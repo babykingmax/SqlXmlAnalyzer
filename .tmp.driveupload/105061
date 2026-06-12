@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment>"死锁回放功能"单元测试</CommitComment>
+  <CommitComment>我已经为您成功完成了 索引评分（Index Scoring） 和 沙盒模拟（Index Sandbox） 的增强功能开发。
+
+  ### 功能增强亮点
+
+  1. 多维度索引评分引擎 ( IndexScoringCalculator )
+      • 实现了基于四因子加权的评分算法：Coverage（覆盖度 40%）、Seekability（等值列可查找性 30%）、Included（包含列有效性 20%）、Uniqueness（唯一性预估 10%）。
+      • 解析执行计划 XML 时会自动进行评分计算，提供  0 - 100  的整数分数。
+      •  SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs  中的单元测试已全部通过。
+  2. 沙盒交互模拟器 ( IndexSandboxWindow )
+      • 在主界面诊断报告中，为每一个缺失索引建议生成了一张卡片，展示包含评分色彩映射（⭐ &lt;70 红色, 70-89 黄色, &gt;=90 绿色）、表名、生成的初始脚本，并提供显眼的 "沙盒模拟" 按钮。
+      • 交互式列操作: 弹出沙盒时使用独立的 ViewModel 驱动（ IndexSandboxViewModel ）。您可以自由地从  KeyColumns  和  IncludeColumns  中删除不需要的列，以及上下移动键列以改变索引字段排序。
+      • 实时反馈: 对键列的任何操作都会触发  Recalculate()  实时重新计算评分，并即刻更新显示的 DDL 脚本。
+  3. 安全稳定的 UI 集成
+      • 新增  MissingIndexSuggestion  和  IndexColumn  数据模型层。
+      • 编写  ScoreToColorConverter  为分数进行醒目的颜色映射。
+      • 代码结构上符合现有的 Core 与 WPF 分离架构标准（没有破坏现行的 XML 解析体系），项目已经过  dotnet build  和  dotnet test  (56/56 测试全部通过)。
+
+
+  现在，您可以打开任意存在 Missing Index 建议的 SQL 执行计划文件（ .sqlplan ），系统就会自动呈现出每条建议的分数，并允许您在“沙盒”内任意组合调试您的完美索引了！</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />

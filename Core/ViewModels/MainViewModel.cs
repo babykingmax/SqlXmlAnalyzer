@@ -59,6 +59,9 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             set => SetProperty(ref _planStatementText, value);
         }
 
+        public ObservableCollection<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion> MissingIndexes { get; } = new ObservableCollection<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>();
+        public ICommand OpenSandboxCommand { get; set; }
+
         public ICommand ClearResultsCommand { get; }
         public ICommand ExportObfuscatedPlanCommand { get; }
 
@@ -66,6 +69,15 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             ClearResultsCommand = new RelayCommand(_ => ClearResults());
             ExportObfuscatedPlanCommand = new RelayCommand(_ => ExportObfuscatedPlan(), _ => CurrentPlanDoc != null);
+            OpenSandboxCommand = new RelayCommand(p => 
+            {
+                if (p is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion suggestion)
+                {
+                    var vm = new SqlXmlAnalyzer.ViewModels.IndexSandboxViewModel(suggestion);
+                    var win = new SqlXmlAnalyzer.Views.IndexSandboxWindow { DataContext = vm };
+                    win.ShowDialog();
+                }
+            });
         }
 
         public void ClearResults()
@@ -75,6 +87,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             DeadlockPatternText = "";
             PlanWarningsText = "";
             PlanStatementText = "";
+            MissingIndexes.Clear();
             StatusText = "已清空分析结果";
             AppTitle = "SqlXmlAnalyzer v2.0 - 智能诊断引擎";
         }

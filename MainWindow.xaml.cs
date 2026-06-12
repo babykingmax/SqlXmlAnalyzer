@@ -335,11 +335,18 @@ namespace SqlXmlAnalyzer
                         .FirstOrDefault()?.Attribute("StatementText")?.Value ?? "未能提取语句";
                     string docString = doc.ToString();
                     string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, _showplanNs);
-                    return (planMermaid, queryText, docString, warningsText);
+                    var mis = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, _showplanNs);
+                    return (planMermaid, queryText, docString, warningsText, mis);
                 });
 
                 Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.planMermaid.Length} 字符");
                 BuildPlanVisualTree(doc, _showplanNs);
+
+                ViewModel.MissingIndexes.Clear();
+                foreach (var mi in result.mis)
+                {
+                    ViewModel.MissingIndexes.Add(mi);
+                }
 
                 PlanXmlTextBox.Text = result.docString;
                 PlanStatementTextBox.Text = result.queryText.Length > 800 ? result.queryText.Substring(0, 800) + "..." : result.queryText;
@@ -1566,6 +1573,16 @@ namespace SqlXmlAnalyzer
 
                     string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
                     string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(ViewModel.CurrentPlanDoc, _showplanNs);
+                    
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        ViewModel.MissingIndexes.Clear();
+                        var mis = PlanDiagnosticAnalyzer.ExtractMissingIndexes(ViewModel.CurrentPlanDoc, _showplanNs);
+                        foreach (var m in mis)
+                        {
+                            ViewModel.MissingIndexes.Add(m);
+                        }
+                    });
                     
                     string formattedDiagnosis = warningsText
                         .Replace("\n\n", "<br/><br/>")

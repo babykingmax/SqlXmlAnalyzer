@@ -141,52 +141,11 @@ namespace SqlXmlAnalyzer
                 // 3. Missing Indexes
                 try
                 {
-                    var missingIndexGroups = doc.Descendants(ns + "MissingIndexGroup");
-                    foreach (var mig in missingIndexGroups)
+                    var missingIndexes = ExtractMissingIndexes(doc, ns);
+                    foreach (var mi in missingIndexes)
                     {
-                        if (mig == null) continue;
-                        double impact = ParseDouble(mig.Attribute("Impact")?.Value);
-                        var mis = mig.Descendants(ns + "MissingIndex");
-                        foreach (var mi in mis)
-                        {
-                            if (mi == null) continue;
-                            string schema = mi.Attribute("Schema")?.Value ?? "";
-                            string table = mi.Attribute("Table")?.Value ?? "";
-                            
-                            var eqCols = new List<string>();
-                            var ineqCols = new List<string>();
-                            var incCols = new List<string>();
-                            
-                            foreach (var cg in mi.Descendants(ns + "ColumnGroup"))
-                            {
-                                if (cg == null) continue;
-                                string usage = cg.Attribute("Usage")?.Value ?? "";
-                                var cols = cg.Descendants(ns + "Column")
-                                    .Select(c => c.Attribute("Name")?.Value ?? "")
-                                    .Where(n => n != "")
-                                    .ToList();
-                                
-                                if (usage == "EQUALITY") eqCols.AddRange(cols);
-                                else if (usage == "INEQUALITY") ineqCols.AddRange(cols);
-                                else if (usage == "INCLUDE") incCols.AddRange(cols);
-                            }
-                            
-                            var orderedCols = eqCols.Concat(ineqCols).ToList();
-                            if (orderedCols.Count > 0)
-                            {
-                                string cleanTable = table.Trim('[', ']');
-                                string firstCol = orderedCols.First().Trim('[', ']');
-                                string indexName = $"IX_{cleanTable}_{firstCol}";
-                                string createStmt = $"CREATE NONCLUSTERED INDEX [{indexName}] ON {schema}.{table} ({string.Join(", ", orderedCols)})";
-                                if (incCols.Count > 0)
-                                {
-                                    createStmt += $" INCLUDE ({string.Join(", ", incCols)})";
-                                }
-                                // 增加 DBA 提示：INCLUDE 键的长度限制
-                                string dbaTip = incCols.Count > 0 ? "\n   [DBA 提示] 包含 (INCLUDE) 列的总长度在某些 SQL Server 版本中受 1023 字节或 32 个列的限制，请视情况裁剪。" : "";
-                                reports[R_IDX].Add($"🔥 预估提升性能: {impact:F1}% | 推荐覆盖索引建表 DDL:\n   👉 {createStmt}{dbaTip}");
-                            }
-                        }
+                        string dbaTip = mi.IncludeColumns.Count > 0 ? "\n   [DBA 提示] 包含 (INCLUDE) 列的总长度在某些 SQL Server 版本中受 1023 字节或 32 个列的限制，请视情况裁剪。" : "";
+                        reports[R_IDX].Add($"⭐ 评分: {mi.Score}/100 | 预估提升: {mi.Impact:F1}% | 推荐覆盖索引建表 DDL:\n   👉 {mi.CreateIndexStatement}{dbaTip}");
                     }
                 }
                 catch (Exception ex)
@@ -664,19 +623,57 @@ namespace SqlXmlAnalyzer
         private static double ParseDouble(string? val)
         {
             if (string.IsNullOrEmpty(val)) return 0.0;
-            try
+            if (double.TryParse(val, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double res)) return res;
+            return 0.0;
+        }
+
+        public static List<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion> ExtractMissingIndexes(XDocument doc, XNamespace ns)
+        {
+            var results = new List<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>();
+            var missingIndexGroups = doc.Descendants(ns + "MissingIndexGroup");
+            foreach (var mig in missingIndexGroups)
             {
-                double res;
-                if (double.TryParse(val, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out res))
+                if (mig == null) continue;
+                double impact = ParseDouble(mig.Attribute("Impact")?.Value);
+                var mis = mig.Descendants(ns + "MissingIndex");
+                foreach (var mi in mis)
                 {
-                    return res;
+                    if (mi == null) continue;
+                    var suggestion = new SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion
+                    {
+                        Schema = mi.Attribute("Schema")?.Value ?? "",
+                        Table = mi.Attribute("Table")?.Value ?? "",
+                        Impact = impact
+                    };
+                    
+                    foreach (var cg in mi.Descendants(ns + "ColumnGroup"))
+                    {
+                        if (cg == null) continue;
+                        string usage = cg.Attribute("Usage")?.Value ?? "";
+                        var cols = cg.Descendants(ns + "Column")
+                            .Select(c => c.Attribute("Name")?.Value ?? "")
+                            .Where(n => n != "")
+                            .Select(n => new SqlXmlAnalyzer.Core.Models.IndexColumn { Name = n, Usage = usage })
+                            .ToList();
+                        
+                        if (usage == "EQUALITY" || usage == "INEQUALITY")
+                        {
+                            suggestion.KeyColumns.AddRange(cols);
+                        }
+                        else if (usage == "INCLUDE")
+                        {
+                            suggestion.IncludeColumns.AddRange(cols);
+                        }
+                    }
+                    
+                    if (suggestion.KeyColumns.Count > 0)
+                    {
+                        SqlXmlAnalyzer.Core.Scoring.IndexScoringCalculator.CalculateScore(suggestion, doc, ns);
+                        results.Add(suggestion);
+                    }
                 }
             }
-            catch
-            {
-                // 忽略转换异常，返回默认值
-            }
-            return 0.0;
+            return results;
         }
 
         private static string ExtractObjectName(XElement relOp, XNamespace ns)

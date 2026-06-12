@@ -4,6 +4,7 @@
         xmlns:local="clr-namespace:SqlXmlAnalyzer"
         xmlns:vm="clr-namespace:SqlXmlAnalyzer.Core.ViewModels"
         xmlns:views="clr-namespace:SqlXmlAnalyzer.Views"
+        xmlns:conv="clr-namespace:SqlXmlAnalyzer.Converters"
         Title="{Binding AppTitle}" 
         Height="900" Width="1400"
         WindowStartupLocation="CenterScreen"
@@ -13,6 +14,7 @@
         Background="{StaticResource BackgroundBrush}">
 
     <Window.Resources>
+        <conv:ScoreToColorConverter x:Key="ScoreColorConv"/>
         <!-- 执行计划操作符模板 (Plan Explorer 风格) -->
         <HierarchicalDataTemplate x:Key="PlanOperatorTemplate" ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal" Margin="2">
@@ -350,10 +352,42 @@
                     <!-- 底部：警告和建议 (类似 Plan Explorer 底部面板) -->
                     <Expander Grid.Row="2" Header="执行计划深度诊断报告 (Deep Diagnostic Report) ★ 13 类专家调优建议" ExpandDirection="Up" IsExpanded="True" Margin="4">
                         <Border Background="#FFF9E6" BorderBrush="#FFD54F" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,8,0,0">
-                            <TextBox Name="PlanWarningsTextBox" Height="120" Text="{Binding PlanWarningsText, Mode=TwoWay}"
-                                     IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"
-                                     VerticalScrollBarVisibility="Auto"
-                                     FontSize="12"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <ItemsControl Grid.Row="0" ItemsSource="{Binding MissingIndexes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Score, StringFormat='⭐ {0}/100'}" 
+                                                               Foreground="{Binding Score, Converter={StaticResource ScoreColorConv}}" 
+                                                               FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Table, StringFormat='表: {0}'}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding CreateIndexStatement}" Foreground="#333" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="2" Content="沙盒模拟" Width="80" Height="28" 
+                                                            Command="{Binding DataContext.OpenSandboxCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                            CommandParameter="{Binding}"
+                                                            Background="#0078D7" Foreground="White" BorderThickness="0" Cursor="Hand" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <TextBox Grid.Row="1" Name="PlanWarningsTextBox" Height="120" Text="{Binding PlanWarningsText, Mode=TwoWay}"
+                                         IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"
+                                         VerticalScrollBarVisibility="Auto"
+                                         FontSize="12"/>
+                            </Grid>
                         </Border>
                     </Expander>
                 </Grid>
