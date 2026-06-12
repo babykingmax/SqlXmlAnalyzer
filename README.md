@@ -57,6 +57,11 @@ SqlXmlAnalyzer 是一款极其强大且现代化的 **SQL Server 性能诊断与
 
 如果您发现有未被识别的特殊 SQL Anti-Pattern，欢迎在 `SqlXmlAnalyzer.Core/Rules` 目录下继承 `IPlanAnalyzerRule` 接口增加属于您的自定义规则！
 
+## 🧑‍💻 作者 (Author)
+
+* **姓名**: 胡冰
+* **Email**: [BABYKINGMAX@HOTMAIL.COM](mailto:BABYKINGMAX@HOTMAIL.COM)
+
 ## 📜 许可证 (License)
 
 本项目采用 MIT License 开源，您可以自由地使用、修改及分发。

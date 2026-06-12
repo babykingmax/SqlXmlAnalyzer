@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment>“死锁回放（Timeline Playback）”功能</CommitComment>
+  <CommitComment>V4</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />
