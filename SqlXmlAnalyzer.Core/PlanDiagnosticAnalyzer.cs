@@ -296,6 +296,8 @@ namespace SqlXmlAnalyzer
                             else if (result.RuleId.Contains("MEMORY_GRANT") || result.RuleId.Contains("SPILL")) reports[R_MEM].Add(msg);
                             else if (result.RuleId.Contains("PARALLEL") || result.RuleId.Contains("SKEW")) reports[R_SKEW].Add(msg);
                             else if (result.RuleId.Contains("RESIDUAL_PRED") || result.RuleId.Contains("NON_SARGABLE")) reports[R_RESID].Add(msg);
+                            else if (result.RuleId.Contains("UDF_TVF")) reports[R_UDF].Add(msg);
+                            else if (result.RuleId.Contains("NESTED_LOOPS_HIGH_EXEC")) reports[R_PATTERN].Add(msg);
                             else reports[R_PATTERN].Add(msg);
                         }
                     }
@@ -477,15 +479,7 @@ namespace SqlXmlAnalyzer
                             }
                         }
 
-                        // TVF 黑洞 (UDF Bombs)
-                        bool isUdf = physOp.Contains("Function") || logical.Contains("UDF") || physOp.Contains("Table Valued");
-                        if (isUdf)
-                        {
-                            if (estRows <= 100 && actRows > 1000)
-                            {
-                                reports[R_UDF].Add($"💥 UDF/表变量性能警告 Node {nodeId} ({logical}): 表变量/TVF 让 SQL 引擎做盲目估算，预估 {estRows:F0} 行而实际输出 {actRows:F0} 行！这会彻底带坏后续 JOIN 算子选择，强烈建议改为 #临时表。");
-                            }
-                        }
+
                     }
                     catch (Exception ex)
                     {

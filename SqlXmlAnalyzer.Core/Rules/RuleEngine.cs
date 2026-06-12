@@ -36,6 +36,10 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new ResidualPredicateRule());
             RegisterRule(new SpillDetectionRule());
             RegisterRule(new ParallelSkewRule());
+            RegisterRule(new UdfAndTableVariableRule());
+            RegisterRule(new NestedLoopsHighExecRule());
+            RegisterRule(new AntiPatternRule());
+            RegisterRule(new SerialPlanReasonRule());
         }
     }
 }

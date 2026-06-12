@@ -146,8 +146,8 @@
                                                             <TextBlock Text="{Binding PartitionCount}" FontSize="11" Foreground="#263238" FontWeight="SemiBold"/>
                                                         </StackPanel>
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                                            <TextBlock Text="Partition Range: " FontSize="11" Foreground="#546E7A"/>
-                                                            <TextBlock Text="{Binding PartitionRange}" FontSize="11" Foreground="#263238" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="Partition Range: " FontSize="11" Foreground="{Binding PartitionLabelColor}"/>
+                                                            <TextBlock Text="{Binding PartitionRange}" FontSize="11" Foreground="{Binding PartitionRangeColor}" FontWeight="SemiBold"/>
                                                         </StackPanel>
                                                     </StackPanel>
 

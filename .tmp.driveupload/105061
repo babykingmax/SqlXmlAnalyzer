@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment>V3</CommitComment>
+  <CommitComment> 为了确保这 30项核心规则（涵盖 P0 到 P2 级别）在未来的迭代中保持稳定，我为您新创建并修复了测试模块：
+
+  1. 🧪 新建  RuleEngineTests.cs ：
+      • 我为刚研发的所有的最新规则（包括隐式转换、回表查询、参数嗅探、TempDB溢出、UDF表变量黑洞、嵌套循环暴增、非SARGable反模式、串行计划等）都编写了专门的模拟 XML 单元测试。（
+      • 保证了每当传入对应的特征节点时，都能被规则引擎 ( RuleEngine ) 精确捕获并抛出正确的  Severity  与包含关键排查指引的中文字符串。
+  2. 🔧 修复原有测试断言：
+      • 由于此前我深度汉化了  PlanDiagnosticAnalyzer  中的提示（比如把  Compiled:  翻译为了  编译值: ），导致部分旧测试报错。目前我已同步将测试断言的内容对齐了全新的全中文专业表述，且修正了 XML 解析中关于
+      Document  根节点加载的适配性问题。
+  3. 🎉 当前测试通过率：100% (44 个测试全部通过)
+    总共 1 个测试文件与指定模式相匹配。
+    已通过! - 失败: 0，通过: 44，已跳过: 0，总计: 44</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />

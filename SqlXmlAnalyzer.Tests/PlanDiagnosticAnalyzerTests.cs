@@ -119,8 +119,8 @@ namespace SqlXmlAnalyzer.Tests
             // Assert
             paramResult.Should().NotBeNull();
             paramResult!.Message.Should().Contain("@p1");
-            paramResult.Message.Should().Contain("Compiled: (1)");
-            paramResult.Message.Should().Contain("Runtime: (2)");
+            paramResult.Message.Should().Contain("编译值: (1)");
+            paramResult.Message.Should().Contain("运行值: (2)");
             paramResult.Severity.Should().Be("Warning");
         }
 

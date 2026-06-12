@@ -829,6 +829,10 @@ namespace SqlXmlAnalyzer
         public string PartitionCount { get; set; } = "";
         public string PartitionRange { get; set; } = "";
 
+        public bool IsFullPartitionScan => Partitioned == "True" && !string.IsNullOrEmpty(PartitionCount) && (PartitionRange == $"1 - {PartitionCount}" || PartitionRange == $"1-{PartitionCount}");
+        public string PartitionRangeColor => IsFullPartitionScan ? "#FF0000" : "#263238"; // Bright Red
+        public string PartitionLabelColor => IsFullPartitionScan ? "#FF0000" : "#546E7A"; // Bright Red
+
         public string HasSeekPredicates => string.IsNullOrEmpty(SeekPredicates) ? "Collapsed" : "Visible";
         public string HasPredicate => string.IsNullOrEmpty(Predicate) ? "Collapsed" : "Visible";
         public string HasOutputList => string.IsNullOrEmpty(OutputList) ? "Collapsed" : "Visible";
