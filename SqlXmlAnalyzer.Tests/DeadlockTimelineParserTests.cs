@@ -51,8 +51,8 @@ namespace SqlXmlAnalyzer.Tests
             parsed.Processes["process123"].IsInCycle.Should().BeTrue();
             parsed.Processes["process456"].IsInCycle.Should().BeTrue();
 
-            parsed.Resources["lock1"].IsInCycle.Should().BeTrue();
-            parsed.Resources["lock2"].IsInCycle.Should().BeTrue();
+            parsed.Resources["res_0"].IsInCycle.Should().BeTrue();
+            parsed.Resources["res_1"].IsInCycle.Should().BeTrue();
 
             // Victim should be correctly marked
             var victimEvent = parsed.Events.FirstOrDefault(e => e.Type == "Victim");
