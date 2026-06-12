@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>2.0.0</Version>
+    <AssemblyName>SqlXmlAnalyzer</AssemblyName>
+    <Product>SqlXmlAnalyzer</Product>
+    <Description>SQL Server 死锁与执行计划深度分析工具 - 图形界面专业版</Description>
+    <Authors>数据库性能优化专家</Authors>
+    <Copyright>2026</Copyright>
+    <LangVersion>latest</LangVersion>
+    <!-- <ApplicationIcon>app.ico</ApplicationIcon> -->
+
+    <!-- 便于 Visual Studio 2026 调试 -->
+    <DebugType Condition="'$(Configuration)' == 'Debug'">full</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' == 'Debug'">true</DebugSymbols>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="SqlXmlAnalyzer.Core\**" />
+    <Page Remove="SqlXmlAnalyzer.Core\**" />
+    <None Remove="SqlXmlAnalyzer.Core\**" />
+  </ItemGroup>
+  <ItemGroup><!-- 已移除 WebView2，改用纯 WPF 本地控件实现可视化 -->
+  
+    <ProjectReference Include="SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocX" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+    <PackageReference Include="Nodify" Version="6.0.0" />
+    <PackageReference Include="QuestPDF" Version="2026.6.0" />
+  </ItemGroup>
+
+</Project>

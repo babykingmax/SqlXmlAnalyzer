@@ -1,0 +1,303 @@
+<UserControl x:Class="SqlXmlAnalyzer.PlanGraphControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
+             xmlns:local="clr-namespace:SqlXmlAnalyzer">
+    <UserControl.Resources>
+        <local:ConnectionThicknessConverter x:Key="ConnectionThicknessConverter"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- 纯图形区域 (Plan Explorer 风格操作符盒子图) - 无内部侧边栏，避免布局冲突 -->
+        <Border BorderBrush="#90A4AE" BorderThickness="1.5" Background="#F5F7FA" CornerRadius="4">
+            <Grid>
+                <!-- 顶部工具提示栏 -->
+                <Border Background="#ECEFF1" BorderBrush="#CFD8DC" BorderThickness="0,0,0,1" Height="26" VerticalAlignment="Top" Panel.ZIndex="10">
+                    <StackPanel Orientation="Horizontal" Margin="8,0">
+                        <TextBlock Text="📊 执行计划节点图" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center" Foreground="#37474F"/>
+                        <TextBlock Text="  |  拖拽节点 reposition • 滚轮缩放 • 中键平移 • 双击选中" 
+                                   FontSize="9" VerticalAlignment="Center" Foreground="#607D8B" Margin="8,0,0,0"/>
+                        <Button Content="重置视图" FontSize="9" Padding="6,1" Margin="12,0,0,0" Click="ResetView_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <nodify:NodifyEditor x:Name="Editor"
+                                     ItemsSource="{Binding Nodes}"
+                                     Connections="{Binding Connections}"
+                                     Background="Transparent"
+                                     Margin="0,26,0,0"
+                                     SnapsToDevicePixels="False" 
+                                     UseLayoutRounding="False"
+                                     TextOptions.TextRenderingMode="ClearType"
+                                     TextOptions.TextFormattingMode="Ideal"
+                                     TextOptions.TextHintingMode="Fixed"
+                                     PreviewMouseLeftButtonDown="Editor_PreviewMouseLeftButtonDown"
+                                     PreviewMouseMove="Editor_PreviewMouseMove"
+                                     PreviewMouseLeftButtonUp="Editor_PreviewMouseLeftButtonUp">
+                    
+                    <!-- 节点内容模板 (Plan Explorer 专业操作符盒子) -->
+                    <nodify:NodifyEditor.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:PlanNodeViewModel}">
+                            <!-- 操作符节点 - 完全复刻 SQL Sentry Plan Explorer 原生风格 (无边框，纯图标+堆叠文字) -->
+                            <Border MinWidth="120" Background="Transparent" SnapsToDevicePixels="True" Padding="4"
+                                    BorderBrush="{Binding NodeSeverityColor}" BorderThickness="{Binding NodeSeverityBorderThickness}" CornerRadius="4">
+                                <Border.ToolTip>
+                                    <ToolTip Background="#FFFFFF" BorderBrush="#90A4AE" BorderThickness="1" Padding="0">
+                                        <Border CornerRadius="4" ClipToBounds="True">
+                                            <StackPanel Width="400">
+                                                <!-- 头部区域 (蓝色背景) -->
+                                                <Border Background="#1976D2" Padding="12,8">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding PhysicalOp}" FontWeight="Bold" FontSize="14" Foreground="#FFFFFF" />
+                                                        <TextBlock Text="{Binding LogicalOpSuffix}" FontSize="11" FontStyle="Italic" Foreground="#BBDEFB" Margin="0,2,0,0" Visibility="{Binding HasExtraInfo}"/>
+                                                        <TextBlock Text="{Binding NodeId, StringFormat='Node ID: {0}'}" FontSize="10" Foreground="#E3F2FD" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- 主体数据区域 -->
+                                                <Border Padding="12">
+                                                    <StackPanel>
+                                                        <!-- 执行与行数信息 -->
+                                                    <Grid Margin="0,0,0,8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="130"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        
+                                                        <TextBlock Text="Executions (Act/Est):" Grid.Row="0" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="0,2">
+                                                            <TextBlock Text="{Binding ActualExecutions}" FontSize="11" Foreground="#263238" FontWeight="SemiBold"/>
+                                                            <TextBlock Text=" / " FontSize="11" Foreground="#90A4AE"/>
+                                                            <TextBlock Text="{Binding EstimatedExecutions}" FontSize="11" Foreground="#263238"/>
+                                                        </StackPanel>
+
+                                                        <TextBlock Text="Rows (Act/Est):" Grid.Row="1" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0,2">
+                                                            <TextBlock Text="{Binding ActualRows}" FontSize="11" Foreground="#263238" FontWeight="SemiBold"/>
+                                                            <TextBlock Text=" / " FontSize="11" Foreground="#90A4AE"/>
+                                                            <TextBlock Text="{Binding EstRows}" FontSize="11" Foreground="#263238"/>
+                                                        </StackPanel>
+
+                                                        <TextBlock Text="Data Size (Est):" Grid.Row="2" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <TextBlock Text="{Binding EstimatedDataSize}" Grid.Row="2" Grid.Column="1" FontSize="11" Foreground="#263238" Margin="0,2"/>
+
+                                                        <TextBlock Text="Execution Mode:" Grid.Row="3" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <TextBlock Text="{Binding ExecutionMode}" Grid.Row="3" Grid.Column="1" FontSize="11" Foreground="#263238" Margin="0,2"/>
+                                                    </Grid>
+
+                                                    <Separator Background="#ECEFF1" Margin="0,0,0,8"/>
+
+                                                    <!-- 成本信息 -->
+                                                    <Grid Margin="0,0,0,8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="130"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        
+                                                        <TextBlock Text="Operator Cost:" Grid.Row="0" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <TextBlock Text="{Binding EstimatedOperatorCost}" Grid.Row="0" Grid.Column="1" FontSize="11" Foreground="#263238" Margin="0,2"/>
+
+                                                        <TextBlock Text="I/O Cost:" Grid.Row="1" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <TextBlock Text="{Binding EstimatedIOCost}" Grid.Row="1" Grid.Column="1" FontSize="11" Foreground="#263238" Margin="0,2"/>
+
+                                                        <TextBlock Text="CPU Cost:" Grid.Row="2" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <TextBlock Text="{Binding EstimatedCPUCost}" Grid.Row="2" Grid.Column="1" FontSize="11" Foreground="#263238" Margin="0,2"/>
+
+                                                        <TextBlock Text="Subtree Cost:" Grid.Row="3" Grid.Column="0" FontSize="11" Foreground="#546E7A" Margin="0,2"/>
+                                                        <TextBlock Text="{Binding EstimatedSubtreeCostStr}" Grid.Row="3" Grid.Column="1" FontSize="11" Foreground="#1976D2" FontWeight="SemiBold" Margin="0,2"/>
+                                                    </Grid>
+
+                                                    <!-- 数据库对象与详细属性 -->
+                                                    <StackPanel Visibility="{Binding HasObjectDetails}" Margin="0,4,0,0">
+                                                        <Separator Background="#ECEFF1" Margin="0,0,0,6"/>
+                                                        <TextBlock Text="Object Details:" FontSize="10.5" FontWeight="Bold" Foreground="#37474F" Margin="0,0,0,2"/>
+                                                        <TextBlock Text="{Binding ObjectDetails}" FontSize="11" Foreground="#004D40" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Visibility="{Binding HasPartitionInfo}">
+                                                        <Separator Background="#ECEFF1" Margin="0,0,0,6"/>
+                                                        <TextBlock Text="Partitioned: True" FontSize="10.5" FontWeight="Bold" Foreground="#37474F" Margin="0,0,0,2"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                            <TextBlock Text="Partition Count: " FontSize="11" Foreground="#546E7A"/>
+                                                            <TextBlock Text="{Binding PartitionCount}" FontSize="11" Foreground="#263238" FontWeight="SemiBold"/>
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                            <TextBlock Text="Partition Range: " FontSize="11" Foreground="#546E7A"/>
+                                                            <TextBlock Text="{Binding PartitionRange}" FontSize="11" Foreground="#263238" FontWeight="SemiBold"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Visibility="{Binding HasOutputList}">
+                                                        <Separator Background="#ECEFF1" Margin="0,0,0,6"/>
+                                                        <TextBlock Text="Output List:" FontSize="10.5" FontWeight="Bold" Foreground="#37474F" Margin="0,0,0,2"/>
+                                                        <TextBlock Text="{Binding OutputList}" FontSize="11" Foreground="#263238" TextWrapping="Wrap" MaxHeight="60" Margin="0,0,0,6"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Visibility="{Binding HasSeekPredicates}">
+                                                        <Separator Background="#ECEFF1" Margin="0,0,0,6"/>
+                                                        <TextBlock Text="Seek Predicates:" FontSize="10.5" FontWeight="Bold" Foreground="#37474F" Margin="0,0,0,2"/>
+                                                        <TextBlock Text="{Binding SeekPredicates}" FontSize="11" Foreground="#E65100" TextWrapping="Wrap" MaxHeight="60" Margin="0,0,0,6"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Visibility="{Binding HasPredicate}">
+                                                        <Separator Background="#ECEFF1" Margin="0,0,0,6"/>
+                                                        <TextBlock Text="Residual Predicate:" FontSize="10.5" FontWeight="Bold" Foreground="#37474F" Margin="0,0,0,2"/>
+                                                        <TextBlock Text="{Binding Predicate}" FontSize="11" Foreground="#D84315" TextWrapping="Wrap" MaxHeight="60" Margin="0,0,0,6"/>
+                                                    </StackPanel>
+
+                                                    <!-- 警告信息 -->
+                                                    <StackPanel Visibility="{Binding HasWarningVisible}" Margin="0,6,0,0">
+                                                        <Border Background="#FFF3E0" BorderBrush="#FFB74D" BorderThickness="1" CornerRadius="4" Padding="8">
+                                                            <StackPanel>
+                                                                <TextBlock Text="⚠ 性能警告 (Warnings):" FontSize="11" FontWeight="Bold" Foreground="#E65100"/>
+                                                                <TextBlock Text="{Binding Warnings}" FontSize="11" Foreground="#BF360C" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+                                    </ToolTip>
+                                </Border.ToolTip>
+
+                                <!-- 核心布局：纵向堆叠 -->
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <!-- 1. 成本百分比 (Cost) -->
+                                    <Border HorizontalAlignment="Center" Margin="0,0,0,2" CornerRadius="3" Padding="4,2">
+                                        <!-- 如果想实现大红底白字高亮，可以在外部加个值转换器，这里默认用深灰加粗字 -->
+                                        <TextBlock Text="{Binding CostText}" FontSize="11.5" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- 2. 居中的核心图标 -->
+                                    <Grid HorizontalAlignment="Center" Margin="0,4,0,4">
+                                        <!-- 使用他们内置的原生 SSMS 图片资源，并调回到标准尺寸 -->
+                                        <Image Source="{Binding OperatorIcon}" Width="32" Height="32" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        
+                                        <!-- 右下角/左下角小警告图标 (SQL Sentry 风格黄底感叹号) -->
+                                        <Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-6,0,0,-4"
+                                                Width="14" Height="14" CornerRadius="7" Background="#FFC107"
+                                                BorderBrush="White" BorderThickness="1.5"
+                                                Visibility="{Binding HasWarningVisible}">
+                                            <TextBlock Text="!" Foreground="Black" FontSize="9" FontWeight="Bold" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
+                                        </Border>
+                                        
+                                        <!-- 并行执行小图标 -->
+                                        <TextBlock Text="⚡" FontSize="10" Foreground="#FF9800" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-4,-8,0" Visibility="{Binding IsParallelVisible}"/>
+                                    </Grid>
+
+                                    <!-- 3. 操作符名称与逻辑操作 -->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                        <TextBlock Text="{Binding PhysicalOp}" FontSize="12" Foreground="#333333" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding LogicalOpSuffix, StringFormat=' ({0})'}" FontSize="12" Foreground="#666666" Visibility="{Binding HasExtraInfo}"/>
+                                    </StackPanel>
+
+                                    <!-- 4. 数据库表名/索引对象名称 -->
+                                    <TextBlock Text="{Binding ObjectDetails}" 
+                                               FontSize="11" Foreground="#666666" 
+                                               HorizontalAlignment="Center" TextAlignment="Center"
+                                               MaxWidth="160" TextWrapping="Wrap" Margin="0,2,0,0"
+                                               Visibility="{Binding HasObjectDetails}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </nodify:NodifyEditor.ItemTemplate>
+
+                    <!-- 节点容器样式 (位置 + 选择效果) -->
+                    <nodify:NodifyEditor.ItemContainerStyle>
+                        <Style TargetType="{x:Type nodify:ItemContainer}">
+                            <Setter Property="Location" Value="{Binding Location, Mode=TwoWay}"/>
+                            <Setter Property="MinWidth" Value="230"/>
+                            <Setter Property="MinHeight" Value="70"/>
+                            <EventSetter Event="MouseDoubleClick" Handler="Node_MouseDoubleClick"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="#1976D2" BlurRadius="8" ShadowDepth="0" Opacity="0.4"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </nodify:NodifyEditor.ItemContainerStyle>
+
+                    <!-- 连接线 (数据流向父节点，由子指向父，支持数据流厚度与估算偏差颜色，以及悬浮数据量数值标签与流向动画) -->
+                    <nodify:NodifyEditor.ConnectionTemplate>
+                        <DataTemplate DataType="{x:Type local:ConnectionViewModel}">
+                            <Grid Opacity="{Binding Opacity}">
+                                <!-- 1. 背景管道连接线 (展示行数对应的粗细，以及估算偏差颜色) -->
+                                <nodify:Connection Source="{Binding SourceLocation}" 
+                                                   Target="{Binding TargetLocation}"
+                                                   Stroke="{Binding StrokeBrush}"
+                                                   StrokeThickness="{Binding RowsCount, Converter={StaticResource ConnectionThicknessConverter}}"
+                                                   ArrowEnds="End"
+                                                   ArrowSize="8,8"
+                                                   ToolTip="{Binding ToolTipText}"/>
+
+                                <!-- 2. 前景动画虚线 (实现类似商业 SQL Sentry Plan Explorer 的动态数据流流向效果) -->
+                                <nodify:Connection Source="{Binding SourceLocation}" 
+                                                   Target="{Binding TargetLocation}"
+                                                   Stroke="White"
+                                                   StrokeThickness="1.2"
+                                                   StrokeDashArray="5,5"
+                                                   ArrowEnds="None"
+                                                   IsHitTestVisible="False"
+                                                   Opacity="0.6">
+                                    <nodify:Connection.Style>
+                                        <Style TargetType="{x:Type nodify:Connection}">
+                                            <Style.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="StrokeDashOffset"
+                                                                             From="100" To="0" Duration="0:0:4"
+                                                                             RepeatBehavior="Forever"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </nodify:Connection.Style>
+                                </nodify:Connection>
+
+                                <!-- 3. 数据流行数浮动标签 (精确居中于连接线中点) -->
+                                <Border Background="#ECEFF1" BorderBrush="{Binding StrokeBrush}" BorderThickness="1.2"
+                                        CornerRadius="3" Padding="4,1.5"
+                                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                                        IsHitTestVisible="False">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform X="{Binding MidpointX}" Y="{Binding MidpointY}"/>
+                                    </Border.RenderTransform>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#37474F" BlurRadius="3" ShadowDepth="1" Opacity="0.15"/>
+                                    </Border.Effect>
+                                    <TextBlock Text="{Binding LabelText}" FontSize="8" FontWeight="SemiBold" Foreground="#37474F"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </nodify:NodifyEditor.ConnectionTemplate>
+                </nodify:NodifyEditor>
+
+                <!-- 空状态提示 -->
+                <TextBlock x:Name="EmptyHint" Text="尚未加载执行计划&#x0A;请打开 .sqlplan 或 .xml 执行计划文件&#x0A;（打开后会自动切换到此专业 Nodify 盒子视图）" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           TextAlignment="Center" Foreground="#546E7A" FontSize="13"
+                           Visibility="Collapsed"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
