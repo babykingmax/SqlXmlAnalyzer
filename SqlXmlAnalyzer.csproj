@@ -19,13 +19,16 @@
     <DebugType Condition="'$(Configuration)' == 'Debug'">full</DebugType>
     <DebugSymbols Condition="'$(Configuration)' == 'Debug'">true</DebugSymbols>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**;SqlXmlAnalyzer.Tests\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="SqlXmlAnalyzer.Core\**" />
     <Page Remove="SqlXmlAnalyzer.Core\**" />
     <None Remove="SqlXmlAnalyzer.Core\**" />
+    <Compile Remove="SqlXmlAnalyzer.Tests\**" />
+    <Page Remove="SqlXmlAnalyzer.Tests\**" />
+    <None Remove="SqlXmlAnalyzer.Tests\**" />
   </ItemGroup>
   <ItemGroup><!-- 已移除 WebView2，改用纯 WPF 本地控件实现可视化 -->
   
@@ -33,10 +36,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.10.3" />
     <PackageReference Include="DocX" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.56.0" />
     <PackageReference Include="Nodify" Version="6.0.0" />
     <PackageReference Include="QuestPDF" Version="2026.6.0" />
+    <PackageReference Include="System.Formats.Asn1" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

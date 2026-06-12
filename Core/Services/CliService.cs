@@ -194,7 +194,7 @@ namespace SqlXmlAnalyzer.Core.Services
         }
 
         // --- Helper methods to reuse parsing logic ---
-        private static (System.Collections.Generic.List<DeadlockProcess> processes, System.Collections.Generic.List<LockResource> resources, string victimId) ParseDeadlockDocument(XDocument doc)
+        public static (System.Collections.Generic.List<DeadlockProcess> processes, System.Collections.Generic.List<LockResource> resources, string victimId) ParseDeadlockDocument(XDocument doc)
         {
             var processes = new System.Collections.Generic.List<DeadlockProcess>();
             var resources = new System.Collections.Generic.List<LockResource>();
