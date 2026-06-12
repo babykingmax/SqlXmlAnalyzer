@@ -12,12 +12,21 @@
         <Border BorderBrush="#90A4AE" BorderThickness="1.5" Background="#F5F7FA" CornerRadius="4">
             <Grid>
                 <!-- 顶部工具提示栏 -->
-                <Border Background="#ECEFF1" BorderBrush="#CFD8DC" BorderThickness="0,0,0,1" Height="26" VerticalAlignment="Top" Panel.ZIndex="10">
+                <Border Background="#ECEFF1" BorderBrush="#CFD8DC" BorderThickness="0,0,0,1" Height="36" VerticalAlignment="Top" Panel.ZIndex="10">
                     <StackPanel Orientation="Horizontal" Margin="8,0">
                         <TextBlock Text="📊 执行计划节点图" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center" Foreground="#37474F"/>
+                        
+                        <!-- 视图选项：动态切换显示模式 -->
+                        <TextBlock Text="视图模式:" VerticalAlignment="Center" Margin="12,0,4,0" FontSize="11" Foreground="#546E7A"/>
+                        <ComboBox x:Name="CmbViewMode" SelectedIndex="0" Width="140" Height="24" SelectionChanged="CmbViewMode_SelectionChanged" VerticalContentAlignment="Center" FontSize="11">
+                            <ComboBoxItem Content="成本百分比 (%)"/>
+                            <ComboBoxItem Content="CPU + I/O 成本"/>
+                            <ComboBoxItem Content="行数对比 (Act/Est)"/>
+                        </ComboBox>
+
                         <TextBlock Text="  |  拖拽节点 reposition • 滚轮缩放 • 中键平移 • 双击选中" 
                                    FontSize="9" VerticalAlignment="Center" Foreground="#607D8B" Margin="8,0,0,0"/>
-                        <Button Content="重置视图" FontSize="9" Padding="6,1" Margin="12,0,0,0" Click="ResetView_Click"/>
+                        <Button Content="重置视图" FontSize="9" Padding="6,1" Margin="12,0,0,0" Click="ResetView_Click" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
 
@@ -38,9 +47,9 @@
                     <!-- 节点内容模板 (Plan Explorer 专业操作符盒子) -->
                     <nodify:NodifyEditor.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:PlanNodeViewModel}">
-                            <!-- 操作符节点 - 完全复刻 SQL Sentry Plan Explorer 原生风格 (无边框，纯图标+堆叠文字) -->
-                            <Border MinWidth="120" Background="Transparent" SnapsToDevicePixels="True" Padding="4"
-                                    BorderBrush="{Binding NodeSeverityColor}" BorderThickness="{Binding NodeSeverityBorderThickness}" CornerRadius="4">
+                            <!-- 操作符节点 - 动态成本编码与图标 -->
+                            <Border MinWidth="120" Background="{Binding DynamicBackgroundBrush}" SnapsToDevicePixels="True" Padding="4"
+                                    BorderBrush="{Binding DynamicBorderBrush}" BorderThickness="{Binding DynamicBorderThickness}" CornerRadius="4">
                                 <Border.ToolTip>
                                     <ToolTip Background="#FFFFFF" BorderBrush="#90A4AE" BorderThickness="1" Padding="0">
                                         <Border CornerRadius="4" ClipToBounds="True">
@@ -178,20 +187,22 @@
                                     <!-- 1. 成本百分比 (Cost) -->
                                     <Border HorizontalAlignment="Center" Margin="0,0,0,2" CornerRadius="3" Padding="4,2">
                                         <!-- 如果想实现大红底白字高亮，可以在外部加个值转换器，这里默认用深灰加粗字 -->
-                                        <TextBlock Text="{Binding CostText}" FontSize="11.5" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding PrimaryDisplayValue}" FontSize="11.5" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center"/>
                                     </Border>
 
                                     <!-- 2. 居中的核心图标 -->
                                     <Grid HorizontalAlignment="Center" Margin="0,4,0,4">
-                                        <!-- 使用他们内置的原生 SSMS 图片资源，并调回到标准尺寸 -->
-                                        <Image Source="{Binding OperatorIcon}" Width="32" Height="32" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <!-- 使用矢量图形替换外部图片 -->
+                                        <Viewbox Width="32" Height="32">
+                                            <Path Data="{Binding OperatorGeometry}" Fill="{Binding AccentBrush}" Stretch="Uniform" />
+                                        </Viewbox>
                                         
-                                        <!-- 右下角/左下角小警告图标 (SQL Sentry 风格黄底感叹号) -->
-                                        <Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-6,0,0,-4"
-                                                Width="14" Height="14" CornerRadius="7" Background="#FFC107"
+                                        <!-- 右上角更醒目的警告图标 -->
+                                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-6,-6,0"
+                                                Width="16" Height="16" CornerRadius="8" Background="#D32F2F"
                                                 BorderBrush="White" BorderThickness="1.5"
                                                 Visibility="{Binding HasWarningVisible}">
-                                            <TextBlock Text="!" Foreground="Black" FontSize="9" FontWeight="Bold" 
+                                            <TextBlock Text="!" Foreground="White" FontSize="10" FontWeight="Bold" 
                                                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
                                         </Border>
                                         

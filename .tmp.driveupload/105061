@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment>UNIT-TEST</CommitComment>
+  <CommitComment>我们在  PlanGraphControl.xaml  和对应的  PlanNodeViewModel  中完成了以下核心功能的升级与重构：
+
+  ### 1. 动态成本编码与高亮 (Dynamic Cost Encoding)
+
+  • 新增了  DynamicBackgroundBrush  和  DynamicBorderBrush 。
+  • 摒弃了写死的条件分支，改为使用颜色插值算法（ LerpColor ）。根据当前节点的独立成本占比 ( CostPercent
+  )，节点背景色会由纯白平滑过渡到浅红，而边框会由灰蓝色过渡到深红色。成本越高越醒目，一眼即可识别出查询瓶颈。
+
+  ### 2. 重绘矢量节点图标 (Vector Icon Redesign)
+
+  • 彻底摆脱了外部图片文件依赖！之前依赖从  ssms_icons  目录读取图片，这种方式不仅容易发生 IO 异常，而且在不同分辨率下缩放也会模糊。
+  • 我们利用 WPF 的  Path Geometry  在  PlanNodeViewModel  中定义了一套现代化的纯矢量几何图标（包含 Scan, Seek, Join, Sort, Parallelism, Spool, Compute 等常见算子），并在前端使用  Viewbox  +  Path
+  完美呈现，配以不同的主题色（ AccentBrush ），使其极其清晰且极具 SQL Sentry 的专业质感。
+
+  ### 3. 更醒目的诊断警告标志 (Warning Flags)
+
+  • 将原来挤在底部的黄色感叹号，改成了更加醒目的红色圆形徽标 ( ! )，并调整到节点核心图标的右上角悬浮显示 ( Z-Index  提升)。
+  • 悬停徽标上方时，原生弹出的  ToolTip  会明确高亮显示该节点的性能警告（如：隐式转换、残差谓词等）。
+
+  ### 4. 视图选项实时切换 (View Mode Toggle)
+
+  • 在界面顶部的工具栏中，新增了 “视图模式” 下拉菜单 ( ComboBox )。
+  • 现在你可以一键切换核心标签条的内容，包括：“成本百分比 (%)”、“CPU + I/O 成本”、以及 “行数对比 (Actual/Estimated)”。更改后数据视图将瞬间热重载。
+  ──────
+  现在，WPF 的  Plan Graph  视图不仅达到了 SQL Sentry 的审美水平，而且摆脱了残缺图标的困扰，性能反馈也更直观了。</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />
