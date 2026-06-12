@@ -1,16 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment> 为了确保这 30项核心规则（涵盖 P0 到 P2 级别）在未来的迭代中保持稳定，我为您新创建并修复了测试模块：
+  <CommitComment>规则引擎核心升级已完成！
+  根据您提供的 Performance Studio 规则体系蓝图，我已经为您成功编写、升级并将 5 条高优先级基数/内存/编译诊断规则 深度集成到了  SqlXmlAnalyzer  中。编译通过，0 Errors。
 
-  1. 🧪 新建  RuleEngineTests.cs ：
-      • 我为刚研发的所有的最新规则（包括隐式转换、回表查询、参数嗅探、TempDB溢出、UDF表变量黑洞、嵌套循环暴增、非SARGable反模式、串行计划等）都编写了专门的模拟 XML 单元测试。（
-      • 保证了每当传入对应的特征节点时，都能被规则引擎 ( RuleEngine ) 精确捕获并抛出正确的  Severity  与包含关键排查指引的中文字符串。
-  2. 🔧 修复原有测试断言：
-      • 由于此前我深度汉化了  PlanDiagnosticAnalyzer  中的提示（比如把  Compiled:  翻译为了  编译值: ），导致部分旧测试报错。目前我已同步将测试断言的内容对齐了全新的全中文专业表述，且修正了 XML 解析中关于
-      Document  根节点加载的适配性问题。
-  3. 🎉 当前测试通过率：100% (44 个测试全部通过)
-    总共 1 个测试文件与指定模式相匹配。
-    已通过! - 失败: 0，通过: 44，已跳过: 0，总计: 44</CommitComment>
+  以下是本次升级的具体实现细节（代码已实装在  SqlXmlAnalyzer.Core/Rules/  目录下并成功注册到  RuleEngine ）：
+  ### 1. 🔍 Rule 1: 参数嗅探深度检测升级 ( ParameterSniffingRule.cs )
+  状态：🔥 已重构升级
+
+  • Deviation Detection：将原先仅对比值的逻辑，升级为动态拉取根节点  EstimateRows  和  ActualRows  计算偏差比例 ( ratio )。
+  • 智能分级：如果偏差比例 ≥100 × 且实际行数 &gt;1000，直接标为 Critical（严重）；偏差 ≥10 × 标为 Warning。
+  • Plan Affecting：增加了对  OPTION (OPTIMIZE FOR UNKNOWN)  提示的检测，如果存在则触发 Info 级别提示。
+  • 专家建议：严格按照您的规范，在输出中加入了：使用  DECLARE @LocalParam = @Parameter 、添加  OPTION (RECOMPILE) 、或评估 SQL Server 2022+ 的参数敏感计划优化 (PSP)。
+
+  ### 2. 📉 Rule 2: 基数估计严重偏差判定升级 ( RowEstimateMismatchRule.cs )
+
+  状态：🔥 已扩展
+
+  • 新型漏洞检测：新增了预估极高但实际极低的反模式检测 ( actualRows &lt;= 100 &amp;&amp; estimatedRows &gt;= 1000 )。对于此场景，明确警告优化器可能错选  Hash Join  并在执行时造成极大的内存授权浪费。
+  • CE 降级埋点：代码中加入了提取  CardinalityEstimationModelVersion  的逻辑 (对  &lt; 120  即旧版 CE 的探测做好了架构铺垫)。
+
+  ### 3. 🕳️ Rule 3: 新增 Zero-Row Actuals 规则 ( ZeroRowActualsRule.cs )
+
+  状态：✨ 全新编写
+
+  • 独立拆分：为了保持单一职责，我将 "0 行返回" 逻辑单独抽象成了专门的分析器。
+  • 检测条件：当算子预估行数 ≥100，但由于极端的互斥谓词或严重过时的统计信息导致实际执行时  totalActualRows == 0 ，触发 Warning。
+  • 输出建议：提示执行  UPDATE STATISTICS  或者人工排查  WHERE  逻辑。
+
+  ### 4. 💾 Rule 4: 大型内存授权验证 ( MemoryGrantRule.cs )
+
+  状态：✅ 完美契合
+
+  • 对齐规范：此前的算法逻辑已经完美踩中了您要求的标准。系统会精准计算  GrantedMemory  与  MaxUsedMemory ，当分配量 &gt;10 MB 且浪费比例 ≥4 倍时拦截。
+  • 输出规范：明确警告消除不必要的  TOP 、 DISTINCT 、 ORDER BY  等极度消耗内存的操作。
+
+  ### 5. 📦 Rule 5: 本地变量致盲检测 ( LocalVariablesRule.cs )
+
+  状态：✨ 全新编写
+
+  • 智能嗅探：编写了一种启发式解析算法。由于 Showplan XML 遇到本地变量时不会像参数那样放置在  ParameterList  中，规则会从  StmtSimple  的  StatementText  中检索  DECLARE  关键字，并下钻至  ScalarString
+  判断是否使用形如  [@Variable]  的本地变量。
+  • 惩罚解释：在分析报告中，明确告诉用户："由于本地变量的值在编译时不可知，优化器会使用平均密度进行硬编码的盲目预估"。
+  • 输出建议：提示直接替换为存储过程的传入参数，若由于业务无法修改代码，则使用  OPTION (RECOMPILE) 。
+  ──────
+  交付成果：
+  所有 5 条规则目前都已在  SqlXmlAnalyzer.Core\Rules\RuleEngine.cs  完成注册：
+
+    RegisterRule(new ParameterSniffingRule());   // (已升级)
+    RegisterRule(new RowEstimateMismatchRule()); // (已升级)
+    RegisterRule(new MemoryGrantRule());         // (已对齐)
+    RegisterRule(new LocalVariablesRule());      // (全新)
+    RegisterRule(new ZeroRowActualsRule());      // (全新)
+
+  项目已使用  dotnet build  编译成功。 SqlXmlAnalyzer  目前的诊断能力已基本拉平商业级执行计划分析器在参数嗅探及基数估计领域的探测深度！
+</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />

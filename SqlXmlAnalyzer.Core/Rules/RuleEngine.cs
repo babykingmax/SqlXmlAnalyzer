@@ -17,9 +17,13 @@ namespace SqlXmlAnalyzer.Core.Rules
             var results = new List<AnalysisResult>();
             foreach (var rule in _rules)
             {
+                var sw = System.Diagnostics.Stopwatch.StartNew();
                 var result = rule.Analyze(relOp, ns);
+                sw.Stop();
+
                 if (result != null)
                 {
+                    Logger.Verbose($"[RuleEngine] Rule '{rule.Name}' hit on Node {result.NodeId}. Time: {sw.ElapsedMilliseconds}ms");
                     results.Add(result);
                 }
             }
@@ -40,6 +44,8 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new NestedLoopsHighExecRule());
             RegisterRule(new AntiPatternRule());
             RegisterRule(new SerialPlanReasonRule());
+            RegisterRule(new LocalVariablesRule());
+            RegisterRule(new ZeroRowActualsRule());
         }
     }
 }

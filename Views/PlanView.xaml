@@ -112,7 +112,12 @@
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
                               HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal">
+                              GridLinesVisibility="Horizontal"
+                              AlternatingRowBackground="#F9FAFB"
+                              RowBackground="White"
+                              Background="White"
+                              BorderBrush="#E0E0E0"
+                              BorderThickness="1">
                         <DataGrid.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.ContainerStyle>

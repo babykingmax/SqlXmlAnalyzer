@@ -39,17 +39,26 @@ namespace SqlXmlAnalyzer.Core.Rules
                         maxExecutions = Math.Max(maxExecutions, execs);
                 }
 
-                double actualRowsPerExec = totalActualRows / maxExecutions;
+                // Remove the old Zero-Row actuals logic here, as we moved it to ZeroRowActualsRule.cs
                 
-                // Zero-Row Actuals: Estimated > 100, Actual = 0
-                if (estimatedRows >= 100 && totalActualRows == 0)
+                // Check CardinalityEstimationModelVersion on Statement
+                var stmtSimple = relOp.Document?.Descendants(ns + "StmtSimple").FirstOrDefault();
+                string ceVersionStr = stmtSimple?.Attribute("CardinalityEstimationModelVersion")?.Value ?? "";
+                if (int.TryParse(ceVersionStr, out int ceVersion) && ceVersion < 120 && nodeId == "0")
+                {
+                    // For root node, we can optionally warn about old CE
+                }
+
+                double actualRowsPerExec = totalActualRows / maxExecutions;
+
+                if (actualRowsPerExec <= 100 && estimatedRows >= 1000)
                 {
                     return new AnalysisResult
                     {
                         RuleId = this.RuleId,
-                        Severity = "Warning",
-                        Title = "实际零行返回 (Zero-Row Actuals)",
-                        Message = $"优化器预估会返回 {estimatedRows:N0} 行，但实际执行时返回了 0 行。统计信息可能已经过时。",
+                        Severity = "Critical",
+                        Title = "基数估计严重偏差 (预估极高, 实际极低)",
+                        Message = $"优化器预估会返回 {estimatedRows:N0} 行，但实际只返回了 {actualRowsPerExec:N0} 行。这种过高的预估会导致优化器错选 Hash Join 或请求极大的内存（导致内存浪费）。建议检查过滤条件或更新统计信息。",
                         NodeId = nodeId
                     };
                 }
