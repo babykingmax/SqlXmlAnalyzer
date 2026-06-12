@@ -22,42 +22,21 @@ namespace SqlXmlAnalyzer.Core.Rules
                 if (stmtSimple == null) return null;
 
                 string statementText = stmtSimple.Attribute("StatementText")?.Value ?? "";
-                
-                // Extremely naive heuristic: checking if StatementText has DECLARE and a WHERE clause using variables.
-                // In a real parser, we'd check if the ScalarString of predicates contains local variables without parameter list.
-                // Actually, the best way in Showplan XML is to check if there are no ParameterList entries but predicates contain variables like [@VariableName]
-                
-                var paramList = stmtSimple.Descendants(ns + "ParameterList").FirstOrDefault();
-                var hasParams = paramList != null;
+                if (string.IsNullOrEmpty(statementText)) return null;
 
-                // Look for variables in scalar strings that start with @ but are not in parameter list
-                var allScalars = relOp.DescendantsAndSelf(ns + "ScalarOperator")
-                                      .Select(s => s.Attribute("ScalarString")?.Value)
-                                      .Where(v => !string.IsNullOrEmpty(v))
-                                      .ToList();
+                // Regex match DECLARE @var ... and later WHERE @var = ...
+                var localVarPattern = new System.Text.RegularExpressions.Regex(@"DECLARE\s+@(\w+)\s+[\w\(\)]+;.*?WHERE.*?@\1\s*[=<>]", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline);
+                var matches = localVarPattern.Matches(statementText);
 
-                bool usesLocalVariable = false;
-                string foundVar = "";
-
-                foreach (var scalar in allScalars)
+                if (matches.Count > 0)
                 {
-                    // Basic heuristic: contains [@var] and statement has DECLARE
-                    if (scalar.Contains("[@") && statementText.Contains("DECLARE", StringComparison.OrdinalIgnoreCase))
-                    {
-                        usesLocalVariable = true;
-                        foundVar = scalar;
-                        break;
-                    }
-                }
-
-                if (usesLocalVariable && !hasParams) // Simplified trigger
-                {
+                    var vars = matches.Cast<System.Text.RegularExpressions.Match>().Select(m => "@" + m.Groups[1].Value).Distinct();
                     return new AnalysisResult
                     {
                         RuleId = this.RuleId,
-                        Severity = "Warning",
+                        Severity = "Warning", // Can be overridden to Medium or Warning
                         Title = "本地变量导致基数误判 (Local Variables)",
-                        Message = $"检测到在 WHERE/JOIN 条件中使用了本地变量: {foundVar}。\n由于本地变量的值在编译时不可知，优化器会使用平均密度进行硬编码的盲目预估。\n建议方案：\n1. 将本地变量直接替换为存储过程的传入参数。\n2. 若无法修改，使用 OPTION (RECOMPILE) 强制每次执行时嗅探本地变量的值。",
+                        Message = $"检测到本地变量 [{string.Join(", ", vars)}] 被用于 WHERE 条件，可能导致基数误估（预估 1 行）。\n建议：\n1. 将本地变量替换为存储过程参数，让优化器了解真实值。\n2. 添加 OPTION (RECOMPILE) 强制每次重新编译。\n3. 使用 OPTION (OPTIMIZE FOR (@var = '典型值')) 提供代表性值。",
                         NodeId = nodeId
                     };
                 }

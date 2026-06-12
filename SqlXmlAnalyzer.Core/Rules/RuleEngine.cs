@@ -1,14 +1,28 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
+using SqlXmlAnalyzer.Core.Configuration;
+
 namespace SqlXmlAnalyzer.Core.Rules
 {
     public class RuleEngine
     {
         private readonly List<IPlanAnalyzerRule> _rules = new();
+        private RuleConfigurationRoot _config;
+
+        public RuleEngine(string configPath = "RuleConfiguration.json")
+        {
+            _config = RuleConfigurationLoader.Load(configPath);
+        }
 
         public void RegisterRule(IPlanAnalyzerRule rule)
         {
+            var ruleConfig = _config.Rules.FirstOrDefault(r => r.RuleId == rule.RuleId || r.RuleId == rule.Name);
+            if (ruleConfig != null && !ruleConfig.Enabled)
+            {
+                Logger.Verbose($"[RuleEngine] Rule '{rule.Name}' ({rule.RuleId}) is disabled by configuration.");
+                return; // Skip registration if disabled
+            }
             _rules.Add(rule);
         }
 
@@ -23,6 +37,12 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 if (result != null)
                 {
+                    var ruleConfig = _config.Rules.FirstOrDefault(r => r.RuleId == rule.RuleId || r.RuleId == rule.Name);
+                    if (ruleConfig?.SeverityOverride != null)
+                    {
+                        result.Severity = ruleConfig.SeverityOverride;
+                    }
+
                     Logger.Verbose($"[RuleEngine] Rule '{rule.Name}' hit on Node {result.NodeId}. Time: {sw.ElapsedMilliseconds}ms");
                     results.Add(result);
                 }
@@ -36,7 +56,7 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new KeyLookupRule());
             RegisterRule(new ParameterSniffingRule());
             RegisterRule(new RowEstimateMismatchRule());
-            RegisterRule(new MemoryGrantRule());
+            RegisterRule(new LargeMemoryGrantRule());
             RegisterRule(new ResidualPredicateRule());
             RegisterRule(new SpillDetectionRule());
             RegisterRule(new ParallelSkewRule());

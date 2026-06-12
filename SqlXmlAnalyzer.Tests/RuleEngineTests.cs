@@ -91,18 +91,16 @@ namespace SqlXmlAnalyzer.Tests
         [Fact]
         public void MemoryGrantRule_ShouldDetectExcessiveGrant()
         {
-            var rule = new MemoryGrantRule();
-            var xml = $@"<RelOp xmlns=""{ns}"" NodeId=""0"">
+            var rule = new LargeMemoryGrantRule();
+            var xml = $@"<ShowPlanXML xmlns=""{ns}""><RelOp NodeId=""0"">
                             <MemoryGrantInfo GrantedMemory=""102400"" MaxUsedMemory=""1024"" />
-                         </RelOp>";
-            var element = XElement.Parse(xml);
-
-            var result = rule.Analyze(element, ns);
-
+                         </RelOp></ShowPlanXML>";
+            var doc = XDocument.Parse(xml);
+            var result = rule.Analyze(doc.Descendants(ns + "RelOp").First(), ns);
             Assert.NotNull(result);
-            Assert.Equal("RULE_005_MEMORY_GRANT", result.RuleId);
+            Assert.Equal("RULE_017_LARGE_MEMORY_GRANT", result.RuleId);
             Assert.Equal("Warning", result.Severity);
-            Assert.Contains("内存过度授权", result.Title);
+            Assert.Contains("内存过度分配", result.Title);
         }
 
         [Fact]

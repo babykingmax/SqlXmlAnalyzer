@@ -121,7 +121,8 @@ namespace SqlXmlAnalyzer.Tests
             paramResult!.Message.Should().Contain("@p1");
             paramResult.Message.Should().Contain("编译值: (1)");
             paramResult.Message.Should().Contain("运行值: (2)");
-            paramResult.Severity.Should().Be("Warning");
+            // Expect Info because the ratio is 1 (no ActualRows provided, defaults to Info)
+            paramResult.Severity.Should().Be("Info");
         }
 
         [Fact]
