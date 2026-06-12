@@ -52,8 +52,11 @@ namespace SqlXmlAnalyzer.Core.Scoring
 
         private static double CalculateUniqueness(MissingIndexSuggestion suggestion, XDocument planDoc, XNamespace ns)
         {
-            // Default to 0.5 if we cannot determine. Uniqueness goes from 0.5 to 1.0
-            return 0.7; 
+            // If planDoc is null (e.g. from Sandbox testing mode), return a heuristic default.
+            if (planDoc == null) return 0.7;
+            
+            // For now, heuristic default. Later, could inspect missing index element details.
+            return 0.7;
         }
     }
 }

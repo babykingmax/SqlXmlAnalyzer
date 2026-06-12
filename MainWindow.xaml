@@ -357,32 +357,34 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <ItemsControl Grid.Row="0" ItemsSource="{Binding MissingIndexes}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Score, StringFormat='⭐ {0}/100'}" 
-                                                               Foreground="{Binding Score, Converter={StaticResource ScoreColorConv}}" 
-                                                               FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Table, StringFormat='表: {0}'}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding CreateIndexStatement}" Foreground="#333" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                                    </StackPanel>
-                                                    <Button Grid.Column="2" Content="沙盒模拟" Width="80" Height="28" 
-                                                            Command="{Binding DataContext.OpenSandboxCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
-                                                            CommandParameter="{Binding}"
-                                                            Background="#0078D7" Foreground="White" BorderThickness="0" Cursor="Hand" />
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <ScrollViewer Grid.Row="0" MaxHeight="250" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8">
+                                    <ItemsControl ItemsSource="{Binding MissingIndexes}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{Binding Score, StringFormat='⭐ {0}/100'}" 
+                                                                   Foreground="{Binding Score, Converter={StaticResource ScoreColorConv}}" 
+                                                                   FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Table, StringFormat='表: {0}'}" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="{Binding CreateIndexStatement}" Foreground="#333" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="2" Content="沙盒模拟" Width="80" Height="28" 
+                                                                Command="{Binding DataContext.OpenSandboxCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                                CommandParameter="{Binding}"
+                                                                Background="#0078D7" Foreground="White" BorderThickness="0" Cursor="Hand" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                                 <TextBox Grid.Row="1" Name="PlanWarningsTextBox" Height="120" Text="{Binding PlanWarningsText, Mode=TwoWay}"
                                          IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"
                                          VerticalScrollBarVisibility="Auto"

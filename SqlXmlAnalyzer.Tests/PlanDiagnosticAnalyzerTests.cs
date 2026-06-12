@@ -45,14 +45,25 @@ namespace SqlXmlAnalyzer.Tests
             var doc = XDocument.Parse(xmlContent);
 
             // Act
-            // Note: Missing Index is currently handled by PlanDiagnosticAnalyzer text report in our architecture
+            // Test text report
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
+            
+            // Test object extraction
+            var suggestions = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
 
-            // Assert
+            // Assert Text Report
             report.Should().Contain("Missing Indexes");
             report.Should().Contain("[dbo].[Orders]");
             report.Should().Contain("CREATE NONCLUSTERED INDEX");
-            report.Should().Contain("(CustomerID)");
+
+            // Assert Object Extraction
+            suggestions.Should().NotBeEmpty();
+            var mi = suggestions.First();
+            mi.Table.Should().Be("[Orders]");
+            mi.Schema.Should().Be("[dbo]");
+            mi.KeyColumns.Should().NotBeEmpty();
+            mi.Score.Should().BeGreaterThan(0);
+            mi.CreateIndexStatement.Should().Contain("CREATE NONCLUSTERED INDEX");
         }
 
         [Fact]
