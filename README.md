@@ -1,80 +1,95 @@
 # SqlXmlAnalyzer 🚀
 
-SqlXmlAnalyzer 是一款专为 SQL Server 资深 DBA 和高阶开发者打造的桌面级辅助诊断工具。它可以深度解析 SQL Server 导出的死锁图 (`.xdl`) 和执行计划 (`.sqlplan`) 文件，结合行业专家经验库，提供可视化的高级性能诊断、死锁根因剖析以及自动化的 SQL 优化建议。
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20WPF-lightgrey)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple.svg)
+
+**SqlXmlAnalyzer** 是一款面向 SQL Server 数据库管理员 (DBA) 与性能优化专家的**开源图形化诊断神器**。它拥有媲美原生 SQL Sentry Plan Explorer 的极简操作节点风格，并内置了基于规则引擎 (Rule Engine) 的智能诊断机制。不仅能让你瞬间看懂天书般的 `.sqlplan` 执行计划，还能自动提取 `.xdl` 找准死锁牺牲者。
 
 ---
 
-## ✨ 核心特性 (Features)
+## 🌟 为什么选择 SqlXmlAnalyzer？
 
-### 1. 深度死锁分析 (Deadlock Analysis)
-针对复杂的 XML 死锁日志进行智能降噪与模式匹配，帮你在一秒钟内找准牺牲品和“真凶”。
-* **模式识别诊断**：内置 `DeadlockPatternAnalyzer`，自动识别经典死锁场景（如：书签查找回表死锁 Bookmark Lookup、反向更新死锁 Reverse Order Update、范围扫描死锁 Range Scan 等）。
-* **SARG 级锁源提取**：搭载了采用 `.NET 8 [GeneratedRegex]` 高性能编译的 `SargAnalyzer`。它可以智能清理凌乱的 SQL 语句，提取 WHERE 条件、JOIN 条件，并输出引发死锁的确切表名和索引名。
-* **Mermaid 流程图生成**：一键生成结构清晰的死锁进程树形图，包含死锁节点优先级（Deadlock Priority）展示，Victim 牺牲品高亮。
-
-### 2. 执行计划可视化与诊断 (Execution Plan Visualizer & Diagnostics)
-媲美商业软件（如 SQL Sentry Plan Explorer）的节点图可视化体验与智能巡检。
-* **专业级可视化节点图**：基于 `Nodify` 构建的可交互图形界面（`PlanGraphControl`），展示操作符节点、CPU/IO 估算成本、并行标记、以及自适应的连接数据流向线。
-* **17 项专家启发式巡检 (`PlanDiagnosticAnalyzer`)**：
-  * **缺失索引自动推导**：针对高优先级 Missing Index 生成精确的覆盖索引 DDL，并附带 DBA 生产环境建库防坑提示（如 INCLUDE 字段 1023 字节上限限制）。
-  * **残差 I/O 自动检测与警告**：独创高级算法，智能甄别由于**残差谓词 (Residual Predicate)** 带来的无用大量存储层读取，计算“实际读取行数/实际返回行数”爆炸比率，以最醒目的 ⚠️ 警告展现底层 I/O 灾难。
-  * **回表代价诊断**：识别 Key/RID Lookup 滥用，提醒审查 `SELECT *` 和覆盖索引设计。
-  * **隐藏毒药揪出**：全自动扫描 隐式类型转换 (`CONVERT_IMPLICIT`)、内存溢出落盘 (Spills)、线程数据倾斜 (Thread Data Skew)、内存分配不合理等计划硬伤。
-
-### 3. 一键 HTML 诊断报告 (HTML Report Generation)
-分析完毕后，可通过 `HtmlReportGenerator` 输出格式精美的脱机 HTML 网页报告。无论是用于团队内部分享、故障复盘 (Post-mortem)，还是邮件汇报，都能完美适配。
+传统的 SSMS 执行计划阅读体验枯燥、信息层级混乱。SqlXmlAnalyzer 提供了：
+- 🎨 **专家级图形化渲染**: 采用 `Nodify` 节点拓扑图，平移缩放丝滑，直观展示算子成本占比。
+- 🚨 **智能红绿灯告警系统**: 自动标红 `Critical` (如：由于隐式类型转换导致的宽表全表扫描)，标橙 `Warning` (如：参数嗅探、键查找异常)。
+- 💀 **死锁回滚成本透视**: 不仅仅画出死锁依赖图 (Mermaid.js)，更独创性地抓取底层 `logused` 数据，精准还原 SQL Server 选择死锁牺牲者 (Victim) 的底层逻辑。
+- 🤖 **批量无头自动扫描 (CLI Mode)**: 支持一次性吞吐上千个计划文件，在控制台秒级输出安全健康报告，完美集成至 CI/CD。
 
 ---
 
-## 🛠 技术栈 (Tech Stack)
+## 📸 工具截图展示
 
-* **语言/运行时**: C# 12 / .NET 8.0
-* **桌面框架**: WPF (Windows Presentation Foundation)
-* **核心依赖库**: 
-  * [Nodify](https://github.com/miroiu/nodify) - 强大的 WPF 节点编辑器控件，用于渲染执行计划物理树和数据流管道。
-  * LINQ to XML (`XDocument`) - 高性能处理海量 `.sqlplan` 和 `.xdl` XML 文件流。
-* **架构设计**: 视图模型 (MVVM 模式变体)，核心诊断逻辑全面静态化解耦。
+*(请在本地 `assets` 文件夹中放入对应的截图)*
 
----
+### 1. 执行计划可视化与告警红框
+> 直观看到 隐式类型转换 与 高成本算子 的智能报警。
+![执行计划图形化界面](assets/plan_graph_demo.png)
 
-## 📦 快速开始 (Getting Started)
+### 2. 详细算子分析面板
+> 鼠标悬停展示分区数据、内存请求、线程倾斜、残差谓词等隐藏杀手。
+![执行计划Hover详情](assets/hover_tooltip_demo.png)
 
-### 编译环境要求
-* Windows 10/11
-* Visual Studio 2022 (v17.8+) 或最新版 Rider
-* .NET 8.0 SDK
-
-### 构建运行
-1. 克隆代码仓库。
-2. 使用 VS 打开 `SqlXmlAnalyzer.sln`，或在根目录执行命令：
-   ```bash
-   dotnet build SqlXmlAnalyzer.sln
-   ```
-3. F5 运行项目，即可看到主界面 `MainWindow.xaml`。
-4. 拖入项目根目录附带的测试样本 `DEMO.sqlplan` 或 `LOCK.XDL`，体验分析效果。
+### 3. 死锁有向图与回滚成本 (LogUsed)
+> 清晰地看出进程间的资源抢占与各自的日志回滚代价。
+![死锁依赖分析图](assets/deadlock_graph_demo.png)
 
 ---
 
-## 📁 核心项目结构 (Project Structure)
+## 📖 使用指南
 
-```text
-SqlXmlAnalyzer/
-├── MainWindow.xaml / .cs           # 主窗体：负责文件加载、调度分析引擎和左侧属性板
-├── PlanGraphControl.xaml / .cs     # 执行计划可视化核心控件：负责 Nodify 节点渲染与交互
-├── PlanDiagnosticAnalyzer.cs       # 核心类：执行计划 17 项全量启发式巡检引擎
-├── ExecutionPlanVisualizer.cs      # 执行计划 HTML/文本报告生成模块
-├── DeadlockGraph.cs                # 核心类：死锁图解析引擎与 SargAnalyzer 锁源提取
-├── HtmlReportGenerator.cs          # 核心类：前端 HTML 报告生成模版引擎
-├── Logger.cs                       # 日志系统
-└── ssms_icons/                     # 执行计划 SSMS 操作符经典图标库
+### 桌面图形端 (GUI)
+1. 下载并运行 `SqlXmlAnalyzer.exe`。
+2. 依次点击菜单栏：`文件` -> `打开`，或者**直接将文件拖拽进窗口**。
+3. 支持解析的文件类型：
+   - `.sqlplan` (SQL Server 执行计划 XML)
+   - `.xdl` (SQL Server 死锁跟踪图 XML)
+4. **快捷交互**：
+   - 按住鼠标**左键拖动**画布，**滚轮**缩放。
+   - **悬停**节点查看详细警告与参数。
+   - **双击**节点可以查看原始 XML 切片代码。
+5. 底部面板会直接汇总整个查询的**缺失索引建议 (Missing Indexes)** 以及**基数估计误差 (Cardinality Error)**。
+
+### 高级批处理自动化 (CLI)
+如果您是高级架构师，可以在终端中以无头模式运行分析：
+```powershell
+# 分析单个计划文件并在控制台输出报告
+.\SqlXmlAnalyzer.exe --analyze "C:\DB_Dumps\slow_query.sqlplan"
+
+# 【强烈推荐】批量扫描目录下的所有 .sqlplan 和 .xdl 文件！
+.\SqlXmlAnalyzer.exe --batch "D:\SQL_Performance_Dumps"
 ```
 
 ---
 
-## 🤝 贡献与反馈 (Contributing)
+## ❓ 常见问题解答 (FAQ)
 
-欢迎数据库爱好者、DBA 和 C# 开发者提交 Issue 和 PR！如果你发现某些特殊的、未被解析出来的死锁场景或奇怪的执行计划 XML 模式，请附上脱敏后的 `.xdl` 或 `.sqlplan` 提报 Issue，我们将不断丰富诊断经验库。
+### **Q1: 为什么有的节点外框是红色的，有的是橙色的？**
+**A1:** 系统内置的**分析规则引擎 (RuleEngine)** 会对所有算子进行评估。
+- 🔴 **红色 (Critical)**: 代表极为严重的阻碍性能反模式（如发现 `CONVERT_IMPLICIT` 隐式转换导致索引扫描、内存溢出落盘 `Memory Spill`）。
+- 🟠 **橙色 (Warning)**: 潜在的问题（如 `Key Lookup` 回表、参数嗅探 `Parameter Sniffing`，或者存在残差谓词）。
+- ⚪ **透明**: 正常健康的算子。
 
-## 📄 开源协议 (License)
+### **Q2: 导入死锁 (`.xdl`) 文件后，图表里的 `LogUsed` 是什么意思？**
+**A2:** 当两个事务发生死锁时，SQL Server 必须杀掉其中一个 (Victim)。数据库引擎判断“该杀谁”的核心依据就是回滚成本，而这个成本就记录在隐藏的 `logused` 字段中。本工具会自动提取该字段并标注在死锁进程旁，让你能够一眼看穿 SQL Server 的“杀人逻辑”。
 
-本项目采用 MIT License 开源，详见 [LICENSE](LICENSE) 文件。
+### **Q3: 遇到解析失败或者闪退怎么办？**
+**A3:** SqlXmlAnalyzer 拥有强大的兜底日志系统。请在 `SqlXmlAnalyzer.exe` 同级目录下寻找 `log\` 文件夹，里面会包含诸如 `SqlXmlAnalyzer_20260612_xxxxx.log` 的日志文件。查看该日志的 `[Critical]` 或 `[Error]` 级别条目通常能知道是哪个 XML 节点格式不兼容导致的。
+
+### **Q4: 它和 SSMS 原生执行计划有什么区别？**
+**A4:** SSMS 是原生的基础查看器，而本工具对标的是 **SQL Sentry Plan Explorer** 等商业化软件。我们在 UI 层面去掉了冗余信息，突出了实际/预估成本；在逻辑层面，把经验老道的 DBA 脑海里的排错经验写成了代码，实现了“自动化诊断”。
+
+---
+
+## 🛠️ 构建与开发
+
+本工具基于 .NET 8 WPF 编写。
+
+1. 克隆代码库并用 Visual Studio 2022 打开 `SqlXmlAnalyzer.sln`。
+2. 架构分为：
+   - `SqlXmlAnalyzer` (WPF UI, Nodify, CefSharp)
+   - `SqlXmlAnalyzer.Core` (规则引擎, 解析器, 纯逻辑层)
+3. 扩展诊断规则：你只需在 `SqlXmlAnalyzer.Core/Rules/` 中新建类实现 `IPlanAnalyzerRule` 接口，并注册到 `RuleEngine.cs` 即可。详见 `Architecture.md`。
+
+## 📝 许可 (License)
+本项目采用 [MIT License](LICENSE) 许可协议。
