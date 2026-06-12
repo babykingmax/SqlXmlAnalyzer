@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment>以下是修复与新增清单的详细交付报告：
-
-  ### 1.  RowEstimateMismatchRule  核心重构
-
-  • 归一化行数算法：严格按照规范重写了行数归一化逻辑  actualPerExec = totalActualRows / maxExecutions ，并且特殊处理了  Key Lookup  节点（将被放大的  EstimateRows  除以  Executions  还原回单次预估值）。
-  • 偏差分级：实现了  ratio &gt;= 100  且实际行数 &gt;100 的 Critical 报警机制。
-  • Zero-Row 整合：针对  estimated &gt;= 100  但实际返回 0 行的场景，已完美分流给  ZeroRowActualsRule  处理。
-
-  ### 2.  LargeMemoryGrantRule  全新实现
-
-  • 新建类与弃用旧规则：新建了  LargeMemoryGrantRule.cs  并删除了不标准的  MemoryGrantRule.cs 。
-  • 精确判定：算法现已准确读取  &lt;MemoryGrantInfo&gt;  的  GrantedMemory  与  UsedMemory 。只有在浪费比例 ≥4 倍 且授权 &gt;10 MB 时才会报警。
-  • 溢出 (Spill) 拦截：在分析流的最前置阶段加入了对  &lt;SpillToTempDb&gt;  节点的捕获。一旦发现溢出，立刻提升为 Critical，有效防止严重性能事故。
-
-  ### 3.  LocalVariablesRule  全新实现
-
-  • 正则表达式扫描：引入了精准的正则匹配引擎  @"DECLARE\s+@(\w+)\s+[\w\(\)]+;.*?WHERE.*?@\1\s*[=&lt;&gt;]" 。
-  • 作用域限定：通过扫描  StatementText ，专门抓取使用本地变量（而非存储过程参数）且发生条件过滤的场景，发出基数盲目预估警告。
-
-  ### 4.  ParameterSniffingRule  深度增强
-
-  • 偏差分级集成：除了输出编译期与运行期的值不一致外，现在的参数嗅探规则会自动往下钻取根节点的实际行数偏差 ( ActualRows / EstimatedRows )。如果偏差超过 100 倍且行数巨大，会直接引发 Critical 报警。
-  • 输出建议强化：已经将对应的参数编译值与运行值合并写入报警信息中。
-
-  ### 5.  ZeroRowActualsRule  SQL 上下文增强
-
-  • SQL 捕获机制：在检测到零行返回时，自动从外层  StmtSimple  节点抽取  StatementText ，截断为最高 200 字符展示在诊断建议中，大大方便了排查  WHERE  逻辑报错的原始语句。
-
-  ### 6. 配置引擎  RuleConfiguration.json
-
-  • 新建加载器：编写了  RuleConfigurationLoader  和映射类，利用  System.Text.Json  进行了高性能解析。
-  • 引擎接入： RuleEngine  现已支持配置注入。在  RegisterRule  阶段，会自动屏蔽  Enabled = false  的规则，并在分析结果产出时动态覆写  SeverityOverride  级别。
-
-  ### 7. 单元测试  EmbeddedResource  集成
-
-  • 测试资源库：创建了  EmbeddedResourceHelper.cs ，并在  SqlXmlAnalyzer.Tests.csproj  中正确配置了  &lt;EmbeddedResource Include="Resources\*.sqlplan" /&gt; 。
-  • 样本注入：手工编写了  plan_critical_mismatch.sqlplan  (1000倍基数偏差) 与  plan_large_memory_grant.sqlplan  (溢出TempDB + 极大内存授权) 测试替身。所有规则正向负向用例全部亮绿灯！
-
-  至此， SqlXmlAnalyzer  已经完美补齐了缺失的分析维度，正式具备了比肩商业软件 SQL Sentry 的高级计划反模式洞察力。您可以直接执行  dotnet test  进行最终验证。*</CommitComment>
+  <CommitComment>BUG FIX</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />

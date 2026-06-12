@@ -49,7 +49,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     // For root node, we can optionally warn about old CE
                 }
 
-                double actualRowsPerExec = totalActualRows / maxExecutions;
+                double actualRowsPerExec = totalActualRows / Math.Max(1.0, maxExecutions);
 
                 if (actualRowsPerExec <= 100 && estimatedRows >= 1000)
                 {
@@ -65,13 +65,6 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 if (actualRowsPerExec < MIN_ACTUAL_ROWS && estimatedRows < MIN_ACTUAL_ROWS)
                     return null;
-
-                // Key Lookup logic (DeepSeek spec)
-                if (physicalOp == "Key Lookup" && maxExecutions > 1)
-                {
-                    actualRowsPerExec = totalActualRows / maxExecutions;
-                    estimatedRows = estimatedRows * maxExecutions;
-                }
 
                 double ratio = 1.0;
                 if (actualRowsPerExec > estimatedRows)
