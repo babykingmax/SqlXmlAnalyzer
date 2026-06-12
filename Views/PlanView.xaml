@@ -10,12 +10,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>   <!-- 查询文本 -->
+            <RowDefinition Height="Auto"/>   <!-- 工具栏 -->
             <RowDefinition Height="*"/>      <!-- 主区域 -->
             <RowDefinition Height="Auto"/>   <!-- 底部信息 -->
         </Grid.RowDefinitions>
 
         <!-- 查询文本区域 -->
-        <Expander Grid.Row="0" Header="查询语句 (Statement Text)" ExpandDirection="Down" IsExpanded="True" Margin="4,4,4,12">
+        <Expander Grid.Row="0" Header="查询语句 (Statement Text)" ExpandDirection="Down" IsExpanded="False" Margin="4,4,4,12">
             <Border Background="#FAFAFA" BorderBrush="#E0E0E0" BorderThickness="1" Padding="8" CornerRadius="6">
                 <TextBox Name="PlanStatementTextBox" Height="60" Text="{Binding DocumentPatternText, Mode=TwoWay}"
                          IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0"
@@ -23,9 +24,15 @@
             </Border>
         </Expander>
 
-        <Grid Grid.Row="1" x:Name="PlanContentGrid">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="4,0,4,8" Background="#F5F5F5" Visibility="Collapsed">
+            <TextBlock Text="图形化执行计划 ★ 推荐直接使用下方的 Nodify Graph 专业拖拽盒子" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#C62828"/>
+            <Button Content="复制 Mermaid 代码" Click="CopyPlanMermaid_Click" Margin="12,0,8,0" Padding="8,4"/>
+            <Button Content="在浏览器中查看图形" Click="OpenPlanMermaidInBrowser_Click" Padding="8,4"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2" x:Name="PlanContentGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="320" MinWidth="30"/> <!-- 操作符树 -->
+                <ColumnDefinition Width="Auto" MinWidth="30"/> <!-- 操作符树 -->
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="*" MinWidth="500"/>    <!-- 图形视图 -->
                 <ColumnDefinition Width="4"/>
@@ -33,7 +40,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- 左侧：操作符树 -->
-            <Expander Grid.Column="0" ExpandDirection="Right" IsExpanded="True" Margin="2"
+            <Expander Grid.Column="0" ExpandDirection="Right" IsExpanded="False" Margin="2"
                       Expanded="LeftPanel_Expanded" Collapsed="LeftPanel_Collapsed">
                 <Expander.Header>
                     <TextBlock Text="操作符树 (Operator Tree)" FontWeight="SemiBold">
@@ -53,17 +60,10 @@
             <!-- 中间：图形化执行计划 -->
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal" Margin="4,0">
-                    <TextBlock Text="图形化执行计划" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#C62828"/>
-                    <Button Content="复制 Mermaid 代码" Click="CopyPlanMermaid_Click" Margin="8,0"/>
-                    <Button Content="在浏览器中查看图形" Click="OpenPlanMermaidInBrowser_Click"/>
-                </StackPanel>
-
-                <TabControl Grid.Row="1" x:Name="PlanGraphTabControl">
+                <TabControl Grid.Row="0" x:Name="PlanGraphTabControl">
                     <TabItem Header="★ Nodify Graph" IsSelected="True">
                         <analyzer:PlanGraphControl x:Name="PlanNodifyGraph" NodeSelected="PlanNodifyGraph_NodeSelected" NodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"/>
                     </TabItem>
@@ -149,7 +149,7 @@
         </Grid>
 
         <!-- 底部：警告和建议 -->
-        <Expander Grid.Row="2" Header="执行计划深度诊断报告 (Deep Diagnostic Report) ★ 13 类专家调优建议" ExpandDirection="Up" IsExpanded="True" Margin="4">
+        <Expander Grid.Row="3" Header="执行计划深度诊断报告 (Deep Diagnostic Report) ★ 13 类专家调优建议" ExpandDirection="Up" IsExpanded="True" Margin="4">
             <Border Background="#FFF9E6" BorderBrush="#FFD54F" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,8,0,0">
                 <TextBox Name="PlanWarningsTextBox" Height="120" Text="{Binding DocumentPatternText, Mode=TwoWay}"
                          IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"

@@ -31,6 +31,11 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new ImplicitConversionRule());
             RegisterRule(new KeyLookupRule());
             RegisterRule(new ParameterSniffingRule());
+            RegisterRule(new RowEstimateMismatchRule());
+            RegisterRule(new MemoryGrantRule());
+            RegisterRule(new ResidualPredicateRule());
+            RegisterRule(new SpillDetectionRule());
+            RegisterRule(new ParallelSkewRule());
         }
     }
 }

@@ -847,18 +847,6 @@ namespace SqlXmlAnalyzer
         public Point Location { get => _location; set { _location = value; OnPropertyChanged(nameof(Location)); } }
 
         // === 模板友好计算属性 (Plan Explorer 视觉) ===
-        public string TypeIcon => OperatorType switch
-        {
-            "Scan" => "📖",
-            "Seek" => "🔎",
-            "Join" => "🔗",
-            "Parallelism" => "⚡",
-            "Sort" => "↕",
-            "Spool" => "🌀",
-            "Compute" => "ƒ",
-            _ => "▣"
-        };
-
         public string LogicalOpSuffix => string.IsNullOrEmpty(LogicalOp) || LogicalOp == PhysicalOp ? "" : $"({LogicalOp})";
 
         public string PrimaryDisplayValue
@@ -891,8 +879,10 @@ namespace SqlXmlAnalyzer
             get
             {
                 double t = Math.Min(100, CostPercent) / 100.0;
-                // 白 (低成本) -> 浅红 (高成本)
-                return new SolidColorBrush(LerpColor(Colors.White, Color.FromRgb(255, 235, 238), Math.Pow(t, 0.7)));
+                // Premium Gradient: White/Gray to Vibrant Red
+                Color topColor = LerpColor(Color.FromRgb(255, 255, 255), Color.FromRgb(255, 230, 230), Math.Pow(t, 0.8));
+                Color botColor = LerpColor(Color.FromRgb(245, 247, 250), Color.FromRgb(255, 190, 190), Math.Pow(t, 0.6));
+                return new LinearGradientBrush(topColor, botColor, 90.0);
             }
         }
 
@@ -901,22 +891,24 @@ namespace SqlXmlAnalyzer
             get
             {
                 double t = Math.Min(100, CostPercent) / 100.0;
-                // 蓝灰 (低成本) -> 深红 (高成本)
-                return new SolidColorBrush(LerpColor(Color.FromRgb(144, 164, 174), Color.FromRgb(198, 40, 40), Math.Pow(t, 0.7)));
+                // Elegant Border: Cool Blue-Gray to Deep Crimson
+                Color c = LerpColor(Color.FromRgb(176, 190, 197), Color.FromRgb(211, 47, 47), Math.Pow(t, 0.7));
+                return new SolidColorBrush(c);
             }
         }
 
-        public Thickness DynamicBorderThickness => CostPercent >= 20 ? new Thickness(2.0) : new Thickness(1.0);
+        public Thickness DynamicBorderThickness => CostPercent >= 30 ? new Thickness(2.0) : new Thickness(1.0);
 
         public Brush AccentBrush => OperatorType switch
         {
-            "Scan" => new SolidColorBrush(Color.FromRgb(0x19, 0x76, 0xD2)),
-            "Seek" => new SolidColorBrush(Color.FromRgb(0x43, 0xA0, 0x47)),
-            "Join" => new SolidColorBrush(Color.FromRgb(0xF5, 0x7C, 0x00)),
-            "Parallelism" => new SolidColorBrush(Color.FromRgb(0x8E, 0x24, 0xAA)),
-            "Sort" => new SolidColorBrush(Color.FromRgb(0xE5, 0x39, 0x35)),
-            "Spool" => new SolidColorBrush(Color.FromRgb(0x00, 0x89, 0x7B)),
-            _ => new SolidColorBrush(Color.FromRgb(0x60, 0x7D, 0x8B))
+            "Scan" => new SolidColorBrush(Color.FromRgb(0x29, 0x62, 0xFF)),      // Deep Vibrant Blue
+            "Seek" => new SolidColorBrush(Color.FromRgb(0x00, 0xC8, 0x53)),      // Emerald Green
+            "Join" => new SolidColorBrush(Color.FromRgb(0xFF, 0x6D, 0x00)),      // Brilliant Orange
+            "Parallelism" => new SolidColorBrush(Color.FromRgb(0xD5, 0x00, 0xF9)), // Neon Purple
+            "Sort" => new SolidColorBrush(Color.FromRgb(0xFF, 0x17, 0x44)),      // Crimson Red
+            "Spool" => new SolidColorBrush(Color.FromRgb(0x00, 0xB8, 0xD4)),     // Cyan/Teal
+            "Compute" => new SolidColorBrush(Color.FromRgb(0xFF, 0xC4, 0x00)),   // Amber/Gold
+            _ => new SolidColorBrush(Color.FromRgb(0x60, 0x7D, 0x8B))           // Blue Gray
         };
 
         public string OperatorGeometry

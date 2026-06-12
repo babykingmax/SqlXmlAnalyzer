@@ -33,7 +33,7 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                     if (!string.IsNullOrEmpty(comp) && !string.IsNullOrEmpty(run) && comp != run)
                     {
-                        sniffedParams.Add($"{col} (Compiled: {comp}, Runtime: {run})");
+                        sniffedParams.Add($"{col} (编译值: {comp}, 运行值: {run})");
                     }
                 }
 
@@ -43,10 +43,10 @@ namespace SqlXmlAnalyzer.Core.Rules
                     {
                         RuleId = this.RuleId,
                         Severity = "Warning",
-                        Title = "Parameter Sniffing Risk",
-                        Message = "Detected mismatch between compiled and runtime parameter values:\n" + 
+                        Title = "参数嗅探风险 (Parameter Sniffing)",
+                        Message = "检测到编译期参数与运行时参数值不一致，可能导致次优的执行计划：\n" + 
                                   string.Join("\n", sniffedParams) + 
-                                  "\nConsider using OPTION (RECOMPILE) or OPTIMIZE FOR if performance degrades.",
+                                  "\n建议：如果遇到性能突降，可考虑使用 OPTION (RECOMPILE) 或 OPTIMIZE FOR 提示。",
                         NodeId = nodeId
                     };
                 }

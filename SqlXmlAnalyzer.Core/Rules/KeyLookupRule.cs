@@ -31,8 +31,8 @@ namespace SqlXmlAnalyzer.Core.Rules
                     {
                         RuleId = this.RuleId,
                         Severity = "Warning",
-                        Title = physicalOp + " Detected",
-                        Message = $"Detected {physicalOp} on {objName}. Consider using a Covering Index (INCLUDE columns) or review if SELECT * is fetching unnecessary columns.",
+                        Title = $"检测到 {physicalOp} (回表查询)",
+                        Message = $"在对象 {objName} 上发生了 {physicalOp} 操作。\n回表操作会消耗大量 I/O 资源，建议使用覆盖索引 (包含 INCLUDE 列)，或者检查 SELECT 是否提取了不必要的多余列。",
                         NodeId = nodeId
                     };
                 }

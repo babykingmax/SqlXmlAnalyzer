@@ -40,8 +40,8 @@ namespace SqlXmlAnalyzer.Core.Rules
                     {
                         RuleId = this.RuleId,
                         Severity = severity,
-                        Title = "Implicit Conversion Risk",
-                        Message = msg,
+                        Title = "隐式转换风险 (Implicit Conversion)",
+                        Message = $"检测到 {implicitConvs.Count} 处隐式转换。\n隐式转换会导致索引失效，引发全表扫描。\n示例代码: {implicitConvs.First()}",
                         NodeId = nodeId
                     };
                 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -273,6 +273,32 @@ namespace SqlXmlAnalyzer
                 try
                 {
                     relOps = doc.Descendants(ns + "RelOp").ToList();
+
+                    // ==========================================
+                    // 🔌 扩展架构：执行 30 条核心诊断规则 (RuleEngine)
+                    // ==========================================
+                    var ruleEngine = new SqlXmlAnalyzer.Core.Rules.RuleEngine();
+                    ruleEngine.RegisterDefaultRules(); // Registers the 6 implemented P0 rules
+
+                    foreach (var relOp in relOps)
+                    {
+                        var ruleResults = ruleEngine.AnalyzeNode(relOp, ns);
+                        foreach (var result in ruleResults)
+                        {
+                            string prefix = result.Severity == "Critical" ? "❌ 严重:" : "⚠️ 警告:";
+                            string msg = $"{prefix} [Node {result.NodeId}] {result.Title}\n{result.Message}";
+                            
+                            // Map RuleId to existing categories (or put in Pattern category)
+                            if (result.RuleId.Contains("CONVERSION")) reports[R_CONV].Add(msg);
+                            else if (result.RuleId.Contains("KEY_LOOKUP")) reports[R_KEY].Add(msg);
+                            else if (result.RuleId.Contains("PARAM_SNIFFING")) reports[R_SNIFF].Add(msg);
+                            else if (result.RuleId.Contains("ESTIMATE_MISMATCH")) reports[R_CARD].Add(msg);
+                            else if (result.RuleId.Contains("MEMORY_GRANT") || result.RuleId.Contains("SPILL")) reports[R_MEM].Add(msg);
+                            else if (result.RuleId.Contains("PARALLEL") || result.RuleId.Contains("SKEW")) reports[R_SKEW].Add(msg);
+                            else if (result.RuleId.Contains("RESIDUAL_PRED") || result.RuleId.Contains("NON_SARGABLE")) reports[R_RESID].Add(msg);
+                            else reports[R_PATTERN].Add(msg);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

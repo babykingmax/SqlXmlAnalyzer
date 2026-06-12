@@ -26,29 +26,6 @@ namespace SqlXmlAnalyzer
 
     public partial class MainWindow : Window
     {
-        // Dummy fields for migration to satisfy compiler
-        private ListView DeadlockProcessesList = new ListView();
-        private ListView DeadlockResourcesList = new ListView();
-        private ListBox DeadlockPatternsListBox = new ListBox();
-        private Canvas DeadlockGraphCanvas = new Canvas();
-        private Border DeadlockCanvasBorder = new Border();
-        private ScaleTransform DeadlockScaleTransform = new ScaleTransform();
-        private TranslateTransform DeadlockTranslateTransform = new TranslateTransform();
-        private ComboBox XelDeadlockSelector = new ComboBox();
-        private TreeView PlanOperatorTree = new TreeView();
-        private Grid PlanContentGrid = new Grid();
-        private DataGrid PlanPropertiesGrid = new DataGrid();
-        private Button ToggleLeftBtn = new Button();
-        private Button ToggleRightBtn = new Button();
-        private ColumnDefinition DeadlockLeftColumn = new ColumnDefinition();
-        private ColumnDefinition DeadlockRightColumn = new ColumnDefinition();
-        private TextBox PlanXmlTextBox = new TextBox();
-        private TextBox PlanStatementTextBox = new TextBox();
-        private TextBox PlanWarningsTextBox = new TextBox();
-        private PlanGraphControl PlanNodifyGraph = new PlanGraphControl();
-        private TabControl PlanGraphTabControl = new TabControl();
-        private TreeView PlanVisualTree = new TreeView();
-
         public Core.ViewModels.MainViewModel ViewModel { get; }
         private readonly Core.XelReader _xelReader;
 

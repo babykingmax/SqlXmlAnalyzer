@@ -48,8 +48,11 @@
                     <nodify:NodifyEditor.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:PlanNodeViewModel}">
                             <!-- 操作符节点 - 动态成本编码与图标 -->
-                            <Border MinWidth="120" Background="{Binding DynamicBackgroundBrush}" SnapsToDevicePixels="True" Padding="4"
-                                    BorderBrush="{Binding DynamicBorderBrush}" BorderThickness="{Binding DynamicBorderThickness}" CornerRadius="4">
+                            <Border MinWidth="130" Background="{Binding DynamicBackgroundBrush}" SnapsToDevicePixels="True" Padding="5"
+                                    BorderBrush="{Binding DynamicBorderBrush}" BorderThickness="{Binding DynamicBorderThickness}" CornerRadius="6">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#263238" BlurRadius="6" ShadowDepth="2" Opacity="0.15"/>
+                                </Border.Effect>
                                 <Border.ToolTip>
                                     <ToolTip Background="#FFFFFF" BorderBrush="#90A4AE" BorderThickness="1" Padding="0">
                                         <Border CornerRadius="4" ClipToBounds="True">
