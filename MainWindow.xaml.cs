@@ -6,9 +6,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
-
-
 using System.Xml.Linq;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Parsers;
+using SqlXmlAnalyzer.ViewModels;
+using MessageBox = System.Windows.MessageBox;
 
 namespace SqlXmlAnalyzer
 {
@@ -29,6 +31,14 @@ namespace SqlXmlAnalyzer
         public Core.ViewModels.MainViewModel ViewModel { get; }
         private readonly Core.XelReader _xelReader;
 
+        private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
+        private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
+        private List<(string fromId, string toId, string label)> _edgesForDrawing = new List<(string, string, string)>();
+        
+        private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
+        private DeadlockPlaybackViewModel? _playbackViewModel;
+        private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
+
         public MainWindow(Core.XelReader xelReader = null)
         {
             InitializeComponent();
@@ -37,7 +47,6 @@ namespace SqlXmlAnalyzer
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
             SetupCanvasZoomPan();
-            // WebView2 已完全移除，全部使用纯 WPF 原生控件实现可视化
         }
 
         #region 文件打开
@@ -77,8 +86,8 @@ namespace SqlXmlAnalyzer
 
                 XelDeadlockSelector.ItemsSource = reports;
                 XelDeadlockSelector.Visibility = Visibility.Visible;
-                XelDeadlockSelector.SelectedIndex = 0; // Trigger selection change
-                MainTabControl.SelectedIndex = 0; // 切换到死锁视图
+                XelDeadlockSelector.SelectedIndex = 0; 
+                MainTabControl.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -93,9 +102,6 @@ namespace SqlXmlAnalyzer
             {
                 try
                 {
-                    // Generate a temporary file to use with existing AnalyzeDeadlockFile logic,
-                    // or directly pass the XML string if AnalyzeDeadlockFile can be modified.
-                    // For simplicity, we save to temp file and call AnalyzeDeadlockFile.
                     string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"deadlock_temp_{Guid.NewGuid()}.xml");
                     System.IO.File.WriteAllText(tempPath, report.DeadlockXml);
                     AnalyzeDeadlockFile(tempPath);
@@ -159,8 +165,7 @@ namespace SqlXmlAnalyzer
 
         #endregion
 
-        #region 核心分析调用 (A + B 完整实现)
-
+        #region 核心分析调用
 
         private XNamespace _showplanNs = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
 
@@ -282,17 +287,28 @@ namespace SqlXmlAnalyzer
                     var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                     var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
                     string deadlockMermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
-                    return (processes, resources, graph, patterns, deadlockMermaid);
+                    
+                    var parser = new DeadlockTimelineParser();
+                    var timeline = parser.Parse(doc.ToString());
+                    
+                    return (processes, resources, graph, patterns, deadlockMermaid, timeline);
                 });
 
-                // 更新 UI
                 DeadlockProcessesList.ItemsSource = result.processes;
                 DeadlockResourcesList.ItemsSource = result.resources;
                 DeadlockPatternsListBox.ItemsSource = result.patterns;
 
-                // 使用原生 TreeView 展示等待关系（已移除 WebView2）
-                Logger.Info($"[Deadlock] 已生成 Mermaid 代码，长度: {result.deadlockMermaid.Length} 字符（可复制到浏览器查看）");
+                _currentTimeline = result.timeline;
+                _playbackViewModel = new DeadlockPlaybackViewModel(_currentTimeline.Events);
+                _playbackViewModel.StepChanged += (s, e) => UpdatePlaybackGraphVisibility();
+                PlaybackControl.DataContext = _playbackViewModel;
+                
+                foreach(var b in _stepBadges.Values) { DeadlockGraphCanvas.Children.Remove(b); }
+                _stepBadges.Clear();
+
                 BuildDeadlockWaitForTree(result.graph);
+                
+                UpdatePlaybackGraphVisibility();
 
                 MainTabControl.SelectedIndex = 0;
                 StatusTextBlock.Text = "死锁分析完成";
@@ -322,25 +338,18 @@ namespace SqlXmlAnalyzer
                     return (planMermaid, queryText, docString, warningsText);
                 });
 
-                // 使用原生 TreeView 展示执行计划（已移除 WebView2）
-                Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.planMermaid.Length} 字符（可复制到浏览器查看）");
+                Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.planMermaid.Length} 字符");
                 BuildPlanVisualTree(doc, _showplanNs);
 
-                // Populate XML Source text
                 PlanXmlTextBox.Text = result.docString;
-
-                // 填充查询文本
                 PlanStatementTextBox.Text = result.queryText.Length > 800 ? result.queryText.Substring(0, 800) + "..." : result.queryText;
 
-                // 构建简单操作符树 (TreeView)
                 var tree = BuildPlanTreeView(doc, _showplanNs);
                 PlanOperatorTree.Items.Clear();
                 if (tree != null) PlanOperatorTree.Items.Add(tree);
 
-                // 填充警告区域 - 使用完整的 PlanDiagnosticAnalyzer 专业诊断引擎（A + B 完整实现）
                 PlanWarningsTextBox.Text = result.warningsText;
 
-                // === 关键：填充专业 Nodify 可拖拽节点图 (真实数据 + Plan Explorer 盒子风格) ===
                 try
                 {
                     PlanNodifyGraph?.LoadFromExecutionPlan(doc, _showplanNs);
@@ -352,13 +361,12 @@ namespace SqlXmlAnalyzer
 
                 MainTabControl.SelectedIndex = 1;
 
-                // 强制切换到 Nodify 子标签，让用户立刻看到专业拖拽盒子效果（而不是默认的传统树）
                 if (PlanGraphTabControl != null)
                 {
                     PlanGraphTabControl.SelectedIndex = 1;
                 }
 
-                StatusTextBlock.Text = "执行计划分析完成 ★ 已在 Nodify 标签显示专业操作符盒子图（可拖拽节点）";
+                StatusTextBlock.Text = "执行计划分析完成";
             }
             catch (Exception ex)
             {
@@ -378,7 +386,6 @@ namespace SqlXmlAnalyzer
 
             try
             {
-                // 解析进程 (全面版，支持富元数据，如事务名、数据库名等)
                 var processList = doc.Root.Element("process-list");
                 if (processList != null)
                 {
@@ -411,10 +418,8 @@ namespace SqlXmlAnalyzer
                     }
                 }
 
-                // 解析受害者
                 victimId = doc.Root.Element("victim-list")?.Element("victimProcess")?.Attribute("id")?.Value ?? "";
 
-                // 解析资源并赋予唯一 ID (res_0, res_1, ...)
                 var resourceList = doc.Root.Element("resource-list");
                 if (resourceList != null)
                 {
@@ -448,7 +453,189 @@ namespace SqlXmlAnalyzer
             return (processes, resources, victimId);
         }
 
-        // 已移除 WebView2，现在使用以下原生方法构建可视化
+        private void UpdatePlaybackGraphVisibility()
+        {
+            if (_currentTimeline == null || _playbackViewModel == null || PlaybackModeToggle.IsChecked != true)
+                return;
+
+            int currentStep = _playbackViewModel.CurrentStep;
+            bool focusCritical = _playbackViewModel.FocusCriticalPath;
+
+            var visibleNodes = new HashSet<string>();
+            var visibleEdges = new HashSet<(string, string)>();
+
+            foreach (var ev in _currentTimeline.Events)
+            {
+                if (ev.StepNumber > currentStep) continue;
+                if (focusCritical && !ev.IsInCycle) continue;
+                
+                string mappedProcId = $"proc_id_{ev.ProcessId}";
+                string mappedResId = ev.ResourceId.StartsWith("res_") ? ev.ResourceId.Replace("res_", "res_single_") : ev.ResourceId;
+                
+                visibleNodes.Add(mappedProcId);
+                visibleNodes.Add(mappedResId);
+
+                if (ev.Type == "Request")
+                {
+                    visibleEdges.Add((mappedProcId, mappedResId));
+                }
+                else if (ev.Type == "Grant")
+                {
+                    visibleEdges.Add((mappedResId, mappedProcId));
+                }
+            }
+
+            foreach (var kvp in _nodeElements)
+            {
+                string id = kvp.Key;
+                var el = kvp.Value;
+                
+                string rawId = id;
+                bool isProc = id.StartsWith("proc_id_");
+                if (isProc) rawId = id.Substring(8);
+                else if (id.StartsWith("res_single_")) rawId = id.Replace("res_single_", "res_");
+                
+                bool inCycle = isProc 
+                    ? (_currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsInCycle) 
+                    : (_currentTimeline.Resources.ContainsKey(rawId) && _currentTimeline.Resources[rawId].IsInCycle);
+
+                if (focusCritical && !inCycle)
+                {
+                    el.Visibility = Visibility.Collapsed;
+                }
+                else if (visibleNodes.Contains(id))
+                {
+                    el.Visibility = Visibility.Visible;
+                    el.Opacity = 1.0;
+                }
+                else
+                {
+                    el.Visibility = Visibility.Visible;
+                    el.Opacity = 0.2;
+                }
+                
+                if (isProc && _currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsVictim)
+                {
+                    if (el is Border b && b.Child is Grid)
+                    {
+                        b.BorderBrush = new SolidColorBrush(Color.FromRgb(211, 47, 47));
+                        b.BorderThickness = new Thickness(3);
+                        if (currentStep >= _currentTimeline.Events.FirstOrDefault(x => x.Type == "Victim")?.StepNumber)
+                            b.Background = new SolidColorBrush(Color.FromArgb(50, 211, 47, 47));
+                        else
+                            b.Background = Brushes.White;
+                    }
+                }
+            }
+
+            foreach (var edge in _arrowCache)
+            {
+                var idPair = edge.Key;
+                var visuals = edge.Value;
+                var relatedEvent = _currentTimeline.Events.FirstOrDefault(e => 
+                    (e.Type == "Request" && e.ProcessId == idPair.Item1 && e.ResourceId == idPair.Item2) ||
+                    (e.Type == "Grant" && e.ResourceId == idPair.Item1 && e.ProcessId == idPair.Item2));
+
+                bool inCycle = relatedEvent != null && relatedEvent.IsInCycle;
+
+                if (focusCritical && !inCycle)
+                {
+                    visuals.line.Visibility = Visibility.Collapsed;
+                    visuals.arrowHead.Visibility = Visibility.Collapsed;
+                    visuals.label.Visibility = Visibility.Collapsed;
+                    if (_stepBadges.TryGetValue(idPair, out var badge)) badge.Visibility = Visibility.Collapsed;
+                }
+                else if (visibleEdges.Contains(idPair))
+                {
+                    visuals.line.Visibility = Visibility.Visible;
+                    visuals.line.Opacity = 1.0;
+                    visuals.line.StrokeDashArray = null; 
+                    visuals.arrowHead.Visibility = Visibility.Visible;
+                    visuals.arrowHead.Opacity = 1.0;
+                    visuals.label.Visibility = Visibility.Visible;
+                    visuals.label.Opacity = 1.0;
+                    
+                    if (relatedEvent != null)
+                    {
+                        if (!_stepBadges.TryGetValue(idPair, out var badge))
+                        {
+                            badge = new Border
+                            {
+                                Background = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
+                                CornerRadius = new CornerRadius(8),
+                                Width = 16, Height = 16,
+                                Child = new TextBlock { Text = relatedEvent.StepNumber.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+                            };
+                            _stepBadges[idPair] = badge;
+                            DeadlockGraphCanvas.Children.Add(badge);
+                            double x1 = visuals.line.X1, y1 = visuals.line.Y1, x2 = visuals.line.X2, y2 = visuals.line.Y2;
+                            Canvas.SetLeft(badge, (x1 + x2) / 2 + 10);
+                            Canvas.SetTop(badge, (y1 + y2) / 2 - 15);
+                        }
+                        badge.Visibility = Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    visuals.line.Visibility = Visibility.Visible;
+                    visuals.line.Opacity = 0.2;
+                    visuals.line.StrokeDashArray = new DoubleCollection { 2, 2 };
+                    visuals.arrowHead.Visibility = Visibility.Visible;
+                    visuals.arrowHead.Opacity = 0.2;
+                    visuals.label.Visibility = Visibility.Visible;
+                    visuals.label.Opacity = 0.2;
+                    if (_stepBadges.TryGetValue(idPair, out var badge)) badge.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void PlaybackModeToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            PlaybackControl.Visibility = Visibility.Visible;
+            if (_playbackViewModel != null)
+            {
+                _playbackViewModel.CurrentStep = 0;
+            }
+            UpdatePlaybackGraphVisibility();
+        }
+
+        private void PlaybackModeToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PlaybackControl.Visibility = Visibility.Collapsed;
+            if (_playbackViewModel != null)
+            {
+                _playbackViewModel.IsPlaying = false;
+            }
+            
+            foreach (var el in _nodeElements.Values)
+            {
+                el.Visibility = Visibility.Visible;
+                el.Opacity = 1.0;
+                if (el is Border b)
+                {
+                    b.BorderBrush = new SolidColorBrush(Color.FromRgb(176, 190, 197));
+                    b.BorderThickness = new Thickness(1.5);
+                    b.Background = Brushes.White;
+                }
+            }
+            foreach (var edge in _arrowCache.Values)
+            {
+                edge.line.Visibility = Visibility.Visible;
+                edge.line.Opacity = 1.0;
+                edge.arrowHead.Visibility = Visibility.Visible;
+                edge.arrowHead.Opacity = 1.0;
+                edge.label.Visibility = Visibility.Visible;
+                edge.label.Opacity = 1.0;
+                if (edge.line.Stroke is SolidColorBrush sb && sb.Color == Color.FromRgb(56, 142, 60))
+                    edge.line.StrokeDashArray = new DoubleCollection { 4, 3 };
+                else
+                    edge.line.StrokeDashArray = null;
+            }
+            foreach (var b in _stepBadges.Values)
+            {
+                b.Visibility = Visibility.Collapsed;
+            }
+        }
 
         private void BuildDeadlockWaitForTree(DeadlockGraph graph)
         {
@@ -456,20 +643,9 @@ namespace SqlXmlAnalyzer
             Dispatcher.BeginInvoke(new Action(() => DoZoomToFitDeadlock()), System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
-        // 用于存储节点位置，支持拖拽
         private readonly Dictionary<string, Point> _nodePositions = new();
-        private readonly Dictionary<string, FrameworkElement> _nodeElements = new();
-
-        // 存储边信息以便拖拽时更新
-        private List<(string fromId, string toId, string label)> _edgesForDrawing = new();
-
-        // 缓存箭头元素以支持高效实时更新
-        private readonly Dictionary<(string from, string to), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new();
-
-        // 缓存折叠资源的明细，以供双击联动使用
         private readonly Dictionary<string, (string LockType, string ObjectName)> _resourceGroupDetails = new();
 
-        // 用于并行死锁高聚合可视化的逻辑实体
         private sealed class CollapsedProcess
         {
             public string Spid { get; set; } = "";

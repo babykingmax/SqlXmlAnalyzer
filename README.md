@@ -21,8 +21,16 @@ SqlXmlAnalyzer 是一款极其强大且现代化的 **SQL Server 性能诊断与
     *   **全分区扫描报警**：当检测到查询访问了分区表，但未发生分区裁剪（即 `Partition Range` 跨越了全部分区）时，自动使用亮红色 (`#FF0000`) 醒目标注！
 
 *   **💀 深度死锁分析 (Deadlock Analyzer)**
-    *   一键解析 `.xdl` 死锁文件。
-    *   将晦涩难懂的死锁 XML 转化为清晰的进程/资源冲突矩阵，直指被 `Kill` 的 Victim 进程及其持有的锁。
+    - **专业级死锁可视化**:
+    - ✨ **新特性：死锁回放（Timeline Playback）**：支持加载 `.xdl` 文件后，像播放视频一样逐步回放死锁形成过程，清晰展示每个进程的锁请求、等待、持有顺序，轻松厘清死锁产生的先后脉络。
+    - **聚焦关键路径**：在回放或静态查看中，可一键过滤无关的受害者或次要进程，仅保留导致死锁的核心环（Cycle）。
+    - 支持多并发、多资源的复杂死锁关系图。
+    - **死锁模式识别**:
+      - **Key/RID Lookup Deadlock**: 读写冲突导致的常见死锁。
+      - **Page/Row Lock Promotion**: 锁升级引起的死锁。
+      - **Parallelism Deadlock (Intra-query)**: 并行查询内部死锁。
+      - **Serializable/Update Lock Escalation**: 高隔离级别下的死锁。
+      - 针对每种死锁模式提供专业的修复建议。死锁 XML 转化为清晰的进程/资源冲突矩阵，直指被 `Kill` 的 Victim 进程及其持有的锁。
 
 ## 🏗️ 快速开始 (Getting Started)
 

@@ -48,9 +48,13 @@
     *   确保无论是简单的链式计划，还是庞大的多路 Hash Join 计划，节点彼此之间都不会发生碰撞重叠。
 *   **动态连线绘制**：利用 WPF 的 `<Path>` 元素和贝塞尔曲线 (Bezier Curve) 或正交折线，连接父子节点的中心点。连线的粗细 (`StrokeThickness`) 由两个节点间流动的 `ActualRows` / `EstimateRows` 的相对大小动态计算得出。
 
-### 3.2 响应式视图 (MainWindow / PlanView)
-*   界面采用了双入口设计：可以直接把 `.sqlplan` 扔进主窗体，也可以在已打开的多标签页环境 (`DocumentTab`) 中独立运作。
-*   侧边栏和上方区域支持 **Expander 自动折叠**，最大化图形画布视野。
+*   **响应式视图与容器 (MainWindow / PlanView)**：主窗体采用了现代化的面板折叠设计，为这套自适应布局系统留出了尽可能开阔的呈现区域。
+
+### 3.3 死锁可视化与回放系统 (Deadlock Visualization)
+除了查询执行计划，SqlXmlAnalyzer 的另一个重头戏是处理 `.xdl` 死锁图谱。
+*   **`DeadlockTimelineParser` (时序反编译器)**：不仅可以扁平化解析包含多种死锁类型的 XML，还能内部执行有向图深度优先搜索算法（DFS），计算并找出成环（Cycle）的致命阻塞链路。它会将静态并发的 XML 重建为一个**时序化事件序列 (Timeline Events)**。
+*   **`DeadlockBipartiteGraph` (二分图引擎)**：画布使用自动推导计算的环形算法或重力散列算法（Circular/Force-directed Layout），实时绘制以进程 (Process) 和锁资源 (Resource) 构成的死锁二分图网络。
+*   **`DeadlockPlaybackViewModel` (动态帧渲染架构)**：支持“死锁可视化回放”模式！引擎像播放录像带一样与 `DeadlockGraphCanvas` 高频联动，通过调节帧率（SpeedIntervalMs）、更改对象 Opacity，在界面上逐个还原资源的 Request (请求边) 与 Grant (持有边) 历史事件，将静态 XML 变身动态教育分析视频。
 
 ## 4. 关键交互流程总结
 1.  **加载文件** -> `XDocument.Load` 解析 XML。

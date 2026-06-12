@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:SqlXmlAnalyzer"
         xmlns:vm="clr-namespace:SqlXmlAnalyzer.Core.ViewModels"
+        xmlns:views="clr-namespace:SqlXmlAnalyzer.Views"
         Title="{Binding AppTitle}" 
         Height="900" Width="1400"
         WindowStartupLocation="CenterScreen"
@@ -141,12 +142,14 @@
                             <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC" ToolTip="收起/展开左侧进程和资源面板"/>
                             <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC" ToolTip="收起/展开右侧类型诊断和详情面板"/>
                             <Button Content="🔍 适屏" Click="ZoomToFitDeadlock_Click" Margin="4,0,8,0" Padding="8,2" ToolTip="自适应缩放并平移以使全部节点适配当前窗口尺寸"/>
+                            <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 回放模式" Checked="PlaybackModeToggle_Checked" Unchecked="PlaybackModeToggle_Unchecked" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
                             <Button Content="复制 Mermaid" Click="CopyDeadlockMermaid_Click" Margin="4,0" Padding="6,2"/>
                             <Button Content="浏览器大图" Click="OpenDeadlockMermaidInBrowser_Click" Margin="4,0" Padding="6,2"/>
                         </StackPanel>
 
+
                         <!-- Canvas 图形化死锁等待图 - 支持节点拖拽 + 鼠标滚轮缩放 + 中键平移 (纯 WPF 原生) -->
-                        <Border x:Name="DeadlockCanvasBorder" Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="2" Background="{StaticResource SurfaceBrush}" CornerRadius="6" ClipToBounds="True">
+                        <Border x:Name="DeadlockCanvasBorder" Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" Margin="2" Background="#FAFAFA" CornerRadius="6" ClipToBounds="True">
                             <Canvas x:Name="DeadlockGraphCanvas" Width="1600" Height="1200">
                                 <Canvas.Background>
                                     <!-- 专家级微点网格背景 (Visual Brush) -->
@@ -174,6 +177,8 @@
                                 </Canvas.RenderTransform>
                             </Canvas>
                         </Border>
+                        
+                        <views:DeadlockPlaybackControl x:Name="PlaybackControl" Grid.Row="1" VerticalAlignment="Top" Margin="10,10,10,0" Panel.ZIndex="10" Visibility="Collapsed" />
                     </Grid>
 
                     <!-- 右侧：死锁类型诊断 + 详情 -->
