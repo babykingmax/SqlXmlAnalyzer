@@ -3,10 +3,21 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Mvvm;
 
+using System.Collections.ObjectModel;
+
 namespace SqlXmlAnalyzer.Core.ViewModels
 {
     public class MainViewModel : ObservableObject
     {
+        public ObservableCollection<DocumentTabViewModel> Tabs { get; } = new ObservableCollection<DocumentTabViewModel>();
+        
+        private DocumentTabViewModel? _selectedTab;
+        public DocumentTabViewModel? SelectedTab
+        {
+            get => _selectedTab;
+            set => SetProperty(ref _selectedTab, value);
+        }
+
         public XDocument? CurrentDeadlockDoc { get; set; }
         public XDocument? CurrentPlanDoc { get; set; }
         public string? CurrentDeadlockFilePath { get; set; }

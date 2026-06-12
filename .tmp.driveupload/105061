@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment>我们在  PlanGraphControl.xaml  和对应的  PlanNodeViewModel  中完成了以下核心功能的升级与重构：
+  <CommitComment>  为了实现专业的多标签页功能，我主要完成了以下底层架构和测试的建设：
 
-  ### 1. 动态成本编码与高亮 (Dynamic Cost Encoding)
+  ### 1. 构建多标签页的 ViewModel 架构
 
-  • 新增了  DynamicBackgroundBrush  和  DynamicBorderBrush 。
-  • 摒弃了写死的条件分支，改为使用颜色插值算法（ LerpColor ）。根据当前节点的独立成本占比 ( CostPercent
-  )，节点背景色会由纯白平滑过渡到浅红，而边框会由灰蓝色过渡到深红色。成本越高越醒目，一眼即可识别出查询瓶颈。
+  在  SqlXmlAnalyzer.Core.ViewModels  中，引入了标准的 MVVM 标签页管理模型：
 
-  ### 2. 重绘矢量节点图标 (Vector Icon Redesign)
+  • 新增  DocumentTabViewModel （作为抽象基类，包含了  Title 、 FilePath  以及关闭标签的  CloseCommand  逻辑）。
+  • 新增  DeadlockTabViewModel  和  PlanTabViewModel ，分别继承基类，用于承载死锁 XML 和执行计划 XML 的独立数据环境。
+  • 在主视图模型  MainViewModel  中，添加了  ObservableCollection&lt;DocumentTabViewModel&gt; Tabs  以及  SelectedTab  属性，用于管理所有打开的文档。
 
-  • 彻底摆脱了外部图片文件依赖！之前依赖从  ssms_icons  目录读取图片，这种方式不仅容易发生 IO 异常，而且在不同分辨率下缩放也会模糊。
-  • 我们利用 WPF 的  Path Geometry  在  PlanNodeViewModel  中定义了一套现代化的纯矢量几何图标（包含 Scan, Seek, Join, Sort, Parallelism, Spool, Compute 等常见算子），并在前端使用  Viewbox  +  Path
-  完美呈现，配以不同的主题色（ AccentBrush ），使其极其清晰且极具 SQL Sentry 的专业质感。
+  ### 2. 编写并跑通 xUnit 单元测试
 
-  ### 3. 更醒目的诊断警告标志 (Warning Flags)
+  根据你的要求，我为标签页管理功能编写了相应的测试，并修复了测试工程与 WPF 工程之间的引用隔离问题（升级到了  net8.0-windows  并启用了 WPF 测试支持）：
 
-  • 将原来挤在底部的黄色感叹号，改成了更加醒目的红色圆形徽标 ( ! )，并调整到节点核心图标的右上角悬浮显示 ( Z-Index  提升)。
-  • 悬停徽标上方时，原生弹出的  ToolTip  会明确高亮显示该节点的性能警告（如：隐式转换、残差谓词等）。
+  •  MainViewModel_InitializesWithEmptyTabs ：测试默认初始化状态。
+  •  AddTab_SelectsNewTab ：测试成功添加新计划/死锁标签并自动聚焦。
+  •  CloseCommand_RemovesTabFromCollection ：测试触发  CloseCommand  时标签能够正确地从集合中销毁并重置焦点。
 
-  ### 4. 视图选项实时切换 (View Mode Toggle)
+  │ 当前  dotnet test  执行结果：已通过! (12个测试用例全绿通过)。
 
-  • 在界面顶部的工具栏中，新增了 “视图模式” 下拉菜单 ( ComboBox )。
-  • 现在你可以一键切换核心标签条的内容，包括：“成本百分比 (%)”、“CPU + I/O 成本”、以及 “行数对比 (Actual/Estimated)”。更改后数据视图将瞬间热重载。
-  ──────
-  现在，WPF 的  Plan Graph  视图不仅达到了 SQL Sentry 的审美水平，而且摆脱了残缺图标的困扰，性能反馈也更直观了。</CommitComment>
+  ### 3. 开始拆解  MainWindow  (UI 解耦准备)
+
+  由于此前所有关于  死锁分析  和  执行计划分析  的 UI 控件（接近 2000 行代码）全部硬编码在  MainWindow.xaml  和  MainWindow.xaml.cs  中，如果直接绑定动态的  Tabs  会导致控件名称找不到（DataTemplate 隔离）。
+  因此，我已经为你创建了第一个独立的组件文件  Views/DeadlockView.xaml  和对应的代码隐藏文件，将原来的死锁布局彻底剥离了出来。
+  ──────</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />
