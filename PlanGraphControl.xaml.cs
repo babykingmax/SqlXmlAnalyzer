@@ -562,9 +562,12 @@ namespace SqlXmlAnalyzer
                 IsParallel = isParallel,
                 Warnings = warningsStr,
                 NodeSeverity = highestSeverity,
-                Location = new Point(50, 50),
-                OperatorIcon = PlanIconManager.GetIcon(physical)
+                Location = new Point(50, 50)
             };
+
+            var iconInfo = PhysicalOpToIconMapper.Map(physical);
+            vm.IconGeometry = iconInfo.Geometry;
+            vm.IconBrush = iconInfo.Brush;
 
             vm.OperatorType = DetectOperatorType(physical, logical);
 
@@ -587,59 +590,60 @@ namespace SqlXmlAnalyzer
         private void ApplyLayeredLayout(List<PlanNodeViewModel> allNodes, Dictionary<XElement, PlanNodeViewModel> nodeMap,
                                         List<XElement> allRelOps, XNamespace ns)
         {
-            // 简单层级布局：按深度分组，水平展开
-            var levels = new Dictionary<int, List<PlanNodeViewModel>>();
-            var depthMap = new Dictionary<XElement, int>();
-
-            // 计算每个节点的深度 (根深度0)
-            void CalcDepth(XElement relOp, int depth)
+            var roots = allRelOps.Where(r => !allRelOps.Any(p => PlanDiagnosticAnalyzer.GetDirectChildRelOps(p, ns).Contains(r))).ToList();
+            if (roots.Count == 0 && allRelOps.Count > 0)
             {
-                depthMap[relOp] = depth;
-                foreach (var child in PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns))
-                    CalcDepth(child, depth + 1);
+                roots.Add(allRelOps[0]);
             }
 
-            var root = allRelOps.FirstOrDefault(r => !allRelOps.Any(p => PlanDiagnosticAnalyzer.GetDirectChildRelOps(p, ns).Contains(r)));
-            if (root != null) CalcDepth(root, 0);
-            else
+            var childrenMap = new Dictionary<XElement, List<XElement>>();
+            foreach (var op in allRelOps)
             {
-                for (int i = 0; i < allRelOps.Count; i++) depthMap[allRelOps[i]] = i % 4;
+                childrenMap[op] = PlanDiagnosticAnalyzer.GetDirectChildRelOps(op, ns).ToList();
             }
 
-            foreach (var kv in depthMap)
+            double CalculateSubtreeWidth(XElement node)
             {
-                int d = kv.Value;
-                if (!levels.ContainsKey(d)) levels[d] = new List<PlanNodeViewModel>();
-                if (nodeMap.TryGetValue(kv.Key, out var vm))
-                    levels[d].Add(vm);
-            }
-
-            // 布局参数
-            double startX = 40;
-            double startY = 80;
-            double xStep = 260;   // 每层水平间距
-            double yStep = 82;    // 同层垂直间距
-
-            int maxDepth = levels.Keys.DefaultIfEmpty(0).Max();
-
-            foreach (var (depth, nodesInLevel) in levels.OrderBy(k => k.Key))
-            {
-                double x = startX + depth * xStep;
-                // 垂直居中该层
-                double totalH = (nodesInLevel.Count - 1) * yStep;
-                double y0 = startY + (maxDepth > 0 ? (maxDepth * 30 - totalH / 2) : 0);
-
-                for (int i = 0; i < nodesInLevel.Count; i++)
+                var vm = nodeMap[node];
+                var children = childrenMap[node];
+                if (children.Count == 0)
                 {
-                    nodesInLevel[i].Location = new Point(x, y0 + i * yStep + (depth % 2 == 1 ? 12 : 0)); // 轻微交错
+                    vm.SubtreeWidth = 1;
+                    return 1;
+                }
+
+                double totalWidth = 0;
+                foreach (var child in children)
+                {
+                    totalWidth += CalculateSubtreeWidth(child);
+                }
+                vm.SubtreeWidth = Math.Max(1, totalWidth);
+                return vm.SubtreeWidth;
+            }
+
+            double horizontalSpacing = 280;
+            double verticalSpacing = 160;
+
+            void SetNodePositions(XElement node, double startY, double depthX)
+            {
+                var vm = nodeMap[node];
+                vm.Location = new Point(depthX, startY + (vm.SubtreeWidth - 1) * verticalSpacing / 2);
+
+                var children = childrenMap[node];
+                double childStartY = startY;
+                foreach (var child in children)
+                {
+                    SetNodePositions(child, childStartY, depthX + horizontalSpacing);
+                    childStartY += nodeMap[child].SubtreeWidth * verticalSpacing;
                 }
             }
 
-            // 如果只有一层或布局太挤，微调
-            if (allNodes.Count > 6 && maxDepth < 2)
+            double currentY = 50;
+            foreach (var root in roots)
             {
-                for (int i = 0; i < allNodes.Count; i++)
-                    allNodes[i].Location = new Point(60 + (i % 3) * 240, 90 + (i / 3) * 85);
+                CalculateSubtreeWidth(root);
+                SetNodePositions(root, currentY, 50);
+                currentY += nodeMap[root].SubtreeWidth * verticalSpacing + 50;
             }
         }
 
@@ -793,9 +797,15 @@ namespace SqlXmlAnalyzer
         public string EstRows { get; set; } = "0";
         public double EstRowsNum { get; set; }
         public string ActualRows { get; set; } = "";
-        public System.Windows.Media.ImageSource? OperatorIcon { get; set; }
         public double ActualRowsNum { get; set; }
         public string ObjectDetails { get; set; } = "";
+        
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double SubtreeWidth { get; set; }
+        public Geometry IconGeometry { get; set; }
+        public Brush IconBrush { get; set; }
+        
         public string OperatorType { get; set; } = "Other";
         public bool IsParallel { get; set; }
         public string Warnings { get; set; } = "";

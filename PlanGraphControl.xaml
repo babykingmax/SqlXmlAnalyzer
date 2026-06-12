@@ -196,8 +196,8 @@
                                     <!-- 2. 居中的核心图标 -->
                                     <Grid HorizontalAlignment="Center" Margin="0,4,0,4">
                                         <!-- 使用矢量图形替换外部图片 -->
-                                        <Viewbox Width="32" Height="32">
-                                            <Path Data="{Binding OperatorGeometry}" Fill="{Binding AccentBrush}" Stretch="Uniform" />
+                                        <Viewbox Width="24" Height="24">
+                                            <Path Data="{Binding IconGeometry}" Fill="{Binding IconBrush}" Stretch="Uniform" />
                                         </Viewbox>
                                         
                                         <!-- 右上角更醒目的警告图标 -->
