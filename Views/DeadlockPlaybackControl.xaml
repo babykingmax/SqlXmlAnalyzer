@@ -1,0 +1,58 @@
+<UserControl x:Class="SqlXmlAnalyzer.Views.DeadlockPlaybackControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:SqlXmlAnalyzer.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="70" d:DesignWidth="800">
+    <Border Background="#F5F7FA" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="6" Padding="12,8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶部控制栏 -->
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <Button Command="{Binding ResetCommand}" Content="⏮" Width="30" ToolTip="重置"/>
+                    <Button Command="{Binding StepBackwardCommand}" Content="◀" Width="30" Margin="4,0" ToolTip="上一帧"/>
+                    <Button Command="{Binding PlayCommand}" Content="{Binding PlayButtonText}" Width="70" FontWeight="Bold" Background="#1976D2" Foreground="White" BorderThickness="0"/>
+                    <Button Command="{Binding StepForwardCommand}" Content="▶" Width="30" Margin="4,0" ToolTip="下一帧"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
+                    <TextBlock Text="进度:" VerticalAlignment="Center" Foreground="#546E7A" FontSize="11" Margin="0,0,8,0"/>
+                    <Slider Minimum="0" Maximum="{Binding TotalSteps}" Value="{Binding CurrentStep}" 
+                            TickFrequency="1" IsSnapToTickEnabled="True"
+                            Width="200" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding CurrentStep, StringFormat=' {0}'}" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F" FontSize="11" Margin="4,0,0,0"/>
+                    <TextBlock Text="{Binding TotalSteps, StringFormat=' / {0}'}" VerticalAlignment="Center" Foreground="#90A4AE" FontSize="11"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="2">
+                    <CheckBox IsChecked="{Binding FocusCriticalPath}" Content="聚焦关键路径" VerticalAlignment="Center" Foreground="#D32F2F" FontWeight="SemiBold" Margin="0,0,16,0" ToolTip="仅显示死锁环中的进程和资源"/>
+                    
+                    <TextBlock Text="速度:" VerticalAlignment="Center" Foreground="#546E7A" FontSize="11" Margin="0,0,4,0"/>
+                    <ComboBox SelectedValue="{Binding PlaybackSpeed}" SelectedValuePath="Tag" Width="60" Height="22" VerticalContentAlignment="Center" FontSize="11">
+                        <ComboBoxItem Content="慢" Tag="2000"/>
+                        <ComboBoxItem Content="中" Tag="1000"/>
+                        <ComboBoxItem Content="快" Tag="400"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <!-- 底部状态描述栏 -->
+            <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8,4">
+                <TextBlock Text="{Binding CurrentStepDescription}" FontSize="12" Foreground="#263238" FontWeight="SemiBold" TextWrapping="Wrap"/>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

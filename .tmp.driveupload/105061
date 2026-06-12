@@ -1,26 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PendingCommit>
-  <CommitComment> 以下是修复和重构的具体内容：
-
-  ### 1. 图标系统重构 (纯矢量化 &amp; 语义化)
-
-  • 创建了  PhysicalOpToIconMapper  字典系统：利用  PathGeometry  纯矢量路径绘制了 SQL Server 中最经典的几种操作符图标（Scan, Seek, Join, Sort, Compute, Parallelism 等）。
-  • 语义化颜色分类：
-      • 红色系 (Red)：全表扫描 / 索引扫描类 (Table Scan, Index Scan, Columnstore Index Scan)。
-      • 蓝色系 (Blue)：高效率查找类 (Index Seek, Key Lookup, RID Lookup)。
-      • 紫色系 (Purple)：联接与聚合计算类 (Nested Loops, Hash Match, Merge Join)。
-      • 灰色系 (Gray)：排序与假脱机 (Sort, Table Spool)。
-      • 橙色系 (Orange)：并行执行 (Parallelism, Exchange)。
-  • 更新 UI 绑定与缩放：去除了以前笨重的 BitmapImage 依赖。在  PlanGraphControl.xaml  中使用了  Viewbox (Width=24, Height=24)  和  &lt;Path Data="{Binding IconGeometry}" Fill="{Binding IconBrush}" /&gt;
-  。不仅大幅缩小了图标占据的空间使界面变得“精致”，而且缩放无论多大都不会失真。
-
-  ### 2. 重叠零容忍的树形布局算法 (无重叠的层次布局)
-
-  • 完全重写了  PlanGraphControl.xaml.cs  中的  ApplyLayeredLayout  布局算法。
-  • 递归子树宽度计算 ( CalculateSubtreeWidth )：自底向上（从叶子节点到根）递归地计算每个分支所需要的垂直空间（ SubtreeWidth ）。
-  • 自顶向下排版 ( SetNodePositions )：将  Y  坐标根据子树的所需宽度完美地划分并垂直居中分配给父节点，将  X  坐标与树的深度（ depthX ）挂钩。
-  • 效果：现在不管是多达上百个节点还是高度复杂的深层级分支，所有节点都会像真实的树枝一样完美分散，不会发生任何边界重叠；且连线层次完全分明。拖拽、缩放（滚轮）、平移（鼠标中键）等  Nodify
-  原生特性得到了完美保留。</CommitComment>
+  <CommitComment>“死锁回放（Timeline Playback）”功能</CommitComment>
   <PinnedBranches />
   <PublishPrompt Enabled="True" />
   <ActiveAccountPrompt Enabled="True" />

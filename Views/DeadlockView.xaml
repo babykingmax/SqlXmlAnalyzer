@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SqlXmlAnalyzer.Views"
+             xmlns:conv="clr-namespace:SqlXmlAnalyzer.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <conv:StepToVisibilityConverter x:Key="StepToVis"/>
+        <conv:StepToOpacityConverter x:Key="StepToOpac"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="DeadlockLeftColumn" Width="280" MinWidth="0"/>
@@ -63,9 +68,12 @@
                 <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC"/>
                 <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC"/>
                 <Button Content="🔍 适屏" Click="ZoomToFitDeadlock_Click" Margin="4,0,8,0" Padding="8,2"/>
+                <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 回放模式" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
                 <Button Content="复制 Mermaid" Click="CopyDeadlockMermaid_Click" Margin="4,0" Padding="6,2"/>
                 <Button Content="浏览器大图" Click="OpenDeadlockMermaidInBrowser_Click" Margin="4,0" Padding="6,2"/>
             </StackPanel>
+
+            <local:DeadlockPlaybackControl x:Name="PlaybackControl" Grid.Row="1" VerticalAlignment="Top" Margin="10,10,10,0" Panel.ZIndex="10" Visibility="Collapsed" />
 
             <Border x:Name="DeadlockCanvasBorder" Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" Margin="2" Background="#FAFAFA" CornerRadius="6" ClipToBounds="True">
                 <Canvas x:Name="DeadlockGraphCanvas" Width="1600" Height="1200">
