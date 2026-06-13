@@ -47,6 +47,29 @@ namespace SqlXmlAnalyzer
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
             SetupCanvasZoomPan();
+
+            // 监听 PlanA / PlanB 快照变化，动态重构并排对比的操作符结构树
+            ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(ViewModel.PlanA))
+                {
+                    PlanATreeView.Items.Clear();
+                    if (ViewModel.PlanA != null)
+                    {
+                        var tree = BuildPlanTreeView(ViewModel.PlanA.Document, _showplanNs);
+                        if (tree != null) PlanATreeView.Items.Add(tree);
+                    }
+                }
+                else if (e.PropertyName == nameof(ViewModel.PlanB))
+                {
+                    PlanBTreeView.Items.Clear();
+                    if (ViewModel.PlanB != null)
+                    {
+                        var tree = BuildPlanTreeView(ViewModel.PlanB.Document, _showplanNs);
+                        if (tree != null) PlanBTreeView.Items.Add(tree);
+                    }
+                }
+            };
         }
 
         #region 文件打开
@@ -2251,6 +2274,49 @@ namespace SqlXmlAnalyzer
         private void PlanNodifyGraph_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        // --- 调优历史与 A/B 并排对比事件处理器 ---
+        private void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (TuningHistoryListView.SelectedItem is Core.ViewModels.PlanSnapshot snapshot)
+            {
+                AnalyzeExecutionPlanDocument(snapshot.Document, snapshot.FilePath);
+            }
+        }
+
+        private void SaveSession_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "SqlXmlAnalyzer 调优会话 (*.pesession)|*.pesession",
+                Title = "保存当前调优会话",
+                FileName = "Tuning_Session.pesession"
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                ViewModel.SaveSession(dlg.FileName);
+            }
+        }
+
+        private void LoadSession_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "SqlXmlAnalyzer 调优会话 (*.pesession)|*.pesession",
+                Title = "打开调优会话文件"
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                ViewModel.LoadSession(dlg.FileName);
+            }
+        }
+
+        private void SwapPlanAB_Click(object sender, RoutedEventArgs e)
+        {
+            var temp = ViewModel.PlanA;
+            ViewModel.PlanA = ViewModel.PlanB;
+            ViewModel.PlanB = temp;
         }
     }
 }
