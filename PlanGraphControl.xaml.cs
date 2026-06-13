@@ -233,7 +233,8 @@ namespace SqlXmlAnalyzer
             foreach (var relOp in relOps)
             {
                 var vm = nodeMap[relOp];
-                var childRelOps = PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns);
+                var childRelOps = PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns).ToList();
+                vm.HasChildren = childRelOps.Count > 0;
                 double childrenSubtreeCost = childRelOps.Sum(c => {
                     if (nodeMap.TryGetValue(c, out var cvm)) return cvm.SubtreeCost;
                     return safeFloat(c.Attribute("EstimatedTotalSubtreeCost")?.Value);
@@ -710,6 +711,12 @@ namespace SqlXmlAnalyzer
             double CalculateSubtreeWidth(XElement node)
             {
                 var vm = nodeMap[node];
+                if (vm.IsCollapsed)
+                {
+                    vm.SubtreeWidth = 1;
+                    return 1;
+                }
+
                 var children = childrenMap[node];
                 if (children.Count == 0)
                 {
@@ -734,6 +741,8 @@ namespace SqlXmlAnalyzer
                 var vm = nodeMap[node];
                 vm.Location = new Point(depthX, startY + (vm.SubtreeWidth - 1) * verticalSpacing / 2);
 
+                if (vm.IsCollapsed) return;
+
                 var children = childrenMap[node];
                 double childStartY = startY;
                 foreach (var child in children)
@@ -747,6 +756,8 @@ namespace SqlXmlAnalyzer
             {
                 var vm = nodeMap[node];
                 vm.Location = new Point(startX + (vm.SubtreeWidth - 1) * horizontalSpacing / 2, depthY);
+
+                if (vm.IsCollapsed) return;
 
                 var children = childrenMap[node];
                 double childStartX = startX;
@@ -799,6 +810,64 @@ namespace SqlXmlAnalyzer
         }
 
         private void ResetView_Click(object sender, RoutedEventArgs e) => ResetView();
+
+        private void ToggleCollapse_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
+            {
+                node.IsCollapsed = !node.IsCollapsed;
+                UpdateGraphVisibility();
+                ReapplyLayout();
+            }
+        }
+
+        private void UpdateGraphVisibility()
+        {
+            if (_currentDoc == null || _currentNs == null || Nodes.Count == 0) return;
+
+            var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
+            var roots = relOps.Where(r => !relOps.Any(p => PlanDiagnosticAnalyzer.GetDirectChildRelOps(p, _currentNs).Contains(r))).ToList();
+
+            var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
+            foreach (var node in Nodes)
+            {
+                if (node.RawElement != null) nodeMap[node.RawElement] = node;
+            }
+
+            // By default, hide all
+            foreach (var n in Nodes) n.IsVisible = false;
+            foreach (var c in Connections) c.IsVisible = false;
+
+            // Traverse and show
+            void Traverse(XElement el, bool isVisible)
+            {
+                if (nodeMap.TryGetValue(el, out var vm))
+                {
+                    vm.IsVisible = isVisible;
+                    bool childrenVisible = isVisible && !vm.IsCollapsed;
+
+                    var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(el, _currentNs).ToList();
+                    
+                    foreach (var child in children)
+                    {
+                        if (nodeMap.TryGetValue(child, out var childVm))
+                        {
+                            var conn = Connections.FirstOrDefault(c => c.Source == childVm && c.Target == vm);
+                            if (conn != null)
+                            {
+                                conn.IsVisible = childrenVisible;
+                            }
+                        }
+                        Traverse(child, childrenVisible);
+                    }
+                }
+            }
+
+            foreach (var root in roots)
+            {
+                Traverse(root, true);
+            }
+        }
 
         private void CmbViewMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1086,6 +1155,45 @@ namespace SqlXmlAnalyzer
         };
         public string NodeSeverityBorderThickness => NodeSeverity == "Info" ? "0" : "2";
 
+        private bool _isCollapsed;
+        public bool IsCollapsed
+        {
+            get => _isCollapsed;
+            set
+            {
+                _isCollapsed = value;
+                OnPropertyChanged(nameof(IsCollapsed));
+                OnPropertyChanged(nameof(CollapseButtonText));
+            }
+        }
+
+        public string CollapseButtonText => IsCollapsed ? "+" : "-";
+
+        private bool _isVisible = true;
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
+            }
+        }
+
+        private bool _hasChildren;
+        public bool HasChildren
+        {
+            get => _hasChildren;
+            set
+            {
+                _hasChildren = value;
+                OnPropertyChanged(nameof(HasChildren));
+                OnPropertyChanged(nameof(CollapseButtonVisibility));
+            }
+        }
+
+        public string CollapseButtonVisibility => HasChildren ? "Visible" : "Collapsed";
+
         private Point _location;
         public Point Location { get => _location; set { _location = value; OnPropertyChanged(nameof(Location)); } }
 
@@ -1263,6 +1371,17 @@ namespace SqlXmlAnalyzer
                 OnPropertyChanged(nameof(ThicknessValue));
                 OnPropertyChanged(nameof(LabelText));
                 OnPropertyChanged(nameof(ToolTipText));
+            }
+        }
+
+        private bool _isVisible = true;
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
             }
         }
 

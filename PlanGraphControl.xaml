@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:SqlXmlAnalyzer">
     <UserControl.Resources>
         <local:ConnectionThicknessConverter x:Key="ConnectionThicknessConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </UserControl.Resources>
 
     <Grid>
@@ -64,6 +65,7 @@
                     <!-- 节点内容模板 (Plan Explorer 专业操作符盒子) -->
                     <nodify:NodifyEditor.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:PlanNodeViewModel}">
+                            <Grid>
                             <!-- 操作符节点 - 动态成本编码与图标 -->
                             <Border MinWidth="130" Background="{Binding DynamicBackgroundBrush}" SnapsToDevicePixels="True" Padding="5"
                                     BorderBrush="{Binding DynamicBorderBrush}" BorderThickness="{Binding DynamicBorderThickness}" CornerRadius="6">
@@ -244,6 +246,25 @@
                                                Visibility="{Binding HasObjectDetails}"/>
                                 </StackPanel>
                             </Border>
+                            
+                            <!-- 折叠/展开按钮 -->
+                            <Button Content="{Binding CollapseButtonText}" 
+                                    Visibility="{Binding CollapseButtonVisibility}"
+                                    Click="ToggleCollapse_Click"
+                                    Width="18" Height="18" FontSize="12" Padding="0,-2,0,0"
+                                    FontWeight="Bold"
+                                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                    Margin="0,0,-9,-9" 
+                                    Background="White" Foreground="#1976D2" BorderBrush="#90A4AE" BorderThickness="1"
+                                    Cursor="Hand"
+                                    ToolTip="折叠/展开子树">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="9"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            </Grid>
                         </DataTemplate>
                     </nodify:NodifyEditor.ItemTemplate>
 
@@ -253,6 +274,7 @@
                             <Setter Property="Location" Value="{Binding Location, Mode=TwoWay}"/>
                             <Setter Property="MinWidth" Value="230"/>
                             <Setter Property="MinHeight" Value="70"/>
+                            <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource BoolToVis}}"/>
                             <EventSetter Event="MouseDoubleClick" Handler="Node_MouseDoubleClick"/>
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
@@ -269,7 +291,7 @@
                     <!-- 连接线 (数据流向父节点，由子指向父，支持数据流厚度与估算偏差颜色，以及悬浮数据量数值标签与流向动画) -->
                     <nodify:NodifyEditor.ConnectionTemplate>
                         <DataTemplate DataType="{x:Type local:ConnectionViewModel}">
-                            <Grid Opacity="{Binding Opacity}">
+                            <Grid Opacity="{Binding Opacity}" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
                                 <!-- 1. 背景管道连接线 (展示行数对应的粗细，以及估算偏差颜色) -->
                                 <nodify:Connection Source="{Binding SourceLocation}" 
                                                    Target="{Binding TargetLocation}"
