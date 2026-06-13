@@ -213,7 +213,7 @@ namespace SqlXmlAnalyzer.Core.Parsers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error parsing deadlock timeline: " + ex.Message);
+                Logger.LogException("DeadlockTimelineParser.ParseDeadlockTimeline", ex);
             }
             return result;
         }
