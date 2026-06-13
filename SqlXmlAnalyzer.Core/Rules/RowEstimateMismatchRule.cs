@@ -21,7 +21,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 var physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "";
                 
                 string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "";
-                if (!double.TryParse(estRowsStr, out double estimatedRows))
+                if (!NumericParser.TryParseInvariantDouble(estRowsStr, out double estimatedRows))
                     return null;
 
                 // Find RunTimeInformation -> RunTimeCountersPerThread
@@ -33,9 +33,9 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 foreach (var counter in runTimeInfo.Elements(ns + "RunTimeCountersPerThread"))
                 {
-                    if (double.TryParse(counter.Attribute("ActualRows")?.Value, out double actualRows))
+                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualRows")?.Value, out double actualRows))
                         totalActualRows += actualRows;
-                    if (double.TryParse(counter.Attribute("ActualExecutions")?.Value, out double execs))
+                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualExecutions")?.Value, out double execs))
                         maxExecutions = Math.Max(maxExecutions, execs);
                 }
 

@@ -108,6 +108,7 @@ namespace SqlXmlAnalyzer
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogException("渲染死锁图失败 (Selector_SelectionChanged)", ex);
                     MessageBox.Show("渲染死锁图失败: " + ex.Message);
                 }
             }
@@ -283,7 +284,7 @@ namespace SqlXmlAnalyzer
 
                 var result = await System.Threading.Tasks.Task.Run(() => 
                 {
-                    var (processes, resources, victimId) = ParseDeadlockDocument(doc);
+                    var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(doc);
                     var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                     var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
                     string deadlockMermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
@@ -383,82 +384,7 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        private (List<DeadlockProcess> processes, List<LockResource> resources, string victimId) ParseDeadlockDocument(XDocument doc)
-        {
-            var processes = new List<DeadlockProcess>();
-            var resources = new List<LockResource>();
-            string victimId = "";
-
-            if (doc?.Root == null) return (processes, resources, victimId);
-
-            try
-            {
-                var processList = doc.Root.Element("process-list");
-                if (processList != null)
-                {
-                    foreach (var p in processList.Elements("process"))
-                    {
-                        var frames = p.Element("executionStack")?.Elements("frame")
-                            .Select(f => new ExecutionFrame(
-                                f.Attribute("procname")?.Value ?? "",
-                                f.Attribute("line")?.Value ?? "",
-                                (f.Value ?? "").Trim().Equals("unknown", StringComparison.OrdinalIgnoreCase) ? "[隐藏代码]" : (f.Value ?? "").Trim()))
-                            .ToList() ?? new List<ExecutionFrame>();
-
-                        processes.Add(new DeadlockProcess(
-                            p.Attribute("id")?.Value ?? "",
-                            p.Attribute("spid")?.Value ?? "",
-                            p.Attribute("loginname")?.Value ?? "",
-                            p.Attribute("hostname")?.Value ?? "",
-                            p.Attribute("isolationlevel")?.Value ?? "",
-                            p.Attribute("status")?.Value ?? "",
-                            (p.Element("inputbuf")?.Value ?? "").Trim(),
-                            frames,
-                            p.Attribute("transactionname")?.Value ?? "",
-                            p.Attribute("currentdbname")?.Value ?? "",
-                            p.Attribute("clientapp")?.Value ?? "",
-                            p.Attribute("waitresource")?.Value ?? "",
-                            p.Attribute("waittime")?.Value ?? "",
-                            p.Attribute("ecid")?.Value ?? "",
-                            p.Attribute("currentdeadlockpriority")?.Value ?? p.Attribute("deadlockpriority")?.Value ?? "0",
-                            p.Attribute("logused")?.Value ?? "0"));
-                    }
-                }
-
-                victimId = doc.Root.Element("victim-list")?.Element("victimProcess")?.Attribute("id")?.Value ?? "";
-
-                var resourceList = doc.Root.Element("resource-list");
-                if (resourceList != null)
-                {
-                    int resIndex = 0;
-                    foreach (var resElem in resourceList.Elements())
-                    {
-                        var owners = resElem.Element("owner-list")?.Elements("owner")
-                            .Select(o => new LockOwner(o.Attribute("id")?.Value ?? "", o.Attribute("mode")?.Value ?? ""))
-                            .ToList() ?? new List<LockOwner>();
-
-                        var waiters = resElem.Element("waiter-list")?.Elements("waiter")
-                            .Select(w => new LockWaiter(w.Attribute("id")?.Value ?? "", w.Attribute("mode")?.Value ?? "", w.Attribute("requestType")?.Value ?? ""))
-                            .ToList() ?? new List<LockWaiter>();
-
-                        resources.Add(new LockResource(
-                            resElem.Name.LocalName,
-                            resElem.Attribute("objectname")?.Value ?? "(未知)",
-                            resElem.Attribute("indexname")?.Value ?? "",
-                            resElem.Attribute("hobtid")?.Value ?? "",
-                            resElem.Attribute("dbid")?.Value ?? "",
-                            owners, waiters, $"res_{resIndex++}"));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("解析死锁 XDocument 时发生异常", ex);
-                throw;
-            }
-
-            return (processes, resources, victimId);
-        }
+        // Helper method removed. Calling DeadlockXmlParser.ParseDeadlockXml instead.
 
         private void UpdatePlaybackGraphVisibility()
         {
@@ -1520,7 +1446,7 @@ namespace SqlXmlAnalyzer
                         return;
                     }
 
-                    var (processes, resources, victimId) = ParseDeadlockDocument(ViewModel.CurrentDeadlockDoc);
+                    var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
                     var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                     string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
 
@@ -1674,7 +1600,7 @@ namespace SqlXmlAnalyzer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"图片捕获失败: {ex.Message}");
+                Logger.LogException("图片捕获失败", ex);
                 return null;
             }
         }
@@ -2142,7 +2068,7 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var (processes, resources, victimId) = ParseDeadlockDocument(ViewModel.CurrentDeadlockDoc);
+                var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
                 var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                 string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
                 
@@ -2325,7 +2251,7 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var (processes, resources, victimId) = ParseDeadlockDocument(ViewModel.CurrentDeadlockDoc);
+                var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
                 var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                 string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
                 OpenMermaidInBrowser(mermaid);

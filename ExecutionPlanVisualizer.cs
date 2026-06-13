@@ -135,7 +135,7 @@ namespace SqlXmlAnalyzer
                 string className = ":::normal";
                 string physicalLower = physical.ToLowerInvariant();
 
-                if (cost > 5.0 || (double.TryParse(costStr, out double c) && c > 10))
+                if (cost > 5.0 || (Core.NumericParser.TryParseInvariantDouble(costStr, out double c) && c > 10))
                     className = ":::expensive";                    // 高成本 - 红色
                 else if (physicalLower.Contains("scan") && !physicalLower.Contains("seek"))
                     className = ":::scan";                         // 扫描 - 橙色警告

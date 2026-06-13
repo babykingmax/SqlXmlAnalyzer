@@ -22,6 +22,25 @@ namespace SqlXmlAnalyzer
         Rows
     }
 
+    public enum PlanLayoutMode
+    {
+        Horizontal,
+        Vertical
+    }
+
+    public enum PlanColorMode
+    {
+        TotalCost,
+        CpuCost,
+        IoCost
+    }
+
+    public enum LinkMetricMode
+    {
+        RowCount,
+        DataSize
+    }
+
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
         private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
@@ -37,6 +56,54 @@ namespace SqlXmlAnalyzer
         // Residual I/O 警告配置参数
         public static double ResidualIOThreshold { get; set; } = 10.0;
         public static int ResidualIOMinRowsRead { get; set; } = 1000;
+
+        private XDocument? _currentDoc;
+        private XNamespace? _currentNs;
+
+        private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
+        public PlanLayoutMode LayoutMode
+        {
+            get => _layoutMode;
+            set
+            {
+                if (_layoutMode != value)
+                {
+                    _layoutMode = value;
+                    OnPropertyChanged(nameof(LayoutMode));
+                    ReapplyLayout();
+                }
+            }
+        }
+
+        private PlanColorMode _colorMode = PlanColorMode.TotalCost;
+        public PlanColorMode ColorMode
+        {
+            get => _colorMode;
+            set
+            {
+                if (_colorMode != value)
+                {
+                    _colorMode = value;
+                    OnPropertyChanged(nameof(ColorMode));
+                    ReapplyColorMode();
+                }
+            }
+        }
+
+        private LinkMetricMode _linkMetric = LinkMetricMode.RowCount;
+        public LinkMetricMode LinkMetric
+        {
+            get => _linkMetric;
+            set
+            {
+                if (_linkMetric != value)
+                {
+                    _linkMetric = value;
+                    OnPropertyChanged(nameof(LinkMetric));
+                    ReapplyLinkMetric();
+                }
+            }
+        }
 
         private PlanNodeViewModel _selectedNode;
         public PlanNodeViewModel SelectedNode
@@ -139,6 +206,18 @@ namespace SqlXmlAnalyzer
                 return;
             }
 
+            _currentDoc = doc;
+            _currentNs = ns;
+
+            PlanLayoutMode initialLayout = CmbLayoutMode != null && CmbLayoutMode.SelectedIndex >= 0 ? (PlanLayoutMode)CmbLayoutMode.SelectedIndex : PlanLayoutMode.Horizontal;
+            PlanColorMode initialColor = CmbColorMode != null && CmbColorMode.SelectedIndex >= 0 ? (PlanColorMode)CmbColorMode.SelectedIndex : PlanColorMode.TotalCost;
+            DiagramViewMode initialView = CmbViewMode != null && CmbViewMode.SelectedIndex >= 0 ? (DiagramViewMode)CmbViewMode.SelectedIndex : DiagramViewMode.CostPercent;
+            LinkMetricMode initialLinkMetric = CmbLinkMetric != null && CmbLinkMetric.SelectedIndex >= 0 ? (LinkMetricMode)CmbLinkMetric.SelectedIndex : LinkMetricMode.RowCount;
+
+            _layoutMode = initialLayout;
+            _colorMode = initialColor;
+            _linkMetric = initialLinkMetric;
+
             // 1. 解析所有 RelOp 到 ViewModel (带 Object / 警告 / 并行信息)
             var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
             var allNodes = new List<PlanNodeViewModel>();
@@ -175,14 +254,29 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            // 计算和分配自身成本百分比 CostPercent
+            // 计算和分配自身成本百分比 CostPercent, CpuPercent, IoPercent
             double maxSubtreeCost = allNodes.Count > 0 ? allNodes.Max(n => n.SubtreeCost) : 0.0;
             if (maxSubtreeCost <= 0) maxSubtreeCost = 1.0;
+
+            double maxCpuCost = allNodes.Count > 0 ? allNodes.Max(n => n.EstimatedCPUCostNum) : 0.0;
+            if (maxCpuCost <= 0) maxCpuCost = 1.0;
+
+            double maxIoCost = allNodes.Count > 0 ? allNodes.Max(n => n.EstimatedIOCostNum) : 0.0;
+            if (maxIoCost <= 0) maxIoCost = 1.0;
 
             foreach (var vm in allNodes)
             {
                 double pct = (vm.OwnCost / maxSubtreeCost) * 100.0;
                 vm.CostPercent = (int)Math.Min(100, Math.Max(0, Math.Round(pct)));
+
+                double cpuPct = (vm.EstimatedCPUCostNum / maxCpuCost) * 100.0;
+                vm.CpuPercent = Math.Min(100.0, Math.Max(0.0, cpuPct));
+
+                double ioPct = (vm.EstimatedIOCostNum / maxIoCost) * 100.0;
+                vm.IoPercent = Math.Min(100.0, Math.Max(0.0, ioPct));
+
+                vm.ViewMode = initialView;
+                vm.ColorMode = initialColor;
             }
 
             // 2. 简单分层初始布局 (类似 Plan Explorer 水平/垂直流)
@@ -196,7 +290,13 @@ namespace SqlXmlAnalyzer
                 {
                     if (nodeMap.TryGetValue(child, out var childVm))
                     {
-                        Connections.Add(new ConnectionViewModel { Source = childVm, Target = parentVm });
+                        Connections.Add(new ConnectionViewModel 
+                        { 
+                            Source = childVm, 
+                            Target = parentVm,
+                            LayoutMode = initialLayout,
+                            CurrentLinkMetric = initialLinkMetric
+                        });
                     }
                 }
             }
@@ -353,6 +453,8 @@ namespace SqlXmlAnalyzer
             string seekPredicate = string.Join(" AND ", predsSeek);
 
             double dEstRowSize = safeFloat(estRowSize);
+            double dEstCpu = safeFloat(estCpuCost);
+            double dEstIo = safeFloat(estIoCost);
             double dEstDataSizeMB = (estRows * dEstRowSize) / (1024.0 * 1024.0);
             double dActDataSizeMB = hasActual ? ((actualRows * dEstRowSize) / (1024.0 * 1024.0)) : 0.0;
             string sEstDataSize = dEstDataSizeMB < 1.0 ? $"{(dEstDataSizeMB * 1024):F0} KB" : $"{dEstDataSizeMB:F0} MB";
@@ -534,6 +636,9 @@ namespace SqlXmlAnalyzer
                 EstRows = FormatNumber(estRows),
                 EstRowsNum = estRows,
                 EstimatedRowsToBeRead = FormatNumber(estRowsRead),
+                EstimatedCPUCostNum = dEstCpu,
+                EstimatedIOCostNum = dEstIo,
+                AvgRowSizeNum = dEstRowSize,
                 EstimatedIOCost = estIoCost,
                 EstimatedCPUCost = estCpuCost,
                 EstimatedExecutions = estExecs,
@@ -638,12 +743,39 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            double currentY = 50;
-            foreach (var root in roots)
+            void SetNodePositionsVertical(XElement node, double startX, double depthY)
             {
-                CalculateSubtreeWidth(root);
-                SetNodePositions(root, currentY, 50);
-                currentY += nodeMap[root].SubtreeWidth * verticalSpacing + 50;
+                var vm = nodeMap[node];
+                vm.Location = new Point(startX + (vm.SubtreeWidth - 1) * horizontalSpacing / 2, depthY);
+
+                var children = childrenMap[node];
+                double childStartX = startX;
+                foreach (var child in children)
+                {
+                    SetNodePositionsVertical(child, childStartX, depthY + verticalSpacing);
+                    childStartX += nodeMap[child].SubtreeWidth * horizontalSpacing;
+                }
+            }
+
+            if (LayoutMode == PlanLayoutMode.Horizontal)
+            {
+                double currentY = 50;
+                foreach (var root in roots)
+                {
+                    CalculateSubtreeWidth(root);
+                    SetNodePositions(root, currentY, 50);
+                    currentY += nodeMap[root].SubtreeWidth * verticalSpacing + 50;
+                }
+            }
+            else
+            {
+                double currentX = 50;
+                foreach (var root in roots)
+                {
+                    CalculateSubtreeWidth(root);
+                    SetNodePositionsVertical(root, currentX, 50);
+                    currentX += nodeMap[root].SubtreeWidth * horizontalSpacing + 50;
+                }
             }
         }
 
@@ -675,6 +807,64 @@ namespace SqlXmlAnalyzer
             foreach (var node in Nodes)
             {
                 node.ViewMode = mode;
+            }
+        }
+
+        private void CmbLayoutMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CmbLayoutMode == null || Nodes == null) return;
+            LayoutMode = (PlanLayoutMode)CmbLayoutMode.SelectedIndex;
+        }
+
+        private void CmbColorMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CmbColorMode == null || Nodes == null) return;
+            ColorMode = (PlanColorMode)CmbColorMode.SelectedIndex;
+        }
+
+        private void CmbLinkMetric_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CmbLinkMetric == null || Nodes == null) return;
+            LinkMetric = (LinkMetricMode)CmbLinkMetric.SelectedIndex;
+        }
+
+        private void ReapplyLayout()
+        {
+            if (_currentDoc == null || _currentNs == null || Nodes.Count == 0) return;
+
+            var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
+            if (relOps.Count == 0) return;
+
+            var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
+            foreach (var node in Nodes)
+            {
+                if (node.RawElement != null)
+                {
+                    nodeMap[node.RawElement] = node;
+                }
+            }
+
+            ApplyLayeredLayout(Nodes.ToList(), nodeMap, relOps, _currentNs);
+
+            foreach (var conn in Connections)
+            {
+                conn.LayoutMode = LayoutMode;
+            }
+        }
+
+        private void ReapplyColorMode()
+        {
+            foreach (var node in Nodes)
+            {
+                node.ColorMode = ColorMode;
+            }
+        }
+
+        private void ReapplyLinkMetric()
+        {
+            foreach (var conn in Connections)
+            {
+                conn.CurrentLinkMetric = LinkMetric;
             }
         }
 
@@ -787,6 +977,45 @@ namespace SqlXmlAnalyzer
                 OnPropertyChanged(nameof(PrimaryDisplayValue));
             }
         }
+
+        private PlanColorMode _colorMode = PlanColorMode.TotalCost;
+        public PlanColorMode ColorMode
+        {
+            get => _colorMode;
+            set
+            {
+                _colorMode = value;
+                OnPropertyChanged(nameof(ColorMode));
+                OnPropertyChanged(nameof(ActivePercent));
+                OnPropertyChanged(nameof(DynamicBackgroundBrush));
+                OnPropertyChanged(nameof(DynamicBorderBrush));
+                OnPropertyChanged(nameof(DynamicBorderThickness));
+                OnPropertyChanged(nameof(PrimaryDisplayValue));
+                OnPropertyChanged(nameof(CostBadgeBrush));
+                OnPropertyChanged(nameof(CostBadgeForeground));
+            }
+        }
+
+        public double ActivePercent
+        {
+            get
+            {
+                return ColorMode switch
+                {
+                    PlanColorMode.TotalCost => CostPercent,
+                    PlanColorMode.CpuCost => CpuPercent,
+                    PlanColorMode.IoCost => IoPercent,
+                    _ => CostPercent
+                };
+            }
+        }
+
+        public double AvgRowSizeNum { get; set; }
+        public double EstimatedCPUCostNum { get; set; }
+        public double EstimatedIOCostNum { get; set; }
+        public double CpuPercent { get; set; }
+        public double IoPercent { get; set; }
+
         public string NodeId { get; set; } = "?";
         public string PhysicalOp { get; set; } = "Unknown";
         public string LogicalOp { get; set; } = "";
@@ -869,7 +1098,13 @@ namespace SqlXmlAnalyzer
             {
                 return ViewMode switch
                 {
-                    DiagramViewMode.CostPercent => $"Cost: {CostPercent}%",
+                    DiagramViewMode.CostPercent => ColorMode switch
+                    {
+                        PlanColorMode.TotalCost => $"Cost: {CostPercent}%",
+                        PlanColorMode.CpuCost => $"CPU: {CpuPercent:F1}%",
+                        PlanColorMode.IoCost => $"I/O: {IoPercent:F1}%",
+                        _ => $"Cost: {CostPercent}%"
+                    },
                     DiagramViewMode.CpuIo => $"C: {EstimatedCPUCost}\nI: {EstimatedIOCost}",
                     DiagramViewMode.Rows => $"R: {(ActualRowsNum > 0 ? ActualRows : EstRows)}",
                     _ => $"{CostPercent}%"
@@ -892,7 +1127,7 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                double t = Math.Min(100, CostPercent) / 100.0;
+                double t = Math.Min(100, ActivePercent) / 100.0;
                 // Premium Gradient: White/Gray to Vibrant Red
                 Color topColor = LerpColor(Color.FromRgb(255, 255, 255), Color.FromRgb(255, 230, 230), Math.Pow(t, 0.8));
                 Color botColor = LerpColor(Color.FromRgb(245, 247, 250), Color.FromRgb(255, 190, 190), Math.Pow(t, 0.6));
@@ -904,14 +1139,14 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                double t = Math.Min(100, CostPercent) / 100.0;
+                double t = Math.Min(100, ActivePercent) / 100.0;
                 // Elegant Border: Cool Blue-Gray to Deep Crimson
                 Color c = LerpColor(Color.FromRgb(176, 190, 197), Color.FromRgb(211, 47, 47), Math.Pow(t, 0.7));
                 return new SolidColorBrush(c);
             }
         }
 
-        public Thickness DynamicBorderThickness => CostPercent >= 30 ? new Thickness(2.0) : new Thickness(1.0);
+        public Thickness DynamicBorderThickness => ActivePercent >= 30 ? new Thickness(2.0) : new Thickness(1.0);
 
         public Brush AccentBrush => OperatorType switch
         {
@@ -943,11 +1178,11 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public Brush CostBadgeBrush => CostPercent >= 40 ? new SolidColorBrush(Color.FromRgb(0xEF, 0x53, 0x50))
-                                    : CostPercent >= 15 ? new SolidColorBrush(Color.FromRgb(0xFF, 0xB3, 0x00))
+        public Brush CostBadgeBrush => ActivePercent >= 40 ? new SolidColorBrush(Color.FromRgb(0xEF, 0x53, 0x50))
+                                    : ActivePercent >= 15 ? new SolidColorBrush(Color.FromRgb(0xFF, 0xB3, 0x00))
                                     : new SolidColorBrush(Color.FromRgb(0xCF, 0xD8, 0xDC));
 
-        public Brush CostBadgeForeground => CostPercent >= 15 ? Brushes.White : Brushes.Black;
+        public Brush CostBadgeForeground => ActivePercent >= 15 ? Brushes.White : Brushes.Black;
 
         public Brush ActualRowsBrush
         {
@@ -1002,6 +1237,35 @@ namespace SqlXmlAnalyzer
             GreenBrush.Freeze();
         }
 
+        private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
+        public PlanLayoutMode LayoutMode
+        {
+            get => _layoutMode;
+            set
+            {
+                _layoutMode = value;
+                OnPropertyChanged(nameof(LayoutMode));
+                OnPropertyChanged(nameof(SourceLocation));
+                OnPropertyChanged(nameof(TargetLocation));
+                OnPropertyChanged(nameof(MidpointX));
+                OnPropertyChanged(nameof(MidpointY));
+            }
+        }
+
+        private LinkMetricMode _currentLinkMetric = LinkMetricMode.RowCount;
+        public LinkMetricMode CurrentLinkMetric
+        {
+            get => _currentLinkMetric;
+            set
+            {
+                _currentLinkMetric = value;
+                OnPropertyChanged(nameof(CurrentLinkMetric));
+                OnPropertyChanged(nameof(ThicknessValue));
+                OnPropertyChanged(nameof(LabelText));
+                OnPropertyChanged(nameof(ToolTipText));
+            }
+        }
+
         public PlanNodeViewModel? Source
         {
             get => _source;
@@ -1018,9 +1282,11 @@ namespace SqlXmlAnalyzer
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
                 OnPropertyChanged(nameof(RowsCount));
+                OnPropertyChanged(nameof(DataSizeVal));
                 OnPropertyChanged(nameof(StrokeBrush));
                 OnPropertyChanged(nameof(ToolTipText));
                 OnPropertyChanged(nameof(LabelText));
+                OnPropertyChanged(nameof(ThicknessValue));
             }
         }
 
@@ -1040,27 +1306,67 @@ namespace SqlXmlAnalyzer
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
                 OnPropertyChanged(nameof(RowsCount));
+                OnPropertyChanged(nameof(DataSizeVal));
                 OnPropertyChanged(nameof(StrokeBrush));
                 OnPropertyChanged(nameof(ToolTipText));
                 OnPropertyChanged(nameof(LabelText));
+                OnPropertyChanged(nameof(ThicknessValue));
             }
         }
 
         public double RowsCount => Source != null ? (Source.ActualRowsNum > 0 ? Source.ActualRowsNum : Source.EstRowsNum) : 0;
+        public double DataSizeVal => Source != null ? (Source.ActualRowsNum > 0 ? Source.ActualRowsNum * Source.AvgRowSizeNum : Source.EstRowsNum * Source.AvgRowSizeNum) : 0;
+
+        public double ThicknessValue
+        {
+            get
+            {
+                double val = CurrentLinkMetric switch
+                {
+                    LinkMetricMode.RowCount => RowsCount,
+                    LinkMetricMode.DataSize => DataSizeVal,
+                    _ => RowsCount
+                };
+
+                if (val <= 0) return 1.5;
+
+                // 对数-双曲正切混合缩放模型
+                // W_link = W_min + (W_max - W_min) * tanh(alpha * log10(val + 1))
+                double wMin = 1.5;
+                double wMax = 12.0;
+                double alpha = 0.25;
+                double logVal = Math.Log10(val + 1);
+                double thickness = wMin + (wMax - wMin) * Math.Tanh(alpha * logVal);
+                return thickness;
+            }
+        }
 
         public Point SourceLocation
         {
             get
             {
                 if (Source == null) return default;
-                if (Target == null)
-                    return new Point(Source.Location.X, Source.Location.Y + 35);
 
-                // 智能连接锚点选择：如果子节点在对侧
-                if (Source.Location.X > Target.Location.X)
-                    return new Point(Source.Location.X, Source.Location.Y + 35); // 从子节点左边缘开始
-                else
-                    return new Point(Source.Location.X + 228, Source.Location.Y + 35); // 从子节点右边缘开始
+                if (LayoutMode == PlanLayoutMode.Horizontal)
+                {
+                    if (Target == null)
+                        return new Point(Source.Location.X, Source.Location.Y + 35);
+
+                    if (Source.Location.X > Target.Location.X)
+                        return new Point(Source.Location.X, Source.Location.Y + 35); // Left edge
+                    else
+                        return new Point(Source.Location.X + 228, Source.Location.Y + 35); // Right edge
+                }
+                else // Vertical layout: child is below parent (Source Y > Target Y)
+                {
+                    if (Target == null)
+                        return new Point(Source.Location.X + 115, Source.Location.Y);
+
+                    if (Source.Location.Y > Target.Location.Y)
+                        return new Point(Source.Location.X + 115, Source.Location.Y); // Top edge
+                    else
+                        return new Point(Source.Location.X + 115, Source.Location.Y + 70); // Bottom edge
+                }
             }
         }
 
@@ -1069,14 +1375,27 @@ namespace SqlXmlAnalyzer
             get
             {
                 if (Target == null) return default;
-                if (Source == null)
-                    return new Point(Target.Location.X + 228, Target.Location.Y + 35);
 
-                // 智能连接锚点选择：如果子节点在对侧
-                if (Source.Location.X > Target.Location.X)
-                    return new Point(Target.Location.X + 228, Target.Location.Y + 35); // 连到父节点右边缘
-                else
-                    return new Point(Target.Location.X, Target.Location.Y + 35); // 连到父节点左边缘
+                if (LayoutMode == PlanLayoutMode.Horizontal)
+                {
+                    if (Source == null)
+                        return new Point(Target.Location.X + 228, Target.Location.Y + 35);
+
+                    if (Source.Location.X > Target.Location.X)
+                        return new Point(Target.Location.X + 228, Target.Location.Y + 35); // Right edge
+                    else
+                        return new Point(Target.Location.X, Target.Location.Y + 35); // Left edge
+                }
+                else // Vertical layout: child is below parent (Source Y > Target Y)
+                {
+                    if (Source == null)
+                        return new Point(Target.Location.X + 115, Target.Location.Y + 70);
+
+                    if (Source.Location.Y > Target.Location.Y)
+                        return new Point(Target.Location.X + 115, Target.Location.Y + 70); // Bottom edge
+                    else
+                        return new Point(Target.Location.X + 115, Target.Location.Y); // Top edge
+                }
             }
         }
 
@@ -1147,7 +1466,26 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public string LabelText => PlanGraphControl.FormatNumber(RowsCount);
+        private static string FormatBytes(double bytes)
+        {
+            if (bytes >= 1024 * 1024 * 1024) return (bytes / (1024 * 1024 * 1024)).ToString("0.0") + " GB";
+            if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).ToString("0.0") + " MB";
+            if (bytes >= 1024) return (bytes / 1024).ToString("0.0") + " KB";
+            return bytes.ToString("0") + " B";
+        }
+
+        public string LabelText
+        {
+            get
+            {
+                return CurrentLinkMetric switch
+                {
+                    LinkMetricMode.RowCount => PlanGraphControl.FormatNumber(RowsCount),
+                    LinkMetricMode.DataSize => FormatBytes(DataSizeVal),
+                    _ => PlanGraphControl.FormatNumber(RowsCount)
+                };
+            }
+        }
 
         public string ToolTipText
         {
@@ -1155,15 +1493,24 @@ namespace SqlXmlAnalyzer
             {
                 if (Source == null) return "未知数据流";
 
-                string estStr = PlanGraphControl.FormatNumber(Source.EstRowsNum);
-                string actStr = string.IsNullOrEmpty(Source.ActualRows) || Source.ActualRows == "N/A" ? "N/A" : PlanGraphControl.FormatNumber(Source.ActualRowsNum);
+                string estRowsStr = PlanGraphControl.FormatNumber(Source.EstRowsNum);
+                string actRowsStr = string.IsNullOrEmpty(Source.ActualRows) || Source.ActualRows == "N/A" ? "N/A" : PlanGraphControl.FormatNumber(Source.ActualRowsNum);
+
+                string estSizeStr = FormatBytes(Source.EstRowsNum * Source.AvgRowSizeNum);
+                string actSizeStr = string.IsNullOrEmpty(Source.ActualRows) || Source.ActualRows == "N/A" ? "N/A" : FormatBytes(Source.ActualRowsNum * Source.AvgRowSizeNum);
 
                 var sb = new StringBuilder();
                 sb.AppendLine($"数据流: {Source.PhysicalOp} ➔ {Target?.PhysicalOp}");
-                sb.AppendLine($"预估行数: {estStr} ({Source.EstRowsNum:N0})");
-                if (actStr != "N/A")
+                sb.AppendLine($"预估行数: {estRowsStr} ({Source.EstRowsNum:N0})");
+                if (actRowsStr != "N/A")
                 {
-                    sb.AppendLine($"实际行数: {actStr} ({Source.ActualRowsNum:N0})");
+                    sb.AppendLine($"实际行数: {actRowsStr} ({Source.ActualRowsNum:N0})");
+                }
+                sb.AppendLine($"平均行宽: {Source.AvgRowSizeNum:N0} 字节");
+                sb.AppendLine($"预估大小: {estSizeStr}");
+                if (actSizeStr != "N/A")
+                {
+                    sb.AppendLine($"实际大小: {actSizeStr}");
                     double ratio = Source.EstRowsNum > 0 ? (Source.ActualRowsNum / Source.EstRowsNum) : 1.0;
                     sb.AppendLine($"估算偏差: {ratio:F2} 倍");
                     if (ratio > 5.0)
@@ -1210,11 +1557,10 @@ namespace SqlXmlAnalyzer
             else if (value is float f) rows = f;
             else if (value is int i) rows = i;
             else if (value is long l) rows = l;
-            else if (value is string s && double.TryParse(s, out double parsed)) rows = parsed;
+            else if (value is string s && SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(s, out double parsed)) rows = parsed;
 
             if (rows <= 0) return 1.0;
 
-            // Replicate: thickness = max(1, int(math.log10(rows) * 1.6))
             double logVal = Math.Log10(rows) * 1.6;
             double thickness = Math.Max(1.0, Math.Min(14.0, logVal));
             return thickness;

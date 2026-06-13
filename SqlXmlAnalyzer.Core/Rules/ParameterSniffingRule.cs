@@ -58,7 +58,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 {
                     // Check for row estimate deviation on root node
                     string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "1";
-                    double.TryParse(estRowsStr, out double estimateRows);
+                    NumericParser.TryParseInvariantDouble(estRowsStr, out double estimateRows);
                     
                     double actualRows = 0;
                     var runTimeInfo = relOp.Element(ns + "RunTimeInformation");
@@ -66,7 +66,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     {
                         foreach (var counter in runTimeInfo.Elements(ns + "RunTimeCountersPerThread"))
                         {
-                            if (double.TryParse(counter.Attribute("ActualRows")?.Value, out double act))
+                            if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualRows")?.Value, out double act))
                                 actualRows += act;
                         }
                     }

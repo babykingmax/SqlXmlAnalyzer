@@ -25,7 +25,7 @@ namespace SqlXmlAnalyzer.Core.Simulation
             foreach (var stmt in statements)
             {
                 var stmtCostAttr = stmt.Attribute("StatementSubTreeCost");
-                if (stmtCostAttr != null && double.TryParse(stmtCostAttr.Value, out double stmtCost))
+                if (stmtCostAttr != null && NumericParser.TryParseInvariantDouble(stmtCostAttr.Value, out double stmtCost))
                 {
                     totalOriginalCost += stmtCost;
                 }
@@ -41,7 +41,7 @@ namespace SqlXmlAnalyzer.Core.Simulation
                         {
                             double operatorCost = 0.0;
                             var costAttr = op.Attribute("EstimatedTotalSubtreeCost");
-                            if (costAttr != null && double.TryParse(costAttr.Value, out operatorCost))
+                            if (costAttr != null && NumericParser.TryParseInvariantDouble(costAttr.Value, out operatorCost))
                             {
                                 // Prevent divide by zero if totalOriginalCost is missing or 0
                                 double operatorCostRatio = totalOriginalCost > 0 ? operatorCost / totalOriginalCost : 0;

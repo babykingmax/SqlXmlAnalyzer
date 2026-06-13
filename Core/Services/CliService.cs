@@ -110,7 +110,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
             if (isDeadlock)
             {
-                var (processes, resources, victimId) = ParseDeadlockDocument(doc);
+                var (processes, resources, victimId) = SqlXmlAnalyzer.DeadlockXmlParser.ParseDeadlockXml(doc);
                 var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                 var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
                 
@@ -193,81 +193,7 @@ namespace SqlXmlAnalyzer.Core.Services
             Console.WriteLine("  SqlXmlAnalyzer.exe --analyze deadlock.xdl --export docx");
         }
 
-        // --- Helper methods to reuse parsing logic ---
-        public static (System.Collections.Generic.List<DeadlockProcess> processes, System.Collections.Generic.List<LockResource> resources, string victimId) ParseDeadlockDocument(XDocument doc)
-        {
-            var processes = new System.Collections.Generic.List<DeadlockProcess>();
-            var resources = new System.Collections.Generic.List<LockResource>();
-            string victimId = "";
-
-            if (doc?.Root == null) return (processes, resources, victimId);
-
-            try
-            {
-                var processList = doc.Root.Element("process-list");
-                if (processList != null)
-                {
-                    foreach (var p in processList.Elements("process"))
-                    {
-                        var frames = p.Element("executionStack")?.Elements("frame")
-                            .Select(f => new ExecutionFrame(
-                                f.Attribute("procname")?.Value ?? "",
-                                f.Attribute("line")?.Value ?? "",
-                                (f.Value ?? "").Trim().Equals("unknown", StringComparison.OrdinalIgnoreCase) ? "[隐藏代码]" : (f.Value ?? "").Trim()))
-                            .ToList() ?? new System.Collections.Generic.List<ExecutionFrame>();
-
-                        processes.Add(new DeadlockProcess(
-                            p.Attribute("id")?.Value ?? "",
-                            p.Attribute("spid")?.Value ?? "",
-                            p.Attribute("loginname")?.Value ?? "",
-                            p.Attribute("hostname")?.Value ?? "",
-                            p.Attribute("isolationlevel")?.Value ?? "",
-                            p.Attribute("status")?.Value ?? "",
-                            (p.Element("inputbuf")?.Value ?? "").Trim(),
-                            frames,
-                            p.Attribute("transactionname")?.Value ?? "",
-                            p.Attribute("currentdbname")?.Value ?? "",
-                            p.Attribute("clientapp")?.Value ?? "",
-                            p.Attribute("waitresource")?.Value ?? "",
-                            p.Attribute("waittime")?.Value ?? "",
-                            p.Attribute("ecid")?.Value ?? "",
-                            p.Attribute("currentdeadlockpriority")?.Value ?? p.Attribute("deadlockpriority")?.Value ?? "0"));
-                    }
-                }
-
-                victimId = doc.Root.Element("victim-list")?.Element("victimProcess")?.Attribute("id")?.Value ?? "";
-
-                var resourceList = doc.Root.Element("resource-list");
-                if (resourceList != null)
-                {
-                    int resIndex = 0;
-                    foreach (var resElem in resourceList.Elements())
-                    {
-                        var owners = resElem.Element("owner-list")?.Elements("owner")
-                            .Select(o => new LockOwner(o.Attribute("id")?.Value ?? "", o.Attribute("mode")?.Value ?? ""))
-                            .ToList() ?? new System.Collections.Generic.List<LockOwner>();
-
-                        var waiters = resElem.Element("waiter-list")?.Elements("waiter")
-                            .Select(w => new LockWaiter(w.Attribute("id")?.Value ?? "", w.Attribute("mode")?.Value ?? "", w.Attribute("requestType")?.Value ?? ""))
-                            .ToList() ?? new System.Collections.Generic.List<LockWaiter>();
-
-                        resources.Add(new LockResource(
-                            resElem.Name.LocalName,
-                            resElem.Attribute("objectname")?.Value ?? "(未知)",
-                            resElem.Attribute("indexname")?.Value ?? "",
-                            resElem.Attribute("hobtid")?.Value ?? "",
-                            resElem.Attribute("dbid")?.Value ?? "",
-                            owners, waiters, $"res_{resIndex++}"));
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // ignore
-            }
-
-            return (processes, resources, victimId);
-        }
+        // Removed ParseDeadlockDocument helper method. Using SqlXmlAnalyzer.DeadlockXmlParser.ParseDeadlockXml instead.
         private static void RunBatchAnalysis(string dirPath, string? exportFormat, string? outputFile)
         {
             var files = Directory.GetFiles(dirPath, "*.*", SearchOption.AllDirectories)

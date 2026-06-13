@@ -85,9 +85,9 @@ namespace SqlXmlAnalyzer
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignore
+                Logger.LogException("DeadlockXmlParser.ParseDeadlockXml", ex);
             }
 
             return (processes, resources, victimId);

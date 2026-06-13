@@ -33,11 +33,11 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 foreach (var counter in runTimeInfo.Elements(ns + "RunTimeCountersPerThread"))
                 {
-                    if (double.TryParse(counter.Attribute("ActualExecutions")?.Value, out double execs))
+                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualExecutions")?.Value, out double execs))
                     {
                         maxExecutions = Math.Max(maxExecutions, execs);
                     }
-                    if (double.TryParse(counter.Attribute("ActualRows")?.Value, out double actualRows))
+                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualRows")?.Value, out double actualRows))
                     {
                         totalActualRows += actualRows;
                     }

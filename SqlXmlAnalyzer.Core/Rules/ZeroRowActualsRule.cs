@@ -16,7 +16,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
                 
                 string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "";
-                if (!double.TryParse(estRowsStr, out double estimatedRows))
+                if (!NumericParser.TryParseInvariantDouble(estRowsStr, out double estimatedRows))
                     return null;
 
                 var runTimeInfo = relOp.Element(ns + "RunTimeInformation");
@@ -26,7 +26,7 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 foreach (var counter in runTimeInfo.Elements(ns + "RunTimeCountersPerThread"))
                 {
-                    if (double.TryParse(counter.Attribute("ActualRows")?.Value, out double actualRows))
+                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualRows")?.Value, out double actualRows))
                         totalActualRows += actualRows;
                 }
 

@@ -32,7 +32,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 var threadStats = threads.Select(t => new
                 {
                     ThreadId = int.TryParse(t.Attribute("Thread")?.Value, out int tid) ? tid : 0,
-                    ActualRows = double.TryParse(t.Attribute("ActualRows")?.Value, out double rows) ? rows : 0
+                    ActualRows = NumericParser.TryParseInvariantDouble(t.Attribute("ActualRows")?.Value, out double rows) ? rows : 0
                 }).ToList();
 
                 double totalRows = threadStats.Sum(t => t.ActualRows);

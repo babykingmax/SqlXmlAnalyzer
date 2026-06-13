@@ -24,9 +24,8 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 if (!isUdfOrTvf) return null;
 
-                // Extract estimate vs actual to see if it's a cardinality estimation disaster
                 string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "";
-                double.TryParse(estRowsStr, out double estimatedRows);
+                NumericParser.TryParseInvariantDouble(estRowsStr, out double estimatedRows);
 
                 double totalActualRows = 0;
                 var runTimeInfo = relOp.Element(ns + "RunTimeInformation");
@@ -34,7 +33,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 {
                     foreach (var counter in runTimeInfo.Elements(ns + "RunTimeCountersPerThread"))
                     {
-                        if (double.TryParse(counter.Attribute("ActualRows")?.Value, out double actualRows))
+                        if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualRows")?.Value, out double actualRows))
                             totalActualRows += actualRows;
                     }
                 }
