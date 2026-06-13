@@ -3,8 +3,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Models;
 using SqlXmlAnalyzer.Core.Scoring;
+using SqlXmlAnalyzer.Core.Simulation;
 using SqlXmlAnalyzer.Core.Mvvm;
 
 namespace SqlXmlAnalyzer.ViewModels
@@ -12,6 +14,8 @@ namespace SqlXmlAnalyzer.ViewModels
     public class IndexSandboxViewModel : INotifyPropertyChanged
     {
         private MissingIndexSuggestion _suggestion;
+        private XDocument? _originalPlan;
+        private readonly XNamespace _ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
         
         public ObservableCollection<IndexColumn> KeyColumns { get; }
         public ObservableCollection<IndexColumn> IncludeColumns { get; }
@@ -38,6 +42,28 @@ namespace SqlXmlAnalyzer.ViewModels
             }
         }
 
+        private int _estimatedCostReductionPercent;
+        public int EstimatedCostReductionPercent
+        {
+            get => _estimatedCostReductionPercent;
+            set
+            {
+                _estimatedCostReductionPercent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _costReductionDescription = "";
+        public string CostReductionDescription
+        {
+            get => _costReductionDescription;
+            set
+            {
+                _costReductionDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string Table => _suggestion.Table;
 
         public ICommand RemoveKeyColumnCommand { get; }
@@ -45,9 +71,10 @@ namespace SqlXmlAnalyzer.ViewModels
         public ICommand MoveKeyColumnUpCommand { get; }
         public ICommand MoveKeyColumnDownCommand { get; }
 
-        public IndexSandboxViewModel(MissingIndexSuggestion suggestion)
+        public IndexSandboxViewModel(MissingIndexSuggestion suggestion, XDocument? originalPlan = null)
         {
             _suggestion = suggestion;
+            _originalPlan = originalPlan;
             KeyColumns = new ObservableCollection<IndexColumn>(suggestion.KeyColumns.Select(c => new IndexColumn { Name = c.Name, Usage = c.Usage }));
             IncludeColumns = new ObservableCollection<IndexColumn>(suggestion.IncludeColumns.Select(c => new IndexColumn { Name = c.Name, Usage = c.Usage }));
 
@@ -100,12 +127,14 @@ namespace SqlXmlAnalyzer.ViewModels
                 IncludeColumns = IncludeColumns.ToList()
             };
 
-            // In a full implementation we would pass the actual plan.
-            // For now, pass nulls as CalculateScore has heuristic fallbacks.
-            IndexScoringCalculator.CalculateScore(temp, null!, null!);
+            IndexScoringCalculator.CalculateScore(temp, _originalPlan!, _ns);
             
             CurrentScore = temp.Score;
             CreateIndexStatement = temp.CreateIndexStatement;
+
+            var costResult = CostImpactSimulator.Simulate(_originalPlan, temp, _ns);
+            EstimatedCostReductionPercent = costResult.ReductionPercent;
+            CostReductionDescription = costResult.Description;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

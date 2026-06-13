@@ -73,7 +73,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             {
                 if (p is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion suggestion)
                 {
-                    var vm = new SqlXmlAnalyzer.ViewModels.IndexSandboxViewModel(suggestion);
+                    var vm = new SqlXmlAnalyzer.ViewModels.IndexSandboxViewModel(suggestion, CurrentPlanDoc);
                     var win = new SqlXmlAnalyzer.Views.IndexSandboxWindow { DataContext = vm };
                     win.ShowDialog();
                 }
