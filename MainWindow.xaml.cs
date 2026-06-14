@@ -423,6 +423,7 @@ namespace SqlXmlAnalyzer
                             StatisticsHistogramView.LoadParameterData(col, comp, run);
                         }
                     }
+                    StatisticsHistogramView.LoadStatisticsUsage(doc, _showplanNs);
                 }
                 catch (Exception ex)
                 {
@@ -2349,6 +2350,11 @@ namespace SqlXmlAnalyzer
             var temp = ViewModel.PlanA;
             ViewModel.PlanA = ViewModel.PlanB;
             ViewModel.PlanB = temp;
+        }
+
+        private void StatisticsHistogramView_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

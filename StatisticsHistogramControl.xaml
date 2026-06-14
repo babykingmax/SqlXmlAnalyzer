@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="800"
+             d:DesignHeight="500" d:DesignWidth="950"
              Background="White">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -15,53 +15,206 @@
 
         <!-- Header Information -->
         <Border Grid.Row="0" Background="#F5F7FA" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,10">
-            <StackPanel>
-                <TextBlock Text="参数嗅探统计直方图 (Mock Histogram Visualization)" FontWeight="Bold" FontSize="14" Foreground="#37474F"/>
-                <TextBlock Text="该视图以图形化方式模拟显示统计信息直方图 (Statistics Histogram)，并标注编译时参数与运行时参数在数据分布中的位置，帮助诊断 Cardinality Estimation 失真原因。" 
-                           Foreground="#546E7A" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Selected Parameter Info -->
-        <Grid Grid.Row="1" Margin="0,0,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="参数名称: " FontWeight="SemiBold" Foreground="#37474F"/>
-                <TextBlock x:Name="TxtParamName" Text="@Param1" Foreground="#0078D7" FontWeight="Bold"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <Rectangle Width="12" Height="12" Fill="#1976D2" Margin="0,0,6,0"/>
-                <TextBlock Text="编译值 (Compiled): " FontWeight="SemiBold" Foreground="#37474F"/>
-                <TextBlock x:Name="TxtCompiledValue" Text="100" Foreground="#1976D2" FontWeight="Bold"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                <Rectangle Width="12" Height="12" Fill="#D32F2F" Margin="0,0,6,0"/>
-                <TextBlock Text="运行值 (Runtime): " FontWeight="SemiBold" Foreground="#37474F"/>
-                <TextBlock x:Name="TxtRuntimeValue" Text="5000" Foreground="#D32F2F" FontWeight="Bold"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- Histogram Canvas Area -->
-        <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="1" Background="#FAFAFA" CornerRadius="4" ClipToBounds="True">
             <Grid>
-                <!-- Y Axis Label -->
-                <TextBlock Text="行&#x0a;数&#x0a;(EQ_ROWS)" FontSize="10" Foreground="#78909C" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" TextAlignment="Center"/>
-                
-                <!-- X Axis Label -->
-                <TextBlock Text="数据分布范围 (RANGE_HI_KEY)" FontSize="10" Foreground="#78909C" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-
-                <!-- Drawing Canvas -->
-                <Canvas x:Name="DrawCanvas" Margin="30,10,10,25" SizeChanged="DrawCanvas_SizeChanged">
-                    <!-- Grid Lines and Bars will be drawn in code-behind -->
-                </Canvas>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="参数嗅探与真实统计直方图分析" FontWeight="Bold" FontSize="14" Foreground="#37474F"/>
+                    <TextBlock Text="本工具提取执行计划中的编译/运行时参数值。导入真实的统计直方图可精准对比评估参数分布偏差和 Cardinality Estimation 失真。" 
+                               Foreground="#546E7A" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                </StackPanel>
+                <Border Grid.Column="1" VerticalAlignment="Center" Background="#E3F2FD" CornerRadius="4" Padding="6,4" Margin="10,0,0,0">
+                    <TextBlock x:Name="TxtStatus" Text="当前显示：概念性教学模拟图表" FontSize="11" Foreground="#1565C0" FontWeight="SemiBold"/>
+                </Border>
             </Grid>
         </Border>
+
+        <!-- Selected Parameter Info & Estimates -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#ECEFF1" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Parameter Base Info -->
+                <Grid Grid.Row="0" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="参数名称: " FontWeight="SemiBold" Foreground="#37474F"/>
+                        <TextBlock x:Name="TxtParamName" Text="@Param1" Foreground="#0078D7" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Rectangle Width="12" Height="12" Fill="#1976D2" Margin="0,0,6,0" RadiusX="2" RadiusY="2"/>
+                        <TextBlock Text="编译值: " FontWeight="SemiBold" Foreground="#37474F"/>
+                        <TextBlock x:Name="TxtCompiledValue" Text="100" Foreground="#1976D2" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Rectangle Width="12" Height="12" Fill="#D32F2F" Margin="0,0,6,0" RadiusX="2" RadiusY="2"/>
+                        <TextBlock Text="运行值: " FontWeight="SemiBold" Foreground="#37474F"/>
+                        <TextBlock x:Name="TxtRuntimeValue" Text="5000" Foreground="#D32F2F" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" x:Name="PanelSniffingRatio" Visibility="Collapsed">
+                        <TextBlock Text="估算值偏离比: " FontWeight="SemiBold" Foreground="#37474F"/>
+                        <TextBlock x:Name="TxtSniffingRatio" Text="1.0 倍" Foreground="#E65100" FontWeight="Bold" FontSize="13"/>
+                    </StackPanel>
+                </Grid>
+
+                <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="#ECEFF1"/>
+
+                <!-- Estimates Info (visible after importing stats) -->
+                <Grid Grid.Row="1" Margin="0,4,0,0" x:Name="PanelEstimates" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Margin="0,4,0,0">
+                        <TextBlock Text="[编译值估算细节]" FontSize="11" Foreground="#546E7A" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtCompiledEstimate" Text="估算返回行数: N/A (匹配方式: N/A)" FontSize="12" FontWeight="SemiBold" Foreground="#1E88E5" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,4,0,0">
+                        <TextBlock Text="[运行值估算细节]" FontSize="11" Foreground="#546E7A" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="TxtRuntimeEstimate" Text="估算返回行数: N/A (匹配方式: N/A)" FontSize="12" FontWeight="SemiBold" Foreground="#E53935" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Main workspace grid (Left: Canvas, Right: DBCC Paste Panel) -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Histogram Canvas Area & OptimizerStatsUsage List -->
+            <Grid Grid.Column="0" Margin="0,0,10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Top: Canvas Area -->
+                <Border Grid.Row="0" BorderBrush="#E0E0E0" BorderThickness="1" Background="#FAFAFA" CornerRadius="4" ClipToBounds="True">
+                    <Grid>
+                        <!-- Y Axis Label -->
+                        <TextBlock Text="频&#x0a;数&#x0a;(Rows)" FontSize="10" Foreground="#78909C" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0" TextAlignment="Center"/>
+
+                        <!-- X Axis Label -->
+                        <TextBlock Text="直方图键值分布范围 (RANGE_HI_KEY)" FontSize="10" Foreground="#78909C" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+
+                        <!-- Drawing Canvas -->
+                        <Canvas x:Name="DrawCanvas" Margin="30,10,10,25" SizeChanged="DrawCanvas_SizeChanged">
+                            <!-- Grid Lines and Bars will be drawn in code-behind -->
+                        </Canvas>
+                    </Grid>
+                </Border>
+
+                <!-- Grid Splitter -->
+                <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#CFD8DC" Margin="0,4"/>
+
+                <!-- Bottom: OptimizerStatsUsage List -->
+                <Border Grid.Row="2" BorderBrush="#E0E0E0" BorderThickness="1" Background="White" CornerRadius="4" Padding="6">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="📊 优化器统计信息使用情况 (OptimizerStatsUsage)" FontSize="11" FontWeight="Bold" Foreground="#37474F" Margin="2,0,0,6"/>
+                        <DataGrid Grid.Row="1" x:Name="GridStatsUsage" AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0" Background="White" HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#ECEFF1">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="表名" Binding="{Binding Table}" Width="2*"/>
+                                <DataGridTextColumn Header="统计信息项" Binding="{Binding Statistics}" Width="2*"/>
+                                <DataGridTextColumn Header="最后更新时间" Binding="{Binding LastUpdate, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="1.5*"/>
+                                <DataGridTextColumn Header="更新账龄 (天)" Binding="{Binding AgeInDays}" Width="*"/>
+                                <DataGridTextColumn Header="修改计数" Binding="{Binding ModificationCount, StringFormat=N0}" Width="*"/>
+                                <DataGridTextColumn Header="采样比例" Binding="{Binding SamplingPercent, StringFormat={}{0:F1}%}" Width="*"/>
+                                <DataGridTemplateColumn Header="健康状态" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="2" Padding="4,2">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#4CAF50"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                                                                <Setter Property="Background" Value="#FF9800"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Severity}" Value="Critical">
+                                                                <Setter Property="Background" Value="#F44336"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding StatusText}" Foreground="White" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Right: DBCC SHOW_STATISTICS Import Panel -->
+            <Border Grid.Column="1" BorderBrush="#CFD8DC" BorderThickness="1" Background="#F8F9FA" CornerRadius="4" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="导入 DBCC SHOW_STATISTICS" FontWeight="Bold" FontSize="12" Foreground="#37474F"/>
+                    
+                    <TextBlock Grid.Row="1" Text="在 SSMS 中执行 DBCC SHOW_STATISTICS('表名', '索引或统计名')。全选并复制结果集 3 (直方图数据格) 并粘贴到下方：" 
+                               Foreground="#78909C" FontSize="10" TextWrapping="Wrap" Margin="0,4,0,8"/>
+
+                    <TextBox Grid.Row="2" x:Name="TxtStatsInput" 
+                             AcceptsReturn="True" 
+                             AcceptsTab="True"
+                             VerticalScrollBarVisibility="Auto" 
+                             HorizontalScrollBarVisibility="Auto"
+                             FontFamily="Consolas" 
+                             FontSize="10" 
+                             Background="White" 
+                             BorderBrush="#B0BEC5"
+                             Padding="4"
+                             ToolTip="在此粘贴直方图数据列，首行必须包含 RANGE_HI_KEY, RANGE_ROWS 等字段名"/>
+
+                    <StackPanel Grid.Row="3" Margin="0,8,0,0">
+                        <Button x:Name="BtnApplyStats" Content="🔄 载入并绘制真实直方图" Click="BtnApplyStats_Click" Height="30" FontWeight="SemiBold" Background="#0078D7" Foreground="White" BorderThickness="0">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="#0078D7"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#1565C0"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button x:Name="BtnClearStats" Content="❌ 清除并恢复模拟" Click="BtnClearStats_Click" Margin="0,4,0,0" Height="22" FontSize="11" Style="{StaticResource SecondaryButtonStyle}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

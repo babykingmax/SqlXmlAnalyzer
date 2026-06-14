@@ -187,7 +187,7 @@ namespace SqlXmlAnalyzer
                     Logger.Warning($"Implicit Conversion 诊断异常: {ex.Message}");
                 }
 
-                // 5. Parameter Sniffing
+                // 5. Parameter Sniffing & Statistics Usage
                 try
                 {
                     var paramCols = doc.Descendants(ns + "ParameterList").Descendants(ns + "ColumnReference");
@@ -202,10 +202,43 @@ namespace SqlXmlAnalyzer
                             reports[R_SNIFF].Add($"🧵 参数嗅探警告 on {col}:\n   • 首次编译缓存值 (Compiled): [{comp}]\n   • 运行时传入值 (Runtime): [{run}]\n   👉 [专家处方]: 首次编译值和实际运行时参数不同，当两值数据分布差异极大时极易引发“嗅探灾难”（选用次优查询方案导致运行缓慢）。建议对该 SQL 语句末尾附加 `OPTION (RECOMPILE)` 提示。");
                         }
                     }
+
+                    // OptimizerStatsUsage 诊断
+                    var statsList = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.Parse(doc, ns);
+                    if (statsList.Count > 0)
+                    {
+                        var sbStats = new StringBuilder();
+                        sbStats.AppendLine("📊 优化器统计信息使用状态 (OptimizerStatsUsage):");
+                        foreach (var stat in statsList)
+                        {
+                            string warningDetails = "";
+                            if (stat.IsStale)
+                            {
+                                warningDetails += $" ⚠️ 已过时 (更新账龄: {stat.AgeInDays}天)";
+                            }
+                            if (stat.ModificationCount > 1000)
+                            {
+                                warningDetails += $" ⚠️ 频繁变动 (修改次数: {stat.ModificationCount:N0})";
+                            }
+                            if (stat.IsLowSampling)
+                            {
+                                warningDetails += $" ⚠️ 低采样率 (采样率: {stat.SamplingPercent:F1}%)";
+                            }
+
+                            string statusIcon = string.IsNullOrEmpty(warningDetails) ? "✅" : "⚠️";
+                            sbStats.AppendLine($"   • {statusIcon} [{stat.Database}].[{stat.Schema}].[{stat.Table}] (统计项: {stat.Statistics}){warningDetails}");
+
+                            if (!string.IsNullOrEmpty(warningDetails))
+                            {
+                                sbStats.AppendLine($"     👉 优化建议: UPDATE STATISTICS [{stat.Database}].[{stat.Schema}].[{stat.Table}]({stat.Statistics}) WITH FULLSCAN;");
+                            }
+                        }
+                        reports[R_SNIFF].Add(sbStats.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warning($"Parameter Sniffing 诊断异常: {ex.Message}");
+                    Logger.Warning($"Parameter Sniffing / Statistics 诊断异常: {ex.Message}");
                 }
 
                 // 6. Memory Grant 过度预估警告

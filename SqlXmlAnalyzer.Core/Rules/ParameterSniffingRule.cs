@@ -79,6 +79,18 @@ namespace SqlXmlAnalyzer.Core.Rules
                     else if (ratio >= 10) severity = "Warning";
                     else severity = "Info";
 
+                    var statsList = Parsers.StatisticsUsageParser.Parse(relOp.Document, ns);
+                    var staleStats = statsList.Where(s => s.IsStale || s.ModificationCount > 1000).ToList();
+                    string statsWarning = "";
+
+                    if (staleStats.Any())
+                    {
+                        severity = "Critical"; // Elevate to Critical if we have parameter sniffing combined with stale stats
+                        statsWarning = "\n⚠️ 伴随的统计信息风险（Stale Statistics）：\n" +
+                                       string.Join("\n", staleStats.Select(s => $"   • [{s.Table}] (统计项: {s.Statistics}) 更新账龄: {s.AgeInDays}天, 修改量: {s.ModificationCount:N0}")) +
+                                       "\n👉 建议优先执行: UPDATE STATISTICS 对涉及的表进行更新，防止由于过时统计导致基数预估失准。\n";
+                    }
+
                     return new AnalysisResult
                     {
                         RuleId = this.RuleId,
@@ -87,6 +99,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                         Message = $"检测到编译期参数与运行时参数值不一致：\n" + 
                                   string.Join("\n", sniffedParams) + 
                                   $"\n当前根节点预估与实际行数偏差比例: {ratio:F1}x。\n" +
+                                  statsWarning +
                                   "建议方案：\n1. 使用局部变量阻断嗅探: DECLARE @LocalParam = @Parameter\n2. 添加 OPTION (RECOMPILE) 或 OPTION (OPTIMIZE FOR UNKNOWN)\n3. SQL Server 2022+ 评估参数敏感计划优化 (PSP)",
                         NodeId = nodeId
                     };
