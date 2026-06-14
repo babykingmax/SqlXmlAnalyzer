@@ -874,7 +874,41 @@ namespace SqlXmlAnalyzer
         {
             if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
             {
-                node.IsCollapsed = !node.IsCollapsed;
+                if (node.IsCollapsed)
+                {
+                    // If manually expanding, forcibly expand ALL descendants
+                    if (node.RawElement != null && _currentNs != null)
+                    {
+                        var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
+                        foreach (var n in _masterNodes)
+                        {
+                            if (n.RawElement != null) nodeMap[n.RawElement] = n;
+                        }
+
+                        void ExpandAllDescendants(XElement el)
+                        {
+                            if (nodeMap.TryGetValue(el, out var vm))
+                            {
+                                vm.IsCollapsed = false;
+                            }
+                            var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(el, _currentNs).ToList();
+                            foreach (var child in children)
+                            {
+                                ExpandAllDescendants(child);
+                            }
+                        }
+                        ExpandAllDescendants(node.RawElement);
+                    }
+                    else
+                    {
+                        node.IsCollapsed = false;
+                    }
+                }
+                else
+                {
+                    node.IsCollapsed = true;
+                }
+
                 UpdateGraphVisibility();
                 ReapplyLayout();
             }
@@ -891,16 +925,17 @@ namespace SqlXmlAnalyzer
             foreach (var node in _masterNodes)
             {
                 if (node.RawElement != null) nodeMap[node.RawElement] = node;
-                node.IsVisible = false; // default hide
             }
-            foreach (var conn in _masterConnections) conn.IsVisible = false;
 
-            // Traverse and show
+            var visibleNodeVms = new HashSet<PlanNodeViewModel>();
+            var visibleConnVms = new HashSet<ConnectionViewModel>();
+
+            // Traverse and calculate which nodes/connections should be visible
             void Traverse(XElement el, bool isVisible)
             {
                 if (nodeMap.TryGetValue(el, out var vm))
                 {
-                    vm.IsVisible = isVisible;
+                    if (isVisible) visibleNodeVms.Add(vm);
                     bool childrenVisible = isVisible && !vm.IsCollapsed;
 
                     var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(el, _currentNs).ToList();
@@ -912,7 +947,7 @@ namespace SqlXmlAnalyzer
                             var conn = _masterConnections.FirstOrDefault(c => c.Source == childVm && c.Target == vm);
                             if (conn != null)
                             {
-                                conn.IsVisible = childrenVisible;
+                                if (childrenVisible) visibleConnVms.Add(conn);
                             }
                         }
                         Traverse(child, childrenVisible);
@@ -925,17 +960,26 @@ namespace SqlXmlAnalyzer
                 Traverse(root, true);
             }
 
-            // 恢复最稳定状态：不再执行 Collection 的 Add/Remove，完全依赖 VirtualizingPanel.IsVirtualizing="False" 和 Visibility 绑定！
-            // 确保 Nodes 拥有所有的元素
-            if (Nodes.Count != _masterNodes.Count)
+            // 彻底的重建策略：不再依赖 WPF 虚拟化或内部状态
+            // 由于 WPF 的 Dispatcher 是单线程且批处理渲染的，Clear() 和 Add() 都在同一个同步上下文中执行，不会造成屏幕闪烁。
+            // 这种方式能 100% 确保 Nodify 的内部引擎树（容器、连接、坐标）被完美且干净地重建。
+            
+            // 1. 先清空所有的连线和节点，确保依赖关系断开
+            Connections.Clear();
+            Nodes.Clear();
+
+            // 2. 仅添加需要显示的节点
+            foreach (var n in visibleNodeVms)
             {
-                Nodes.Clear();
-                foreach(var n in _masterNodes) Nodes.Add(n);
+                n.IsVisible = true; // 确保可见性属性也保持一致
+                Nodes.Add(n);
             }
-            if (Connections.Count != _masterConnections.Count)
+
+            // 3. 仅添加需要显示的连线
+            foreach (var c in visibleConnVms)
             {
-                Connections.Clear();
-                foreach(var c in _masterConnections) Connections.Add(c);
+                c.IsVisible = true;
+                Connections.Add(c);
             }
         }
 
@@ -1245,6 +1289,7 @@ namespace SqlXmlAnalyzer
             get => _isVisible;
             set
             {
+                if (_isVisible == value) return;
                 _isVisible = value;
                 OnPropertyChanged(nameof(IsVisible));
             }
@@ -1450,6 +1495,7 @@ namespace SqlXmlAnalyzer
             get => _isVisible;
             set
             {
+                if (_isVisible == value) return;
                 _isVisible = value;
                 OnPropertyChanged(nameof(IsVisible));
             }
