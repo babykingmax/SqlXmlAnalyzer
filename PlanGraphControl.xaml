@@ -44,11 +44,15 @@
                             <ComboBoxItem Content="数据大小"/>
                         </ComboBox>
 
-                        <Button Content="重置视图" FontSize="9" Padding="6,1" Margin="12,0,0,0" Click="ResetView_Click" VerticalAlignment="Center"/>
+                        <Button Content="全部展开" FontSize="9" Padding="6,1" Margin="12,0,0,0" Click="ExpandAll_Click" VerticalAlignment="Center"/>
+                        <Button Content="智能折叠(&lt;5%)" FontSize="9" Padding="6,1" Margin="6,0,0,0" Click="SmartCollapse_Click" VerticalAlignment="Center" ToolTip="折叠子树成本小于5%且无警告的节点"/>
+
+                        <Button Content="重置视图" FontSize="9" Padding="6,1" Margin="6,0,0,0" Click="ResetView_Click" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
 
                 <nodify:NodifyEditor x:Name="Editor"
+                                     VirtualizingPanel.IsVirtualizing="False"
                                      ItemsSource="{Binding Nodes}"
                                      Connections="{Binding Connections}"
                                      Background="Transparent"

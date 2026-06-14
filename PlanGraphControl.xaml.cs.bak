@@ -59,8 +59,6 @@ namespace SqlXmlAnalyzer
 
         private XDocument? _currentDoc;
         private XNamespace? _currentNs;
-        private List<PlanNodeViewModel> _masterNodes = new();
-        private List<ConnectionViewModel> _masterConnections = new();
 
         private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
         public PlanLayoutMode LayoutMode
@@ -305,8 +303,6 @@ namespace SqlXmlAnalyzer
             }
 
             // 添加到集合 (Nodify 会自动响应)
-            _masterNodes = allNodes;
-            _masterConnections = Connections.ToList();
             foreach (var n in allNodes) Nodes.Add(n);
 
             // 默认选中根节点 (最高成本或第一个)
@@ -817,7 +813,7 @@ namespace SqlXmlAnalyzer
 
         private void ExpandAll_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var n in _masterNodes)
+            foreach (var n in Nodes)
             {
                 n.IsCollapsed = false;
             }
@@ -827,13 +823,13 @@ namespace SqlXmlAnalyzer
 
         private void SmartCollapse_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
+            if (_currentDoc == null || _currentNs == null || Nodes.Count == 0) return;
 
-            double maxSubtreeCost = _masterNodes.Max(n => n.SubtreeCost);
+            double maxSubtreeCost = Nodes.Max(n => n.SubtreeCost);
             if (maxSubtreeCost <= 0) maxSubtreeCost = 1.0;
 
             var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-            foreach (var node in _masterNodes)
+            foreach (var node in Nodes)
             {
                 if (node.RawElement != null) nodeMap[node.RawElement] = node;
                 node.IsCollapsed = false; // 先全部展开
@@ -856,7 +852,7 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            foreach (var n in _masterNodes)
+            foreach (var n in Nodes)
             {
                 if (n.HasChildren && n.RawElement != null)
                 {
@@ -882,18 +878,20 @@ namespace SqlXmlAnalyzer
 
         private void UpdateGraphVisibility()
         {
-            if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
+            if (_currentDoc == null || _currentNs == null || Nodes.Count == 0) return;
 
             var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
             var roots = relOps.Where(r => !relOps.Any(p => PlanDiagnosticAnalyzer.GetDirectChildRelOps(p, _currentNs).Contains(r))).ToList();
 
             var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-            foreach (var node in _masterNodes)
+            foreach (var node in Nodes)
             {
                 if (node.RawElement != null) nodeMap[node.RawElement] = node;
-                node.IsVisible = false; // default hide
             }
-            foreach (var conn in _masterConnections) conn.IsVisible = false;
+
+            // By default, hide all
+            foreach (var n in Nodes) n.IsVisible = false;
+            foreach (var c in Connections) c.IsVisible = false;
 
             // Traverse and show
             void Traverse(XElement el, bool isVisible)
@@ -909,7 +907,7 @@ namespace SqlXmlAnalyzer
                     {
                         if (nodeMap.TryGetValue(child, out var childVm))
                         {
-                            var conn = _masterConnections.FirstOrDefault(c => c.Source == childVm && c.Target == vm);
+                            var conn = Connections.FirstOrDefault(c => c.Source == childVm && c.Target == vm);
                             if (conn != null)
                             {
                                 conn.IsVisible = childrenVisible;
@@ -923,19 +921,6 @@ namespace SqlXmlAnalyzer
             foreach (var root in roots)
             {
                 Traverse(root, true);
-            }
-
-            // 恢复最稳定状态：不再执行 Collection 的 Add/Remove，完全依赖 VirtualizingPanel.IsVirtualizing="False" 和 Visibility 绑定！
-            // 确保 Nodes 拥有所有的元素
-            if (Nodes.Count != _masterNodes.Count)
-            {
-                Nodes.Clear();
-                foreach(var n in _masterNodes) Nodes.Add(n);
-            }
-            if (Connections.Count != _masterConnections.Count)
-            {
-                Connections.Clear();
-                foreach(var c in _masterConnections) Connections.Add(c);
             }
         }
 
@@ -969,13 +954,13 @@ namespace SqlXmlAnalyzer
 
         private void ReapplyLayout()
         {
-            if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
+            if (_currentDoc == null || _currentNs == null || Nodes.Count == 0) return;
 
             var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
             if (relOps.Count == 0) return;
 
             var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-            foreach (var node in _masterNodes)
+            foreach (var node in Nodes)
             {
                 if (node.RawElement != null)
                 {
@@ -983,9 +968,9 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            ApplyLayeredLayout(_masterNodes, nodeMap, relOps, _currentNs);
+            ApplyLayeredLayout(Nodes.ToList(), nodeMap, relOps, _currentNs);
 
-            foreach (var conn in _masterConnections)
+            foreach (var conn in Connections)
             {
                 conn.LayoutMode = LayoutMode;
             }
