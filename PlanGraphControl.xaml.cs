@@ -872,54 +872,60 @@ namespace SqlXmlAnalyzer
 
         private void ToggleCollapse_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
+            try
             {
-                var logFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CollapseLog.txt");
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine("==================================================");
-                sb.AppendLine($"Time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
-                sb.AppendLine($"Action: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on Node [{node.NodeId}] {node.PhysicalOp}");
-                
-                var oldVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
-                var oldVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
-
-                // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
-                node.IsCollapsed = !node.IsCollapsed;
-
-                // 1. 先在完整树上计算所有节点的新绝对坐标
-                ReapplyLayout();
-                
-                // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
-                UpdateGraphVisibility();
-
-                var newVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
-                var newVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
-
-                var addedNodes = newVisibleNodes.Except(oldVisibleNodes).ToList();
-                var removedNodes = oldVisibleNodes.Except(newVisibleNodes).ToList();
-
-                var addedConns = newVisibleConns.Except(oldVisibleConns).ToList();
-                var removedConns = oldVisibleConns.Except(newVisibleConns).ToList();
-
-                sb.AppendLine($"Nodes Added (Expanded): {addedNodes.Count}");
-                foreach(var n in addedNodes) sb.AppendLine($"  + [{n.NodeId}] {n.PhysicalOp} (Collapsed State: {n.IsCollapsed})");
-
-                sb.AppendLine($"Nodes Removed (Hidden): {removedNodes.Count}");
-                foreach(var n in removedNodes) sb.AppendLine($"  - [{n.NodeId}] {n.PhysicalOp}");
-
-                sb.AppendLine($"Connections Added: {addedConns.Count}");
-                foreach(var c in addedConns) sb.AppendLine($"  + [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
-
-                sb.AppendLine($"Connections Removed: {removedConns.Count}");
-                foreach(var c in removedConns) sb.AppendLine($"  - [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
-                
-                sb.AppendLine("==================================================");
-                
-                try 
+                if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
                 {
+                    var logFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CollapseLog.txt");
+                    System.IO.File.AppendAllText(logFile, $"\n--- START CLICK: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on [{node.NodeId}] {node.PhysicalOp} ---\n");
+
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine("==================================================");
+                    sb.AppendLine($"Time: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
+                    sb.AppendLine($"Action: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on Node [{node.NodeId}] {node.PhysicalOp}");
+                    
+                    var oldVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
+                    var oldVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
+
+                    // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
+                    node.IsCollapsed = !node.IsCollapsed;
+
+                    // 1. 先在完整树上计算所有节点的新绝对坐标
+                    ReapplyLayout();
+                    
+                    // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
+                    UpdateGraphVisibility();
+
+                    var newVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
+                    var newVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
+
+                    var addedNodes = newVisibleNodes.Except(oldVisibleNodes).ToList();
+                    var removedNodes = oldVisibleNodes.Except(newVisibleNodes).ToList();
+
+                    var addedConns = newVisibleConns.Except(oldVisibleConns).ToList();
+                    var removedConns = oldVisibleConns.Except(newVisibleConns).ToList();
+
+                    sb.AppendLine($"Nodes Added (Expanded): {addedNodes.Count}");
+                    foreach(var n in addedNodes) sb.AppendLine($"  + [{n.NodeId}] {n.PhysicalOp} (Collapsed State: {n.IsCollapsed})");
+
+                    sb.AppendLine($"Nodes Removed (Hidden): {removedNodes.Count}");
+                    foreach(var n in removedNodes) sb.AppendLine($"  - [{n.NodeId}] {n.PhysicalOp}");
+
+                    sb.AppendLine($"Connections Added: {addedConns.Count}");
+                    foreach(var c in addedConns) sb.AppendLine($"  + [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
+
+                    sb.AppendLine($"Connections Removed: {removedConns.Count}");
+                    foreach(var c in removedConns) sb.AppendLine($"  - [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
+                    
+                    sb.AppendLine("==================================================");
+                    
                     System.IO.File.AppendAllText(logFile, sb.ToString());
                 }
-                catch { }
+            }
+            catch (Exception ex)
+            {
+                var logFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CollapseLog.txt");
+                System.IO.File.AppendAllText(logFile, $"\n[EXCEPTION CAUGHT]: {ex}\n");
             }
         }
 
