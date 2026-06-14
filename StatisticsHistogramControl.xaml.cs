@@ -129,7 +129,7 @@ namespace SqlXmlAnalyzer
             }
             catch (Exception ex)
             {
-                SqlXmlAnalyzer.Logger.Warning($"LoadStatisticsUsage failed: {ex.Message}");
+                SqlXmlAnalyzer.Logger.LogException("LoadStatisticsUsage", ex);
             }
         }
 
@@ -225,21 +225,28 @@ namespace SqlXmlAnalyzer
 
         private void RedrawHistogram()
         {
-            DrawCanvas.Children.Clear();
-            if (!_hasData || DrawCanvas.ActualWidth == 0 || DrawCanvas.ActualHeight == 0) return;
-
-            double width = DrawCanvas.ActualWidth;
-            double height = DrawCanvas.ActualHeight;
-
-            if (_steps == null)
+            try
             {
-                // FALLBACK: Draw deterministic mock histogram
-                DrawMockHistogram(width, height);
+                DrawCanvas.Children.Clear();
+                if (!_hasData || DrawCanvas.ActualWidth == 0 || DrawCanvas.ActualHeight == 0) return;
+
+                double width = DrawCanvas.ActualWidth;
+                double height = DrawCanvas.ActualHeight;
+
+                if (_steps == null)
+                {
+                    // FALLBACK: Draw deterministic mock histogram
+                    DrawMockHistogram(width, height);
+                }
+                else
+                {
+                    // REAL DRAW: Draw based on imported DBCC statistics
+                    DrawRealHistogram(width, height);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // REAL DRAW: Draw based on imported DBCC statistics
-                DrawRealHistogram(width, height);
+                SqlXmlAnalyzer.Logger.LogException("RedrawHistogram", ex);
             }
         }
 
