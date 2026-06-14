@@ -874,43 +874,14 @@ namespace SqlXmlAnalyzer
         {
             if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
             {
-                if (node.IsCollapsed)
-                {
-                    // If manually expanding, forcibly expand ALL descendants
-                    if (node.RawElement != null && _currentNs != null)
-                    {
-                        var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-                        foreach (var n in _masterNodes)
-                        {
-                            if (n.RawElement != null) nodeMap[n.RawElement] = n;
-                        }
+                // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
+                node.IsCollapsed = !node.IsCollapsed;
 
-                        void ExpandAllDescendants(XElement el)
-                        {
-                            if (nodeMap.TryGetValue(el, out var vm))
-                            {
-                                vm.IsCollapsed = false;
-                            }
-                            var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(el, _currentNs).ToList();
-                            foreach (var child in children)
-                            {
-                                ExpandAllDescendants(child);
-                            }
-                        }
-                        ExpandAllDescendants(node.RawElement);
-                    }
-                    else
-                    {
-                        node.IsCollapsed = false;
-                    }
-                }
-                else
-                {
-                    node.IsCollapsed = true;
-                }
-
-                UpdateGraphVisibility();
+                // 1. 先在完整树上计算所有节点的新绝对坐标
                 ReapplyLayout();
+                
+                // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
+                UpdateGraphVisibility();
             }
         }
 
