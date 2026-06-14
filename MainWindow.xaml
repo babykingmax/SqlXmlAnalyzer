@@ -447,14 +447,21 @@
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
-                            <ListView.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="设为 [计划 A] (基准)" Command="{Binding DataContext.SetAsPlanACommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                    <MenuItem Header="设为 [计划 B] (优化后)" Command="{Binding DataContext.SetAsPlanBCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                    <Separator/>
-                                    <MenuItem Header="删除快照" Command="{Binding DataContext.RemoveSnapshotCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                </ContextMenu>
-                            </ListView.ContextMenu>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Header="设为 [计划 A] (基准)" Command="{Binding PlacementTarget.Tag.SetAsPlanACommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
+                                                <MenuItem Header="设为 [计划 B] (优化后)" Command="{Binding PlacementTarget.Tag.SetAsPlanBCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
+                                                <Separator/>
+                                                <MenuItem Header="删除快照" Command="{Binding PlacementTarget.Tag.RemoveSnapshotCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                         </ListView>
 
                         <!-- 会话保存与加载 -->

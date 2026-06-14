@@ -51,22 +51,13 @@ namespace SqlXmlAnalyzer
             // 监听 PlanA / PlanB 快照变化，动态重构并排对比的操作符结构树
             ViewModel.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == nameof(ViewModel.PlanA))
+                if (e.PropertyName == nameof(ViewModel.PlanA) || e.PropertyName == nameof(ViewModel.PlanB))
                 {
-                    PlanATreeView.Items.Clear();
-                    if (ViewModel.PlanA != null)
+                    RefreshABCompareTrees();
+                    if (ViewModel.PlanA != null && ViewModel.PlanB != null)
                     {
-                        var tree = BuildPlanTreeView(ViewModel.PlanA.Document, _showplanNs);
-                        if (tree != null) PlanATreeView.Items.Add(tree);
-                    }
-                }
-                else if (e.PropertyName == nameof(ViewModel.PlanB))
-                {
-                    PlanBTreeView.Items.Clear();
-                    if (ViewModel.PlanB != null)
-                    {
-                        var tree = BuildPlanTreeView(ViewModel.PlanB.Document, _showplanNs);
-                        if (tree != null) PlanBTreeView.Items.Add(tree);
+                        var tab = MainTabControl.Items.OfType<System.Windows.Controls.TabItem>().FirstOrDefault(t => t.Header?.ToString().Contains("A/B") == true);
+                        if (tab != null) MainTabControl.SelectedItem = tab;
                     }
                 }
             };
@@ -1416,6 +1407,181 @@ namespace SqlXmlAnalyzer
             foreach (var child in PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns))
             {
                 item.Items.Add(BuildRelOpNode(child, ns));
+            }
+
+            return item;
+        }
+
+        private void RefreshABCompareTrees()
+        {
+            PlanATreeView.Items.Clear();
+            PlanBTreeView.Items.Clear();
+
+            var nsA = ViewModel.PlanA?.Document.Root?.GetDefaultNamespace() ?? _showplanNs;
+            var planA = ViewModel.PlanA?.Document.Descendants(nsA + "RelOp").FirstOrDefault();
+
+            var nsB = ViewModel.PlanB?.Document.Root?.GetDefaultNamespace() ?? _showplanNs;
+            var planB = ViewModel.PlanB?.Document.Descendants(nsB + "RelOp").FirstOrDefault();
+
+            if (planA != null)
+            {
+                var treeA = BuildDiffTreeView(planA, planB, nsA, false);
+                if (treeA != null) PlanATreeView.Items.Add(treeA);
+            }
+
+            if (planB != null)
+            {
+                var treeB = BuildDiffTreeView(planB, planA, nsB, true);
+                if (treeB != null) PlanBTreeView.Items.Add(treeB);
+            }
+        }
+
+        private (double rows, double rowsRead, double elapsed, double reads) GetRuntimeMetrics(XElement relOp, XNamespace ns)
+        {
+            var rtInfo = relOp.Element(ns + "RunTimeInformation");
+            if (rtInfo == null) return (0, 0, 0, 0);
+
+            var counters = rtInfo.Elements(ns + "RunTimeCountersPerThread");
+            double rows = counters.Sum(c => (double?)c.Attribute("ActualRows") ?? 0);
+            double rowsRead = counters.Sum(c => (double?)c.Attribute("ActualRowsRead") ?? 0);
+            double elapsed = counters.Max(c => (double?)c.Attribute("ActualElapsedms") ?? 0);
+            double reads = counters.Sum(c => (double?)c.Attribute("ActualLogicalReads") ?? 0);
+
+            return (rows, rowsRead, elapsed, reads);
+        }
+
+        private TreeViewItem BuildDiffTreeView(XElement currentRelOp, XElement? otherRelOp, XNamespace ns, bool isPlanB)
+        {
+            string phys = currentRelOp.Attribute("PhysicalOp")?.Value ?? "Unknown";
+            string costStr = currentRelOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
+            double.TryParse(costStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cost);
+
+            string otherPhys = otherRelOp?.Attribute("PhysicalOp")?.Value ?? "";
+            double otherCost = 0;
+            if (otherRelOp != null)
+            {
+                string otherCostStr = otherRelOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
+                double.TryParse(otherCostStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out otherCost);
+            }
+
+            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 2) };
+            
+            var textBlockOp = new TextBlock { Text = phys, FontWeight = FontWeights.SemiBold };
+            var textBlockCost = new TextBlock { Text = $" (Cost: {cost:F4})", Foreground = Brushes.Gray };
+
+            Border border = new Border { CornerRadius = new CornerRadius(3), Padding = new Thickness(4, 2, 4, 2), Margin = new Thickness(0, 0, 4, 0) };
+
+            // 差异对比逻辑
+            if (otherRelOp == null)
+            {
+                // 新增或被删除
+                border.Background = isPlanB ? new SolidColorBrush(Color.FromArgb(40, 76, 175, 80)) : new SolidColorBrush(Color.FromArgb(40, 244, 67, 54)); // B新增绿，A独有红
+                border.BorderBrush = isPlanB ? Brushes.Green : Brushes.Red;
+                border.BorderThickness = new Thickness(1);
+                textBlockOp.Foreground = isPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
+                textBlockOp.Text = phys + (isPlanB ? " [新增]" : " [移除]");
+            }
+            else if (phys != otherPhys)
+            {
+                // 类型改变
+                border.Background = new SolidColorBrush(Color.FromArgb(40, 255, 152, 0));
+                border.BorderBrush = Brushes.Orange;
+                border.BorderThickness = new Thickness(1);
+                textBlockOp.Foreground = Brushes.DarkOrange;
+                textBlockOp.Text = $"{phys} [变自 {otherPhys}]";
+            }
+            
+            if (otherRelOp != null && phys == otherPhys)
+            {
+                // 类型没变，检查成本差异
+                double deltaCost = cost - otherCost;
+                if (Math.Abs(deltaCost) > 0.0001) // 有意义的成本变化
+                {
+                    double pct = otherCost > 0 ? (deltaCost / otherCost) * 100 : 0;
+                    if (pct > 5) // 成本增加 > 5%
+                    {
+                        textBlockCost.Foreground = Brushes.Red;
+                        textBlockCost.Text += $" (+{pct:F1}%)";
+                    }
+                    else if (pct < -5) // 成本降低 > 5%
+                    {
+                        textBlockCost.Foreground = Brushes.Green;
+                        textBlockCost.Text += $" ({pct:F1}%)";
+                    }
+                }
+            }
+
+            var currentMetrics = GetRuntimeMetrics(currentRelOp, ns);
+            var otherMetrics = otherRelOp != null ? GetRuntimeMetrics(otherRelOp, ns) : (0, 0, 0, 0);
+
+            List<string> diffs = new List<string>();
+
+            if (otherRelOp != null)
+            {
+                double eDiff = currentMetrics.elapsed - otherMetrics.elapsed;
+                if (Math.Abs(eDiff) > 5) 
+                {
+                    string sign = eDiff > 0 ? "↑" : "↓";
+                    diffs.Add($"耗时: {currentMetrics.elapsed}ms ({sign}{Math.Abs(eDiff)}ms)");
+                }
+
+                double rDiff = currentMetrics.reads - otherMetrics.reads;
+                if (Math.Abs(rDiff) > 10) 
+                {
+                    string sign = rDiff > 0 ? "↑" : "↓";
+                    diffs.Add($"逻辑读: {currentMetrics.reads} ({sign}{Math.Abs(rDiff)})");
+                }
+
+                double rrDiff = currentMetrics.rowsRead - otherMetrics.rowsRead;
+                if (Math.Abs(rrDiff) > 10) 
+                {
+                    string sign = rrDiff > 0 ? "↑" : "↓";
+                    diffs.Add($"读取行: {currentMetrics.rowsRead} ({sign}{Math.Abs(rrDiff)})");
+                }
+            }
+            else
+            {
+                if (currentMetrics.elapsed > 0) diffs.Add($"耗时: {currentMetrics.elapsed}ms");
+                if (currentMetrics.reads > 0) diffs.Add($"逻辑读: {currentMetrics.reads}");
+                if (currentMetrics.rowsRead > 0) diffs.Add($"读取行: {currentMetrics.rowsRead}");
+            }
+
+            if (diffs.Count > 0)
+            {
+                var textBlockRuntime = new TextBlock 
+                { 
+                    Text = " | " + string.Join(", ", diffs), 
+                    Foreground = isPlanB ? Brushes.Purple : Brushes.Teal,
+                    FontWeight = FontWeights.Medium,
+                    Margin = new Thickness(4, 0, 0, 0)
+                };
+                stackPanel.Children.Add(textBlockRuntime);
+            }
+
+            stackPanel.Children.Add(textBlockOp);
+            stackPanel.Children.Add(textBlockCost);
+            border.Child = stackPanel;
+
+            var item = new TreeViewItem
+            {
+                Header = border,
+                Tag = currentRelOp,
+                IsExpanded = true
+            };
+
+            var children1 = PlanDiagnosticAnalyzer.GetDirectChildRelOps(currentRelOp, ns).ToList();
+            var children2 = otherRelOp != null ? PlanDiagnosticAnalyzer.GetDirectChildRelOps(otherRelOp, ns).ToList() : new List<XElement>();
+
+            int maxChildren = Math.Max(children1.Count, children2.Count);
+            for (int i = 0; i < maxChildren; i++)
+            {
+                XElement? c1 = i < children1.Count ? children1[i] : null;
+                XElement? c2 = i < children2.Count ? children2[i] : null;
+
+                if (c1 != null)
+                {
+                    item.Items.Add(BuildDiffTreeView(c1, c2, ns, isPlanB));
+                }
             }
 
             return item;
