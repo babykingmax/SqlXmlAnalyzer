@@ -960,26 +960,24 @@ namespace SqlXmlAnalyzer
                 Traverse(root, true);
             }
 
-            // 彻底的重建策略：不再依赖 WPF 虚拟化或内部状态
-            // 由于 WPF 的 Dispatcher 是单线程且批处理渲染的，Clear() 和 Add() 都在同一个同步上下文中执行，不会造成屏幕闪烁。
-            // 这种方式能 100% 确保 Nodify 的内部引擎树（容器、连接、坐标）被完美且干净地重建。
+            // ==================================================
+            // 完全基于 Nodify 推荐的设计模式：纯数据绑定
+            // 不再动态向 ObservableCollection 中 Add/Remove 节点，
+            // 而是所有节点都在集合中，仅通过更新 IsVisible 属性，
+            // 让 ItemContainerStyle 中的 Visibility 绑定自动接管显示隐藏。
+            // 这样彻底避免了虚拟化面板的集合变更 Bug 和动画丢失问题。
+            // ==================================================
             
-            // 1. 先清空所有的连线和节点，确保依赖关系断开
-            Connections.Clear();
-            Nodes.Clear();
-
-            // 2. 仅添加需要显示的节点
-            foreach (var n in visibleNodeVms)
+            foreach (var n in _masterNodes)
             {
-                n.IsVisible = true; // 确保可见性属性也保持一致
-                Nodes.Add(n);
+                n.IsVisible = visibleNodeVms.Contains(n);
+                if (!Nodes.Contains(n)) Nodes.Add(n); // 确保集合包含全部节点（通常初始化时已包含）
             }
 
-            // 3. 仅添加需要显示的连线
-            foreach (var c in visibleConnVms)
+            foreach (var c in _masterConnections)
             {
-                c.IsVisible = true;
-                Connections.Add(c);
+                c.IsVisible = visibleConnVms.Contains(c);
+                if (!Connections.Contains(c)) Connections.Add(c); // 确保集合包含全部连接线
             }
         }
 
