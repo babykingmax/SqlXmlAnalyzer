@@ -5,7 +5,15 @@
         xmlns:vm="clr-namespace:SqlXmlAnalyzer.Core.ViewModels"
         xmlns:views="clr-namespace:SqlXmlAnalyzer.Views"
         xmlns:conv="clr-namespace:SqlXmlAnalyzer.Converters"
-        Title="{Binding AppTitle}" 
+        Title="{Binding AppTitle}"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        
         Height="900" Width="1400"
         WindowStartupLocation="CenterScreen"
         AllowDrop="True"
@@ -46,45 +54,77 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- 菜单栏 -->
-            <RowDefinition Height="Auto"/>   <!-- 工具栏 -->
-            <RowDefinition Height="*"/>      <!-- 主内容区 -->
-            <RowDefinition Height="Auto"/>   <!-- 状态栏 -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- 顶部菜单 -->
-        <Menu Grid.Row="0" Background="{StaticResource SurfaceBrush}" Padding="4">
-            <MenuItem Header="文件(_F)">
-                <MenuItem Header="打开死锁 XML..." Click="OpenDeadlockFile_Click"/>
-                <MenuItem Header="打开执行计划 XML..." Click="OpenPlanFile_Click"/>
-                <Separator/>
-                <MenuItem Header="退出" Click="Exit_Click"/>
-            </MenuItem>
-            <MenuItem Header="工具(_T)">
-                <MenuItem Header="生成 HTML 报告" Click="GenerateHtmlReport_Click"/>
-                <MenuItem Header="打开日志目录" Click="OpenLogsFolder_Click"/>
-            </MenuItem>
-            <MenuItem Header="帮助(_H)">
-                <MenuItem Header="关于 SqlXmlAnalyzer" Click="About_Click"/>
-            </MenuItem>
-        </Menu>
+        <!-- 现代化极简顶部导航 (高度压缩) -->
+        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="8,4" materialDesign:ElevationAssist.Elevation="Dp2">
+            <DockPanel>
+                <!-- 标题 -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <materialDesign:PackIcon Kind="DatabaseSearchOutline" Width="20" Height="20" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="智能诊断引擎" FontSize="14" FontWeight="SemiBold" Margin="6,0,0,0" Foreground="White" VerticalAlignment="Center"/>
+                </StackPanel>
 
-        <!-- 工具栏 -->
-        <ToolBar Grid.Row="1" Height="48" Background="{StaticResource SurfaceBrush}" Padding="4">
-            <Button Content="📂 打开死锁" Click="OpenDeadlockFile_Click" Margin="4,0"/>
-            <Button Content="📊 打开执行计划" Click="OpenPlanFile_Click" Margin="4,0"/>
-            <Separator Margin="8,0"/>
-            <Button Content="🌐 导出 HTML" Click="GenerateHtmlReport_Click" Margin="4,0"/>
-            <Button Content="📄 导出 Word" Style="{StaticResource SecondaryButtonStyle}" Click="ExportToWord_Click" Margin="4,0" ToolTip="导出当前诊断报告为 Word 文档 (.docx)"/>
-            <Button Content="📄 导出 PDF" Style="{StaticResource SecondaryButtonStyle}" Click="ExportToPdf_Click" Margin="4,0" ToolTip="导出当前诊断报告为 PDF 文档 (.pdf)"/>
-            <Button Content="🎭 脱敏导出" Style="{StaticResource SecondaryButtonStyle}" Click="ExportObfuscatedPlan_Click" Margin="4,0" ToolTip="保留核心DOM结构去除敏感字符串(库表/SQL语句等)导出安全的脱敏XML文件"/>
-            <Button Content="📋 复制结果" Style="{StaticResource SecondaryButtonStyle}" Click="CopyAnalysisResult_Click" Margin="4,0" ToolTip="一键复制诊断与分析结果到剪贴板"/>
-            <Separator Margin="8,0"/>
-            <Button Content="🧹 清空结果" Style="{StaticResource SecondaryButtonStyle}" Click="ClearResults_Click" Margin="4,0"/>
-        </ToolBar>
+                <!-- 隐藏传统的菜单栏，将功能合并到工具栏 -->
+                <Menu DockPanel.Dock="Left" Background="Transparent" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <MenuItem Header="文件" Padding="8,4" Foreground="White">
+                        <MenuItem Header="打开死锁 XML..." Click="OpenDeadlockFile_Click" Foreground="Black">
+                            <MenuItem.Icon><materialDesign:PackIcon Kind="LockOpenVariantOutline" /></MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="打开执行计划 XML..." Click="OpenPlanFile_Click" Foreground="Black">
+                            <MenuItem.Icon><materialDesign:PackIcon Kind="ChartTree" /></MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="退出" Click="Exit_Click" Foreground="Black"/>
+                    </MenuItem>
+                    <MenuItem Header="帮助" Padding="8,4" Foreground="White">
+                        <MenuItem Header="关于" Click="About_Click" Foreground="Black"/>
+                    </MenuItem>
+                </Menu>
 
-        <!-- 主内容区 - 参考 SQL Sentry Plan Explorer 风格 -->
-        <TabControl Grid.Row="2" Margin="6" Name="MainTabControl" SelectedIndex="0">
+                <!-- 核心工具按钮 (去文字，纯图标化) -->
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="OpenDeadlockFile_Click" ToolTip="打开死锁" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="LockAlert" Width="18" Height="18"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="OpenPlanFile_Click" ToolTip="打开执行计划" Height="28" Width="28" Padding="0" Margin="0,0,16,0">
+                        <materialDesign:PackIcon Kind="ChartTree" Width="18" Height="18"/>
+                    </Button>
+
+                    <Separator Style="{StaticResource MaterialDesignLightSeparator}" Width="1" Margin="0,4,16,4" Background="#80FFFFFF"/>
+
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="GenerateHtmlReport_Click" ToolTip="导出 HTML" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="LanguageHtml5" Width="18" Height="18"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ExportToWord_Click" ToolTip="导出 Word" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="FileWordOutline" Width="18" Height="18"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ExportToPdf_Click" ToolTip="导出 PDF" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="FilePdfBox" Width="18" Height="18"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ExportObfuscatedPlan_Click" ToolTip="脱敏导出" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="Incognito" Width="18" Height="18"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- 右侧清理功能 -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="CopyAnalysisResult_Click" ToolTip="复制结果" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
+                        <materialDesign:PackIcon Kind="ContentCopy" Width="16" Height="16"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ClearResults_Click" ToolTip="清空所有视图" Height="28" Width="28" Padding="0">
+                        <materialDesign:PackIcon Kind="Broom" Width="16" Height="16"/>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+        </materialDesign:ColorZone>
+
+        <!-- 主内容区 - 紧凑型 Tabs -->
+        
+        <TabControl Grid.Row="1" Margin="2" Name="MainTabControl" SelectedIndex="0">
 
             <!-- ==================== 死锁分析 Tab (A) ==================== -->
             <TabItem Header="🔴 死锁分析" Margin="0,0,-16,0">
@@ -180,7 +220,7 @@
                                 </Canvas.RenderTransform>
                             </Canvas>
                         </Border>
-                        
+
                         <views:DeadlockPlaybackControl x:Name="PlaybackControl" Grid.Row="1" VerticalAlignment="Top" Margin="10,10,10,0" Panel.ZIndex="10" Visibility="Collapsed" />
                     </Grid>
 
@@ -210,13 +250,16 @@
             <TabItem Header="📈 执行计划分析" Margin="24,0,-42,0">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>   <!-- 查询文本 -->
-                        <RowDefinition Height="*"/>      <!-- 主区域 -->
-                        <RowDefinition Height="Auto"/>   <!-- 底部信息 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 查询文本 -->
+                        <RowDefinition Height="*"/>
+                        <!-- 主区域 -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 底部信息 -->
                     </Grid.RowDefinitions>
 
                     <!-- 查询文本区域 -->
-                    <Expander Grid.Row="0" Header="查询语句 (Statement Text)" ExpandDirection="Down" IsExpanded="False" Margin="4,4,4,12">
+                    <Expander Grid.Row="0" Header="查询语句 (Statement Text)" ExpandDirection="Down" IsExpanded="False" Margin="2,0,2,4">
                         <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="8" CornerRadius="6">
                             <TextBox Name="PlanStatementTextBox" Height="60" Text="{Binding PlanStatementText, Mode=TwoWay}"
                                      IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0"
@@ -226,11 +269,14 @@
 
                     <Grid Grid.Row="1" x:Name="PlanContentGrid">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="30"/> <!-- 操作符树 -->
+                            <ColumnDefinition Width="Auto" MinWidth="30"/>
+                            <!-- 操作符树 -->
                             <ColumnDefinition Width="4"/>
-                            <ColumnDefinition Width="*" MinWidth="500"/>    <!-- 图形视图 -->
+                            <ColumnDefinition Width="*" MinWidth="500"/>
+                            <!-- 图形视图 -->
                             <ColumnDefinition Width="4"/>
-                            <ColumnDefinition Width="280" MinWidth="30"/> <!-- 属性面板 -->
+                            <ColumnDefinition Width="280" MinWidth="30"/>
+                            <!-- 属性面板 -->
                         </Grid.ColumnDefinitions>
 
                         <!-- 左侧：操作符树 (类似 Plan Explorer 左侧树) -->
@@ -248,7 +294,7 @@
                                           SelectedItemChanged="PlanOperatorTree_SelectedItemChanged"/>
                             </Grid>
                         </Expander>
-                        
+
                         <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#DDDDDD" />
 
                         <!-- 中间：图形化执行计划 (纯 WPF 原生控件，Plan Explorer 风格) -->
@@ -259,7 +305,7 @@
                             </Grid.RowDefinitions>
 
                             <!-- 增强的 TreeView + Nodify 节点编辑器（A + B） - 强烈推荐切换到第二个标签看专业效果 -->
-                            <TabControl Grid.Row="1" x:Name="PlanGraphTabControl">
+                            <TabControl Grid.Row="1" x:Name="PlanGraphTabControl" Margin="0,2,0,0">
                                 <TabItem Header="★ Nodify Graph（专业拖拽操作符盒子 - Plan Explorer 推荐）" IsSelected="True">
                                     <local:PlanGraphControl x:Name="PlanNodifyGraph" NodeSelected="PlanNodifyGraph_NodeSelected" NodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"/>
                                 </TabItem>
@@ -354,7 +400,7 @@
                     </Grid>
 
                     <!-- 底部：警告和建议 (类似 Plan Explorer 底部面板) -->
-                    <Expander Grid.Row="2" Header="执行计划深度诊断报告 (Deep Diagnostic Report) ★ 13 类专家调优建议" ExpandDirection="Up" IsExpanded="True" Margin="4">
+                    <Expander Grid.Row="2" Header="执行计划深度诊断报告 (★ 13类专家建议)" ExpandDirection="Up" IsExpanded="True" Margin="2,4,2,0">
                         <Border Background="#FFF9E6" BorderBrush="#FFD54F" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,8,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -398,14 +444,16 @@
                     </Expander>
                 </Grid>
             </TabItem>
-            
+
             <!-- ==================== A/B 并排对比 Tab (C) ==================== -->
             <TabItem Header="⚖️ A/B 比对分析" Margin="42,0,-60,0">
                 <Grid Background="{StaticResource BackgroundBrush}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="320" MinWidth="200"/> <!-- 调优历史列表 -->
+                        <ColumnDefinition Width="320" MinWidth="200"/>
+                        <!-- 调优历史列表 -->
                         <ColumnDefinition Width="4"/>
-                        <ColumnDefinition Width="*"/>                  <!-- 并排对比控制板 -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- 并排对比控制板 -->
                     </Grid.ColumnDefinitions>
 
                     <!-- 左侧：调优历史 (Tuning History) -->
@@ -491,9 +539,12 @@
                         <!-- A/B 并排对比核心面板 -->
                         <Grid Visibility="{Binding CompareVisible, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/> <!-- 顶部对比卡片 -->
-                                <RowDefinition Height="Auto"/> <!-- 查询语句对比 -->
-                                <RowDefinition Height="*"/>    <!-- 树状差异并排 -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 顶部对比卡片 -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 查询语句对比 -->
+                                <RowDefinition Height="*"/>
+                                <!-- 树状差异并排 -->
                             </Grid.RowDefinitions>
 
                             <!-- 顶部对比卡片 -->
@@ -625,7 +676,7 @@
         </TabControl>
 
         <!-- 状态栏 -->
-        <StatusBar Grid.Row="3" Height="32" Background="{StaticResource AccentBrush}" Foreground="White">
+        <StatusBar Grid.Row="3" Background="{StaticResource AccentBrush}" Foreground="White">
             <StatusBarItem>
                 <TextBlock Name="StatusTextBlock" Text="{Binding StatusText}" Foreground="White" FontWeight="SemiBold"/>
             </StatusBarItem>

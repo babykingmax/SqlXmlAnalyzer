@@ -63,6 +63,15 @@ namespace SqlXmlAnalyzer
         private List<ConnectionViewModel> _masterConnections = new();
 
         private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
+        
+        public double ArrowAngle
+        {
+            get
+            {
+                return LayoutMode == PlanLayoutMode.Horizontal ? 180 : -90;
+            }
+        }
+
         public PlanLayoutMode LayoutMode
         {
             get => _layoutMode;
@@ -813,6 +822,39 @@ namespace SqlXmlAnalyzer
             }
         }
 
+        
+        private void CopyNodeInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem mi && mi.DataContext is PlanNodeViewModel node)
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"Node ID: {node.NodeId}");
+                sb.AppendLine($"Physical Op: {node.PhysicalOp}");
+                sb.AppendLine($"Logical Op: {node.LogicalOp}");
+                sb.AppendLine($"Estimated Cost: {node.SubtreeCost} ({node.CostPercent:F1}%)");
+                sb.AppendLine($"Estimated Rows: {node.EstRows}");
+                sb.AppendLine($"Actual Rows: {node.ActualRows}");
+                sb.AppendLine($"Estimated Data Size: {node.EstimatedDataSize}");
+                
+                if (!string.IsNullOrEmpty(node.ObjectDetails)) 
+                    sb.AppendLine($"Object: {node.ObjectDetails}");
+                if (!string.IsNullOrEmpty(node.OutputList)) 
+                    sb.AppendLine($"Output List: {node.OutputList}");
+                if (!string.IsNullOrEmpty(node.SeekPredicates)) 
+                    sb.AppendLine($"Seek Predicates: {node.SeekPredicates}");
+                if (!string.IsNullOrEmpty(node.Predicate)) 
+                    sb.AppendLine($"Predicate: {node.Predicate}");
+                if (!string.IsNullOrEmpty(node.Warnings)) 
+                    sb.AppendLine($"Warnings: {node.Warnings}");
+
+                System.Windows.Clipboard.SetText(sb.ToString());
+                
+                ToastPopup.IsOpen = true;
+                System.Threading.Tasks.Task.Delay(2000).ContinueWith(_ => Dispatcher.Invoke(() => ToastPopup.IsOpen = false));
+
+            }
+        }
+
         private void ResetView_Click(object sender, RoutedEventArgs e) => ResetView();
 
         private void ExpandAll_Click(object sender, RoutedEventArgs e)
@@ -1486,6 +1528,15 @@ namespace SqlXmlAnalyzer
         }
 
         private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
+        
+        public double ArrowAngle
+        {
+            get
+            {
+                return LayoutMode == PlanLayoutMode.Horizontal ? 180 : -90;
+            }
+        }
+
         public PlanLayoutMode LayoutMode
         {
             get => _layoutMode;
@@ -1494,6 +1545,7 @@ namespace SqlXmlAnalyzer
                 _layoutMode = value;
                 OnPropertyChanged(nameof(LayoutMode));
                 OnPropertyChanged(nameof(SourceLocation));
+                    OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1538,6 +1590,7 @@ namespace SqlXmlAnalyzer
                     _source.PropertyChanged += OnSourcePropertyChanged;
                 OnPropertyChanged(nameof(Source));
                 OnPropertyChanged(nameof(SourceLocation));
+                    OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1562,6 +1615,7 @@ namespace SqlXmlAnalyzer
                     _target.PropertyChanged += OnTargetPropertyChanged;
                 OnPropertyChanged(nameof(Target));
                 OnPropertyChanged(nameof(SourceLocation));
+                    OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1787,6 +1841,7 @@ namespace SqlXmlAnalyzer
             if (e.PropertyName == nameof(PlanNodeViewModel.Location))
             {
                 OnPropertyChanged(nameof(SourceLocation));
+                    OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1798,6 +1853,7 @@ namespace SqlXmlAnalyzer
             if (e.PropertyName == nameof(PlanNodeViewModel.Location))
             {
                 OnPropertyChanged(nameof(SourceLocation));
+                    OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
