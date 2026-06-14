@@ -870,10 +870,11 @@ namespace SqlXmlAnalyzer
             ReapplyLayout();
         }
 
-        private void ToggleCollapse_Click(object sender, RoutedEventArgs e)
+        private void ToggleCollapse_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             try
             {
+                e.Handled = true; // MUST PREVENT NodifyEditor from capturing this click!
                 if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
                 {
                     string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");

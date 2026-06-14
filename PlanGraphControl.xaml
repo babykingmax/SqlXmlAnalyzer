@@ -254,11 +254,12 @@
                             <!-- 折叠/展开按钮 -->
                             <Button Content="{Binding CollapseButtonText}" 
                                     Visibility="{Binding CollapseButtonVisibility}"
-                                    Click="ToggleCollapse_Click"
-                                    Width="18" Height="18" FontSize="12" Padding="0,-2,0,0"
+                                    PreviewMouseLeftButtonDown="ToggleCollapse_PreviewMouseDown"
+                                    Panel.ZIndex="9999"
+                                    Width="24" Height="24" FontSize="14" Padding="0,-2,0,0"
                                     FontWeight="Bold"
                                     HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                    Margin="0,0,-9,-9" 
+                                    Margin="0,0,-12,-12" 
                                     Background="White" Foreground="#1976D2" BorderBrush="#90A4AE" BorderThickness="1"
                                     Cursor="Hand"
                                     ToolTip="折叠/展开子树">
