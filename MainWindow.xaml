@@ -286,8 +286,11 @@
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </TabItem>
-                                <TabItem Header="📄 XML 源码" Margin="0,0,-19,0">
+                                <TabItem Header="📄 XML 源码">
                                     <TextBox x:Name="PlanXmlTextBox" IsReadOnly="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#FDFEFE" Foreground="#17202A"/>
+                                </TabItem>
+                                <TabItem Header="📊 参数嗅探直方图 (Histogram)" Margin="0,0,-19,0">
+                                    <local:StatisticsHistogramControl x:Name="StatisticsHistogramView"/>
                                 </TabItem>
                             </TabControl>
                         </Grid>

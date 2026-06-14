@@ -397,6 +397,38 @@ namespace SqlXmlAnalyzer
                     PlanGraphTabControl.SelectedIndex = 1;
                 }
 
+                try
+                {
+                    var paramList = doc.Descendants(_showplanNs + "ParameterList").Descendants(_showplanNs + "ColumnReference");
+                    var sniffedParam = paramList.FirstOrDefault(p => 
+                        !string.IsNullOrEmpty(p.Attribute("ParameterCompiledValue")?.Value) && 
+                        !string.IsNullOrEmpty(p.Attribute("ParameterRuntimeValue")?.Value) &&
+                        p.Attribute("ParameterCompiledValue")?.Value != p.Attribute("ParameterRuntimeValue")?.Value);
+
+                    if (sniffedParam != null)
+                    {
+                        string col = sniffedParam.Attribute("Column")?.Value ?? "@Param";
+                        string comp = sniffedParam.Attribute("ParameterCompiledValue")?.Value ?? "";
+                        string run = sniffedParam.Attribute("ParameterRuntimeValue")?.Value ?? "";
+                        StatisticsHistogramView.LoadParameterData(col, comp, run);
+                    }
+                    else
+                    {
+                        var firstParam = paramList.FirstOrDefault();
+                        if (firstParam != null)
+                        {
+                            string col = firstParam.Attribute("Column")?.Value ?? "@Param";
+                            string comp = firstParam.Attribute("ParameterCompiledValue")?.Value ?? "1";
+                            string run = firstParam.Attribute("ParameterRuntimeValue")?.Value ?? "1";
+                            StatisticsHistogramView.LoadParameterData(col, comp, run);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException("Load Histogram", ex);
+                }
+
                 StatusTextBlock.Text = "执行计划分析完成";
             }
             catch (Exception ex)
