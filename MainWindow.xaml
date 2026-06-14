@@ -19,7 +19,9 @@
         AllowDrop="True"
         DragEnter="Window_DragEnter"
         Drop="Window_Drop"
-        Background="{StaticResource BackgroundBrush}">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="{DynamicResource MaterialDesignPaper}">
 
     <Window.Resources>
         <conv:ScoreToColorConverter x:Key="ScoreColorConv"/>
@@ -54,81 +56,97 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="32"/> <!-- 标题栏 -->
+            <RowDefinition Height="*"/>  <!-- 内容区 -->
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- 现代化极简顶部导航 (高度压缩) -->
-        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="8,4" materialDesign:ElevationAssist.Elevation="Dp2">
-            <DockPanel>
-                <!-- 标题 -->
-                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
-                    <materialDesign:PackIcon Kind="DatabaseSearchOutline" Width="20" Height="20" Foreground="White" VerticalAlignment="Center"/>
-                    <TextBlock Text="智能诊断引擎" FontSize="14" FontWeight="SemiBold" Margin="6,0,0,0" Foreground="White" VerticalAlignment="Center"/>
+        <!-- 自定义沉浸式标题栏 -->
+        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="12,0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="DatabaseSearchOutline" Width="18" Height="18" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
+                    <TextBlock Text="智能诊断引擎 (SqlXmlAnalyzer)" FontSize="13" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- 隐藏传统的菜单栏，将功能合并到工具栏 -->
-                <Menu DockPanel.Dock="Left" Background="Transparent" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0">
-                    <MenuItem Header="文件" Padding="8,4" Foreground="White">
-                        <MenuItem Header="打开死锁 XML..." Click="OpenDeadlockFile_Click" Foreground="Black">
-                            <MenuItem.Icon><materialDesign:PackIcon Kind="LockOpenVariantOutline" /></MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="打开执行计划 XML..." Click="OpenPlanFile_Click" Foreground="Black">
-                            <MenuItem.Icon><materialDesign:PackIcon Kind="ChartTree" /></MenuItem.Icon>
-                        </MenuItem>
-                        <Separator/>
-                        <MenuItem Header="退出" Click="Exit_Click" Foreground="Black"/>
-                    </MenuItem>
-                    <MenuItem Header="帮助" Padding="8,4" Foreground="White">
-                        <MenuItem Header="关于" Click="About_Click" Foreground="Black"/>
-                    </MenuItem>
-                </Menu>
-
-                <!-- 核心工具按钮 (去文字，纯图标化) -->
-                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="OpenDeadlockFile_Click" ToolTip="打开死锁" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="LockAlert" Width="18" Height="18"/>
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="OpenPlanFile_Click" ToolTip="打开执行计划" Height="28" Width="28" Padding="0" Margin="0,0,16,0">
-                        <materialDesign:PackIcon Kind="ChartTree" Width="18" Height="18"/>
-                    </Button>
-
-                    <Separator Style="{StaticResource MaterialDesignLightSeparator}" Width="1" Margin="0,4,16,4" Background="#80FFFFFF"/>
-
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="GenerateHtmlReport_Click" ToolTip="导出 HTML" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="LanguageHtml5" Width="18" Height="18"/>
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ExportToWord_Click" ToolTip="导出 Word" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="FileWordOutline" Width="18" Height="18"/>
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ExportToPdf_Click" ToolTip="导出 PDF" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="FilePdfBox" Width="18" Height="18"/>
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ExportObfuscatedPlan_Click" ToolTip="脱敏导出" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="Incognito" Width="18" Height="18"/>
+                <!-- 系统控制按钮 -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Click="Minimize_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="46" Height="32" Padding="0" Content="—" Foreground="{DynamicResource MaterialDesignBody}"/>
+                    <Button Click="Maximize_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="46" Height="32" Padding="0" Content="☐" Foreground="{DynamicResource MaterialDesignBody}"/>
+                    <Button Click="Close_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="46" Height="32" Padding="0" Content="✕" Foreground="{DynamicResource MaterialDesignBody}" x:Name="CloseButton">
                     </Button>
                 </StackPanel>
-
-                <!-- 右侧清理功能 -->
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="CopyAnalysisResult_Click" ToolTip="复制结果" Height="28" Width="28" Padding="0" Margin="0,0,4,0">
-                        <materialDesign:PackIcon Kind="ContentCopy" Width="16" Height="16"/>
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignFlatLightButton}" Click="ClearResults_Click" ToolTip="清空所有视图" Height="28" Width="28" Padding="0">
-                        <materialDesign:PackIcon Kind="Broom" Width="16" Height="16"/>
-                    </Button>
-                </StackPanel>
-            </DockPanel>
+            </Grid>
         </materialDesign:ColorZone>
 
-        <!-- 主内容区 - 紧凑型 Tabs -->
-        
-        <TabControl Grid.Row="1" Margin="2" Name="MainTabControl" SelectedIndex="0">
+        <!-- 主内容区: 左侧 Navigation Rail + 右侧 TabControl -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- 现代化侧边导航 (Navigation Rail) -->
+            <Border Grid.Column="0" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,1,0" Padding="0,12,0,12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="OpenDeadlockFile_Click" ToolTip="打开死锁 XML" Width="48" Height="48" Margin="0,0,0,8">
+                            <materialDesign:PackIcon Kind="LockAlert" Width="24" Height="24" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="OpenPlanFile_Click" ToolTip="打开执行计划 XML" Width="48" Height="48" Margin="0,0,0,16">
+                            <materialDesign:PackIcon Kind="ChartTree" Width="24" Height="24" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
+                        </Button>
+                        <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="12,0,12,16"/>
+                        
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="GenerateHtmlReport_Click" ToolTip="导出 HTML 报告" Width="48" Height="48" Margin="0,0,0,8">
+                            <materialDesign:PackIcon Kind="LanguageHtml5" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ExportToWord_Click" ToolTip="导出 Word 报告" Width="48" Height="48" Margin="0,0,0,8">
+                            <materialDesign:PackIcon Kind="FileWordOutline" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ExportToPdf_Click" ToolTip="导出 PDF" Width="48" Height="48" Margin="0,0,0,8">
+                            <materialDesign:PackIcon Kind="FilePdfBox" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ExportObfuscatedPlan_Click" ToolTip="脱敏导出执行计划" Width="48" Height="48" Margin="0,0,0,16">
+                            <materialDesign:PackIcon Kind="Incognito" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="CopyAnalysisResult_Click" ToolTip="复制结果到剪贴板" Width="48" Height="48" Margin="0,0,0,8">
+                            <materialDesign:PackIcon Kind="ContentCopy" Width="20" Height="20" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ClearResults_Click" ToolTip="清空所有视图" Width="48" Height="48" Margin="0,0,0,16">
+                            <materialDesign:PackIcon Kind="Broom" Width="20" Height="20" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                        <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="12,0,12,16"/>
+                        <ToggleButton x:Name="ThemeToggle" Style="{StaticResource MaterialDesignSwitchToggleButton}" Click="ThemeToggle_Click" ToolTip="深色/浅色切换" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="About_Click" ToolTip="关于" Width="48" Height="48">
+                            <materialDesign:PackIcon Kind="InformationOutline" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- 主内容区 Tabs -->
+<TabControl Grid.Column="1" Margin="2" Name="MainTabControl" SelectedIndex="0" Background="{DynamicResource MaterialDesignPaper}">
 
             <!-- ==================== 死锁分析 Tab (A) ==================== -->
             <TabItem Header="🔴 死锁分析" Margin="0,0,-16,0">
-                <Grid>
+
+    <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition x:Name="DeadlockLeftColumn" Width="280" MinWidth="0"/>
                         <ColumnDefinition Width="4"/>
@@ -180,10 +198,10 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Orientation="Horizontal" Margin="4,2,4,4">
-                            <TextBlock Text="死锁等待图 (原生拓扑视图)" FontWeight="SemiBold" VerticalAlignment="Center" FontSize="12" Foreground="#1E2B3C"/>
+                            <TextBlock Text="死锁等待图 (原生拓扑视图)" FontWeight="SemiBold" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource MaterialDesignBody}"/>
                             <ComboBox x:Name="XelDeadlockSelector" Width="170" Margin="12,0,4,0" Visibility="Collapsed" SelectionChanged="XelDeadlockSelector_SelectionChanged" DisplayMemberPath="Timestamp" ToolTip="选择 XEL 文件中的死锁记录"/>
-                            <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC" ToolTip="收起/展开左侧进程和资源面板"/>
-                            <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC" ToolTip="收起/展开右侧类型诊断和详情面板"/>
+                            <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开左侧进程和资源面板"/>
+                            <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开右侧类型诊断和详情面板"/>
                             <Button Content="🔍 适屏" Click="ZoomToFitDeadlock_Click" Margin="4,0,8,0" Padding="8,2" ToolTip="自适应缩放并平移以使全部节点适配当前窗口尺寸"/>
                             <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 回放模式" Checked="PlaybackModeToggle_Checked" Unchecked="PlaybackModeToggle_Unchecked" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
                             <Button Content="复制 Mermaid" Click="CopyDeadlockMermaid_Click" Margin="4,0" Padding="6,2"/>
@@ -192,7 +210,7 @@
 
 
                         <!-- Canvas 图形化死锁等待图 - 支持节点拖拽 + 鼠标滚轮缩放 + 中键平移 (纯 WPF 原生) -->
-                        <Border x:Name="DeadlockCanvasBorder" Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" Margin="2" Background="#FAFAFA" CornerRadius="6" ClipToBounds="True">
+                        <Border x:Name="DeadlockCanvasBorder" Grid.Row="1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1" Margin="2" Background="{DynamicResource MaterialDesignPaper}" CornerRadius="6" ClipToBounds="True">
                             <Canvas x:Name="DeadlockGraphCanvas" Width="1600" Height="1200">
                                 <Canvas.Background>
                                     <!-- 专家级微点网格背景 (Visual Brush) -->
@@ -248,7 +266,8 @@
 
             <!-- ==================== 执行计划分析 Tab (B) - 参考 Plan Explorer ==================== -->
             <TabItem Header="📈 执行计划分析" Margin="24,0,-42,0">
-                <Grid>
+
+    <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <!-- 查询文本 -->
@@ -289,7 +308,8 @@
                                     </TextBlock.LayoutTransform>
                                 </TextBlock>
                             </Expander.Header>
-                            <Grid>
+
+    <Grid>
                                 <TreeView Name="PlanOperatorTree"
                                           SelectedItemChanged="PlanOperatorTree_SelectedItemChanged"/>
                             </Grid>
@@ -310,7 +330,7 @@
                                     <local:PlanGraphControl x:Name="PlanNodifyGraph" NodeSelected="PlanNodifyGraph_NodeSelected" NodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"/>
                                 </TabItem>
                                 <TabItem Header="📄 传统树状图（经典显示）">
-                                    <Border BorderBrush="#CCCCCC" BorderThickness="1" Background="White">
+                                    <Border BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1" Background="{DynamicResource MaterialDesignPaper}">
                                         <ScrollViewer>
                                             <TreeView Name="PlanVisualTree" 
                                                       ItemTemplate="{StaticResource PlanOperatorTemplate}"
@@ -333,7 +353,7 @@
                                     </DataGrid>
                                 </TabItem>
                                 <TabItem Header="📄 XML 源码" Margin="0,0,3,0">
-                                    <TextBox x:Name="PlanXmlTextBox" IsReadOnly="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#FDFEFE" Foreground="#17202A"/>
+                                    <TextBox x:Name="PlanXmlTextBox" IsReadOnly="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}"/>
                                 </TabItem>
                                 <TabItem Header="📊 参数嗅探直方图 (Histogram)" Margin="0,0,-19,0">
                                     <local:StatisticsHistogramControl x:Name="StatisticsHistogramView"/>
@@ -353,16 +373,14 @@
                                     </TextBlock.LayoutTransform>
                                 </TextBlock>
                             </Expander.Header>
-                            <Grid>
+
+    <Grid>
                                 <DataGrid Name="PlanPropertiesGrid"
                                           AutoGenerateColumns="False"
                                           IsReadOnly="True"
                                           HeadersVisibility="Column"
                                           GridLinesVisibility="Horizontal"
-                                          AlternatingRowBackground="#F9FAFB"
-                                          RowBackground="White"
-                                          Background="White"
-                                          BorderBrush="#E0E0E0"
+                                          Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{DynamicResource MaterialDesignDivider}"
                                           BorderThickness="1">
                                     <DataGrid.GroupStyle>
                                         <GroupStyle>
@@ -390,6 +408,7 @@
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="TextWrapping" Value="Wrap"/>
+                                                    <Setter Property="FontFamily" Value="Consolas, Cascadia Code, Courier New"/>
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
@@ -402,7 +421,8 @@
                     <!-- 底部：警告和建议 (类似 Plan Explorer 底部面板) -->
                     <Expander Grid.Row="2" Header="执行计划深度诊断报告 (★ 13类专家建议)" ExpandDirection="Up" IsExpanded="True" Margin="2,4,2,0">
                         <Border Background="#FFF9E6" BorderBrush="#FFD54F" BorderThickness="1" Padding="12" CornerRadius="6" Margin="0,8,0,0">
-                            <Grid>
+
+    <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
@@ -411,8 +431,9 @@
                                     <ItemsControl ItemsSource="{Binding MissingIndexes}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
-                                                    <Grid>
+                                                <Border Background="{DynamicResource MaterialDesignPaper}" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+
+    <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
@@ -447,7 +468,7 @@
 
             <!-- ==================== A/B 并排对比 Tab (C) ==================== -->
             <TabItem Header="⚖️ A/B 比对分析" Margin="42,0,-60,0">
-                <Grid Background="{StaticResource BackgroundBrush}">
+                <Grid Background="{DynamicResource MaterialDesignPaper}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="320" MinWidth="200"/>
                         <!-- 调优历史列表 -->
@@ -465,7 +486,7 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Orientation="Vertical" Margin="0,0,0,8">
-                            <TextBlock Text="调优版本历史 (Tuning History)" FontWeight="Bold" FontSize="14" Foreground="#1E2B3C" Margin="0,0,0,6"/>
+                            <TextBlock Text="调优版本历史 (Tuning History)" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}" Margin="0,0,0,6"/>
                             <UniformGrid Columns="2" Margin="0,2">
                                 <Button Content="📸 捕获当前计划" Command="{Binding CaptureCurrentPlanCommand}" Height="28" Margin="0,0,4,0" ToolTip="将当前查看的执行计划加入调优历史列表中"/>
                                 <Button Content="🧹 清空历史" Command="{Binding ClearHistoryCommand}" Style="{StaticResource SecondaryButtonStyle}" Height="28" Margin="4,0,0,0"/>
@@ -621,15 +642,16 @@
 
                             <!-- 查询语句对比 -->
                             <Expander Grid.Row="1" Header="查询语句对比 (SQL Statements)" ExpandDirection="Down" IsExpanded="False" Margin="4,0,4,8">
-                                <Grid>
+
+    <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="4"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" Height="50" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding PlanA.StatementText}" FontFamily="Consolas" FontSize="10" Background="#FAFAFA" VerticalScrollBarVisibility="Auto"/>
+                                    <TextBox Grid.Column="0" Height="50" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding PlanA.StatementText}" FontFamily="Consolas" FontSize="10" Background="{DynamicResource MaterialDesignPaper}" VerticalScrollBarVisibility="Auto"/>
                                     <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Transparent"/>
-                                    <TextBox Grid.Column="2" Height="50" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding PlanB.StatementText}" FontFamily="Consolas" FontSize="10" Background="#FAFAFA" VerticalScrollBarVisibility="Auto"/>
+                                    <TextBox Grid.Column="2" Height="50" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding PlanB.StatementText}" FontFamily="Consolas" FontSize="10" Background="{DynamicResource MaterialDesignPaper}" VerticalScrollBarVisibility="Auto"/>
                                 </Grid>
                             </Expander>
 
@@ -642,8 +664,9 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- 计划 A 的 TreeView -->
-                                <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
-                                    <Grid>
+                                <Border Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+
+    <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
@@ -656,8 +679,9 @@
                                 </Border>
 
                                 <!-- 计划 B 的 TreeView -->
-                                <Border Grid.Column="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
-                                    <Grid>
+                                <Border Grid.Column="2" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+
+    <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
@@ -674,9 +698,10 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        </Grid>
 
         <!-- 状态栏 -->
-        <StatusBar Grid.Row="3" Background="{StaticResource AccentBrush}" Foreground="White">
+        <StatusBar Grid.Row="2" Background="{StaticResource AccentBrush}" Foreground="White">
             <StatusBarItem>
                 <TextBlock Name="StatusTextBlock" Text="{Binding StatusText}" Foreground="White" FontWeight="SemiBold"/>
             </StatusBarItem>

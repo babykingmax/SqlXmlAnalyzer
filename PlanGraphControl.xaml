@@ -14,7 +14,7 @@
         <Border BorderBrush="#90A4AE" BorderThickness="1.5" Background="#F5F7FA" CornerRadius="4">
             <Grid>
                 <!-- 顶部工具提示栏 -->
-                <Border Background="#ECEFF1" BorderBrush="#CFD8DC" BorderThickness="0,0,0,1" Height="36" VerticalAlignment="Top" Panel.ZIndex="10">
+                <Border Background="#ECEFF1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,0,1" Height="36" VerticalAlignment="Top" Panel.ZIndex="10">
                     <StackPanel Orientation="Horizontal" Margin="8,0">
                         <TextBlock Text="📊 执行计划节点图" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center" Foreground="#37474F"/>
                         
@@ -73,7 +73,7 @@
                             <Grid>
                                 <!-- Material Design 风格的节点卡片 -->
                                 <Border MinWidth="140" MinHeight="75" 
-                                        Background="White" 
+                                        Background="{DynamicResource MaterialDesignPaper}" 
                                         BorderBrush="{Binding DynamicBorderBrush}" 
                                         BorderThickness="{Binding DynamicBorderThickness}" 
                                         CornerRadius="6"
@@ -285,7 +285,7 @@
                                         
                                         <!-- 分隔线 -->
                                         <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
-                                            <Grid Background="#FAFAFA" Margin="0">
+                                            <Grid Background="{DynamicResource MaterialDesignPaper}" Margin="0">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
@@ -312,7 +312,7 @@
                                         FontWeight="Bold"
                                         HorizontalAlignment="Right" VerticalAlignment="Bottom"
                                         Margin="0,0,-10,-10" 
-                                        Background="White" Foreground="{StaticResource InfoBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                        Background="{DynamicResource MaterialDesignPaper}" Foreground="{StaticResource InfoBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
                                         Cursor="Hand"
                                         ToolTip="折叠/展开子树">
                                     <Button.Resources>

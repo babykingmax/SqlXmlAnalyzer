@@ -1,3 +1,4 @@
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,6 +39,50 @@ namespace SqlXmlAnalyzer
         private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
         private DeadlockPlaybackViewModel? _playbackViewModel;
         private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
+
+        
+        
+        private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                if (this.WindowState == System.Windows.WindowState.Maximized)
+                    this.WindowState = System.Windows.WindowState.Normal;
+                else
+                    this.WindowState = System.Windows.WindowState.Maximized;
+            }
+            else
+            {
+                this.DragMove();
+            }
+        }
+        
+        private void Minimize_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.WindowState = System.Windows.WindowState.Minimized;
+        }
+
+        private void Maximize_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (this.WindowState == System.Windows.WindowState.Maximized)
+                this.WindowState = System.Windows.WindowState.Normal;
+            else
+                this.WindowState = System.Windows.WindowState.Maximized;
+        }
+
+        private void Close_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ThemeToggle_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var paletteHelper = new PaletteHelper();
+            var theme = paletteHelper.GetTheme();
+            if (theme == null) return;
+            theme.SetBaseTheme(ThemeToggle.IsChecked == true ? BaseTheme.Dark : BaseTheme.Light);
+            paletteHelper.SetTheme(theme);
+        }
 
         public MainWindow(Core.XelReader xelReader = null)
         {
