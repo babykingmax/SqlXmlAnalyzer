@@ -96,6 +96,13 @@ namespace SqlXmlAnalyzer
             };
 
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+            if (e.Args.Length > 0 && File.Exists(e.Args[0]))
+            {
+                mainWindow.Loaded += (sender, args) =>
+                {
+                    mainWindow.AnalyzeFile(e.Args[0]);
+                };
+            }
             mainWindow.Show();
         }
 

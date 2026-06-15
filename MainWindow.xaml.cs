@@ -380,7 +380,7 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        private async void AnalyzeFile(string filePath)
+        public async void AnalyzeFile(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             {
@@ -2117,10 +2117,68 @@ namespace SqlXmlAnalyzer
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("SqlXmlAnalyzer 专业图形界面版 v2.0\n\n" +
-                           "原控制台版本的增强 GUI 实现\n" +
-                           "支持死锁 Wait-For Graph 可视化 + 执行计划树可视化\n\n" +
-                           "开发中...", "关于", MessageBoxButton.OK, MessageBoxImage.Information);
+            var result = MessageBox.Show("SqlXmlAnalyzer 专业图形界面版 v2.0\n\n" +
+                                         "功能特性：\n" +
+                                         "1. 完美的执行计划可视化与智能折叠 (基于 Nodify)\n" +
+                                         "2. 深度死锁回放与有向图关键路径聚焦\n" +
+                                         "3. 索引调优沙盒与 Tipping Point 临界线分析\n" +
+                                         "4. 参数嗅探并排对比与直方图绘制\n\n" +
+                                         "是否关联 .sqlplan 与 .xdl 文件到系统右键菜单？\n" +
+                                         "（点击“是”将为当前用户注册文件关联，“否”则仅关闭此窗口）", 
+                                         "关于 & 关联设置", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    RegisterFileAssociations();
+                    MessageBox.Show("文件关联注册成功！您现在可以直接双击或右键打开 .sqlplan 和 .xdl 文件了。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"注册文件关联失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        public static void RegisterFileAssociations()
+        {
+            string appPath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? "";
+            if (string.IsNullOrEmpty(appPath)) return;
+
+            using (var classesKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Classes", true))
+            {
+                if (classesKey == null) return;
+
+                // 1. .sqlplan 关联
+                using (var sqlplanKey = classesKey.CreateSubKey(".sqlplan"))
+                {
+                    sqlplanKey.SetValue("", "SqlXmlAnalyzer.sqlplan");
+                }
+                using (var sqlplanProgKey = classesKey.CreateSubKey("SqlXmlAnalyzer.sqlplan"))
+                {
+                    sqlplanProgKey.SetValue("", "SQL Server 执行计划文件 (.sqlplan)");
+                    sqlplanProgKey.SetValue("FriendlyTypeName", "SQL Server 执行计划文件 (.sqlplan)");
+                    using (var shellKey = sqlplanProgKey.CreateSubKey(@"shell\open\command"))
+                    {
+                        shellKey.SetValue("", $"\"{appPath}\" \"%1\"");
+                    }
+                }
+
+                // 2. .xdl 关联
+                using (var xdlKey = classesKey.CreateSubKey(".xdl"))
+                {
+                    xdlKey.SetValue("", "SqlXmlAnalyzer.xdl");
+                }
+                using (var xdlProgKey = classesKey.CreateSubKey("SqlXmlAnalyzer.xdl"))
+                {
+                    xdlProgKey.SetValue("", "SQL Server 死锁文件 (.xdl)");
+                    xdlProgKey.SetValue("FriendlyTypeName", "SQL Server 死锁文件 (.xdl)");
+                    using (var shellKey = xdlProgKey.CreateSubKey(@"shell\open\command"))
+                    {
+                        shellKey.SetValue("", $"\"{appPath}\" \"%1\"");
+                    }
+                }
+            }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
