@@ -35,8 +35,10 @@
 
 ### 2.3 索引分析沙盒与评分系统 (Index Analysis Sandbox) *[New]*
 最新加入的杀手级特性，它深度解析 XML 中的 `<MissingIndexes>` 节点，构建了一个虚拟的索引调优沙盒：
-*   **沙盒模拟 (Sandbox)**：在不动生产库的情况下，分析补齐索引能带来的预估性能提升（Impact）。
-*   **索引评分 (Index Scoring)**：结合表大小、读写比例等维度进行智能打分，防止“伪缺失索引”带来的写惩罚。
+*   **三栏式现代调优面板**：左侧为表内可用列选择器，中间为已选定 Key Columns（键列，支持上下调整顺序）与 Include Columns（包含列），右侧为智能评分与决策面板。
+*   **沙盒模拟 (Sandbox) 与评分 (Index Scoring)**：在不动生产库的情况下，分析补齐索引能带来的预估性能提升（Impact）。结合表大小、读写比例等维度进行智能打分（配合多彩进度圆环），防止“伪缺失索引”带来的写惩罚。
+*   **回表临界值分析器 (Tipping Point Analyzer)**：集成了 SQL Server 优化器回表阈值算法。支持输入表数据行数（Total Rows）、平均行宽（Avg Row Size）与预估返回行数（Returned Rows），动态计算 Tipping Point 区间并分析当前查询是否会因超出阈值而导致 Seek-Lookup 计划退化为 Table Scan。
+*   **CREATE INDEX 脚本生成**：在配置完成后，自动生成标准 T-SQL 索引创建脚本，支持一键复制代码。
 
 ---
 
@@ -50,7 +52,7 @@
 *   **PlanNodeViewModel**：每一个解析出的算子都被封装为 ViewModel。其中计算了极其丰富的显示属性（如 `NodeSeverityColor`, `PartitionRangeColor` 等）。
 *   **坐标系与递归布局 (`MeasureNode`)**：
     *   采用 **后序遍历 (Post-order Traversal)** 算法，自底向上计算每一个子节点的宽高和相对位置（Bottom-Up）。
-    *   完美解决了节点折叠/展开动态触发布局变更时的重叠与碰撞问题。
+    *   完美解决了节点折叠/展开动态触布局变更时的重叠与碰撞问题。
 *   **事件隔离防穿透 (Hit-Testing Fix)**：针对 Nodify 画布会全局拦截 `MouseDown` 事件用于平移的特性，在节点的 `[+]`/`[-]` 按钮处创新性地使用了隧道事件 (`PreviewMouseLeftButtonDown`) 配合 `e.Handled = true` 强行阻断冒泡，实现了完美的精确点击伸缩体验。
 *   **智能折叠 (Smart Collapse)**：
     *   算法在生成计划图时，会自底向上扫描所有算子的 `SubtreeCost` 和是否存在 `Warning/Critical`。
@@ -59,7 +61,20 @@
 ### 3.2 死锁可视化与回放系统 (Deadlock Visualization)
 除了查询执行计划，处理 `.xdl` 死锁图谱是另一大杀手锏。
 *   **`DeadlockTimelineParser` (时序反编译器)**：内部执行有向图深度优先搜索算法（DFS），计算并找出成环（Cycle）的致命阻塞链路。
-*   **`DeadlockPlaybackViewModel` (动态帧渲染架构)**：支持“死锁可视化回放”模式！引擎像播放录像带一样与 `DeadlockGraphCanvas` 高频联动，通过调节帧率（SpeedIntervalMs），在界面上逐个还原资源的 Request (请求边) 与 Grant (持有边) 历史事件。
+*   **`DeadlockPlaybackViewModel` (动态帧渲染与水平步进时间轴)**：
+    *   **水平步进时间轴 (Horizontal Stepper Timeline)**：界面上方集成了横向 ListBox 步进指示器，每个事务状态演化节点均渲染为独立的气泡。气泡支持不同激活状态（已回放/未回放/当前执行帧/受害者 💀 节点高亮，伴随柔软发光阴影）。
+    *   **现代交互操作**：移除原有纯文字按钮，升级为带有 PackIcon 的多功能控制栏（重置、上一步、播放/暂停、下一步），并提供播放速度微调（Slow/Medium/Fast）与一键“聚焦关键环”交互。
+    *   像播放录像带一样与 `DeadlockGraphCanvas` 高频联动，逐帧还原资源的 Request 与 Grant 历史。
+
+### 3.3 参数嗅探并排对比卡片 (Parameter Sniffing side-by-side cards)
+针对 SQL Server 严重的参数嗅探问题（Parameter Sniffing），在统计直方图面板引入了并排对比卡片：
+*   **并排对比卡片 (Side-by-Side Cards)**：编译期参数（Compiled Parameter）和运行期参数（Runtime Parameter）的参数值分别采用淡蓝色（主题主色）与淡红色（告警色）并排展示。
+*   **估算偏离比徽章 (Ratio Badge)**：计算由于编译参数和运行时参数的基数不一致导致的偏离比例，超出安全阈值时自动以醒目的橙色徽章进行性能警示。
+
+### 3.4 无边框窗口与最大化自适应 (Borderless Window Maximization)
+主界面采用了 Material Design 风格的无边框设计：
+*   **标题栏鼠标拖动**：通过 TitleBar 拦截 `MouseLeftButtonDown` 实现双击最大化/还原以及按住拖拽移动窗口。
+*   **任务栏工作区适配（Win32 钩子）**：为了防止普通 borderless 窗口在最大化时覆盖 Windows 任务栏，重写了 `OnSourceInitialized` 并注入 `WM_GETMINMAXINFO` 窗口消息钩子。动态查询当前显示器的工作区范围（WorkArea），精确限制最大化后的窗口边界。
 
 ## 4. 关键交互流程总结
 1.  **加载文件** -> `XDocument.Load` 解析 XML。
