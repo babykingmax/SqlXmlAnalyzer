@@ -8,7 +8,7 @@ namespace SqlXmlAnalyzer.Core.Scoring
 {
     public static class IndexScoringCalculator
     {
-        public static void CalculateScore(MissingIndexSuggestion suggestion, XDocument planDoc, XNamespace ns)
+        public static void CalculateScore(MissingIndexSuggestion suggestion, XDocument? planDoc, XNamespace? ns)
         {
             if (suggestion == null) return;
 
@@ -63,6 +63,7 @@ namespace SqlXmlAnalyzer.Core.Scoring
                         var preds = relOp.Descendants(ns + "ScalarOperator")
                                          .Select(so => so.Attribute("ScalarString")?.Value)
                                          .Where(s => !string.IsNullOrEmpty(s))
+                                         .Select(s => s!)
                                          .ToList();
 
                         foreach (var p in preds)
@@ -96,46 +97,54 @@ namespace SqlXmlAnalyzer.Core.Scoring
 
             // 2. Score(I) = S_eq + S_ineq + S_order + S_cover - S_penalty
 
+            var keyCols = suggestion.KeyColumns;
+
             // S_eq: Equality Score
             int seq = 0;
-            for (int i = 0; i < (suggestion.KeyColumns?.Count ?? 0); i++)
+            if (keyCols != null)
             {
-                var col = suggestion.KeyColumns[i];
-                if (col == null || string.IsNullOrEmpty(col.Name)) continue;
-                string colName = col.Name.Trim('[', ']');
+                for (int i = 0; i < keyCols.Count; i++)
+                {
+                    var col = keyCols[i];
+                    if (col == null || string.IsNullOrEmpty(col.Name)) continue;
+                    string colName = col.Name.Trim('[', ']');
 
-                bool isEquality = (planDoc != null) ? eqPredCols.Contains(colName) : (col.Usage == "EQUALITY");
-                if (isEquality)
-                {
-                    seq += 30;
-                }
-                else
-                {
-                    break; // Must be contiguous leading key columns
+                    bool isEquality = (planDoc != null) ? eqPredCols.Contains(colName) : (col.Usage == "EQUALITY");
+                    if (isEquality)
+                    {
+                        seq += 30;
+                    }
+                    else
+                    {
+                        break; // Must be contiguous leading key columns
+                    }
                 }
             }
 
             // S_ineq: Inequality Score
             int sineq = 0;
             int firstNonEqIndex = 0;
-            for (int i = 0; i < (suggestion.KeyColumns?.Count ?? 0); i++)
+            if (keyCols != null)
             {
-                var col = suggestion.KeyColumns[i];
-                if (col == null || string.IsNullOrEmpty(col.Name)) continue;
-                string colName = col.Name.Trim('[', ']');
-
-                bool isEquality = (planDoc != null) ? eqPredCols.Contains(colName) : (col.Usage == "EQUALITY");
-                if (!isEquality)
+                for (int i = 0; i < keyCols.Count; i++)
                 {
-                    firstNonEqIndex = i;
-                    break;
+                    var col = keyCols[i];
+                    if (col == null || string.IsNullOrEmpty(col.Name)) continue;
+                    string colName = col.Name.Trim('[', ']');
+
+                    bool isEquality = (planDoc != null) ? eqPredCols.Contains(colName) : (col.Usage == "EQUALITY");
+                    if (!isEquality)
+                    {
+                        firstNonEqIndex = i;
+                        break;
+                    }
+                    firstNonEqIndex = i + 1;
                 }
-                firstNonEqIndex = i + 1;
             }
 
-            if (suggestion.KeyColumns != null && firstNonEqIndex < suggestion.KeyColumns.Count)
+            if (keyCols != null && firstNonEqIndex < keyCols.Count)
             {
-                var col = suggestion.KeyColumns[firstNonEqIndex];
+                var col = keyCols[firstNonEqIndex];
                 if (col != null && !string.IsNullOrEmpty(col.Name))
                 {
                     string colName = col.Name.Trim('[', ']');
@@ -149,12 +158,12 @@ namespace SqlXmlAnalyzer.Core.Scoring
 
             // S_order: OrderBy Score
             int sorder = 0;
-            if (orderByCols.Count > 0 && suggestion.KeyColumns != null && suggestion.KeyColumns.Count > 0)
+            if (orderByCols.Count > 0 && keyCols != null && keyCols.Count > 0)
             {
                 int keyIdx = 0;
-                while (keyIdx < suggestion.KeyColumns.Count)
+                while (keyIdx < keyCols.Count)
                 {
-                    var col = suggestion.KeyColumns[keyIdx];
+                    var col = keyCols[keyIdx];
                     if (col == null || string.IsNullOrEmpty(col.Name)) break;
                     string colName = col.Name.Trim('[', ']');
 
@@ -163,12 +172,12 @@ namespace SqlXmlAnalyzer.Core.Scoring
                     keyIdx++;
                 }
 
-                if (keyIdx < suggestion.KeyColumns.Count && (suggestion.KeyColumns.Count - keyIdx) >= orderByCols.Count)
+                if (keyIdx < keyCols.Count && (keyCols.Count - keyIdx) >= orderByCols.Count)
                 {
                     bool match = true;
                     for (int o = 0; o < orderByCols.Count; o++)
                     {
-                        var col = suggestion.KeyColumns[keyIdx + o];
+                        var col = keyCols[keyIdx + o];
                         if (col == null || string.IsNullOrEmpty(col.Name) || 
                             !string.Equals(col.Name.Trim('[', ']'), orderByCols[o], StringComparison.OrdinalIgnoreCase))
                         {

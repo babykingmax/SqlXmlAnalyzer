@@ -24,7 +24,7 @@ namespace SqlXmlAnalyzer.Tests
             );
         }
 
-        private LockResource CreateResource(string id, string lockType, string indexName = "", string objectName = "", List<LockWaiter> waiters = null)
+        private LockResource CreateResource(string id, string lockType, string indexName = "", string objectName = "", List<LockWaiter>? waiters = null)
         {
             return new LockResource(
                 LockType: lockType,

@@ -50,7 +50,7 @@ namespace SqlXmlAnalyzer.Tests
             Assert.Equal(new DateTime(2026, 5, 1, 10, 0, 0), stat1.LastUpdate);
             Assert.Equal(1500, stat1.ModificationCount);
             Assert.Equal(100.0, stat1.SamplingPercent);
-            Assert.True(stat1.IsStale || (DateTime.Now - stat1.LastUpdate.Value).TotalDays > 30);
+            Assert.True(stat1.IsStale || (DateTime.Now - stat1.LastUpdate!.Value).TotalDays > 30);
             Assert.False(stat1.IsLowSampling);
 
             var stat2 = result[1];

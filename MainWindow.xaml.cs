@@ -172,7 +172,7 @@ namespace SqlXmlAnalyzer
             paletteHelper.SetTheme(theme);
         }
 
-        public MainWindow(Core.XelReader xelReader = null)
+        public MainWindow(Core.XelReader? xelReader = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -189,7 +189,7 @@ namespace SqlXmlAnalyzer
                     RefreshABCompareTrees();
                     if (ViewModel.PlanA != null && ViewModel.PlanB != null)
                     {
-                        var tab = MainTabControl.Items.OfType<System.Windows.Controls.TabItem>().FirstOrDefault(t => t.Header?.ToString().Contains("A/B") == true);
+                        var tab = MainTabControl.Items.OfType<System.Windows.Controls.TabItem>().FirstOrDefault(t => t.Header?.ToString()?.Contains("A/B") == true);
                         if (tab != null) MainTabControl.SelectedItem = tab;
                     }
                 }
@@ -2609,9 +2609,9 @@ namespace SqlXmlAnalyzer
 
         public class PropertyItem
         {
-            public string Group { get; set; }
-            public string Name { get; set; }
-            public string Value { get; set; }
+            public string Group { get; set; } = "";
+            public string Name { get; set; } = "";
+            public string Value { get; set; } = "";
         }
 
         private void OpenPlanMermaidInBrowser_Click(object sender, RoutedEventArgs e)

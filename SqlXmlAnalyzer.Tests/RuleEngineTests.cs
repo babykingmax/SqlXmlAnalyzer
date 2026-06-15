@@ -58,7 +58,7 @@ namespace SqlXmlAnalyzer.Tests
                             </QueryPlan>
                          </RelOp>";
             var doc = XDocument.Parse(xml);
-            var element = doc.Root;
+            var element = doc.Root!;
 
             var result = rule.Analyze(element, ns);
 

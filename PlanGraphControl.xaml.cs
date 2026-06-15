@@ -116,8 +116,8 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        private PlanNodeViewModel _selectedNode;
-        public PlanNodeViewModel SelectedNode
+        private PlanNodeViewModel? _selectedNode;
+        public PlanNodeViewModel? SelectedNode
         {
             get => _selectedNode;
             set
@@ -130,8 +130,8 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public event EventHandler<PlanNodeViewModel> NodeSelected;
-        public event EventHandler<PlanNodeViewModel> NodeDoubleClicked;
+        public event EventHandler<PlanNodeViewModel?>? NodeSelected;
+        public event EventHandler<PlanNodeViewModel?>? NodeDoubleClicked;
 
         private Point _lastMousePosition;
         private bool _isPanning;
@@ -1137,7 +1137,7 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
@@ -1282,8 +1282,8 @@ namespace SqlXmlAnalyzer
         public double X { get; set; }
         public double Y { get; set; }
         public double SubtreeWidth { get; set; }
-        public Geometry IconGeometry { get; set; }
-        public Brush IconBrush { get; set; }
+        public Geometry? IconGeometry { get; set; }
+        public Brush? IconBrush { get; set; }
         
         public string OperatorType { get; set; } = "Other";
         public bool IsParallel { get; set; }
@@ -1505,7 +1505,7 @@ namespace SqlXmlAnalyzer
         public string HasWarningVisible => string.IsNullOrEmpty(Warnings) ? "Collapsed" : "Visible";
         public string HasExtraInfo => (IsParallel || !string.IsNullOrEmpty(Warnings)) ? "Visible" : "Collapsed";
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
@@ -1892,8 +1892,22 @@ namespace SqlXmlAnalyzer
     {
         private readonly Action<T> _execute;
         public RelayCommand(Action<T> execute) => _execute = execute;
-        public bool CanExecute(object parameter) => true;
-        public void Execute(object parameter) => _execute((T)parameter);
-        public event EventHandler CanExecuteChanged;
+        public bool CanExecute(object? parameter) => true;
+        public void Execute(object? parameter)
+        {
+            if (parameter is T val)
+            {
+                _execute(val);
+            }
+            else if (parameter == null)
+            {
+                _execute(default!);
+            }
+        }
+        public event EventHandler? CanExecuteChanged
+        {
+            add { }
+            remove { }
+        }
     }
 }

@@ -66,6 +66,25 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new SerialPlanReasonRule());
             RegisterRule(new LocalVariablesRule());
             RegisterRule(new ZeroRowActualsRule());
+            RegisterRule(new WaitStatsRule());
+            RegisterRule(new ResourceSemaphoreRule());
+            RegisterRule(new OptimizerAbortRule());
+            RegisterRule(new CacheAndRecompileRule());
+            RegisterRule(new MissingIndexRule());
+            RegisterRule(new TableScanRule());
+            RegisterRule(new HighCostOperatorRule());
+            RegisterRule(new NestedLoopsRunningTotalRule());
+            RegisterRule(new MultipleScalarSubqueriesRule());
+            RegisterRule(new QueryRewriteRule());
+            RegisterRule(new ImplicitConversionDocRule());
+            RegisterRule(new ParameterSniffingDocRule());
+            RegisterRule(new StatsUsageRule());
+            RegisterRule(new MemoryGrantDocRule());
+            RegisterRule(new CardinalityErrorRule());
+            RegisterRule(new KeyLookupOpRule());
+            RegisterRule(new MemorySpillRule());
+            RegisterRule(new ThreadSkewRule());
+            RegisterRule(new ResidualPredOpRule());
         }
     }
 }

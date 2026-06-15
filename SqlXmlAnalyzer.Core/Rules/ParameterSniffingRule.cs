@@ -79,7 +79,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     else if (ratio >= 10) severity = "Warning";
                     else severity = "Info";
 
-                    var statsList = Parsers.StatisticsUsageParser.Parse(relOp.Document, ns);
+                    var statsList = relOp.Document != null ? Parsers.StatisticsUsageParser.Parse(relOp.Document, ns) : new List<Models.StatisticsInfo>();
                     var staleStats = statsList.Where(s => s.IsStale || s.ModificationCount > 1000).ToList();
                     string statsWarning = "";
 
