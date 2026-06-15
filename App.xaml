@@ -7,6 +7,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Nodify;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="ThemeColors.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- 现代配色体系 (Fluent Design / Modern UI) -->

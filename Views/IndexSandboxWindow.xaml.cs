@@ -9,6 +9,17 @@ namespace SqlXmlAnalyzer.Views
             InitializeComponent();
         }
 
+        private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+                this.DragMove();
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         private void CopyAndClose_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.IndexSandboxViewModel vm)

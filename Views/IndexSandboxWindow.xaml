@@ -2,192 +2,277 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:conv="clr-namespace:SqlXmlAnalyzer.Converters"
-        Title="索引沙盒模拟 (Index Sandbox)" Height="580" Width="920"
-        WindowStartupLocation="CenterOwner" Background="#F5F6F8" FontFamily="Segoe UI">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="索引沙盒模拟 (Index Sandbox)" Height="620" Width="1000"
+        WindowStartupLocation="CenterOwner" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto">
     <Window.Resources>
         <conv:ScoreToColorConverter x:Key="ScoreColorConv"/>
     </Window.Resources>
     
-    <Grid Margin="12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border Background="{DynamicResource MaterialDesignPaper}"
+            BorderBrush="{DynamicResource MaterialDesignDivider}"
+            BorderThickness="1"
+            CornerRadius="8"
+            ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/> <!-- Custom TitleBar -->
+                <RowDefinition Height="*"/>  <!-- Main Content -->
+                <RowDefinition Height="Auto"/> <!-- Script Footer -->
+            </Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding Table, StringFormat='表索引沙盒分析: {0}'}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12" Foreground="#263238"/>
+            <!-- Custom TitleBar -->
+            <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="12,0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <materialDesign:PackIcon Kind="FlaskOutline" Width="18" Height="18" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
+                        <TextBlock Text="{Binding Table, StringFormat='索引优化沙盒 - {0}'}" FontSize="13" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Click="Close_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="40" Height="40" Padding="0" Content="✕" Foreground="{DynamicResource MaterialDesignBody}" FontSize="14"/>
+                </Grid>
+            </materialDesign:ColorZone>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <!-- 可用表列 -->
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition Width="12"/>
-                <!-- 选定索引列 -->
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
-                <!-- 评分与Tipping Point分析 -->
-                <ColumnDefinition Width="280"/>
-            </Grid.ColumnDefinitions>
+            <!-- Main Content -->
+            <Grid Grid.Row="1" Margin="16">
+                <Grid.ColumnDefinitions>
+                    <!-- Available Columns -->
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="12"/>
+                    <!-- Key & Include Columns -->
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <!-- Dashboard & Scoring -->
+                    <ColumnDefinition Width="320"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- 1. 可用表列 (Available Columns) -->
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="可用表列 (Available Columns)" FontWeight="SemiBold" Margin="0,0,0,6" Foreground="#37474F" FontSize="12"/>
-                <Border Grid.Row="1" Background="White" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" ClipToBounds="True">
-                    <ListBox ItemsSource="{Binding AvailableColumns}" BorderThickness="0" Background="Transparent" Padding="4">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="2" HorizontalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="11" Foreground="#37474F" TextTrimming="CharacterEllipsis" MaxWidth="110"/>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4,0,0,0">
-                                        <Button Content="+ 键" FontSize="9.5" Padding="4,2" Margin="2,0" Background="#ECEFF1" BorderBrush="#B0BEC5" Cursor="Hand"
-                                                Command="{Binding DataContext.AddKeyColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                        <Button Content="+ 包" FontSize="9.5" Padding="4,2" Margin="2,0" Background="#ECEFF1" BorderBrush="#B0BEC5" Cursor="Hand"
-                                                Command="{Binding DataContext.AddIncludeColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Border>
-            </Grid>
-
-            <!-- 2. 选定索引列 (Key & Include Columns) -->
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                
-                <TextBlock Text="键列 (Key Columns) - 顺序敏感" FontWeight="SemiBold" Margin="0,0,0,6" Foreground="#37474F" FontSize="12"/>
-                <Border Grid.Row="1" Margin="0,0,0,12" Background="White" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" ClipToBounds="True">
-                    <ListBox ItemsSource="{Binding KeyColumns}" BorderThickness="0" Background="Transparent" Padding="4">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="2" HorizontalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="11" Foreground="#263238"/>
-                                        <TextBlock Text="{Binding Usage, StringFormat=' ({0})'}" Foreground="#78909C" FontSize="10" Margin="6,0,0,0" FontStyle="Italic"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="6,0,0,0">
-                                        <Button Content="↑" FontSize="9.5" Padding="5,1" Command="{Binding DataContext.MoveKeyColumnUpCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="2,0" Cursor="Hand"/>
-                                        <Button Content="↓" FontSize="9.5" Padding="5,1" Command="{Binding DataContext.MoveKeyColumnDownCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="2,0" Cursor="Hand"/>
-                                        <Button Content="删除" FontSize="9.5" Padding="5,1" Command="{Binding DataContext.RemoveKeyColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="#C62828" Margin="2,0" Cursor="Hand"/>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Border>
-
-                <TextBlock Grid.Row="2" Text="包含列 (Include Columns)" FontWeight="SemiBold" Margin="0,0,0,6" Foreground="#37474F" FontSize="12"/>
-                <Border Grid.Row="3" Background="White" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" ClipToBounds="True">
-                    <ListBox ItemsSource="{Binding IncludeColumns}" BorderThickness="0" Background="Transparent" Padding="4">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="2" HorizontalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="11" Foreground="#263238"/>
-                                    <Button Grid.Column="1" Content="删除" FontSize="9.5" Padding="5,1" Command="{Binding DataContext.RemoveIncludeColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="#C62828" Margin="2,0" Cursor="Hand"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Border>
-            </Grid>
-
-            <!-- 3. 评分与 Tipping Point 分析 -->
-            <ScrollViewer Grid.Column="4" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <!-- 评分板 -->
-                    <Border Background="White" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,12">
-                        <StackPanel>
-                            <TextBlock Text="索引契合评分" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,6" Foreground="#37474F"/>
-                            <Separator Background="#ECEFF1" Margin="0,0,0,8"/>
-                            <TextBlock Text="{Binding CurrentScore, StringFormat={}{0} / 100}" 
-                                       Foreground="{Binding CurrentScore, Converter={StaticResource ScoreColorConv}}" 
-                                       FontWeight="Bold" FontSize="44" HorizontalAlignment="Center"/>
+                <!-- 1. 可用表列 -->
+                <materialDesign:Card Grid.Column="0" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                            <TextBlock Text="可用表列" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                            <TextBlock Text="Available Columns" FontSize="11" Foreground="Gray"/>
                         </StackPanel>
-                    </Border>
-                    
-                    <!-- 成本模拟板 -->
-                    <Border Background="White" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,12">
-                        <StackPanel>
-                            <TextBlock Text="成本影响模拟" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,6" Foreground="#37474F"/>
-                            <Separator Background="#ECEFF1" Margin="0,0,0,8"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" ToolTip="{Binding CostReductionDescription}">
-                                <TextBlock Text="预估总成本降低: " FontSize="12" VerticalAlignment="Center" Foreground="#546E7A"/>
-                                <TextBlock Text="{Binding EstimatedCostReductionPercent, StringFormat={}{0}%}" Foreground="#2E7D32" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
-                                <TextBlock Text=" ▲" Foreground="#2E7D32" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/>
+                        <Border Grid.Row="1" BorderThickness="0" Background="#08000000" CornerRadius="4" Padding="4">
+                            <ListBox ItemsSource="{Binding AvailableColumns}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="2" HorizontalAlignment="Stretch" Width="220">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12" Foreground="{DynamicResource MaterialDesignBody}" TextTrimming="CharacterEllipsis"/>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4,0,0,0">
+                                                <Button Content="+ 键" Style="{StaticResource MaterialDesignOutlinedButton}" Height="24" FontSize="10" Padding="6,0" Margin="2,0" Cursor="Hand"
+                                                        Command="{Binding DataContext.AddKeyColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                                <Button Content="+ 包含" Style="{StaticResource MaterialDesignOutlinedButton}" Height="24" FontSize="10" Padding="6,0" Margin="2,0" Cursor="Hand"
+                                                        Command="{Binding DataContext.AddIncludeColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Grid>
+                </materialDesign:Card>
+
+                <!-- 2. 选定索引列 -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 键列 -->
+                    <materialDesign:Card Grid.Row="0" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                                <TextBlock Text="键列 (Key Columns) - 顺序敏感" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <TextBlock Text="索引按此顺序进行 B-Tree 排序，最左前缀原则生效" FontSize="11" Foreground="Gray"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding CostReductionDescription}" Foreground="#78909C" FontSize="10.5" TextWrapping="Wrap" Margin="0,8,0,0" FontStyle="Italic"/>
-                        </StackPanel>
-                    </Border>
+                            <Border Grid.Row="1" Background="#08000000" CornerRadius="4" Padding="4">
+                                <ListBox ItemsSource="{Binding KeyColumns}" BorderThickness="0" Background="Transparent">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="2" HorizontalAlignment="Stretch" Width="320">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                                    <TextBlock Text="{Binding Usage, StringFormat=' ({0})'}" Foreground="Gray" FontSize="11" Margin="6,0,0,0" FontStyle="Italic"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="6,0,0,0">
+                                                    <Button Style="{StaticResource MaterialDesignIconButton}" Width="28" Height="28" Padding="0" Command="{Binding DataContext.MoveKeyColumnUpCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="2,0" Cursor="Hand" ToolTip="上移">
+                                                        <materialDesign:PackIcon Kind="ArrowUp" Width="16" Height="16" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                                    </Button>
+                                                    <Button Style="{StaticResource MaterialDesignIconButton}" Width="28" Height="28" Padding="0" Command="{Binding DataContext.MoveKeyColumnDownCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="2,0" Cursor="Hand" ToolTip="下移">
+                                                        <materialDesign:PackIcon Kind="ArrowDown" Width="16" Height="16" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                                    </Button>
+                                                    <Button Style="{StaticResource MaterialDesignIconButton}" Width="28" Height="28" Padding="0" Command="{Binding DataContext.RemoveKeyColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="{DynamicResource CriticalBrush}" Margin="2,0" Cursor="Hand" ToolTip="移除">
+                                                        <materialDesign:PackIcon Kind="DeleteOutline" Width="16" Height="16"/>
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </Grid>
+                    </materialDesign:Card>
 
-                    <!-- Tipping Point 临界线展示板 -->
-                    <Border Background="White" BorderBrush="#CFD8DC" BorderThickness="1" CornerRadius="4" Padding="12">
-                        <StackPanel>
-                            <TextBlock Text="回表临界值分析 (Tipping Point)" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,6" Foreground="#37474F"/>
-                            <Separator Background="#ECEFF1" Margin="0,0,0,8"/>
-                            
-                            <Grid Margin="0,3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="表估算总行数:" FontSize="11" Foreground="#546E7A" VerticalAlignment="Center"/>
-                                <TextBox Grid.Column="1" Text="{Binding TotalRows, UpdateSourceTrigger=PropertyChanged}" Width="110" Height="20" FontSize="11" Padding="2,0" VerticalContentAlignment="Center"/>
-                            </Grid>
-                            
-                            <Grid Margin="0,3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="平均行宽 (Bytes):" FontSize="11" Foreground="#546E7A" VerticalAlignment="Center"/>
-                                <TextBox Grid.Column="1" Text="{Binding AvgRowSize, UpdateSourceTrigger=PropertyChanged}" Width="110" Height="20" FontSize="11" Padding="2,0" VerticalContentAlignment="Center"/>
-                            </Grid>
-                            
-                            <Grid Margin="0,3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="查询预计返回行数:" FontSize="11" Foreground="#546E7A" VerticalAlignment="Center"/>
-                                <TextBox Grid.Column="1" Text="{Binding ReturnedRows, UpdateSourceTrigger=PropertyChanged}" Width="110" Height="20" FontSize="11" Padding="2,0" VerticalContentAlignment="Center"/>
-                            </Grid>
-                            
-                            <Separator Background="#ECEFF1" Margin="0,8"/>
-                            
-                            <TextBlock Text="{Binding TippingPointStatus}" Foreground="{Binding TippingPointStatusColor}" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding TippingPointDetails}" Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,8,0,0" FontStyle="Italic"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </ScrollViewer>
+                    <!-- 包含列 -->
+                    <materialDesign:Card Grid.Row="2" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                                <TextBlock Text="包含列 (Include Columns)" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <TextBlock Text="仅存储在叶子节点，用于覆盖索引，不参与排序且无大小限制" FontSize="11" Foreground="Gray"/>
+                            </StackPanel>
+                            <Border Grid.Row="1" Background="#08000000" CornerRadius="4" Padding="4">
+                                <ListBox ItemsSource="{Binding IncludeColumns}" BorderThickness="0" Background="Transparent">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="2" HorizontalAlignment="Stretch" Width="320">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                                <Button Grid.Column="1" Style="{StaticResource MaterialDesignIconButton}" Width="28" Height="28" Padding="0" Command="{Binding DataContext.RemoveIncludeColumnCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Foreground="{DynamicResource CriticalBrush}" Margin="2,0" Cursor="Hand" ToolTip="移除">
+                                                    <materialDesign:PackIcon Kind="DeleteOutline" Width="16" Height="16"/>
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+
+                <!-- 3. 评分与 Tipping Point 分析 -->
+                <ScrollViewer Grid.Column="4" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- 评分板 (带有圆环) -->
+                        <materialDesign:Card Padding="12" Margin="0,0,0,12" materialDesign:ElevationAssist.Elevation="Dp2">
+                            <StackPanel>
+                                <TextBlock Text="索引契合评分" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,4,0,12"/>
+                                
+                                <Grid Width="120" Height="120" Margin="0,4" HorizontalAlignment="Center">
+                                    <!-- Background circular progress -->
+                                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="100" MinHeight="100" MinWidth="100" Foreground="{DynamicResource MaterialDesignDivider}" Opacity="0.1" IsIndeterminate="False"/>
+                                    <!-- Foreground circular progress -->
+                                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="{Binding CurrentScore}" MinHeight="100" MinWidth="100" Foreground="{Binding CurrentScore, Converter={StaticResource ScoreColorConv}}" IsIndeterminate="False"/>
+                                    <!-- Value Text inside -->
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding CurrentScore}" FontSize="28" FontWeight="Bold" Foreground="{Binding CurrentScore, Converter={StaticResource ScoreColorConv}}" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="SCORE" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </materialDesign:Card>
+
+                        <!-- 成本模拟板 -->
+                        <materialDesign:Card Padding="12" Margin="0,0,0,12" materialDesign:ElevationAssist.Elevation="Dp2">
+                            <StackPanel>
+                                <TextBlock Text="成本影响模拟" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,4,0,8"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" ToolTip="{Binding CostReductionDescription}" Margin="0,4">
+                                    <TextBlock Text="预估总成本降低: " FontSize="12" VerticalAlignment="Center" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding EstimatedCostReductionPercent, StringFormat={}{0}%}" Foreground="#2E7D32" FontWeight="Bold" FontSize="20" VerticalAlignment="Center"/>
+                                    <TextBlock Text=" ▲" Foreground="#2E7D32" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding CostReductionDescription}" Foreground="Gray" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" TextAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:Card>
+
+                        <!-- Tipping Point 临界线展示板 -->
+                        <materialDesign:Card Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
+                            <StackPanel>
+                                <TextBlock Text="回表临界值分析 (Tipping Point)" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,4,0,8"/>
+
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="表估算总行数:" FontSize="11" Foreground="Gray" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" Text="{Binding TotalRows, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="22" FontSize="11" Padding="2,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+                                </Grid>
+
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="平均行宽 (Bytes):" FontSize="11" Foreground="Gray" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" Text="{Binding AvgRowSize, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="22" FontSize="11" Padding="2,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+                                </Grid>
+
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="查询预计返回行数:" FontSize="11" Foreground="Gray" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" Text="{Binding ReturnedRows, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="22" FontSize="11" Padding="2,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+                                </Grid>
+
+                                <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,8"/>
+
+                                <TextBlock Text="{Binding TippingPointStatus}" Foreground="{Binding TippingPointStatusColor}" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding TippingPointDetails}" Foreground="Gray" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" LineHeight="16"/>
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- 底部：脚本与操作 -->
+            <materialDesign:Card Grid.Row="2" Padding="16" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                        <TextBlock Text="生成的 CREATE INDEX 脚本" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesignBody}" FontSize="12" Margin="0,0,0,6"/>
+                        <TextBox Text="{Binding CreateIndexStatement}" IsReadOnly="True" Height="50" TextWrapping="Wrap" Background="#0A000000" FontFamily="Consolas" FontSize="11.5" Padding="6" BorderBrush="{DynamicResource MaterialDesignDivider}"/>
+                    </StackPanel>
+                    
+                    <Button Grid.Column="1" Content="复制脚本并关闭" Click="CopyAndClose_Click" Width="160" Height="36" Style="{StaticResource MaterialDesignRaisedButton}" VerticalAlignment="Bottom" Cursor="Hand" FontSize="12" FontWeight="SemiBold"/>
+                </Grid>
+            </materialDesign:Card>
         </Grid>
-
-        <!-- 底部：脚本与操作 -->
-        <StackPanel Grid.Row="2" Margin="0,12,0,0">
-            <TextBlock Text="生成的 CREATE INDEX 脚本:" FontWeight="SemiBold" Margin="0,0,0,4" Foreground="#37474F" FontSize="12"/>
-            <TextBox Text="{Binding CreateIndexStatement}" IsReadOnly="True" Height="60" TextWrapping="Wrap" Background="#ECEFF1" FontFamily="Consolas" FontSize="11.5" Padding="6" BorderBrush="#CFD8DC"/>
-            <Button Content="复制脚本并关闭" Click="CopyAndClose_Click" Width="150" Height="32" Background="#0078D7" Foreground="White" BorderThickness="0" Margin="0,12,0,0" HorizontalAlignment="Right" Cursor="Hand" FontSize="12" FontWeight="SemiBold"/>
-        </StackPanel>
-    </Grid>
+    </Border>
 </Window>
