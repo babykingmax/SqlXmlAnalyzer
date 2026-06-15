@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer;
 
 namespace SqlXmlAnalyzer.Core.Parsers
 {
@@ -20,7 +21,7 @@ namespace SqlXmlAnalyzer.Core.Parsers
             var result = new ParsedDeadlock();
             try
             {
-                var doc = XDocument.Parse(xmlContent);
+                var doc = SafeXmlHelper.ParseSafe(xmlContent);
                 var deadlockNode = doc.Descendants("deadlock").FirstOrDefault();
                 if (deadlockNode == null) return result;
 

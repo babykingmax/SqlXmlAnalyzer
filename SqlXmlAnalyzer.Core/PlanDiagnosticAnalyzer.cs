@@ -34,6 +34,43 @@ namespace SqlXmlAnalyzer
         private const string R_SEMAPHORE = "16. 🚦 内存资源准入等待 (Resource Semaphore)";
         private const string R_CACHE     = "17. ♻️ 缓存命中与重编译开销 (Cache Hit & Recompile)";
 
+        public static List<SqlXmlAnalyzer.Core.Rules.AnalysisResult> AnalyzePlan(XDocument doc, XNamespace ns, string configPath = "RuleConfiguration.json")
+        {
+            var results = new List<SqlXmlAnalyzer.Core.Rules.AnalysisResult>();
+            if (doc?.Root == null) return results;
+
+            var ruleEngine = new SqlXmlAnalyzer.Core.Rules.RuleEngine(configPath);
+            ruleEngine.RegisterDefaultRules();
+
+            var relOps = doc.Descendants(ns + "RelOp").ToList();
+            XElement? dummyRelOp = null;
+            bool hasNodeZero = relOps.Any(r => r.Attribute("NodeId")?.Value == "0");
+            if (!hasNodeZero && doc.Root != null)
+            {
+                dummyRelOp = new XElement(ns + "RelOp", new XAttribute("NodeId", "0"));
+                doc.Root.Add(dummyRelOp);
+                relOps.Add(dummyRelOp);
+            }
+
+            try
+            {
+                foreach (var relOp in relOps)
+                {
+                    var ruleResults = ruleEngine.AnalyzeNode(relOp, ns);
+                    results.AddRange(ruleResults);
+                }
+            }
+            finally
+            {
+                if (dummyRelOp != null)
+                {
+                    dummyRelOp.Remove();
+                }
+            }
+
+            return results;
+        }
+
         public static string GenerateDiagnosticReport(XDocument doc, XNamespace ns)
         {
             if (doc?.Root == null) return "⚠️ 无效的执行计划 XML 结构。";
@@ -63,52 +100,27 @@ namespace SqlXmlAnalyzer
                     { R_CACHE, new List<string>() }
                 };
 
-                var ruleEngine = new SqlXmlAnalyzer.Core.Rules.RuleEngine();
-                ruleEngine.RegisterDefaultRules();
+                var ruleResults = AnalyzePlan(doc, ns);
 
-                var relOps = doc.Descendants(ns + "RelOp").ToList();
-                XElement? dummyRelOp = null;
-                bool hasNodeZero = relOps.Any(r => r.Attribute("NodeId")?.Value == "0");
-                if (!hasNodeZero && doc.Root != null)
+                foreach (var result in ruleResults)
                 {
-                    dummyRelOp = new XElement(ns + "RelOp", new XAttribute("NodeId", "0"));
-                    doc.Root.Add(dummyRelOp);
-                    relOps.Add(dummyRelOp);
-                }
-
-                try
-                {
-                    foreach (var relOp in relOps)
+                    string category = MapRuleIdToCategory(result.RuleId);
+                    if (IsNodeLevelRule(result.RuleId))
                     {
-                        var ruleResults = ruleEngine.AnalyzeNode(relOp, ns);
-                        foreach (var result in ruleResults)
+                        string prefix = result.Severity == "Critical" ? "❌ 严重:" : "⚠️ 警告:";
+                        string msg = $"{prefix} [Node {result.NodeId}] {result.Title}\n{result.Message}";
+                        reports[category].Add(msg);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(result.Message))
                         {
-                            string category = MapRuleIdToCategory(result.RuleId);
-                            if (IsNodeLevelRule(result.RuleId))
+                            var parts = result.Message.Split(new[] { "|||" }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var part in parts)
                             {
-                                string prefix = result.Severity == "Critical" ? "❌ 严重:" : "⚠️ 警告:";
-                                string msg = $"{prefix} [Node {result.NodeId}] {result.Title}\n{result.Message}";
-                                reports[category].Add(msg);
-                            }
-                            else
-                            {
-                                if (!string.IsNullOrEmpty(result.Message))
-                                {
-                                    var parts = result.Message.Split(new[] { "|||" }, StringSplitOptions.RemoveEmptyEntries);
-                                    foreach (var part in parts)
-                                    {
-                                        reports[category].Add(part);
-                                    }
-                                }
+                                reports[category].Add(part);
                             }
                         }
-                    }
-                }
-                finally
-                {
-                    if (dummyRelOp != null)
-                    {
-                        dummyRelOp.Remove();
                     }
                 }
 
@@ -159,6 +171,7 @@ namespace SqlXmlAnalyzer
             switch (ruleId)
             {
                 case "RULE_020_MISSING_INDEX":
+                case "RULE_035_SARGABLE_INDEX_RECOMMENDATION":
                     return R_IDX;
                 case "RULE_004_ESTIMATE_MISMATCH":
                 case "RULE_016_ZERO_ROW_ACTUALS":
@@ -232,7 +245,9 @@ namespace SqlXmlAnalyzer
 
         private static bool IsNodeLevelRule(string ruleId)
         {
-            if (ruleId == "RULE_016_ZERO_ROW_ACTUALS" || ruleId == "RULE_017_LARGE_MEMORY_GRANT")
+            if (ruleId == "RULE_016_ZERO_ROW_ACTUALS" || 
+                ruleId == "RULE_017_LARGE_MEMORY_GRANT" || 
+                ruleId == "RULE_035_SARGABLE_INDEX_RECOMMENDATION")
             {
                 return true;
             }

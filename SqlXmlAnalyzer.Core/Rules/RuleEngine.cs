@@ -85,6 +85,7 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new MemorySpillRule());
             RegisterRule(new ThreadSkewRule());
             RegisterRule(new ResidualPredOpRule());
+            RegisterRule(new SargableIndexRecommendationRule());
         }
     }
 }

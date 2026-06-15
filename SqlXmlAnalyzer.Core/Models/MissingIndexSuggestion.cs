@@ -17,21 +17,32 @@ namespace SqlXmlAnalyzer.Core.Models
         {
             get
             {
-                var orderedKeys = KeyColumns.Select(c => c.Name).ToList();
-                var includes = IncludeColumns.Select(c => c.Name).ToList();
-                
-                if (orderedKeys.Count == 0) return "";
-                
-                string cleanTable = Table.Trim('[', ']');
-                string firstCol = orderedKeys.First().Trim('[', ']');
-                string indexName = $"IX_{cleanTable}_{firstCol}";
-                
-                string stmt = $"CREATE NONCLUSTERED INDEX [{indexName}] ON {Schema}.{Table} ({string.Join(", ", orderedKeys)})";
-                if (includes.Count > 0)
+                return SqlXmlAnalyzer.Core.Refactoring.IndexDdlCompiler.Generate(this, new SqlXmlAnalyzer.Core.Refactoring.IndexDdlOptions());
+            }
+        }
+
+        public string RollbackStatement
+        {
+            get
+            {
+                string cleanTable = new string(Table.Trim('[', ']').Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
+                var keyColNames = KeyColumns
+                    .Select(c => new string(c.Name.Trim('[', ']', '@').Where(ch => char.IsLetterOrDigit(ch) || ch == '_').ToArray()))
+                    .Where(n => !string.IsNullOrEmpty(n))
+                    .Take(3)
+                    .ToList();
+
+                string indexName = $"IX_{cleanTable}_{string.Join("_", keyColNames)}";
+                if (indexName.Length > 120)
                 {
-                    stmt += $" INCLUDE ({string.Join(", ", includes)})";
+                    indexName = indexName.Substring(0, 120);
                 }
-                return stmt;
+
+                string target = string.IsNullOrEmpty(Schema)
+                    ? SqlXmlAnalyzer.Core.Refactoring.IndexDdlCompiler.EscapeName(Table)
+                    : $"{SqlXmlAnalyzer.Core.Refactoring.IndexDdlCompiler.EscapeName(Schema)}.{SqlXmlAnalyzer.Core.Refactoring.IndexDdlCompiler.EscapeName(Table)}";
+
+                return $"DROP INDEX [{indexName}] ON {target};";
             }
         }
     }

@@ -5,6 +5,7 @@ using SqlXmlAnalyzer.Core.Mvvm;
 using SqlXmlAnalyzer.Core.Services;
 
 using System.Collections.ObjectModel;
+using SqlXmlAnalyzer;
 
 namespace SqlXmlAnalyzer.Core.ViewModels
 {
@@ -275,7 +276,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             try
             {
-                var doc = XDocument.Load(filePath);
+                var doc = SafeXmlHelper.LoadSafe(filePath);
                 if (doc.Root == null) return;
                 
                 XNamespace sessionNs = "http://schemas.sqlxmlanalyzer.com/session";

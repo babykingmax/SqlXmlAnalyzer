@@ -4,6 +4,7 @@
     { "RuleId": "RULE_003_PARAM_SNIFFING", "Enabled": true, "SeverityOverride": null },
     { "RuleId": "RULE_017_LARGE_MEMORY_GRANT", "Enabled": true, "SeverityOverride": null },
     { "RuleId": "RULE_015_LOCAL_VARIABLES", "Enabled": true, "SeverityOverride": "Warning" },
-    { "RuleId": "RULE_016_ZERO_ROW_ACTUALS", "Enabled": true, "SeverityOverride": null }
+    { "RuleId": "RULE_016_ZERO_ROW_ACTUALS", "Enabled": true, "SeverityOverride": null },
+    { "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION", "Enabled": true, "SeverityOverride": null }
   ]
 }

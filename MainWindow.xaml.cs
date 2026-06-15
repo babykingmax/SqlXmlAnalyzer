@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -128,6 +129,12 @@ namespace SqlXmlAnalyzer
         private DeadlockPlaybackViewModel? _playbackViewModel;
         private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
 
+        private string _currentOriginalSql = "";
+        private string _currentRefactoredSql = "";
+        private ScrollViewer? _originalScroll;
+        private ScrollViewer? _refactoredScroll;
+        private bool _isSynchronizingScroll = false;
+
         
         
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -180,6 +187,7 @@ namespace SqlXmlAnalyzer
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
             SetupCanvasZoomPan();
+            this.Loaded += (s, e) => SetupSynchronizedScrolling();
 
             // 监听 PlanA / PlanB 快照变化，动态重构并排对比的操作符结构树
             ViewModel.PropertyChanged += (s, e) =>
@@ -350,8 +358,8 @@ namespace SqlXmlAnalyzer
             Logger.Info($"开始加载 XML 文件: {filePath}");
             try
             {
-                var doc = XDocument.Load(filePath);
-                Logger.Info("使用 XDocument.Load 成功加载文件");
+                var doc = SafeXmlHelper.LoadSafe(filePath);
+                Logger.Info("使用 SafeXmlHelper.LoadSafe 成功加载文件");
                 return doc;
             }
             catch (System.Xml.XmlException ex) when (ex.Message.Contains("encoding", StringComparison.OrdinalIgnoreCase) ||
@@ -363,7 +371,7 @@ namespace SqlXmlAnalyzer
                 {
                     using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     using var sr = new StreamReader(fs, detectEncodingFromByteOrderMarks: true);
-                    var doc = XDocument.Load(sr);
+                    var doc = SafeXmlHelper.LoadSafe(sr);
                     Logger.Info("使用 StreamReader + 自动编码检测重试加载成功");
                     return doc;
                 }
@@ -484,7 +492,35 @@ namespace SqlXmlAnalyzer
                     string docString = doc.ToString();
                     string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, _showplanNs);
                     var mis = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, _showplanNs);
-                    return (planMermaid, queryText, docString, warningsText, mis);
+
+                    string refactoredSql = queryText;
+                    if (queryText != "未能提取语句" && !string.IsNullOrWhiteSpace(queryText))
+                    {
+                        try
+                        {
+                            var engine = new SqlXmlAnalyzer.Core.Refactoring.SqlRefactorEngine();
+                            refactoredSql = engine.Refactor(queryText, out var errors);
+                            if (errors != null && errors.Count > 0)
+                            {
+                                var sb = new System.Text.StringBuilder();
+                                sb.AppendLine("/* ");
+                                sb.AppendLine("T-SQL 智能重构失败，解析语法树时发生以下错误：");
+                                foreach (var err in errors)
+                                {
+                                    sb.AppendLine($"- 行 {err.Line}, 列 {err.Column}: {err.Message}");
+                                }
+                                sb.AppendLine("*/");
+                                sb.AppendLine(queryText);
+                                refactoredSql = sb.ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            refactoredSql = $"/* T-SQL 智能重构发生意外异常: {ex.Message} */\r\n" + queryText;
+                        }
+                    }
+
+                    return (planMermaid, queryText, docString, warningsText, mis, refactoredSql);
                 });
 
                 Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.planMermaid.Length} 字符");
@@ -498,6 +534,9 @@ namespace SqlXmlAnalyzer
 
                 PlanXmlTextBox.Text = result.docString;
                 PlanStatementTextBox.Text = result.queryText.Length > 800 ? result.queryText.Substring(0, 800) + "..." : result.queryText;
+                _currentOriginalSql = result.queryText;
+                _currentRefactoredSql = result.refactoredSql;
+                UpdateSqlDiffViews();
 
                 var tree = BuildPlanTreeView(doc, _showplanNs);
                 PlanOperatorTree.Items.Clear();
@@ -2079,6 +2118,33 @@ namespace SqlXmlAnalyzer
             }
         }
 
+        private void CopyRefactoredSql_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_currentRefactoredSql))
+            {
+                Clipboard.SetText(_currentRefactoredSql);
+                MessageBox.Show("重构后的 SQL 已成功复制到剪贴板！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void CompareSql_Click(object sender, RoutedEventArgs e)
+        {
+            if (OriginalSqlCol.Width.Value == 0)
+            {
+                OriginalSqlCol.Width = new GridLength(1, GridUnitType.Star);
+                SqlSplitterCol.Width = new GridLength(4);
+                SqlGridSplitter.Visibility = Visibility.Visible;
+                BtnCompareSql.Content = "隐藏原始 SQL";
+            }
+            else
+            {
+                OriginalSqlCol.Width = new GridLength(0);
+                SqlSplitterCol.Width = new GridLength(0);
+                SqlGridSplitter.Visibility = Visibility.Collapsed;
+                BtnCompareSql.Content = "显示原始 SQL";
+            }
+        }
+
         private void ClearResults_Click(object sender, RoutedEventArgs e)
         {
             // 清空 ViewModel
@@ -2713,5 +2779,382 @@ namespace SqlXmlAnalyzer
         {
 
         }
+
+        #region 可视化看板与交互展示 (GUI Dashboard Integration & Interactive Visualization)
+
+        private static readonly Brush AdditionBrush = CreateFrozenBrush(Color.FromRgb(232, 245, 233)); // #E8F5E9
+        private static readonly Brush DeletionBrush = CreateFrozenBrush(Color.FromRgb(255, 235, 238)); // #FFEBEE
+        private static readonly Brush ModificationBrush = CreateFrozenBrush(Color.FromRgb(227, 242, 253)); // #E3F2FD
+        private static readonly Brush PlaceholderBrush = CreateFrozenBrush(Color.FromRgb(245, 245, 245)); // #F5F5F5
+
+        private static Brush CreateFrozenBrush(Color color)
+        {
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
+
+        private static readonly HashSet<string> SqlKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "SELECT", "FROM", "WHERE", "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "ON", "GROUP", "BY", "ORDER",
+            "HAVING", "AND", "OR", "NOT", "IN", "EXISTS", "LIKE", "AS", "CREATE", "INDEX", "DROP", "TABLE",
+            "INSERT", "UPDATE", "DELETE", "INTO", "VALUES", "SET", "EXEC", "PROCEDURE", "DECLARE", "WITH",
+            "UNION", "ALL", "CASE", "WHEN", "THEN", "ELSE", "END", "NULL", "IS", "CAST", "CONVERT", "GO",
+            "CROSS", "APPLY", "TOP", "DISTINCT"
+        };
+
+        private static readonly System.Text.RegularExpressions.Regex SqlTokenizerRegex = 
+            new System.Text.RegularExpressions.Regex(
+                @"(--.*)|('[^']*(?:''[^']*)*')|([a-zA-Z_#@][a-zA-Z0-9_]*)|(\s+)|(.)",
+                System.Text.RegularExpressions.RegexOptions.Compiled,
+                TimeSpan.FromMilliseconds(100));
+
+        private T? FindVisualChild<T>(DependencyObject? depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        return (T)child;
+                    }
+
+                    T? childItem = FindVisualChild<T>(child);
+                    if (childItem != null)
+                    {
+                        return childItem;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void SetupSynchronizedScrolling()
+        {
+            _originalScroll = FindVisualChild<ScrollViewer>(OriginalSqlTextBox);
+            _refactoredScroll = FindVisualChild<ScrollViewer>(RefactoredSqlTextBox);
+
+            if (_originalScroll != null)
+            {
+                _originalScroll.ScrollChanged += OriginalScroll_ScrollChanged;
+            }
+            if (_refactoredScroll != null)
+            {
+                _refactoredScroll.ScrollChanged += RefactoredScroll_ScrollChanged;
+            }
+        }
+
+        private void OriginalScroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (_isSynchronizingScroll) return;
+            if (_refactoredScroll == null || _originalScroll == null) return;
+
+            _isSynchronizingScroll = true;
+            try
+            {
+                _refactoredScroll.ScrollToVerticalOffset(e.VerticalOffset);
+                _refactoredScroll.ScrollToHorizontalOffset(e.HorizontalOffset);
+            }
+            finally
+            {
+                _isSynchronizingScroll = false;
+            }
+        }
+
+        private void RefactoredScroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (_isSynchronizingScroll) return;
+            if (_originalScroll == null || _refactoredScroll == null) return;
+
+            _isSynchronizingScroll = true;
+            try
+            {
+                _originalScroll.ScrollToVerticalOffset(e.VerticalOffset);
+                _originalScroll.ScrollToHorizontalOffset(e.HorizontalOffset);
+            }
+            finally
+            {
+                _isSynchronizingScroll = false;
+            }
+        }
+
+        private void UpdateSqlDiffViews()
+        {
+            if (string.IsNullOrEmpty(_currentOriginalSql) && string.IsNullOrEmpty(_currentRefactoredSql))
+            {
+                OriginalSqlTextBox.Document.Blocks.Clear();
+                RefactoredSqlTextBox.Document.Blocks.Clear();
+                return;
+            }
+
+            string[] linesOriginal = _currentOriginalSql.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string[] linesRefactored = _currentRefactoredSql.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+            var (alignedOriginal, alignedRefactored) = AlignLines(linesOriginal, linesRefactored);
+
+            RenderAlignedDiff(OriginalSqlTextBox, alignedOriginal, false, alignedRefactored);
+            RenderAlignedDiff(RefactoredSqlTextBox, alignedRefactored, true, alignedOriginal);
+        }
+
+        private (List<string?> alignedOriginal, List<string?> alignedRefactored) AlignLines(string[] linesA, string[] linesB)
+        {
+            int N = linesA.Length;
+            int M = linesB.Length;
+
+            if (N > 1000 || M > 1000)
+            {
+                // Fallback: simple line-by-line alignment without DP to avoid OOM or UI freezing for massive queries
+                List<string?> fallbackA = new List<string?>();
+                List<string?> fallbackB = new List<string?>();
+                int minLen = Math.Min(N, M);
+                for (int i = 0; i < minLen; i++)
+                {
+                    fallbackA.Add(linesA[i]);
+                    fallbackB.Add(linesB[i]);
+                }
+                if (N > M)
+                {
+                    for (int i = minLen; i < N; i++)
+                    {
+                        fallbackA.Add(linesA[i]);
+                        fallbackB.Add(null);
+                    }
+                }
+                else if (M > N)
+                {
+                    for (int i = minLen; i < M; i++)
+                    {
+                        fallbackA.Add(null);
+                        fallbackB.Add(linesB[i]);
+                    }
+                }
+                return (fallbackA, fallbackB);
+            }
+
+            int[,] dp = new int[N + 1, M + 1];
+
+            for (int i = 1; i <= N; i++)
+            {
+                for (int j = 1; j <= M; j++)
+                {
+                    if (NormalizeForDiff(linesA[i - 1]) == NormalizeForDiff(linesB[j - 1]))
+                    {
+                        dp[i, j] = dp[i - 1, j - 1] + 1;
+                    }
+                    else
+                    {
+                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+                    }
+                }
+            }
+
+            List<string?> alignedA = new List<string?>();
+            List<string?> alignedB = new List<string?>();
+            int currI = N;
+            int currJ = M;
+
+            while (currI > 0 || currJ > 0)
+            {
+                if (currI > 0 && currJ > 0 && NormalizeForDiff(linesA[currI - 1]) == NormalizeForDiff(linesB[currJ - 1]))
+                {
+                    alignedA.Add(linesA[currI - 1]);
+                    alignedB.Add(linesB[currJ - 1]);
+                    currI--;
+                    currJ--;
+                }
+                else if (currJ > 0 && (currI == 0 || dp[currI, currJ - 1] >= dp[currI - 1, currJ]))
+                {
+                    alignedA.Add(null);
+                    alignedB.Add(linesB[currJ - 1]);
+                    currJ--;
+                }
+                else
+                {
+                    alignedA.Add(linesA[currI - 1]);
+                    alignedB.Add(null);
+                    currI--;
+                }
+            }
+
+            alignedA.Reverse();
+            alignedB.Reverse();
+
+            // Post-process single line diffs to pair them up side-by-side
+            for (int i = 0; i < alignedA.Count - 1; i++)
+            {
+                if (alignedA[i] != null && alignedB[i] == null && alignedA[i + 1] == null && alignedB[i + 1] != null)
+                {
+                    alignedB[i] = alignedB[i + 1];
+                    alignedA.RemoveAt(i + 1);
+                    alignedB.RemoveAt(i + 1);
+                }
+                else if (alignedA[i] == null && alignedB[i] != null && alignedA[i + 1] != null && alignedB[i + 1] == null)
+                {
+                    alignedA[i] = alignedA[i + 1];
+                    alignedA.RemoveAt(i + 1);
+                    alignedB.RemoveAt(i + 1);
+                }
+            }
+
+            return (alignedA, alignedB);
+        }
+
+        private string NormalizeForDiff(string s)
+        {
+            if (s == null) return "";
+            return System.Text.RegularExpressions.Regex.Replace(s, @"\s+", "").ToLowerInvariant();
+        }
+
+        private void RenderAlignedDiff(RichTextBox rtb, List<string?> lines, bool isRefactoredSide, List<string?> opposingLines)
+        {
+            rtb.Document.Blocks.Clear();
+            rtb.BeginChange();
+            try
+            {
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    string? line = lines[i];
+                    string? opposingLine = opposingLines[i];
+                    
+                    Paragraph p = new Paragraph();
+                    p.Margin = new Thickness(0, 1, 0, 1);
+                    
+                    Brush defaultForeground = Brushes.Black;
+                    
+                    if (line == null)
+                    {
+                        p.Background = PlaceholderBrush;
+                        p.Inlines.Add(new Run(" ") { Foreground = Brushes.Transparent });
+                    }
+                    else if (opposingLine == null)
+                    {
+                        p.Background = isRefactoredSide ? AdditionBrush : DeletionBrush;
+                        FormatSqlLine(p, line, defaultForeground);
+                    }
+                    else if (NormalizeForDiff(line) != NormalizeForDiff(opposingLine))
+                    {
+                        p.Background = ModificationBrush;
+                        FormatSqlLine(p, line, defaultForeground);
+                    }
+                    else
+                    {
+                        FormatSqlLine(p, line, defaultForeground);
+                    }
+                    
+                    rtb.Document.Blocks.Add(p);
+                }
+            }
+            finally
+            {
+                rtb.EndChange();
+            }
+        }
+
+        private void FormatSqlLine(Paragraph p, string text, Brush defaultForeground)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                p.Inlines.Add(new Run(""));
+                return;
+            }
+
+            try
+            {
+                var matches = SqlTokenizerRegex.Matches(text);
+                foreach (System.Text.RegularExpressions.Match match in matches)
+                {
+                    if (match.Groups[1].Success) // Comment
+                    {
+                        p.Inlines.Add(new Run(match.Value) { Foreground = Brushes.Green });
+                    }
+                    else if (match.Groups[2].Success) // String literal
+                    {
+                        p.Inlines.Add(new Run(match.Value) { Foreground = Brushes.Brown });
+                    }
+                    else if (match.Groups[3].Success) // Word / Identifier
+                    {
+                        string val = match.Value;
+                        if (SqlKeywords.Contains(val))
+                        {
+                            p.Inlines.Add(new Run(val) { Foreground = Brushes.Blue, FontWeight = FontWeights.Bold });
+                        }
+                        else
+                        {
+                            p.Inlines.Add(new Run(val) { Foreground = defaultForeground });
+                        }
+                    }
+                    else // Whitespace, operators, or anything else
+                    {
+                        p.Inlines.Add(new Run(match.Value) { Foreground = defaultForeground });
+                    }
+                }
+            }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
+            {
+                // Fallback to plain text on timeout to prevent freezing
+                p.Inlines.Add(new Run(text) { Foreground = defaultForeground });
+            }
+        }
+
+        private void CopyIndexDdl_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string ddl && !string.IsNullOrEmpty(ddl))
+            {
+                Clipboard.SetText(ddl);
+                MessageBox.Show("CREATE INDEX DDL 已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void CopyRollbackDdl_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string ddl && !string.IsNullOrEmpty(ddl))
+            {
+                Clipboard.SetText(ddl);
+                MessageBox.Show("DROP INDEX (回滚) DDL 已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void CopyDeploymentBundle_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion mi)
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine("/*******************************************************************************");
+                sb.AppendLine($" * SQL Server Missing Index Deployment Bundle");
+                sb.AppendLine($" * Table:  {mi.Table}");
+                if (!string.IsNullOrEmpty(mi.Schema))
+                {
+                    sb.AppendLine($" * Schema: {mi.Schema}");
+                }
+                sb.AppendLine($" * Impact: {mi.Impact:F2}%");
+                sb.AppendLine($" * Score:  {mi.Score}/100");
+                sb.AppendLine(" *******************************************************************************/");
+                sb.AppendLine();
+                sb.AppendLine("-- === 1. DEPLOYMENT DDL (CREATE INDEX) ===");
+                sb.AppendLine("BEGIN TRANSACTION;");
+                sb.AppendLine("BEGIN TRY");
+                sb.AppendLine("    " + mi.CreateIndexStatement);
+                sb.AppendLine("    COMMIT TRANSACTION;");
+                sb.AppendLine("    PRINT 'Missing Index deployed successfully.';");
+                sb.AppendLine("END TRY");
+                sb.AppendLine("BEGIN CATCH");
+                sb.AppendLine("    ROLLBACK TRANSACTION;");
+                sb.AppendLine("    DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();");
+                sb.AppendLine("    RAISERROR(@ErrMsg, 16, 1);");
+                sb.AppendLine("END CATCH");
+                sb.AppendLine();
+                sb.AppendLine("-- === 2. ROLLBACK DDL (DROP INDEX) ===");
+                sb.AppendLine("/*");
+                sb.AppendLine("    " + mi.RollbackStatement);
+                sb.AppendLine("*/");
+
+                Clipboard.SetText(sb.ToString());
+                MessageBox.Show("完整部署包 (包含安全事务与回滚脚本) 已复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        #endregion
     }
 }

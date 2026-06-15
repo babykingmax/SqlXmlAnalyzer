@@ -355,6 +355,79 @@
                                 <TabItem Header="📄 XML 源码" Margin="0,0,3,0">
                                     <TextBox x:Name="PlanXmlTextBox" IsReadOnly="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}"/>
                                 </TabItem>
+                                <TabItem x:Name="SqlRefactorTab" Header="✨ T-SQL 智能重构" Margin="0,0,3,0">
+                                    <Grid Background="{DynamicResource MaterialDesignPaper}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        
+                                        <!-- Top Info/Action bar -->
+                                        <Border Grid.Row="0" Background="{DynamicResource MaterialDesignBackground}" Padding="8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <materialDesign:PackIcon Kind="AutoFix" Foreground="#1976D2" VerticalAlignment="Center" Width="20" Height="20" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="AST 静态规则引擎已自动扫描并重构了查询语句中的反模式（如隐式转换、表变量等）" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                    <Button Content="复制重构 SQL" Click="CopyRefactoredSql_Click" Margin="0,0,8,0" Padding="12,2" Style="{StaticResource MaterialDesignFlatButton}"/>
+                                                    <Button Content="隐藏原始 SQL" x:Name="BtnCompareSql" Click="CompareSql_Click" Padding="12,2" Style="{StaticResource MaterialDesignFlatButton}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                        
+                                        <!-- Side-by-Side SQL view -->
+                                        <Grid Grid.Row="1" Margin="4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" x:Name="OriginalSqlCol"/>
+                                                <ColumnDefinition Width="4" x:Name="SqlSplitterCol"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <!-- Original SQL -->
+                                            <Grid Grid.Column="0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Border Background="#F5F5F5" Padding="4,2" CornerRadius="4,4,0,0" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                                    <TextBlock Text="原始 SQL 语句" FontWeight="SemiBold" Foreground="#666" FontSize="11" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <RichTextBox Grid.Row="1" x:Name="OriginalSqlTextBox" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12" Padding="6" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1">
+                                                    <RichTextBox.Resources>
+                                                        <Style TargetType="{x:Type Paragraph}">
+                                                            <Setter Property="Margin" Value="0"/>
+                                                        </Style>
+                                                    </RichTextBox.Resources>
+                                                </RichTextBox>
+                                            </Grid>
+                                            
+                                            <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#DDDDDD" x:Name="SqlGridSplitter"/>
+                                            
+                                            <!-- Refactored SQL -->
+                                            <Grid Grid.Column="2">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Border Background="#E3F2FD" Padding="4,2" CornerRadius="4,4,0,0" BorderThickness="1,1,1,0" BorderBrush="#BBDEFB">
+                                                    <TextBlock Text="重构后 SQL 语句 (优化版)" FontWeight="SemiBold" Foreground="#1565C0" FontSize="11" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <RichTextBox Grid.Row="1" x:Name="RefactoredSqlTextBox" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12" Padding="6" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="#BBDEFB" BorderThickness="1">
+                                                    <RichTextBox.Resources>
+                                                        <Style TargetType="{x:Type Paragraph}">
+                                                            <Setter Property="Margin" Value="0"/>
+                                                        </Style>
+                                                    </RichTextBox.Resources>
+                                                </RichTextBox>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </TabItem>
                                 <TabItem Header="📊 参数嗅探直方图 (Histogram)" Margin="0,0,-19,0">
                                     <local:StatisticsHistogramControl x:Name="StatisticsHistogramView"/>
                                 </TabItem>
@@ -431,25 +504,68 @@
                                     <ItemsControl ItemsSource="{Binding MissingIndexes}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Background="{DynamicResource MaterialDesignPaper}" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
-
-    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="{Binding Score, StringFormat='⭐ {0}/100'}" 
-                                                                   Foreground="{Binding Score, Converter={StaticResource ScoreColorConv}}" 
-                                                                   FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                            <TextBlock Text="{Binding Table, StringFormat='表: {0}'}" FontWeight="SemiBold"/>
-                                                            <TextBlock Text="{Binding CreateIndexStatement}" Foreground="#333" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                                        </StackPanel>
-                                                        <Button Grid.Column="2" Content="沙盒模拟" Width="80" Height="28" 
-                                                                Command="{Binding DataContext.OpenSandboxCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
-                                                                CommandParameter="{Binding}"
-                                                                Background="#0078D7" Foreground="White" BorderThickness="0" Cursor="Hand" />
+                                                <Border Background="{DynamicResource MaterialDesignPaper}" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        
+                                                        <!-- Header row: Table, Score/Impact, Sandbox Button -->
+                                                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                                <TextBlock Text="📋 建议索引于 " FontWeight="Bold" FontSize="14" Foreground="#1565C0"/>
+                                                                <TextBlock Text="{Binding Table}" FontWeight="Bold" FontSize="14" Foreground="#1565C0"/>
+                                                                <TextBlock Text="{Binding Schema, StringFormat=' ({0})'}" Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                            
+                                                            <TextBlock Grid.Column="1" Text="{Binding Impact, StringFormat='提升: {0:F2}%'}" Foreground="#2E7D32" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0"/>
+                                                            
+                                                            <TextBlock Grid.Column="2" Text="{Binding Score, StringFormat='⭐ 评分: {0}/100'}" 
+                                                                       Foreground="{Binding Score, Converter={StaticResource ScoreColorConv}}" 
+                                                                       FontWeight="Bold" VerticalAlignment="Center" Margin="12,0"/>
+                                                                       
+                                                            <Button Grid.Column="3" Content="🛠️ 沙盒模拟" Width="100" Height="28" 
+                                                                    Command="{Binding DataContext.OpenSandboxCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                                    CommandParameter="{Binding}"
+                                                                    Background="#0078D7" Foreground="White" BorderThickness="0" Cursor="Hand" />
+                                                        </Grid>
+                                                        
+                                                        <!-- CREATE INDEX DDL Box & Copy Button -->
+                                                        <Grid Grid.Row="1" Margin="0,4,0,4">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Text="{Binding CreateIndexStatement, Mode=OneWay}" IsReadOnly="True" 
+                                                                     FontFamily="Consolas" FontSize="11" TextWrapping="Wrap" Background="#F5F5F5" BorderBrush="#E0E0E0" BorderThickness="1" Padding="6" Height="60" VerticalScrollBarVisibility="Auto"/>
+                                                            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="8,0,0,0">
+                                                                <Button Content="📋 复制 DDL" Width="120" Height="28" Margin="0,0,0,4"
+                                                                        Click="CopyIndexDdl_Click" Tag="{Binding CreateIndexStatement}" Cursor="Hand"/>
+                                                                <Button Content="📦 复制部署包" Width="120" Height="28"
+                                                                        Click="CopyDeploymentBundle_Click" Cursor="Hand"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                        
+                                                        <!-- DROP INDEX (Rollback) DDL Box & Copy Button -->
+                                                        <Grid Grid.Row="2" Margin="0,4,0,0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Text="{Binding RollbackStatement, Mode=OneWay}" IsReadOnly="True" 
+                                                                     FontFamily="Consolas" FontSize="11" TextWrapping="Wrap" Background="#FFF3E0" BorderBrush="#FFE0B2" BorderThickness="1" Padding="6" Height="40" VerticalScrollBarVisibility="Auto"/>
+                                                            <Button Grid.Column="1" Content="↩️ 复制回滚" Margin="8,0,0,0" VerticalAlignment="Center" Width="120" Height="28" Style="{StaticResource SecondaryButtonStyle}"
+                                                                    Click="CopyRollbackDdl_Click" Tag="{Binding RollbackStatement}" Cursor="Hand"/>
+                                                        </Grid>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>

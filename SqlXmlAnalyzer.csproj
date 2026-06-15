@@ -19,9 +19,9 @@
     <DebugType Condition="'$(Configuration)' == 'Debug'">full</DebugType>
     <DebugSymbols Condition="'$(Configuration)' == 'Debug'">true</DebugSymbols>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**;SqlXmlAnalyzer.Tests\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**;SqlXmlAnalyzer.Tests\**;SqlXmlAnalyzer.CLI\**</DefaultItemExcludes>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <Compile Remove="SqlXmlAnalyzer.Core\**" />
     <Page Remove="SqlXmlAnalyzer.Core\**" />
@@ -29,6 +29,9 @@
     <Compile Remove="SqlXmlAnalyzer.Tests\**" />
     <Page Remove="SqlXmlAnalyzer.Tests\**" />
     <None Remove="SqlXmlAnalyzer.Tests\**" />
+    <Compile Remove="SqlXmlAnalyzer.CLI\**" />
+    <Page Remove="SqlXmlAnalyzer.CLI\**" />
+    <None Remove="SqlXmlAnalyzer.CLI\**" />
   </ItemGroup>
   <ItemGroup><!-- 已移除 WebView2，改用纯 WPF 本地控件实现可视化 -->
   

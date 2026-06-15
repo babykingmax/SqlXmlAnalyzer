@@ -240,6 +240,22 @@ namespace SqlXmlAnalyzer
                 allNodes.Add(vm);
             }
 
+            // 关联 Missing Indexes 推荐到 Operator 节点
+            var missingIndexes = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
+            foreach (var vm in allNodes)
+            {
+                if (!string.IsNullOrEmpty(vm.TableName))
+                {
+                    string cleanVmTable = vm.TableName.Trim('[', ']');
+                    var match = missingIndexes.FirstOrDefault(mi => 
+                        string.Equals(mi.Table.Trim('[', ']'), cleanVmTable, StringComparison.OrdinalIgnoreCase));
+                    if (match != null)
+                    {
+                        vm.AssociatedSuggestion = match;
+                    }
+                }
+            }
+
             // 计算真实的 own_cost 并从 subtree_cost 中减去子节点的 subtree_cost
             foreach (var relOp in relOps)
             {
@@ -1288,6 +1304,29 @@ namespace SqlXmlAnalyzer
         public string OperatorType { get; set; } = "Other";
         public bool IsParallel { get; set; }
         public string Warnings { get; set; } = "";
+        
+        private SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion? _associatedSuggestion;
+        public SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion? AssociatedSuggestion
+        {
+            get => _associatedSuggestion;
+            set
+            {
+                if (_associatedSuggestion != value)
+                {
+                    _associatedSuggestion = value;
+                    OnPropertyChanged(nameof(AssociatedSuggestion));
+                    OnPropertyChanged(nameof(HasIndexRecommendation));
+                    OnPropertyChanged(nameof(MissingIndexOverlayVisible));
+                    OnPropertyChanged(nameof(MissingIndexTooltip));
+                }
+            }
+        }
+
+        public bool HasIndexRecommendation => _associatedSuggestion != null;
+        public string MissingIndexOverlayVisible => HasIndexRecommendation ? "Visible" : "Collapsed";
+        public string MissingIndexTooltip => _associatedSuggestion != null
+            ? $"包含索引推荐:\n{_associatedSuggestion.CreateIndexStatement}\n\n点击在此表上打开索引优化沙盒模拟。"
+            : string.Empty;
         
         public XElement? RawElement { get; set; }
 

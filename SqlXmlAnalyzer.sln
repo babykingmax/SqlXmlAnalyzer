@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlXmlAnalyzer.Core", "SqlX
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlXmlAnalyzer.Tests", "SqlXmlAnalyzer.Tests\SqlXmlAnalyzer.Tests.csproj", "{DAB420D3-5509-4B28-AE2C-8E350F82FE63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlXmlAnalyzer.CLI", "SqlXmlAnalyzer.CLI\SqlXmlAnalyzer.CLI.csproj", "{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{DAB420D3-5509-4B28-AE2C-8E350F82FE63}.Release|x64.Build.0 = Release|Any CPU
 		{DAB420D3-5509-4B28-AE2C-8E350F82FE63}.Release|x86.ActiveCfg = Release|Any CPU
 		{DAB420D3-5509-4B28-AE2C-8E350F82FE63}.Release|x86.Build.0 = Release|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Debug|x64.Build.0 = Debug|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Release|x64.ActiveCfg = Release|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Release|x64.Build.0 = Release|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D9353D0-3A8B-480B-AE3B-1E81BDDCBCE5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

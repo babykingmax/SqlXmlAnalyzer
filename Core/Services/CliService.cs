@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using SqlXmlAnalyzer;
 
 namespace SqlXmlAnalyzer.Core.Services
 {
@@ -92,7 +93,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 return;
             }
 
-            var doc = XDocument.Load(filePath);
+            var doc = SafeXmlHelper.LoadSafe(filePath);
             bool isDeadlock = doc.Root?.Name.LocalName == "deadlock";
             XNamespace ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
             bool isPlan = doc.Root?.Name.LocalName == "ShowPlanXML";
