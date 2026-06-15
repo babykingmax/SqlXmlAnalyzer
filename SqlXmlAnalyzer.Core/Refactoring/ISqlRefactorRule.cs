@@ -7,10 +7,9 @@ namespace SqlXmlAnalyzer.Core.Refactoring
         string RuleId { get; }
         string Name { get; }
         string Description { get; }
-        
-        /// <summary>
-        /// Modifies the AST fragment in place.
-        /// </summary>
-        void Apply(TSqlFragment fragment);
+        int Priority { get; }
+
+        bool CanApply(TSqlFragment fragment, RefactorContext context);
+        TSqlFragment Apply(TSqlFragment fragment, RefactorContext context);
     }
 }

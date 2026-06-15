@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlXmlAnalyzer.Core.Refactoring;
@@ -9,10 +10,27 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
     public class SqlRefactorEngineTests
     {
         [Fact]
+        public void DefaultConstructor_ShouldOnlyRegisterCoreRules()
+        {
+            // Arrange & Act
+            var engine = new SqlRefactorEngine();
+
+            // Assert
+            engine.Rules.Should().HaveCount(4);
+            engine.Rules.Select(r => r.GetType().Name).Should().Contain(new[]
+            {
+                "IsNullComparisonRefactorRule",
+                "LeftOrSubstringRefactorRule",
+                "TrimRefactorRule",
+                "ConstantFoldingRefactorRule"
+            });
+        }
+
+        [Fact]
         public void Refactor_WithSimpleImplicitConversion_ShouldStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE UserName = N'admin'";
 
             // Act
@@ -30,7 +48,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithReversedImplicitConversion_ShouldStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE N'admin' = UserName";
 
             // Act
@@ -46,7 +64,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithInPredicateUnicodeLiterals_ShouldStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE UserRole IN (N'Admin', N'Manager', 'Guest')";
 
             // Act
@@ -62,7 +80,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithLikePredicateUnicodeLiteral_ShouldStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE UserName LIKE N'admin%'";
 
             // Act
@@ -78,7 +96,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithBetweenPredicateUnicodeLiterals_ShouldStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE UserCode BETWEEN N'A' AND N'Z'";
 
             // Act
@@ -95,7 +113,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithNonPredicateAssignment_ShouldNotStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             // Variable assignments and parameters should NOT be modified by the visitor.
             string sql = "DECLARE @UnicodeVar NVARCHAR(50) = N'UnicodeValue';";
 
@@ -111,7 +129,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithUnicodeCharacters_ShouldNotStripNPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE UserName = N'张三'";
 
             // Act
@@ -126,7 +144,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         public void Refactor_WithTableVariable_ShouldConvertToTempTable()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = @"
 DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
 INSERT INTO @MyTable VALUES (1, 'Admin');
@@ -149,7 +167,7 @@ SELECT * FROM @MyTable;
         public void Refactor_WithTableVariableAndColumnPrefix_ShouldConvertToTempTableWithPrefix()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = @"
 DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
 SELECT @MyTable.Id, Name FROM @MyTable;
@@ -170,7 +188,7 @@ SELECT @MyTable.Id, Name FROM @MyTable;
         public void Refactor_WithTableVariableAndScalarVariable_ShouldOnlyRenameTableVariable()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = @"
 DECLARE @UserId INT = 42;
 DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
@@ -195,7 +213,7 @@ SELECT * FROM @MyTable WHERE Id = @UserId;
         public void Refactor_WithMultipleBatches_ShouldProcessEachBatchIndependently()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = @"
 DECLARE @MyTable1 TABLE (Id INT);
 SELECT * FROM @MyTable1;
@@ -219,7 +237,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullComparisonDifferentValue_ShouldRemoveIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(Status, '') = 'Active'";
 
             // Act
@@ -235,7 +253,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullComparisonDifferentValueReversed_ShouldRemoveIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE 'Active' = ISNULL(Status, '')";
 
             // Act
@@ -251,7 +269,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullComparisonSameValue_ShouldRewriteToOrIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(Status, 'Unknown') = 'Unknown'";
 
             // Act
@@ -267,7 +285,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullAndImplicitConversion_ShouldOptimizeBoth()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(UserName, N'') = N'admin'";
 
             // Act
@@ -283,7 +301,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithCoalesceComparisonDifferentValue_ShouldRemoveCoalesce()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE COALESCE(Status, '') = 'Active'";
 
             // Act
@@ -299,7 +317,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullNumericEqual_ShouldRewriteToOrIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(Age, 0) = 0.0";
 
             // Act
@@ -315,7 +333,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullNumericDifferent_ShouldRemoveIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(Age, 0) = 5.0";
 
             // Act
@@ -330,7 +348,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullComparisonVariable_ShouldKeepOriginal()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(Status, '') = @Status";
 
             // Act
@@ -361,7 +379,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftEqualLiteral_ShouldConvertToLike()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE LEFT(UserName, 3) = 'adm'";
 
             // Act
@@ -377,7 +395,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftEqualLiteralUnicode_ShouldConvertToLikeUnicode()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE LEFT(UserName, 3) = N'adm'";
 
             // Act
@@ -395,7 +413,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftEqualLiteralReversed_ShouldConvertToLike()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE 'adm' = LEFT(UserName, 3)";
 
             // Act
@@ -410,7 +428,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftEqualLiteralLengthMismatch_ShouldKeepOriginal()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql1 = "SELECT * FROM Users WHERE LEFT(UserName, 3) = 'ad'";
             string sql2 = "SELECT * FROM Users WHERE LEFT(UserName, 3) = 'admi'";
 
@@ -423,7 +441,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftNotEqualLiteral_ShouldConvertToNotLike()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE LEFT(UserName, 3) <> 'adm'";
 
             // Act
@@ -438,7 +456,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithSubstringStart1EqualLiteral_ShouldConvertToLike()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE SUBSTRING(UserName, 1, 4) = 'john'";
 
             // Act
@@ -453,7 +471,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithSubstringStartNot1EqualLiteral_ShouldKeepOriginal()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE SUBSTRING(UserName, 2, 3) = 'john'";
 
             // Act
@@ -468,7 +486,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftEqualWildcardLiteral_ShouldEscapeWildcards()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE LEFT(UserName, 5) = 'a%b_c'";
 
             // Act
@@ -484,7 +502,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithLeftEqualVariable_ShouldKeepOriginal()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE LEFT(UserName, 3) = @pattern";
 
             // Act
@@ -499,7 +517,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithYearEqualLiteral_ShouldConvertToDateRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE YEAR(OrderDate) = 2026";
 
             // Act
@@ -516,7 +534,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithYearGreaterThanLiteral_ShouldConvertToDateComparison()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE YEAR(OrderDate) > 2026";
 
             // Act
@@ -532,7 +550,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithYearReversedComparison_ShouldConvertToCorrectComparison()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE 2026 >= YEAR(OrderDate)";
 
             // Act
@@ -548,7 +566,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithConvertDateEqualLiteral_ShouldConvertToDateRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE CONVERT(date, OrderDate) = '2026-06-15'";
 
             // Act
@@ -565,7 +583,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithCastDateNotEqualLiteral_ShouldConvertToDisjointRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE CAST(OrderDate AS date) <> '2026-06-15'";
 
             // Act
@@ -582,7 +600,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithConvertDateInvalidLiteral_ShouldKeepOriginal()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE CONVERT(date, OrderDate) = 'invalid-date'";
 
             // Act
@@ -597,7 +615,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDatePartYear_ShouldConvertToDateRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEPART(year, OrderDate) = 2026";
 
             // Act
@@ -614,7 +632,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDatePartYearQuoted_ShouldConvertToDateRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEPART('yyyy', OrderDate) > 2026";
 
             // Act
@@ -630,7 +648,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullNotSatisfyingComparison_ShouldRemoveIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE ISNULL(Amount, 0) > 100";
 
             // Act
@@ -646,7 +664,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullSatisfyingComparison_ShouldRewriteToOrIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE ISNULL(Amount, 200) > 100";
 
             // Act
@@ -662,7 +680,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullReversedComparisonNotSatisfying_ShouldRemoveIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE 100 < ISNULL(Amount, 0)";
 
             // Act
@@ -678,7 +696,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithRedundantAndConditions_ShouldDeduplicate()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE Status = 'Active' AND Amount > 100 AND Status = 'Active'";
 
             // Act
@@ -697,7 +715,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithTautologyInAnd_ShouldRemoveTautology()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE 1 = 1 AND Status = 'Active'";
 
             // Act
@@ -713,7 +731,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithContradictionInAnd_ShouldCollapseToContradiction()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE Status = 'Active' AND 1 = 0";
 
             // Act
@@ -729,7 +747,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithTautologyInOr_ShouldCollapseToTautology()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE Status = 'Active' OR 1 = 1";
 
             // Act
@@ -745,7 +763,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithContradictionInOr_ShouldRemoveContradiction()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE Status = 'Active' OR 1 = 0";
 
             // Act
@@ -761,7 +779,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDateAddConstant_ShouldMoveToRightSide()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEADD(day, 30, OrderDate) >= GETDATE()";
 
             // Act
@@ -777,7 +795,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDateAddNegativeConstant_ShouldMoveToRightSide()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEADD(month, -1, CreatedDate) < '2026-01-01'";
 
             // Act
@@ -793,7 +811,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDateDiffDayEqualsZero_ShouldConvertToRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEDIFF(day, OrderDate, '2026-06-15') = 0";
 
             // Act
@@ -810,7 +828,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDateDiffDayGreaterThanConstant_ShouldConvertToComparison()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEDIFF(day, '2026-06-15', OrderDate) > 5";
 
             // Act
@@ -826,7 +844,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithDateDiffYearEqualsConstant_ShouldConvertToRange()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Orders WHERE DATEDIFF(year, OrderDate, '2026-06-15') = 3";
 
             // Act
@@ -843,7 +861,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithAbsNegativeConstant_ShouldRewriteToNullPropagatingFalse()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Products WHERE ABS(Weight) < -5";
 
             // Act
@@ -860,7 +878,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithAbsZero_ShouldRewriteToDirectComparison()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Products WHERE ABS(Weight) = 0";
 
             // Act
@@ -875,7 +893,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithAbsPositiveConstant_ShouldRewriteToDoubleBoundedComparison()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Products WHERE ABS(Weight) < 10";
 
             // Act
@@ -891,7 +909,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithRTrim_ShouldRemoveFunction()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE RTRIM(UserName) = 'admin'";
 
             // Act
@@ -907,7 +925,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithRecursiveLogicSimplification_ShouldSimplify()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE UserName = 'admin' AND 1 = 1";
 
             // Act
@@ -923,7 +941,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullInList_DefaultValueInList_ShouldRewriteToOrIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(UserRole, 'Guest') IN ('Admin', 'Guest')";
 
             // Act
@@ -941,7 +959,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullInList_DefaultValueNotInList_ShouldRewriteToAndIsNotNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(UserRole, 'Guest') IN ('Admin', 'Manager')";
 
             // Act
@@ -959,7 +977,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullNotInList_DefaultValueInList_ShouldRewriteToAndIsNotNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(UserRole, 'Guest') NOT IN ('Admin', 'Guest')";
 
             // Act
@@ -977,7 +995,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithIsNullNotInList_DefaultValueNotInList_ShouldRewriteToOrIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(UserRole, 'Guest') NOT IN ('Admin', 'Manager')";
 
             // Act
@@ -995,7 +1013,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithCoalesceInList_DefaultValueInList_ShouldRewriteToOrIsNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE COALESCE(UserRole, 'Guest') IN ('Admin', 'Guest')";
 
             // Act
@@ -1013,7 +1031,7 @@ SELECT * FROM @MyTable2;
         public void Refactor_WithNestedTableVariable_ShouldConvertToTempTableAndSafeDrop()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = @"
 IF @Condition = 1
 BEGIN
@@ -1040,7 +1058,7 @@ END
         public void Refactor_WithAbsNegativeConstantAndNot_ShouldPreserveThreeValuedLogic()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Products WHERE NOT (ABS(Weight) < -5)";
 
             // Act
@@ -1057,7 +1075,7 @@ END
         public void Refactor_WithAbsZeroLessThan_ShouldRewriteToNullPropagatingFalse()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Products WHERE ABS(Weight) < 0";
 
             // Act
@@ -1073,7 +1091,7 @@ END
         public void Refactor_WithAbsZeroGreaterThanOrEqualTo_ShouldRewriteToNullPropagatingTrue()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Products WHERE ABS(Weight) >= 0";
 
             // Act
@@ -1088,7 +1106,7 @@ END
         public void Refactor_WithIsNullComparisonDifferentValue_ShouldRewriteToAndIsNotNull()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE ISNULL(Status, '') = 'Active'";
 
             // Act
@@ -1104,7 +1122,7 @@ END
         public void Refactor_WithIsNullComparisonDifferentValueAndNot_ShouldPreserveThreeValuedLogic()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = "SELECT * FROM Users WHERE NOT (ISNULL(Status, '') = 'Active')";
 
             // Act
@@ -1121,7 +1139,7 @@ END
         public void Refactor_WithTableVariableInUpdateDeleteMerge_ShouldRenameToTempTable()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql = @"
 DECLARE @MyTable TABLE (Id INT, Val VARCHAR(10));
 INSERT INTO @MyTable VALUES (1, 'A');
@@ -1149,7 +1167,7 @@ WHEN MATCHED THEN UPDATE SET Val = Source.Val;
         public void Refactor_WithIsNullInList_VariableOrDefaultValueVariable_ShouldKeepOriginal()
         {
             // Arrange
-            var engine = new SqlRefactorEngine();
+            var engine = new SqlRefactorEngine(registerLegacyRules: true);
             string sql1 = "SELECT * FROM Users WHERE ISNULL(UserRole, 'Guest') IN ('Admin', @Var)";
             string sql2 = "SELECT * FROM Users WHERE ISNULL(UserRole, @Var) IN ('Admin', 'Guest')";
 

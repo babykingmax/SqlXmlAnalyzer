@@ -166,7 +166,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 try
                 {
                     // Refactor query using the refactoring engine
-                    var refactorEngine = new SqlRefactorEngine(registerDefaultRules: true);
+                    var refactorEngine = new SqlRefactorEngine(registerCoreRules: true, registerLegacyRules: true);
                     string refactoredSql = refactorEngine.Refactor(statementText, out var errors);
 
                     // Suggest indexes on the refactored SQL
