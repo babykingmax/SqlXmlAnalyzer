@@ -74,11 +74,10 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                     {
                         if (rule.CanApply(currentFragment, context))
                         {
-                            var beforeSql = GenerateSql(currentFragment);
+                            context.Changed = false;
                             var nextFragment = rule.Apply(currentFragment, context);
-                            var afterSql = GenerateSql(nextFragment);
 
-                            if (beforeSql != afterSql)
+                            if (context.Changed)
                             {
                                 context.Log($"Pass {pass}: Applied rule [{rule.RuleId}] - {rule.Name}");
                                 currentFragment = nextFragment;

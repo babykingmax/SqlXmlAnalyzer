@@ -54,11 +54,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
 
         private class RewriteVisitor : BooleanExpressionReplacementVisitor
         {
-            private readonly RefactorContext _context;
-
-            public RewriteVisitor(RefactorContext context)
+            public RewriteVisitor(RefactorContext context) : base(context)
             {
-                _context = context;
             }
 
             public BooleanExpression Rewrite(BooleanExpression expr)
@@ -89,6 +86,12 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
                 {
                     if (right is StringLiteral strLit && strLit.Value.Length == length)
                     {
+                        // LIKE trailing space behavior is different from =
+                        if (strLit.Value.EndsWith(" ") || strLit.Value.EndsWith("\t"))
+                        {
+                            return false;
+                        }
+
                         if (!ContainsLikeWildcards(strLit.Value))
                         {
                             optimized = new LikePredicate
@@ -116,6 +119,10 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
             {
                 if (comparison is StringLiteral strLit && strLit.Value.Length == length)
                 {
+                    if (strLit.Value.EndsWith(" ") || strLit.Value.EndsWith("\t"))
+                    {
+                        return false;
+                    }
                     return !ContainsLikeWildcards(strLit.Value);
                 }
             }

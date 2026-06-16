@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
@@ -9,6 +10,13 @@ namespace SqlXmlAnalyzer.Core.Refactoring
     public abstract class BooleanExpressionReplacementVisitor : TSqlFragmentVisitor
     {
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
+        protected readonly RefactorContext _context;
+        public bool Changed { get; protected set; }
+
+        protected BooleanExpressionReplacementVisitor(RefactorContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         private PropertyInfo[] GetBooleanExpressionProperties(Type type)
         {
@@ -17,16 +25,26 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                 var list = new List<PropertyInfo>();
                 foreach (var prop in t.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if (typeof(BooleanExpression).IsAssignableFrom(prop.PropertyType) && prop.CanRead && prop.CanWrite)
+                    if (!prop.CanRead) continue;
+
+                    if (typeof(BooleanExpression).IsAssignableFrom(prop.PropertyType) && prop.CanWrite)
                     {
                         list.Add(prop);
                     }
-                    else if (typeof(System.Collections.IList).IsAssignableFrom(prop.PropertyType))
+                    else
                     {
-                        var genericArgs = prop.PropertyType.GetGenericArguments();
-                        if (genericArgs.Length == 1 && typeof(BooleanExpression).IsAssignableFrom(genericArgs[0]))
+                        var listInterface = prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(IList<>)
+                            ? prop.PropertyType
+                            : prop.PropertyType.GetInterfaces()
+                                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
+
+                        if (listInterface != null)
                         {
-                            list.Add(prop);
+                            var genericArgs = listInterface.GetGenericArguments();
+                            if (genericArgs.Length == 1 && typeof(BooleanExpression).IsAssignableFrom(genericArgs[0]))
+                            {
+                                list.Add(prop);
+                            }
                         }
                     }
                 }
@@ -50,10 +68,12 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                         if (replacement != val && replacement != null)
                         {
                             prop.SetValue(node, replacement);
+                            Changed = true;
+                            _context.Changed = true;
                         }
                     }
                 }
-                else if (typeof(System.Collections.IList).IsAssignableFrom(prop.PropertyType))
+                else
                 {
                     if (prop.GetValue(node) is System.Collections.IList list)
                     {
@@ -65,6 +85,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                                 if (replacement != expr && replacement != null)
                                 {
                                     list[i] = replacement;
+                                    Changed = true;
+                                    _context.Changed = true;
                                 }
                             }
                         }
@@ -78,3 +100,4 @@ namespace SqlXmlAnalyzer.Core.Refactoring
         protected abstract BooleanExpression ReplaceExpression(BooleanExpression expression);
     }
 }
+

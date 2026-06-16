@@ -51,11 +51,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
 
         private class RewriteVisitor : BooleanExpressionReplacementVisitor
         {
-            private readonly RefactorContext _context;
-
-            public RewriteVisitor(RefactorContext context)
+            public RewriteVisitor(RefactorContext context) : base(context)
             {
-                _context = context;
             }
 
             public BooleanExpression Rewrite(BooleanExpression expr)
@@ -96,45 +93,106 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
             ScalarExpression expr, 
             ScalarExpression comparisonVal, 
             out ColumnReferenceExpression? colRef, 
-            out IntegerLiteral? newComparisonVal)
+            out ScalarExpression? newComparisonVal)
         {
             colRef = null;
             newComparisonVal = null;
 
-            if (comparisonVal is IntegerLiteral destLit && long.TryParse(destLit.Value, out long destVal))
+            if (TryGetIntegerValue(comparisonVal, out long destVal))
             {
                 if (expr is BinaryExpression binExpr)
                 {
-                    if (binExpr.BinaryExpressionType == BinaryExpressionType.Add)
+                    try
                     {
-                        if (binExpr.FirstExpression is ColumnReferenceExpression col &&
-                            binExpr.SecondExpression is IntegerLiteral lit &&
-                            long.TryParse(lit.Value, out long offset))
+                        if (binExpr.BinaryExpressionType == BinaryExpressionType.Add)
                         {
-                            colRef = col;
-                            newComparisonVal = new IntegerLiteral { Value = (destVal - offset).ToString() };
-                            return true;
+                            if (binExpr.FirstExpression is ColumnReferenceExpression col &&
+                                TryGetIntegerValue(binExpr.SecondExpression, out long offset))
+                            {
+                                colRef = col;
+                                checked
+                                {
+                                    newComparisonVal = CreateIntegerLiteralExpression(destVal - offset);
+                                }
+                                return true;
+                            }
+                            else if (binExpr.SecondExpression is ColumnReferenceExpression col2 &&
+                                     TryGetIntegerValue(binExpr.FirstExpression, out long offset2))
+                            {
+                                colRef = col2;
+                                checked
+                                {
+                                    newComparisonVal = CreateIntegerLiteralExpression(destVal - offset2);
+                                }
+                                return true;
+                            }
                         }
-                        else if (binExpr.SecondExpression is ColumnReferenceExpression col2 &&
-                                 binExpr.FirstExpression is IntegerLiteral lit2 &&
-                                 long.TryParse(lit2.Value, out long offset2))
+                        else if (binExpr.BinaryExpressionType == BinaryExpressionType.Subtract)
                         {
-                            colRef = col2;
-                            newComparisonVal = new IntegerLiteral { Value = (destVal - offset2).ToString() };
-                            return true;
+                            if (binExpr.FirstExpression is ColumnReferenceExpression col &&
+                                TryGetIntegerValue(binExpr.SecondExpression, out long offset))
+                            {
+                                colRef = col;
+                                checked
+                                {
+                                    newComparisonVal = CreateIntegerLiteralExpression(destVal + offset);
+                                }
+                                return true;
+                            }
                         }
                     }
-                    else if (binExpr.BinaryExpressionType == BinaryExpressionType.Subtract)
+                    catch (OverflowException)
                     {
-                        if (binExpr.FirstExpression is ColumnReferenceExpression col &&
-                            binExpr.SecondExpression is IntegerLiteral lit &&
-                            long.TryParse(lit.Value, out long offset))
-                        {
-                            colRef = col;
-                            newComparisonVal = new IntegerLiteral { Value = (destVal + offset).ToString() };
-                            return true;
-                        }
+                        return false;
                     }
+                }
+            }
+
+            return false;
+        }
+
+        private static ScalarExpression CreateIntegerLiteralExpression(long value)
+        {
+            if (value < 0)
+            {
+                var unary = new UnaryExpression();
+                unary.UnaryExpressionType = UnaryExpressionType.Negative;
+                string valStr = value == long.MinValue ? "9223372036854775808" : (-value).ToString();
+                unary.Expression = new IntegerLiteral { Value = valStr };
+                return unary;
+            }
+            else
+            {
+                return new IntegerLiteral { Value = value.ToString() };
+            }
+        }
+
+        private static bool TryGetIntegerValue(ScalarExpression? expr, out long value)
+        {
+            value = 0;
+            if (expr == null) return false;
+
+            if (expr is IntegerLiteral literal)
+            {
+                return long.TryParse(literal.Value, out value);
+            }
+
+            if (expr is UnaryExpression unary)
+            {
+                if (unary.UnaryExpressionType == UnaryExpressionType.Negative)
+                {
+                    if (TryGetIntegerValue(unary.Expression, out long innerVal))
+                    {
+                        checked
+                        {
+                            value = -innerVal;
+                        }
+                        return true;
+                    }
+                }
+                else if (unary.UnaryExpressionType == UnaryExpressionType.Positive)
+                {
+                    return TryGetIntegerValue(unary.Expression, out value);
                 }
             }
 

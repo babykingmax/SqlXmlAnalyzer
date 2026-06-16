@@ -6,9 +6,17 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 {
     public class TableVariableVisitor : TSqlFragmentVisitor
     {
+        private readonly RefactorContext _context;
+
+        public TableVariableVisitor(RefactorContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         public override void ExplicitVisit(TSqlBatch node)
         {
             var tableVars = new List<string>();
+            var renameMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var statementsToReplace = new Dictionary<TSqlStatement, TSqlStatement>();
 
             // 1. Collect all table variable declarations recursively
@@ -30,15 +38,17 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                 createStmt.Definition = declareStmt.Body.Definition;
 
                 statementsToReplace[declareStmt] = createStmt;
+                renameMap[varName] = tempTableName;
             }
 
             if (tableVars.Count > 0)
             {
+                _context.Changed = true;
                 // 2. Recursively replace DECLARE TABLE statements with CREATE TABLE statements
                 ReplaceStatements(node, statementsToReplace);
 
                 // 3. Rename variable references in the batch statements
-                var renameVisitor = new VariableRenameVisitor(tableVars);
+                var renameVisitor = new VariableRenameVisitor(renameMap);
                 node.Accept(renameVisitor);
 
                 // 4. Append safe conditional DROP TABLE statements at the end of the batch
@@ -89,63 +99,52 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
             {
                 if (!prop.CanRead || prop.GetIndexParameters().Length > 0) continue;
 
+                var val = prop.GetValue(node);
+                if (val == null) continue;
+
                 // 1. Single TSqlStatement property
-                if (typeof(TSqlStatement).IsAssignableFrom(prop.PropertyType))
+                if (val is TSqlStatement stmt)
                 {
-                    if (prop.CanWrite && prop.GetValue(node) is TSqlStatement stmt && replacementMap.TryGetValue(stmt, out var replacement))
+                    if (replacementMap.TryGetValue(stmt, out var replacement))
                     {
-                        prop.SetValue(node, replacement);
+                        if (prop.CanWrite)
+                        {
+                            prop.SetValue(node, replacement);
+                        }
                     }
-                    else if (prop.GetValue(node) is TSqlFragment child)
+                    else
                     {
-                        ReplaceStatements(child, replacementMap);
+                        ReplaceStatements(stmt, replacementMap);
                     }
                 }
-                // 2. IList<TSqlStatement> property
-                else if (typeof(IList<TSqlStatement>).IsAssignableFrom(prop.PropertyType))
+                // 2. Collections of statements/fragments
+                else if (val is System.Collections.IList list)
                 {
-                    if (prop.GetValue(node) is IList<TSqlStatement> list)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        for (int i = 0; i < list.Count; i++)
+                        if (list[i] is TSqlStatement listStmt && replacementMap.TryGetValue(listStmt, out var listReplacement))
                         {
-                            if (list[i] != null && replacementMap.TryGetValue(list[i], out var replacement))
-                            {
-                                list[i] = replacement;
-                            }
-                            else
-                            {
-                                ReplaceStatements(list[i], replacementMap);
-                            }
+                            list[i] = listReplacement;
+                        }
+                        else if (list[i] is TSqlFragment child)
+                        {
+                            ReplaceStatements(child, replacementMap);
                         }
                     }
                 }
-                // 3. StatementList property
-                else if (typeof(StatementList).IsAssignableFrom(prop.PropertyType))
+                // 3. Any other TSqlFragment property to recurse
+                else if (val is TSqlFragment fragmentChild)
                 {
-                    if (prop.GetValue(node) is StatementList stmtList)
-                    {
-                        ReplaceStatements(stmtList, replacementMap);
-                    }
+                    ReplaceStatements(fragmentChild, replacementMap);
                 }
-                // 4. Any other TSqlFragment property to recurse
-                else if (typeof(TSqlFragment).IsAssignableFrom(prop.PropertyType))
+                // 4. Collections of TSqlFragment (fallback for read-only or non-IList collections)
+                else if (val is System.Collections.IEnumerable enumerable && !(val is string))
                 {
-                    if (prop.GetValue(node) is TSqlFragment child)
+                    foreach (var item in enumerable)
                     {
-                        ReplaceStatements(child, replacementMap);
-                    }
-                }
-                // 5. Collections of TSqlFragment
-                else if (typeof(System.Collections.IEnumerable).IsAssignableFrom(prop.PropertyType) && prop.PropertyType != typeof(string))
-                {
-                    if (prop.GetValue(node) is System.Collections.IEnumerable enumerable)
-                    {
-                        foreach (var item in enumerable)
+                        if (item is TSqlFragment child)
                         {
-                            if (item is TSqlFragment child)
-                            {
-                                ReplaceStatements(child, replacementMap);
-                            }
+                            ReplaceStatements(child, replacementMap);
                         }
                     }
                 }
@@ -159,29 +158,93 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
         public HashSet<DeclareTableVariableStatement> InsideSchemaObjects { get; } = new HashSet<DeclareTableVariableStatement>();
 
         private bool _inSchemaObject = false;
+        private bool _inFunctionOrView = false;
 
-        public override void Visit(TSqlFragment node)
+        public override void ExplicitVisit(CreateProcedureStatement node)
         {
             bool wasInSchemaObject = _inSchemaObject;
-            if (node is CreateProcedureStatement || node is AlterProcedureStatement ||
-                node is CreateFunctionStatement || node is AlterFunctionStatement ||
-                node is CreateTriggerStatement || node is AlterTriggerStatement ||
-                node is CreateViewStatement || node is AlterViewStatement)
-            {
-                _inSchemaObject = true;
-            }
-
-            base.Visit(node);
-
+            _inSchemaObject = true;
+            base.ExplicitVisit(node);
             _inSchemaObject = wasInSchemaObject;
+        }
+
+        public override void ExplicitVisit(AlterProcedureStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            _inSchemaObject = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+        }
+
+        public override void ExplicitVisit(CreateTriggerStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            _inSchemaObject = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+        }
+
+        public override void ExplicitVisit(AlterTriggerStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            _inSchemaObject = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+        }
+
+        public override void ExplicitVisit(CreateFunctionStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            bool wasInFunctionOrView = _inFunctionOrView;
+            _inSchemaObject = true;
+            _inFunctionOrView = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+            _inFunctionOrView = wasInFunctionOrView;
+        }
+
+        public override void ExplicitVisit(AlterFunctionStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            bool wasInFunctionOrView = _inFunctionOrView;
+            _inSchemaObject = true;
+            _inFunctionOrView = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+            _inFunctionOrView = wasInFunctionOrView;
+        }
+
+        public override void ExplicitVisit(CreateViewStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            bool wasInFunctionOrView = _inFunctionOrView;
+            _inSchemaObject = true;
+            _inFunctionOrView = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+            _inFunctionOrView = wasInFunctionOrView;
+        }
+
+        public override void ExplicitVisit(AlterViewStatement node)
+        {
+            bool wasInSchemaObject = _inSchemaObject;
+            bool wasInFunctionOrView = _inFunctionOrView;
+            _inSchemaObject = true;
+            _inFunctionOrView = true;
+            base.ExplicitVisit(node);
+            _inSchemaObject = wasInSchemaObject;
+            _inFunctionOrView = wasInFunctionOrView;
         }
 
         public override void ExplicitVisit(DeclareTableVariableStatement node)
         {
-            Declarations.Add(node);
-            if (_inSchemaObject)
+            if (!_inFunctionOrView)
             {
-                InsideSchemaObjects.Add(node);
+                Declarations.Add(node);
+                if (_inSchemaObject)
+                {
+                    InsideSchemaObjects.Add(node);
+                }
             }
             base.ExplicitVisit(node);
         }
@@ -189,18 +252,18 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 
     internal class VariableRenameVisitor : TSqlFragmentVisitor
     {
-        private readonly HashSet<string> _targetVariables;
+        private readonly Dictionary<string, string> _renameMap;
 
-        public VariableRenameVisitor(IEnumerable<string> targetVariables)
+        public VariableRenameVisitor(Dictionary<string, string> renameMap)
         {
-            _targetVariables = new HashSet<string>(targetVariables, StringComparer.OrdinalIgnoreCase);
+            _renameMap = new Dictionary<string, string>(renameMap, StringComparer.OrdinalIgnoreCase);
         }
 
         public override void ExplicitVisit(VariableReference node)
         {
-            if (_targetVariables.Contains(node.Name))
+            if (_renameMap.TryGetValue(node.Name, out var newName))
             {
-                node.Name = node.Name.Replace("@", "#");
+                node.Name = newName;
             }
             base.ExplicitVisit(node);
         }

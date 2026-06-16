@@ -52,11 +52,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
 
         private class IsNullRewriteVisitor : BooleanExpressionReplacementVisitor
         {
-            private readonly RefactorContext _context;
-
-            public IsNullRewriteVisitor(RefactorContext context)
+            public IsNullRewriteVisitor(RefactorContext context) : base(context)
             {
-                _context = context;
             }
 
             public BooleanExpression Rewrite(BooleanExpression expr)
@@ -236,9 +233,31 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
 
             if (left is StringLiteral strLeft && right is StringLiteral strRight)
             {
-                int cmp = string.Compare(strLeft.Value, strRight.Value, StringComparison.Ordinal);
-                result = EvaluateCmpResult(cmp, compType);
-                return true;
+                if (compType == BooleanComparisonType.Equals || 
+                    compType == BooleanComparisonType.NotEqualToBrackets || 
+                    compType == BooleanComparisonType.NotEqualToExclamation)
+                {
+                    // 1. If exactly identical (case-sensitive and including trailing spaces), they are equal.
+                    if (string.Equals(strLeft.Value, strRight.Value, StringComparison.Ordinal))
+                    {
+                        result = compType == BooleanComparisonType.Equals;
+                        return true;
+                    }
+
+                    // 2. If they differ even after trimming trailing spaces and ignoring case, they are definitely different.
+                    string trimmedLeft = strLeft.Value.TrimEnd(' ');
+                    string trimmedRight = strRight.Value.TrimEnd(' ');
+                    if (!string.Equals(trimmedLeft, trimmedRight, StringComparison.OrdinalIgnoreCase))
+                    {
+                        result = compType != BooleanComparisonType.Equals;
+                        return true;
+                    }
+
+                    // 3. Otherwise, they differ only by case and/or trailing spaces.
+                    // We cannot safely optimize because the behavior is collation-dependent.
+                    return false;
+                }
+                return false; // Safe fallback for other comparisons to avoid collation-dependent ordering mismatch
             }
 
             if (TryGetNumericValue(left, out decimal valLeft) && TryGetNumericValue(right, out decimal valRight))

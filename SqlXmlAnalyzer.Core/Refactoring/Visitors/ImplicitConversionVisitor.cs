@@ -4,6 +4,13 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 {
     public class ImplicitConversionVisitor : TSqlFragmentVisitor
     {
+        private readonly RefactorContext _context;
+
+        public ImplicitConversionVisitor(RefactorContext context)
+        {
+            _context = context ?? throw new System.ArgumentNullException(nameof(context));
+        }
+
         private static bool ContainsNonAscii(string s)
         {
             if (s == null) return false;
@@ -23,6 +30,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                 !ContainsNonAscii(literal.Value))
             {
                 literal.IsNational = false;
+                _context.Changed = true;
             }
             
             // Check reversed comparison order
@@ -32,6 +40,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                 !ContainsNonAscii(literalRev.Value))
             {
                 literalRev.IsNational = false;
+                _context.Changed = true;
             }
 
             base.ExplicitVisit(node);
@@ -46,6 +55,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                     if (expr is StringLiteral literal && literal.IsNational && !ContainsNonAscii(literal.Value))
                     {
                         literal.IsNational = false;
+                        _context.Changed = true;
                     }
                 }
             }
@@ -61,6 +71,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                 !ContainsNonAscii(literal.Value))
             {
                 literal.IsNational = false;
+                _context.Changed = true;
             }
 
             base.ExplicitVisit(node);
@@ -76,10 +87,12 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                     if (node.SecondExpression is StringLiteral lower && lower.IsNational && !ContainsNonAscii(lower.Value))
                     {
                         lower.IsNational = false;
+                        _context.Changed = true;
                     }
                     if (node.ThirdExpression is StringLiteral upper && upper.IsNational && !ContainsNonAscii(upper.Value))
                     {
                         upper.IsNational = false;
+                        _context.Changed = true;
                     }
                 }
             }

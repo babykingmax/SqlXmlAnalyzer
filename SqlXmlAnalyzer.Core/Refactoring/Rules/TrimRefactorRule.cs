@@ -23,7 +23,11 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
             {
                 var visitor = new RewriteVisitor(context);
                 var replaced = visitor.Rewrite(boolExpr);
-                if (replaced != boolExpr) return replaced;
+                if (replaced != boolExpr)
+                {
+                    context.Changed = true;
+                    return replaced;
+                }
             }
             else
             {
@@ -56,11 +60,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
 
         private class RewriteVisitor : BooleanExpressionReplacementVisitor
         {
-            private readonly RefactorContext _context;
-
-            public RewriteVisitor(RefactorContext context)
+            public RewriteVisitor(RefactorContext context) : base(context)
             {
-                _context = context;
             }
 
             public BooleanExpression Rewrite(BooleanExpression expr)
@@ -151,6 +152,12 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
                     }
                     else if (string.Equals(name, "RTRIM", StringComparison.OrdinalIgnoreCase) && funcCall.Parameters.Count == 1)
                     {
+                        hasRTrim = true;
+                        current = funcCall.Parameters[0];
+                    }
+                    else if (string.Equals(name, "TRIM", StringComparison.OrdinalIgnoreCase) && funcCall.Parameters.Count == 1)
+                    {
+                        hasLTrim = true;
                         hasRTrim = true;
                         current = funcCall.Parameters[0];
                     }

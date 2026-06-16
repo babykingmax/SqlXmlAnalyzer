@@ -7,6 +7,13 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 {
     public class SargableVisitor : TSqlFragmentVisitor
     {
+        private readonly RefactorContext _context;
+
+        public SargableVisitor(RefactorContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = 
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
@@ -44,6 +51,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                         if (optimized != val)
                         {
                             prop.SetValue(node, optimized);
+                            _context.Changed = true;
                         }
                     }
                 }
@@ -234,6 +242,19 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                         {
                             return inPred;
                         }
+
+                        if (defaultValue is StringLiteral strDefault && val is StringLiteral strVal)
+                        {
+                            if (!string.Equals(strDefault.Value, strVal.Value, StringComparison.Ordinal))
+                            {
+                                string t1 = strDefault.Value.TrimEnd(' ');
+                                string t2 = strVal.Value.TrimEnd(' ');
+                                if (string.Equals(t1, t2, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    return inPred;
+                                }
+                            }
+                        }
                     }
 
                     bool hasDefault = false;
@@ -308,6 +329,11 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                     // Correctness check: the literal string length must match the function length parameter
                     if (stringLiteral.Value != null && stringLiteral.Value.Length == length)
                     {
+                        if (stringLiteral.Value.EndsWith(" ") || stringLiteral.Value.EndsWith("\t"))
+                        {
+                            return false;
+                        }
+
                         string escaped = EscapeLikeWildcards(stringLiteral.Value);
                         string pattern = escaped + "%";
 
@@ -895,9 +921,31 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 
             if (left is StringLiteral strLeft && right is StringLiteral strRight)
             {
-                int cmp = string.Compare(strLeft.Value, strRight.Value, StringComparison.Ordinal);
-                result = EvaluateCmpResult(cmp, compType);
-                return true;
+                if (compType == BooleanComparisonType.Equals || 
+                    compType == BooleanComparisonType.NotEqualToBrackets || 
+                    compType == BooleanComparisonType.NotEqualToExclamation)
+                {
+                    // 1. If exactly identical (case-sensitive and including trailing spaces), they are equal.
+                    if (string.Equals(strLeft.Value, strRight.Value, StringComparison.Ordinal))
+                    {
+                        result = compType == BooleanComparisonType.Equals;
+                        return true;
+                    }
+
+                    // 2. If they differ even after trimming trailing spaces and ignoring case, they are definitely different.
+                    string trimmedLeft = strLeft.Value.TrimEnd(' ');
+                    string trimmedRight = strRight.Value.TrimEnd(' ');
+                    if (!string.Equals(trimmedLeft, trimmedRight, StringComparison.OrdinalIgnoreCase))
+                    {
+                        result = compType != BooleanComparisonType.Equals;
+                        return true;
+                    }
+
+                    // 3. Otherwise, they differ only by case and/or trailing spaces.
+                    // We cannot safely optimize because the behavior is collation-dependent.
+                    return false;
+                }
+                return false; // Safe fallback for other comparisons to avoid collation-dependent ordering mismatch
             }
 
             if (TryGetNumericValue(left, out decimal valLeft) && TryGetNumericValue(right, out decimal valRight))

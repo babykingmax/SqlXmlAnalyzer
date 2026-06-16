@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Rules
 
         public TSqlFragment Apply(TSqlFragment fragment, RefactorContext context)
         {
-            var visitor = new ImplicitConversionVisitor();
+            var visitor = new ImplicitConversionVisitor(context);
             fragment.Accept(visitor);
             return fragment;
         }

@@ -8,6 +8,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring
         public string OriginalSql { get; }
         public IList<string> Logs { get; } = new List<string>();
         public IList<string> Warnings { get; } = new List<string>();
+        public bool Changed { get; set; }
 
         public RefactorContext(string originalSql)
         {
@@ -18,3 +19,4 @@ namespace SqlXmlAnalyzer.Core.Refactoring
         public void Warn(string message) => Warnings.Add(message);
     }
 }
+
