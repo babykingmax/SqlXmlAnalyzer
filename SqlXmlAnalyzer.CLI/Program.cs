@@ -8,6 +8,16 @@ using System.Xml;
 using System.Xml.Linq;
 using SqlXmlAnalyzer;
 using SqlXmlAnalyzer.Core.Rules;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Models;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
 
 namespace SqlXmlAnalyzer.CLI
 {
@@ -15,6 +25,25 @@ namespace SqlXmlAnalyzer.CLI
     {
         public static int Main(string[] args)
         {
+            try
+            {
+                var initField = typeof(SqlXmlAnalyzer.Logger).GetField("_initialized", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                if (initField != null)
+                {
+                    initField.SetValue(null, false);
+                }
+                SqlXmlAnalyzer.Logger.Initialize(logLevel: SqlXmlAnalyzer.LogLevel.Error, enableFileLogging: false);
+            }
+            catch
+            {
+                // Ignore logger init error
+            }
+
+            if (args.Length > 0 && args[0].Equals("refactor", StringComparison.OrdinalIgnoreCase))
+            {
+                return HandleRefactorCommand(args.Skip(1).ToArray());
+            }
+
             // Parse arguments
             string? path = null;
             string configPath = "RuleConfiguration.json";
@@ -399,6 +428,316 @@ namespace SqlXmlAnalyzer.CLI
             Console.WriteLine("  -f, --format <格式>        输出报告格式: console, json, junit (默认为 console)");
             Console.WriteLine("  -o, --output <路径>        将分析报告写入指定的文件路径");
             Console.WriteLine("  -h, --help                 显示此帮助信息");
+        }
+
+        private static int HandleRefactorCommand(string[] args)
+        {
+            if (args.Contains("--help") || args.Contains("-h"))
+            {
+                PrintRefactorUsage();
+                return 0;
+            }
+
+            if (args.Length == 0)
+            {
+                Console.Error.WriteLine("[Error] 参数错误: 未指定 SQL 文件路径。");
+                Console.WriteLine();
+                PrintRefactorUsage();
+                return 2;
+            }
+
+            string sqlPath = args[0];
+            if (sqlPath.StartsWith("-"))
+            {
+                Console.Error.WriteLine($"[Error] 参数错误: SQL 文件路径不能以 '-' 开头: '{sqlPath}'。若要查看帮助，请使用 --help。");
+                Console.WriteLine();
+                PrintRefactorUsage();
+                return 2;
+            }
+
+            string? planPath = null;
+            bool isDryRun = false;
+            bool showSql = false;
+            int? maxPasses = null;
+            string format = "console";
+            string? outputPath = null;
+
+            for (int i = 1; i < args.Length; i++)
+            {
+                string arg = args[i];
+                switch (arg)
+                {
+                    case "--plan":
+                    case "-p":
+                        if (i + 1 < args.Length)
+                        {
+                            planPath = args[++i];
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"[Error] 参数错误: 选项 '{arg}' 缺少参数值。");
+                            return 2;
+                        }
+                        break;
+
+                    case "--dry-run":
+                    case "-d":
+                        isDryRun = true;
+                        break;
+
+                    case "--show-sql":
+                    case "-s":
+                        showSql = true;
+                        break;
+
+                    case "--max-passes":
+                    case "-m":
+                        if (i + 1 < args.Length)
+                        {
+                            var val = args[++i];
+                            if (int.TryParse(val, out int passes) && passes > 0)
+                            {
+                                maxPasses = passes;
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine($"[Error] 参数错误: 选项 '{arg}' 的值必须是大于 0 的有效整数，当前值为 '{val}'。");
+                                return 2;
+                            }
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"[Error] 参数错误: 选项 '{arg}' 缺少参数值。");
+                            return 2;
+                        }
+                        break;
+
+                    case "--format":
+                    case "-f":
+                        if (i + 1 < args.Length)
+                        {
+                            var val = args[++i];
+                            if (val.Equals("console", StringComparison.OrdinalIgnoreCase) ||
+                                val.Equals("json", StringComparison.OrdinalIgnoreCase))
+                            {
+                                format = val.ToLower();
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine($"[Error] 参数错误: 不支持的输出格式 '{val}'。支持的格式为: console, json。");
+                                return 2;
+                            }
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"[Error] 参数错误: 选项 '{arg}' 缺少参数值。");
+                            return 2;
+                        }
+                        break;
+
+                    case "--output":
+                    case "-o":
+                        if (i + 1 < args.Length)
+                        {
+                            var val = args[++i];
+                            if (val.Equals("json", StringComparison.OrdinalIgnoreCase))
+                            {
+                                format = "json";
+                            }
+                            else
+                            {
+                                outputPath = val;
+                            }
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine($"[Error] 参数错误: 选项 '{arg}' 缺少参数值。");
+                            return 2;
+                        }
+                        break;
+
+                    default:
+                        Console.Error.WriteLine($"[Error] 参数错误: 未知的选项或参数 '{arg}'。");
+                        Console.WriteLine();
+                        PrintRefactorUsage();
+                        return 2;
+                }
+            }
+
+            // Setup services
+            var services = new ServiceCollection();
+            services.AddLogging(configure =>
+            {
+                configure.AddConsole(options =>
+                {
+                    options.LogToStandardErrorThreshold = Microsoft.Extensions.Logging.LogLevel.Trace;
+                });
+                configure.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Warning);
+            });
+
+            services.AddSingleton<IFileHandler, PhysicalFileHandler>();
+
+            bool isJson = format.Equals("json", StringComparison.OrdinalIgnoreCase) || 
+                          (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+
+            if (isJson)
+            {
+                services.AddSingleton<IResultReporter>(sp => new JsonResultReporter { ShowSql = showSql });
+            }
+            else
+            {
+                services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = showSql });
+            }
+
+            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine("RuleConfiguration.json"));
+            services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
+
+            // Rules
+            services.AddSingleton<ISqlRefactorRule, ConstantFoldingRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, IsNullComparisonRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, LeftOrSubstringRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, TrimRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, ImplicitConversionRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, SubqueryToJoinRule>();
+            services.AddSingleton<ISqlRefactorRule, ExistsToJoinRule>();
+            services.AddSingleton<ISqlRefactorRule, TableVariableRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, ScalarSubqueryToJoinRule>();
+
+            services.AddSingleton<IRefactoringEngine, SqlRefactoringEngine>();
+            services.AddSingleton<ApplicationOrchestrator>();
+
+            using var serviceProvider = services.BuildServiceProvider();
+            var orchestrator = serviceProvider.GetRequiredService<ApplicationOrchestrator>();
+
+            var refactorOptions = new RefactorOptions();
+            if (maxPasses.HasValue)
+            {
+                refactorOptions = refactorOptions with { MaxPasses = maxPasses.Value };
+            }
+
+            try
+            {
+                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath);
+
+                if (orchestratorResult.Result == null)
+                {
+                    // Handle failure before refactoring engine ran
+                    if (isJson)
+                    {
+                        var jsonResult = new
+                        {
+                            IsSuccess = false,
+                            ErrorMessage = orchestratorResult.ErrorMessage,
+                            Warnings = orchestratorResult.Warnings,
+                            HasChanges = false,
+                            Changes = new List<object>(),
+                            Failures = new List<object>(),
+                            WarningsList = new List<object>(),
+                            Errors = new List<string> { orchestratorResult.ErrorMessage ?? "Unknown orchestration error" },
+                            OriginalSql = (string?)null,
+                            RefactoredSql = (string?)null
+                        };
+
+                        var jsonOptions = new JsonSerializerOptions
+                        {
+                            WriteIndented = true,
+                            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                        };
+                        string jsonString = JsonSerializer.Serialize(jsonResult, jsonOptions);
+
+                        if (!string.IsNullOrEmpty(outputPath))
+                        {
+                            try
+                            {
+                                File.WriteAllText(outputPath, jsonString, Encoding.UTF8);
+                                Console.WriteLine($"报告已写入到: {outputPath}");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine(jsonString);
+                        }
+                    }
+                    else
+                    {
+                        var sb = new StringBuilder();
+                        sb.AppendLine("==================================================");
+                        sb.AppendLine("                Refactoring Report                ");
+                        sb.AppendLine("==================================================");
+                        sb.AppendLine("[FAILED] Refactoring failed.");
+                        sb.AppendLine(orchestratorResult.ErrorMessage);
+                        sb.AppendLine("==================================================");
+
+                        if (!string.IsNullOrEmpty(outputPath))
+                        {
+                            try
+                            {
+                                File.WriteAllText(outputPath, sb.ToString(), Encoding.UTF8);
+                                Console.WriteLine($"报告已写入到: {outputPath}");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
+                            }
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Error.WriteLine(orchestratorResult.ErrorMessage);
+                            Console.ResetColor();
+                        }
+                    }
+                }
+
+                return orchestratorResult.IsSuccess ? 0 : 1;
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine($"[ERROR] Command execution crashed: {ex.Message}");
+                Console.ResetColor();
+                return 1;
+            }
+        }
+
+        private static void PrintRefactorUsage()
+        {
+            Console.WriteLine("用法: SqlXmlAnalyzer.CLI refactor <SQL文件路径> [选项]");
+            Console.WriteLine();
+            Console.WriteLine("对指定的 SQL 文件进行自动重构优化，识别并修复潜在的性能问题和不规范写法。");
+            Console.WriteLine();
+            Console.WriteLine("参数:");
+            Console.WriteLine("  <SQL文件路径>                需要重构的目标 SQL 文件路径 (必须项)");
+            Console.WriteLine();
+            Console.WriteLine("选项:");
+            Console.WriteLine("  -p, --plan <路径>            关联的执行计划文件 (.sqlplan) 路径 (可选项)");
+            Console.WriteLine("                               如果提供，重构引擎将结合计划中的物理开销和扫描信息进行针对性重构");
+            Console.WriteLine("  -d, --dry-run                Dry-Run 模式，仅分析并输出重构变更摘要，不修改原文件");
+            Console.WriteLine("  -s, --show-sql               在 Dry-Run 模式下同时输出重构前后的完整 SQL 对比");
+            Console.WriteLine("  -m, --max-passes <次数>      重构引擎的最大迭代分析次数 (默认值为 5，必须是大于0的整数)");
+            Console.WriteLine("  -f, --format <格式>          报告输出格式，支持: console, json (默认值为 console)");
+            Console.WriteLine("  -o, --output <路径>          将重构报告写入指定的文件路径，若路径以 .json 结尾则自动切换为 json 格式");
+            Console.WriteLine("  -h, --help                   显示此帮助信息");
+            Console.WriteLine();
+            Console.WriteLine("使用示例:");
+            Console.WriteLine("  1. Dry-Run 预览模式 (推荐，不修改源文件):");
+            Console.WriteLine("     SqlXmlAnalyzer.CLI refactor query.sql --dry-run");
+            Console.WriteLine();
+            Console.WriteLine("  2. 基础重构 (直接修改 query.sql 文件):");
+            Console.WriteLine("     SqlXmlAnalyzer.CLI refactor query.sql");
+            Console.WriteLine();
+            Console.WriteLine("  3. 结合执行计划进行重构:");
+            Console.WriteLine("     SqlXmlAnalyzer.CLI refactor query.sql --plan query.sqlplan");
+            Console.WriteLine();
+            Console.WriteLine("  4. 输出 JSON 格式报告到指定文件:");
+            Console.WriteLine("     SqlXmlAnalyzer.CLI refactor query.sql --output report.json");
+            Console.WriteLine();
+            Console.WriteLine("  5. 使用 --show-sql 查看完整 SQL 对比:");
+            Console.WriteLine("     SqlXmlAnalyzer.CLI refactor query.sql --dry-run --show-sql");
         }
     }
 

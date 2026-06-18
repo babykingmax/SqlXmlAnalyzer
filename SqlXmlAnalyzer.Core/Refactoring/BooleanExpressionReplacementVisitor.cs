@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlXmlAnalyzer.Core;
 
 namespace SqlXmlAnalyzer.Core.Refactoring
 {
     public abstract class BooleanExpressionReplacementVisitor : TSqlFragmentVisitor
     {
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
-        protected readonly RefactorContext _context;
+        protected readonly SqlXmlAnalyzer.Core.RefactorContext _context;
         public bool Changed { get; protected set; }
 
-        protected BooleanExpressionReplacementVisitor(RefactorContext context)
+        protected BooleanExpressionReplacementVisitor(SqlXmlAnalyzer.Core.RefactorContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -26,6 +27,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                 foreach (var prop in t.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (!prop.CanRead) continue;
+                    if (prop.GetIndexParameters().Length > 0) continue;
 
                     if (typeof(BooleanExpression).IsAssignableFrom(prop.PropertyType) && prop.CanWrite)
                     {

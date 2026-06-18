@@ -4,10 +4,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
 
 namespace SqlXmlAnalyzer
 {
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
@@ -108,6 +114,26 @@ namespace SqlXmlAnalyzer
 
         private void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging();
+            services.AddSingleton<IFileHandler, PhysicalFileHandler>();
+            services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = false });
+            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine("RuleConfiguration.json"));
+            services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
+
+            // Rules
+            services.AddSingleton<ISqlRefactorRule, ConstantFoldingRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, IsNullComparisonRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, LeftOrSubstringRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, TrimRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, ImplicitConversionRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, SubqueryToJoinRule>();
+            services.AddSingleton<ISqlRefactorRule, ExistsToJoinRule>();
+            services.AddSingleton<ISqlRefactorRule, TableVariableRefactorRule>();
+            services.AddSingleton<ISqlRefactorRule, ScalarSubqueryToJoinRule>();
+
+            services.AddSingleton<IRefactoringEngine, SqlRefactoringEngine>();
+            services.AddSingleton<ApplicationOrchestrator>();
+
             services.AddSingleton<XelReader>();
             services.AddTransient<MainWindow>();
         }

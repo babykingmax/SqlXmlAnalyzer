@@ -32,6 +32,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj" />
     <ProjectReference Include="..\SqlXmlAnalyzer.csproj" />
+    <ProjectReference Include="..\src\SqlXmlAnalyzer.Analysis\SqlXmlAnalyzer.Analysis.csproj" />
+    <ProjectReference Include="..\src\SqlXmlAnalyzer.Refactoring\SqlXmlAnalyzer.Refactoring.csproj" />
+    <ProjectReference Include="..\src\SqlXmlAnalyzer.Application\SqlXmlAnalyzer.Application.csproj" />
+    <ProjectReference Include="..\SqlXmlAnalyzer.CLI\SqlXmlAnalyzer.CLI.csproj" />
   </ItemGroup>
 
 </Project>

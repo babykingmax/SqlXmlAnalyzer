@@ -19,7 +19,7 @@
     <DebugType Condition="'$(Configuration)' == 'Debug'">full</DebugType>
     <DebugSymbols Condition="'$(Configuration)' == 'Debug'">true</DebugSymbols>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**;SqlXmlAnalyzer.Tests\**;SqlXmlAnalyzer.CLI\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**;SqlXmlAnalyzer.Tests\**;SqlXmlAnalyzer.CLI\**;src\**</DefaultItemExcludes>
   </PropertyGroup>
   
   <ItemGroup>
@@ -32,10 +32,15 @@
     <Compile Remove="SqlXmlAnalyzer.CLI\**" />
     <Page Remove="SqlXmlAnalyzer.CLI\**" />
     <None Remove="SqlXmlAnalyzer.CLI\**" />
+    <Compile Remove="src\**" />
+    <Page Remove="src\**" />
+    <None Remove="src\**" />
   </ItemGroup>
   <ItemGroup><!-- 已移除 WebView2，改用纯 WPF 本地控件实现可视化 -->
   
     <ProjectReference Include="SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj" />
+    <ProjectReference Include="src\SqlXmlAnalyzer.Application\SqlXmlAnalyzer.Application.csproj" />
+    <ProjectReference Include="src\SqlXmlAnalyzer.Refactoring\SqlXmlAnalyzer.Refactoring.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +48,7 @@
     <PackageReference Include="DocX" Version="5.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.3.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
     <PackageReference Include="Nodify" Version="6.0.0" />
     <PackageReference Include="QuestPDF" Version="2026.6.0" />

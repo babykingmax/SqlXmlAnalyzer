@@ -15,20 +15,10 @@ namespace SqlXmlAnalyzer.Core.Refactoring
         public SqlRefactorEngine(bool registerCoreRules = true, bool registerLegacyRules = false, int maxPasses = 5)
         {
             _maxPasses = maxPasses;
-            if (registerCoreRules)
+            if (registerCoreRules || registerLegacyRules)
             {
-                // Register new modular core rules
-                RegisterRule(new IsNullComparisonRefactorRule());
-                RegisterRule(new LeftOrSubstringRefactorRule());
-                RegisterRule(new TrimRefactorRule());
-                RegisterRule(new ConstantFoldingRefactorRule());
-            }
-            if (registerLegacyRules)
-            {
-                // Register old/legacy optional rules
-                RegisterRule(new TableVariableRefactorRule());
+                // Register remaining legacy rules in the Core project
                 RegisterRule(new SargableRefactorRule());
-                RegisterRule(new ImplicitConversionRefactorRule());
             }
         }
 

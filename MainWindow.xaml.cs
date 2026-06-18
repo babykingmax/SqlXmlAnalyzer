@@ -14,6 +14,9 @@ using System.Xml.Linq;
 using SqlXmlAnalyzer.Core;
 using SqlXmlAnalyzer.Core.Parsers;
 using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Abstractions;
 using MessageBox = System.Windows.MessageBox;
 
 namespace SqlXmlAnalyzer
@@ -120,6 +123,8 @@ namespace SqlXmlAnalyzer
 
         public Core.ViewModels.MainViewModel ViewModel { get; }
         private readonly Core.XelReader _xelReader;
+        private readonly ApplicationOrchestrator _orchestrator;
+        private readonly IFileHandler _fileHandler;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -179,9 +184,11 @@ namespace SqlXmlAnalyzer
             paletteHelper.SetTheme(theme);
         }
 
-        public MainWindow(Core.XelReader? xelReader = null)
+        public MainWindow(ApplicationOrchestrator orchestrator, IFileHandler fileHandler, Core.XelReader? xelReader = null)
         {
             InitializeComponent();
+            _orchestrator = orchestrator;
+            _fileHandler = fileHandler;
             _xelReader = xelReader ?? new Core.XelReader();
             ViewModel = new Core.ViewModels.MainViewModel();
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -498,20 +505,49 @@ namespace SqlXmlAnalyzer
                     {
                         try
                         {
-                            var engine = new SqlXmlAnalyzer.Core.Refactoring.SqlRefactorEngine();
-                            refactoredSql = engine.Refactor(queryText, out var errors);
-                            if (errors != null && errors.Count > 0)
+                            string tempSqlPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, $"temp_{System.Guid.NewGuid()}.sql");
+                            try
                             {
-                                var sb = new System.Text.StringBuilder();
-                                sb.AppendLine("/* ");
-                                sb.AppendLine("T-SQL 智能重构失败，解析语法树时发生以下错误：");
-                                foreach (var err in errors)
+                                _fileHandler.WriteAllText(tempSqlPath, queryText);
+                                var options = new SqlXmlAnalyzer.Core.Models.RefactorOptions { MaxPasses = 5 };
+                                string? planPath = _fileHandler.Exists(filePath) ? filePath : null;
+                                var orchestratorResult = _orchestrator.Execute(tempSqlPath, planPath: planPath, isDryRun: true, options: options);
+
+                                if (orchestratorResult.IsSuccess && orchestratorResult.Result != null)
                                 {
-                                    sb.AppendLine($"- 行 {err.Line}, 列 {err.Column}: {err.Message}");
+                                    refactoredSql = orchestratorResult.Result.OutputSql;
+                                    if (orchestratorResult.Result.Errors != null && orchestratorResult.Result.Errors.Count > 0)
+                                    {
+                                        var sb = new System.Text.StringBuilder();
+                                        sb.AppendLine("/* ");
+                                        sb.AppendLine("T-SQL 智能重构失败，解析语法树时发生以下错误：");
+                                        foreach (var err in orchestratorResult.Result.Errors)
+                                        {
+                                            sb.AppendLine($"- {err}");
+                                        }
+                                        sb.AppendLine("*/");
+                                        sb.AppendLine(queryText);
+                                        refactoredSql = sb.ToString();
+                                    }
                                 }
-                                sb.AppendLine("*/");
-                                sb.AppendLine(queryText);
-                                refactoredSql = sb.ToString();
+                                else
+                                {
+                                    refactoredSql = $"/* T-SQL 智能重构失败: {orchestratorResult.ErrorMessage} */\r\n" + queryText;
+                                }
+                            }
+                            finally
+                            {
+                                try
+                                {
+                                    if (_fileHandler.Exists(tempSqlPath))
+                                    {
+                                        System.IO.File.Delete(tempSqlPath);
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    // Ignore cleanup errors to prevent masking primary logic exceptions
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -1863,7 +1899,7 @@ namespace SqlXmlAnalyzer
                     string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
                     string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(ViewModel.CurrentPlanDoc, _showplanNs);
                     
-                    Application.Current.Dispatcher.Invoke(() =>
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         ViewModel.MissingIndexes.Clear();
                         var mis = PlanDiagnosticAnalyzer.ExtractMissingIndexes(ViewModel.CurrentPlanDoc, _showplanNs);
@@ -2249,7 +2285,7 @@ namespace SqlXmlAnalyzer
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown();
         }
 
         #endregion

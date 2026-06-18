@@ -16,98 +16,11 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
             var engine = new SqlRefactorEngine();
 
             // Assert
-            engine.Rules.Should().HaveCount(4);
-            engine.Rules.Select(r => r.GetType().Name).Should().Contain(new[]
-            {
-                "IsNullComparisonRefactorRule",
-                "LeftOrSubstringRefactorRule",
-                "TrimRefactorRule",
-                "ConstantFoldingRefactorRule"
-            });
+            engine.Rules.Should().ContainSingle();
+            engine.Rules.First().GetType().Name.Should().Be("SargableRefactorRule");
         }
 
-        [Fact]
-        public void Refactor_WithSimpleImplicitConversion_ShouldStripNPrefix()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE UserName = N'admin'";
 
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            // ScriptDom generator formats and capitalizes keywords.
-            // Let's assert that the generated string contains the correct non-Unicode comparison.
-            refactored.Should().Contain("UserName = 'admin'");
-            refactored.Should().NotContain("UserName = N'admin'");
-        }
-
-        [Fact]
-        public void Refactor_WithReversedImplicitConversion_ShouldStripNPrefix()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE N'admin' = UserName";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("UserName = 'admin'");
-            refactored.Should().NotContain("N'admin' = UserName");
-        }
-
-        [Fact]
-        public void Refactor_WithInPredicateUnicodeLiterals_ShouldStripNPrefix()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE UserRole IN (N'Admin', N'Manager', 'Guest')";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("UserRole IN ('Admin', 'Manager', 'Guest')");
-            refactored.Should().NotContain("N'Admin'");
-        }
-
-        [Fact]
-        public void Refactor_WithLikePredicateUnicodeLiteral_ShouldStripNPrefix()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE UserName LIKE N'admin%'";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("UserName LIKE 'admin%'");
-            refactored.Should().NotContain("LIKE N'admin%'");
-        }
-
-        [Fact]
-        public void Refactor_WithBetweenPredicateUnicodeLiterals_ShouldStripNPrefix()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE UserCode BETWEEN N'A' AND N'Z'";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("UserCode BETWEEN 'A' AND 'Z'");
-            refactored.Should().NotContain("N'A'");
-            refactored.Should().NotContain("N'Z'");
-        }
 
         [Fact]
         public void Refactor_WithNonPredicateAssignment_ShouldNotStripNPrefix()
@@ -140,98 +53,6 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
             refactored.Should().Contain("UserName = N'张三'");
         }
 
-        [Fact]
-        public void Refactor_WithTableVariable_ShouldConvertToTempTable()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
-INSERT INTO @MyTable VALUES (1, 'Admin');
-SELECT * FROM @MyTable;
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable");
-            refactored.Should().MatchRegex(@"INSERT\s+INTO\s+#MyTable");
-            refactored.Should().MatchRegex(@"FROM\s+#MyTable");
-            refactored.Should().Contain("DROP TABLE #MyTable;");
-            refactored.Should().NotContain("@MyTable");
-        }
-
-        [Fact]
-        public void Refactor_WithTableVariableAndColumnPrefix_ShouldConvertToTempTableWithPrefix()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
-SELECT @MyTable.Id, Name FROM @MyTable;
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable");
-            refactored.Should().Contain("#MyTable.Id");
-            refactored.Should().MatchRegex(@"FROM\s+#MyTable");
-            refactored.Should().Contain("DROP TABLE #MyTable;");
-        }
-
-        [Fact]
-        public void Refactor_WithTableVariableAndScalarVariable_ShouldOnlyRenameTableVariable()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-DECLARE @UserId INT = 42;
-DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
-INSERT INTO @MyTable VALUES (@UserId, 'Admin');
-SELECT * FROM @MyTable WHERE Id = @UserId;
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable");
-            refactored.Should().MatchRegex(@"INSERT\s+INTO\s+#MyTable");
-            refactored.Should().MatchRegex(@"FROM\s+#MyTable");
-            refactored.Should().Contain("@UserId"); // Scalar variable should remain unchanged
-            refactored.Should().NotContain("#UserId");
-            refactored.Should().Contain("DROP TABLE #MyTable;");
-        }
-
-        [Fact]
-        public void Refactor_WithMultipleBatches_ShouldProcessEachBatchIndependently()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-DECLARE @MyTable1 TABLE (Id INT);
-SELECT * FROM @MyTable1;
-GO
-DECLARE @MyTable2 TABLE (Id INT);
-SELECT * FROM @MyTable2;
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable1");
-            refactored.Should().Contain("DROP TABLE #MyTable1");
-            refactored.Should().Contain("CREATE TABLE #MyTable2");
-            refactored.Should().Contain("DROP TABLE #MyTable2");
-        }
 
         [Fact]
         public void Refactor_WithIsNullComparisonDifferentValue_ShouldRemoveIsNull()
@@ -281,21 +102,7 @@ SELECT * FROM @MyTable2;
             refactored.Should().Contain("Status IS NULL");
         }
 
-        [Fact]
-        public void Refactor_WithIsNullAndImplicitConversion_ShouldOptimizeBoth()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE ISNULL(UserName, N'') = N'admin'";
 
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("UserName = 'admin'");
-            refactored.Should().NotContain("N'admin'");
-        }
 
         [Fact]
         public void Refactor_WithCoalesceComparisonDifferentValue_ShouldRemoveCoalesce()
@@ -391,23 +198,7 @@ SELECT * FROM @MyTable2;
             refactored.Should().NotContain("LEFT(");
         }
 
-        [Fact]
-        public void Refactor_WithLeftEqualLiteralUnicode_ShouldConvertToLikeUnicode()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = "SELECT * FROM Users WHERE LEFT(UserName, 3) = N'adm'";
 
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            // Since SargableRefactorRule optimizes it to LIKE N'adm%' first,
-            // and then ImplicitConversionRefactorRule optimizes it to LIKE 'adm%',
-            // we check the final optimized result.
-            refactored.Should().Contain("UserName LIKE 'adm%'");
-        }
 
         [Fact]
         public void Refactor_WithLeftEqualLiteralReversed_ShouldConvertToLike()
@@ -1027,32 +818,6 @@ SELECT * FROM @MyTable2;
             refactored.Should().NotContain("COALESCE");
         }
 
-        [Fact]
-        public void Refactor_WithNestedTableVariable_ShouldConvertToTempTableAndSafeDrop()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-IF @Condition = 1
-BEGIN
-    DECLARE @NestedTable TABLE (Id INT);
-    INSERT INTO @NestedTable VALUES (1);
-    SELECT * FROM @NestedTable;
-END
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #NestedTable");
-            refactored.Should().MatchRegex(@"INSERT\s+INTO\s+#NestedTable");
-            refactored.Should().MatchRegex(@"FROM\s+#NestedTable");
-            refactored.Should().Contain("IF OBJECT_ID('tempdb..#NestedTable') IS NOT NULL");
-            refactored.Should().Contain("DROP TABLE #NestedTable;");
-            refactored.Should().NotContain("@NestedTable");
-        }
 
         [Fact]
         public void Refactor_WithAbsNegativeConstantAndNot_ShouldPreserveThreeValuedLogic()
@@ -1135,33 +900,6 @@ END
             refactored.Should().Contain("Status IS NOT NULL");
         }
 
-        [Fact]
-        public void Refactor_WithTableVariableInUpdateDeleteMerge_ShouldRenameToTempTable()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-DECLARE @MyTable TABLE (Id INT, Val VARCHAR(10));
-INSERT INTO @MyTable VALUES (1, 'A');
-UPDATE @MyTable SET Val = 'B' WHERE Id = 1;
-DELETE FROM @MyTable WHERE Id = 1;
-MERGE INTO @MyTable AS Target
-USING (SELECT 1 AS Id, 'C' AS Val) AS Source
-ON Target.Id = Source.Id
-WHEN MATCHED THEN UPDATE SET Val = Source.Val;
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable");
-            refactored.Should().Contain("UPDATE #MyTable");
-            refactored.Should().Contain("DELETE #MyTable");
-            refactored.Should().Contain("MERGE INTO #MyTable");
-            refactored.Should().NotContain("@MyTable");
-        }
 
         [Fact]
         public void Refactor_WithIsNullInList_VariableOrDefaultValueVariable_ShouldKeepOriginal()
@@ -1223,94 +961,9 @@ WHEN MATCHED THEN UPDATE SET Val = Source.Val;
             refactored.Should().Contain("ISNULL(Status, 'default')");
         }
 
-        [Fact]
-        public void Refactor_WithTableVariableInFunctionOrView_ShouldNotOptimize()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-CREATE FUNCTION dbo.GetUsers()
-RETURNS @Users TABLE (Id INT, Name VARCHAR(50))
-AS
-BEGIN
-    DECLARE @MyTable TABLE (Id INT, Name VARCHAR(50));
-    INSERT INTO @MyTable VALUES (1, 'Admin');
-    INSERT INTO @Users SELECT * FROM @MyTable;
-    RETURN;
-END;
-";
 
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
 
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("DECLARE @MyTable TABLE");
-            refactored.Should().NotContain("CREATE TABLE #MyTable");
-        }
 
-        [Fact]
-        public void Refactor_WithTableVariableCaseInsensitiveRenaming_ShouldPreserveCasing()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-DECLARE @MyTable TABLE (Id INT);
-INSERT INTO @mytable VALUES (1);
-SELECT * FROM @MYTABLE;
-";
 
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable");
-            refactored.Should().MatchRegex(@"INSERT\s+INTO\s+#MyTable");
-            refactored.Should().MatchRegex(@"FROM\s+#MyTable");
-            refactored.Should().NotContain("#mytable");
-            refactored.Should().NotContain("#MYTABLE");
-        }
-
-        [Fact]
-        public void Refactor_WithNegativeConstantFolding_ShouldFoldCorrectly()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerCoreRules: true);
-            string sql1 = "SELECT * FROM Users WHERE Age + 5 = -10";
-            string sql2 = "SELECT * FROM Users WHERE Age - 5 = -10";
-
-            // Act
-            string refactored1 = engine.Refactor(sql1, out var errors1);
-            string refactored2 = engine.Refactor(sql2, out var errors2);
-
-            // Assert
-            errors1.Should().BeEmpty();
-            refactored1.Should().Contain("Age = -15");
-
-            errors2.Should().BeEmpty();
-            refactored2.Should().Contain("Age = -5");
-        }
-
-        [Fact]
-        public void Refactor_WithTableVariableInStatementList_ShouldReplaceCorrectly()
-        {
-            // Arrange
-            var engine = new SqlRefactorEngine(registerLegacyRules: true);
-            string sql = @"
-BEGIN
-    DECLARE @MyTable TABLE (Id INT);
-    INSERT INTO @MyTable VALUES (1);
-END
-";
-
-            // Act
-            string refactored = engine.Refactor(sql, out var errors);
-
-            // Assert
-            errors.Should().BeEmpty();
-            refactored.Should().Contain("CREATE TABLE #MyTable");
-            refactored.Should().Contain("INSERT  INTO #MyTable");
-        }
     }
 }
