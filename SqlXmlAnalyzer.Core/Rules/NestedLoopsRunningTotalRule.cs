@@ -12,14 +12,15 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            if (relOp.Attribute("NodeId")?.Value != "0") return null;
-
             try
             {
                 var doc = relOp.Document;
                 if (doc == null) return null;
 
-                var relOps = doc.Descendants(ns + "RelOp").ToList();
+                var statement = relOp.Ancestors(ns + "StmtSimple").FirstOrDefault();
+                var relOps = statement != null
+                    ? statement.Descendants(ns + "RelOp").ToList()
+                    : doc.Descendants(ns + "RelOp").ToList();
                 var nestedLoops = relOps.Where(r => r != null && r.Attribute("PhysicalOp")?.Value == "Nested Loops").ToList();
 
                 if (nestedLoops.Count >= 2)

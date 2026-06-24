@@ -18,7 +18,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         public string FilePath { get; set; } = string.Empty;
         public DateTime CaptureTime { get; set; } = DateTime.Now;
         public XDocument Document { get; set; } = null!;
-        
+
         public double TotalCost { get; set; }
         public int OperatorCount { get; set; }
         public int MissingIndexCount { get; set; }

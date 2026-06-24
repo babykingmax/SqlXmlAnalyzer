@@ -15,10 +15,8 @@ namespace SqlXmlAnalyzer.Core.Rules
             try
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-                // Execute only on root nodes
-                if (nodeId != "0" && nodeId != "1") return null;
-
-                var stmtSimple = relOp.Document?.Descendants(ns + "StmtSimple").FirstOrDefault();
+                var stmtSimple = relOp.Ancestors(ns + "StmtSimple").FirstOrDefault()
+                    ?? relOp.Document?.Descendants(ns + "StmtSimple").FirstOrDefault();
                 if (stmtSimple == null) return null;
 
                 string statementText = stmtSimple.Attribute("StatementText")?.Value ?? "";

@@ -37,7 +37,7 @@ namespace SqlXmlAnalyzer.Tests
             };
 
             var viewModel = new DeadlockPlaybackViewModel(events);
-            
+
             bool eventFired = false;
             viewModel.StepChanged += (s, e) => eventFired = true;
 
@@ -82,7 +82,7 @@ namespace SqlXmlAnalyzer.Tests
             viewModel.PlayCommand.Execute(null);
             viewModel.IsPlaying.Should().BeFalse();
         }
-        
+
         [Fact]
         public void StepForward_ShouldNotExceedTotalSteps()
         {

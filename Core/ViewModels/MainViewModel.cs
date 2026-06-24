@@ -12,7 +12,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
     public class MainViewModel : ObservableObject
     {
         public ObservableCollection<DocumentTabViewModel> Tabs { get; } = new ObservableCollection<DocumentTabViewModel>();
-        
+
         private DocumentTabViewModel? _selectedTab;
         public DocumentTabViewModel? SelectedTab
         {
@@ -24,7 +24,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         public XDocument? CurrentPlanDoc { get; set; }
         public string? CurrentDeadlockFilePath { get; set; }
         public string? CurrentPlanFilePath { get; set; }
-        
+
         public Action<string>? ShowMessageBox { get; set; }
         private string _statusText = "就绪 - 支持拖拽 XML 文件到窗口进行分析";
         public string StatusText
@@ -158,7 +158,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             ClearResultsCommand = new RelayCommand(_ => ClearResults());
             ExportObfuscatedPlanCommand = new RelayCommand(_ => ExportObfuscatedPlan(), _ => CurrentPlanDoc != null);
-            OpenSandboxCommand = new RelayCommand(p => 
+            OpenSandboxCommand = new RelayCommand(p =>
             {
                 if (p is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion suggestion)
                 {
@@ -169,14 +169,14 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             });
 
             CaptureCurrentPlanCommand = new RelayCommand(_ => CaptureCurrentPlan(), _ => CurrentPlanDoc != null);
-            ClearHistoryCommand = new RelayCommand(_ => 
+            ClearHistoryCommand = new RelayCommand(_ =>
             {
                 TuningHistory.Clear();
                 PlanA = null;
                 PlanB = null;
                 StatusText = "已清空调优历史记录";
             });
-            RemoveSnapshotCommand = new RelayCommand(p => 
+            RemoveSnapshotCommand = new RelayCommand(p =>
             {
                 if (p is PlanSnapshot s)
                 {
@@ -186,7 +186,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     StatusText = $"已移除历史版本: {s.Title}";
                 }
             });
-            SetAsPlanACommand = new RelayCommand(p => 
+            SetAsPlanACommand = new RelayCommand(p =>
             {
                 if (p is PlanSnapshot s)
                 {
@@ -194,7 +194,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     StatusText = $"已设置 {s.Title} 为 [计划 A]";
                 }
             });
-            SetAsPlanBCommand = new RelayCommand(p => 
+            SetAsPlanBCommand = new RelayCommand(p =>
             {
                 if (p is PlanSnapshot s)
                 {
@@ -207,7 +207,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         public void CaptureCurrentPlan()
         {
             if (CurrentPlanDoc == null) return;
-            
+
             XNamespace ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
             double cost = 0.0;
             var rootRelOp = CurrentPlanDoc.Descendants(ns + "RelOp").FirstOrDefault();
@@ -216,11 +216,11 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                 string costStr = rootRelOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
                 double.TryParse(costStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out cost);
             }
-            
+
             int opCount = CurrentPlanDoc.Descendants(ns + "RelOp").Count();
             int miCount = CurrentPlanDoc.Descendants(ns + "MissingIndex").Count();
             string stmt = CurrentPlanDoc.Descendants(ns + "StmtSimple").FirstOrDefault()?.Attribute("StatementText")?.Value ?? "未能提取 SQL 语句";
-            
+
             var snapshot = new PlanSnapshot
             {
                 Title = $"计划版本 #{TuningHistory.Count + 1} - " + System.IO.Path.GetFileName(CurrentPlanFilePath ?? "未命名"),
@@ -260,7 +260,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                 );
                 if (PlanA != null) root.Add(new XAttribute("PlanAId", PlanA.Id));
                 if (PlanB != null) root.Add(new XAttribute("PlanBId", PlanB.Id));
-                
+
                 var doc = new XDocument(root);
                 doc.Save(filePath);
                 StatusText = $"调优会话已保存至: {System.IO.Path.GetFileName(filePath)}";
@@ -278,17 +278,17 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             {
                 var doc = SafeXmlHelper.LoadSafe(filePath);
                 if (doc.Root == null) return;
-                
+
                 XNamespace sessionNs = "http://schemas.sqlxmlanalyzer.com/session";
                 var snapshotsElem = doc.Root.Element(sessionNs + "Snapshots");
                 if (snapshotsElem == null) return;
-                
+
                 TuningHistory.Clear();
                 PlanA = null;
                 PlanB = null;
-                
+
                 var snapshotsMap = new System.Collections.Generic.Dictionary<string, PlanSnapshot>();
-                
+
                 foreach (var sElem in snapshotsElem.Elements(sessionNs + "Snapshot"))
                 {
                     string id = sElem.Attribute("Id")?.Value ?? Guid.NewGuid().ToString();
@@ -299,10 +299,10 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     int.TryParse(sElem.Attribute("OperatorCount")?.Value, out int opCount);
                     int.TryParse(sElem.Attribute("MissingIndexCount")?.Value, out int miCount);
                     string stmt = sElem.Element(sessionNs + "StatementText")?.Value ?? string.Empty;
-                    
+
                     var planDocElem = sElem.Element(sessionNs + "PlanDoc")?.Elements().FirstOrDefault();
                     XDocument planDoc = planDocElem != null ? new XDocument(new XElement(planDocElem)) : new XDocument();
-                    
+
                     var snapshot = new PlanSnapshot
                     {
                         Title = title,
@@ -314,17 +314,17 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                         MissingIndexCount = miCount,
                         StatementText = stmt
                     };
-                    
+
                     TuningHistory.Add(snapshot);
                     snapshotsMap[id] = snapshot;
                 }
-                
+
                 string planAId = doc.Root.Attribute("PlanAId")?.Value ?? string.Empty;
                 string planBId = doc.Root.Attribute("PlanBId")?.Value ?? string.Empty;
-                
+
                 if (!string.IsNullOrEmpty(planAId) && snapshotsMap.TryGetValue(planAId, out var pa)) PlanA = pa;
                 if (!string.IsNullOrEmpty(planBId) && snapshotsMap.TryGetValue(planBId, out var pb)) PlanB = pb;
-                
+
                 StatusText = $"已成功载入调优会话，包含 {TuningHistory.Count} 个计划版本";
             }
             catch (Exception ex)

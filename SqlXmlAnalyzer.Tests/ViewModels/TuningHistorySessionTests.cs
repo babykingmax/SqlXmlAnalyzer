@@ -95,13 +95,13 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
             // Assert
             File.Exists(tempFile).Should().BeTrue();
             vmLoad.TuningHistory.Should().HaveCount(1);
-            
+
             var loadedSnapshot = vmLoad.TuningHistory.First();
             loadedSnapshot.Title.Should().Be(savedSnapshot.Title);
             loadedSnapshot.TotalCost.Should().Be(savedSnapshot.TotalCost);
             loadedSnapshot.OperatorCount.Should().Be(savedSnapshot.OperatorCount);
             loadedSnapshot.StatementText.Should().Be(savedSnapshot.StatementText);
-            
+
             vmLoad.PlanA.Should().NotBeNull();
             vmLoad.PlanA!.Title.Should().Be(savedSnapshot.Title);
 

@@ -4,7 +4,7 @@
 
 ## 1. 宏观架构视图
 
-整个系统拆分为三个主要项目（Project）：
+系统按依赖方向拆分为以下项目：
 
 1.  **SqlXmlAnalyzer.Core** 🧠
     *   无 UI 依赖的核心解析与诊断模块 (Class Library)。
@@ -12,7 +12,13 @@
 2.  **SqlXmlAnalyzer** 🖥️
     *   基于 WPF (Windows Presentation Foundation) 的桌面 UI 应用。
     *   引入了强大的 **Nodify** 节点图框架，取代了传统的 TreeView，利用 MVVM 和 Code-Behind 实现复杂树状图的动态渲染、自适应排版、智能折叠及事件交互。
-3.  **SqlXmlAnalyzer.Tests** 🧪
+3.  **SqlXmlAnalyzer.Analysis / SqlXmlAnalyzer.Refactoring / SqlXmlAnalyzer.Application**
+    *   Analysis 将核心诊断结果适配为应用层接口。
+    *   Refactoring 是唯一公开的 SQL 重构实现，提供多轮 fixed-point 重写、规则隔离和输出语法验证。
+    *   Application 负责文件处理、分析与重构编排以及结果报告。
+4.  **SqlXmlAnalyzer.CLI**
+    *   通过 Application 层执行扫描和重构，不直接承载领域逻辑。
+5.  **SqlXmlAnalyzer.Tests** 🧪
     *   基于 xUnit 和 FluentAssertions 的单元测试网。涵盖核心逻辑与所有三十余条 P0/P1/P2 诊断规则的正确性校验。
 
 ---
@@ -22,15 +28,15 @@
 ### 2.1 专家规则引擎 (RuleEngine)
 受启发于编译器中的 Linter 与商业软件的架构，SqlXmlAnalyzer 的核心竞争力在于其强大的 `RuleEngine`。
 
-*   **`IPlanAnalyzerRule` 接口**：所有的分析规则必须实现此接口。它要求返回 `RuleId`、`Name` 以及执行具体的 `Analyze(XElement relOp, XNamespace ns)` 方法并输出 `AnalysisResult`。
+*   **`IPlanAnalyzerRule` 接口**：规则通过 `RuleMetadata` 声明稳定 RuleId、分类、默认严重级别和 `Plan/Statement/Operator` 作用域。
 *   **引擎注册机制**：在 `RuleEngine` 初始化时，集中注册了如 `ImplicitConversionRule`, `KeyLookupRule`, `SpillDetectionRule`, `UdfAndTableVariableRule` 等规则类。
 *   **高可扩展性**：如果要新增一个 SQL 反模式检测（例如并行死锁或残余谓词等），只需在 `Rules` 目录下新建一个实现了该接口的类，并在 `RuleEngine` 中 `RegisterRule` 即可，**无需修改任何现有业务逻辑**。
 
 ### 2.2 计划分析器 (PlanDiagnosticAnalyzer)
 它作为规则引擎与 UI 之间的桥梁：
-1.  递归遍历 SQL XML 的每一个 `<RelOp>` 算子节点。
-2.  调用 `RuleEngine` 让所有规则同时在当前节点上运行（"扫描式" 诊断）。
-3.  将规则产生的 `AnalysisResult` 按照预设的分类收集到字典中。
+1.  将完整计划交给 `RuleEngine`。
+2.  引擎根据规则元数据，在计划、语句或算子边界执行规则。
+3.  将规则产生的 `AnalysisResult` 按元数据分类，不再通过 RuleId 字符串推断。
 4.  将结果集合回传给 UI 层用于在侧边栏渲染出 **执行计划深度诊断报告**。
 
 ### 2.3 索引分析沙盒与评分系统 (Index Analysis Sandbox) *[New]*
@@ -43,6 +49,8 @@
 ---
 
 ## 3. 可视化渲染引擎 (UI 层)
+
+`MainWindow` 只负责 WPF 事件协调。浏览器启动、Mermaid 临时页、PDF/Word 导出、临时文件生命周期和异步分析会话分别由 `BrowserLauncher`、`PdfWordReportService`、`TemporaryFileManager` 和 `AnalysisSessionCoordinator` 管理。
 
 执行计划是一个复杂的树状图，WPF 的内建 `TreeView` 无法满足横向展开和算子间带权连线的需求。
 

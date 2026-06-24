@@ -40,14 +40,14 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
             var optionsList = new List<string>();
             optionsList.Add(options.Online ? "ONLINE = ON" : "ONLINE = OFF");
-            
+
             if (!string.IsNullOrEmpty(options.DataCompression))
             {
                 optionsList.Add($"DATA_COMPRESSION = {options.DataCompression.ToUpperInvariant()}");
             }
-            
+
             optionsList.Add(options.SortInTempDb ? "SORT_IN_TEMPDB = ON" : "SORT_IN_TEMPDB = OFF");
-            
+
             if (options.MaxDop.HasValue)
             {
                 optionsList.Add($"MAXDOP = {options.MaxDop.Value}");

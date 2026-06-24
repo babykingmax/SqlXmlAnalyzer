@@ -63,7 +63,7 @@ namespace SqlXmlAnalyzer
                 // Aggregations
                 ["Stream Aggregate"] = (ComputeGeo, PurpleBrush),
                 ["Hash Aggregate"] = (ComputeGeo, PurpleBrush),
-                
+
                 // Other
                 ["Filter"] = (Geometry.Parse("M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"), GrayBrush)
             };
@@ -78,7 +78,7 @@ namespace SqlXmlAnalyzer
             if (physicalOp.Contains("Seek", StringComparison.OrdinalIgnoreCase)) return (SeekGeo, BlueBrush);
             if (physicalOp.Contains("Join", StringComparison.OrdinalIgnoreCase)) return (JoinGeo, PurpleBrush);
             if (physicalOp.Contains("Sort", StringComparison.OrdinalIgnoreCase)) return (SortGeo, GrayBrush);
-            
+
             return (DefaultGeometry, DefaultBrush);
         }
     }

@@ -111,7 +111,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
 
             // Assert
             suggestions.Should().NotBeEmpty();
-            
+
             var usersSug = suggestions.FirstOrDefault(s => s.Table == "Users");
             usersSug.Should().NotBeNull();
             usersSug!.KeyColumns.Should().ContainSingle(c => c.Name == "[UserID]" && c.Usage == "EQUALITY");

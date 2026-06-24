@@ -40,10 +40,12 @@ namespace SqlXmlAnalyzer.Tests
         public void Parse_ShouldGenerateCorrectTimelineAndCycles()
         {
             var parser = new DeadlockTimelineParser();
-            var parsed = parser.Parse(SampleDeadlockXml);
+            var parseResult = parser.ParseResult(SampleDeadlockXml);
+            parseResult.IsSuccess.Should().BeTrue();
+            var parsed = parseResult.Value!;
 
             parsed.Should().NotBeNull();
-            
+
             // 2 Grant events, 2 Request events, 1 Victim event = 5 total events
             parsed.Events.Count.Should().Be(5);
 

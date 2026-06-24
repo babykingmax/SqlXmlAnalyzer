@@ -12,8 +12,6 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            if (relOp.Attribute("NodeId")?.Value != "0") return null;
-
             try
             {
                 var doc = relOp.Document;

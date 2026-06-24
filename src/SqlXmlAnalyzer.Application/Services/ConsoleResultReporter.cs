@@ -39,7 +39,7 @@ namespace SqlXmlAnalyzer.Application.Services
             Console.WriteLine("┌──────────────────────────────────────────────────────────┐");
             Console.WriteLine("│                    REFACTORING REPORT                    │");
             Console.WriteLine("├──────────────────────────────────────────────────────────┤");
-            
+
             // Status line
             Console.Write("│ Status: ");
             if (result.IsSuccess)

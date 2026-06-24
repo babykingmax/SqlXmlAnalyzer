@@ -7,5 +7,6 @@ namespace SqlXmlAnalyzer.Core.Rules
         public string Title { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public string NodeId { get; set; } = string.Empty;
+        public RuleMetadata? Metadata { get; set; }
     }
 }

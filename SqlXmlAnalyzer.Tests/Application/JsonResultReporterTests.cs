@@ -34,7 +34,7 @@ namespace SqlXmlAnalyzer.Tests.Application
             // Arrange
             var context = new RefactorContext("SELECT * FROM Users WHERE 1=1");
             context.RecordChange("RULE_1", "Optimized comparison");
-            
+
             var result = new RefactorResult("SELECT * FROM Users WHERE 1=1", true, new List<string>(), context)
             {
                 TimeElapsedMs = 123.45,

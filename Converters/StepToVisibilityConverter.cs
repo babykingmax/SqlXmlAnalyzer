@@ -34,7 +34,7 @@ namespace SqlXmlAnalyzer.Converters
             throw new NotImplementedException();
         }
     }
-    
+
     public class StepToOpacityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

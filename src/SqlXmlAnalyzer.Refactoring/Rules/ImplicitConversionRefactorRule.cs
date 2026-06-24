@@ -27,7 +27,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
             fragment.Accept(visitor);
             if (visitor.Changed)
             {
-                var colsStr = visitor.OptimizedColumns.Count > 0 
+                var colsStr = visitor.OptimizedColumns.Count > 0
                     ? " on column(s) " + string.Join(", ", visitor.OptimizedColumns.Distinct())
                     : "";
                 var desc = $"Removed redundant Unicode N prefix from string literal(s){colsStr}";
@@ -102,8 +102,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
             {
                 if (Found) return;
 
-                if (node.FirstExpression is ColumnReferenceExpression colRef && 
-                    node.SecondExpression is StringLiteral literal && 
+                if (node.FirstExpression is ColumnReferenceExpression colRef &&
+                    node.SecondExpression is StringLiteral literal &&
                     literal.IsNational &&
                     !ContainsNonAscii(literal.Value) &&
                     IsColumnAffected(GetColumnName(colRef), _context))
@@ -111,9 +111,9 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                     Found = true;
                     return;
                 }
-                
-                if (node.SecondExpression is ColumnReferenceExpression colRefRev && 
-                    node.FirstExpression is StringLiteral literalRev && 
+
+                if (node.SecondExpression is ColumnReferenceExpression colRefRev &&
+                    node.FirstExpression is StringLiteral literalRev &&
                     literalRev.IsNational &&
                     !ContainsNonAscii(literalRev.Value) &&
                     IsColumnAffected(GetColumnName(colRefRev), _context))
@@ -149,8 +149,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
             {
                 if (Found) return;
 
-                if (node.FirstExpression is ColumnReferenceExpression colRef && 
-                    node.SecondExpression is StringLiteral literal && 
+                if (node.FirstExpression is ColumnReferenceExpression colRef &&
+                    node.SecondExpression is StringLiteral literal &&
                     literal.IsNational &&
                     !ContainsNonAscii(literal.Value) &&
                     IsColumnAffected(GetColumnName(colRef), _context))
@@ -166,7 +166,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
             {
                 if (Found) return;
 
-                if ((node.TernaryExpressionType == BooleanTernaryExpressionType.Between || 
+                if ((node.TernaryExpressionType == BooleanTernaryExpressionType.Between ||
                      node.TernaryExpressionType == BooleanTernaryExpressionType.NotBetween) &&
                     node.FirstExpression is ColumnReferenceExpression colRef &&
                     IsColumnAffected(GetColumnName(colRef), _context))
@@ -200,8 +200,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
 
             public override void ExplicitVisit(BooleanComparisonExpression node)
             {
-                if (node.FirstExpression is ColumnReferenceExpression colRef && 
-                    node.SecondExpression is StringLiteral literal && 
+                if (node.FirstExpression is ColumnReferenceExpression colRef &&
+                    node.SecondExpression is StringLiteral literal &&
                     literal.IsNational &&
                     !ContainsNonAscii(literal.Value))
                 {
@@ -214,9 +214,9 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                         _context.Log($"Removed redundant Unicode N prefix from literal compared to column {colName}");
                     }
                 }
-                
-                if (node.SecondExpression is ColumnReferenceExpression colRefRev && 
-                    node.FirstExpression is StringLiteral literalRev && 
+
+                if (node.SecondExpression is ColumnReferenceExpression colRefRev &&
+                    node.FirstExpression is StringLiteral literalRev &&
                     literalRev.IsNational &&
                     !ContainsNonAscii(literalRev.Value))
                 {
@@ -258,8 +258,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
 
             public override void ExplicitVisit(LikePredicate node)
             {
-                if (node.FirstExpression is ColumnReferenceExpression colRef && 
-                    node.SecondExpression is StringLiteral literal && 
+                if (node.FirstExpression is ColumnReferenceExpression colRef &&
+                    node.SecondExpression is StringLiteral literal &&
                     literal.IsNational &&
                     !ContainsNonAscii(literal.Value))
                 {
@@ -278,7 +278,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
 
             public override void ExplicitVisit(BooleanTernaryExpression node)
             {
-                if ((node.TernaryExpressionType == BooleanTernaryExpressionType.Between || 
+                if ((node.TernaryExpressionType == BooleanTernaryExpressionType.Between ||
                      node.TernaryExpressionType == BooleanTernaryExpressionType.NotBetween) &&
                     node.FirstExpression is ColumnReferenceExpression colRef)
                 {

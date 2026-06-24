@@ -26,9 +26,9 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                 if (prop.GetIndexParameters().Length > 0) continue;
 
                 // Skip system properties that link back to the parser/token stream or parent pointers
-                if (prop.Name == "Parent" || 
-                    prop.Name == "FirstTokenIndex" || 
-                    prop.Name == "LastTokenIndex" || 
+                if (prop.Name == "Parent" ||
+                    prop.Name == "FirstTokenIndex" ||
+                    prop.Name == "LastTokenIndex" ||
                     prop.Name == "ScriptTokenStream")
                 {
                     continue;

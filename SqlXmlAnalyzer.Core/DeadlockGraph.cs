@@ -51,7 +51,7 @@ namespace SqlXmlAnalyzer
         string Id = ""
     )
     {
-        public string CleanTableName => string.IsNullOrEmpty(ObjectName) ? "(Unknown)" : 
+        public string CleanTableName => string.IsNullOrEmpty(ObjectName) ? "(Unknown)" :
             (ObjectName.Contains(".") ? ObjectName.Split('.').Last() : ObjectName);
 
         public string OwnerModes => string.Join(", ", Owners.Select(o => o.Mode));
@@ -559,16 +559,16 @@ namespace SqlXmlAnalyzer
                         string from = SanitizeId(edge.FromProcessId);
                         string to = SanitizeId(edge.ToProcessId);
                         string resId = SanitizeId(edge.Resource.Id);
-                        
+
                         string reqMode = EscapeMermaidLabel(edge.RequestedMode ?? "Unknown");
                         string holdMode = EscapeMermaidLabel(edge.HeldMode ?? "Unknown");
-                        
+
                         string arrow1 = cycleEdges.Contains(edge) ? "==>" : "-->";
                         string arrow2 = cycleEdges.Contains(edge) ? "==>" : "-->";
-                        
+
                         // 请求边 (Process -> Resource)
                         sb.AppendLine($"    {from} {arrow1}|\"请求 {reqMode}\"| {resId}");
-                        
+
                         // 分配边 (Resource -> Process)
                         sb.AppendLine($"    {resId} {arrow2}|\"分配 {holdMode}\"| {to}");
                     }
@@ -620,7 +620,7 @@ namespace SqlXmlAnalyzer
             long logUsedBytes = 0;
             if (long.TryParse(proc.LogUsed, out long logUsed))
                 logUsedBytes = logUsed;
-                
+
             sb.Append($"\\n回滚代价: {logUsedBytes} 日志量");
             if (isVictim)
                 sb.Append($"\\n(判定为牺牲品)");
@@ -934,8 +934,9 @@ namespace SqlXmlAnalyzer
                             string resType = edge.Resource.LockType?.ToUpper() ?? "UNKNOWN";
                             string reqMode = edge.RequestedMode?.ToUpper() ?? "";
                             string heldMode = edge.HeldMode?.ToUpper() ?? "";
-                            
-                            string resTranslate = resType switch {
+
+                            string resTranslate = resType switch
+                            {
                                 "KEY" => "索引键(KEY)",
                                 "PAG" => "数据页(PAGE)",
                                 "PAGE" => "数据页(PAGE)",
@@ -945,8 +946,9 @@ namespace SqlXmlAnalyzer
                                 "HOBT" => "堆或B树(HOBT)",
                                 _ => resType
                             };
-                            
-                            string modeTranslate(string m) => m switch {
+
+                            string modeTranslate(string m) => m switch
+                            {
                                 "S" => "共享读(S)",
                                 "X" => "排他写(X)",
                                 "U" => "更新预备(U)",
@@ -955,14 +957,14 @@ namespace SqlXmlAnalyzer
                                 "SIX" => "共享意向排他(SIX)",
                                 _ => m
                             };
-                            
+
                             if (!string.IsNullOrEmpty(reqMode) && !string.IsNullOrEmpty(heldMode))
                             {
                                 string chainMsg = $"• SPID {edge.FromProcessId} 请求 {modeTranslate(reqMode)} 锁被阻塞，因 SPID {edge.ToProcessId} 正持有互斥的 {modeTranslate(heldMode)} 锁 (在 {resTranslate} '{edge.Resource.CleanTableName}' 上)。";
                                 if (!chainInfos.Contains(chainMsg)) chainInfos.Add(chainMsg);
                             }
                         }
-                        
+
                         if (chainInfos.Count > 0)
                         {
                             patterns.Add(new DeadlockPattern(
@@ -1125,7 +1127,7 @@ namespace SqlXmlAnalyzer
 
             // 通过 ecid 检测
             bool hasEcidThread = graph.Processes.Any(p => p != null && !string.IsNullOrEmpty(p.Ecid) && p.Ecid != "0");
-            
+
             // 同一个 SPID 出现了多次
             bool hasSharedSpid = graph.Processes.Where(p => p != null).GroupBy(p => p.Spid).Any(g => g.Count() >= 2);
 
@@ -1154,8 +1156,9 @@ namespace SqlXmlAnalyzer
             if (graph == null || graph.Resources == null || graph.Processes == null) return false;
 
             bool hasPageOrRidLock = graph.Resources.Any(r => r != null && r.LockType != null && (r.LockType.Contains("page") || r.LockType.Contains("rid")));
-            
-            bool hasWrites = graph.Processes.Any(p => {
+
+            bool hasWrites = graph.Processes.Any(p =>
+            {
                 if (p == null) return false;
                 string sql = p.Inputbuf?.ToLowerInvariant() ?? "";
                 return sql.Contains("insert") || sql.Contains("update") || sql.Contains("delete");

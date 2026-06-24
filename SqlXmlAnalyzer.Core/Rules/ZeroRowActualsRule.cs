@@ -14,7 +14,7 @@ namespace SqlXmlAnalyzer.Core.Rules
             try
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-                
+
                 string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "";
                 if (!NumericParser.TryParseInvariantDouble(estRowsStr, out double estimatedRows))
                     return null;

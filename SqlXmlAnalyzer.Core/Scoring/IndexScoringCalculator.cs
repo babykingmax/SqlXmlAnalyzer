@@ -81,9 +81,9 @@ namespace SqlXmlAnalyzer.Core.Scoring
                                     {
                                         eqPredCols.Add(keyCol.Name.Trim('[', ']'));
                                     }
-                                    else if (normP.Contains(colName + " >") || normP.Contains(colName + " <") || 
-                                             normP.Contains(colName + " >=") || normP.Contains(colName + " <=") || 
-                                             normP.Contains(colName + " <>") || normP.Contains(colName + " like") || 
+                                    else if (normP.Contains(colName + " >") || normP.Contains(colName + " <") ||
+                                             normP.Contains(colName + " >=") || normP.Contains(colName + " <=") ||
+                                             normP.Contains(colName + " <>") || normP.Contains(colName + " like") ||
                                              normP.Contains(colName + " between"))
                                     {
                                         ineqPredCols.Add(keyCol.Name.Trim('[', ']'));
@@ -178,7 +178,7 @@ namespace SqlXmlAnalyzer.Core.Scoring
                     for (int o = 0; o < orderByCols.Count; o++)
                     {
                         var col = keyCols[keyIdx + o];
-                        if (col == null || string.IsNullOrEmpty(col.Name) || 
+                        if (col == null || string.IsNullOrEmpty(col.Name) ||
                             !string.Equals(col.Name.Trim('[', ']'), orderByCols[o], StringComparison.OrdinalIgnoreCase))
                         {
                             match = false;

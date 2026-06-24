@@ -21,17 +21,17 @@ namespace SqlXmlAnalyzer.ViewModels
         public bool IsRequest { get; set; }
 
         private bool _isActive;
-        public bool IsActive 
-        { 
-            get => _isActive; 
-            set { _isActive = value; OnPropertyChanged(); } 
+        public bool IsActive
+        {
+            get => _isActive;
+            set { _isActive = value; OnPropertyChanged(); }
         }
 
         private bool _isCurrent;
-        public bool IsCurrent 
-        { 
-            get => _isCurrent; 
-            set { _isCurrent = value; OnPropertyChanged(); } 
+        public bool IsCurrent
+        {
+            get => _isCurrent;
+            set { _isCurrent = value; OnPropertyChanged(); }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -54,39 +54,39 @@ namespace SqlXmlAnalyzer.ViewModels
         {
             _events = events;
             _currentStep = 0;
-            
+
             _timer = new DispatcherTimer();
             _timer.Tick += Timer_Tick;
-            
+
             PlayCommand = new RelayCommand(o => TogglePlay());
             StepForwardCommand = new RelayCommand(o => StepForward(), o => CanStepForward);
             StepBackwardCommand = new RelayCommand(o => StepBackward(), o => CanStepBackward);
             ResetCommand = new RelayCommand(o => Reset());
 
             PlaybackSteps = new List<DeadlockStepItem>();
-            PlaybackSteps.Add(new DeadlockStepItem 
-            { 
-                StepIndex = 0, 
-                DisplayName = "始", 
-                ToolTip = "初始/就绪状态", 
-                IsStart = true 
+            PlaybackSteps.Add(new DeadlockStepItem
+            {
+                StepIndex = 0,
+                DisplayName = "始",
+                ToolTip = "初始/就绪状态",
+                IsStart = true
             });
 
             for (int i = 0; i < events.Count; i++)
             {
                 var ev = events[i];
                 string name = ev.IsVictim ? "💀" : (i + 1).ToString();
-                PlaybackSteps.Add(new DeadlockStepItem 
-                { 
-                    StepIndex = i + 1, 
-                    DisplayName = name, 
-                    ToolTip = $"步骤 {i + 1}: {ev.Description}", 
+                PlaybackSteps.Add(new DeadlockStepItem
+                {
+                    StepIndex = i + 1,
+                    DisplayName = name,
+                    ToolTip = $"步骤 {i + 1}: {ev.Description}",
                     IsVictim = ev.IsVictim,
                     IsGrant = ev.Type == "Grant",
                     IsRequest = ev.Type == "Request"
                 });
             }
-            
+
             UpdateState();
         }
 
@@ -219,7 +219,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     step.IsCurrent = step.StepIndex == _currentStep;
                 }
             }
-            
+
             StepChanged?.Invoke(this, EventArgs.Empty);
         }
 

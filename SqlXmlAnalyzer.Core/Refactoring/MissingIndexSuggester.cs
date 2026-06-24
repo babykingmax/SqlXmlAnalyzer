@@ -111,20 +111,20 @@ namespace SqlXmlAnalyzer.Core.Refactoring
             if (_scopes.Count > 0)
             {
                 var scopeOut = _scopes.Pop();
-                
+
                 foreach (var table in scopeOut.Tables)
                 {
                     var usages = scopeOut.ColumnUsages[table];
                     var includes = scopeOut.IncludeColumnCandidates[table];
 
                     var keyCols = new List<IndexColumn>();
-                    
+
                     // Add Equality keys first
                     foreach (var kv in usages.Where(u => u.Value == "EQUALITY"))
                     {
                         keyCols.Add(new IndexColumn { Name = "[" + kv.Key + "]", Usage = "EQUALITY" });
                     }
-                    
+
                     // Add Inequality keys next
                     foreach (var kv in usages.Where(u => u.Value == "INEQUALITY"))
                     {
@@ -326,10 +326,10 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
             public override void ExplicitVisit(BooleanTernaryExpression node)
             {
-                if ((node.TernaryExpressionType == BooleanTernaryExpressionType.Between || 
+                if ((node.TernaryExpressionType == BooleanTernaryExpressionType.Between ||
                      node.TernaryExpressionType == BooleanTernaryExpressionType.NotBetween) &&
-                    node.FirstExpression is ColumnReferenceExpression col && 
-                    IsConstantOrVariable(node.SecondExpression) && 
+                    node.FirstExpression is ColumnReferenceExpression col &&
+                    IsConstantOrVariable(node.SecondExpression) &&
                     IsConstantOrVariable(node.ThirdExpression))
                 {
                     AddPredicate(col, "INEQUALITY");

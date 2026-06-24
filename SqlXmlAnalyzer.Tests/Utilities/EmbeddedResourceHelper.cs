@@ -11,12 +11,12 @@ namespace SqlXmlAnalyzer.Tests.Utilities
             var assembly = Assembly.GetExecutingAssembly();
             var fullName = assembly.GetManifestResourceNames()
                 .FirstOrDefault(n => n.EndsWith(resourceName));
-            
+
             if (fullName == null) throw new FileNotFoundException($"Resource {resourceName} not found.");
-            
+
             using var stream = assembly.GetManifestResourceStream(fullName);
             if (stream == null) throw new FileNotFoundException($"Resource stream for {fullName} could not be opened.");
-            
+
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }

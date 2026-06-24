@@ -17,12 +17,17 @@ namespace SqlXmlAnalyzer.Tests
             var doc = XDocument.Parse(xmlContent);
 
             // Act
-            var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(doc);
+            var parseResult = DeadlockXmlParser.TryParseDeadlockXml(doc);
+            parseResult.IsSuccess.Should().BeTrue();
+            var parsed = parseResult.Value!;
+            var processes = parsed.Processes;
+            var resources = parsed.Resources;
+            var victimId = parsed.VictimId;
 
             // Assert
             processes.Should().NotBeNullOrEmpty();
             processes.Count.Should().Be(2);
-            
+
             resources.Should().NotBeNullOrEmpty();
             resources.Count.Should().Be(2);
 
@@ -32,13 +37,13 @@ namespace SqlXmlAnalyzer.Tests
             // Verify LogUsed is extracted properly
             var p1 = processes.Find(p => p.Id == "process1");
             var p2 = processes.Find(p => p.Id == "process2");
-            
+
             p1.Should().NotBeNull();
             p1!.LogUsed.Should().Be("100");
 
             p2.Should().NotBeNull();
             p2!.LogUsed.Should().Be("5000");
-            
+
             // Verify resources parsed
             resources[0].Id.Should().Be("res_0");
             resources[0].LockType.Should().Be("keylock");
@@ -46,31 +51,33 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void ParseDeadlockXml_EmptyXml_ReturnsEmpty()
+        public void ParseDeadlockXml_EmptyXml_ReturnsFailure()
         {
             // Arrange
             string xmlContent = "<deadlock></deadlock>";
             var doc = XDocument.Parse(xmlContent);
 
             // Act
-            var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(doc);
+            var result = DeadlockXmlParser.TryParseDeadlockXml(doc);
 
             // Assert
-            processes.Should().BeEmpty();
-            resources.Should().BeEmpty();
-            victimId.Should().BeEmpty();
+            result.IsSuccess.Should().BeFalse();
+            result.Value.Should().BeNull();
+            result.Errors.Should().NotBeEmpty();
         }
-        
+
         [Fact]
         public void BuildDeadlockMermaidGraph_ShouldIncludeLogUsedAndWaitResources()
         {
             // Arrange
             string xmlContent = EmbeddedResourceHelper.GetResourceContent("deadlock_bookmark_lookup.xdl");
             var doc = XDocument.Parse(xmlContent);
-            var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(doc);
+            var parseResult = DeadlockXmlParser.TryParseDeadlockXml(doc);
+            parseResult.IsSuccess.Should().BeTrue();
+            var parsed = parseResult.Value!;
 
             // Act
-            var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
+            var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
             string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph);
 
             // Assert
@@ -79,7 +86,7 @@ namespace SqlXmlAnalyzer.Tests
             mermaid.Should().Contain("process2");
             mermaid.Should().Contain("100 日志量"); // process1 rollback cost
             mermaid.Should().Contain("5000 日志量"); // process2 rollback cost
-            
+
             // Process1 should be marked as victim
             mermaid.Should().Contain(":::victim");
         }

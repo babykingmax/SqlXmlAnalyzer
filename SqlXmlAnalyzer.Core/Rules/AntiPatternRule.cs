@@ -25,7 +25,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     string scalarString = op.Attribute("ScalarString")?.Value ?? "";
 
                     // 1. Check for leading wildcard (e.g. LIKE '%abc')
-                    if (scalarString.Contains("LIKE", StringComparison.OrdinalIgnoreCase) && 
+                    if (scalarString.Contains("LIKE", StringComparison.OrdinalIgnoreCase) &&
                         (scalarString.Contains("'%") || scalarString.Contains("N'%")))
                     {
                         return new AnalysisResult

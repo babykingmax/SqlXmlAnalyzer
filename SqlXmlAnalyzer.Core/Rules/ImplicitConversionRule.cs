@@ -15,7 +15,7 @@ namespace SqlXmlAnalyzer.Core.Rules
             try
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "0";
-                
+
                 // Find all CONVERT_IMPLICIT strings in ScalarOperator
                 var implicitConvs = relOp.Descendants(ns + "ScalarOperator")
                     .Select(op => op.Attribute("ScalarString")?.Value)
@@ -28,7 +28,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     // If CONVERT_IMPLICIT happens on an Index Scan or Table Scan, it might be the reason it didn't Seek.
                     string physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "";
                     string severity = "Warning";
-                    
+
                     if (physicalOp.Contains("Scan"))
                     {
                         severity = "Critical";

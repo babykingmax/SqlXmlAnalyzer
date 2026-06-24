@@ -63,7 +63,7 @@ namespace SqlXmlAnalyzer
         private List<ConnectionViewModel> _masterConnections = new();
 
         private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
-        
+
         public double ArrowAngle
         {
             get
@@ -140,7 +140,7 @@ namespace SqlXmlAnalyzer
         {
             if (e.OriginalSource is FrameworkElement fe && fe.DataContext is PlanNodeViewModel) return;
             if (e.OriginalSource is FrameworkElement fe2 && fe2.DataContext is ConnectionViewModel) return;
-            
+
             _isPanning = true;
             _lastMousePosition = e.GetPosition(this);
             Editor.CaptureMouse();
@@ -247,7 +247,7 @@ namespace SqlXmlAnalyzer
                 if (!string.IsNullOrEmpty(vm.TableName))
                 {
                     string cleanVmTable = vm.TableName.Trim('[', ']');
-                    var match = missingIndexes.FirstOrDefault(mi => 
+                    var match = missingIndexes.FirstOrDefault(mi =>
                         string.Equals(mi.Table.Trim('[', ']'), cleanVmTable, StringComparison.OrdinalIgnoreCase));
                     if (match != null)
                     {
@@ -262,14 +262,15 @@ namespace SqlXmlAnalyzer
                 var vm = nodeMap[relOp];
                 var childRelOps = PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns).ToList();
                 vm.HasChildren = childRelOps.Count > 0;
-                double childrenSubtreeCost = childRelOps.Sum(c => {
+                double childrenSubtreeCost = childRelOps.Sum(c =>
+                {
                     if (nodeMap.TryGetValue(c, out var cvm)) return cvm.SubtreeCost;
                     return safeFloat(c.Attribute("EstimatedTotalSubtreeCost")?.Value);
                 });
-                
+
                 vm.OwnCost = Math.Max(0.0, vm.SubtreeCost - childrenSubtreeCost);
                 vm.Cost = vm.OwnCost; // 让 Cost 代表 OwnCost
-                
+
                 if (vm.EstRowsNum > 0 && !string.IsNullOrEmpty(vm.ActualRows))
                 {
                     vm.ActualRecost = vm.OwnCost * (vm.ActualRowsNum / vm.EstRowsNum);
@@ -318,9 +319,9 @@ namespace SqlXmlAnalyzer
                 {
                     if (nodeMap.TryGetValue(child, out var childVm))
                     {
-                        Connections.Add(new ConnectionViewModel 
-                        { 
-                            Source = childVm, 
+                        Connections.Add(new ConnectionViewModel
+                        {
+                            Source = childVm,
                             Target = parentVm,
                             LayoutMode = initialLayout,
                             CurrentLinkMetric = initialLinkMetric
@@ -358,7 +359,7 @@ namespace SqlXmlAnalyzer
 
             string estIoCost = relOp.Attribute("EstimateIO")?.Value ?? "0";
             string estCpuCost = relOp.Attribute("EstimateCPU")?.Value ?? "0";
-            string estExecs = relOp.Attribute("EstimateRebinds") != null ? 
+            string estExecs = relOp.Attribute("EstimateRebinds") != null ?
                 (safeFloat(relOp.Attribute("EstimateRebinds")?.Value) + safeFloat(relOp.Attribute("EstimateRewinds")?.Value) + 1.0).ToString("0.0") : "1.0";
             string estRowSize = relOp.Attribute("AvgRowSize")?.Value ?? "0";
 
@@ -392,7 +393,7 @@ namespace SqlXmlAnalyzer
                     actualRows += rows;
                     actualRowsRead += rowsRead;
                     actualExecutions += execs;
-                    
+
                     actualRebinds += safeFloat(rt.Attribute("ActualRebinds")?.Value);
                     actualRewinds += safeFloat(rt.Attribute("ActualRewinds")?.Value);
                 }
@@ -493,7 +494,7 @@ namespace SqlXmlAnalyzer
             // Residual Predicate Warning
             bool hasResidualStr = physical.Contains("Seek") && !string.IsNullOrEmpty(seekPredicate) && !string.IsNullOrEmpty(residualPredicate);
             bool hasResidualWarning = false;
-            
+
             // Residual I/O Automatic Detection and Warning (新增高级诊断)
             bool hasResidualPredicate = !string.IsNullOrEmpty(residualPredicate) || relOp.Elements(ns + "Predicate").Any(p => p.Parent?.Name != ns + "SeekPredicate");
             bool hasResidualIOWarning = false;
@@ -505,7 +506,7 @@ namespace SqlXmlAnalyzer
                 {
                     hasResidualIOWarning = true;
                     double ratio = actualRows > 0 ? actualRowsRead / actualRows : actualRowsRead;
-                    residualIOWarningDetails = 
+                    residualIOWarningDetails =
                         $"**残差 I/O 警告**\n" +
                         $"操作符: {physical}\n" +
                         $"实际读取行数: {actualRowsRead:N0}\n" +
@@ -515,7 +516,7 @@ namespace SqlXmlAnalyzer
                         $"建议: 考虑将谓词改为索引列能直接查找的条件，或添加包含列的覆盖索引。";
                 }
             }
-            
+
             if (!hasResidualIOWarning && hasResidualStr)
             {
                 if (hasActual && hasActualRead)
@@ -531,7 +532,7 @@ namespace SqlXmlAnalyzer
 
             // Warnings parsing
             var warningsList = new List<string>();
-            
+
             // 1. RelOp Warnings
             var warningsEl = relOp.Element(ns + "Warnings");
             if (warningsEl != null)
@@ -575,11 +576,11 @@ namespace SqlXmlAnalyzer
                     double granted = safeFloat(memGrantInfo.Attribute("GrantedMemory")?.Value);
                     double used = safeFloat(memGrantInfo.Attribute("MaxUsedMemory")?.Value);
                     if (granted > 10240 && used > 0 && (used / granted) < 0.1)
-                        warningsList.Add($"内存预估过度 (申请 {granted/1024.0:F1}MB, 仅用 {used/1024.0:F1}MB)");
+                        warningsList.Add($"内存预估过度 (申请 {granted / 1024.0:F1}MB, 仅用 {used / 1024.0:F1}MB)");
                     else if (granted > 0 && used > granted)
-                        warningsList.Add($"内存不足溢出落盘 (申请 {granted/1024.0:F1}MB, 实际需 {used/1024.0:F1}MB)");
+                        warningsList.Add($"内存不足溢出落盘 (申请 {granted / 1024.0:F1}MB, 实际需 {used / 1024.0:F1}MB)");
                 }
-                
+
                 var globalWarnings = relOp.Document?.Descendants(ns + "Warnings").FirstOrDefault();
                 if (globalWarnings != null)
                 {
@@ -838,7 +839,7 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        
+
         private void CopyNodeInfo_Click(object sender, RoutedEventArgs e)
         {
             if (sender is MenuItem mi && mi.DataContext is PlanNodeViewModel node)
@@ -851,20 +852,20 @@ namespace SqlXmlAnalyzer
                 sb.AppendLine($"Estimated Rows: {node.EstRows}");
                 sb.AppendLine($"Actual Rows: {node.ActualRows}");
                 sb.AppendLine($"Estimated Data Size: {node.EstimatedDataSize}");
-                
-                if (!string.IsNullOrEmpty(node.ObjectDetails)) 
+
+                if (!string.IsNullOrEmpty(node.ObjectDetails))
                     sb.AppendLine($"Object: {node.ObjectDetails}");
-                if (!string.IsNullOrEmpty(node.OutputList)) 
+                if (!string.IsNullOrEmpty(node.OutputList))
                     sb.AppendLine($"Output List: {node.OutputList}");
-                if (!string.IsNullOrEmpty(node.SeekPredicates)) 
+                if (!string.IsNullOrEmpty(node.SeekPredicates))
                     sb.AppendLine($"Seek Predicates: {node.SeekPredicates}");
-                if (!string.IsNullOrEmpty(node.Predicate)) 
+                if (!string.IsNullOrEmpty(node.Predicate))
                     sb.AppendLine($"Predicate: {node.Predicate}");
-                if (!string.IsNullOrEmpty(node.Warnings)) 
+                if (!string.IsNullOrEmpty(node.Warnings))
                     sb.AppendLine($"Warnings: {node.Warnings}");
 
                 System.Windows.Clipboard.SetText(sb.ToString());
-                
+
                 ToastPopup.IsOpen = true;
                 System.Threading.Tasks.Task.Delay(2000).ContinueWith(_ => Dispatcher.Invoke(() => ToastPopup.IsOpen = false));
 
@@ -901,12 +902,12 @@ namespace SqlXmlAnalyzer
 
             // 自底向上计算每个节点是否包含任何Warning/Critical子节点
             var hasWarningSubtree = new HashSet<XElement>();
-            foreach(var op in relOps)
+            foreach (var op in relOps)
             {
-                if(nodeMap.TryGetValue(op, out var vm) && vm.NodeSeverity != "Info")
+                if (nodeMap.TryGetValue(op, out var vm) && vm.NodeSeverity != "Info")
                 {
                     var ancestor = op;
-                    while(ancestor != null && ancestor.Name.LocalName == "RelOp")
+                    while (ancestor != null && ancestor.Name.LocalName == "RelOp")
                     {
                         hasWarningSubtree.Add(ancestor);
                         ancestor = ancestor.Parent?.AncestorsAndSelf().FirstOrDefault(a => a.Name.LocalName == "RelOp");
@@ -938,13 +939,13 @@ namespace SqlXmlAnalyzer
                     string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
                     if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
                     var logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
-                    
+
                     System.IO.File.AppendAllText(logFile, $"\n[{DateTime.Now:HH:mm:ss.fff}] --- START CLICK: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on [{node.NodeId}] {node.PhysicalOp} ---\n");
 
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine("==================================================");
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Action: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on Node [{node.NodeId}] {node.PhysicalOp}");
-                    
+
                     var oldVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
                     var oldVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
 
@@ -955,7 +956,7 @@ namespace SqlXmlAnalyzer
                     // 1. 先在完整树上计算所有节点的新绝对坐标
                     ReapplyLayout();
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] ReapplyLayout Completed");
-                    
+
                     // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
                     UpdateGraphVisibility();
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] UpdateGraphVisibility Completed");
@@ -970,31 +971,31 @@ namespace SqlXmlAnalyzer
                     var removedConns = oldVisibleConns.Except(newVisibleConns).ToList();
 
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Nodes Added (Expanded): {addedNodes.Count}");
-                    foreach(var n in addedNodes) sb.AppendLine($"  + [{n.NodeId}] {n.PhysicalOp} (Collapsed State: {n.IsCollapsed})");
+                    foreach (var n in addedNodes) sb.AppendLine($"  + [{n.NodeId}] {n.PhysicalOp} (Collapsed State: {n.IsCollapsed})");
 
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Nodes Removed (Hidden): {removedNodes.Count}");
-                    foreach(var n in removedNodes) sb.AppendLine($"  - [{n.NodeId}] {n.PhysicalOp}");
+                    foreach (var n in removedNodes) sb.AppendLine($"  - [{n.NodeId}] {n.PhysicalOp}");
 
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Connections Added: {addedConns.Count}");
-                    foreach(var c in addedConns) sb.AppendLine($"  + [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
+                    foreach (var c in addedConns) sb.AppendLine($"  + [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
 
                     sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Connections Removed: {removedConns.Count}");
-                    foreach(var c in removedConns) sb.AppendLine($"  - [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
-                    
+                    foreach (var c in removedConns) sb.AppendLine($"  - [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
+
                     sb.AppendLine("==================================================");
-                    
+
                     System.IO.File.AppendAllText(logFile, sb.ToString());
                 }
             }
             catch (Exception ex)
             {
-                try 
+                try
                 {
                     string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
                     if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
                     var logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
                     System.IO.File.AppendAllText(logFile, $"\n[{DateTime.Now:HH:mm:ss.fff}] [EXCEPTION CAUGHT]: {ex}\n");
-                } 
+                }
                 catch { }
             }
         }
@@ -1024,7 +1025,7 @@ namespace SqlXmlAnalyzer
                     bool childrenVisible = isVisible && !vm.IsCollapsed;
 
                     var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(el, _currentNs).ToList();
-                    
+
                     foreach (var child in children)
                     {
                         if (nodeMap.TryGetValue(child, out var childVm))
@@ -1052,7 +1053,7 @@ namespace SqlXmlAnalyzer
             // 让 ItemContainerStyle 中的 Visibility 绑定自动接管显示隐藏。
             // 这样彻底避免了虚拟化面板的集合变更 Bug 和动画丢失问题。
             // ==================================================
-            
+
             foreach (var n in _masterNodes)
             {
                 n.IsVisible = visibleNodeVms.Contains(n);
@@ -1163,9 +1164,9 @@ namespace SqlXmlAnalyzer
         {
             if (string.IsNullOrEmpty(op)) return null;
             string opLower = op.ToLowerInvariant().Trim();
-            
+
             string name = opLower.Replace(" ", "-").Replace("_", "-");
-            
+
             // 特定算子别名规则
             if (opLower.Contains("hash match") || opLower.Contains("hash")) name = "hash-match";
             else if (opLower.Contains("merge join") || opLower.Contains("merge")) name = "merge-join";
@@ -1190,7 +1191,7 @@ namespace SqlXmlAnalyzer
 
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string iconFile = $"icon-{name}.png";
-            
+
             string[] searchPaths = new[]
             {
                 System.IO.Path.Combine(baseDir, "ssms_icons", iconFile),
@@ -1205,7 +1206,7 @@ namespace SqlXmlAnalyzer
                     return path;
                 }
             }
-            
+
             return null;
         }
 
@@ -1294,17 +1295,17 @@ namespace SqlXmlAnalyzer
         public string ActualRows { get; set; } = "";
         public double ActualRowsNum { get; set; }
         public string ObjectDetails { get; set; } = "";
-        
+
         public double X { get; set; }
         public double Y { get; set; }
         public double SubtreeWidth { get; set; }
         public Geometry? IconGeometry { get; set; }
         public Brush? IconBrush { get; set; }
-        
+
         public string OperatorType { get; set; } = "Other";
         public bool IsParallel { get; set; }
         public string Warnings { get; set; } = "";
-        
+
         private SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion? _associatedSuggestion;
         public SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion? AssociatedSuggestion
         {
@@ -1327,7 +1328,7 @@ namespace SqlXmlAnalyzer
         public string MissingIndexTooltip => _associatedSuggestion != null
             ? $"包含索引推荐:\n{_associatedSuggestion.CreateIndexStatement}\n\n点击在此表上打开索引优化沙盒模拟。"
             : string.Empty;
-        
+
         public XElement? RawElement { get; set; }
 
         public double ActualRecost { get; set; }
@@ -1567,7 +1568,7 @@ namespace SqlXmlAnalyzer
         }
 
         private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
-        
+
         public double ArrowAngle
         {
             get
@@ -1584,7 +1585,7 @@ namespace SqlXmlAnalyzer
                 _layoutMode = value;
                 OnPropertyChanged(nameof(LayoutMode));
                 OnPropertyChanged(nameof(SourceLocation));
-                    OnPropertyChanged(nameof(ArrowAngle));
+                OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1629,7 +1630,7 @@ namespace SqlXmlAnalyzer
                     _source.PropertyChanged += OnSourcePropertyChanged;
                 OnPropertyChanged(nameof(Source));
                 OnPropertyChanged(nameof(SourceLocation));
-                    OnPropertyChanged(nameof(ArrowAngle));
+                OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1654,7 +1655,7 @@ namespace SqlXmlAnalyzer
                     _target.PropertyChanged += OnTargetPropertyChanged;
                 OnPropertyChanged(nameof(Target));
                 OnPropertyChanged(nameof(SourceLocation));
-                    OnPropertyChanged(nameof(ArrowAngle));
+                OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1880,7 +1881,7 @@ namespace SqlXmlAnalyzer
             if (e.PropertyName == nameof(PlanNodeViewModel.Location))
             {
                 OnPropertyChanged(nameof(SourceLocation));
-                    OnPropertyChanged(nameof(ArrowAngle));
+                OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));
@@ -1892,7 +1893,7 @@ namespace SqlXmlAnalyzer
             if (e.PropertyName == nameof(PlanNodeViewModel.Location))
             {
                 OnPropertyChanged(nameof(SourceLocation));
-                    OnPropertyChanged(nameof(ArrowAngle));
+                OnPropertyChanged(nameof(ArrowAngle));
                 OnPropertyChanged(nameof(TargetLocation));
                 OnPropertyChanged(nameof(MidpointX));
                 OnPropertyChanged(nameof(MidpointY));

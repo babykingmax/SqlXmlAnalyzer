@@ -15,9 +15,6 @@ namespace SqlXmlAnalyzer.Core.Rules
             try
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-                // Only root node or node containing the info
-                if (nodeId != "0" && nodeId != "1") return null;
-
                 var document = relOp.Document;
                 if (document == null) return null;
 

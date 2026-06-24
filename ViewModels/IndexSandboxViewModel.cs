@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.ViewModels
         private MissingIndexSuggestion _suggestion;
         private XDocument? _originalPlan;
         private readonly XNamespace _ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
-        
+
         public ObservableCollection<IndexColumn> KeyColumns { get; }
         public ObservableCollection<IndexColumn> IncludeColumns { get; }
         public ObservableCollection<string> AvailableColumns { get; } = new ObservableCollection<string>();
@@ -110,7 +110,7 @@ namespace SqlXmlAnalyzer.ViewModels
             get
             {
                 if (_originalPlan == null) return false;
-                
+
                 string normTable = (_suggestion.Table ?? "").Trim('[', ']');
                 var outputCols = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var relOp in _originalPlan.Descendants(_ns + "RelOp"))
@@ -132,9 +132,9 @@ namespace SqlXmlAnalyzer.ViewModels
                         }
                     }
                 }
-                
+
                 if (outputCols.Count == 0) return false;
-                
+
                 var indexCols = KeyColumns.Concat(IncludeColumns)
                                           .Select(c => c.Name.Trim('[', ']'))
                                           .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -171,7 +171,7 @@ namespace SqlXmlAnalyzer.ViewModels
             _avgRowSize = FindAvgRowSize();
             _returnedRows = FindEstimatedReturnedRows();
 
-            RemoveKeyColumnCommand = new RelayCommand(p => 
+            RemoveKeyColumnCommand = new RelayCommand(p =>
             {
                 if (p is IndexColumn c && KeyColumns.Contains(c))
                 {
@@ -182,7 +182,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     Recalculate();
                 }
             });
-            RemoveIncludeColumnCommand = new RelayCommand(p => 
+            RemoveIncludeColumnCommand = new RelayCommand(p =>
             {
                 if (p is IndexColumn c && IncludeColumns.Contains(c))
                 {
@@ -193,7 +193,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     Recalculate();
                 }
             });
-            MoveKeyColumnUpCommand = new RelayCommand(p => 
+            MoveKeyColumnUpCommand = new RelayCommand(p =>
             {
                 if (p is IndexColumn c)
                 {
@@ -205,7 +205,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     }
                 }
             });
-            MoveKeyColumnDownCommand = new RelayCommand(p => 
+            MoveKeyColumnDownCommand = new RelayCommand(p =>
             {
                 if (p is IndexColumn c)
                 {
@@ -218,7 +218,7 @@ namespace SqlXmlAnalyzer.ViewModels
                 }
             });
 
-            AddKeyColumnCommand = new RelayCommand(p => 
+            AddKeyColumnCommand = new RelayCommand(p =>
             {
                 if (p is string colName && AvailableColumns.Contains(colName))
                 {
@@ -226,14 +226,14 @@ namespace SqlXmlAnalyzer.ViewModels
                     string rawName = colName.Trim('[', ']');
                     var orig = suggestion.KeyColumns.FirstOrDefault(c => string.Equals(c.Name.Trim('[', ']'), rawName, StringComparison.OrdinalIgnoreCase));
                     if (orig != null) usage = orig.Usage;
-                    
+
                     KeyColumns.Add(new IndexColumn { Name = colName, Usage = usage });
                     AvailableColumns.Remove(colName);
                     Recalculate();
                 }
             });
 
-            AddIncludeColumnCommand = new RelayCommand(p => 
+            AddIncludeColumnCommand = new RelayCommand(p =>
             {
                 if (p is string colName && AvailableColumns.Contains(colName))
                 {
@@ -259,7 +259,7 @@ namespace SqlXmlAnalyzer.ViewModels
             };
 
             IndexScoringCalculator.CalculateScore(temp, _originalPlan!, _ns);
-            
+
             CurrentScore = temp.Score;
             CreateIndexStatement = temp.CreateIndexStatement;
 
@@ -274,7 +274,7 @@ namespace SqlXmlAnalyzer.ViewModels
         {
             AvailableColumns.Clear();
             if (_originalPlan == null) return;
-            
+
             string normTable = (_suggestion.Table ?? "").Trim('[', ']');
             var allCols = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -304,7 +304,7 @@ namespace SqlXmlAnalyzer.ViewModels
         private double FindTableCardinality()
         {
             if (_originalPlan == null) return 100000;
-            
+
             string normTable = (_suggestion.Table ?? "").Trim('[', ']');
             foreach (var relOp in _originalPlan.Descendants(_ns + "RelOp"))
             {
@@ -324,7 +324,7 @@ namespace SqlXmlAnalyzer.ViewModels
         private double FindAvgRowSize()
         {
             if (_originalPlan == null) return 200;
-            
+
             string normTable = (_suggestion.Table ?? "").Trim('[', ']');
             foreach (var relOp in _originalPlan.Descendants(_ns + "RelOp"))
             {
@@ -344,7 +344,7 @@ namespace SqlXmlAnalyzer.ViewModels
         private double FindEstimatedReturnedRows()
         {
             if (_originalPlan == null) return 1000;
-            
+
             string normTable = (_suggestion.Table ?? "").Trim('[', ']');
             foreach (var relOp in _originalPlan.Descendants(_ns + "RelOp"))
             {

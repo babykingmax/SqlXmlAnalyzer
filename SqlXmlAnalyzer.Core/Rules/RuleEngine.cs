@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Xml.Linq;
-
 using SqlXmlAnalyzer.Core.Configuration;
 
 namespace SqlXmlAnalyzer.Core.Rules
@@ -8,45 +10,133 @@ namespace SqlXmlAnalyzer.Core.Rules
     public class RuleEngine
     {
         private readonly List<IPlanAnalyzerRule> _rules = new();
-        private RuleConfigurationRoot _config;
+        private readonly RuleConfigurationRoot _config;
 
-        public RuleEngine(string configPath = "RuleConfiguration.json")
+        public RuleEngine(string? configPath = null)
         {
-            _config = RuleConfigurationLoader.Load(configPath);
+            ConfigurationLoadResult = RuleConfigurationLoader.Load(configPath);
+            _config = ConfigurationLoadResult.Configuration;
+
+            foreach (string warning in ConfigurationLoadResult.Warnings)
+            {
+                Logger.Warning(warning);
+            }
+
+            if (!ConfigurationLoadResult.IsSuccess)
+            {
+                throw new InvalidOperationException(
+                    string.Join(Environment.NewLine, ConfigurationLoadResult.Errors));
+            }
         }
+
+        public RuleConfigurationLoadResult ConfigurationLoadResult { get; }
+        public IReadOnlyList<IPlanAnalyzerRule> RegisteredRules => _rules;
 
         public void RegisterRule(IPlanAnalyzerRule rule)
         {
-            var ruleConfig = _config.Rules.FirstOrDefault(r => r.RuleId == rule.RuleId || r.RuleId == rule.Name);
+            ArgumentNullException.ThrowIfNull(rule);
+            RuleMetadata metadata = rule.Metadata;
+
+            if (_rules.Any(existing =>
+                    string.Equals(existing.Metadata.RuleId, metadata.RuleId, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException($"Duplicate rule id: {metadata.RuleId}");
+            }
+
+            RuleConfig? ruleConfig = FindConfiguration(rule);
             if (ruleConfig != null && !ruleConfig.Enabled)
             {
-                Logger.Verbose($"[RuleEngine] Rule '{rule.Name}' ({rule.RuleId}) is disabled by configuration.");
-                return; // Skip registration if disabled
+                Logger.Verbose(
+                    $"[RuleEngine] Rule '{rule.Name}' ({metadata.RuleId}) is disabled by configuration.");
+                return;
             }
+
             _rules.Add(rule);
         }
 
+        public List<AnalysisResult> AnalyzePlan(XDocument document, XNamespace ns)
+        {
+            var results = new List<AnalysisResult>();
+            if (document.Root == null)
+            {
+                return results;
+            }
+
+            var temporaryContexts = new List<XElement>();
+            try
+            {
+                List<XElement> relOps = document.Descendants(ns + "RelOp").ToList();
+                XElement planContext = relOps.FirstOrDefault()
+                    ?? CreateTemporaryContext(document.Root, ns, temporaryContexts);
+
+                foreach (IPlanAnalyzerRule rule in _rules)
+                {
+                    IEnumerable<XElement> contexts = rule.Metadata.Scope switch
+                    {
+                        RuleScope.Plan => new[] { planContext },
+                        RuleScope.Statement => GetStatementContexts(
+                            document,
+                            ns,
+                            temporaryContexts),
+                        RuleScope.Operator => relOps,
+                        _ => Array.Empty<XElement>()
+                    };
+
+                    foreach (XElement context in contexts)
+                    {
+                        AnalysisResult? result = ExecuteRule(rule, context, ns);
+                        if (result != null)
+                        {
+                            results.Add(result);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                foreach (XElement context in temporaryContexts)
+                {
+                    context.Remove();
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Compatibility entry point for operator-detail views. Operator rules run for
+        /// every node; plan and statement rules run only for the first applicable node.
+        /// </summary>
         public List<AnalysisResult> AnalyzeNode(XElement relOp, XNamespace ns)
         {
             var results = new List<AnalysisResult>();
-            foreach (var rule in _rules)
-            {
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                var result = rule.Analyze(relOp, ns);
-                sw.Stop();
+            XDocument? document = relOp.Document;
+            XElement? firstPlanRelOp = document?.Descendants(ns + "RelOp").FirstOrDefault();
+            XElement? statement = relOp.Ancestors(ns + "StmtSimple").FirstOrDefault();
+            XElement? firstStatementRelOp = statement?.Descendants(ns + "RelOp").FirstOrDefault();
 
+            foreach (IPlanAnalyzerRule rule in _rules)
+            {
+                bool shouldRun = rule.Metadata.Scope switch
+                {
+                    RuleScope.Operator => true,
+                    RuleScope.Plan => ReferenceEquals(relOp, firstPlanRelOp),
+                    RuleScope.Statement => ReferenceEquals(relOp, firstStatementRelOp),
+                    _ => false
+                };
+
+                if (!shouldRun)
+                {
+                    continue;
+                }
+
+                AnalysisResult? result = ExecuteRule(rule, relOp, ns);
                 if (result != null)
                 {
-                    var ruleConfig = _config.Rules.FirstOrDefault(r => r.RuleId == rule.RuleId || r.RuleId == rule.Name);
-                    if (ruleConfig?.SeverityOverride != null)
-                    {
-                        result.Severity = ruleConfig.SeverityOverride;
-                    }
-
-                    Logger.Verbose($"[RuleEngine] Rule '{rule.Name}' hit on Node {result.NodeId}. Time: {sw.ElapsedMilliseconds}ms");
                     results.Add(result);
                 }
             }
+
             return results;
         }
 
@@ -86,6 +176,65 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new ThreadSkewRule());
             RegisterRule(new ResidualPredOpRule());
             RegisterRule(new SargableIndexRecommendationRule());
+        }
+
+        private AnalysisResult? ExecuteRule(
+            IPlanAnalyzerRule rule,
+            XElement context,
+            XNamespace ns)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            AnalysisResult? result = rule.Analyze(context, ns);
+            stopwatch.Stop();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            result.Metadata = rule.Metadata;
+            RuleConfig? ruleConfig = FindConfiguration(rule);
+            if (ruleConfig?.SeverityOverride != null)
+            {
+                result.Severity = ruleConfig.SeverityOverride;
+            }
+
+            Logger.Verbose(
+                $"[RuleEngine] Rule '{rule.Name}' hit in {rule.Metadata.Scope} scope " +
+                $"on Node {result.NodeId}. Time: {stopwatch.ElapsedMilliseconds}ms");
+            return result;
+        }
+
+        private RuleConfig? FindConfiguration(IPlanAnalyzerRule rule)
+        {
+            return _config.Rules.FirstOrDefault(configuration =>
+                configuration.RuleId == rule.Metadata.RuleId
+                || configuration.RuleId == rule.Name);
+        }
+
+        private static IReadOnlyList<XElement> GetStatementContexts(
+            XDocument document,
+            XNamespace ns,
+            List<XElement> temporaryContexts)
+        {
+            var contexts = new List<XElement>();
+            foreach (XElement statement in document.Descendants(ns + "StmtSimple"))
+            {
+                XElement? context = statement.Descendants(ns + "RelOp").FirstOrDefault();
+                contexts.Add(context ?? CreateTemporaryContext(statement, ns, temporaryContexts));
+            }
+            return contexts;
+        }
+
+        private static XElement CreateTemporaryContext(
+            XElement parent,
+            XNamespace ns,
+            List<XElement> temporaryContexts)
+        {
+            var context = new XElement(ns + "RelOp");
+            parent.Add(context);
+            temporaryContexts.Add(context);
+            return context;
         }
     }
 }

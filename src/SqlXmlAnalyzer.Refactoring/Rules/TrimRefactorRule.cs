@@ -49,8 +49,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
 
             public override void ExplicitVisit(BooleanComparisonExpression node)
             {
-                if (node.ComparisonType == BooleanComparisonType.Equals || 
-                    node.ComparisonType == BooleanComparisonType.NotEqualToBrackets || 
+                if (node.ComparisonType == BooleanComparisonType.Equals ||
+                    node.ComparisonType == BooleanComparisonType.NotEqualToBrackets ||
                     node.ComparisonType == BooleanComparisonType.NotEqualToExclamation)
                 {
                     if (IsOptimizeable(node.FirstExpression, node.SecondExpression) ||
@@ -79,9 +79,9 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
 
             protected override BooleanExpression ReplaceExpression(BooleanExpression expression)
             {
-                if (expression is BooleanComparisonExpression compExpr && 
-                    (compExpr.ComparisonType == BooleanComparisonType.Equals || 
-                     compExpr.ComparisonType == BooleanComparisonType.NotEqualToBrackets || 
+                if (expression is BooleanComparisonExpression compExpr &&
+                    (compExpr.ComparisonType == BooleanComparisonType.Equals ||
+                     compExpr.ComparisonType == BooleanComparisonType.NotEqualToBrackets ||
                      compExpr.ComparisonType == BooleanComparisonType.NotEqualToExclamation))
                 {
                     if (TryOptimize(compExpr.FirstExpression, compExpr.SecondExpression, compExpr.ComparisonType, out var optimized))
@@ -104,8 +104,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                     if (right is StringLiteral strLit)
                     {
                         // Ensure literal doesn't have leading/trailing spaces that would break equivalence
-                        if (strLit.Value.Length > 0 && 
-                            !char.IsWhiteSpace(strLit.Value[0]) && 
+                        if (strLit.Value.Length > 0 &&
+                            !char.IsWhiteSpace(strLit.Value[0]) &&
                             !char.IsWhiteSpace(strLit.Value[strLit.Value.Length - 1]))
                         {
                             optimized = new BooleanComparisonExpression
@@ -135,8 +135,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
             {
                 if (comparison is StringLiteral strLit)
                 {
-                    return strLit.Value.Length > 0 && 
-                           !char.IsWhiteSpace(strLit.Value[0]) && 
+                    return strLit.Value.Length > 0 &&
+                           !char.IsWhiteSpace(strLit.Value[0]) &&
                            !char.IsWhiteSpace(strLit.Value[strLit.Value.Length - 1]);
                 }
             }

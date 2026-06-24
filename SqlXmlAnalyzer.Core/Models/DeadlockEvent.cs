@@ -11,7 +11,7 @@ namespace SqlXmlAnalyzer.Core.Models
         public string ResourceId { get; set; } = "";
         public string LockMode { get; set; } = "";
         public string Description { get; set; } = "";
-        
+
         // UI Helpers
         public bool IsInCycle { get; set; }
         public bool IsVictim { get; set; }

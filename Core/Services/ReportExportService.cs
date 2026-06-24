@@ -75,7 +75,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 {
                     var img = document.AddImage(imagePath);
                     var picture = img.CreatePicture();
-                    
+
                     // 适配宽度
                     if (picture.Width > 600)
                     {
@@ -83,7 +83,7 @@ namespace SqlXmlAnalyzer.Core.Services
                         picture.Width = 600;
                         picture.Height = (int)(picture.Height * ratio);
                     }
-                    
+
                     document.InsertParagraph().AppendPicture(picture).Alignment = Alignment.center;
                     document.InsertParagraph();
                 }

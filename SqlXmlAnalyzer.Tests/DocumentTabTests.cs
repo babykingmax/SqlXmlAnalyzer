@@ -44,12 +44,12 @@ namespace SqlXmlAnalyzer.Tests
             var doc = new XDocument();
             var tab1 = new DeadlockTabViewModel("Deadlock 1", "test1.xdl", doc);
             var tab2 = new PlanTabViewModel("Plan 1", "test2.sqlplan", doc);
-            
+
             viewModel.Tabs.Add(tab1);
             viewModel.Tabs.Add(tab2);
             viewModel.SelectedTab = tab2;
 
-            tab1.CloseRequested += (s, e) => 
+            tab1.CloseRequested += (s, e) =>
             {
                 if (s is DocumentTabViewModel t)
                 {

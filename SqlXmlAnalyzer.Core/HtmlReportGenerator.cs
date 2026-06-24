@@ -1,115 +1,122 @@
-﻿// =====================================================================================
-// HtmlReportGenerator.cs - 生成自包含的 HTML 单文件报告
-// 内嵌 CSS + Mermaid.js (CDN) + 分析结果 + 可交互的 Mermaid 图
+// =====================================================================================
+// HtmlReportGenerator.cs - 生成单文件 HTML 报告
+// 内嵌 CSS + Mermaid.js (CDN) + 结构化分析结果
 // 支持死锁报告和执行计划报告
 // =====================================================================================
 
-#nullable disable
-
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Text;
-using System.Xml.Linq;
 
 namespace SqlXmlAnalyzer
 {
+    public sealed record HtmlReportSection(
+        string Title,
+        IReadOnlyList<HtmlReportItem> Items);
+
+    public sealed record HtmlReportItem(
+        string Heading,
+        string Description,
+        string Cause,
+        string Recommendation,
+        string Severity);
+
     public static class HtmlReportGenerator
     {
+        private const string MermaidCdnUrl = "https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js";
+
         /// <summary>
-        /// 生成完整的自包含 HTML 报告
+        /// 生成完整的单文件 HTML 报告。所有动态文本均由生成器进行 HTML 编码。
         /// </summary>
         public static string GenerateReport(
-            string originalFilePath,
-            string analysisType, // "Deadlock" or "ExecutionPlan"
-            string summaryText,
-            string mermaidCode,
-            string additionalAnalysis = "")
+            string? originalFilePath,
+            string? analysisType,
+            string? summaryText,
+            string? mermaidCode,
+            IReadOnlyList<HtmlReportSection>? sections = null)
         {
             try
             {
                 var sb = new StringBuilder();
-
-                string title = (analysisType == "Deadlock") 
-                    ? "SQL Server 死锁分析报告" 
+                string title = analysisType == "Deadlock"
+                    ? "SQL Server 死锁分析报告"
                     : "SQL Server 执行计划分析报告";
-
                 string fileToShow = string.IsNullOrEmpty(originalFilePath) ? "未知文件" : originalFilePath;
                 string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string nonce = Guid.NewGuid().ToString("N");
+                bool hasMermaid = !string.IsNullOrWhiteSpace(mermaidCode);
+
+                string scriptPolicy = hasMermaid
+                    ? $"'nonce-{nonce}' https://cdn.jsdelivr.net"
+                    : "'none'";
+                string contentSecurityPolicy =
+                    $"default-src 'none'; script-src {scriptPolicy}; style-src 'unsafe-inline'; " +
+                    "img-src data:; font-src data:; connect-src 'none'; object-src 'none'; " +
+                    "base-uri 'none'; form-action 'none'";
 
                 sb.AppendLine("<!DOCTYPE html>");
                 sb.AppendLine("<html lang=\"zh-CN\">");
                 sb.AppendLine("<head>");
                 sb.AppendLine("  <meta charset=\"UTF-8\">");
                 sb.AppendLine("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-                sb.AppendLine($"  <title>{title} - SqlXmlAnalyzer</title>");
+                sb.AppendLine($"  <meta http-equiv=\"Content-Security-Policy\" content=\"{Encode(contentSecurityPolicy)}\">");
+                sb.AppendLine($"  <title>{Encode(title)} - SqlXmlAnalyzer</title>");
                 sb.AppendLine("  <style>");
                 sb.AppendLine(GetEmbeddedCss());
                 sb.AppendLine("  </style>");
-                sb.AppendLine("  <!-- Mermaid.js from CDN for rendering diagrams -->");
-                sb.AppendLine("  <script src=\"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js\"></script>");
+                if (hasMermaid)
+                {
+                    sb.AppendLine("  <!-- Mermaid.js from the only script origin allowed by CSP. -->");
+                    sb.AppendLine($"  <script nonce=\"{nonce}\" src=\"{MermaidCdnUrl}\"></script>");
+                }
                 sb.AppendLine("</head>");
                 sb.AppendLine("<body>");
                 sb.AppendLine("  <div class=\"container\">");
-                
-                // Header
+
                 sb.AppendLine("    <div class=\"header\">");
-                sb.AppendLine($"      <h1>🔍 {title}</h1>");
-                sb.AppendLine($"      <p class=\"subtitle\">由 SqlXmlAnalyzer v1.0.0 生成 | 分析时间: {timestamp}</p>");
-                sb.AppendLine($"      <p class=\"subtitle\">原始文件: {fileToShow}</p>");
+                sb.AppendLine($"      <h1>🔍 {Encode(title)}</h1>");
+                sb.AppendLine($"      <p class=\"subtitle\">由 SqlXmlAnalyzer v{Encode(Core.ProductInfo.Version)} 生成 | 分析时间: {Encode(timestamp)}</p>");
+                sb.AppendLine($"      <p class=\"subtitle\">原始文件: {Encode(fileToShow)}</p>");
                 sb.AppendLine("    </div>");
 
-                // Summary
-                string summarySafe = summaryText ?? "（无摘要信息）";
                 sb.AppendLine("    <div class=\"section\">");
                 sb.AppendLine("      <h2>📋 分析摘要</h2>");
-                sb.AppendLine($"      <pre class=\"summary\">{System.Net.WebUtility.HtmlEncode(summarySafe)}</pre>");
+                sb.AppendLine($"      <pre class=\"summary\">{Encode(summaryText ?? "（无摘要信息）")}</pre>");
                 sb.AppendLine("    </div>");
 
-                // Mermaid Diagram
-                if (!string.IsNullOrWhiteSpace(mermaidCode))
+                if (hasMermaid)
                 {
                     sb.AppendLine("    <div class=\"section\">");
                     sb.AppendLine("      <h2>📊 可视化图表</h2>");
                     sb.AppendLine("      <div class=\"mermaid-container\">");
-                    string encodedMermaid = System.Net.WebUtility.HtmlEncode(mermaidCode);
-                    sb.AppendLine($"        <pre class=\"mermaid\">{encodedMermaid}</pre>");
+                    sb.AppendLine($"        <pre class=\"mermaid\">{Encode(mermaidCode)}</pre>");
                     sb.AppendLine("      </div>");
                     sb.AppendLine("      <p class=\"hint\">💡 图表可交互：点击节点、缩放、拖拽</p>");
                     sb.AppendLine("    </div>");
                 }
 
-                // Additional analysis (patterns, suggestions, etc.)
-                if (!string.IsNullOrWhiteSpace(additionalAnalysis))
-                {
-                    sb.AppendLine("    <div class=\"section\">");
-                    sb.AppendLine("      <h2>💡 详细诊断与建议</h2>");
-                    sb.AppendLine($"      <div class=\"analysis\">{additionalAnalysis}</div>");
-                    sb.AppendLine("    </div>");
-                }
+                AppendSections(sb, sections);
 
-                // Footer
                 sb.AppendLine("    <div class=\"footer\">");
                 sb.AppendLine("      <p>Generated by <strong>SqlXmlAnalyzer</strong> | .NET 8 | 纯 LINQ to XML</p>");
                 sb.AppendLine("      <p>提示：本报告为单文件，可离线保存。Mermaid 图表需要网络加载脚本首次渲染。</p>");
                 sb.AppendLine("    </div>");
-
                 sb.AppendLine("  </div>");
 
-                // Mermaid initialization script
-                sb.AppendLine("  <script>");
-                sb.AppendLine("    mermaid.initialize({");
-                sb.AppendLine("      startOnLoad: true,");
-                sb.AppendLine("      theme: 'default',");
-                sb.AppendLine("      flowchart: { useMaxWidth: true, htmlLabels: true }");
-                sb.AppendLine("    });");
-                sb.AppendLine("    // Re-render on resize for better UX");
-                sb.AppendLine("    window.addEventListener('resize', () => {");
-                sb.AppendLine("      document.querySelectorAll('.mermaid').forEach(el => {");
-                sb.AppendLine("        el.removeAttribute('data-processed');");
-                sb.AppendLine("      });");
-                sb.AppendLine("      mermaid.init();");
-                sb.AppendLine("    });");
-                sb.AppendLine("  </script>");
+                if (hasMermaid)
+                {
+                    sb.AppendLine($"  <script nonce=\"{nonce}\">");
+                    sb.AppendLine("    mermaid.initialize({");
+                    sb.AppendLine("      startOnLoad: true,");
+                    sb.AppendLine("      securityLevel: 'strict',");
+                    sb.AppendLine("      theme: 'default',");
+                    sb.AppendLine("      flowchart: { useMaxWidth: true, htmlLabels: false }");
+                    sb.AppendLine("    });");
+                    sb.AppendLine("  </script>");
+                }
 
                 sb.AppendLine("</body>");
                 sb.AppendLine("</html>");
@@ -119,8 +126,77 @@ namespace SqlXmlAnalyzer
             catch (Exception ex)
             {
                 Logger.LogException("HtmlReportGenerator.GenerateReport", ex);
-                return $"<html><body><h1>分析报告生成失败</h1><p>{ex.Message}</p></body></html>";
+                return $"<html><body><h1>分析报告生成失败</h1><p>{Encode(ex.Message)}</p></body></html>";
             }
+        }
+
+        private static void AppendSections(
+            StringBuilder sb,
+            IReadOnlyList<HtmlReportSection>? sections)
+        {
+            if (sections == null)
+            {
+                return;
+            }
+
+            foreach (var section in sections.Where(section => section != null))
+            {
+                sb.AppendLine("    <div class=\"section\">");
+                sb.AppendLine($"      <h2>{Encode(section.Title)}</h2>");
+                sb.AppendLine("      <div class=\"analysis\">");
+
+                foreach (var item in section.Items ?? Array.Empty<HtmlReportItem>())
+                {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
+                    string severityClass = GetSeverityClass(item.Severity);
+                    sb.AppendLine($"        <article class=\"report-item {severityClass}\">");
+                    sb.AppendLine($"          <h3>{Encode(item.Heading)} <span class=\"severity\">{Encode(item.Severity)}</span></h3>");
+                    AppendField(sb, "描述", item.Description);
+                    AppendField(sb, "可能原因", item.Cause);
+                    AppendField(sb, "推荐措施", item.Recommendation);
+                    sb.AppendLine("        </article>");
+                }
+
+                sb.AppendLine("      </div>");
+                sb.AppendLine("    </div>");
+            }
+        }
+
+        private static void AppendField(StringBuilder sb, string label, string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            sb.AppendLine($"          <p><strong>{label}:</strong> {EncodeMultiline(value)}</p>");
+        }
+
+        private static string GetSeverityClass(string? severity)
+        {
+            return severity?.Trim().ToUpperInvariant() switch
+            {
+                "CRITICAL" or "HIGH" => "severity-high",
+                "WARNING" or "MEDIUM" => "severity-medium",
+                _ => "severity-low"
+            };
+        }
+
+        private static string Encode(string? value)
+        {
+            return WebUtility.HtmlEncode(value ?? string.Empty);
+        }
+
+        private static string EncodeMultiline(string? value)
+        {
+            return Encode(value)
+                .Replace("\r\n", "<br/>", StringComparison.Ordinal)
+                .Replace("\r", "<br/>", StringComparison.Ordinal)
+                .Replace("\n", "<br/>", StringComparison.Ordinal);
         }
 
         private static string GetEmbeddedCss()
@@ -129,7 +205,6 @@ namespace SqlXmlAnalyzer
 :root {
   --primary: #0066cc;
   --danger: #cc0000;
-  --success: #28a745;
   --warning: #ff9800;
   --bg: #f8f9fa;
   --card: #ffffff;
@@ -214,7 +289,45 @@ h2 {
 }
 
 .analysis {
+  display: grid;
+  gap: 12px;
+}
+
+.report-item {
+  border: 1px solid #dee2e6;
+  border-left-width: 5px;
+  border-radius: 6px;
+  padding: 14px 16px;
   background: #fff;
+}
+
+.report-item h3 {
+  margin: 0 0 8px;
+}
+
+.report-item p {
+  margin: 7px 0 0;
+}
+
+.severity {
+  font-size: 0.78rem;
+  font-weight: normal;
+  margin-left: 6px;
+}
+
+.severity-high {
+  border-left-color: var(--danger);
+  background: #fff5f5;
+}
+
+.severity-medium {
+  border-left-color: var(--warning);
+  background: #fffaf0;
+}
+
+.severity-low {
+  border-left-color: var(--primary);
+  background: #f5f9ff;
 }
 
 .footer {
@@ -237,33 +350,35 @@ pre.mermaid {
         }
 
         /// <summary>
-        /// 便捷方法：直接保存 HTML 报告到文件
+        /// 便捷方法：直接保存 HTML 报告到文件。
         /// </summary>
         public static string SaveReport(
-            string originalFilePath,
-            string analysisType,
-            string summaryText,
-            string mermaidCode,
-            string additionalAnalysis = "",
-            string outputPath = null)
+            string? originalFilePath,
+            string? analysisType,
+            string? summaryText,
+            string? mermaidCode,
+            IReadOnlyList<HtmlReportSection>? sections = null,
+            string? outputPath = null)
         {
             Logger.Info($"SaveReport: 开始保存 HTML 报告 | originalFilePath={originalFilePath}, type={analysisType}");
-            
+
             try
             {
-                string html = GenerateReport(originalFilePath, analysisType, summaryText, mermaidCode, additionalAnalysis);
+                string html = GenerateReport(originalFilePath, analysisType, summaryText, mermaidCode, sections);
 
                 if (string.IsNullOrEmpty(outputPath))
                 {
                     string dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "reports");
                     Directory.CreateDirectory(dir);
                     string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                    string safeName = string.IsNullOrEmpty(originalFilePath) ? "unknown" : Path.GetFileNameWithoutExtension(originalFilePath);
+                    string safeName = string.IsNullOrEmpty(originalFilePath)
+                        ? "unknown"
+                        : Path.GetFileNameWithoutExtension(originalFilePath);
                     outputPath = Path.Combine(dir, $"{analysisType}_{safeName}_{timestamp}.html");
                 }
                 else
                 {
-                    string dir = Path.GetDirectoryName(outputPath);
+                    string? dir = Path.GetDirectoryName(outputPath);
                     if (!string.IsNullOrEmpty(dir))
                     {
                         Directory.CreateDirectory(dir);
@@ -277,11 +392,12 @@ pre.mermaid {
             catch (Exception ex)
             {
                 Logger.LogException("HtmlReportGenerator.SaveReport", ex);
-                // 试图在应用程序目录的根部进行备用保存
                 try
                 {
-                    string fallbackPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"fallback_report_{DateTime.Now:yyyyMMdd_HHmmss}.html");
-                    string html = GenerateReport(originalFilePath, analysisType, summaryText, mermaidCode, additionalAnalysis);
+                    string fallbackPath = Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        $"fallback_report_{DateTime.Now:yyyyMMdd_HHmmss}.html");
+                    string html = GenerateReport(originalFilePath, analysisType, summaryText, mermaidCode, sections);
                     File.WriteAllText(fallbackPath, html, Encoding.UTF8);
                     Logger.Warning($"SaveReport: 已将报告备份保存到: {fallbackPath}");
                     return fallbackPath;
@@ -290,10 +406,9 @@ pre.mermaid {
                 {
                     Logger.LogException("HtmlReportGenerator.SaveReport (Fallback)", fallbackEx);
                 }
+
                 throw;
             }
         }
     }
 }
-
-

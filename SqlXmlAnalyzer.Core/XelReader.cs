@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using Microsoft.SqlServer.XEvent.XELite;
 
 namespace SqlXmlAnalyzer.Core
@@ -13,7 +14,9 @@ namespace SqlXmlAnalyzer.Core
 
     public class XelReader
     {
-        public async Task<List<XelDeadlockReport>> ReadDeadlocksAsync(string xelFilePath)
+        public async Task<List<XelDeadlockReport>> ReadDeadlocksAsync(
+            string xelFilePath,
+            CancellationToken cancellationToken = default)
         {
             var reports = new List<XelDeadlockReport>();
             var reader = new XEFileEventStreamer(xelFilePath);
@@ -34,7 +37,7 @@ namespace SqlXmlAnalyzer.Core
                     }
                     return Task.CompletedTask;
                 },
-                System.Threading.CancellationToken.None);
+                cancellationToken);
 
             return reports;
         }

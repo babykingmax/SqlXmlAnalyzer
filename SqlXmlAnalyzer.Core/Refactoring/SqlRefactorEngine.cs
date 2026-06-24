@@ -7,7 +7,11 @@ using SqlXmlAnalyzer.Core.Refactoring.Rules;
 
 namespace SqlXmlAnalyzer.Core.Refactoring
 {
-    public class SqlRefactorEngine
+    /// <summary>
+    /// Internal compatibility adapter for legacy SARGable rewrite tests and the
+    /// plan/index correlation rule. Application workflows use IRefactoringEngine.
+    /// </summary>
+    internal class SqlRefactorEngine
     {
         private readonly RuleRegistry _registry = new();
         private readonly int _maxPasses;
@@ -51,7 +55,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                     return sql; // Return original if compile errors exist
                 }
 
-                var context = new RefactorContext(sql);
+                var context = new SqlXmlAnalyzer.Core.RefactorContext(sql);
                 string currentSql = sql;
                 TSqlFragment currentFragment = fragment;
 

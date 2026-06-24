@@ -7,14 +7,14 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 {
     public class SargableVisitor : TSqlFragmentVisitor
     {
-        private readonly RefactorContext _context;
+        private readonly SqlXmlAnalyzer.Core.RefactorContext _context;
 
-        public SargableVisitor(RefactorContext context)
+        public SargableVisitor(SqlXmlAnalyzer.Core.RefactorContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = 
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache =
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         private PropertyInfo[] GetBooleanExpressionProperties(Type type)
@@ -315,9 +315,9 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
         }
 
         private bool TryOptimizeLeftOrSubstring(
-            ScalarExpression? potentialFunc, 
-            ScalarExpression? comparisonExpr, 
-            BooleanComparisonType comparisonType, 
+            ScalarExpression? potentialFunc,
+            ScalarExpression? comparisonExpr,
+            BooleanComparisonType comparisonType,
             out BooleanExpression? optimized)
         {
             optimized = null;
@@ -347,7 +347,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
                         {
                             FirstExpression = columnRef,
                             SecondExpression = patternLiteral,
-                            NotDefined = (comparisonType == BooleanComparisonType.NotEqualToBrackets || 
+                            NotDefined = (comparisonType == BooleanComparisonType.NotEqualToBrackets ||
                                           comparisonType == BooleanComparisonType.NotEqualToExclamation)
                         };
                         return true;
@@ -616,8 +616,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
         }
 
         private bool TryOptimizeYear(
-            ScalarExpression? potentialYearFunc, 
-            ScalarExpression? comparisonExpr, 
+            ScalarExpression? potentialYearFunc,
+            ScalarExpression? comparisonExpr,
             BooleanComparisonType comparisonType,
             out BooleanExpression? optimized)
         {
@@ -921,8 +921,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring.Visitors
 
             if (left is StringLiteral strLeft && right is StringLiteral strRight)
             {
-                if (compType == BooleanComparisonType.Equals || 
-                    compType == BooleanComparisonType.NotEqualToBrackets || 
+                if (compType == BooleanComparisonType.Equals ||
+                    compType == BooleanComparisonType.NotEqualToBrackets ||
                     compType == BooleanComparisonType.NotEqualToExclamation)
                 {
                     // 1. If exactly identical (case-sensitive and including trailing spaces), they are equal.

@@ -77,7 +77,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 {
                     Console.WriteLine($"[错误] 分析过程中发生异常: {ex.Message}");
                 }
-                
+
                 // Exit when done
                 return true;
             }
@@ -111,10 +111,20 @@ namespace SqlXmlAnalyzer.Core.Services
 
             if (isDeadlock)
             {
-                var (processes, resources, victimId) = SqlXmlAnalyzer.DeadlockXmlParser.ParseDeadlockXml(doc);
-                var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
+                var parseResult = SqlXmlAnalyzer.DeadlockXmlParser.TryParseDeadlockXml(doc);
+                if (!parseResult.IsSuccess || parseResult.Value == null)
+                {
+                    Console.WriteLine($"[错误] 死锁 XML 解析失败: {string.Join("; ", parseResult.Errors)}");
+                    return;
+                }
+                foreach (string warning in parseResult.Warnings)
+                {
+                    Console.WriteLine($"[警告] {warning}");
+                }
+                var parsed = parseResult.Value;
+                var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
                 var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
-                
+
                 var sb = new System.Text.StringBuilder();
                 foreach (var p in patterns)
                 {

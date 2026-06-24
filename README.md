@@ -1,7 +1,7 @@
 # SqlXmlAnalyzer 🚀
 
 SqlXmlAnalyzer 是一款极其强大且现代化的 **SQL Server 性能诊断与执行计划分析工具**。
-它的目标是提供媲美甚至超越商业软件（如 SQL Sentry Plan Explorer）的分析能力，不仅能够优雅地可视化庞大复杂的执行计划（`.sqlplan`）和死锁图（`.xdl`），更内置了一套专业的 **30 项规则诊断引擎 (Rule Engine)**，为您提供 DBA 级别的深度中文诊断报告！
+它能够可视化 SQL Server 执行计划（`.sqlplan`）和死锁图（`.xdl`），并通过可扩展的规则诊断引擎提供中文诊断报告。
 
 ## 🌟 核心特性 (Features)
 
@@ -49,7 +49,10 @@ SqlXmlAnalyzer 是一款极其强大且现代化的 **SQL Server 性能诊断与
 
 *   `SqlXmlAnalyzer` (WPF UI 主工程)：包含所有 XAML 视图层、图形画布 (`PlanGraphControl` 基于 Nodify)。
 *   `SqlXmlAnalyzer.Core` (核心逻辑库)：完全解耦的分析引擎。包含 `RuleEngine` 架构和底层 XML 解析器。
-*   `SqlXmlAnalyzer.Tests` (单元测试工程)：提供 100% 覆盖率的规则引擎测试网，保障诊断规则升级的健壮性。
+*   `src/SqlXmlAnalyzer.Analysis`：执行计划分析适配层。
+*   `src/SqlXmlAnalyzer.Refactoring`：唯一公开的 SQL 重构实现。
+*   `src/SqlXmlAnalyzer.Application`：CLI 与 WPF 共用的应用编排层。
+*   `SqlXmlAnalyzer.Tests`：xUnit 回归测试；实际通过数量以 CI 结果为准。
 
 ## 🛠️ 参与贡献 (Contributing)
 

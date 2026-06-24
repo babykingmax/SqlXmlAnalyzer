@@ -47,7 +47,7 @@ namespace SqlXmlAnalyzer.Tests
             // Act
             // Test text report
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
-            
+
             // Test object extraction
             var suggestions = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
 
@@ -151,7 +151,7 @@ namespace SqlXmlAnalyzer.Tests
                                   </ShowPlanXML>";
             var doc = XDocument.Parse(xmlContent);
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
-            
+
             report.Should().Contain("内存预估过度");
             // report.Should().Contain("Table Scan"); // No EstimateRows so RelOp diagnostic skipped
         }
@@ -173,7 +173,7 @@ namespace SqlXmlAnalyzer.Tests
                                   </ShowPlanXML>";
             var doc = XDocument.Parse(xmlContent);
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
-            
+
             report.Should().Contain("隐式转换风险");
             report.Should().Contain("CONVERT_IMPLICIT(INT, [X])");
             report.Should().Contain("CONVERT_IMPLICIT(VARCHAR, [Y])");
@@ -192,7 +192,7 @@ namespace SqlXmlAnalyzer.Tests
                                   </ShowPlanXML>";
             var doc = XDocument.Parse(xmlContent);
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
-            
+
             report.Should().Contain("Spool");
             report.Should().Contain("Sort");
         }
@@ -241,7 +241,7 @@ namespace SqlXmlAnalyzer.Tests
                                   </ShowPlanXML>";
             var doc = XDocument.Parse(xmlContent);
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
-            
+
             report.Should().Contain("基数估计偏离");
         }
 
@@ -345,7 +345,7 @@ namespace SqlXmlAnalyzer.Tests
                                   </ShowPlanXML>";
             var doc = XDocument.Parse(xmlContent);
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
-            
+
             report.Should().Contain("嵌套循环 + 不等式查找");
             report.Should().Contain("线程倾斜");
             report.Should().Contain("宽表扫描");

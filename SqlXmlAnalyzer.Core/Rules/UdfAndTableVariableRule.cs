@@ -18,8 +18,8 @@ namespace SqlXmlAnalyzer.Core.Rules
                 var physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "";
                 var logicalOp = relOp.Attribute("LogicalOp")?.Value ?? "";
 
-                bool isUdfOrTvf = physicalOp.Contains("Function", StringComparison.OrdinalIgnoreCase) || 
-                                  logicalOp.Contains("UDF", StringComparison.OrdinalIgnoreCase) || 
+                bool isUdfOrTvf = physicalOp.Contains("Function", StringComparison.OrdinalIgnoreCase) ||
+                                  logicalOp.Contains("UDF", StringComparison.OrdinalIgnoreCase) ||
                                   physicalOp.Contains("Table Valued", StringComparison.OrdinalIgnoreCase);
 
                 if (!isUdfOrTvf) return null;
@@ -40,7 +40,7 @@ namespace SqlXmlAnalyzer.Core.Rules
 
                 string msg = "";
                 string severity = "Warning";
-                
+
                 if (totalActualRows > 0 && estimatedRows > 0)
                 {
                     double ratio = totalActualRows / estimatedRows;

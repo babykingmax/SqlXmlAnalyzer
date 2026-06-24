@@ -48,7 +48,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                 {
                     var conds = new List<BooleanExpression>();
                     CollectAndConditions(node.WhereClause.SearchCondition, conds);
-                    
+
                     foreach (var cond in conds)
                     {
                         if (cond is InPredicate inPredicate && IsRewriteableInSubquery(inPredicate, out _, out _, out _))
@@ -131,7 +131,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                         // 2. Append JOIN to the rightmost TableReference
                         var lastIdx = node.FromClause.TableReferences.Count - 1;
                         var lastRef = node.FromClause.TableReferences[lastIdx];
-                        
+
                         var joinCondition = new BooleanComparisonExpression
                         {
                             ComparisonType = BooleanComparisonType.Equals,
@@ -174,7 +174,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                         var sourceCol = GetExpressionString(targetInPredicate.Expression);
                         var targetTable = GetTableString(subqueryTable);
                         ChangeDetail = $"Converted IN subquery on {sourceCol} to JOIN with {targetTable}";
-                        
+
                         _context.Log($"Converted IN subquery on {sourceCol} to JOIN with {targetTable}");
                     }
                 }
@@ -266,7 +266,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                 // Subquery FROM must have exactly one table reference, which can be a NamedTableReference or QualifiedJoin
                 if (spec.FromClause == null || spec.FromClause.TableReferences.Count != 1) return false;
                 var tableRef = spec.FromClause.TableReferences[0];
-                
+
                 if (!IsValidTableReferenceStructure(tableRef, out int namedTableCount)) return false;
                 if (namedTableCount < 1 || namedTableCount > 2) return false;
                 if (namedTableCount == 2)

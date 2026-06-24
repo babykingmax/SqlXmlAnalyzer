@@ -99,8 +99,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                 if (string.Equals(funcName, "LEFT", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(funcName, "SUBSTRING", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (compType == BooleanComparisonType.Equals || 
-                        compType == BooleanComparisonType.NotEqualToBrackets || 
+                    if (compType == BooleanComparisonType.Equals ||
+                        compType == BooleanComparisonType.NotEqualToBrackets ||
                         compType == BooleanComparisonType.NotEqualToExclamation)
                     {
                         isRefactorable = true;
@@ -266,7 +266,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
         public override void ExplicitVisit(BooleanTernaryExpression node)
         {
-            if (node.TernaryExpressionType == BooleanTernaryExpressionType.Between || 
+            if (node.TernaryExpressionType == BooleanTernaryExpressionType.Between ||
                 node.TernaryExpressionType == BooleanTernaryExpressionType.NotBetween)
             {
                 CheckExpression(node.FirstExpression);

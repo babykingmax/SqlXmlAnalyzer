@@ -19,7 +19,7 @@ namespace SqlXmlAnalyzer.Core.Rules
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
                 var physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "";
-                
+
                 string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "";
                 if (!NumericParser.TryParseInvariantDouble(estRowsStr, out double estimatedRows))
                     return null;
@@ -40,7 +40,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 }
 
                 // Remove the old Zero-Row actuals logic here, as we moved it to ZeroRowActualsRule.cs
-                
+
                 // Check CardinalityEstimationModelVersion on Statement
                 var stmtSimple = relOp.Document?.Descendants(ns + "StmtSimple").FirstOrDefault();
                 string ceVersionStr = stmtSimple?.Attribute("CardinalityEstimationModelVersion")?.Value ?? "";

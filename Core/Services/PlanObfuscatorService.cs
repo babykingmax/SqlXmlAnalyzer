@@ -9,10 +9,10 @@ namespace SqlXmlAnalyzer.Core.Services
         public static XDocument ObfuscatePlan(XDocument originalPlan)
         {
             if (originalPlan == null) throw new ArgumentNullException(nameof(originalPlan));
-            
+
             var maskedDoc = new XDocument(originalPlan);
             var dict = new Dictionary<string, string>();
-            
+
             foreach (var elem in maskedDoc.Descendants())
             {
                 // 1. 掩码物理库表对象名
@@ -25,7 +25,7 @@ namespace SqlXmlAnalyzer.Core.Services
                         string coreVal = a.Value.Trim('[', ']');
                         if (string.IsNullOrWhiteSpace(coreVal) || coreVal.StartsWith("@") || coreVal.StartsWith("Expr") || coreVal.Equals("dbo", StringComparison.OrdinalIgnoreCase))
                             continue;
-                            
+
                         string key = $"{attr}:{coreVal.ToLower()}";
                         if (!dict.TryGetValue(key, out string? masked))
                         {
@@ -35,7 +35,7 @@ namespace SqlXmlAnalyzer.Core.Services
                         a.Value = a.Value.StartsWith("[") ? $"[{masked}]" : masked;
                     }
                 }
-                
+
                 // 2. 清洗或模糊化 ScalarString 中的物理对象
                 var scalarStrAttr = elem.Attribute("ScalarString");
                 if (scalarStrAttr != null)

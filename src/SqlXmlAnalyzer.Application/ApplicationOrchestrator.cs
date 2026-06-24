@@ -35,9 +35,9 @@ namespace SqlXmlAnalyzer.Application
         }
 
         public OrchestratorResult Execute(
-            string sqlPath, 
-            string? planPath = null, 
-            bool isDryRun = false, 
+            string sqlPath,
+            string? planPath = null,
+            bool isDryRun = false,
             RefactorOptions? options = null,
             string? outputPath = null)
         {
@@ -78,7 +78,7 @@ namespace SqlXmlAnalyzer.Application
 
                 var opt = options ?? new RefactorOptions();
                 var result = _refactoringEngine.Run(sql, report, opt, isDryRun);
-                
+
                 if (result.IsSuccess && !isDryRun)
                 {
                     string backupPath = sqlPath + ".bak";

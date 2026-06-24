@@ -16,11 +16,6 @@ namespace SqlXmlAnalyzer.Core.Rules
             try
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "0";
-                
-                // This is a plan-level rule. PlanDiagnosticAnalyzer injects a temporary
-                // NodeId=0 when a plan does not contain one, so executing on NodeId=1
-                // as well only creates duplicate document-level findings.
-                if (nodeId != "0") return null;
 
                 var queryPlan = relOp.Document?.Descendants(ns + "QueryPlan").FirstOrDefault();
                 if (queryPlan != null)
@@ -61,7 +56,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     // Check for row estimate deviation on root node
                     string estRowsStr = relOp.Attribute("EstimateRows")?.Value ?? "1";
                     NumericParser.TryParseInvariantDouble(estRowsStr, out double estimateRows);
-                    
+
                     double actualRows = 0;
                     var runTimeInfo = relOp.Element(ns + "RunTimeInformation");
                     if (runTimeInfo != null)
@@ -98,8 +93,8 @@ namespace SqlXmlAnalyzer.Core.Rules
                         RuleId = this.RuleId,
                         Severity = severity,
                         Title = "参数嗅探风险 (Parameter Sniffing)",
-                        Message = $"检测到编译期参数与运行时参数值不一致：\n" + 
-                                  string.Join("\n", sniffedParams) + 
+                        Message = $"检测到编译期参数与运行时参数值不一致：\n" +
+                                  string.Join("\n", sniffedParams) +
                                   $"\n当前根节点预估与实际行数偏差比例: {ratio:F1}x。\n" +
                                   statsWarning +
                                   "建议方案：\n1. 使用局部变量阻断嗅探: DECLARE @LocalParam = @Parameter\n2. 添加 OPTION (RECOMPILE) 或 OPTION (OPTIMIZE FOR UNKNOWN)\n3. SQL Server 2022+ 评估参数敏感计划优化 (PSP)",

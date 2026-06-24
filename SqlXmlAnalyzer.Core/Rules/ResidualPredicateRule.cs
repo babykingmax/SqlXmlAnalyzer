@@ -29,9 +29,9 @@ namespace SqlXmlAnalyzer.Core.Rules
                 {
                     // If it's a Seek, there's usually a SeekPredicates as well. The <Predicate> here acts as a residual filter.
                     string predicateText = GetScalarOperatorString(predicate, ns);
-                    
+
                     // Check for function-wrapped columns (like CONVERT, YEAR, SUBSTRING)
-                    bool hasFunctionWrapped = predicateText.Contains("CONVERT") || predicateText.Contains("YEAR") || 
+                    bool hasFunctionWrapped = predicateText.Contains("CONVERT") || predicateText.Contains("YEAR") ||
                                               predicateText.Contains("SUBSTRING") || predicateText.Contains("ISNULL");
 
                     if (hasFunctionWrapped)

@@ -10,7 +10,7 @@ namespace SqlXmlAnalyzer.Tests
             var assembly = Assembly.GetExecutingAssembly();
             // Try to find the exact resource name, assuming default namespace SqlXmlAnalyzer.Tests
             var fullResourceName = $"SqlXmlAnalyzer.Tests.Resources.{resourceName}";
-            
+
             using Stream? stream = assembly.GetManifestResourceStream(fullResourceName);
             if (stream == null)
             {

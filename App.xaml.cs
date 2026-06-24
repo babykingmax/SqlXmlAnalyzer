@@ -10,6 +10,7 @@ using SqlXmlAnalyzer.Application.Services;
 using SqlXmlAnalyzer.Analysis;
 using SqlXmlAnalyzer.Refactoring;
 using SqlXmlAnalyzer.Refactoring.Rules;
+using SqlXmlAnalyzer.Core.Configuration;
 
 namespace SqlXmlAnalyzer
 {
@@ -29,6 +30,26 @@ namespace SqlXmlAnalyzer
             if (Core.Services.CliService.HandleCommandLineArgs(e.Args))
 
             {
+                Shutdown();
+                return;
+            }
+
+            var configurationResult = RuleConfigurationLoader.Load();
+            if (configurationResult.Warnings.Count > 0)
+            {
+                MessageBox.Show(
+                    string.Join(Environment.NewLine, configurationResult.Warnings),
+                    "规则配置警告",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+            else if (!configurationResult.IsSuccess)
+            {
+                MessageBox.Show(
+                    string.Join(Environment.NewLine, configurationResult.Errors),
+                    "规则配置错误",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 Shutdown();
                 return;
             }
@@ -117,7 +138,7 @@ namespace SqlXmlAnalyzer
             services.AddLogging();
             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
             services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = false });
-            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine("RuleConfiguration.json"));
+            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine());
             services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
 
             // Rules
@@ -135,12 +156,26 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<ApplicationOrchestrator>();
 
             services.AddSingleton<XelReader>();
+            services.AddSingleton<TemporaryFileManager>();
+            services.AddSingleton<Core.Services.AnalysisSessionCoordinator>();
+            services.AddSingleton<Core.Services.BrowserLauncher>();
+            services.AddSingleton<Core.Services.PdfWordReportService>();
+            services.AddSingleton<DeadlockAnalysisService>();
+            services.AddSingleton<Core.Services.PlanAnalysisService>();
             services.AddTransient<MainWindow>();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             Logger.Info("=== SqlXmlAnalyzer WPF 应用正常关闭 ===");
+            if (ServiceProvider?.GetService<TemporaryFileManager>() is { } temporaryFileManager)
+            {
+                temporaryFileManager.Dispose();
+            }
+            if (ServiceProvider?.GetService<Core.Services.AnalysisSessionCoordinator>() is { } coordinator)
+            {
+                coordinator.Dispose();
+            }
             Logger.Shutdown();
             base.OnExit(e);
         }

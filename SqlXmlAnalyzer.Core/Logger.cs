@@ -1,4 +1,4 @@
-﻿// =====================================================================================
+// =====================================================================================
 // Logger.cs - SqlXmlAnalyzer 高级条件日志系统 (v2)
 // 支持功能：
 //   • 编译时 DEBUG/RELEASE 控制
@@ -187,7 +187,7 @@ namespace SqlXmlAnalyzer
             _fileWriter.WriteLine("====================================================================");
             _fileWriter.WriteLine("SqlXmlAnalyzer 详细日志");
             _fileWriter.WriteLine($"启动时间        : {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
-            _fileWriter.WriteLine($"版本            : 1.0.0");
+            _fileWriter.WriteLine($"版本            : {Core.ProductInfo.Version}");
             _fileWriter.WriteLine($"构建模式        : {(IsDebugMode ? "DEBUG" : "RELEASE")}");
             _fileWriter.WriteLine($"日志级别        : {MinimumLogLevel}");
             _fileWriter.WriteLine($"Verbose 模式    : {VerboseMode}");

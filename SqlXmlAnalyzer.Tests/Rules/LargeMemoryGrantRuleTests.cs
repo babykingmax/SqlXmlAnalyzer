@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
             var rootOp = doc.Descendants(ns + "RelOp").FirstOrDefault();
 
             var result = rule.Analyze(rootOp!, ns);
-            
+
             // Because there's a spill, it returns Critical
             result.Should().NotBeNull();
             result!.Severity.Should().Be("Critical");

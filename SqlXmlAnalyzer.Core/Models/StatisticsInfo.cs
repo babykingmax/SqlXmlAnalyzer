@@ -13,7 +13,7 @@ namespace SqlXmlAnalyzer.Core.Models
         public double SamplingPercent { get; set; }
 
         public int AgeInDays => LastUpdate.HasValue ? (DateTime.Now - LastUpdate.Value).Days : 0; // default 0 if not updated yet or unknown
-        
+
         public bool IsStale => AgeInDays > 30;
 
         public bool IsLowSampling => SamplingPercent > 0 && SamplingPercent < 20;

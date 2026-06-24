@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Models;
-using SqlXmlAnalyzer;
 
 namespace SqlXmlAnalyzer.Core.Parsers
 {
@@ -11,212 +10,245 @@ namespace SqlXmlAnalyzer.Core.Parsers
     {
         public class ParsedDeadlock
         {
-            public List<DeadlockEvent> Events { get; set; } = new List<DeadlockEvent>();
-            public Dictionary<string, DeadlockNodeInfo> Processes { get; set; } = new Dictionary<string, DeadlockNodeInfo>();
-            public Dictionary<string, DeadlockResourceInfo> Resources { get; set; } = new Dictionary<string, DeadlockResourceInfo>();
+            public List<DeadlockEvent> Events { get; set; } = new();
+            public Dictionary<string, DeadlockNodeInfo> Processes { get; set; } = new();
+            public Dictionary<string, DeadlockResourceInfo> Resources { get; set; } = new();
         }
 
-        public ParsedDeadlock Parse(string xmlContent)
+        public DeadlockParseResult<ParsedDeadlock> ParseResult(string xmlContent)
         {
-            var result = new ParsedDeadlock();
+            if (string.IsNullOrWhiteSpace(xmlContent))
+            {
+                return DeadlockParseResult<ParsedDeadlock>.Failure("死锁 XML 内容为空。");
+            }
+
             try
             {
-                var doc = SafeXmlHelper.ParseSafe(xmlContent);
-                var deadlockNode = doc.Descendants("deadlock").FirstOrDefault();
-                if (deadlockNode == null) return result;
-
-                var victimId = deadlockNode.Element("victim-list")?.Element("victimProcess")?.Attribute("id")?.Value ?? "";
-
-                // 1. Parse Processes
-                var processList = deadlockNode.Element("process-list");
-                if (processList != null)
+                XDocument doc = SafeXmlHelper.ParseSafe(xmlContent);
+                XElement? deadlockNode = doc.Root?.Name.LocalName == "deadlock"
+                    ? doc.Root
+                    : doc.Descendants().FirstOrDefault(element => element.Name.LocalName == "deadlock");
+                if (deadlockNode == null)
                 {
-                    foreach (var proc in processList.Elements("process"))
-                    {
-                        var id = proc.Attribute("id")?.Value ?? "";
-                        var spid = proc.Attribute("spid")?.Value ?? "";
-                        result.Processes[id] = new DeadlockNodeInfo
-                        {
-                            Id = id,
-                            Spid = spid,
-                            IsVictim = id == victimId
-                        };
-                    }
+                    return DeadlockParseResult<ParsedDeadlock>.Failure("未找到 deadlock 节点。");
                 }
 
-                // 2. Parse Resources and wait graph
-                var resourceList = deadlockNode.Element("resource-list");
-                var adjList = new Dictionary<string, List<string>>(); // Waiter -> Owner
-                var resourceToWaiters = new Dictionary<string, List<string>>();
-                var resourceToOwners = new Dictionary<string, List<string>>();
-
-                var grants = new List<DeadlockEvent>();
-                var requests = new List<DeadlockEvent>();
-
-                if (resourceList != null)
+                var graphParseResult = DeadlockXmlParser.TryParseDeadlockXml(
+                    new XDocument(new XElement(deadlockNode)));
+                if (!graphParseResult.IsSuccess)
                 {
-                    int resIndex = 0;
-                    foreach (var res in resourceList.Elements())
-                    {
-                        var resId = $"res_{resIndex++}";
-                        var resName = res.Name.LocalName;
-                        result.Resources[resId] = new DeadlockResourceInfo { Id = resId, Name = resName };
-
-                        resourceToWaiters[resId] = new List<string>();
-                        resourceToOwners[resId] = new List<string>();
-
-                        var ownerList = res.Element("owner-list");
-                        if (ownerList != null)
-                        {
-                            foreach (var owner in ownerList.Elements("owner"))
-                            {
-                                var pid = owner.Attribute("id")?.Value ?? "";
-                                var mode = owner.Attribute("mode")?.Value ?? "";
-                                resourceToOwners[resId].Add(pid);
-                                
-                                var spid = result.Processes.ContainsKey(pid) ? result.Processes[pid].Spid : pid;
-                                grants.Add(new DeadlockEvent
-                                {
-                                    Type = "Grant",
-                                    ProcessId = pid,
-                                    Spid = spid,
-                                    ResourceId = resId,
-                                    LockMode = mode,
-                                    Description = $"进程 SPID={spid} 获得了资源 {resId} 上的 {mode} 锁"
-                                });
-                            }
-                        }
-
-                        var waiterList = res.Element("waiter-list");
-                        if (waiterList != null)
-                        {
-                            foreach (var waiter in waiterList.Elements("waiter"))
-                            {
-                                var pid = waiter.Attribute("id")?.Value ?? "";
-                                var mode = waiter.Attribute("mode")?.Value ?? "";
-                                resourceToWaiters[resId].Add(pid);
-
-                                if (!adjList.ContainsKey(pid)) adjList[pid] = new List<string>();
-                                foreach (var owner in resourceToOwners[resId])
-                                {
-                                    adjList[pid].Add(owner);
-                                }
-
-                                var spid = result.Processes.ContainsKey(pid) ? result.Processes[pid].Spid : pid;
-                                requests.Add(new DeadlockEvent
-                                {
-                                    Type = "Request",
-                                    ProcessId = pid,
-                                    Spid = spid,
-                                    ResourceId = resId,
-                                    LockMode = mode,
-                                    Description = $"进程 SPID={spid} 请求资源 {resId} 上的 {mode} 锁"
-                                });
-                            }
-                        }
-                    }
+                    return new DeadlockParseResult<ParsedDeadlock>(
+                        null,
+                        graphParseResult.Errors,
+                        graphParseResult.Warnings);
                 }
 
-                // 3. Detect Cycle (DFS)
-                var visited = new HashSet<string>();
-                var inStack = new HashSet<string>();
-                var cycleNodes = new HashSet<string>();
-
-                bool DFS(string node, List<string> path)
-                {
-                    if (inStack.Contains(node))
-                    {
-                        var cycleStart = path.IndexOf(node);
-                        for (int i = cycleStart; i < path.Count; i++) cycleNodes.Add(path[i]);
-                        return true;
-                    }
-                    if (visited.Contains(node)) return false;
-
-                    visited.Add(node);
-                    inStack.Add(node);
-                    path.Add(node);
-
-                    bool foundCycle = false;
-                    if (adjList.ContainsKey(node))
-                    {
-                        foreach (var neighbor in adjList[node])
-                        {
-                            if (DFS(neighbor, path)) foundCycle = true;
-                        }
-                    }
-
-                    path.RemoveAt(path.Count - 1);
-                    inStack.Remove(node);
-                    return foundCycle;
-                }
-
-                foreach (var node in result.Processes.Keys)
-                {
-                    if (!visited.Contains(node)) DFS(node, new List<string>());
-                }
-
-                // Mark cycle
-                foreach (var p in result.Processes.Values)
-                {
-                    if (cycleNodes.Contains(p.Id)) p.IsInCycle = true;
-                }
-                foreach (var r in result.Resources.Values)
-                {
-                    bool resourceInCycle = false;
-                    if (resourceToWaiters.TryGetValue(r.Id, out var waiters) && resourceToOwners.TryGetValue(r.Id, out var owners))
-                    {
-                        if (waiters.Any(w => cycleNodes.Contains(w)) && owners.Any(o => cycleNodes.Contains(o)))
-                        {
-                            resourceInCycle = true;
-                        }
-                    }
-                    r.IsInCycle = resourceInCycle;
-                }
-
-                // 4. Assemble Timeline
-                int step = 1;
-                foreach (var g in grants.OrderBy(x => x.Spid))
-                {
-                    g.StepNumber = step++;
-                    g.IsInCycle = cycleNodes.Contains(g.ProcessId);
-                    result.Events.Add(g);
-                }
-
-                foreach (var r in requests.OrderBy(x => x.Spid))
-                {
-                    r.StepNumber = step++;
-                    r.IsInCycle = cycleNodes.Contains(r.ProcessId);
-                    
-                    // Add blocked info to description
-                    var blockingOwners = resourceToOwners.ContainsKey(r.ResourceId) ? resourceToOwners[r.ResourceId] : new List<string>();
-                    if (blockingOwners.Any())
-                    {
-                        var blockingSpids = blockingOwners.Select(o => result.Processes.ContainsKey(o) ? result.Processes[o].Spid : o).ToList();
-                        r.Description += $"，被进程 {string.Join(", ", blockingSpids)} 阻塞";
-                    }
-                    result.Events.Add(r);
-                }
-
-                if (!string.IsNullOrEmpty(victimId) && result.Processes.ContainsKey(victimId))
-                {
-                    var vp = result.Processes[victimId];
-                    result.Events.Add(new DeadlockEvent
-                    {
-                        StepNumber = step++,
-                        Type = "Victim",
-                        ProcessId = victimId,
-                        Spid = vp.Spid,
-                        Description = $"进程 SPID={vp.Spid} 被选为死锁牺牲品",
-                        IsInCycle = cycleNodes.Contains(victimId),
-                        IsVictim = true
-                    });
-                }
+                var parsed = BuildTimeline(deadlockNode);
+                return DeadlockParseResult<ParsedDeadlock>.Success(
+                    parsed,
+                    graphParseResult.Warnings);
             }
             catch (Exception ex)
             {
-                Logger.LogException("DeadlockTimelineParser.ParseDeadlockTimeline", ex);
+                Logger.LogException("DeadlockTimelineParser.ParseResult", ex);
+                return DeadlockParseResult<ParsedDeadlock>.Failure(
+                    $"死锁时间线解析失败: {ex.Message}");
             }
+        }
+
+        [Obsolete("Use ParseResult and inspect IsSuccess, Errors, and Warnings.")]
+        public ParsedDeadlock Parse(string xmlContent)
+        {
+            return ParseResult(xmlContent).Value ?? new ParsedDeadlock();
+        }
+
+        private static ParsedDeadlock BuildTimeline(XElement deadlockNode)
+        {
+            var result = new ParsedDeadlock();
+            string victimId = deadlockNode.Element("victim-list")
+                ?.Element("victimProcess")
+                ?.Attribute("id")
+                ?.Value ?? string.Empty;
+
+            foreach (XElement process in deadlockNode.Element("process-list")!.Elements("process"))
+            {
+                string id = process.Attribute("id")?.Value ?? string.Empty;
+                if (id.Length == 0)
+                {
+                    continue;
+                }
+
+                result.Processes[id] = new DeadlockNodeInfo
+                {
+                    Id = id,
+                    Spid = process.Attribute("spid")?.Value ?? string.Empty,
+                    IsVictim = id == victimId
+                };
+            }
+
+            var adjacency = new Dictionary<string, List<string>>();
+            var resourceToWaiters = new Dictionary<string, List<string>>();
+            var resourceToOwners = new Dictionary<string, List<string>>();
+            var grants = new List<DeadlockEvent>();
+            var requests = new List<DeadlockEvent>();
+            int resourceIndex = 0;
+
+            foreach (XElement resource in deadlockNode.Element("resource-list")!.Elements())
+            {
+                string resourceId = $"res_{resourceIndex++}";
+                result.Resources[resourceId] = new DeadlockResourceInfo
+                {
+                    Id = resourceId,
+                    Name = resource.Name.LocalName
+                };
+                resourceToWaiters[resourceId] = new List<string>();
+                resourceToOwners[resourceId] = new List<string>();
+
+                foreach (XElement owner in resource.Element("owner-list")?.Elements("owner")
+                             ?? Enumerable.Empty<XElement>())
+                {
+                    string processId = owner.Attribute("id")?.Value ?? string.Empty;
+                    string lockMode = owner.Attribute("mode")?.Value ?? string.Empty;
+                    resourceToOwners[resourceId].Add(processId);
+                    string spid = GetSpid(result, processId);
+                    grants.Add(new DeadlockEvent
+                    {
+                        Type = "Grant",
+                        ProcessId = processId,
+                        Spid = spid,
+                        ResourceId = resourceId,
+                        LockMode = lockMode,
+                        Description = $"进程 SPID={spid} 获得了资源 {resourceId} 上的 {lockMode} 锁"
+                    });
+                }
+
+                foreach (XElement waiter in resource.Element("waiter-list")?.Elements("waiter")
+                             ?? Enumerable.Empty<XElement>())
+                {
+                    string processId = waiter.Attribute("id")?.Value ?? string.Empty;
+                    string lockMode = waiter.Attribute("mode")?.Value ?? string.Empty;
+                    resourceToWaiters[resourceId].Add(processId);
+                    if (!adjacency.TryGetValue(processId, out List<string>? owners))
+                    {
+                        owners = new List<string>();
+                        adjacency[processId] = owners;
+                    }
+                    owners.AddRange(resourceToOwners[resourceId]);
+
+                    string spid = GetSpid(result, processId);
+                    requests.Add(new DeadlockEvent
+                    {
+                        Type = "Request",
+                        ProcessId = processId,
+                        Spid = spid,
+                        ResourceId = resourceId,
+                        LockMode = lockMode,
+                        Description = $"进程 SPID={spid} 请求资源 {resourceId} 上的 {lockMode} 锁"
+                    });
+                }
+            }
+
+            HashSet<string> cycleNodes = DetectCycleNodes(result.Processes.Keys, adjacency);
+            foreach (DeadlockNodeInfo process in result.Processes.Values)
+            {
+                process.IsInCycle = cycleNodes.Contains(process.Id);
+            }
+            foreach (DeadlockResourceInfo resource in result.Resources.Values)
+            {
+                resource.IsInCycle =
+                    resourceToWaiters[resource.Id].Any(cycleNodes.Contains)
+                    && resourceToOwners[resource.Id].Any(cycleNodes.Contains);
+            }
+
+            int step = 1;
+            foreach (DeadlockEvent grant in grants.OrderBy(item => item.Spid))
+            {
+                grant.StepNumber = step++;
+                grant.IsInCycle = cycleNodes.Contains(grant.ProcessId);
+                result.Events.Add(grant);
+            }
+
+            foreach (DeadlockEvent request in requests.OrderBy(item => item.Spid))
+            {
+                request.StepNumber = step++;
+                request.IsInCycle = cycleNodes.Contains(request.ProcessId);
+                var blockingSpids = resourceToOwners[request.ResourceId]
+                    .Select(ownerId => GetSpid(result, ownerId))
+                    .ToList();
+                if (blockingSpids.Count > 0)
+                {
+                    request.Description += $"，被进程 {string.Join(", ", blockingSpids)} 阻塞";
+                }
+                result.Events.Add(request);
+            }
+
+            if (victimId.Length > 0 && result.Processes.TryGetValue(victimId, out DeadlockNodeInfo? victim))
+            {
+                result.Events.Add(new DeadlockEvent
+                {
+                    StepNumber = step,
+                    Type = "Victim",
+                    ProcessId = victimId,
+                    Spid = victim.Spid,
+                    Description = $"进程 SPID={victim.Spid} 被选为死锁牺牲品",
+                    IsInCycle = cycleNodes.Contains(victimId),
+                    IsVictim = true
+                });
+            }
+
             return result;
+        }
+
+        private static string GetSpid(ParsedDeadlock parsed, string processId)
+        {
+            return parsed.Processes.TryGetValue(processId, out DeadlockNodeInfo? process)
+                ? process.Spid
+                : processId;
+        }
+
+        private static HashSet<string> DetectCycleNodes(
+            IEnumerable<string> processIds,
+            IReadOnlyDictionary<string, List<string>> adjacency)
+        {
+            var visited = new HashSet<string>();
+            var inStack = new HashSet<string>();
+            var cycleNodes = new HashSet<string>();
+
+            void Visit(string node, List<string> path)
+            {
+                if (inStack.Contains(node))
+                {
+                    int cycleStart = path.IndexOf(node);
+                    for (int i = Math.Max(cycleStart, 0); i < path.Count; i++)
+                    {
+                        cycleNodes.Add(path[i]);
+                    }
+                    return;
+                }
+                if (!visited.Add(node))
+                {
+                    return;
+                }
+
+                inStack.Add(node);
+                path.Add(node);
+                if (adjacency.TryGetValue(node, out List<string>? neighbors))
+                {
+                    foreach (string neighbor in neighbors)
+                    {
+                        Visit(neighbor, path);
+                    }
+                }
+                path.RemoveAt(path.Count - 1);
+                inStack.Remove(node);
+            }
+
+            foreach (string processId in processIds)
+            {
+                Visit(processId, new List<string>());
+            }
+
+            return cycleNodes;
         }
     }
 }

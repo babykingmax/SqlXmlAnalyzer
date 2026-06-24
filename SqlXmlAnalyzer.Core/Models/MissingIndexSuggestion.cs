@@ -9,10 +9,10 @@ namespace SqlXmlAnalyzer.Core.Models
         public string Table { get; set; } = "";
         public double Impact { get; set; }
         public int Score { get; set; }
-        
+
         public List<IndexColumn> KeyColumns { get; set; } = new();
         public List<IndexColumn> IncludeColumns { get; set; } = new();
-        
+
         public string CreateIndexStatement
         {
             get

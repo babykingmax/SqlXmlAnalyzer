@@ -248,8 +248,8 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
 
             if (left is StringLiteral strLeft && right is StringLiteral strRight)
             {
-                if (compType == BooleanComparisonType.Equals || 
-                    compType == BooleanComparisonType.NotEqualToBrackets || 
+                if (compType == BooleanComparisonType.Equals ||
+                    compType == BooleanComparisonType.NotEqualToBrackets ||
                     compType == BooleanComparisonType.NotEqualToExclamation)
                 {
                     if (string.Equals(strLeft.Value, strRight.Value, StringComparison.Ordinal))

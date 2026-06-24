@@ -51,6 +51,35 @@ namespace SqlXmlAnalyzer.Tests.Application
         }
 
         [Fact]
+        public void Main_Scan_WithMissingExplicitConfiguration_ShouldReturnFailureCode2()
+        {
+            File.WriteAllText(_tempPlanFile, "<ShowPlanXML />");
+            string missingConfig = Path.Combine(
+                Path.GetTempPath(),
+                $"missing_config_{Guid.NewGuid():N}.json");
+            var errorWriter = new StringWriter();
+            TextWriter originalError = Console.Error;
+
+            int exitCode;
+            try
+            {
+                Console.SetError(errorWriter);
+                exitCode = Program.Main(new[]
+                {
+                    "--path", _tempPlanFile,
+                    "--config", missingConfig
+                });
+            }
+            finally
+            {
+                Console.SetError(originalError);
+            }
+
+            exitCode.Should().Be(2);
+            errorWriter.ToString().Should().Contain("规则配置文件不存在");
+        }
+
+        [Fact]
         public void Main_Refactor_NonExistentFile_ShouldReturnFailureCode1()
         {
             // Arrange
@@ -127,7 +156,7 @@ namespace SqlXmlAnalyzer.Tests.Application
             var stringWriter = new StringWriter();
             var originalOut = Console.Out;
             Console.SetOut(stringWriter);
-            
+
             int exitCode;
             try
             {
@@ -142,7 +171,7 @@ namespace SqlXmlAnalyzer.Tests.Application
             exitCode.Should().Be(0);
             var output = stringWriter.ToString();
             output.Should().NotBeNullOrEmpty();
-            
+
             try
             {
                 // Try parse output as JSON

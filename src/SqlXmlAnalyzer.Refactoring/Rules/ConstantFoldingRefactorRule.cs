@@ -102,9 +102,9 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
         }
 
         private static bool TryFoldArithmetic(
-            ScalarExpression expr, 
-            ScalarExpression comparisonVal, 
-            out ColumnReferenceExpression? colRef, 
+            ScalarExpression expr,
+            ScalarExpression comparisonVal,
+            out ColumnReferenceExpression? colRef,
             out ScalarExpression? newComparisonVal)
         {
             colRef = null;

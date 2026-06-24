@@ -6,12 +6,8 @@
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>2.0.0</Version>
     <AssemblyName>SqlXmlAnalyzer</AssemblyName>
-    <Product>SqlXmlAnalyzer</Product>
     <Description>SQL Server 死锁与执行计划深度分析工具 - 图形界面专业版</Description>
-    <Authors>数据库性能优化专家</Authors>
-    <Copyright>2026</Copyright>
     <LangVersion>latest</LangVersion>
     <!-- <ApplicationIcon>app.ico</ApplicationIcon> -->
 
@@ -44,15 +40,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.11.4" />
-    <PackageReference Include="DocX" Version="5.0.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="5.3.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
-    <PackageReference Include="Nodify" Version="6.0.0" />
-    <PackageReference Include="QuestPDF" Version="2026.6.0" />
-    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+    <PackageReference Include="DocX" />
+    <PackageReference Include="MaterialDesignThemes" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Nodify" />
+    <PackageReference Include="QuestPDF" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="RuleConfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

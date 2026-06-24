@@ -177,7 +177,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
                 var querySpecification = (QuerySpecification)selectStatement.QueryExpression;
                 var selectElement = (SelectScalarExpression)querySpecification.SelectElements[0];
                 var expr = selectElement.Expression;
-                
+
                 expr.GetType().FullName.Should().Be("Microsoft.SqlServer.TransactSql.ScriptDom.CoalesceExpression");
             }
         }
@@ -497,7 +497,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
             errors.Should().BeEmpty();
             refactored.Should().Contain("Status = 'Active'");
             refactored.Should().Contain("Amount > 100");
-            
+
             int count = refactored.Split("Status = 'Active'").Length - 1;
             count.Should().Be(1);
         }

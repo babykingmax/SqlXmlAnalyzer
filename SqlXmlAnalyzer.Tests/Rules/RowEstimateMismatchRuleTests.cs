@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
             var rootOp = doc.Descendants(ns + "RelOp").FirstOrDefault();
 
             var result = rule.Analyze(rootOp!, ns);
-            
+
             result.Should().NotBeNull();
             result!.Severity.Should().Be("Critical");
             result.Message.Should().Contain("1,000"); // 1000 estimate, 1 actual -> 1000x mismatch

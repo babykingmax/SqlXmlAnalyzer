@@ -18,6 +18,7 @@ using SqlXmlAnalyzer.Core.Abstractions;
 using SqlXmlAnalyzer.Core.Models;
 using SqlXmlAnalyzer.Refactoring;
 using SqlXmlAnalyzer.Refactoring.Rules;
+using SqlXmlAnalyzer.Core.Configuration;
 
 namespace SqlXmlAnalyzer.CLI
 {
@@ -46,7 +47,7 @@ namespace SqlXmlAnalyzer.CLI
 
             // Parse arguments
             string? path = null;
-            string configPath = "RuleConfiguration.json";
+            string? configPath = null;
             double? maxCost = null;
             bool blockScans = false;
             string format = "console";
@@ -96,6 +97,21 @@ namespace SqlXmlAnalyzer.CLI
                 PrintUsage();
                 return string.IsNullOrEmpty(path) && !showHelp ? 2 : 0;
             }
+
+            var configurationResult = RuleConfigurationLoader.Load(configPath);
+            foreach (string warning in configurationResult.Warnings)
+            {
+                Console.Error.WriteLine($"[Warning] {warning}");
+            }
+            if (!configurationResult.IsSuccess)
+            {
+                foreach (string error in configurationResult.Errors)
+                {
+                    Console.Error.WriteLine($"[Error] {error}");
+                }
+                return 2;
+            }
+            configPath = configurationResult.ResolvedPath;
 
             // Collect files
             var filesToScan = new List<string>();
@@ -172,7 +188,7 @@ namespace SqlXmlAnalyzer.CLI
             return hasAnyFailure ? 1 : 0;
         }
 
-        private static PlanScanResult ScanPlanFile(string filePath, string configPath, double? maxCostThreshold, bool blockScans)
+        private static PlanScanResult ScanPlanFile(string filePath, string? configPath, double? maxCostThreshold, bool blockScans)
         {
             var result = new PlanScanResult
             {
@@ -577,7 +593,7 @@ namespace SqlXmlAnalyzer.CLI
 
             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
 
-            bool isJson = format.Equals("json", StringComparison.OrdinalIgnoreCase) || 
+            bool isJson = format.Equals("json", StringComparison.OrdinalIgnoreCase) ||
                           (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
 
             if (isJson)

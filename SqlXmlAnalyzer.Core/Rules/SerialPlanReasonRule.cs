@@ -15,8 +15,6 @@ namespace SqlXmlAnalyzer.Core.Rules
             {
                 // This property is usually on the root QueryPlan node
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-                if (nodeId != "0" && nodeId != "1") return null;
-
                 var queryPlan = relOp.Document?.Root?.Element(ns + "BatchSequence")
                                     ?.Element(ns + "Batch")?.Element(ns + "Statements")
                                     ?.Element(ns + "StmtSimple")?.Element(ns + "QueryPlan")
@@ -38,7 +36,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     };
 
                     string title = nonParallelReason == "MaxDOPSetToOne" || nonParallelReason == "CostNotEnoughForParallelPlan"
-                                   ? "提示: 串行执行计划 (Serial Plan)" 
+                                   ? "提示: 串行执行计划 (Serial Plan)"
                                    : "降级警告: 串行执行计划 (Serial Plan)";
 
                     string severity = nonParallelReason == "CouldNotGenerateValidParallelPlan" ? "Warning" : "Info";

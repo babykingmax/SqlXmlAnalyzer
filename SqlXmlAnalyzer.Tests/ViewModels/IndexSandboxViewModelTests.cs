@@ -70,7 +70,7 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
             var suggestion = CreateTestSuggestion();
             var vm = new IndexSandboxViewModel(suggestion);
             var colToMove = vm.KeyColumns[1]; // [Col2]
-            
+
             // Act
             vm.MoveKeyColumnUpCommand.Execute(colToMove);
 
@@ -87,7 +87,7 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
             var suggestion = CreateTestSuggestion();
             var vm = new IndexSandboxViewModel(suggestion);
             var colToMove = vm.KeyColumns[0]; // [Col1]
-            
+
             // Act
             vm.MoveKeyColumnUpCommand.Execute(colToMove);
 
@@ -102,7 +102,7 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
             var suggestion = CreateTestSuggestion();
             var vm = new IndexSandboxViewModel(suggestion);
             var colToMove = vm.KeyColumns[0]; // [Col1]
-            
+
             // Act
             vm.MoveKeyColumnDownCommand.Execute(colToMove);
 
@@ -110,7 +110,7 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
             vm.KeyColumns[0].Name.Should().Be("[Col2]");
             vm.KeyColumns[1].Name.Should().Be("[Col1]");
         }
-        
+
         [Fact]
         public void RemoveIncludeColumnCommand_ShouldRemoveAndRecalculate()
         {
@@ -133,26 +133,26 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
             // Arrange
             var suggestion = CreateTestSuggestion();
             var vm = new IndexSandboxViewModel(suggestion);
-            
+
             // Set stats manually
             vm.TotalRows = 100000;
             vm.AvgRowSize = 200;
-            
+
             // P_table = 100000 * 200 / 8192 = 2441.4 pages
             // TippingPointLow = 2441.4 / 4 = 610
             // TippingPointHigh = 2441.4 / 3 = 814
-            
+
             vm.TippingPointLow.Should().Be(610);
             vm.TippingPointHigh.Should().Be(814);
-            
+
             // Act 1: Returned rows < Low (Safe)
             vm.ReturnedRows = 100;
             vm.TippingPointStatus.Should().Contain("安全");
-            
+
             // Act 2: Returned rows between Low and High (Boundary)
             vm.ReturnedRows = 700;
             vm.TippingPointStatus.Should().Contain("临界区");
-            
+
             // Act 3: Returned rows > High (Degraded)
             vm.ReturnedRows = 900;
             vm.TippingPointStatus.Should().Contain("已触发退化");
@@ -169,7 +169,7 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
                 KeyColumns = new List<IndexColumn> { new IndexColumn { Name = "[Id]", Usage = "EQUALITY" } },
                 IncludeColumns = new List<IndexColumn> { new IndexColumn { Name = "[Price]", Usage = "INCLUDE" } }
             };
-            
+
             string xml = @"<ShowPlanXML xmlns=""http://schemas.microsoft.com/sqlserver/2004/07/showplan"">
                              <BatchSequence><Batch><Statements><StmtSimple>
                                 <QueryPlan><RelOp PhysicalOp=""Table Scan"">
@@ -184,12 +184,12 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
                              </StmtSimple></Statements></Batch></BatchSequence>
                            </ShowPlanXML>";
             var planDoc = System.Xml.Linq.XDocument.Parse(xml);
-            
+
             var vm = new IndexSandboxViewModel(suggestion, planDoc);
-            
+
             // Act
             bool covered = vm.IsCoveredIndex;
-            
+
             // Assert
             covered.Should().BeTrue();
             vm.TippingPointStatus.Should().Contain("覆盖索引");

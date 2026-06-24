@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace SqlXmlAnalyzer.Core.Refactoring
 {
-    public class RuleRegistry
+    internal class RuleRegistry
     {
         private readonly List<ISqlRefactorRule> _rules = new();
 

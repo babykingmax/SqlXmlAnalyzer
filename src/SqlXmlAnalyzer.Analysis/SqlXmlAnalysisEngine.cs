@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core;
 using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Configuration;
 
 namespace SqlXmlAnalyzer.Analysis
 {
     public class SqlXmlAnalysisEngine : IAnalysisEngine
     {
-        private readonly string _configPath;
+        private readonly string? _configPath;
 
-        public SqlXmlAnalysisEngine(string configPath = "RuleConfiguration.json")
+        public SqlXmlAnalysisEngine(string? configPath = null)
         {
-            _configPath = configPath;
+            _configPath = string.IsNullOrWhiteSpace(configPath)
+                ? null
+                : RuleConfigurationPathResolver.Resolve(configPath);
         }
 
         public AnalysisReport Analyze(string xmlContent)
@@ -42,7 +45,7 @@ namespace SqlXmlAnalyzer.Analysis
                 foreach (var res in ruleResults)
                 {
                     var severity = MapSeverity(res.Severity);
-                    
+
                     issues.Add(new SqlPlanAnalysisIssue(
                         res.RuleId,
                         $"[Node {res.NodeId}] {res.Title}: {res.Message}",

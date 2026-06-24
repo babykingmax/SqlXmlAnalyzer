@@ -44,7 +44,7 @@ namespace SqlXmlAnalyzer
             _paramName = paramName;
             _compiledValueStr = compiledValStr.Trim('\'', '(', ')');
             _runtimeValueStr = runtimeValStr.Trim('\'', '(', ')');
-            
+
             bool parsedCompiled = SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(_compiledValueStr, out _compiledValue);
             bool parsedRuntime = SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(_runtimeValueStr, out _runtimeValue);
 
@@ -62,7 +62,7 @@ namespace SqlXmlAnalyzer
             TxtRuntimeValue.Text = _runtimeValueStr;
 
             _hasData = true;
-            
+
             // Reapply stats if they are already loaded
             if (_steps != null)
             {
@@ -197,7 +197,7 @@ namespace SqlXmlAnalyzer
             // Update labels
             TxtCompiledEstimate.Text = $"估算返回: {compEst:N2} 行 ({compMatch})";
             TxtRuntimeEstimate.Text = $"估算返回: {runEst:N2} 行 ({runMatch})";
-            
+
             SqlXmlAnalyzer.Logger.Info($"ApplyStatistics: Param={_paramName}, Compiled={_compiledValueStr} -> Est={compEst:F2} ({compMatch}), Runtime={_runtimeValueStr} -> Est={runEst:F2} ({runMatch})");
 
             PanelEstimates.Visibility = Visibility.Visible;
@@ -263,7 +263,7 @@ namespace SqlXmlAnalyzer
             double endXValue = maxVal + range * 0.2;
             double stepSize = (endXValue - startXValue) / stepsCount;
 
-            Random rnd = new Random(42); 
+            Random rnd = new Random(42);
             double maxEqRows = 0;
 
             for (int i = 0; i < stepsCount; i++)
@@ -272,7 +272,7 @@ namespace SqlXmlAnalyzer
                 double dist1 = Math.Exp(-Math.Pow((xVal - _compiledValue) / (range * 0.1), 2));
                 double dist2 = Math.Exp(-Math.Pow((xVal - _runtimeValue) / (range * 0.3), 2));
                 double eqRows = (dist1 * 10000) + (dist2 * 500) + rnd.Next(50, 200);
-                
+
                 stepValues[i] = eqRows;
                 if (eqRows > maxEqRows) maxEqRows = eqRows;
             }
@@ -283,7 +283,10 @@ namespace SqlXmlAnalyzer
                 double y = height - (i * height / 4.0);
                 var line = new Line
                 {
-                    X1 = 0, Y1 = y, X2 = width, Y2 = y,
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = width,
+                    Y2 = y,
                     Stroke = new SolidColorBrush(Color.FromRgb(224, 224, 224)),
                     StrokeThickness = 1,
                     StrokeDashArray = new DoubleCollection(new[] { 4.0, 4.0 })
@@ -363,7 +366,10 @@ namespace SqlXmlAnalyzer
                 double y = height - (i * height / 4.0);
                 var line = new Line
                 {
-                    X1 = 0, Y1 = y, X2 = width, Y2 = y,
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = width,
+                    Y2 = y,
                     Stroke = new SolidColorBrush(Color.FromRgb(224, 224, 224)),
                     StrokeThickness = 1,
                     StrokeDashArray = new DoubleCollection(new[] { 4.0, 4.0 })
@@ -402,7 +408,7 @@ namespace SqlXmlAnalyzer
                             Fill = new SolidColorBrush(Color.FromArgb(50, 33, 150, 243)), // Translucent blue
                             Stroke = new SolidColorBrush(Color.FromArgb(80, 33, 150, 243)),
                             StrokeThickness = 0.5,
-                            ToolTip = $"区间: {_steps[i-1].RangeHiKey} ~ {step.RangeHiKey}\n区间内行数 (RANGE_ROWS): {step.RangeRows:N0}\n区间内均值 (AVG_RANGE_ROWS): {step.AvgRangeRows:N1}"
+                            ToolTip = $"区间: {_steps[i - 1].RangeHiKey} ~ {step.RangeHiKey}\n区间内行数 (RANGE_ROWS): {step.RangeRows:N0}\n区间内均值 (AVG_RANGE_ROWS): {step.AvgRangeRows:N1}"
                         };
                         Canvas.SetLeft(rect, xPrev);
                         Canvas.SetTop(rect, height - barH);
@@ -423,7 +429,7 @@ namespace SqlXmlAnalyzer
                     ToolTip = $"上限值 (RANGE_HI_KEY): {step.RangeHiKey}\n等值行数 (EQ_ROWS): {step.EqRows:N0}"
                 };
                 DrawCanvas.Children.Add(pin);
-                
+
                 // Draw a small dot on top of the EQ_ROWS pin
                 var dot = new Ellipse
                 {
@@ -454,7 +460,10 @@ namespace SqlXmlAnalyzer
 
             var line = new Line
             {
-                X1 = x, Y1 = 0, X2 = x, Y2 = height,
+                X1 = x,
+                Y1 = 0,
+                X2 = x,
+                Y2 = height,
                 Stroke = brush,
                 StrokeThickness = 2,
                 StrokeDashArray = new DoubleCollection(new[] { 5.0, 3.0 })
@@ -470,7 +479,7 @@ namespace SqlXmlAnalyzer
                 Background = new SolidColorBrush(Color.FromArgb(210, 255, 255, 255)),
                 Padding = new Thickness(4, 2, 4, 2)
             };
-            
+
             // Adjust label offset so it doesn't clip off screen
             if (x > DrawCanvas.ActualWidth - 120)
             {

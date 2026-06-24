@@ -13,14 +13,15 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            if (relOp.Attribute("NodeId")?.Value != "0") return null;
-
             try
             {
                 var doc = relOp.Document;
                 if (doc == null) return null;
 
-                var stmts = doc.Descendants(ns + "StmtSimple");
+                var statement = relOp.Ancestors(ns + "StmtSimple").FirstOrDefault()
+                    ?? doc.Descendants(ns + "StmtSimple").FirstOrDefault();
+                if (statement == null) return null;
+                var stmts = new[] { statement };
                 var messages = new List<string>();
 
                 foreach (var stmt in stmts)

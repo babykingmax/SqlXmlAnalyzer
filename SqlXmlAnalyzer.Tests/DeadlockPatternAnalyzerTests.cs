@@ -63,7 +63,7 @@ namespace SqlXmlAnalyzer.Tests
         {
             var graph = new DeadlockGraph();
             graph.Processes.Add(CreateProcess("p1", spid: "55", ecid: "0"));
-            
+
             var doc = System.Xml.Linq.XDocument.Parse("<ShowPlanXML xmlns=\"http://schemas.microsoft.com/sqlserver/2004/07/showplan\"><exchange/><parallelism/></ShowPlanXML>");
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
 
@@ -77,7 +77,7 @@ namespace SqlXmlAnalyzer.Tests
             var graph = new DeadlockGraph();
             graph.Processes.Add(CreateProcess("p1", inputBuf: "SELECT * FROM Users WHERE Name = 'A'"));
             graph.Processes.Add(CreateProcess("p2", inputBuf: "UPDATE Users SET Age = 30 WHERE Id = 1"));
-            
+
             graph.Resources.Add(CreateResource("r1", "keylock", indexName: "IX_Name", objectName: "dbo.Users"));
             graph.Resources.Add(CreateResource("r2", "pagelock", indexName: "PK_Users", objectName: "dbo.Users"));
             graph.Resources.Add(CreateResource("r3", "keylock", indexName: "IX_Other", objectName: "dbo.Users"));
@@ -102,7 +102,7 @@ namespace SqlXmlAnalyzer.Tests
             var graph = new DeadlockGraph();
             graph.Processes.Add(CreateProcess("p1"));
             graph.Processes.Add(CreateProcess("p2"));
-            
+
             graph.Edges.Add(new WaitForEdge { FromProcessId = "p1", HeldMode = "S", RequestedMode = "X" });
 
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph);
@@ -194,17 +194,17 @@ namespace SqlXmlAnalyzer.Tests
 
             patterns.Should().Contain(p => p.TypeName.Contains("Deadlock Priority Analysis"));
         }
-        
+
         [Fact]
         public void IdentifyPatterns_BlitzLock_ReturnsPattern()
         {
             var graph = new DeadlockGraph();
             graph.Processes.Add(CreateProcess("p1"));
-            graph.Edges.Add(new WaitForEdge 
-            { 
-                FromProcessId = "p1", 
-                ToProcessId = "p2", 
-                RequestedMode = "S", 
+            graph.Edges.Add(new WaitForEdge
+            {
+                FromProcessId = "p1",
+                ToProcessId = "p2",
+                RequestedMode = "S",
                 HeldMode = "X",
                 Resource = CreateResource("r1", "KEY", objectName: "dbo.T1")
             });

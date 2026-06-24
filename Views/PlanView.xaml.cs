@@ -19,15 +19,15 @@ namespace SqlXmlAnalyzer.Views
         private void RightPanel_Expanded(object sender, System.Windows.RoutedEventArgs e) { }
         private void RightPanel_Collapsed(object sender, System.Windows.RoutedEventArgs e) { }
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -123,8 +125,12 @@ namespace SqlXmlAnalyzer
 
         public Core.ViewModels.MainViewModel ViewModel { get; }
         private readonly Core.XelReader _xelReader;
-        private readonly ApplicationOrchestrator _orchestrator;
-        private readonly IFileHandler _fileHandler;
+        private readonly TemporaryFileManager _temporaryFileManager;
+        private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
+        private readonly Core.Services.BrowserLauncher _browserLauncher;
+        private readonly Core.Services.PdfWordReportService _pdfWordReportService;
+        private readonly DeadlockAnalysisService _deadlockAnalysisService;
+        private readonly Core.Services.PlanAnalysisService _planAnalysisService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -214,17 +220,38 @@ namespace SqlXmlAnalyzer
             paletteHelper.SetTheme(theme);
         }
 
-        public MainWindow(ApplicationOrchestrator orchestrator, IFileHandler fileHandler, Core.XelReader? xelReader = null)
+        public MainWindow(
+            ApplicationOrchestrator orchestrator,
+            IFileHandler fileHandler,
+            Core.XelReader? xelReader = null,
+            TemporaryFileManager? temporaryFileManager = null,
+            Core.Services.AnalysisSessionCoordinator? analysisSessions = null,
+            Core.Services.BrowserLauncher? browserLauncher = null,
+            Core.Services.PdfWordReportService? pdfWordReportService = null,
+            DeadlockAnalysisService? deadlockAnalysisService = null,
+            Core.Services.PlanAnalysisService? planAnalysisService = null)
         {
             InitializeComponent();
-            _orchestrator = orchestrator;
-            _fileHandler = fileHandler;
             _xelReader = xelReader ?? new Core.XelReader();
+            _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
+            _analysisSessions = analysisSessions ?? new Core.Services.AnalysisSessionCoordinator();
+            _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
+            _pdfWordReportService = pdfWordReportService
+                ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
+            _deadlockAnalysisService = deadlockAnalysisService
+                ?? new DeadlockAnalysisService();
+            _planAnalysisService = planAnalysisService
+                ?? new Core.Services.PlanAnalysisService(
+                    orchestrator,
+                    fileHandler,
+                    _temporaryFileManager);
+            _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel();
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
             SetupCanvasZoomPan();
             this.Loaded += (s, e) => SetupSynchronizedScrolling();
+            this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
             // 监听 PlanA / PlanB 快照变化，动态重构并排对比的操作符结构树
             ViewModel.PropertyChanged += (s, e) =>
@@ -267,9 +294,14 @@ namespace SqlXmlAnalyzer
 
         private async Task AnalyzeXelFileAsync(string filePath)
         {
+            var session = _analysisSessions.Begin();
             try
             {
-                var reports = await _xelReader.ReadDeadlocksAsync(filePath);
+                var reports = await _xelReader.ReadDeadlocksAsync(filePath, session.Token);
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
                 if (reports.Count == 0)
                 {
                     MessageBox.Show("该 XEL 文件中没有找到任何 xml_deadlock_report 事件。");
@@ -281,22 +313,30 @@ namespace SqlXmlAnalyzer
                 XelDeadlockSelector.SelectedIndex = 0;
                 MainTabControl.SelectedIndex = 0;
             }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"XEL 分析已取消: {filePath}");
+            }
             catch (Exception ex)
             {
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
                 Logger.LogException("MainWindow.AnalyzeXelFileAsync", ex);
                 MessageBox.Show("解析 XEL 文件时发生错误: " + ex.Message);
             }
         }
 
-        private void XelDeadlockSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void XelDeadlockSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (XelDeadlockSelector.SelectedItem is Core.XelDeadlockReport report)
             {
                 try
                 {
-                    string tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"deadlock_temp_{Guid.NewGuid()}.xml");
-                    System.IO.File.WriteAllText(tempPath, report.DeadlockXml);
-                    AnalyzeDeadlockFile(tempPath);
+                    await AnalyzeDeadlockXmlAsync(
+                        report.DeadlockXml,
+                        $"XEL 死锁事件 {report.Timestamp}");
                 }
                 catch (Exception ex)
                 {
@@ -364,12 +404,12 @@ namespace SqlXmlAnalyzer
 
         private void AnalyzeDeadlockFile(string filePath)
         {
-            AnalyzeFile(filePath);
+            _ = AnalyzeFileAsync(filePath);
         }
 
         private void AnalyzeExecutionPlanFile(string filePath)
         {
-            AnalyzeFile(filePath);
+            _ = AnalyzeFileAsync(filePath);
         }
 
         private static bool IsDeadlockXml(XDocument doc)
@@ -427,6 +467,11 @@ namespace SqlXmlAnalyzer
 
         public async void AnalyzeFile(string filePath)
         {
+            await AnalyzeFileAsync(filePath);
+        }
+
+        public async Task AnalyzeFileAsync(string filePath)
+        {
             if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             {
                 Logger.Error($"尝试分析不存在的文件: {filePath}");
@@ -434,22 +479,35 @@ namespace SqlXmlAnalyzer
                 return;
             }
 
+            var session = _analysisSessions.Begin();
             try
             {
                 StatusTextBlock.Text = $"正在加载并识别文件：{System.IO.Path.GetFileName(filePath)}...";
-                XDocument doc = await System.Threading.Tasks.Task.Run(() => LoadXmlDocument(filePath));
+                XDocument doc = await Task.Run(
+                    () =>
+                    {
+                        session.Token.ThrowIfCancellationRequested();
+                        XDocument loaded = LoadXmlDocument(filePath);
+                        session.Token.ThrowIfCancellationRequested();
+                        return loaded;
+                    },
+                    session.Token);
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
 
                 if (IsDeadlockXml(doc))
                 {
                     Logger.Info($"文件被识别为死锁报告: {filePath}");
                     ViewModel.CurrentDeadlockFilePath = filePath;
-                    AnalyzeDeadlockDocument(doc, filePath);
+                    await AnalyzeDeadlockDocumentAsync(doc, filePath, session.RequestId, session.Token);
                 }
                 else if (IsExecutionPlanXml(doc))
                 {
                     Logger.Info($"文件被识别为 SQL Server 执行计划: {filePath}");
                     ViewModel.CurrentPlanFilePath = filePath;
-                    AnalyzeExecutionPlanDocument(doc, filePath);
+                    await AnalyzeExecutionPlanDocumentAsync(doc, filePath, session.RequestId, session.Token);
                 }
                 else
                 {
@@ -459,156 +517,167 @@ namespace SqlXmlAnalyzer
                     StatusTextBlock.Text = "未知文件类型";
                 }
             }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"文件分析已取消: {filePath}");
+            }
             catch (Exception ex)
             {
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
                 Logger.LogException("AnalyzeFile", ex);
                 MessageBox.Show($"解析文件失败: {ex.Message}\n\n详细错误已记录到日志。", "分析错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 StatusTextBlock.Text = "解析失败";
             }
         }
 
-        private async void AnalyzeDeadlockDocument(XDocument doc, string filePath)
+        private async Task AnalyzeDeadlockXmlAsync(string xml, string displayName)
+        {
+            var session = _analysisSessions.Begin();
+            try
+            {
+                StatusTextBlock.Text = $"正在分析：{displayName}...";
+                XDocument doc = await Task.Run(
+                    () =>
+                    {
+                        session.Token.ThrowIfCancellationRequested();
+                        XDocument parsed = SafeXmlHelper.ParseSafe(xml);
+                        session.Token.ThrowIfCancellationRequested();
+                        return parsed;
+                    },
+                    session.Token);
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
+
+                ViewModel.CurrentDeadlockFilePath = displayName;
+                await AnalyzeDeadlockDocumentAsync(doc, displayName, session.RequestId, session.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"内存死锁分析已取消: {displayName}");
+            }
+            catch (Exception ex)
+            {
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
+                Logger.LogException("AnalyzeDeadlockXmlAsync", ex);
+                MessageBox.Show($"分析死锁内容失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusTextBlock.Text = "分析失败";
+            }
+        }
+
+        private async Task AnalyzeDeadlockDocumentAsync(
+            XDocument doc,
+            string filePath,
+            long requestId,
+            CancellationToken cancellationToken)
         {
             try
             {
                 StatusTextBlock.Text = $"正在分析死锁文件：{System.IO.Path.GetFileName(filePath)}...";
-                ViewModel.CurrentDeadlockDoc = doc;
 
-                var result = await System.Threading.Tasks.Task.Run(() =>
+                var result = await Task.Run(
+                    () => _deadlockAnalysisService.Analyze(doc, cancellationToken),
+                    cancellationToken);
+                if (!_analysisSessions.IsCurrent(requestId))
                 {
-                    var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(doc);
-                    var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
-                    var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
-                    string deadlockMermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
+                    return;
+                }
 
-                    var parser = new DeadlockTimelineParser();
-                    var timeline = parser.Parse(doc.ToString());
+                ViewModel.CurrentDeadlockDoc = doc;
+                DeadlockProcessesList.ItemsSource = result.Processes;
+                DeadlockResourcesList.ItemsSource = result.Resources;
+                DeadlockPatternsListBox.ItemsSource = result.Patterns;
 
-                    return (processes, resources, graph, patterns, deadlockMermaid, timeline);
-                });
-
-                DeadlockProcessesList.ItemsSource = result.processes;
-                DeadlockResourcesList.ItemsSource = result.resources;
-                DeadlockPatternsListBox.ItemsSource = result.patterns;
-
-                _currentTimeline = result.timeline;
+                _currentTimeline = result.Timeline;
                 _playbackViewModel = new DeadlockPlaybackViewModel(_currentTimeline.Events);
                 _playbackViewModel.StepChanged += (s, e) => UpdatePlaybackGraphVisibility();
                 PlaybackControl.DataContext = _playbackViewModel;
 
-                foreach(var b in _stepBadges.Values) { DeadlockGraphCanvas.Children.Remove(b); }
+                foreach (var b in _stepBadges.Values) { DeadlockGraphCanvas.Children.Remove(b); }
                 _stepBadges.Clear();
 
-                BuildDeadlockWaitForTree(result.graph);
+                BuildDeadlockWaitForTree(result.Graph);
 
                 UpdatePlaybackGraphVisibility();
 
                 MainTabControl.SelectedIndex = 0;
-                StatusTextBlock.Text = "死锁分析完成";
+                foreach (string warning in result.Warnings)
+                {
+                    Logger.Warning(warning);
+                }
+
+                StatusTextBlock.Text = result.Warnings.Count == 0
+                    ? "死锁分析完成"
+                    : $"死锁分析完成（{result.Warnings.Count} 条警告）";
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"死锁分析已取消: {filePath}");
             }
             catch (Exception ex)
             {
+                if (!_analysisSessions.IsCurrent(requestId))
+                {
+                    return;
+                }
                 Logger.LogException("AnalyzeDeadlockDocument", ex);
                 MessageBox.Show($"分析死锁内容失败: {ex.Message}\n\n完整错误已记录到日志文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 StatusTextBlock.Text = "分析失败";
             }
         }
 
-        private async void AnalyzeExecutionPlanDocument(XDocument doc, string filePath)
+        private async Task AnalyzeExecutionPlanDocumentAsync(
+            XDocument doc,
+            string filePath,
+            long requestId,
+            CancellationToken cancellationToken)
         {
             try
             {
                 StatusTextBlock.Text = $"正在分析执行计划：{System.IO.Path.GetFileName(filePath)}...";
-                ViewModel.CurrentPlanDoc = doc;
 
-                var result = await System.Threading.Tasks.Task.Run(() =>
+                var result = await Task.Run(
+                    () => _planAnalysisService.Analyze(
+                        doc,
+                        _showplanNs,
+                        filePath,
+                        cancellationToken),
+                    cancellationToken);
+                if (!_analysisSessions.IsCurrent(requestId))
                 {
-                    string planMermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(doc, _showplanNs);
-                    string queryText = doc.Descendants(_showplanNs + "StmtSimple")
-                        .FirstOrDefault()?.Attribute("StatementText")?.Value ?? "未能提取语句";
-                    string docString = doc.ToString();
-                    string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, _showplanNs);
-                    var mis = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, _showplanNs);
+                    return;
+                }
 
-                    string refactoredSql = queryText;
-                    if (queryText != "未能提取语句" && !string.IsNullOrWhiteSpace(queryText))
-                    {
-                        try
-                        {
-                            string tempSqlPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, $"temp_{System.Guid.NewGuid()}.sql");
-                            try
-                            {
-                                _fileHandler.WriteAllText(tempSqlPath, queryText);
-                                var options = new SqlXmlAnalyzer.Core.Models.RefactorOptions { MaxPasses = 5 };
-                                string? planPath = _fileHandler.Exists(filePath) ? filePath : null;
-                                var orchestratorResult = _orchestrator.Execute(tempSqlPath, planPath: planPath, isDryRun: true, options: options);
-
-                                if (orchestratorResult.IsSuccess && orchestratorResult.Result != null)
-                                {
-                                    refactoredSql = orchestratorResult.Result.OutputSql;
-                                    if (orchestratorResult.Result.Errors != null && orchestratorResult.Result.Errors.Count > 0)
-                                    {
-                                        var sb = new System.Text.StringBuilder();
-                                        sb.AppendLine("/* ");
-                                        sb.AppendLine("T-SQL 智能重构失败，解析语法树时发生以下错误：");
-                                        foreach (var err in orchestratorResult.Result.Errors)
-                                        {
-                                            sb.AppendLine($"- {err}");
-                                        }
-                                        sb.AppendLine("*/");
-                                        sb.AppendLine(queryText);
-                                        refactoredSql = sb.ToString();
-                                    }
-                                }
-                                else
-                                {
-                                    refactoredSql = $"/* T-SQL 智能重构失败: {orchestratorResult.ErrorMessage} */\r\n" + queryText;
-                                }
-                            }
-                            finally
-                            {
-                                try
-                                {
-                                    if (_fileHandler.Exists(tempSqlPath))
-                                    {
-                                        System.IO.File.Delete(tempSqlPath);
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    // Ignore cleanup errors to prevent masking primary logic exceptions
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            refactoredSql = $"/* T-SQL 智能重构发生意外异常: {ex.Message} */\r\n" + queryText;
-                        }
-                    }
-
-                    return (planMermaid, queryText, docString, warningsText, mis, refactoredSql);
-                });
-
-                Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.planMermaid.Length} 字符");
+                ViewModel.CurrentPlanDoc = doc;
+                Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.Mermaid.Length} 字符");
                 BuildPlanVisualTree(doc, _showplanNs);
 
                 ViewModel.MissingIndexes.Clear();
-                foreach (var mi in result.mis)
+                foreach (var mi in result.MissingIndexes)
                 {
                     ViewModel.MissingIndexes.Add(mi);
                 }
 
-                PlanXmlTextBox.Text = result.docString;
-                PlanStatementTextBox.Text = result.queryText.Length > 800 ? result.queryText.Substring(0, 800) + "..." : result.queryText;
-                _currentOriginalSql = result.queryText;
-                _currentRefactoredSql = result.refactoredSql;
+                PlanXmlTextBox.Text = result.DocumentText;
+                PlanStatementTextBox.Text = result.QueryText.Length > 800
+                    ? result.QueryText.Substring(0, 800) + "..."
+                    : result.QueryText;
+                _currentOriginalSql = result.QueryText;
+                _currentRefactoredSql = result.RefactoredSql;
                 UpdateSqlDiffViews();
 
                 var tree = BuildPlanTreeView(doc, _showplanNs);
                 PlanOperatorTree.Items.Clear();
                 if (tree != null) PlanOperatorTree.Items.Add(tree);
 
-                PlanWarningsTextBox.Text = result.warningsText;
+                PlanWarningsTextBox.Text = result.WarningsText;
 
                 try
                 {
@@ -661,8 +730,16 @@ namespace SqlXmlAnalyzer
 
                 StatusTextBlock.Text = "执行计划分析完成";
             }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"执行计划分析已取消: {filePath}");
+            }
             catch (Exception ex)
             {
+                if (!_analysisSessions.IsCurrent(requestId))
+                {
+                    return;
+                }
                 Logger.LogException("AnalyzeExecutionPlanDocument", ex);
                 MessageBox.Show($"分析执行计划失败: {ex.Message}\n\n完整错误已记录到日志文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 StatusTextBlock.Text = "分析失败";
@@ -781,7 +858,8 @@ namespace SqlXmlAnalyzer
                             {
                                 Background = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
                                 CornerRadius = new CornerRadius(8),
-                                Width = 16, Height = 16,
+                                Width = 16,
+                                Height = 16,
                                 Child = new TextBlock { Text = relatedEvent.StepNumber.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
                             };
                             _stepBadges[idPair] = badge;
@@ -919,7 +997,8 @@ namespace SqlXmlAnalyzer
             }).ToList();
 
             // 2. 不再强制聚合物理锁资源节点，保留所有独立资源
-            var collapsedResources = resources.Select((r, idx) => {
+            var collapsedResources = resources.Select((r, idx) =>
+            {
                 var collapsed = new CollapsedResource
                 {
                     Id = $"res_single_{idx}",
@@ -1445,7 +1524,7 @@ namespace SqlXmlAnalyzer
             double resW = 160, resH = 50;
 
             bool fromIsResource = fromId.StartsWith("res_");
-            bool toIsResource   = toId.StartsWith("res_");
+            bool toIsResource = toId.StartsWith("res_");
 
             double fromW = fromIsResource ? resW : procW;
             double fromH = fromIsResource ? resH : procH;
@@ -1453,10 +1532,10 @@ namespace SqlXmlAnalyzer
             double toH = toIsResource ? resH : procH;
 
             Point fromTopLeft = _nodePositions.TryGetValue(fromId, out var fp) ? fp : new Point(80, 150);
-            Point toTopLeft   = _nodePositions.TryGetValue(toId, out var tp) ? tp : new Point(400, 150);
+            Point toTopLeft = _nodePositions.TryGetValue(toId, out var tp) ? tp : new Point(400, 150);
 
             Point fromCenter = new Point(fromTopLeft.X + fromW / 2, fromTopLeft.Y + fromH / 2);
-            Point toCenter   = new Point(toTopLeft.X + toW / 2, toTopLeft.Y + toH / 2);
+            Point toCenter = new Point(toTopLeft.X + toW / 2, toTopLeft.Y + toH / 2);
 
             double dx = toCenter.X - fromCenter.X;
             double dy = toCenter.Y - fromCenter.Y;
@@ -1466,7 +1545,7 @@ namespace SqlXmlAnalyzer
             double uy = dy / dist;
 
             double factorFrom = Math.Min((fromW / 2) / Math.Max(0.001, Math.Abs(ux)), (fromH / 2) / Math.Max(0.001, Math.Abs(uy)));
-            double factorTo   = Math.Min((toW / 2) / Math.Max(0.001, Math.Abs(ux)), (toH / 2) / Math.Max(0.001, Math.Abs(uy)));
+            double factorTo = Math.Min((toW / 2) / Math.Max(0.001, Math.Abs(ux)), (toH / 2) / Math.Max(0.001, Math.Abs(uy)));
 
             double gap = 3;
             double x1 = fromCenter.X + ux * (factorFrom + gap);
@@ -1535,7 +1614,10 @@ namespace SqlXmlAnalyzer
 
             var line = new System.Windows.Shapes.Line
             {
-                X1 = x1, Y1 = y1, X2 = x2, Y2 = y2,
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2,
                 Stroke = brush,
                 StrokeThickness = isWaitEdge ? 2.5 : 2.0
             };
@@ -1875,30 +1957,41 @@ namespace SqlXmlAnalyzer
                         return;
                     }
 
-                    var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
-                    var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
+                    var parseResult = DeadlockXmlParser.TryParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
+                    if (!parseResult.IsSuccess || parseResult.Value == null)
+                    {
+                        throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
+                    }
+                    var parsed = parseResult.Value;
+                    var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
                     string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
 
-                    string summaryText = $"死锁文件: {Path.GetFileName(ViewModel.CurrentDeadlockFilePath)}\n受害者进程: {victimId}\n参与 SPID: {string.Join(", ", processes.Select(p => p.Spid).Distinct())}";
+                    string summaryText = $"死锁文件: {Path.GetFileName(ViewModel.CurrentDeadlockFilePath)}\n受害者进程: {parsed.VictimId}\n参与 SPID: {string.Join(", ", parsed.Processes.Select(p => p.Spid).Distinct())}";
 
                     var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, ViewModel.CurrentDeadlockDoc);
-                    var sb = new System.Text.StringBuilder();
-                    sb.AppendLine("<h3>🔍 死锁模式自动诊断：</h3>");
-                    foreach (var p in patterns)
-                    {
-                        sb.AppendLine($"<div style='border: 1px solid #ffcccc; background: #fff5f5; padding: 10px; margin-bottom: 10px; border-radius: 4px;'>");
-                        sb.AppendLine($"  <strong style='color: {(p.Severity == "High" ? "red" : "orange")};'>【{p.TypeName}】 ({p.Severity})</strong><br/>");
-                        sb.AppendLine($"  <strong>描述:</strong> {p.Description}<br/>");
-                        sb.AppendLine($"  <strong>可能原因:</strong> {p.LikelyCause}<br/>");
-                        sb.AppendLine($"  <strong>推荐措施:</strong> <span style='color: green;'>{p.Recommendation.Replace("\n", "<br/>")}</span>");
-                        sb.AppendLine($"</div>");
-                    }
+                    var reportItems = patterns
+                        .Select(p => new HtmlReportItem(
+                            p.TypeName,
+                            p.Description,
+                            p.LikelyCause,
+                            p.Recommendation,
+                            p.Severity))
+                        .ToList();
 
                     if (!string.IsNullOrWhiteSpace(ViewModel.DeadlockPatternText))
                     {
-                        sb.AppendLine("<h3>📋 分析与选中项详情：</h3>");
-                        sb.AppendLine($"<pre style='background:#f4f4f4; padding:10px; border-radius:4px; font-family:Consolas, monospace; white-space: pre-wrap;'>{System.Net.WebUtility.HtmlEncode(ViewModel.DeadlockPatternText)}</pre>");
+                        reportItems.Add(new HtmlReportItem(
+                            "分析与选中项详情",
+                            ViewModel.DeadlockPatternText,
+                            string.Empty,
+                            string.Empty,
+                            "Info"));
                     }
+
+                    var reportSections = new[]
+                    {
+                        new HtmlReportSection("💡 详细诊断与建议", reportItems)
+                    };
 
                     var dlg = new Microsoft.Win32.SaveFileDialog
                     {
@@ -1909,12 +2002,12 @@ namespace SqlXmlAnalyzer
 
                     if (dlg.ShowDialog() == true)
                     {
-                        HtmlReportGenerator.SaveReport(ViewModel.CurrentDeadlockFilePath, "Deadlock", summaryText, mermaid, sb.ToString(), dlg.FileName);
+                        HtmlReportGenerator.SaveReport(ViewModel.CurrentDeadlockFilePath, "Deadlock", summaryText, mermaid, reportSections, dlg.FileName);
                         Logger.Info($"死锁 HTML 报告成功保存至: {dlg.FileName}");
 
                         if (MessageBox.Show("报告保存成功！是否立即在浏览器中打开？", "保存成功", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
+                            _browserLauncher.OpenFile(dlg.FileName);
                         }
                     }
                 }
@@ -1927,7 +2020,7 @@ namespace SqlXmlAnalyzer
                     }
 
                     string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
-                    string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(ViewModel.CurrentPlanDoc, _showplanNs);
+                    var planResults = PlanDiagnosticAnalyzer.AnalyzePlan(ViewModel.CurrentPlanDoc, _showplanNs);
 
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -1939,14 +2032,29 @@ namespace SqlXmlAnalyzer
                         }
                     });
 
-                    string formattedDiagnosis = warningsText
-                        .Replace("\n\n", "<br/><br/>")
-                        .Replace("【", "<h4 style='color:#0066cc;margin-bottom:5px;'>【")
-                        .Replace("】", "】</h4>")
-                        .Replace("👉", "✔️")
-                        .Replace("🔥", "🔥")
-                        .Replace("🚨", "🚨")
-                        .Replace("⚠️", "⚠️");
+                    var reportItems = planResults
+                        .Select(result => new HtmlReportItem(
+                            result.Title,
+                            result.Message,
+                            string.Empty,
+                            string.Empty,
+                            result.Severity))
+                        .ToList();
+
+                    if (reportItems.Count == 0)
+                    {
+                        reportItems.Add(new HtmlReportItem(
+                            "未发现规则告警",
+                            "当前执行计划未命中已启用的诊断规则。",
+                            string.Empty,
+                            string.Empty,
+                            "Info"));
+                    }
+
+                    var reportSections = new[]
+                    {
+                        new HtmlReportSection("💡 详细诊断与建议", reportItems)
+                    };
 
                     string summaryText = $"执行计划文件: {Path.GetFileName(ViewModel.CurrentPlanFilePath)}\n";
                     var queryPlans = ViewModel.CurrentPlanDoc.Descendants(_showplanNs + "QueryPlan").ToList();
@@ -1964,12 +2072,12 @@ namespace SqlXmlAnalyzer
 
                     if (dlg.ShowDialog() == true)
                     {
-                        HtmlReportGenerator.SaveReport(ViewModel.CurrentPlanFilePath, "ExecutionPlan", summaryText, mermaid, formattedDiagnosis, dlg.FileName);
+                        HtmlReportGenerator.SaveReport(ViewModel.CurrentPlanFilePath, "ExecutionPlan", summaryText, mermaid, reportSections, dlg.FileName);
                         Logger.Info($"执行计划 HTML 报告成功保存至: {dlg.FileName}");
 
                         if (MessageBox.Show("报告保存成功！是否立即在浏览器中打开？", "保存成功", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
+                            _browserLauncher.OpenFile(dlg.FileName);
                         }
                     }
                 }
@@ -1995,45 +2103,6 @@ namespace SqlXmlAnalyzer
             ExportReport("docx", "Word 报告 (*.docx)|*.docx");
         }
 
-        private string? CaptureElementToImage(FrameworkElement element)
-        {
-            try
-            {
-                if (element.ActualWidth == 0 || element.ActualHeight == 0) return null;
-
-                double width = element.ActualWidth;
-                double height = element.ActualHeight;
-
-                System.Windows.Media.Imaging.RenderTargetBitmap rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
-                    (int)Math.Round(width), (int)Math.Round(height),
-                    96d, 96d,
-                    System.Windows.Media.PixelFormats.Pbgra32);
-
-                System.Windows.Media.DrawingVisual dv = new System.Windows.Media.DrawingVisual();
-                using (System.Windows.Media.DrawingContext ctx = dv.RenderOpen())
-                {
-                    ctx.DrawRectangle(System.Windows.Media.Brushes.White, null, new Rect(0, 0, width, height));
-                    ctx.DrawRectangle(new System.Windows.Media.VisualBrush(element), null, new Rect(0, 0, width, height));
-                }
-                rtb.Render(dv);
-
-                System.Windows.Media.Imaging.PngBitmapEncoder encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
-                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
-
-                string tempFile = Path.Combine(Path.GetTempPath(), $"SqlXmlAnalyzer_Graph_{Guid.NewGuid()}.png");
-                using (var fs = new FileStream(tempFile, FileMode.Create))
-                {
-                    encoder.Save(fs);
-                }
-                return tempFile;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("图片捕获失败", ex);
-                return null;
-            }
-        }
-
         private void ExportReport(string extension, string filter)
         {
             try
@@ -2041,7 +2110,7 @@ namespace SqlXmlAnalyzer
                 string title = "";
                 string content = "";
                 string defaultFileName = "";
-                string? tempImagePath = null;
+                FrameworkElement? imageElement = null;
 
                 if (MainTabControl.SelectedIndex == 0)
                 {
@@ -2097,7 +2166,7 @@ namespace SqlXmlAnalyzer
                     defaultFileName = $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.{extension}";
 
                     // Capture Deadlock Canvas Border
-                    tempImagePath = CaptureElementToImage(DeadlockCanvasBorder);
+                    imageElement = DeadlockCanvasBorder;
                 }
                 else if (MainTabControl.SelectedIndex == 1)
                 {
@@ -2124,21 +2193,13 @@ namespace SqlXmlAnalyzer
 
                 if (dlg.ShowDialog() == true)
                 {
-                    if (extension == "pdf")
-                    {
-                        Core.Services.ReportExportService.ExportToPdf(dlg.FileName, title, content, tempImagePath);
-                    }
-                    else if (extension == "docx")
-                    {
-                        Core.Services.ReportExportService.ExportToWord(dlg.FileName, title, content, tempImagePath);
-                    }
+                    _pdfWordReportService.Export(
+                        extension,
+                        dlg.FileName,
+                        title,
+                        content,
+                        imageElement);
                     MessageBox.Show($"{extension.ToUpper()} 报告已成功导出！", "导出成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-
-                // Cleanup temp image
-                if (!string.IsNullOrEmpty(tempImagePath) && File.Exists(tempImagePath))
-                {
-                    try { File.Delete(tempImagePath); } catch { }
                 }
             }
             catch (Exception ex)
@@ -2233,7 +2294,7 @@ namespace SqlXmlAnalyzer
             {
                 try
                 {
-                    System.Diagnostics.Process.Start("explorer.exe", logsPath);
+                    _browserLauncher.OpenFolder(logsPath);
                 }
                 catch (Exception ex)
                 {
@@ -2582,8 +2643,13 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
-                var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
+                var parseResult = DeadlockXmlParser.TryParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
+                if (!parseResult.IsSuccess || parseResult.Value == null)
+                {
+                    throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
+                }
+                var parsed = parseResult.Value;
+                var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
                 string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
 
                 Clipboard.SetText(mermaid);
@@ -2703,7 +2769,7 @@ namespace SqlXmlAnalyzer
             {
                 if (child.Name.LocalName == "OutputList")
                 {
-                    foreach(var col in child.Descendants(child.Name.Namespace + "ColumnReference"))
+                    foreach (var col in child.Descendants(child.Name.Namespace + "ColumnReference"))
                     {
                         string db = col.Attribute("Database")?.Value ?? "";
                         string schema = col.Attribute("Schema")?.Value ?? "";
@@ -2765,8 +2831,13 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
-                var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
+                var parseResult = DeadlockXmlParser.TryParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
+                if (!parseResult.IsSuccess || parseResult.Value == null)
+                {
+                    throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
+                }
+                var parsed = parseResult.Value;
+                var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
                 string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
                 OpenMermaidInBrowser(mermaid);
                 Logger.Info("已在浏览器中打开死锁 Mermaid 等待图。");
@@ -2780,15 +2851,7 @@ namespace SqlXmlAnalyzer
 
         private void OpenMermaidInBrowser(string mermaidCode)
         {
-            string html = $@"<!DOCTYPE html>
-<html>
-<head><meta charset='utf-8'><script src='https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'></script></head>
-<body><div class='mermaid'>{System.Net.WebUtility.HtmlEncode(mermaidCode)}</div>
-<script>mermaid.initialize({{startOnLoad:true}});mermaid.run();</script></body></html>";
-
-            string tempFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SqlXmlAnalyzer_Mermaid.html");
-            File.WriteAllText(tempFile, html);
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(tempFile) { UseShellExecute = true });
+            _browserLauncher.OpenMermaid(mermaidCode);
         }
 
         #endregion
@@ -2799,11 +2862,17 @@ namespace SqlXmlAnalyzer
         }
 
         // --- 调优历史与 A/B 并排对比事件处理器 ---
-        private void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (TuningHistoryListView.SelectedItem is Core.ViewModels.PlanSnapshot snapshot)
             {
-                AnalyzeExecutionPlanDocument(snapshot.Document, snapshot.FilePath);
+                var session = _analysisSessions.Begin();
+                ViewModel.CurrentPlanFilePath = snapshot.FilePath;
+                await AnalyzeExecutionPlanDocumentAsync(
+                    snapshot.Document,
+                    snapshot.FilePath,
+                    session.RequestId,
+                    session.Token);
             }
         }
 

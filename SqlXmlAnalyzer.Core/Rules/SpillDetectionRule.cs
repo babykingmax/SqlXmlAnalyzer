@@ -26,10 +26,10 @@ namespace SqlXmlAnalyzer.Core.Rules
                 if (warnings == null) return null;
 
                 // Check Hash, Sort, or Exchange spills
-                var spillNode = warnings.Element(ns + "SpillToTempDb") ?? 
-                                warnings.Element(ns + "SortSpillDetails") ?? 
+                var spillNode = warnings.Element(ns + "SpillToTempDb") ??
+                                warnings.Element(ns + "SortSpillDetails") ??
                                 warnings.Element(ns + "HashSpillDetails");
-                
+
                 if (spillNode == null) return null;
 
                 // Try to extract the SpillLevel
