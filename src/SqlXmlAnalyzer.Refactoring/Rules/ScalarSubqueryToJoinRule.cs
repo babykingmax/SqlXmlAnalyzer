@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlXmlAnalyzer.Core;
@@ -33,6 +34,55 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
             }
 
             return new RuleResult(fragment, false, null);
+        }
+
+        public static bool TryRewriteSelectedSubquery(
+            string sql,
+            int subqueryStartOffset,
+            int subqueryLength,
+            out string rewrittenSql)
+        {
+            rewrittenSql = sql;
+            if (string.IsNullOrWhiteSpace(sql) || subqueryStartOffset < 0 || subqueryLength <= 0)
+            {
+                return false;
+            }
+
+            var parser = new TSql160Parser(true);
+            TSqlFragment fragment;
+            using (var reader = new StringReader(sql))
+            {
+                fragment = parser.Parse(reader, out var parseErrors);
+                if (parseErrors.Count > 0)
+                {
+                    return false;
+                }
+            }
+
+            var context = new RefactorContext(sql);
+            var visitor = new RewriteVisitor(context, "REF_RULE_107_SCALAR_SUBQUERY_JOIN", subqueryStartOffset, subqueryLength);
+            fragment.Accept(visitor);
+            if (!visitor.Changed)
+            {
+                return false;
+            }
+
+            var generator = new Sql160ScriptGenerator(new SqlScriptGeneratorOptions
+            {
+                KeywordCasing = KeywordCasing.Uppercase,
+                MultilineSelectElementsList = false
+            });
+            generator.GenerateScript(fragment, out rewrittenSql);
+
+            using var validationReader = new StringReader(rewrittenSql);
+            parser.Parse(validationReader, out var validationErrors);
+            if (validationErrors.Count > 0)
+            {
+                rewrittenSql = sql;
+                return false;
+            }
+
+            return true;
         }
 
         private class FinderVisitor : TSqlFragmentVisitor
@@ -70,15 +120,23 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
         {
             private readonly RefactorContext _context;
             private readonly string _ruleId;
+            private readonly int? _targetStartOffset;
+            private readonly int? _targetLength;
             private int _subqueryCounter = 0;
 
             public bool Changed { get; private set; }
             public string? ChangeDetail { get; private set; }
 
-            public RewriteVisitor(RefactorContext context, string ruleId)
+            public RewriteVisitor(
+                RefactorContext context,
+                string ruleId,
+                int? targetStartOffset = null,
+                int? targetLength = null)
             {
                 _context = context;
                 _ruleId = ruleId;
+                _targetStartOffset = targetStartOffset;
+                _targetLength = targetLength;
             }
 
             public override void ExplicitVisit(QuerySpecification node)
@@ -106,6 +164,11 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                     if (element is SelectScalarExpression selectExpr &&
                         IsRewriteableScalarSubquery(selectExpr, mainQueryAliases, out var scalarSub, out var subQuerySpec, out var subQueryTable, out var aggFunc, out var subQueryAliases, out var correlatedConditions, out var nonCorrelatedConditions))
                     {
+                        if (!IsTargetSubquery(scalarSub))
+                        {
+                            continue;
+                        }
+
                         // 1. Generate unique aliases
                         string subqueryTableAlias = $"t_sub_{_subqueryCounter}";
                         string aggAlias = $"agg_{_subqueryCounter}";
@@ -296,9 +359,77 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
                     ChangeDetail = string.Join("; ", detailsList);
                 }
             }
+
+            private bool IsTargetSubquery(ScalarSubquery? scalarSubquery)
+            {
+                if (!_targetStartOffset.HasValue || !_targetLength.HasValue)
+                {
+                    return true;
+                }
+
+                return scalarSubquery != null &&
+                       scalarSubquery.StartOffset == _targetStartOffset.Value &&
+                       scalarSubquery.FragmentLength == _targetLength.Value;
+            }
         }
 
         #region Helper Methods
+
+        public static List<ScalarSubquery> GetRewriteableSubqueries(string sql)
+        {
+            var list = new List<ScalarSubquery>();
+            if (string.IsNullOrWhiteSpace(sql)) return list;
+
+            try
+            {
+                var parser = new TSql160Parser(true);
+                using (var reader = new System.IO.StringReader(sql))
+                {
+                    var fragment = parser.Parse(reader, out _);
+                    if (fragment == null) return list;
+
+                    var collector = new SubqueryCollector();
+                    fragment.Accept(collector);
+                    list.AddRange(collector.Subqueries);
+                }
+            }
+            catch
+            {
+                // Ignore parsing errors for robust UI display
+            }
+            return list;
+        }
+
+        private class SubqueryCollector : TSqlFragmentVisitor
+        {
+            public List<ScalarSubquery> Subqueries { get; } = new List<ScalarSubquery>();
+
+            public override void ExplicitVisit(QuerySpecification node)
+            {
+                if (node.FromClause != null && node.FromClause.TableReferences.Count > 0)
+                {
+                    var mainQueryAliases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var tableRef in node.FromClause.TableReferences)
+                    {
+                        CollectTableAliases(tableRef, mainQueryAliases);
+                    }
+
+                    foreach (var element in node.SelectElements)
+                    {
+                        if (element is SelectScalarExpression selectExpr &&
+                            IsRewriteableScalarSubquery(selectExpr, mainQueryAliases, out var scalarSub, out _, out _, out _, out _, out _, out _))
+                        {
+                            if (scalarSub != null)
+                            {
+                                Subqueries.Add(scalarSub);
+                            }
+                        }
+                    }
+                }
+
+                base.ExplicitVisit(node);
+            }
+        }
 
         private static BooleanExpression UnwrapParenthesis(BooleanExpression expr)
         {

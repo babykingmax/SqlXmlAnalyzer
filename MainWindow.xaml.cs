@@ -113,7 +113,7 @@ namespace SqlXmlAnalyzer
                 mmi.ptMaxSize.Y = Math.Abs(rcWorkArea.Bottom - rcWorkArea.Top);
                 mmi.ptMaxPosition.X = Math.Abs(rcWorkArea.Left - rcMonitorArea.Left);
                 mmi.ptMaxPosition.Y = Math.Abs(rcWorkArea.Top - rcMonitorArea.Top);
-                
+
                 mmi.ptMaxTrackSize.X = mmi.ptMaxSize.X;
                 mmi.ptMaxTrackSize.Y = mmi.ptMaxSize.Y;
             }
@@ -129,7 +129,7 @@ namespace SqlXmlAnalyzer
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
         private List<(string fromId, string toId, string label)> _edgesForDrawing = new List<(string, string, string)>();
-        
+
         private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
         private DeadlockPlaybackViewModel? _playbackViewModel;
         private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
@@ -140,8 +140,38 @@ namespace SqlXmlAnalyzer
         private ScrollViewer? _refactoredScroll;
         private bool _isSynchronizingScroll = false;
 
-        
-        
+        private static readonly TextDecorationCollection SquigglyUnderline = CreateSquigglyUnderline();
+
+        private static TextDecorationCollection CreateSquigglyUnderline()
+        {
+            var brush = new DrawingBrush();
+            brush.Viewport = new Rect(0, 0, 6, 4);
+            brush.ViewportUnits = BrushMappingMode.Absolute;
+            brush.TileMode = TileMode.Tile;
+
+            var geometry = new GeometryGroup();
+            var path = new PathGeometry();
+            var figure = new PathFigure { StartPoint = new Point(0, 2) };
+            figure.Segments.Add(new BezierSegment(new Point(1.5, 0), new Point(1.5, 4), new Point(3, 2), true));
+            figure.Segments.Add(new BezierSegment(new Point(4.5, 0), new Point(4.5, 4), new Point(6, 2), true));
+            path.Figures.Add(figure);
+
+            var drawing = new GeometryDrawing(null, new Pen(Brushes.Red, 1.2), path);
+            brush.Drawing = drawing;
+
+            var dec = new TextDecoration
+            {
+                Location = TextDecorationLocation.Underline,
+                Pen = new Pen(brush, 3)
+            };
+
+            var decs = new TextDecorationCollection();
+            decs.Add(dec);
+            return decs;
+        }
+
+
+
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -156,7 +186,7 @@ namespace SqlXmlAnalyzer
                 this.DragMove();
             }
         }
-        
+
         private void Minimize_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             this.WindowState = System.Windows.WindowState.Minimized;
@@ -248,7 +278,7 @@ namespace SqlXmlAnalyzer
 
                 XelDeadlockSelector.ItemsSource = reports;
                 XelDeadlockSelector.Visibility = Visibility.Visible;
-                XelDeadlockSelector.SelectedIndex = 0; 
+                XelDeadlockSelector.SelectedIndex = 0;
                 MainTabControl.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -424,7 +454,7 @@ namespace SqlXmlAnalyzer
                 else
                 {
                     Logger.Warning($"文件格式无法自动识别: {filePath}. 根节点 LocalName: {doc.Root?.Name.LocalName}, Namespace: {doc.Root?.Name.Namespace.NamespaceName}");
-                    MessageBox.Show("无法自动识别该 XML 文件的类型！\n\n请确认该文件是标准的 SQL Server 死锁 XML（根节点为 <deadlock>）或执行计划 XML（根节点为 <ShowPlanXML>）。", 
+                    MessageBox.Show("无法自动识别该 XML 文件的类型！\n\n请确认该文件是标准的 SQL Server 死锁 XML（根节点为 <deadlock>）或执行计划 XML（根节点为 <ShowPlanXML>）。",
                                     "格式未识别", MessageBoxButton.OK, MessageBoxImage.Warning);
                     StatusTextBlock.Text = "未知文件类型";
                 }
@@ -444,16 +474,16 @@ namespace SqlXmlAnalyzer
                 StatusTextBlock.Text = $"正在分析死锁文件：{System.IO.Path.GetFileName(filePath)}...";
                 ViewModel.CurrentDeadlockDoc = doc;
 
-                var result = await System.Threading.Tasks.Task.Run(() => 
+                var result = await System.Threading.Tasks.Task.Run(() =>
                 {
                     var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(doc);
                     var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                     var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
                     string deadlockMermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
-                    
+
                     var parser = new DeadlockTimelineParser();
                     var timeline = parser.Parse(doc.ToString());
-                    
+
                     return (processes, resources, graph, patterns, deadlockMermaid, timeline);
                 });
 
@@ -465,12 +495,12 @@ namespace SqlXmlAnalyzer
                 _playbackViewModel = new DeadlockPlaybackViewModel(_currentTimeline.Events);
                 _playbackViewModel.StepChanged += (s, e) => UpdatePlaybackGraphVisibility();
                 PlaybackControl.DataContext = _playbackViewModel;
-                
+
                 foreach(var b in _stepBadges.Values) { DeadlockGraphCanvas.Children.Remove(b); }
                 _stepBadges.Clear();
 
                 BuildDeadlockWaitForTree(result.graph);
-                
+
                 UpdatePlaybackGraphVisibility();
 
                 MainTabControl.SelectedIndex = 0;
@@ -491,7 +521,7 @@ namespace SqlXmlAnalyzer
                 StatusTextBlock.Text = $"正在分析执行计划：{System.IO.Path.GetFileName(filePath)}...";
                 ViewModel.CurrentPlanDoc = doc;
 
-                var result = await System.Threading.Tasks.Task.Run(() => 
+                var result = await System.Threading.Tasks.Task.Run(() =>
                 {
                     string planMermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(doc, _showplanNs);
                     string queryText = doc.Descendants(_showplanNs + "StmtSimple")
@@ -599,8 +629,8 @@ namespace SqlXmlAnalyzer
                 try
                 {
                     var paramList = doc.Descendants(_showplanNs + "ParameterList").Descendants(_showplanNs + "ColumnReference");
-                    var sniffedParam = paramList.FirstOrDefault(p => 
-                        !string.IsNullOrEmpty(p.Attribute("ParameterCompiledValue")?.Value) && 
+                    var sniffedParam = paramList.FirstOrDefault(p =>
+                        !string.IsNullOrEmpty(p.Attribute("ParameterCompiledValue")?.Value) &&
                         !string.IsNullOrEmpty(p.Attribute("ParameterRuntimeValue")?.Value) &&
                         p.Attribute("ParameterCompiledValue")?.Value != p.Attribute("ParameterRuntimeValue")?.Value);
 
@@ -656,10 +686,10 @@ namespace SqlXmlAnalyzer
             {
                 if (ev.StepNumber > currentStep) continue;
                 if (focusCritical && !ev.IsInCycle) continue;
-                
+
                 string mappedProcId = $"proc_id_{ev.ProcessId}";
                 string mappedResId = ev.ResourceId.StartsWith("res_") ? ev.ResourceId.Replace("res_", "res_single_") : ev.ResourceId;
-                
+
                 visibleNodes.Add(mappedProcId);
                 visibleNodes.Add(mappedResId);
 
@@ -677,14 +707,14 @@ namespace SqlXmlAnalyzer
             {
                 string id = kvp.Key;
                 var el = kvp.Value;
-                
+
                 string rawId = id;
                 bool isProc = id.StartsWith("proc_id_");
                 if (isProc) rawId = id.Substring(8);
                 else if (id.StartsWith("res_single_")) rawId = id.Replace("res_single_", "res_");
-                
-                bool inCycle = isProc 
-                    ? (_currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsInCycle) 
+
+                bool inCycle = isProc
+                    ? (_currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsInCycle)
                     : (_currentTimeline.Resources.ContainsKey(rawId) && _currentTimeline.Resources[rawId].IsInCycle);
 
                 if (focusCritical && !inCycle)
@@ -701,7 +731,7 @@ namespace SqlXmlAnalyzer
                     el.Visibility = Visibility.Visible;
                     el.Opacity = 0.2;
                 }
-                
+
                 if (isProc && _currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsVictim)
                 {
                     if (el is Border b && b.Child is Grid)
@@ -720,7 +750,7 @@ namespace SqlXmlAnalyzer
             {
                 var idPair = edge.Key;
                 var visuals = edge.Value;
-                var relatedEvent = _currentTimeline.Events.FirstOrDefault(e => 
+                var relatedEvent = _currentTimeline.Events.FirstOrDefault(e =>
                     (e.Type == "Request" && e.ProcessId == idPair.Item1 && e.ResourceId == idPair.Item2) ||
                     (e.Type == "Grant" && e.ResourceId == idPair.Item1 && e.ProcessId == idPair.Item2));
 
@@ -737,12 +767,12 @@ namespace SqlXmlAnalyzer
                 {
                     visuals.line.Visibility = Visibility.Visible;
                     visuals.line.Opacity = 1.0;
-                    visuals.line.StrokeDashArray = null; 
+                    visuals.line.StrokeDashArray = null;
                     visuals.arrowHead.Visibility = Visibility.Visible;
                     visuals.arrowHead.Opacity = 1.0;
                     visuals.label.Visibility = Visibility.Visible;
                     visuals.label.Opacity = 1.0;
-                    
+
                     if (relatedEvent != null)
                     {
                         if (!_stepBadges.TryGetValue(idPair, out var badge))
@@ -794,7 +824,7 @@ namespace SqlXmlAnalyzer
             {
                 _playbackViewModel.IsPlaying = false;
             }
-            
+
             foreach (var el in _nodeElements.Values)
             {
                 el.Visibility = Visibility.Visible;
@@ -852,10 +882,10 @@ namespace SqlXmlAnalyzer
             public int LockCount { get; set; }
             public List<LockResource> RawResources { get; set; } = new();
             public string Dbid => RawResources.FirstOrDefault()?.Dbid ?? "";
-            
+
             public HashSet<string> OwnerSpids { get; set; } = new();
             public HashSet<string> WaiterSpids { get; set; } = new();
-            
+
             public string OwnerModes => string.Join(", ", RawResources.SelectMany(r => r.Owners).Select(o => o.Mode).Distinct());
             public string WaiterModes => string.Join(", ", RawResources.SelectMany(r => r.Waiters).Select(w => w.Mode).Distinct());
         }
@@ -928,14 +958,14 @@ namespace SqlXmlAnalyzer
             double canvasHeight = DeadlockCanvasBorder.ActualHeight > 0 ? DeadlockCanvasBorder.ActualHeight : 600;
             double centerX = canvasWidth / 2;
             double centerY = canvasHeight / 2;
-            
+
             // 动态计算半径，防止节点重叠
             int totalNodes = collapsedProcesses.Count + collapsedResources.Count;
             double minRadius = 250;
-            double dynamicRadius = Math.Max(minRadius, (totalNodes * 120) / (2 * Math.PI)); 
+            double dynamicRadius = Math.Max(minRadius, (totalNodes * 120) / (2 * Math.PI));
             double radiusX = dynamicRadius;
             double radiusY = dynamicRadius * 0.8; // 稍微扁一点的椭圆更契合宽屏
-            
+
             int nodeIndex = 0;
 
             // 3. 绘制并排版独立的进程节点（环形分布）
@@ -959,7 +989,7 @@ namespace SqlXmlAnalyzer
             {
                 var collapsedRes = collapsedResources[j];
                 var res = collapsedRes.RawResources.First();
-                
+
                 // 缓存映射明细以供联动
                 _resourceGroupDetails[collapsedRes.Id] = (collapsedRes.LockType, collapsedRes.ObjectName);
 
@@ -1022,11 +1052,11 @@ namespace SqlXmlAnalyzer
                 BorderBrush = isVictim ? new SolidColorBrush(Color.FromRgb(220, 50, 50)) : new SolidColorBrush(Color.FromRgb(70, 130, 180)),
                 BorderThickness = isVictim ? new Thickness(2.5) : new Thickness(1.5),
                 CornerRadius = new CornerRadius(6),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect 
-                { 
-                    Color = Colors.Gray, 
-                    Direction = 315, 
-                    ShadowDepth = 2, 
+                Effect = new System.Windows.Media.Effects.DropShadowEffect
+                {
+                    Color = Colors.Gray,
+                    Direction = 315,
+                    ShadowDepth = 2,
                     Opacity = 0.3,
                     BlurRadius = 4
                 },
@@ -1113,14 +1143,14 @@ namespace SqlXmlAnalyzer
                 Padding = new Thickness(4, 2, 4, 2),
                 Margin = new Thickness(0, 4, 0, 0),
                 TextTrimming = TextTrimming.CharacterEllipsis,
-                ToolTip = new ToolTip 
-                { 
-                    Content = new TextBlock 
-                    { 
-                        Text = string.IsNullOrEmpty(proc.Inputbuf) ? sql : proc.Inputbuf, 
-                        MaxWidth = 400, 
-                        TextWrapping = TextWrapping.Wrap 
-                    } 
+                ToolTip = new ToolTip
+                {
+                    Content = new TextBlock
+                    {
+                        Text = string.IsNullOrEmpty(proc.Inputbuf) ? sql : proc.Inputbuf,
+                        MaxWidth = 400,
+                        TextWrapping = TextWrapping.Wrap
+                    }
                 }
             };
             contentStack.Children.Add(sqlText);
@@ -1178,9 +1208,9 @@ namespace SqlXmlAnalyzer
             };
             container.Children.Add(poly);
 
-            var textStack = new StackPanel 
-            { 
-                VerticalAlignment = VerticalAlignment.Center, 
+            var textStack = new StackPanel
+            {
+                VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(14, 0, 14, 0),
                 IsHitTestVisible = false
@@ -1502,7 +1532,7 @@ namespace SqlXmlAnalyzer
             var (x1, y1, x2, y2) = CalculateConnectionPoints(fromId, toId);
 
             var brush = isWaitEdge ? new SolidColorBrush(Color.FromRgb(211, 47, 47)) : new SolidColorBrush(Color.FromRgb(56, 142, 60));
-            
+
             var line = new System.Windows.Shapes.Line
             {
                 X1 = x1, Y1 = y1, X2 = x2, Y2 = y2,
@@ -1673,7 +1703,7 @@ namespace SqlXmlAnalyzer
             }
 
             var stackPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 2) };
-            
+
             var textBlockOp = new TextBlock { Text = phys, FontWeight = FontWeights.SemiBold };
             var textBlockCost = new TextBlock { Text = $" (Cost: {cost:F4})", Foreground = Brushes.Gray };
 
@@ -1698,7 +1728,7 @@ namespace SqlXmlAnalyzer
                 textBlockOp.Foreground = Brushes.DarkOrange;
                 textBlockOp.Text = $"{phys} [变自 {otherPhys}]";
             }
-            
+
             if (otherRelOp != null && phys == otherPhys)
             {
                 // 类型没变，检查成本差异
@@ -1727,21 +1757,21 @@ namespace SqlXmlAnalyzer
             if (otherRelOp != null)
             {
                 double eDiff = currentMetrics.elapsed - otherMetrics.elapsed;
-                if (Math.Abs(eDiff) > 5) 
+                if (Math.Abs(eDiff) > 5)
                 {
                     string sign = eDiff > 0 ? "↑" : "↓";
                     diffs.Add($"耗时: {currentMetrics.elapsed}ms ({sign}{Math.Abs(eDiff)}ms)");
                 }
 
                 double rDiff = currentMetrics.reads - otherMetrics.reads;
-                if (Math.Abs(rDiff) > 10) 
+                if (Math.Abs(rDiff) > 10)
                 {
                     string sign = rDiff > 0 ? "↑" : "↓";
                     diffs.Add($"逻辑读: {currentMetrics.reads} ({sign}{Math.Abs(rDiff)})");
                 }
 
                 double rrDiff = currentMetrics.rowsRead - otherMetrics.rowsRead;
-                if (Math.Abs(rrDiff) > 10) 
+                if (Math.Abs(rrDiff) > 10)
                 {
                     string sign = rrDiff > 0 ? "↑" : "↓";
                     diffs.Add($"读取行: {currentMetrics.rowsRead} ({sign}{Math.Abs(rrDiff)})");
@@ -1756,9 +1786,9 @@ namespace SqlXmlAnalyzer
 
             if (diffs.Count > 0)
             {
-                var textBlockRuntime = new TextBlock 
-                { 
-                    Text = " | " + string.Join(", ", diffs), 
+                var textBlockRuntime = new TextBlock
+                {
+                    Text = " | " + string.Join(", ", diffs),
                     Foreground = isPlanB ? Brushes.Purple : Brushes.Teal,
                     FontWeight = FontWeights.Medium,
                     Margin = new Thickness(4, 0, 0, 0)
@@ -1850,7 +1880,7 @@ namespace SqlXmlAnalyzer
                     string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
 
                     string summaryText = $"死锁文件: {Path.GetFileName(ViewModel.CurrentDeadlockFilePath)}\n受害者进程: {victimId}\n参与 SPID: {string.Join(", ", processes.Select(p => p.Spid).Distinct())}";
-                    
+
                     var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, ViewModel.CurrentDeadlockDoc);
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine("<h3>🔍 死锁模式自动诊断：</h3>");
@@ -1881,7 +1911,7 @@ namespace SqlXmlAnalyzer
                     {
                         HtmlReportGenerator.SaveReport(ViewModel.CurrentDeadlockFilePath, "Deadlock", summaryText, mermaid, sb.ToString(), dlg.FileName);
                         Logger.Info($"死锁 HTML 报告成功保存至: {dlg.FileName}");
-                        
+
                         if (MessageBox.Show("报告保存成功！是否立即在浏览器中打开？", "保存成功", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
                             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
@@ -1898,7 +1928,7 @@ namespace SqlXmlAnalyzer
 
                     string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
                     string warningsText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(ViewModel.CurrentPlanDoc, _showplanNs);
-                    
+
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         ViewModel.MissingIndexes.Clear();
@@ -1908,7 +1938,7 @@ namespace SqlXmlAnalyzer
                             ViewModel.MissingIndexes.Add(m);
                         }
                     });
-                    
+
                     string formattedDiagnosis = warningsText
                         .Replace("\n\n", "<br/><br/>")
                         .Replace("【", "<h4 style='color:#0066cc;margin-bottom:5px;'>【")
@@ -1936,7 +1966,7 @@ namespace SqlXmlAnalyzer
                     {
                         HtmlReportGenerator.SaveReport(ViewModel.CurrentPlanFilePath, "ExecutionPlan", summaryText, mermaid, formattedDiagnosis, dlg.FileName);
                         Logger.Info($"执行计划 HTML 报告成功保存至: {dlg.FileName}");
-                        
+
                         if (MessageBox.Show("报告保存成功！是否立即在浏览器中打开？", "保存成功", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
                             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
@@ -2021,7 +2051,7 @@ namespace SqlXmlAnalyzer
                         return;
                     }
                     title = "SQL Server 死锁深度诊断报告";
-                    
+
                     System.Text.StringBuilder sb = new System.Text.StringBuilder();
                     sb.AppendLine("=== 死锁类型与启发式诊断 ===");
                     var patterns = DeadlockPatternsListBox.ItemsSource as System.Collections.IEnumerable;
@@ -2065,7 +2095,7 @@ namespace SqlXmlAnalyzer
 
                     content = sb.ToString();
                     defaultFileName = $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.{extension}";
-                    
+
                     // Capture Deadlock Canvas Border
                     tempImagePath = CaptureElementToImage(DeadlockCanvasBorder);
                 }
@@ -2141,7 +2171,7 @@ namespace SqlXmlAnalyzer
                     }
                     textToCopy = "=== SQL Server 执行计划诊断报告 ===\r\n\r\n" + ViewModel.PlanWarningsText;
                 }
-                
+
                 if (!string.IsNullOrEmpty(textToCopy))
                 {
                     Clipboard.SetText(textToCopy);
@@ -2185,7 +2215,7 @@ namespace SqlXmlAnalyzer
         {
             // 清空 ViewModel
             ViewModel.ClearResults();
-            
+
             // 清空主要控件
             DeadlockGraphCanvas.Children.Clear();
             DeadlockProcessesList.ItemsSource = null;
@@ -2226,7 +2256,7 @@ namespace SqlXmlAnalyzer
                                          "3. 索引调优沙盒与 Tipping Point 临界线分析\n" +
                                          "4. 参数嗅探并排对比与直方图绘制\n\n" +
                                          "是否关联 .sqlplan 与 .xdl 文件到系统右键菜单？\n" +
-                                         "（点击“是”将为当前用户注册文件关联，“否”则仅关闭此窗口）", 
+                                         "（点击“是”将为当前用户注册文件关联，“否”则仅关闭此窗口）",
                                          "关于 & 关联设置", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
@@ -2480,7 +2510,7 @@ namespace SqlXmlAnalyzer
         {
             if (DeadlockPatternsListBox.SelectedItem is DeadlockPattern pattern)
             {
-                ViewModel.DeadlockPatternText = 
+                ViewModel.DeadlockPatternText =
                     $"类型: {pattern.TypeName}\n\n" +
                     $"描述: {pattern.Description}\n\n" +
                     $"可能原因: {pattern.LikelyCause}\n\n" +
@@ -2555,7 +2585,7 @@ namespace SqlXmlAnalyzer
                 var (processes, resources, victimId) = DeadlockXmlParser.ParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
                 var graph = DeadlockGraphBuilder.Build(processes, resources, victimId);
                 string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
-                
+
                 Clipboard.SetText(mermaid);
                 MessageBox.Show("死锁 Mermaid 代码已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 Logger.Info("已成功将死锁 Mermaid 代码复制到剪贴板。");
@@ -2839,7 +2869,7 @@ namespace SqlXmlAnalyzer
             "CROSS", "APPLY", "TOP", "DISTINCT"
         };
 
-        private static readonly System.Text.RegularExpressions.Regex SqlTokenizerRegex = 
+        private static readonly System.Text.RegularExpressions.Regex SqlTokenizerRegex =
             new System.Text.RegularExpressions.Regex(
                 @"(--.*)|('[^']*(?:''[^']*)*')|([a-zA-Z_#@][a-zA-Z0-9_]*)|(\s+)|(.)",
                 System.Text.RegularExpressions.RegexOptions.Compiled,
@@ -3049,36 +3079,62 @@ namespace SqlXmlAnalyzer
             rtb.BeginChange();
             try
             {
+                List<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? subqueries = null;
+                List<int>? lineStartOffsets = null;
+                HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? handledSubqueries = null;
+
+                if (!isRefactoredSide && !string.IsNullOrEmpty(_currentOriginalSql))
+                {
+                    subqueries = SqlXmlAnalyzer.Refactoring.Rules.ScalarSubqueryToJoinRule.GetRewriteableSubqueries(_currentOriginalSql);
+                    lineStartOffsets = GetLineStartOffsets(_currentOriginalSql);
+                    handledSubqueries = new HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>();
+                }
+
+                int realLineIdx = 0;
                 for (int i = 0; i < lines.Count; i++)
                 {
                     string? line = lines[i];
                     string? opposingLine = opposingLines[i];
-                    
+
                     Paragraph p = new Paragraph();
                     p.Margin = new Thickness(0, 1, 0, 1);
-                    
+
                     Brush defaultForeground = Brushes.Black;
-                    
+
                     if (line == null)
                     {
                         p.Background = PlaceholderBrush;
                         p.Inlines.Add(new Run(" ") { Foreground = Brushes.Transparent });
                     }
-                    else if (opposingLine == null)
-                    {
-                        p.Background = isRefactoredSide ? AdditionBrush : DeletionBrush;
-                        FormatSqlLine(p, line, defaultForeground);
-                    }
-                    else if (NormalizeForDiff(line) != NormalizeForDiff(opposingLine))
-                    {
-                        p.Background = ModificationBrush;
-                        FormatSqlLine(p, line, defaultForeground);
-                    }
                     else
                     {
-                        FormatSqlLine(p, line, defaultForeground);
+                        int lineStartOffset = 0;
+                        if (!isRefactoredSide && lineStartOffsets != null && realLineIdx < lineStartOffsets.Count)
+                        {
+                            lineStartOffset = lineStartOffsets[realLineIdx];
+                        }
+
+                        if (opposingLine == null)
+                        {
+                            p.Background = isRefactoredSide ? AdditionBrush : DeletionBrush;
+                            FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
+                        }
+                        else if (NormalizeForDiff(line) != NormalizeForDiff(opposingLine))
+                        {
+                            p.Background = ModificationBrush;
+                            FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
+                        }
+                        else
+                        {
+                            FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
+                        }
+
+                        if (!isRefactoredSide)
+                        {
+                            realLineIdx++;
+                        }
                     }
-                    
+
                     rtb.Document.Blocks.Add(p);
                 }
             }
@@ -3088,7 +3144,7 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        private void FormatSqlLine(Paragraph p, string text, Brush defaultForeground)
+        private void FormatSqlLine(Paragraph p, string text, Brush defaultForeground, List<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? subqueries = null, int lineStartOffset = 0, HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? handledSubqueries = null)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -3101,36 +3157,142 @@ namespace SqlXmlAnalyzer
                 var matches = SqlTokenizerRegex.Matches(text);
                 foreach (System.Text.RegularExpressions.Match match in matches)
                 {
+                    int tokenAbsoluteStart = lineStartOffset + match.Index;
+                    int tokenAbsoluteEnd = tokenAbsoluteStart + match.Length;
+
+                    Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery? overlappingSubquery = null;
+                    if (subqueries != null)
+                    {
+                        foreach (var sub in subqueries)
+                        {
+                            int subStart = sub.StartOffset;
+                            int subEnd = subStart + sub.FragmentLength;
+                            if (tokenAbsoluteStart < subEnd && tokenAbsoluteEnd > subStart)
+                            {
+                                overlappingSubquery = sub;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (overlappingSubquery != null && handledSubqueries != null && !handledSubqueries.Contains(overlappingSubquery))
+                    {
+                        handledSubqueries.Add(overlappingSubquery);
+                        var lightbulbBtn = CreateLightbulbButton(overlappingSubquery);
+                        p.Inlines.Add(new InlineUIContainer(lightbulbBtn) { BaselineAlignment = BaselineAlignment.Center });
+                    }
+
+                    Run run;
                     if (match.Groups[1].Success) // Comment
                     {
-                        p.Inlines.Add(new Run(match.Value) { Foreground = Brushes.Green });
+                        run = new Run(match.Value) { Foreground = Brushes.Green };
                     }
                     else if (match.Groups[2].Success) // String literal
                     {
-                        p.Inlines.Add(new Run(match.Value) { Foreground = Brushes.Brown });
+                        run = new Run(match.Value) { Foreground = Brushes.Brown };
                     }
                     else if (match.Groups[3].Success) // Word / Identifier
                     {
                         string val = match.Value;
                         if (SqlKeywords.Contains(val))
                         {
-                            p.Inlines.Add(new Run(val) { Foreground = Brushes.Blue, FontWeight = FontWeights.Bold });
+                            run = new Run(val) { Foreground = Brushes.Blue, FontWeight = FontWeights.Bold };
                         }
                         else
                         {
-                            p.Inlines.Add(new Run(val) { Foreground = defaultForeground });
+                            run = new Run(val) { Foreground = defaultForeground };
                         }
                     }
                     else // Whitespace, operators, or anything else
                     {
-                        p.Inlines.Add(new Run(match.Value) { Foreground = defaultForeground });
+                        run = new Run(match.Value) { Foreground = defaultForeground };
                     }
+
+                    if (overlappingSubquery != null)
+                    {
+                        run.TextDecorations = SquigglyUnderline;
+                        run.ToolTip = "标量子查询可优化为 JOIN，点击灯泡一键修复并对比效果";
+                    }
+
+                    p.Inlines.Add(run);
                 }
             }
             catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
             {
                 // Fallback to plain text on timeout to prevent freezing
                 p.Inlines.Add(new Run(text) { Foreground = defaultForeground });
+            }
+        }
+
+        private List<int> GetLineStartOffsets(string sql)
+        {
+            var list = new List<int>();
+            if (string.IsNullOrEmpty(sql)) return list;
+
+            list.Add(0);
+            for (int i = 0; i < sql.Length; i++)
+            {
+                if (sql[i] == '\r')
+                {
+                    if (i + 1 < sql.Length && sql[i + 1] == '\n')
+                    {
+                        i++;
+                    }
+                    list.Add(i + 1);
+                }
+                else if (sql[i] == '\n')
+                {
+                    list.Add(i + 1);
+                }
+            }
+            return list;
+        }
+
+        private UIElement CreateLightbulbButton(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
+        {
+            var textBlock = new TextBlock
+            {
+                Text = "💡",
+                ToolTip = "标量子查询可优化为 JOIN，点击一键修复并对比效果",
+                Cursor = Cursors.Hand,
+                Margin = new Thickness(2, 0, 2, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            textBlock.MouseDown += (s, e) =>
+            {
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    e.Handled = true;
+                    QuickFix_Click(subquery);
+                }
+            };
+            return textBlock;
+        }
+
+        private void QuickFix_Click(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
+        {
+            if (!SqlXmlAnalyzer.Refactoring.Rules.ScalarSubqueryToJoinRule.TryRewriteSelectedSubquery(
+                    _currentOriginalSql,
+                    subquery.StartOffset,
+                    subquery.FragmentLength,
+                    out var selectedRewriteSql))
+            {
+                MessageBox.Show("无法安全地重写所选标量子查询。SQL 未被修改。", "快速修复不可用", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dialog = new QuickFixWindow(_currentOriginalSql, selectedRewriteSql, subquery)
+            {
+                Owner = this
+            };
+            dialog.ShowDialog();
+            if (dialog.Applied)
+            {
+                _currentOriginalSql = selectedRewriteSql;
+                _currentRefactoredSql = selectedRewriteSql;
+                UpdateSqlDiffViews();
+                PlanStatementTextBox.Text = _currentOriginalSql.Length > 800 ? _currentOriginalSql.Substring(0, 800) + "..." : _currentOriginalSql;
+                MessageBox.Show("已仅应用所选标量子查询的 JOIN 重写。", "修复成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

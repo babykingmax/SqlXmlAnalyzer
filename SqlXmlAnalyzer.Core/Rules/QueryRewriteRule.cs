@@ -36,12 +36,10 @@ namespace SqlXmlAnalyzer.Core.Rules
                     messages.Add("💡 [表变量性能黑洞修复]\n-- ❌ 原写法 (缺乏统计信息):\nDECLARE @Tmp TABLE (Id INT);\nINSERT INTO @Tmp...\n\n-- ✅ 优化 (临时表有独立直方图支持分布):\nCREATE TABLE #Tmp (Id INT);\nINSERT INTO #Tmp...\n-- (记得 DROP TABLE #Tmp)");
                 }
 
-                // Check for parameter sniffing or statistics usage
+                // Parameter sensitivity requires direct evidence that the compiled and
+                // runtime parameter values differ. Statistics usage alone is normal
+                // optimizer behavior and must not trigger parameter-sniffing advice.
                 bool hasSniff = doc.Descendants(ns + "ColumnReference").Any(p => p.Attribute("ParameterCompiledValue")?.Value != null && p.Attribute("ParameterRuntimeValue")?.Value != null && p.Attribute("ParameterCompiledValue")?.Value != p.Attribute("ParameterRuntimeValue")?.Value);
-                if (!hasSniff)
-                {
-                    hasSniff = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.Parse(doc, ns).Any();
-                }
                 if (hasSniff)
                 {
                     messages.Add("💡 [参数嗅探 4 种解法]\n👉 解法 A (表小/查询快): 在末尾加 `OPTION (RECOMPILE)`\n👉 解法 B (查询极复杂): 在末尾加 `OPTION (OPTIMIZE FOR UNKNOWN)`\n👉 解法 C (查询极偏斜): 在末尾加 `OPTION (OPTIMIZE FOR (@p = '典型值'))`\n👉 解法 D (存储过程局部变量骗过优化器): \n   DECLARE @L_Var INT = @Param;\n   SELECT ... WHERE Col = @L_Var;");

@@ -21,11 +21,15 @@ namespace SqlXmlAnalyzer.Core.Rules
                 if (doc == null) return null;
 
                 var statsList = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.Parse(doc, ns);
-                if (statsList.Count > 0)
+                var riskyStats = statsList
+                    .Where(stat => stat.Severity != "Info")
+                    .ToList();
+
+                if (riskyStats.Count > 0)
                 {
                     var sbStats = new StringBuilder();
                     sbStats.AppendLine("📊 优化器统计信息使用状态 (OptimizerStatsUsage):");
-                    foreach (var stat in statsList)
+                    foreach (var stat in riskyStats)
                     {
                         string warningDetails = "";
                         if (stat.IsStale)
@@ -56,7 +60,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                     return new AnalysisResult
                     {
                         RuleId = this.RuleId,
-                        Severity = "Warning",
+                        Severity = riskyStats.Any(stat => stat.Severity == "Critical") ? "Critical" : "Warning",
                         Title = "统计信息使用状态",
                         Message = messageStr,
                         NodeId = "0"

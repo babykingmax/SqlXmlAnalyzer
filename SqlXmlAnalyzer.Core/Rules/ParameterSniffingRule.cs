@@ -17,8 +17,10 @@ namespace SqlXmlAnalyzer.Core.Rules
             {
                 var nodeId = relOp.Attribute("NodeId")?.Value ?? "0";
                 
-                // Only execute this rule on the Root node (NodeId = 0) to avoid duplicate warnings
-                if (nodeId != "0" && nodeId != "1") return null;
+                // This is a plan-level rule. PlanDiagnosticAnalyzer injects a temporary
+                // NodeId=0 when a plan does not contain one, so executing on NodeId=1
+                // as well only creates duplicate document-level findings.
+                if (nodeId != "0") return null;
 
                 var queryPlan = relOp.Document?.Descendants(ns + "QueryPlan").FirstOrDefault();
                 if (queryPlan != null)
