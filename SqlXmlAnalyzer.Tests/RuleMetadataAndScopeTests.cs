@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core.Configuration;
@@ -30,6 +31,23 @@ namespace SqlXmlAnalyzer.Tests
                     .Contains(rule.Metadata.DefaultSeverity));
             rules.Select(rule => rule.Metadata.Scope)
                 .Should().Contain(new[] { RuleScope.Plan, RuleScope.Statement, RuleScope.Operator });
+        }
+
+        [Fact]
+        public void DefaultRules_HaveUniqueRuleNumberPrefixes()
+        {
+            var engine = new RuleEngine();
+            engine.RegisterDefaultRules();
+
+            var duplicatePrefixes = engine.RegisteredRules
+                .Select(rule => Regex.Match(rule.Metadata.RuleId, @"^RULE_(\d+)_"))
+                .Where(match => match.Success)
+                .GroupBy(match => match.Groups[1].Value)
+                .Where(group => group.Count() > 1)
+                .Select(group => $"RULE_{group.Key}")
+                .ToList();
+
+            duplicatePrefixes.Should().BeEmpty();
         }
 
         [Fact]

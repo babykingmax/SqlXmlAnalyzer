@@ -42,7 +42,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.IsSuccess.Should().BeFalse();
             result.IsExplicitPath.Should().BeTrue();
-            result.Errors.Should().ContainSingle(message => message.Contains("不存在"));
+            result.Errors.Should().ContainSingle(message => message.Contains("does not exist"));
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace SqlXmlAnalyzer.Tests
             RuleConfigurationLoadResult result = RuleConfigurationLoader.Load(path);
 
             result.IsSuccess.Should().BeFalse();
-            result.Errors.Should().ContainSingle(message => message.Contains("JSON"));
+            result.Errors.Should().ContainSingle(message => message.Contains("invalid JSON"));
         }
 
         [Fact]
@@ -64,8 +64,8 @@ namespace SqlXmlAnalyzer.Tests
             File.WriteAllText(path, """
                 {
                   "Rules": [
-                    { "RuleId": "RULE_TEST", "Enabled": true },
-                    { "RuleId": "rule_test", "Enabled": true, "SeverityOverride": "Severe" },
+                    { "RuleId": "RULE_001_IMPLICIT_CONV", "Enabled": true },
+                    { "RuleId": "rule_001_implicit_conv", "Enabled": true, "SeverityOverride": "Severe" },
                     { "RuleId": "", "Enabled": true }
                   ]
                 }
@@ -74,9 +74,51 @@ namespace SqlXmlAnalyzer.Tests
             RuleConfigurationLoadResult result = RuleConfigurationLoader.Load(path);
 
             result.IsSuccess.Should().BeFalse();
-            result.Errors.Should().Contain(message => message.Contains("重复 RuleId"));
+            result.Errors.Should().Contain(message => message.Contains("Duplicate RuleId"));
             result.Errors.Should().Contain(message => message.Contains("SeverityOverride"));
-            result.Errors.Should().Contain(message => message.Contains("RuleId 不能为空"));
+            result.Errors.Should().Contain(message => message.Contains("RuleId cannot be empty"));
+        }
+
+        [Fact]
+        public void Load_UnknownRuleId_ReturnsValidationError()
+        {
+            string path = Path.Combine(_tempDirectory, "unknown-rule.json");
+            File.WriteAllText(path, """
+                {
+                  "Rules": [
+                    { "RuleId": "RULE_DOES_NOT_EXIST", "Enabled": true }
+                  ]
+                }
+                """);
+
+            RuleConfigurationLoadResult result = RuleConfigurationLoader.Load(path);
+
+            result.IsSuccess.Should().BeFalse();
+            result.Errors.Should().ContainSingle(message =>
+                message.Contains("Unknown RuleId") &&
+                message.Contains("RULE_DOES_NOT_EXIST"));
+        }
+
+        [Fact]
+        public void Load_DeprecatedRuleIdAlias_NormalizesAndWarns()
+        {
+            string path = Path.Combine(_tempDirectory, "legacy-rule.json");
+            File.WriteAllText(path, """
+                {
+                  "Rules": [
+                    { "RuleId": "RULE_016_WAIT_STATS", "Enabled": false }
+                  ]
+                }
+                """);
+
+            RuleConfigurationLoadResult result = RuleConfigurationLoader.Load(path);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Configuration.Rules.Should().ContainSingle();
+            result.Configuration.Rules[0].RuleId.Should().Be("RULE_036_WAIT_STATS");
+            result.Warnings.Should().ContainSingle(message =>
+                message.Contains("deprecated") &&
+                message.Contains("RULE_036_WAIT_STATS"));
         }
 
         [Fact]
@@ -86,7 +128,7 @@ namespace SqlXmlAnalyzer.Tests
             File.WriteAllText(path, """
                 {
                   "Rules": [
-                    { "RuleId": " RULE_TEST ", "Enabled": false, "SeverityOverride": " warning " }
+                    { "RuleId": " RULE_001_IMPLICIT_CONV ", "Enabled": false, "SeverityOverride": " warning " }
                   ]
                 }
                 """);
@@ -96,7 +138,7 @@ namespace SqlXmlAnalyzer.Tests
             result.IsSuccess.Should().BeTrue();
             result.ResolvedPath.Should().Be(Path.GetFullPath(path));
             result.Configuration.Rules.Should().ContainSingle();
-            result.Configuration.Rules[0].RuleId.Should().Be("RULE_TEST");
+            result.Configuration.Rules[0].RuleId.Should().Be("RULE_001_IMPLICIT_CONV");
             result.Configuration.Rules[0].SeverityOverride.Should().Be("Warning");
         }
     }

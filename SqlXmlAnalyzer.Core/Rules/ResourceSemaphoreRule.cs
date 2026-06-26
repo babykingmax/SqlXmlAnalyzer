@@ -7,7 +7,7 @@ namespace SqlXmlAnalyzer.Core.Rules
 {
     public class ResourceSemaphoreRule : IPlanAnalyzerRule
     {
-        public string RuleId => "RULE_017_RESOURCE_SEMAPHORE";
+        public string RuleId => "RULE_037_RESOURCE_SEMAPHORE";
         public string Name => "Resource Semaphore Wait Detection";
         public string Description => "Detects memory grant resource semaphore waits.";
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using SqlXmlAnalyzer;
@@ -24,6 +25,17 @@ namespace SqlXmlAnalyzer.CLI
 {
     public class Program
     {
+        private static readonly string[] DefaultScanExclusionPatterns =
+        {
+            ".git",
+            "bin",
+            "obj",
+            ".vs",
+            "publish-*",
+            "backups",
+            ".tmp.*"
+        };
+
         public static int Main(string[] args)
         {
             try
@@ -53,6 +65,7 @@ namespace SqlXmlAnalyzer.CLI
             string format = "console";
             string? outputPath = null;
             bool showHelp = false;
+            var additionalExcludePatterns = new List<string>();
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -84,6 +97,13 @@ namespace SqlXmlAnalyzer.CLI
                     case "--output":
                     case "-o":
                         if (i + 1 < args.Length) outputPath = args[++i];
+                        break;
+                    case "--exclude":
+                    case "-x":
+                        if (i + 1 < args.Length)
+                        {
+                            additionalExcludePatterns.AddRange(SplitExcludePatterns(args[++i]));
+                        }
                         break;
                     case "--help":
                     case "-h":
@@ -121,7 +141,7 @@ namespace SqlXmlAnalyzer.CLI
             }
             else if (Directory.Exists(path))
             {
-                filesToScan.AddRange(Directory.GetFiles(path, "*.sqlplan", SearchOption.AllDirectories));
+                filesToScan.AddRange(CollectPlanFiles(path, additionalExcludePatterns));
             }
             else
             {
@@ -186,6 +206,87 @@ namespace SqlXmlAnalyzer.CLI
             }
 
             return hasAnyFailure ? 1 : 0;
+        }
+
+        public static IReadOnlyList<string> CollectPlanFiles(
+            string rootPath,
+            IEnumerable<string>? additionalExcludePatterns = null)
+        {
+            if (!Directory.Exists(rootPath))
+            {
+                return Array.Empty<string>();
+            }
+
+            var excludePatterns = DefaultScanExclusionPatterns
+                .Concat(additionalExcludePatterns ?? Array.Empty<string>())
+                .Select(pattern => pattern.Trim())
+                .Where(pattern => pattern.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            var files = new List<string>();
+            var pendingDirectories = new Stack<string>();
+            pendingDirectories.Push(Path.GetFullPath(rootPath));
+
+            while (pendingDirectories.Count > 0)
+            {
+                string currentDirectory = pendingDirectories.Pop();
+
+                try
+                {
+                    files.AddRange(Directory.EnumerateFiles(
+                        currentDirectory,
+                        "*.sqlplan",
+                        SearchOption.TopDirectoryOnly));
+
+                    foreach (string childDirectory in Directory.EnumerateDirectories(currentDirectory))
+                    {
+                        string directoryName = Path.GetFileName(childDirectory);
+                        if (ShouldExcludeDirectory(directoryName, excludePatterns))
+                        {
+                            continue;
+                        }
+
+                        pendingDirectories.Push(childDirectory);
+                    }
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Console.Error.WriteLine($"[Warning] Skipping inaccessible directory '{currentDirectory}': {ex.Message}");
+                }
+                catch (IOException ex)
+                {
+                    Console.Error.WriteLine($"[Warning] Skipping unreadable directory '{currentDirectory}': {ex.Message}");
+                }
+            }
+
+            files.Sort(StringComparer.OrdinalIgnoreCase);
+            return files;
+        }
+
+        private static IEnumerable<string> SplitExcludePatterns(string value)
+        {
+            return value.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static bool ShouldExcludeDirectory(
+            string directoryName,
+            IReadOnlyList<string> excludePatterns)
+        {
+            return excludePatterns.Any(pattern => IsWildcardMatch(directoryName, pattern));
+        }
+
+        private static bool IsWildcardMatch(string value, string pattern)
+        {
+            string regexPattern = "^" +
+                Regex.Escape(pattern)
+                    .Replace("\\*", ".*")
+                    .Replace("\\?", ".") +
+                "$";
+            return Regex.IsMatch(
+                value,
+                regexPattern,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
         private static PlanScanResult ScanPlanFile(string filePath, string? configPath, double? maxCostThreshold, bool blockScans)

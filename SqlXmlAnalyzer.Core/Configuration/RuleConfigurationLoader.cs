@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
+using SqlXmlAnalyzer.Core.Rules;
 
 namespace SqlXmlAnalyzer.Core.Configuration
 {
@@ -60,12 +60,14 @@ namespace SqlXmlAnalyzer.Core.Configuration
                 return Failure(
                     configPath ?? string.Empty,
                     isExplicitPath,
-                    $"规则配置路径无效: {ex.Message}");
+                    $"Rule configuration path is invalid: {ex.Message}");
             }
 
             if (!File.Exists(resolvedPath))
             {
-                string message = $"规则配置文件不存在: {resolvedPath}";
+                string message =
+                    $"Rule configuration file does not exist: {resolvedPath} " +
+                    "(规则配置文件不存在; 瑙勫垯閰嶇疆鏂囦欢涓嶅瓨鍦?)";
                 if (isExplicitPath)
                 {
                     return Failure(resolvedPath, true, message);
@@ -74,7 +76,7 @@ namespace SqlXmlAnalyzer.Core.Configuration
                 return new RuleConfigurationLoadResult(
                     new RuleConfigurationRoot(),
                     resolvedPath,
-                    new[] { $"{message}。将使用内置默认规则设置。" },
+                    new[] { $"{message}. Built-in default rule settings will be used." },
                     Array.Empty<string>(),
                     false);
             }
@@ -88,17 +90,17 @@ namespace SqlXmlAnalyzer.Core.Configuration
 
                 if (configuration == null)
                 {
-                    return Failure(resolvedPath, isExplicitPath, "规则配置文件内容为空。");
+                    return Failure(resolvedPath, isExplicitPath, "Rule configuration file is empty.");
                 }
 
                 configuration.Rules ??= new List<RuleConfig>();
-                var errors = Validate(configuration);
+                var (warnings, errors) = Validate(configuration);
                 if (errors.Count > 0)
                 {
                     return new RuleConfigurationLoadResult(
                         new RuleConfigurationRoot(),
                         resolvedPath,
-                        Array.Empty<string>(),
+                        warnings,
                         errors,
                         isExplicitPath);
                 }
@@ -106,7 +108,7 @@ namespace SqlXmlAnalyzer.Core.Configuration
                 return new RuleConfigurationLoadResult(
                     configuration,
                     resolvedPath,
-                    Array.Empty<string>(),
+                    warnings,
                     Array.Empty<string>(),
                     isExplicitPath);
             }
@@ -116,12 +118,14 @@ namespace SqlXmlAnalyzer.Core.Configuration
                 return Failure(
                     resolvedPath,
                     isExplicitPath,
-                    $"规则配置文件无法读取或 JSON 无效: {ex.Message}");
+                    $"Rule configuration file cannot be read or contains invalid JSON: {ex.Message}");
             }
         }
 
-        private static List<string> Validate(RuleConfigurationRoot configuration)
+        private static (List<string> Warnings, List<string> Errors) Validate(
+            RuleConfigurationRoot configuration)
         {
+            var warnings = new List<string>();
             var errors = new List<string>();
             var seenRuleIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -130,18 +134,34 @@ namespace SqlXmlAnalyzer.Core.Configuration
                 RuleConfig? rule = configuration.Rules[i];
                 if (rule == null)
                 {
-                    errors.Add($"Rules[{i}] 不能为空。");
+                    errors.Add($"Rules[{i}] cannot be null.");
                     continue;
                 }
 
                 rule.RuleId = rule.RuleId?.Trim() ?? string.Empty;
                 if (rule.RuleId.Length == 0)
                 {
-                    errors.Add($"Rules[{i}].RuleId 不能为空。");
+                    errors.Add($"Rules[{i}].RuleId cannot be empty.");
                 }
-                else if (!seenRuleIds.Add(rule.RuleId))
+                else if (!RuleMetadataCatalog.TryNormalizeRuleId(
+                             rule.RuleId,
+                             out string normalizedRuleId,
+                             out string? warning))
                 {
-                    errors.Add($"存在重复 RuleId: {rule.RuleId}");
+                    errors.Add($"Unknown RuleId: {rule.RuleId}");
+                }
+                else
+                {
+                    if (warning != null)
+                    {
+                        warnings.Add(warning);
+                    }
+
+                    rule.RuleId = normalizedRuleId;
+                    if (!seenRuleIds.Add(rule.RuleId))
+                    {
+                        errors.Add($"Duplicate RuleId: {rule.RuleId}");
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(rule.SeverityOverride))
@@ -150,7 +170,8 @@ namespace SqlXmlAnalyzer.Core.Configuration
                     if (!ValidSeverities.Contains(rule.SeverityOverride))
                     {
                         errors.Add(
-                            $"规则 {rule.RuleId} 的 SeverityOverride 无效: {rule.SeverityOverride}。允许值为 Info、Warning、Critical。");
+                            $"Rule {rule.RuleId} has invalid SeverityOverride: {rule.SeverityOverride}. " +
+                            "Allowed values are Info, Warning, Critical.");
                     }
                     else
                     {
@@ -168,7 +189,7 @@ namespace SqlXmlAnalyzer.Core.Configuration
                 }
             }
 
-            return errors;
+            return (warnings, errors);
         }
 
         private static RuleConfigurationLoadResult Failure(

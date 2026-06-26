@@ -1,0 +1,189 @@
+SqlXmlAnalyzer 分阶段修复、增强和 UI 完善实施计划
+生成日期: 2026-06-26
+
+目标
+====
+将 SqlXmlAnalyzer 从当前的 SQL Server 死锁与执行计划分析原型，逐步建设为接近 SQL Sentry Plan Explorer 水平的专业 DBA 调优工作台。
+
+总体路线不是简单增加规则数量，而是重建 DBA 调优工作流:
+1. 打开文件或采集计划。
+2. 快速定位最高风险语句、节点、等待、死锁资源。
+3. 在图、树、属性、SQL、XML、诊断证据之间双向导航。
+4. 给出可解释、可验证、可回滚的索引/SQL/配置建议。
+5. 支持会话保存、版本对比、脱敏分享、报告导出和自动化。
+
+对标能力
+========
+SQL Sentry Plan Explorer 的关键产品能力包括:
+- 执行计划图的颜色、成本、布局、缩放、过滤、stretch、flatten、link style 等交互。
+- Statements Tree，多语句、控制结构、嵌套调用、语句级指标导航。
+- Estimated/Actual、per-node/cumulative、CPU、I/O、Rows 等成本视图。
+- Index Analysis、Statistics Histogram、Actual Plan Recosting。
+- Live Query Profile、资源图、Wait Stats、调用栈和会话历史。
+- Deadlock Grid、Diagram、XML tab、victim 高亮、事件序号箭头、playback、布局切换。
+- SSMS Add-in、文件关联、会话文件、注释和历史。
+
+参考资料:
+- https://www.solarwinds.com/free-tools/plan-explorer
+- https://documentation.solarwinds.com/en/success_center/sqlsentry/content/planexplorer/installation-overview.htm
+- https://documentation.solarwinds.com/en/success_center/sqlsentry/content/planexplorer/results.htm
+- https://documentation.solarwinds.com/en/success_center/sqlsentry/content/planexplorer/deadlock-files.htm
+- https://documentation.solarwinds.com/en/success_center/sqlsentry/content/release_notes/planexplorer_2024-1_release_notes.htm
+
+阶段 0: 止血与工程基线
+=====================
+周期: 1-2 周
+
+目标:
+先把项目变得可维护、可测试、可发布，避免后续大功能建设建立在不稳定工程基础上。
+
+重点任务:
+1. 删除或修复 SqlXmlAnalyzer.Tests/UnitTest1.cs 中对 E:\SqlXmlAnalyzer\table_hints.txt 的固定路径写文件副作用。
+2. 清理 table_hints.txt 测试副产物和 1.1.0 等疑似误提交/工具握手 artifact。
+3. 清理 Directory.Packages.props 中未被项目引用的 central package pins。
+4. 修复 RuleMetadata 中规则编号字段复用问题，建立唯一编号/RuleId 治理。
+5. RuleConfigurationLoader 对未知 RuleId 报 warning 或 error，避免配置拼写错误静默失效。
+6. CLI 扫描目录默认排除 bin、obj、.vs、publish-*、backups、.tmp.*，并提供 --exclude 选项。
+7. 日志、报告、导出默认减少敏感 SQL 和对象名暴露；Debug/Verbose 需提示风险。
+8. CI 增加 build、test、依赖漏洞扫描、artifact 清洁检查。
+
+验收标准:
+- dotnet build SqlXmlAnalyzer.sln 通过。
+- dotnet test SqlXmlAnalyzer.Tests\SqlXmlAnalyzer.Tests.csproj 通过。
+- 测试运行后不产生工作区文件。
+- 配置文件出现未知 RuleId 时有测试覆盖。
+- CLI 目录扫描不会进入 bin/obj/.vs/publish/backups。
+
+阶段 1: 架构拆分与 UI 骨架重建
+==============================
+周期: 2-4 周
+
+目标:
+把 WPF 从巨型窗口改为专业工具壳，并为后续 Plan Explorer 级交互留出结构。
+
+重点任务:
+1. 拆分 MainWindow.xaml.cs: PlanDocumentController、DeadlockDocumentController、ReportController、ComparisonController。
+2. 分离 ViewModel: 文件加载、分析任务、图形状态、诊断列表、属性面板、导出状态。
+3. 所有分析入口改为 Task + CancellationToken + progress，不让 async void 承担核心流程。
+4. 首屏改成专业分析工作台: 左侧 Statements/Object 树，中间 Plan/Deadlock 图，右侧 Properties/Warnings，底部 Diagnostics/SQL/XML/Output。
+5. 去掉 emoji、负 margin 和宣传式文案；改用图标、紧凑工具栏、可折叠面板、状态栏。
+6. DataGrid 支持排序、过滤、复制行、列选择、固定关键列。
+
+验收标准:
+- 100%、125%、150% DPI 下无文本重叠。
+- 键盘可操作核心命令。
+- 1000 节点计划文件打开、缩放、选择不卡死。
+- UI smoke test 覆盖打开 .sqlplan、.xdl、切换 tab 和导出报告。
+
+阶段 2: 执行计划核心体验追平
+============================
+周期: 4-8 周
+
+目标:
+追平 Plan Explorer 的离线执行计划分析体验。
+
+重点任务:
+1. Statements Tree 支持多语句、控制结构、存储过程、动态 SQL 调用栈。
+2. 选择语句时同步计划图、SQL 文本、属性面板和诊断列表。
+3. Plan Diagram 支持缩放 6%-400%、cost filter、stretch、flatten、layout mode、link style、rotation、auto-fit。
+4. 成本视图支持 Estimated、Actual、Per Node、Cumulative、CPU、I/O、Rows、Data Size。
+5. Plan Tree 以树形表格展示 RelOp 指标和估算/实际偏差。
+6. Top Operations 按 cost、CPU、I/O、rows、spill、memory grant 排序。
+7. Query Columns、Parameters、Expressions、Table I/O、Warnings、Missing Index 等 tab。
+8. 所有诊断输出结构化: RuleId、Severity、Evidence、Confidence、Recommendation。
+
+验收标准:
+- 至少 50 个真实 .sqlplan golden corpus。
+- 启发式估算必须在 UI 上标注为估算/推断。
+- 大计划的选择、过滤、搜索响应稳定。
+
+阶段 3: 死锁分析专业化
+=====================
+周期: 3-6 周
+
+目标:
+让死锁功能从能画图升级为能调查、能解释、能定位责任 SQL。
+
+重点任务:
+1. Deadlock Grid / Diagram / XML / Timeline 四视图。
+2. Grid 按 SPID x Resource 展示 owner、waiter、lock mode、wait time、inputbuf、executionStack。
+3. Diagram 中 victim 红色高亮，Process 和 Resource 独立节点。
+4. 选择图节点同步 Grid、XML、SQL、执行栈和建议。
+5. Playback 支持 Play、前进、后退、速度、Auto Fit、Circular/Force/Layered 布局。
+6. 修正当前 Timeline: 能从 XML 取真实 sequence 时显示真实序列；否则标注逻辑推导顺序。
+7. DeadlockPattern 输出 Evidence: 资源、SPID、锁模式、XML 路径、置信度。
+8. 支持 .xdl 与 .xel deadlock 事件提取。
+
+验收标准:
+- 建立常见死锁样本库: key lookup、conversion、parallel exchange、foreign key、range lock、page split、metadata/schema lock。
+- 每个模式有阳性和阴性测试。
+- 用户能从任意资源节点追到相关 SQL、执行栈、锁详情和建议。
+
+阶段 4: 索引、统计、SQL 重构产品化
+=================================
+周期: 4-8 周
+
+目标:
+把建议做成可信的调优辅助，而不是看起来确定但缺证据的猜测。
+
+重点任务:
+1. Index Analysis 覆盖缺失索引、现有索引、覆盖性、过滤索引、排序方向、include columns、写入成本、重复/重叠索引。
+2. Index Score 展示公式、输入依据、缺失信息和置信度。
+3. Histogram 区分真实 DBCC SHOW_STATISTICS 与 mock histogram，并叠加参数值、偏斜识别、tipping point 解释。
+4. What-if Index Sandbox 生成 CREATE INDEX、DROP INDEX、UPDATE STATISTICS 脚本，默认 dry-run。
+5. SQL Refactor 规则分 safe、suggest、manual；高风险改写只给 patch，不直接替换。
+6. A/B Compare 支持 operator diff、cost diff、row estimate diff、I/O diff、warnings diff。
+
+验收标准:
+- 每条索引/SQL 建议都有依据、风险、回滚脚本和适用前提。
+- SQL 改写有语法测试、语义风险说明和 golden query corpus。
+- 报告导出支持给 DBA 看和给研发看两种模板。
+
+阶段 5: 运行时采集、会话与协作
+==============================
+周期: 6-10 周
+
+目标:
+补齐 Plan Explorer 真正拉开差距的能力。
+
+重点任务:
+1. 可选 SQL Server 连接，获取 Estimated Plan、Actual Plan、STATISTICS IO/TIME、wait stats。
+2. Query Store、Extended Events、DMV 采集适配层。
+3. Live Query Profile 与资源图: CPU、I/O、duration、rows、waits 时间线。
+4. Session 文件格式: 保存计划 XML、SQL、诊断、UI 布局、注释、版本历史。
+5. 会话 diff: 同一 SQL 多次调优版本对比。
+6. 可分享脱敏包: 一键导出给团队，默认移除敏感 SQL/对象名或提供脱敏预览。
+7. SSMS 集成探索: 文件关联、CLI bridge、右键打开；后续评估 Add-in。
+
+验收标准:
+- 离线模式不依赖数据库。
+- 在线模式所有采集操作有权限提示。
+- 会话文件可跨机器打开。
+- 调优前后版本能稳定复现图、诊断和注释。
+
+阶段 6: 商业级质量与发布
+========================
+周期: 持续 4-8 周
+
+目标:
+让工具像专业产品一样可靠、可安装、可诊断、可持续演进。
+
+重点任务:
+1. 性能基准: 100、1000、5000、10000 RelOp 计划的加载、布局、搜索、导出耗时。
+2. 图形虚拟化和后台分析缓存。
+3. WPF 自动化测试和截图 diff。
+4. 安全审计: XML、HTML、Mermaid、日志、导出、临时文件。
+5. 安装包、自动更新检查、崩溃报告、用户偏好。
+6. 文档: 规则手册、死锁模式手册、索引建议可信度说明、CLI schema。
+7. 发布标准: release notes、样例输出、已知限制。
+
+推荐里程碑
+==========
+M1: 4 周内完成工程止血和新 UI 壳，项目从能跑变为可维护。
+M2: 8-12 周内完成 Plan Diagram、Statements Tree、Top Operations、Diagnostics Grid，达到离线计划分析主流程可用。
+M3: 12-18 周内完成 Deadlock Grid+Playback、Index/Histogram 产品化，接近 Plan Explorer 离线体验。
+M4: 20-32 周内完成 runtime capture、session、versioning、SSMS bridge，进入商业工具级别。
+
+关键取舍
+========
+不要先追更多规则，先追证据链、可导航 UI 和可信度标注。Plan Explorer 强的地方不是诊断文案多，而是用户能从异常成本、语句或死锁节点一路追到证据、上下文和可执行动作。

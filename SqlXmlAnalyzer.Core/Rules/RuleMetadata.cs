@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SqlXmlAnalyzer.Core.Rules
 {
@@ -45,6 +46,13 @@ namespace SqlXmlAnalyzer.Core.Rules
             RuleScope Scope,
             string DefaultSeverity);
 
+        private static readonly IReadOnlyDictionary<string, string> DeprecatedRuleIdAliases =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["RULE_016_WAIT_STATS"] = "RULE_036_WAIT_STATS",
+                ["RULE_017_RESOURCE_SEMAPHORE"] = "RULE_037_RESOURCE_SEMAPHORE"
+            };
+
         private static readonly IReadOnlyDictionary<string, Definition> Definitions =
             new Dictionary<string, Definition>(StringComparer.Ordinal)
             {
@@ -61,9 +69,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 ["RULE_014_SERIAL_PLAN_REASON"] = new(RuleCategory.AntiPattern, RuleScope.Plan, "Info"),
                 ["RULE_015_LOCAL_VARIABLES"] = new(RuleCategory.AntiPattern, RuleScope.Statement, "Warning"),
                 ["RULE_016_ZERO_ROW_ACTUALS"] = new(RuleCategory.Cardinality, RuleScope.Operator, "Warning"),
-                ["RULE_016_WAIT_STATS"] = new(RuleCategory.WaitStats, RuleScope.Plan, "Warning"),
                 ["RULE_017_LARGE_MEMORY_GRANT"] = new(RuleCategory.Memory, RuleScope.Plan, "Warning"),
-                ["RULE_017_RESOURCE_SEMAPHORE"] = new(RuleCategory.ResourceSemaphore, RuleScope.Plan, "Critical"),
                 ["RULE_018_OPTIMIZER_ABORT"] = new(RuleCategory.OptimizerAbort, RuleScope.Statement, "Critical"),
                 ["RULE_019_CACHE_RECOMPILE"] = new(RuleCategory.CacheAndRecompile, RuleScope.Plan, "Warning"),
                 ["RULE_020_MISSING_INDEX"] = new(RuleCategory.MissingIndex, RuleScope.Plan, "Warning"),
@@ -81,8 +87,38 @@ namespace SqlXmlAnalyzer.Core.Rules
                 ["RULE_032_MEMORY_SPILL"] = new(RuleCategory.Memory, RuleScope.Operator, "Warning"),
                 ["RULE_033_THREAD_SKEW"] = new(RuleCategory.Parallelism, RuleScope.Operator, "Warning"),
                 ["RULE_034_RESIDUAL_PRED_OP"] = new(RuleCategory.ResidualPredicate, RuleScope.Operator, "Warning"),
-                ["RULE_035_SARGABLE_INDEX_RECOMMENDATION"] = new(RuleCategory.MissingIndex, RuleScope.Operator, "Warning")
+                ["RULE_035_SARGABLE_INDEX_RECOMMENDATION"] = new(RuleCategory.MissingIndex, RuleScope.Operator, "Warning"),
+                ["RULE_036_WAIT_STATS"] = new(RuleCategory.WaitStats, RuleScope.Plan, "Warning"),
+                ["RULE_037_RESOURCE_SEMAPHORE"] = new(RuleCategory.ResourceSemaphore, RuleScope.Plan, "Critical")
             };
+
+        public static IReadOnlyCollection<string> RegisteredRuleIds => Definitions.Keys.ToArray();
+
+        public static bool TryNormalizeRuleId(
+            string ruleId,
+            out string normalizedRuleId,
+            out string? warning)
+        {
+            normalizedRuleId = ruleId;
+            warning = null;
+
+            string? registeredRuleId = Definitions.Keys.FirstOrDefault(knownRuleId =>
+                string.Equals(knownRuleId, ruleId, StringComparison.OrdinalIgnoreCase));
+            if (registeredRuleId != null)
+            {
+                normalizedRuleId = registeredRuleId;
+                return true;
+            }
+
+            if (DeprecatedRuleIdAliases.TryGetValue(ruleId, out string? replacementRuleId))
+            {
+                normalizedRuleId = replacementRuleId;
+                warning = $"RuleId '{ruleId}' is deprecated; use '{replacementRuleId}'.";
+                return true;
+            }
+
+            return false;
+        }
 
         public static RuleMetadata Get(string ruleId, string description)
         {

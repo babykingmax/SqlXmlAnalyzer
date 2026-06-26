@@ -7,7 +7,7 @@ namespace SqlXmlAnalyzer.Core.Rules
 {
     public class WaitStatsRule : IPlanAnalyzerRule
     {
-        public string RuleId => "RULE_016_WAIT_STATS";
+        public string RuleId => "RULE_036_WAIT_STATS";
         public string Name => "Wait Stats Detection";
         public string Description => "Detects significant resource wait stats.";
 
