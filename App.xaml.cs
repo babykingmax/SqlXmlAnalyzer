@@ -160,8 +160,11 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.AnalysisSessionCoordinator>();
             services.AddSingleton<Core.Services.BrowserLauncher>();
             services.AddSingleton<Core.Services.PdfWordReportService>();
+            services.AddSingleton<Core.Services.DocumentOpenService>();
             services.AddSingleton<DeadlockAnalysisService>();
             services.AddSingleton<Core.Services.PlanAnalysisService>();
+            services.AddSingleton<Core.Services.DeadlockDocumentController>();
+            services.AddSingleton<Core.Services.PlanDocumentController>();
             services.AddTransient<MainWindow>();
         }
 

@@ -130,8 +130,8 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.BrowserLauncher _browserLauncher;
         private readonly Core.Services.PdfWordReportService _pdfWordReportService;
         private readonly Core.Services.DocumentOpenService _documentOpenService;
-        private readonly DeadlockAnalysisService _deadlockAnalysisService;
-        private readonly Core.Services.PlanAnalysisService _planAnalysisService;
+        private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
+        private readonly Core.Services.PlanDocumentController _planDocumentController;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -230,6 +230,8 @@ namespace SqlXmlAnalyzer
             Core.Services.BrowserLauncher? browserLauncher = null,
             Core.Services.PdfWordReportService? pdfWordReportService = null,
             Core.Services.DocumentOpenService? documentOpenService = null,
+            Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
+            Core.Services.PlanDocumentController? planDocumentController = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
         {
@@ -242,13 +244,17 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
             _documentOpenService = documentOpenService
                 ?? new Core.Services.DocumentOpenService();
-            _deadlockAnalysisService = deadlockAnalysisService
-                ?? new DeadlockAnalysisService();
-            _planAnalysisService = planAnalysisService
-                ?? new Core.Services.PlanAnalysisService(
+            DeadlockAnalysisService effectiveDeadlockAnalysisService =
+                deadlockAnalysisService ?? new DeadlockAnalysisService();
+            Core.Services.PlanAnalysisService effectivePlanAnalysisService =
+                planAnalysisService ?? new Core.Services.PlanAnalysisService(
                     orchestrator,
                     fileHandler,
                     _temporaryFileManager);
+            _deadlockDocumentController = deadlockDocumentController
+                ?? new Core.Services.DeadlockDocumentController(effectiveDeadlockAnalysisService);
+            _planDocumentController = planDocumentController
+                ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel();
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -606,15 +612,18 @@ namespace SqlXmlAnalyzer
             {
                 StatusTextBlock.Text = $"正在分析死锁文件：{System.IO.Path.GetFileName(filePath)}...";
 
-                var result = await Task.Run(
-                    () => _deadlockAnalysisService.Analyze(doc, cancellationToken),
-                    cancellationToken);
+                Core.Services.DeadlockDocumentResult documentResult =
+                    await _deadlockDocumentController.AnalyzeAsync(
+                        doc,
+                        filePath,
+                        cancellationToken);
                 if (!_analysisSessions.IsCurrent(requestId))
                 {
                     return;
                 }
 
-                ViewModel.CurrentDeadlockDoc = doc;
+                var result = documentResult.Analysis;
+                ViewModel.CurrentDeadlockDoc = documentResult.Document;
                 ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Deadlock);
                 DeadlockProcessesList.ItemsSource = result.Processes;
                 DeadlockResourcesList.ItemsSource = result.Resources;
@@ -668,19 +677,19 @@ namespace SqlXmlAnalyzer
             {
                 StatusTextBlock.Text = $"正在分析执行计划：{System.IO.Path.GetFileName(filePath)}...";
 
-                var result = await Task.Run(
-                    () => _planAnalysisService.Analyze(
+                Core.Services.PlanDocumentResult documentResult =
+                    await _planDocumentController.AnalyzeAsync(
                         doc,
-                        _showplanNs,
                         filePath,
-                        cancellationToken),
-                    cancellationToken);
+                        _showplanNs,
+                        cancellationToken);
                 if (!_analysisSessions.IsCurrent(requestId))
                 {
                     return;
                 }
 
-                ViewModel.CurrentPlanDoc = doc;
+                var result = documentResult.Analysis;
+                ViewModel.CurrentPlanDoc = documentResult.Document;
                 ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.ExecutionPlan);
                 Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.Mermaid.Length} 字符");
                 BuildPlanVisualTree(doc, _showplanNs);
