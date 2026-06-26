@@ -133,6 +133,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly Core.Services.PlanComparisonController _planComparisonController;
+        private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.IFileDialogService _fileDialogService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
@@ -235,6 +236,7 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
             Core.Services.PlanDocumentController? planDocumentController = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
+            Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
@@ -261,6 +263,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
             _planComparisonController = planComparisonController
                 ?? new Core.Services.PlanComparisonController();
+            _analysisReportController = analysisReportController
+                ?? new Core.Services.AnalysisReportController();
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
@@ -2000,145 +2004,73 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                if (MainTabControl.SelectedIndex == 0) // Deadlock
+                Core.Services.HtmlAnalysisReport report;
+
+                if (MainTabControl.SelectedIndex == 0)
                 {
                     if (ViewModel.CurrentDeadlockDoc == null || string.IsNullOrEmpty(ViewModel.CurrentDeadlockFilePath))
                     {
-                        MessageBox.Show("请先打开并分析一个死锁 XML 文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Please open and analyze a deadlock XML file first.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
-                    var parseResult = DeadlockXmlParser.TryParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
-                    if (!parseResult.IsSuccess || parseResult.Value == null)
-                    {
-                        throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
-                    }
-                    var parsed = parseResult.Value;
-                    var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
-                    string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
-
-                    string summaryText = $"死锁文件: {Path.GetFileName(ViewModel.CurrentDeadlockFilePath)}\n受害者进程: {parsed.VictimId}\n参与 SPID: {string.Join(", ", parsed.Processes.Select(p => p.Spid).Distinct())}";
-
-                    var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, ViewModel.CurrentDeadlockDoc);
-                    var reportItems = patterns
-                        .Select(p => new HtmlReportItem(
-                            p.TypeName,
-                            p.Description,
-                            p.LikelyCause,
-                            p.Recommendation,
-                            p.Severity))
-                        .ToList();
-
-                    if (!string.IsNullOrWhiteSpace(ViewModel.DeadlockPatternText))
-                    {
-                        reportItems.Add(new HtmlReportItem(
-                            "分析与选中项详情",
-                            ViewModel.DeadlockPatternText,
-                            string.Empty,
-                            string.Empty,
-                            "Info"));
-                    }
-
-                    var reportSections = new[]
-                    {
-                        new HtmlReportSection("💡 详细诊断与建议", reportItems)
-                    };
-
-                    string? reportPath = ShowSaveFileDialog(
-                        "HTML report (*.html)|*.html",
-                        "Save deadlock analysis report",
-                        ".html",
-                        $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.html");
-
-                    if (reportPath != null)
-                    {
-                        HtmlReportGenerator.SaveReport(ViewModel.CurrentDeadlockFilePath, "Deadlock", summaryText, mermaid, reportSections, reportPath);
-                        Logger.Info($"Deadlock HTML report saved to {reportPath}");
-
-                        if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        {
-                            _browserLauncher.OpenFile(reportPath);
-                        }
-                    }
+                    report = _analysisReportController.BuildDeadlockHtmlReport(
+                        ViewModel.CurrentDeadlockDoc,
+                        ViewModel.CurrentDeadlockFilePath,
+                        ViewModel.DeadlockPatternText);
                 }
-                else if (MainTabControl.SelectedIndex == 1) // Execution Plan
+                else if (MainTabControl.SelectedIndex == 1)
                 {
                     if (ViewModel.CurrentPlanDoc == null || string.IsNullOrEmpty(ViewModel.CurrentPlanFilePath))
                     {
-                        MessageBox.Show("请先打开并分析一个执行计划文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Please open and analyze an execution plan file first.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
-                    string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
-                    var planResults = PlanDiagnosticAnalyzer.AnalyzePlan(ViewModel.CurrentPlanDoc, _showplanNs);
+                    report = _analysisReportController.BuildPlanHtmlReport(
+                        ViewModel.CurrentPlanDoc,
+                        ViewModel.CurrentPlanFilePath,
+                        _showplanNs);
 
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    ViewModel.MissingIndexes.Clear();
+                    foreach (var missingIndex in report.MissingIndexes)
                     {
-                        ViewModel.MissingIndexes.Clear();
-                        var mis = PlanDiagnosticAnalyzer.ExtractMissingIndexes(ViewModel.CurrentPlanDoc, _showplanNs);
-                        foreach (var m in mis)
-                        {
-                            ViewModel.MissingIndexes.Add(m);
-                        }
-                    });
-
-                    var reportItems = planResults
-                        .Select(result => new HtmlReportItem(
-                            result.Title,
-                            result.Message,
-                            string.Empty,
-                            string.Empty,
-                            result.Severity))
-                        .ToList();
-
-                    if (reportItems.Count == 0)
-                    {
-                        reportItems.Add(new HtmlReportItem(
-                            "未发现规则告警",
-                            "当前执行计划未命中已启用的诊断规则。",
-                            string.Empty,
-                            string.Empty,
-                            "Info"));
-                    }
-
-                    var reportSections = new[]
-                    {
-                        new HtmlReportSection("💡 详细诊断与建议", reportItems)
-                    };
-
-                    string summaryText = $"执行计划文件: {Path.GetFileName(ViewModel.CurrentPlanFilePath)}\n";
-                    var queryPlans = ViewModel.CurrentPlanDoc.Descendants(_showplanNs + "QueryPlan").ToList();
-                    if (queryPlans.Count > 0)
-                    {
-                        summaryText += $"估算总成本: {queryPlans[0].Attribute("EstimatedTotalSubtreeCost")?.Value ?? "N/A"}\n";
-                    }
-
-                    string? reportPath = ShowSaveFileDialog(
-                        "HTML report (*.html)|*.html",
-                        "Save execution plan analysis report",
-                        ".html",
-                        $"ExecutionPlanReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentPlanFilePath)}.html");
-
-                    if (reportPath != null)
-                    {
-                        HtmlReportGenerator.SaveReport(ViewModel.CurrentPlanFilePath, "ExecutionPlan", summaryText, mermaid, reportSections, reportPath);
-                        Logger.Info($"Execution plan HTML report saved to {reportPath}");
-
-                        if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        {
-                            _browserLauncher.OpenFile(reportPath);
-                        }
+                        ViewModel.MissingIndexes.Add(missingIndex);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("当前没有选中的分析标签！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("There is no selected analysis tab.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                string? reportPath = ShowSaveFileDialog(
+                    "HTML report (*.html)|*.html",
+                    $"Save {report.AnalysisType} analysis report",
+                    ".html",
+                    report.DefaultFileName);
+
+                if (reportPath != null)
+                {
+                    HtmlReportGenerator.SaveReport(
+                        report.OriginalFilePath,
+                        report.AnalysisType,
+                        report.SummaryText,
+                        report.MermaidCode,
+                        report.Sections,
+                        reportPath);
+                    Logger.Info($"{report.AnalysisType} HTML report saved to {reportPath}");
+
+                    if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        _browserLauncher.OpenFile(reportPath);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogException("GenerateHtmlReport_Click", ex);
-                MessageBox.Show($"生成 HTML 报告失败: {ex.Message}\n\n详细错误已记录到日志。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"HTML report generation failed: {ex.Message}\n\nDetails were written to the log.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -2156,10 +2088,8 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                string title;
-                string content;
-                string defaultFileName;
-                FrameworkElement? imageElement = null;
+                Core.Services.PortableAnalysisReport report;
+                FrameworkElement? imageElement;
 
                 if (MainTabControl.SelectedIndex == 0)
                 {
@@ -2169,50 +2099,12 @@ namespace SqlXmlAnalyzer
                         return;
                     }
 
-                    title = "SQL Server Deadlock Diagnostic Report";
-                    var sb = new System.Text.StringBuilder();
-                    sb.AppendLine("=== Deadlock Pattern Diagnostics ===");
-                    var patterns = DeadlockPatternsListBox.ItemsSource as System.Collections.IEnumerable;
-                    bool hasPatterns = false;
-                    if (patterns != null)
-                    {
-                        foreach (var item in patterns)
-                        {
-                            if (item is DeadlockPattern pattern)
-                            {
-                                sb.AppendLine(pattern.TypeName);
-                                sb.AppendLine($"Description: {pattern.Description}");
-                                sb.AppendLine($"Likely cause: {pattern.LikelyCause}");
-                                sb.AppendLine($"Recommendation: {pattern.Recommendation}");
-                                sb.AppendLine();
-                                hasPatterns = true;
-                            }
-                        }
-                    }
-
-                    if (!hasPatterns)
-                    {
-                        sb.AppendLine("No known deadlock pattern was detected.");
-                        sb.AppendLine();
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(ViewModel.DeadlockPatternText))
-                    {
-                        sb.AppendLine("=== Selected Item Analysis ===");
-                        content = ViewModel.DeadlockPatternText
-                            .Replace("馃拃", "")
-                            .Replace("馃攳", "")
-                            .Replace("馃挕", "")
-                            .Replace("馃敶", "")
-                            .Replace("馃煝", "")
-                            .Replace("馃煚", "")
-                            .Replace("馃搵", "");
-                        sb.AppendLine(content);
-                    }
-
-                    content = sb.ToString();
-                    defaultFileName = $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.{extension}";
-                    imageElement = DeadlockCanvasBorder;
+                    report = _analysisReportController.BuildDeadlockPortableReport(
+                        ViewModel.CurrentDeadlockFilePath,
+                        DeadlockPatternsListBox.ItemsSource?.OfType<DeadlockPattern>(),
+                        ViewModel.DeadlockPatternText,
+                        extension);
+                    imageElement = report.IncludeDeadlockDiagram ? DeadlockCanvasBorder : null;
                 }
                 else if (MainTabControl.SelectedIndex == 1)
                 {
@@ -2222,9 +2114,11 @@ namespace SqlXmlAnalyzer
                         return;
                     }
 
-                    title = "SQL Server Execution Plan Diagnostic Report";
-                    content = ViewModel.PlanWarningsText;
-                    defaultFileName = $"PlanReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentPlanFilePath)}.{extension}";
+                    report = _analysisReportController.BuildPlanPortableReport(
+                        ViewModel.CurrentPlanFilePath,
+                        ViewModel.PlanWarningsText,
+                        extension);
+                    imageElement = null;
                 }
                 else
                 {
@@ -2235,15 +2129,15 @@ namespace SqlXmlAnalyzer
                     filter,
                     $"Save {extension.ToUpperInvariant()} analysis report",
                     $".{extension}",
-                    defaultFileName);
+                    report.DefaultFileName);
 
                 if (fileName != null)
                 {
                     _pdfWordReportService.Export(
                         extension,
                         fileName,
-                        title,
-                        content,
+                        report.Title,
+                        report.Content,
                         imageElement);
                     MessageBox.Show($"{extension.ToUpperInvariant()} report exported successfully.", "Export succeeded", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
