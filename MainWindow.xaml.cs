@@ -132,6 +132,8 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
+        private readonly Core.Services.PlanComparisonController _planComparisonController;
+        private readonly Core.Services.IFileDialogService _fileDialogService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -232,6 +234,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DocumentOpenService? documentOpenService = null,
             Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
             Core.Services.PlanDocumentController? planDocumentController = null,
+            Core.Services.PlanComparisonController? planComparisonController = null,
+            Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
         {
@@ -255,6 +259,10 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockDocumentController(effectiveDeadlockAnalysisService);
             _planDocumentController = planDocumentController
                 ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
+            _planComparisonController = planComparisonController
+                ?? new Core.Services.PlanComparisonController();
+            _fileDialogService = fileDialogService
+                ?? new Core.Services.WpfFileDialogService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel();
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -281,24 +289,50 @@ namespace SqlXmlAnalyzer
 
         #region 文件打开
 
+        private string? ShowOpenFileDialog(
+            string filter,
+            string title,
+            string? defaultExtension = null,
+            string? fileName = null)
+        {
+            return _fileDialogService.ShowOpenFile(
+                new Core.Services.FileDialogRequest(
+                    filter,
+                    title,
+                    defaultExtension,
+                    fileName));
+        }
+
+        private string? ShowSaveFileDialog(
+            string filter,
+            string title,
+            string? defaultExtension = null,
+            string? fileName = null)
+        {
+            return _fileDialogService.ShowSaveFile(
+                new Core.Services.FileDialogRequest(
+                    filter,
+                    title,
+                    defaultExtension,
+                    fileName));
+        }
+
         private async void OpenDeadlockFile_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "死锁文件 (*.xml;*.xdl;*.xel)|*.xml;*.xdl;*.xel|所有文件 (*.*)|*.*",
-                Title = "选择死锁报告文件"
-            };
+            string? fileName = ShowOpenFileDialog(
+                "Deadlock files (*.xml;*.xdl;*.xel)|*.xml;*.xdl;*.xel|All files (*.*)|*.*",
+                "Open deadlock report");
 
-            if (dlg.ShowDialog() == true)
+            if (fileName != null)
             {
-                string ext = System.IO.Path.GetExtension(dlg.FileName).ToLower();
+                string ext = System.IO.Path.GetExtension(fileName).ToLowerInvariant();
                 if (ext == ".xel")
                 {
-                    await AnalyzeXelFileAsync(dlg.FileName);
+                    await AnalyzeXelFileAsync(fileName);
                 }
                 else
                 {
-                    AnalyzeDeadlockFile(dlg.FileName);
+                    AnalyzeDeadlockFile(fileName);
                 }
             }
         }
@@ -359,15 +393,13 @@ namespace SqlXmlAnalyzer
 
         private void OpenPlanFile_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "执行计划文件 (*.sqlplan;*.xml)|*.sqlplan;*.xml|所有文件 (*.*)|*.*",
-                Title = "选择执行计划文件"
-            };
+            string? fileName = ShowOpenFileDialog(
+                "Execution plan files (*.sqlplan;*.xml)|*.sqlplan;*.xml|All files (*.*)|*.*",
+                "Open execution plan");
 
-            if (dlg.ShowDialog() == true)
+            if (fileName != null)
             {
-                AnalyzeExecutionPlanFile(dlg.FileName);
+                AnalyzeExecutionPlanFile(fileName);
             }
         }
 
@@ -1772,140 +1804,62 @@ namespace SqlXmlAnalyzer
             PlanATreeView.Items.Clear();
             PlanBTreeView.Items.Clear();
 
-            var nsA = ViewModel.PlanA?.Document.Root?.GetDefaultNamespace() ?? _showplanNs;
-            var planA = ViewModel.PlanA?.Document.Descendants(nsA + "RelOp").FirstOrDefault();
+            Core.Services.PlanComparisonResult comparison =
+                _planComparisonController.BuildComparison(
+                    ViewModel.PlanA,
+                    ViewModel.PlanB,
+                    _showplanNs);
 
-            var nsB = ViewModel.PlanB?.Document.Root?.GetDefaultNamespace() ?? _showplanNs;
-            var planB = ViewModel.PlanB?.Document.Descendants(nsB + "RelOp").FirstOrDefault();
-
-            if (planA != null)
+            if (comparison.PlanA != null)
             {
-                var treeA = BuildDiffTreeView(planA, planB, nsA, false);
-                if (treeA != null) PlanATreeView.Items.Add(treeA);
+                PlanATreeView.Items.Add(BuildDiffTreeView(comparison.PlanA, false));
             }
 
-            if (planB != null)
+            if (comparison.PlanB != null)
             {
-                var treeB = BuildDiffTreeView(planB, planA, nsB, true);
-                if (treeB != null) PlanBTreeView.Items.Add(treeB);
+                PlanBTreeView.Items.Add(BuildDiffTreeView(comparison.PlanB, true));
             }
         }
 
-        private (double rows, double rowsRead, double elapsed, double reads) GetRuntimeMetrics(XElement relOp, XNamespace ns)
+        private TreeViewItem BuildDiffTreeView(
+            Core.Services.PlanComparisonNode node,
+            bool isPlanB)
         {
-            var rtInfo = relOp.Element(ns + "RunTimeInformation");
-            if (rtInfo == null) return (0, 0, 0, 0);
-
-            var counters = rtInfo.Elements(ns + "RunTimeCountersPerThread");
-            double rows = counters.Sum(c => (double?)c.Attribute("ActualRows") ?? 0);
-            double rowsRead = counters.Sum(c => (double?)c.Attribute("ActualRowsRead") ?? 0);
-            double elapsed = counters.Max(c => (double?)c.Attribute("ActualElapsedms") ?? 0);
-            double reads = counters.Sum(c => (double?)c.Attribute("ActualLogicalReads") ?? 0);
-
-            return (rows, rowsRead, elapsed, reads);
-        }
-
-        private TreeViewItem BuildDiffTreeView(XElement currentRelOp, XElement? otherRelOp, XNamespace ns, bool isPlanB)
-        {
-            string phys = currentRelOp.Attribute("PhysicalOp")?.Value ?? "Unknown";
-            string costStr = currentRelOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
-            double.TryParse(costStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cost);
-
-            string otherPhys = otherRelOp?.Attribute("PhysicalOp")?.Value ?? "";
-            double otherCost = 0;
-            if (otherRelOp != null)
+            var stackPanel = new StackPanel
             {
-                string otherCostStr = otherRelOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
-                double.TryParse(otherCostStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out otherCost);
-            }
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 2, 0, 2)
+            };
 
-            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 2) };
-
-            var textBlockOp = new TextBlock { Text = phys, FontWeight = FontWeights.SemiBold };
-            var textBlockCost = new TextBlock { Text = $" (Cost: {cost:F4})", Foreground = Brushes.Gray };
-
-            Border border = new Border { CornerRadius = new CornerRadius(3), Padding = new Thickness(4, 2, 4, 2), Margin = new Thickness(0, 0, 4, 0) };
-
-            // 差异对比逻辑
-            if (otherRelOp == null)
+            var textBlockOp = new TextBlock
             {
-                // 新增或被删除
-                border.Background = isPlanB ? new SolidColorBrush(Color.FromArgb(40, 76, 175, 80)) : new SolidColorBrush(Color.FromArgb(40, 244, 67, 54)); // B新增绿，A独有红
-                border.BorderBrush = isPlanB ? Brushes.Green : Brushes.Red;
-                border.BorderThickness = new Thickness(1);
-                textBlockOp.Foreground = isPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
-                textBlockOp.Text = phys + (isPlanB ? " [新增]" : " [移除]");
-            }
-            else if (phys != otherPhys)
+                Text = GetComparisonOperatorText(node, isPlanB),
+                FontWeight = FontWeights.SemiBold
+            };
+            var textBlockCost = new TextBlock
             {
-                // 类型改变
-                border.Background = new SolidColorBrush(Color.FromArgb(40, 255, 152, 0));
-                border.BorderBrush = Brushes.Orange;
-                border.BorderThickness = new Thickness(1);
-                textBlockOp.Foreground = Brushes.DarkOrange;
-                textBlockOp.Text = $"{phys} [变自 {otherPhys}]";
-            }
+                Text = $" (Cost: {node.Cost:F4})",
+                Foreground = Brushes.Gray
+            };
 
-            if (otherRelOp != null && phys == otherPhys)
+            Border border = new Border
             {
-                // 类型没变，检查成本差异
-                double deltaCost = cost - otherCost;
-                if (Math.Abs(deltaCost) > 0.0001) // 有意义的成本变化
-                {
-                    double pct = otherCost > 0 ? (deltaCost / otherCost) * 100 : 0;
-                    if (pct > 5) // 成本增加 > 5%
-                    {
-                        textBlockCost.Foreground = Brushes.Red;
-                        textBlockCost.Text += $" (+{pct:F1}%)";
-                    }
-                    else if (pct < -5) // 成本降低 > 5%
-                    {
-                        textBlockCost.Foreground = Brushes.Green;
-                        textBlockCost.Text += $" ({pct:F1}%)";
-                    }
-                }
-            }
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4, 2, 4, 2),
+                Margin = new Thickness(0, 0, 4, 0)
+            };
 
-            var currentMetrics = GetRuntimeMetrics(currentRelOp, ns);
-            var otherMetrics = otherRelOp != null ? GetRuntimeMetrics(otherRelOp, ns) : (0, 0, 0, 0);
+            ApplyComparisonStateStyle(node.State, isPlanB, border, textBlockOp);
+            ApplyCostDeltaStyle(node, textBlockCost);
 
-            List<string> diffs = new List<string>();
+            stackPanel.Children.Add(textBlockOp);
+            stackPanel.Children.Add(textBlockCost);
 
-            if (otherRelOp != null)
-            {
-                double eDiff = currentMetrics.elapsed - otherMetrics.elapsed;
-                if (Math.Abs(eDiff) > 5)
-                {
-                    string sign = eDiff > 0 ? "↑" : "↓";
-                    diffs.Add($"耗时: {currentMetrics.elapsed}ms ({sign}{Math.Abs(eDiff)}ms)");
-                }
-
-                double rDiff = currentMetrics.reads - otherMetrics.reads;
-                if (Math.Abs(rDiff) > 10)
-                {
-                    string sign = rDiff > 0 ? "↑" : "↓";
-                    diffs.Add($"逻辑读: {currentMetrics.reads} ({sign}{Math.Abs(rDiff)})");
-                }
-
-                double rrDiff = currentMetrics.rowsRead - otherMetrics.rowsRead;
-                if (Math.Abs(rrDiff) > 10)
-                {
-                    string sign = rrDiff > 0 ? "↑" : "↓";
-                    diffs.Add($"读取行: {currentMetrics.rowsRead} ({sign}{Math.Abs(rrDiff)})");
-                }
-            }
-            else
-            {
-                if (currentMetrics.elapsed > 0) diffs.Add($"耗时: {currentMetrics.elapsed}ms");
-                if (currentMetrics.reads > 0) diffs.Add($"逻辑读: {currentMetrics.reads}");
-                if (currentMetrics.rowsRead > 0) diffs.Add($"读取行: {currentMetrics.rowsRead}");
-            }
-
-            if (diffs.Count > 0)
+            if (node.RuntimeDeltas.Count > 0)
             {
                 var textBlockRuntime = new TextBlock
                 {
-                    Text = " | " + string.Join(", ", diffs),
+                    Text = " | " + string.Join(", ", node.RuntimeDeltas.Select(FormatRuntimeDelta)),
                     Foreground = isPlanB ? Brushes.Purple : Brushes.Teal,
                     FontWeight = FontWeights.Medium,
                     Margin = new Thickness(4, 0, 0, 0)
@@ -1913,33 +1867,94 @@ namespace SqlXmlAnalyzer
                 stackPanel.Children.Add(textBlockRuntime);
             }
 
-            stackPanel.Children.Add(textBlockOp);
-            stackPanel.Children.Add(textBlockCost);
             border.Child = stackPanel;
 
             var item = new TreeViewItem
             {
                 Header = border,
-                Tag = currentRelOp,
+                Tag = node.Source,
                 IsExpanded = true
             };
 
-            var children1 = PlanDiagnosticAnalyzer.GetDirectChildRelOps(currentRelOp, ns).ToList();
-            var children2 = otherRelOp != null ? PlanDiagnosticAnalyzer.GetDirectChildRelOps(otherRelOp, ns).ToList() : new List<XElement>();
-
-            int maxChildren = Math.Max(children1.Count, children2.Count);
-            for (int i = 0; i < maxChildren; i++)
+            foreach (Core.Services.PlanComparisonNode child in node.Children)
             {
-                XElement? c1 = i < children1.Count ? children1[i] : null;
-                XElement? c2 = i < children2.Count ? children2[i] : null;
-
-                if (c1 != null)
-                {
-                    item.Items.Add(BuildDiffTreeView(c1, c2, ns, isPlanB));
-                }
+                item.Items.Add(BuildDiffTreeView(child, isPlanB));
             }
 
             return item;
+        }
+
+        private static string GetComparisonOperatorText(
+            Core.Services.PlanComparisonNode node,
+            bool isPlanB)
+        {
+            return node.State switch
+            {
+                Core.Services.PlanComparisonNodeState.Added => $"{node.PhysicalOp} [Added]",
+                Core.Services.PlanComparisonNodeState.Removed => $"{node.PhysicalOp} [Removed]",
+                Core.Services.PlanComparisonNodeState.OperatorChanged =>
+                    $"{node.PhysicalOp} [from {node.OtherPhysicalOp}]",
+                _ => node.PhysicalOp
+            };
+        }
+
+        private static void ApplyComparisonStateStyle(
+            Core.Services.PlanComparisonNodeState state,
+            bool isPlanB,
+            Border border,
+            TextBlock textBlockOp)
+        {
+            switch (state)
+            {
+                case Core.Services.PlanComparisonNodeState.Added:
+                case Core.Services.PlanComparisonNodeState.Removed:
+                    border.Background = isPlanB
+                        ? new SolidColorBrush(Color.FromArgb(40, 76, 175, 80))
+                        : new SolidColorBrush(Color.FromArgb(40, 244, 67, 54));
+                    border.BorderBrush = isPlanB ? Brushes.Green : Brushes.Red;
+                    border.BorderThickness = new Thickness(1);
+                    textBlockOp.Foreground = isPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
+                    break;
+                case Core.Services.PlanComparisonNodeState.OperatorChanged:
+                    border.Background = new SolidColorBrush(Color.FromArgb(40, 255, 152, 0));
+                    border.BorderBrush = Brushes.Orange;
+                    border.BorderThickness = new Thickness(1);
+                    textBlockOp.Foreground = Brushes.DarkOrange;
+                    break;
+            }
+        }
+
+        private static void ApplyCostDeltaStyle(
+            Core.Services.PlanComparisonNode node,
+            TextBlock textBlockCost)
+        {
+            if (node.State != Core.Services.PlanComparisonNodeState.Unchanged ||
+                Math.Abs(node.CostPercentDelta) <= 5)
+            {
+                return;
+            }
+
+            if (node.CostPercentDelta > 0)
+            {
+                textBlockCost.Foreground = Brushes.Red;
+                textBlockCost.Text += $" (+{node.CostPercentDelta:F1}%)";
+            }
+            else
+            {
+                textBlockCost.Foreground = Brushes.Green;
+                textBlockCost.Text += $" ({node.CostPercentDelta:F1}%)";
+            }
+        }
+
+        private static string FormatRuntimeDelta(Core.Services.RuntimeMetricDelta delta)
+        {
+            if (Math.Abs(delta.Delta) < 1e-9)
+            {
+                return $"{delta.Label}: {delta.Value}";
+            }
+
+            string sign = delta.Delta > 0 ? "+" : "-";
+            return $"{delta.Label}: {delta.Value} ({sign}{Math.Abs(delta.Delta)})";
         }
 
         #endregion
@@ -1950,33 +1965,34 @@ namespace SqlXmlAnalyzer
         {
             if (ViewModel.CurrentPlanDoc == null)
             {
-                MessageBox.Show("请先加载一个执行计划文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please load an execution plan first.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var dlg = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "执行计划文件 (*.sqlplan)|*.sqlplan|XML文件 (*.xml)|*.xml",
-                Title = "导出脱敏后的执行计划",
-                FileName = "Obfuscated_Plan.sqlplan"
-            };
+            string? fileName = ShowSaveFileDialog(
+                "Execution plan files (*.sqlplan)|*.sqlplan|XML files (*.xml)|*.xml",
+                "Export obfuscated execution plan",
+                ".sqlplan",
+                "Obfuscated_Plan.sqlplan");
 
-            if (dlg.ShowDialog() == true)
+            if (fileName == null)
             {
-                try
-                {
-                    StatusTextBlock.Text = "正在生成脱敏计划...";
-                    var maskedDoc = SqlXmlAnalyzer.Core.Services.PlanObfuscatorService.ObfuscatePlan(ViewModel.CurrentPlanDoc);
-                    maskedDoc.Save(dlg.FileName);
-                    MessageBox.Show($"脱敏后的执行计划已保存至:\n{dlg.FileName}\n\n安全提示：敏感表名和SQL语句已完全替换，但该文件仍可被 SSMS 解析。", "脱敏成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                    StatusTextBlock.Text = "就绪";
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException("ExportObfuscatedPlan_Click", ex);
-                    MessageBox.Show($"导出时发生错误:\n{ex.Message}", "失败", MessageBoxButton.OK, MessageBoxImage.Error);
-                    StatusTextBlock.Text = "脱敏导出失败";
-                }
+                return;
+            }
+
+            try
+            {
+                StatusTextBlock.Text = "Generating obfuscated plan...";
+                var maskedDoc = SqlXmlAnalyzer.Core.Services.PlanObfuscatorService.ObfuscatePlan(ViewModel.CurrentPlanDoc);
+                maskedDoc.Save(fileName);
+                MessageBox.Show($"Obfuscated execution plan saved to:\n{fileName}\n\nSensitive table names and SQL text have been replaced, and the file remains readable by SSMS.", "Export succeeded", MessageBoxButton.OK, MessageBoxImage.Information);
+                StatusTextBlock.Text = "Ready";
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException("ExportObfuscatedPlan_Click", ex);
+                MessageBox.Show($"Export failed:\n{ex.Message}", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusTextBlock.Text = "Obfuscated export failed";
             }
         }
 
@@ -2028,21 +2044,20 @@ namespace SqlXmlAnalyzer
                         new HtmlReportSection("💡 详细诊断与建议", reportItems)
                     };
 
-                    var dlg = new Microsoft.Win32.SaveFileDialog
-                    {
-                        Filter = "HTML 报告 (*.html)|*.html",
-                        FileName = $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.html",
-                        Title = "保存死锁分析报告"
-                    };
+                    string? reportPath = ShowSaveFileDialog(
+                        "HTML report (*.html)|*.html",
+                        "Save deadlock analysis report",
+                        ".html",
+                        $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.html");
 
-                    if (dlg.ShowDialog() == true)
+                    if (reportPath != null)
                     {
-                        HtmlReportGenerator.SaveReport(ViewModel.CurrentDeadlockFilePath, "Deadlock", summaryText, mermaid, reportSections, dlg.FileName);
-                        Logger.Info($"死锁 HTML 报告成功保存至: {dlg.FileName}");
+                        HtmlReportGenerator.SaveReport(ViewModel.CurrentDeadlockFilePath, "Deadlock", summaryText, mermaid, reportSections, reportPath);
+                        Logger.Info($"Deadlock HTML report saved to {reportPath}");
 
-                        if (MessageBox.Show("报告保存成功！是否立即在浏览器中打开？", "保存成功", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            _browserLauncher.OpenFile(dlg.FileName);
+                            _browserLauncher.OpenFile(reportPath);
                         }
                     }
                 }
@@ -2098,21 +2113,20 @@ namespace SqlXmlAnalyzer
                         summaryText += $"估算总成本: {queryPlans[0].Attribute("EstimatedTotalSubtreeCost")?.Value ?? "N/A"}\n";
                     }
 
-                    var dlg = new Microsoft.Win32.SaveFileDialog
-                    {
-                        Filter = "HTML 报告 (*.html)|*.html",
-                        FileName = $"ExecutionPlanReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentPlanFilePath)}.html",
-                        Title = "保存执行计划分析报告"
-                    };
+                    string? reportPath = ShowSaveFileDialog(
+                        "HTML report (*.html)|*.html",
+                        "Save execution plan analysis report",
+                        ".html",
+                        $"ExecutionPlanReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentPlanFilePath)}.html");
 
-                    if (dlg.ShowDialog() == true)
+                    if (reportPath != null)
                     {
-                        HtmlReportGenerator.SaveReport(ViewModel.CurrentPlanFilePath, "ExecutionPlan", summaryText, mermaid, reportSections, dlg.FileName);
-                        Logger.Info($"执行计划 HTML 报告成功保存至: {dlg.FileName}");
+                        HtmlReportGenerator.SaveReport(ViewModel.CurrentPlanFilePath, "ExecutionPlan", summaryText, mermaid, reportSections, reportPath);
+                        Logger.Info($"Execution plan HTML report saved to {reportPath}");
 
-                        if (MessageBox.Show("报告保存成功！是否立即在浏览器中打开？", "保存成功", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            _browserLauncher.OpenFile(dlg.FileName);
+                            _browserLauncher.OpenFile(reportPath);
                         }
                     }
                 }
@@ -2142,75 +2156,73 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                string title = "";
-                string content = "";
-                string defaultFileName = "";
+                string title;
+                string content;
+                string defaultFileName;
                 FrameworkElement? imageElement = null;
 
                 if (MainTabControl.SelectedIndex == 0)
                 {
                     if (ViewModel.CurrentDeadlockDoc == null || ViewModel.CurrentDeadlockFilePath == null)
                     {
-                        MessageBox.Show("当前没有加载的死锁文件可导出！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("There is no loaded deadlock document to export.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
                         return;
                     }
-                    title = "SQL Server 死锁深度诊断报告";
 
-                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
-                    sb.AppendLine("=== 死锁类型与启发式诊断 ===");
+                    title = "SQL Server Deadlock Diagnostic Report";
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine("=== Deadlock Pattern Diagnostics ===");
                     var patterns = DeadlockPatternsListBox.ItemsSource as System.Collections.IEnumerable;
                     bool hasPatterns = false;
                     if (patterns != null)
                     {
                         foreach (var item in patterns)
                         {
-                            if (item is DeadlockPattern p)
+                            if (item is DeadlockPattern pattern)
                             {
-                                sb.AppendLine($"🔴 {p.TypeName}");
-                                sb.AppendLine($"   【描述】: {p.Description}");
-                                sb.AppendLine($"   🔍 【可能原因】: {p.LikelyCause}");
-                                sb.AppendLine($"   💡 【建议】: {p.Recommendation}");
+                                sb.AppendLine(pattern.TypeName);
+                                sb.AppendLine($"Description: {pattern.Description}");
+                                sb.AppendLine($"Likely cause: {pattern.LikelyCause}");
+                                sb.AppendLine($"Recommendation: {pattern.Recommendation}");
                                 sb.AppendLine();
                                 hasPatterns = true;
                             }
                         }
                     }
+
                     if (!hasPatterns)
                     {
-                        sb.AppendLine("未检测到典型的已知死锁模式。");
+                        sb.AppendLine("No known deadlock pattern was detected.");
                         sb.AppendLine();
                     }
 
                     if (!string.IsNullOrWhiteSpace(ViewModel.DeadlockPatternText))
                     {
-                        sb.AppendLine("=== 分析与选中项详情 ===");
-                        // Remove common emojis to prevent PDF generation engine (QuestPDF) from failing to render the text block
-                        string safeText = ViewModel.DeadlockPatternText
-                            .Replace("💀", "")
-                            .Replace("🗄️", "")
-                            .Replace("🔍", "")
-                            .Replace("💡", "")
-                            .Replace("🔴", "")
-                            .Replace("🟢", "")
-                            .Replace("🟠", "")
-                            .Replace("📋", "");
-                        sb.AppendLine(safeText);
+                        sb.AppendLine("=== Selected Item Analysis ===");
+                        content = ViewModel.DeadlockPatternText
+                            .Replace("馃拃", "")
+                            .Replace("馃攳", "")
+                            .Replace("馃挕", "")
+                            .Replace("馃敶", "")
+                            .Replace("馃煝", "")
+                            .Replace("馃煚", "")
+                            .Replace("馃搵", "");
+                        sb.AppendLine(content);
                     }
 
                     content = sb.ToString();
                     defaultFileName = $"DeadlockReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentDeadlockFilePath)}.{extension}";
-
-                    // Capture Deadlock Canvas Border
                     imageElement = DeadlockCanvasBorder;
                 }
                 else if (MainTabControl.SelectedIndex == 1)
                 {
                     if (string.IsNullOrWhiteSpace(ViewModel.PlanWarningsText) || ViewModel.CurrentPlanFilePath == null)
                     {
-                        MessageBox.Show("当前没有执行计划诊断结果可导出！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("There are no execution plan diagnostics to export.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
                         return;
                     }
-                    title = "SQL Server 执行计划专家诊断报告";
+
+                    title = "SQL Server Execution Plan Diagnostic Report";
                     content = ViewModel.PlanWarningsText;
                     defaultFileName = $"PlanReport_{Path.GetFileNameWithoutExtension(ViewModel.CurrentPlanFilePath)}.{extension}";
                 }
@@ -2219,28 +2231,27 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var dlg = new Microsoft.Win32.SaveFileDialog
-                {
-                    Filter = filter,
-                    FileName = defaultFileName,
-                    Title = $"保存 {extension.ToUpper()} 分析报告"
-                };
+                string? fileName = ShowSaveFileDialog(
+                    filter,
+                    $"Save {extension.ToUpperInvariant()} analysis report",
+                    $".{extension}",
+                    defaultFileName);
 
-                if (dlg.ShowDialog() == true)
+                if (fileName != null)
                 {
                     _pdfWordReportService.Export(
                         extension,
-                        dlg.FileName,
+                        fileName,
                         title,
                         content,
                         imageElement);
-                    MessageBox.Show($"{extension.ToUpper()} 报告已成功导出！", "导出成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"{extension.ToUpperInvariant()} report exported successfully.", "Export succeeded", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogException($"ExportTo{extension.ToUpper()}_Click", ex);
-                MessageBox.Show($"导出失败:\n{ex.Message}", "失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.LogException($"ExportTo{extension.ToUpperInvariant()}_Click", ex);
+                MessageBox.Show($"Export failed:\n{ex.Message}", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -2913,28 +2924,28 @@ namespace SqlXmlAnalyzer
 
         private void SaveSession_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new Microsoft.Win32.SaveFileDialog
+            string? fileName = ShowSaveFileDialog(
+                "SqlXmlAnalyzer tuning session (*.pesession)|*.pesession",
+                "Save current tuning session",
+                ".pesession",
+                "Tuning_Session.pesession");
+
+            if (fileName != null)
             {
-                Filter = "SqlXmlAnalyzer 调优会话 (*.pesession)|*.pesession",
-                Title = "保存当前调优会话",
-                FileName = "Tuning_Session.pesession"
-            };
-            if (dlg.ShowDialog() == true)
-            {
-                ViewModel.SaveSession(dlg.FileName);
+                ViewModel.SaveSession(fileName);
             }
         }
 
         private void LoadSession_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new Microsoft.Win32.OpenFileDialog
+            string? fileName = ShowOpenFileDialog(
+                "SqlXmlAnalyzer tuning session (*.pesession)|*.pesession",
+                "Open tuning session",
+                ".pesession");
+
+            if (fileName != null)
             {
-                Filter = "SqlXmlAnalyzer 调优会话 (*.pesession)|*.pesession",
-                Title = "打开调优会话文件"
-            };
-            if (dlg.ShowDialog() == true)
-            {
-                ViewModel.LoadSession(dlg.FileName);
+                ViewModel.LoadSession(fileName);
             }
         }
 
