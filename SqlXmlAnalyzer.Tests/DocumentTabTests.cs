@@ -16,6 +16,20 @@ namespace SqlXmlAnalyzer.Tests
             // Assert
             viewModel.Tabs.Should().BeEmpty();
             viewModel.SelectedTab.Should().BeNull();
+            viewModel.WorkspaceMode.Should().Be(WorkspaceMode.Start);
+            viewModel.IsNavigationPaneVisible.Should().BeTrue();
+            viewModel.IsPropertiesPaneVisible.Should().BeTrue();
+            viewModel.IsDiagnosticsPaneVisible.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ActivateWorkspace_UpdatesWorkspaceMode()
+        {
+            var viewModel = new MainViewModel();
+
+            viewModel.ActivateWorkspace(WorkspaceMode.ExecutionPlan);
+
+            viewModel.WorkspaceMode.Should().Be(WorkspaceMode.ExecutionPlan);
         }
 
         [Fact]

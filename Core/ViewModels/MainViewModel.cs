@@ -9,6 +9,14 @@ using SqlXmlAnalyzer;
 
 namespace SqlXmlAnalyzer.Core.ViewModels
 {
+    public enum WorkspaceMode
+    {
+        Start,
+        Deadlock,
+        ExecutionPlan,
+        Compare
+    }
+
     public class MainViewModel : ObservableObject
     {
         public ObservableCollection<DocumentTabViewModel> Tabs { get; } = new ObservableCollection<DocumentTabViewModel>();
@@ -18,6 +26,39 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             get => _selectedTab;
             set => SetProperty(ref _selectedTab, value);
+        }
+
+        private WorkspaceMode _workspaceMode = WorkspaceMode.Start;
+        public WorkspaceMode WorkspaceMode
+        {
+            get => _workspaceMode;
+            set => SetProperty(ref _workspaceMode, value);
+        }
+
+        private bool _isNavigationPaneVisible = true;
+        public bool IsNavigationPaneVisible
+        {
+            get => _isNavigationPaneVisible;
+            set => SetProperty(ref _isNavigationPaneVisible, value);
+        }
+
+        private bool _isPropertiesPaneVisible = true;
+        public bool IsPropertiesPaneVisible
+        {
+            get => _isPropertiesPaneVisible;
+            set => SetProperty(ref _isPropertiesPaneVisible, value);
+        }
+
+        private bool _isDiagnosticsPaneVisible = true;
+        public bool IsDiagnosticsPaneVisible
+        {
+            get => _isDiagnosticsPaneVisible;
+            set => SetProperty(ref _isDiagnosticsPaneVisible, value);
+        }
+
+        public void ActivateWorkspace(WorkspaceMode workspaceMode)
+        {
+            WorkspaceMode = workspaceMode;
         }
 
         public XDocument? CurrentDeadlockDoc { get; set; }

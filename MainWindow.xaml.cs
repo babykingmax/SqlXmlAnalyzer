@@ -129,6 +129,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
         private readonly Core.Services.PdfWordReportService _pdfWordReportService;
+        private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly DeadlockAnalysisService _deadlockAnalysisService;
         private readonly Core.Services.PlanAnalysisService _planAnalysisService;
 
@@ -228,6 +229,7 @@ namespace SqlXmlAnalyzer
             Core.Services.AnalysisSessionCoordinator? analysisSessions = null,
             Core.Services.BrowserLauncher? browserLauncher = null,
             Core.Services.PdfWordReportService? pdfWordReportService = null,
+            Core.Services.DocumentOpenService? documentOpenService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
         {
@@ -238,6 +240,8 @@ namespace SqlXmlAnalyzer
             _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
             _pdfWordReportService = pdfWordReportService
                 ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
+            _documentOpenService = documentOpenService
+                ?? new Core.Services.DocumentOpenService();
             _deadlockAnalysisService = deadlockAnalysisService
                 ?? new DeadlockAnalysisService();
             _planAnalysisService = planAnalysisService
@@ -261,6 +265,7 @@ namespace SqlXmlAnalyzer
                     RefreshABCompareTrees();
                     if (ViewModel.PlanA != null && ViewModel.PlanB != null)
                     {
+                        ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Compare);
                         var tab = MainTabControl.Items.OfType<System.Windows.Controls.TabItem>().FirstOrDefault(t => t.Header?.ToString()?.Contains("A/B") == true);
                         if (tab != null) MainTabControl.SelectedItem = tab;
                     }
@@ -483,27 +488,46 @@ namespace SqlXmlAnalyzer
             try
             {
                 StatusTextBlock.Text = $"正在加载并识别文件：{System.IO.Path.GetFileName(filePath)}...";
-                XDocument doc = await Task.Run(
-                    () =>
-                    {
-                        session.Token.ThrowIfCancellationRequested();
-                        XDocument loaded = LoadXmlDocument(filePath);
-                        session.Token.ThrowIfCancellationRequested();
-                        return loaded;
-                    },
-                    session.Token);
+                Core.Services.DocumentOpenResult openResult =
+                    await _documentOpenService.OpenAsync(filePath, session.Token);
                 if (!_analysisSessions.IsCurrent(session.RequestId))
                 {
                     return;
                 }
 
-                if (IsDeadlockXml(doc))
+                if (!openResult.IsSuccess)
+                {
+                    Logger.Error($"Document open failed: {filePath}. {openResult.ErrorMessage}");
+                    MessageBox.Show("鎸囧畾鐨勬枃浠朵笉瀛樺湪鎴栬矾寰勬棤鏁堬紒", "閿欒", MessageBoxButton.OK, MessageBoxImage.Error);
+                    StatusTextBlock.Text = "鏂囦欢鍔犺浇澶辫触";
+                    return;
+                }
+
+                if (openResult.Kind == Core.Services.AnalysisDocumentKind.XelDeadlockTrace)
+                {
+                    await AnalyzeXelFileAsync(filePath);
+                    return;
+                }
+
+                XDocument? doc = openResult.Document;
+                if (doc == null)
+                {
+                    MessageBox.Show(
+                        "The file did not produce an XML document.",
+                        "File load failed",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    StatusTextBlock.Text = "File load failed";
+                    return;
+                }
+
+                if (openResult.Kind == Core.Services.AnalysisDocumentKind.DeadlockXml)
                 {
                     Logger.Info($"文件被识别为死锁报告: {filePath}");
                     ViewModel.CurrentDeadlockFilePath = filePath;
                     await AnalyzeDeadlockDocumentAsync(doc, filePath, session.RequestId, session.Token);
                 }
-                else if (IsExecutionPlanXml(doc))
+                else if (openResult.Kind == Core.Services.AnalysisDocumentKind.ExecutionPlanXml)
                 {
                     Logger.Info($"文件被识别为 SQL Server 执行计划: {filePath}");
                     ViewModel.CurrentPlanFilePath = filePath;
@@ -591,6 +615,7 @@ namespace SqlXmlAnalyzer
                 }
 
                 ViewModel.CurrentDeadlockDoc = doc;
+                ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Deadlock);
                 DeadlockProcessesList.ItemsSource = result.Processes;
                 DeadlockResourcesList.ItemsSource = result.Resources;
                 DeadlockPatternsListBox.ItemsSource = result.Patterns;
@@ -656,6 +681,7 @@ namespace SqlXmlAnalyzer
                 }
 
                 ViewModel.CurrentPlanDoc = doc;
+                ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.ExecutionPlan);
                 Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.Mermaid.Length} 字符");
                 BuildPlanVisualTree(doc, _showplanNs);
 
