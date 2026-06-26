@@ -19,6 +19,8 @@ namespace SqlXmlAnalyzer.Core.ViewModels
 
     public class MainViewModel : ObservableObject
     {
+        private readonly TuningSessionService _tuningSessionService;
+
         public ObservableCollection<DocumentTabViewModel> Tabs { get; } = new ObservableCollection<DocumentTabViewModel>();
 
         private DocumentTabViewModel? _selectedTab;
@@ -106,7 +108,6 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         public ICommand OpenSandboxCommand { get; set; }
 
         public ICommand ClearResultsCommand { get; }
-        public ICommand ExportObfuscatedPlanCommand { get; }
 
         // --- 调优历史与 A/B 并排对比属性与命令 ---
         public ObservableCollection<PlanSnapshot> TuningHistory { get; } = new ObservableCollection<PlanSnapshot>();
@@ -195,10 +196,10 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         public ICommand SetAsPlanACommand { get; }
         public ICommand SetAsPlanBCommand { get; }
 
-        public MainViewModel()
+        public MainViewModel(TuningSessionService? tuningSessionService = null)
         {
+            _tuningSessionService = tuningSessionService ?? new TuningSessionService();
             ClearResultsCommand = new RelayCommand(_ => ClearResults());
-            ExportObfuscatedPlanCommand = new RelayCommand(_ => ExportObfuscatedPlan(), _ => CurrentPlanDoc != null);
             OpenSandboxCommand = new RelayCommand(p =>
             {
                 if (p is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion suggestion)
@@ -249,30 +250,10 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             if (CurrentPlanDoc == null) return;
 
-            XNamespace ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
-            double cost = 0.0;
-            var rootRelOp = CurrentPlanDoc.Descendants(ns + "RelOp").FirstOrDefault();
-            if (rootRelOp != null)
-            {
-                string costStr = rootRelOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
-                double.TryParse(costStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out cost);
-            }
-
-            int opCount = CurrentPlanDoc.Descendants(ns + "RelOp").Count();
-            int miCount = CurrentPlanDoc.Descendants(ns + "MissingIndex").Count();
-            string stmt = CurrentPlanDoc.Descendants(ns + "StmtSimple").FirstOrDefault()?.Attribute("StatementText")?.Value ?? "未能提取 SQL 语句";
-
-            var snapshot = new PlanSnapshot
-            {
-                Title = $"计划版本 #{TuningHistory.Count + 1} - " + System.IO.Path.GetFileName(CurrentPlanFilePath ?? "未命名"),
-                FilePath = CurrentPlanFilePath ?? string.Empty,
-                CaptureTime = DateTime.Now,
-                Document = new XDocument(CurrentPlanDoc),
-                TotalCost = cost,
-                OperatorCount = opCount,
-                MissingIndexCount = miCount,
-                StatementText = stmt
-            };
+            var snapshot = _tuningSessionService.CaptureSnapshot(
+                CurrentPlanDoc,
+                CurrentPlanFilePath,
+                TuningHistory.Count + 1);
             TuningHistory.Add(snapshot);
             StatusText = $"已成功捕获当前计划版本: {snapshot.Title}";
         }
@@ -281,29 +262,11 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             try
             {
-                XNamespace sessionNs = "http://schemas.sqlxmlanalyzer.com/session";
-                var root = new XElement(sessionNs + "TuningSession",
-                    new XAttribute("Version", "2.0"),
-                    new XAttribute("Created", DateTime.Now.ToString("o")),
-                    new XElement(sessionNs + "Snapshots",
-                        System.Linq.Enumerable.Select(TuningHistory, s => new XElement(sessionNs + "Snapshot",
-                            new XAttribute("Id", s.Id),
-                            new XAttribute("Title", s.Title),
-                            new XAttribute("FilePath", s.FilePath),
-                            new XAttribute("CaptureTime", s.CaptureTime.ToString("o")),
-                            new XAttribute("TotalCost", s.TotalCost.ToString(System.Globalization.CultureInfo.InvariantCulture)),
-                            new XAttribute("OperatorCount", s.OperatorCount),
-                            new XAttribute("MissingIndexCount", s.MissingIndexCount),
-                            new XElement(sessionNs + "StatementText", s.StatementText),
-                            new XElement(sessionNs + "PlanDoc", s.Document.Root)
-                        ))
-                    )
-                );
-                if (PlanA != null) root.Add(new XAttribute("PlanAId", PlanA.Id));
-                if (PlanB != null) root.Add(new XAttribute("PlanBId", PlanB.Id));
-
-                var doc = new XDocument(root);
-                doc.Save(filePath);
+                _tuningSessionService.Save(
+                    filePath,
+                    TuningHistory,
+                    PlanA,
+                    PlanB);
                 StatusText = $"调优会话已保存至: {System.IO.Path.GetFileName(filePath)}";
             }
             catch (Exception ex)
@@ -317,55 +280,16 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         {
             try
             {
-                var doc = SafeXmlHelper.LoadSafe(filePath);
-                if (doc.Root == null) return;
-
-                XNamespace sessionNs = "http://schemas.sqlxmlanalyzer.com/session";
-                var snapshotsElem = doc.Root.Element(sessionNs + "Snapshots");
-                if (snapshotsElem == null) return;
+                TuningSessionLoadResult result = _tuningSessionService.Load(filePath);
 
                 TuningHistory.Clear();
-                PlanA = null;
-                PlanB = null;
-
-                var snapshotsMap = new System.Collections.Generic.Dictionary<string, PlanSnapshot>();
-
-                foreach (var sElem in snapshotsElem.Elements(sessionNs + "Snapshot"))
+                foreach (PlanSnapshot snapshot in result.Snapshots)
                 {
-                    string id = sElem.Attribute("Id")?.Value ?? Guid.NewGuid().ToString();
-                    string title = sElem.Attribute("Title")?.Value ?? "Snapshot";
-                    string origPath = sElem.Attribute("FilePath")?.Value ?? string.Empty;
-                    DateTime.TryParse(sElem.Attribute("CaptureTime")?.Value, out DateTime captureTime);
-                    double.TryParse(sElem.Attribute("TotalCost")?.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double cost);
-                    int.TryParse(sElem.Attribute("OperatorCount")?.Value, out int opCount);
-                    int.TryParse(sElem.Attribute("MissingIndexCount")?.Value, out int miCount);
-                    string stmt = sElem.Element(sessionNs + "StatementText")?.Value ?? string.Empty;
-
-                    var planDocElem = sElem.Element(sessionNs + "PlanDoc")?.Elements().FirstOrDefault();
-                    XDocument planDoc = planDocElem != null ? new XDocument(new XElement(planDocElem)) : new XDocument();
-
-                    var snapshot = new PlanSnapshot
-                    {
-                        Title = title,
-                        FilePath = origPath,
-                        CaptureTime = captureTime == default ? DateTime.Now : captureTime,
-                        Document = planDoc,
-                        TotalCost = cost,
-                        OperatorCount = opCount,
-                        MissingIndexCount = miCount,
-                        StatementText = stmt
-                    };
-
                     TuningHistory.Add(snapshot);
-                    snapshotsMap[id] = snapshot;
                 }
 
-                string planAId = doc.Root.Attribute("PlanAId")?.Value ?? string.Empty;
-                string planBId = doc.Root.Attribute("PlanBId")?.Value ?? string.Empty;
-
-                if (!string.IsNullOrEmpty(planAId) && snapshotsMap.TryGetValue(planAId, out var pa)) PlanA = pa;
-                if (!string.IsNullOrEmpty(planBId) && snapshotsMap.TryGetValue(planBId, out var pb)) PlanB = pb;
-
+                PlanA = result.PlanA;
+                PlanB = result.PlanB;
                 StatusText = $"已成功载入调优会话，包含 {TuningHistory.Count} 个计划版本";
             }
             catch (Exception ex)
@@ -390,38 +314,5 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             AppTitle = "SqlXmlAnalyzer v2.0 - 智能诊断引擎";
         }
 
-        private void ExportObfuscatedPlan()
-        {
-            if (CurrentPlanDoc == null)
-            {
-                ShowMessageBox?.Invoke("请先打开一个执行计划文件！");
-                return;
-            }
-
-            var dlg = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "执行计划文件 (*.sqlplan)|*.sqlplan",
-                Title = "保存脱敏后的执行计划",
-                FileName = "Obfuscated_Plan.sqlplan"
-            };
-
-            if (dlg.ShowDialog() == true)
-            {
-                try
-                {
-                    StatusText = "正在生成脱敏计划...";
-                    var maskedDoc = PlanObfuscatorService.ObfuscatePlan(CurrentPlanDoc);
-                    maskedDoc.Save(dlg.FileName);
-                    ShowMessageBox?.Invoke($"脱敏后的执行计划已保存至:\n{dlg.FileName}\n\n安全提示：敏感表名和SQL语句已完全替换，但该文件仍可被 SSMS 解析！");
-                    StatusText = "就绪";
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException("ExportObfuscatedPlan", ex);
-                    ShowMessageBox?.Invoke($"导出时发生错误:\n{ex.Message}");
-                    StatusText = "脱敏导出失败";
-                }
-            }
-        }
     }
 }

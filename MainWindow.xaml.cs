@@ -237,6 +237,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanDocumentController? planDocumentController = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
+            Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
@@ -268,7 +269,7 @@ namespace SqlXmlAnalyzer
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
-            ViewModel = new Core.ViewModels.MainViewModel();
+            ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
             SetupCanvasZoomPan();
