@@ -42,6 +42,7 @@ namespace SqlXmlAnalyzer
 
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
+        private static readonly Core.Services.PlanGraphCollapseStateService CollapseStateService = new();
         private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
@@ -501,10 +502,9 @@ namespace SqlXmlAnalyzer
 
         private void ExpandAll_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var n in _masterNodes)
-            {
-                n.IsCollapsed = false;
-            }
+            ApplyCollapseStates(
+                CollapseStateService.CalculateExpandAll(
+                    BuildCollapseStateNodes()).CollapsedStates);
             UpdateGraphVisibility();
             ReapplyLayout();
         }
@@ -513,32 +513,9 @@ namespace SqlXmlAnalyzer
         {
             if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
 
-            var collapseNodes = new List<Core.Services.PlanGraphSmartCollapseNode>();
-            foreach (var node in _masterNodes)
-            {
-                node.IsCollapsed = false; // 先全部展开
-                if (node.RawElement != null)
-                {
-                    collapseNodes.Add(
-                        new Core.Services.PlanGraphSmartCollapseNode(
-                            node.RawElement,
-                            node.HasChildren,
-                            node.SubtreeCost,
-                            node.NodeSeverity));
-                }
-            }
-
-            var smartCollapseService = new Core.Services.PlanGraphSmartCollapseService();
-            Core.Services.PlanGraphSmartCollapseResult result =
-                smartCollapseService.CalculateCollapsedRelOps(collapseNodes);
-
-            foreach (var n in _masterNodes)
-            {
-                if (n.RawElement != null)
-                {
-                    n.IsCollapsed = result.CollapsedRelOps.Contains(n.RawElement);
-                }
-            }
+            ApplyCollapseStates(
+                CollapseStateService.CalculateSmartCollapse(
+                    BuildCollapseStateNodes()).CollapsedStates);
 
             UpdateGraphVisibility();
             ReapplyLayout();
@@ -559,7 +536,17 @@ namespace SqlXmlAnalyzer
                         CaptureCollapseLogSnapshot();
 
                     // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
-                    node.IsCollapsed = !node.IsCollapsed;
+                    if (node.RawElement != null)
+                    {
+                        ApplyCollapseStates(
+                            CollapseStateService.CalculateToggle(
+                                BuildCollapseStateNodes(),
+                                node.RawElement).CollapsedStates);
+                    }
+                    else
+                    {
+                        node.IsCollapsed = !node.IsCollapsed;
+                    }
 
                     // 1. 先在完整树上计算所有节点的新绝对坐标
                     ReapplyLayout();
@@ -585,6 +572,31 @@ namespace SqlXmlAnalyzer
                     AppendCollapseLog(logService.BuildExceptionLog(ex, DateTime.Now));
                 }
                 catch { }
+            }
+        }
+
+        private IReadOnlyList<Core.Services.PlanGraphCollapseStateNode> BuildCollapseStateNodes()
+        {
+            return _masterNodes
+                .Where(node => node.RawElement != null)
+                .Select(node => new Core.Services.PlanGraphCollapseStateNode(
+                    node.RawElement!,
+                    node.HasChildren,
+                    node.SubtreeCost,
+                    node.NodeSeverity,
+                    node.IsCollapsed))
+                .ToList();
+        }
+
+        private void ApplyCollapseStates(
+            IReadOnlyDictionary<XElement, bool> collapsedStates)
+        {
+            foreach (var node in _masterNodes)
+            {
+                node.IsCollapsed =
+                    node.RawElement != null
+                    && collapsedStates.TryGetValue(node.RawElement, out bool isCollapsed)
+                    && isCollapsed;
             }
         }
 
