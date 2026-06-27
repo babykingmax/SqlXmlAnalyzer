@@ -138,6 +138,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
         private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
         private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
+        private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -239,7 +240,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null,
             Core.Services.DeadlockGraphLayoutService? deadlockGraphLayoutService = null,
             Core.Services.DeadlockGraphEdgeService? deadlockGraphEdgeService = null,
-            Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null)
+            Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null,
+            Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -303,6 +305,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphEdgeService();
             _deadlockGraphPlacementService = deadlockGraphPlacementService
                 ?? new Core.Services.DeadlockGraphPlacementService();
+            _deadlockPlaybackStateService = deadlockPlaybackStateService
+                ?? new Core.Services.DeadlockPlaybackStateService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -875,49 +879,25 @@ namespace SqlXmlAnalyzer
             int currentStep = _playbackViewModel.CurrentStep;
             bool focusCritical = _playbackViewModel.FocusCriticalPath;
 
-            var visibleNodes = new HashSet<string>();
-            var visibleEdges = new HashSet<(string, string)>();
-
-            foreach (var ev in _currentTimeline.Events)
-            {
-                if (ev.StepNumber > currentStep) continue;
-                if (focusCritical && !ev.IsInCycle) continue;
-
-                string mappedProcId = $"proc_id_{ev.ProcessId}";
-                string mappedResId = ev.ResourceId.StartsWith("res_") ? ev.ResourceId.Replace("res_", "res_single_") : ev.ResourceId;
-
-                visibleNodes.Add(mappedProcId);
-                visibleNodes.Add(mappedResId);
-
-                if (ev.Type == "Request")
-                {
-                    visibleEdges.Add((mappedProcId, mappedResId));
-                }
-                else if (ev.Type == "Grant")
-                {
-                    visibleEdges.Add((mappedResId, mappedProcId));
-                }
-            }
+            Core.Services.DeadlockPlaybackGraphState playbackState =
+                _deadlockPlaybackStateService.BuildState(
+                    _currentTimeline,
+                    currentStep,
+                    focusCritical,
+                    _nodeElements.Keys,
+                    _arrowCache.Keys.Select(edge => new Core.Services.DeadlockPlaybackEdgeKey(edge.Item1, edge.Item2)));
 
             foreach (var kvp in _nodeElements)
             {
                 string id = kvp.Key;
                 var el = kvp.Value;
+                Core.Services.DeadlockPlaybackNodeState nodeState = playbackState.Nodes[id];
 
-                string rawId = id;
-                bool isProc = id.StartsWith("proc_id_");
-                if (isProc) rawId = id.Substring(8);
-                else if (id.StartsWith("res_single_")) rawId = id.Replace("res_single_", "res_");
-
-                bool inCycle = isProc
-                    ? (_currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsInCycle)
-                    : (_currentTimeline.Resources.ContainsKey(rawId) && _currentTimeline.Resources[rawId].IsInCycle);
-
-                if (focusCritical && !inCycle)
+                if (nodeState.IsCollapsed)
                 {
                     el.Visibility = Visibility.Collapsed;
                 }
-                else if (visibleNodes.Contains(id))
+                else if (nodeState.IsActive)
                 {
                     el.Visibility = Visibility.Visible;
                     el.Opacity = 1.0;
@@ -928,13 +908,13 @@ namespace SqlXmlAnalyzer
                     el.Opacity = 0.2;
                 }
 
-                if (isProc && _currentTimeline.Processes.ContainsKey(rawId) && _currentTimeline.Processes[rawId].IsVictim)
+                if (nodeState.IsVictim)
                 {
                     if (el is Border b && b.Child is Grid)
                     {
                         b.BorderBrush = new SolidColorBrush(Color.FromRgb(211, 47, 47));
                         b.BorderThickness = new Thickness(3);
-                        if (currentStep >= _currentTimeline.Events.FirstOrDefault(x => x.Type == "Victim")?.StepNumber)
+                        if (nodeState.IsVictimRevealed)
                             b.Background = new SolidColorBrush(Color.FromArgb(50, 211, 47, 47));
                         else
                             b.Background = Brushes.White;
@@ -946,20 +926,17 @@ namespace SqlXmlAnalyzer
             {
                 var idPair = edge.Key;
                 var visuals = edge.Value;
-                var relatedEvent = _currentTimeline.Events.FirstOrDefault(e =>
-                    (e.Type == "Request" && e.ProcessId == idPair.Item1 && e.ResourceId == idPair.Item2) ||
-                    (e.Type == "Grant" && e.ResourceId == idPair.Item1 && e.ProcessId == idPair.Item2));
+                var playbackEdgeKey = new Core.Services.DeadlockPlaybackEdgeKey(idPair.Item1, idPair.Item2);
+                Core.Services.DeadlockPlaybackEdgeState edgeState = playbackState.Edges[playbackEdgeKey];
 
-                bool inCycle = relatedEvent != null && relatedEvent.IsInCycle;
-
-                if (focusCritical && !inCycle)
+                if (edgeState.IsCollapsed)
                 {
                     visuals.line.Visibility = Visibility.Collapsed;
                     visuals.arrowHead.Visibility = Visibility.Collapsed;
                     visuals.label.Visibility = Visibility.Collapsed;
                     if (_stepBadges.TryGetValue(idPair, out var badge)) badge.Visibility = Visibility.Collapsed;
                 }
-                else if (visibleEdges.Contains(idPair))
+                else if (edgeState.IsActive)
                 {
                     visuals.line.Visibility = Visibility.Visible;
                     visuals.line.Opacity = 1.0;
@@ -969,7 +946,7 @@ namespace SqlXmlAnalyzer
                     visuals.label.Visibility = Visibility.Visible;
                     visuals.label.Opacity = 1.0;
 
-                    if (relatedEvent != null)
+                    if (edgeState.BadgeStepNumber.HasValue)
                     {
                         if (!_stepBadges.TryGetValue(idPair, out var badge))
                         {
@@ -979,7 +956,7 @@ namespace SqlXmlAnalyzer
                                 CornerRadius = new CornerRadius(8),
                                 Width = 16,
                                 Height = 16,
-                                Child = new TextBlock { Text = relatedEvent.StepNumber.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+                                Child = new TextBlock { Text = edgeState.BadgeStepNumber.Value.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
                             };
                             _stepBadges[idPair] = badge;
                             DeadlockGraphCanvas.Children.Add(badge);
