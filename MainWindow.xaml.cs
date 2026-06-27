@@ -135,6 +135,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockCanvasInteractionService _deadlockCanvasInteractionService;
         private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
         private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
+        private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -233,7 +234,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphGeometryService? deadlockGraphGeometryService = null,
             Core.Services.DeadlockCanvasInteractionService? deadlockCanvasInteractionService = null,
             Core.Services.DeadlockNodeDragService? deadlockNodeDragService = null,
-            Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null)
+            Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null,
+            Core.Services.DeadlockGraphLayoutService? deadlockGraphLayoutService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -291,6 +293,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockNodeDragService();
             _deadlockGraphSelectionService = deadlockGraphSelectionService
                 ?? new Core.Services.DeadlockGraphSelectionService();
+            _deadlockGraphLayoutService = deadlockGraphLayoutService
+                ?? new Core.Services.DeadlockGraphLayoutService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1049,32 +1053,6 @@ namespace SqlXmlAnalyzer
         private readonly Dictionary<string, Point> _nodePositions = new();
         private readonly Dictionary<string, (string LockType, string ObjectName)> _resourceGroupDetails = new();
 
-        private sealed class CollapsedProcess
-        {
-            public string Spid { get; set; } = "";
-            public string PrimaryId { get; set; } = "";
-            public int ThreadCount { get; set; }
-            public List<DeadlockProcess> Threads { get; set; } = new();
-            public DeadlockProcess PrimaryProcess => Threads.FirstOrDefault(t => t.Ecid == "0") ?? Threads.First();
-        }
-
-        private sealed class CollapsedResource
-        {
-            public string Id { get; set; } = "";
-            public string LockType { get; set; } = "";
-            public string ObjectName { get; set; } = "";
-            public string IndexName { get; set; } = "";
-            public int LockCount { get; set; }
-            public List<LockResource> RawResources { get; set; } = new();
-            public string Dbid => RawResources.FirstOrDefault()?.Dbid ?? "";
-
-            public HashSet<string> OwnerSpids { get; set; } = new();
-            public HashSet<string> WaiterSpids { get; set; } = new();
-
-            public string OwnerModes => string.Join(", ", RawResources.SelectMany(r => r.Owners).Select(o => o.Mode).Distinct());
-            public string WaiterModes => string.Join(", ", RawResources.SelectMany(r => r.Waiters).Select(w => w.Mode).Distinct());
-        }
-
         private void DrawDeadlockBipartiteGraph(DeadlockGraph graph)
         {
             DeadlockGraphCanvas.Children.Clear();
@@ -1084,50 +1062,21 @@ namespace SqlXmlAnalyzer
             _arrowCache.Clear();
             _resourceGroupDetails.Clear();
 
-            var processes = graph.Processes.DistinctBy(p => p.Id).ToList();
-            var resources = graph.Resources.ToList();
+            var layout = _deadlockGraphLayoutService.BuildLayout(graph);
+            var collapsedProcesses = layout.Processes;
+            var collapsedResources = layout.Resources;
 
-            if (processes.Count == 0)
+            foreach (var detail in layout.ResourceGroupDetails)
+            {
+                _resourceGroupDetails[detail.Key] = detail.Value;
+            }
+
+            if (collapsedProcesses.Count == 0)
             {
                 var tb = new TextBlock { Text = "无有效的死锁进程数据", Margin = new Thickness(20), FontSize = 12, Foreground = Brushes.Gray };
                 DeadlockGraphCanvas.Children.Add(tb);
                 return;
             }
-
-            // 1. 不再按 SPID 聚合，保留所有独立进程节点以展示N节点全貌（完全匹配原始分析图）
-            var collapsedProcesses = processes.Select(p => new CollapsedProcess
-            {
-                Spid = p.Spid,
-                PrimaryId = p.Id,
-                ThreadCount = 1,
-                Threads = new List<DeadlockProcess> { p }
-            }).ToList();
-
-            // 2. 不再强制聚合物理锁资源节点，保留所有独立资源
-            var collapsedResources = resources.Select((r, idx) =>
-            {
-                var collapsed = new CollapsedResource
-                {
-                    Id = $"res_single_{idx}",
-                    LockType = r.LockType,
-                    ObjectName = r.ObjectName,
-                    IndexName = r.IndexName,
-                    LockCount = 1,
-                    RawResources = new List<LockResource> { r }
-                };
-
-                // 此时直接映射具体的 Thread ID (p.Id)，而非 SPID
-                foreach (var owner in r.Owners)
-                {
-                    collapsed.OwnerSpids.Add(owner.Id);
-                }
-                foreach (var waiter in r.Waiters)
-                {
-                    collapsed.WaiterSpids.Add(waiter.Id);
-                }
-
-                return collapsed;
-            }).ToList();
 
             // 节点尺寸
             double procW = 220, procH = 90;
@@ -1175,9 +1124,6 @@ namespace SqlXmlAnalyzer
             {
                 var collapsedRes = collapsedResources[j];
                 var res = collapsedRes.RawResources.First();
-
-                // 缓存映射明细以供联动
-                _resourceGroupDetails[collapsedRes.Id] = (collapsedRes.LockType, collapsedRes.ObjectName);
 
                 double angle = 2 * Math.PI * nodeIndex / totalNodes;
                 double x = centerX + radiusX * Math.Cos(angle) - resW / 2;
