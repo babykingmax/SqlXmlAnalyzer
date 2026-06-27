@@ -123,6 +123,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
         private readonly Core.Services.PlanComparisonTreeViewRenderer _planComparisonTreeViewRenderer;
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
+        private readonly Core.Services.MermaidDiagramActionService _mermaidDiagramActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
@@ -221,6 +222,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
             Core.Services.PlanComparisonTreeViewRenderer? planComparisonTreeViewRenderer = null,
             Core.Services.MermaidDiagramService? mermaidDiagramService = null,
+            Core.Services.MermaidDiagramActionService? mermaidDiagramActionService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.HtmlReportExportService? htmlReportExportService = null,
             Core.Services.PortableReportExportService? portableReportExportService = null,
@@ -279,6 +281,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanComparisonTreeViewRenderer();
             _mermaidDiagramService = mermaidDiagramService
                 ?? new Core.Services.MermaidDiagramService();
+            _mermaidDiagramActionService = mermaidDiagramActionService
+                ?? new Core.Services.MermaidDiagramActionService(_mermaidDiagramService);
             _analysisReportController = analysisReportController
                 ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
             _fileDialogService = fileDialogService
@@ -2181,18 +2185,15 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                if (ViewModel.CurrentDeadlockDoc == null)
+                Core.Services.MermaidDiagramActionResult result =
+                    _mermaidDiagramActionService.BuildDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
+
+                if (ShowMissingMermaidDocumentIfNeeded(result))
                 {
-                    MessageBox.Show("当前没有加载的死锁文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                string mermaid = _mermaidDiagramService.BuildDeadlockDiagram(
-                    ViewModel.CurrentDeadlockDoc);
-
-                Clipboard.SetText(mermaid);
-                MessageBox.Show("死锁 Mermaid 代码已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                Logger.Info("已成功将死锁 Mermaid 代码复制到剪贴板。");
+                CopyMermaidResult(result, "死锁 Mermaid 代码已成功复制到剪贴板！");
             }
             catch (Exception ex)
             {
@@ -2215,18 +2216,17 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                if (ViewModel.CurrentPlanDoc == null)
+                Core.Services.MermaidDiagramActionResult result =
+                    _mermaidDiagramActionService.BuildPlanDiagram(
+                        ViewModel.CurrentPlanDoc,
+                        _showplanNs);
+
+                if (ShowMissingMermaidDocumentIfNeeded(result))
                 {
-                    MessageBox.Show("当前没有加载的执行计划文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                string mermaid = _mermaidDiagramService.BuildPlanDiagram(
-                    ViewModel.CurrentPlanDoc,
-                    _showplanNs);
-                Clipboard.SetText(mermaid);
-                MessageBox.Show("执行计划 Mermaid 代码已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                Logger.Info("已成功将执行计划 Mermaid 代码复制到剪贴板。");
+                CopyMermaidResult(result, "执行计划 Mermaid 代码已成功复制到剪贴板！");
             }
             catch (Exception ex)
             {
@@ -2266,12 +2266,24 @@ namespace SqlXmlAnalyzer
 
         private void OpenPlanMermaidInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.CurrentPlanDoc != null)
+            try
             {
-                string mermaid = _mermaidDiagramService.BuildPlanDiagram(
-                    ViewModel.CurrentPlanDoc,
-                    _showplanNs);
-                _browserLauncher.OpenMermaid(mermaid);
+                Core.Services.MermaidDiagramActionResult result =
+                    _mermaidDiagramActionService.BuildPlanDiagram(
+                        ViewModel.CurrentPlanDoc,
+                        _showplanNs);
+
+                if (ShowMissingMermaidDocumentIfNeeded(result))
+                {
+                    return;
+                }
+
+                OpenMermaidResultInBrowser(result);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException("OpenPlanMermaidInBrowser", ex);
+                MessageBox.Show($"在浏览器中打开 Mermaid 图形失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -2279,22 +2291,49 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                if (ViewModel.CurrentDeadlockDoc == null)
+                Core.Services.MermaidDiagramActionResult result =
+                    _mermaidDiagramActionService.BuildDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
+
+                if (ShowMissingMermaidDocumentIfNeeded(result))
                 {
-                    MessageBox.Show("当前没有加载的死锁文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                string mermaid = _mermaidDiagramService.BuildDeadlockDiagram(
-                    ViewModel.CurrentDeadlockDoc);
-                _browserLauncher.OpenMermaid(mermaid);
-                Logger.Info("已在浏览器中打开死锁 Mermaid 等待图。");
+                OpenMermaidResultInBrowser(result);
             }
             catch (Exception ex)
             {
                 Logger.LogException("OpenDeadlockMermaidInBrowser", ex);
                 MessageBox.Show($"在浏览器中打开 Mermaid 图形失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private static bool ShowMissingMermaidDocumentIfNeeded(
+            Core.Services.MermaidDiagramActionResult result)
+        {
+            if (result.Status != Core.Services.MermaidDiagramActionStatus.MissingDocument)
+            {
+                return false;
+            }
+
+            MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return true;
+        }
+
+        private static void CopyMermaidResult(
+            Core.Services.MermaidDiagramActionResult result,
+            string successMessage)
+        {
+            Clipboard.SetText(result.MermaidCode);
+            MessageBox.Show(successMessage, "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            Logger.Info($"{result.LogMessage} 已成功复制到剪贴板。");
+        }
+
+        private void OpenMermaidResultInBrowser(
+            Core.Services.MermaidDiagramActionResult result)
+        {
+            _browserLauncher.OpenMermaid(result.MermaidCode);
+            Logger.Info($"{result.LogMessage} 已在浏览器中打开。");
         }
 
         #endregion

@@ -171,6 +171,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.PlanComparisonTreeService>();
             services.AddSingleton<Core.Services.PlanComparisonTreeViewRenderer>();
             services.AddSingleton<Core.Services.MermaidDiagramService>();
+            services.AddSingleton<Core.Services.MermaidDiagramActionService>();
             services.AddSingleton<Core.Services.AnalysisReportController>();
             services.AddSingleton<Core.Services.TuningSessionService>();
             services.AddSingleton<Core.Services.PlanPropertyService>();
