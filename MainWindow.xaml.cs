@@ -132,6 +132,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
+        private readonly Core.Services.DeadlockCanvasInteractionService _deadlockCanvasInteractionService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -225,7 +226,8 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanAnalysisService? planAnalysisService = null,
             Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null,
             Core.Services.DeadlockGraphViewportService? deadlockGraphViewportService = null,
-            Core.Services.DeadlockGraphGeometryService? deadlockGraphGeometryService = null)
+            Core.Services.DeadlockGraphGeometryService? deadlockGraphGeometryService = null,
+            Core.Services.DeadlockCanvasInteractionService? deadlockCanvasInteractionService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -277,6 +279,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphViewportService();
             _deadlockGraphGeometryService = deadlockGraphGeometryService
                 ?? new Core.Services.DeadlockGraphGeometryService();
+            _deadlockCanvasInteractionService = deadlockCanvasInteractionService
+                ?? new Core.Services.DeadlockCanvasInteractionService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1521,21 +1525,24 @@ namespace SqlXmlAnalyzer
         {
             DeadlockGraphCanvas.MouseWheel += (s, e) =>
             {
-                double zoomFactor = e.Delta > 0 ? 1.1 : 0.9;
-                double newScale = DeadlockScaleTransform.ScaleX * zoomFactor;
-
-                if (newScale < 0.1 || newScale > 10) return;
-
                 Point mousePos = e.GetPosition(DeadlockGraphCanvas);
+                Core.Services.DeadlockCanvasTransformState? transform =
+                    _deadlockCanvasInteractionService.ZoomAt(
+                        e.Delta,
+                        mousePos,
+                        DeadlockScaleTransform.ScaleX,
+                        DeadlockTranslateTransform.X,
+                        DeadlockTranslateTransform.Y);
 
-                double absX = (mousePos.X - DeadlockTranslateTransform.X) / DeadlockScaleTransform.ScaleX;
-                double absY = (mousePos.Y - DeadlockTranslateTransform.Y) / DeadlockScaleTransform.ScaleY;
+                if (transform == null)
+                {
+                    return;
+                }
 
-                DeadlockScaleTransform.ScaleX = newScale;
-                DeadlockScaleTransform.ScaleY = newScale;
-
-                DeadlockTranslateTransform.X = mousePos.X - absX * newScale;
-                DeadlockTranslateTransform.Y = mousePos.Y - absY * newScale;
+                DeadlockScaleTransform.ScaleX = transform.Scale;
+                DeadlockScaleTransform.ScaleY = transform.Scale;
+                DeadlockTranslateTransform.X = transform.TranslateX;
+                DeadlockTranslateTransform.Y = transform.TranslateY;
                 e.Handled = true;
             };
 
@@ -1555,11 +1562,16 @@ namespace SqlXmlAnalyzer
                 if (_isPanning)
                 {
                     Point current = e.GetPosition(DeadlockCanvasBorder);
-                    double dx = current.X - _lastPanPoint.X;
-                    double dy = current.Y - _lastPanPoint.Y;
+                    Core.Services.DeadlockCanvasTransformState transform =
+                        _deadlockCanvasInteractionService.Pan(
+                            DeadlockScaleTransform.ScaleX,
+                            DeadlockTranslateTransform.X,
+                            DeadlockTranslateTransform.Y,
+                            _lastPanPoint,
+                            current);
 
-                    DeadlockTranslateTransform.X += dx;
-                    DeadlockTranslateTransform.Y += dy;
+                    DeadlockTranslateTransform.X = transform.TranslateX;
+                    DeadlockTranslateTransform.Y = transform.TranslateY;
 
                     _lastPanPoint = current;
                     e.Handled = true;
