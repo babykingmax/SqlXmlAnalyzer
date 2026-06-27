@@ -126,6 +126,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
         private readonly Core.Services.MermaidDiagramActionService _mermaidDiagramActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
+        private readonly Core.Services.HtmlReportActionService _htmlReportActionService;
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
@@ -226,6 +227,7 @@ namespace SqlXmlAnalyzer
             Core.Services.MermaidDiagramService? mermaidDiagramService = null,
             Core.Services.MermaidDiagramActionService? mermaidDiagramActionService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
+            Core.Services.HtmlReportActionService? htmlReportActionService = null,
             Core.Services.HtmlReportExportService? htmlReportExportService = null,
             Core.Services.PortableReportExportService? portableReportExportService = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
@@ -289,6 +291,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.MermaidDiagramActionService(_mermaidDiagramService);
             _analysisReportController = analysisReportController
                 ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
+            _htmlReportActionService = htmlReportActionService
+                ?? new Core.Services.HtmlReportActionService(_analysisReportController);
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
             _htmlReportExportService = htmlReportExportService
@@ -1759,44 +1763,31 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                Core.Services.HtmlAnalysisReport report;
-
-                if (MainTabControl.SelectedIndex == 0)
-                {
-                    if (ViewModel.CurrentDeadlockDoc == null || string.IsNullOrEmpty(ViewModel.CurrentDeadlockFilePath))
-                    {
-                        MessageBox.Show("Please open and analyze a deadlock XML file first.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    report = _analysisReportController.BuildDeadlockHtmlReport(
+                Core.Services.HtmlReportActionResult action =
+                    _htmlReportActionService.BuildReport(
+                        MainTabControl.SelectedIndex,
                         ViewModel.CurrentDeadlockDoc,
                         ViewModel.CurrentDeadlockFilePath,
-                        ViewModel.DeadlockPatternText);
-                }
-                else if (MainTabControl.SelectedIndex == 1)
-                {
-                    if (ViewModel.CurrentPlanDoc == null || string.IsNullOrEmpty(ViewModel.CurrentPlanFilePath))
-                    {
-                        MessageBox.Show("Please open and analyze an execution plan file first.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    report = _analysisReportController.BuildPlanHtmlReport(
+                        ViewModel.DeadlockPatternText,
                         ViewModel.CurrentPlanDoc,
                         ViewModel.CurrentPlanFilePath,
                         _showplanNs);
 
+                if (action.Status != Core.Services.HtmlReportActionStatus.Ready ||
+                    action.Report == null)
+                {
+                    MessageBox.Show(action.UserMessage, "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                Core.Services.HtmlAnalysisReport report = action.Report;
+                if (MainTabControl.SelectedIndex == 1)
+                {
                     ViewModel.MissingIndexes.Clear();
                     foreach (var missingIndex in report.MissingIndexes)
                     {
                         ViewModel.MissingIndexes.Add(missingIndex);
                     }
-                }
-                else
-                {
-                    MessageBox.Show("There is no selected analysis tab.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
                 }
 
                 Core.Services.HtmlReportExportResult result =
