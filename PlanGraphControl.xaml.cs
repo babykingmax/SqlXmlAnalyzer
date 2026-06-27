@@ -45,6 +45,7 @@ namespace SqlXmlAnalyzer
         private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
         private static readonly Core.Services.PlanGraphRelOpDetailsService RelOpDetailsService = new();
         private static readonly Core.Services.PlanGraphRuntimeCountersService RuntimeCountersService = new();
+        private static readonly Core.Services.PlanGraphWarningService WarningService = new();
 
         static PlanGraphControl()
         {
@@ -388,129 +389,24 @@ namespace SqlXmlAnalyzer
             string sEstDataSize = dEstDataSizeMB < 1.0 ? $"{(dEstDataSizeMB * 1024):F0} KB" : $"{dEstDataSizeMB:F0} MB";
             string sActDataSize = dActDataSizeMB < 1.0 ? $"{(dActDataSizeMB * 1024):F0} KB" : $"{dActDataSizeMB:F0} MB";
 
-            // Residual Predicate Warning
-            bool hasResidualStr = physical.Contains("Seek") && !string.IsNullOrEmpty(seekPredicate) && !string.IsNullOrEmpty(residualPredicate);
-            bool hasResidualWarning = false;
-
-            // Residual I/O Automatic Detection and Warning (新增高级诊断)
-            bool hasResidualPredicate = !string.IsNullOrEmpty(residualPredicate) || relOp.Elements(ns + "Predicate").Any(p => p.Parent?.Name != ns + "SeekPredicate");
-            bool hasResidualIOWarning = false;
-            string residualIOWarningDetails = "";
-
-            if (hasResidualPredicate && hasActual && hasActualRead)
-            {
-                if (actualRowsRead > ResidualIOMinRowsRead && actualRowsRead > actualRows * ResidualIOThreshold)
-                {
-                    hasResidualIOWarning = true;
-                    double ratio = actualRows > 0 ? actualRowsRead / actualRows : actualRowsRead;
-                    residualIOWarningDetails =
-                        $"**残差 I/O 警告**\n" +
-                        $"操作符: {physical}\n" +
-                        $"实际读取行数: {actualRowsRead:N0}\n" +
-                        $"实际返回行数: {actualRows:N0}\n" +
-                        $"读取/返回比: {ratio:F1} : 1\n" +
-                        $"说明: 该操作符因残差谓词过滤了大部分读取的行，造成大量额外 I/O。\n" +
-                        $"建议: 考虑将谓词改为索引列能直接查找的条件，或添加包含列的覆盖索引。";
-                }
-            }
-
-            if (!hasResidualIOWarning && hasResidualStr)
-            {
-                if (hasActual && hasActualRead)
-                {
-                    if (actualRowsRead > actualRows * 1.2 && (actualRowsRead - actualRows) > 100)
-                        hasResidualWarning = true;
-                }
-                else
-                {
-                    hasResidualWarning = true;
-                }
-            }
-
-            // Warnings parsing
-            var warningsList = new List<string>();
-
-            // 1. RelOp Warnings
-            var warningsEl = relOp.Element(ns + "Warnings");
-            if (warningsEl != null)
-            {
-                foreach (var warnNode in warningsEl.Elements())
-                {
-                    if (warnNode == null) continue;
-                    string warnText = $"⚠ 操作符警告: {warnNode.Name.LocalName}";
-                    if (warnNode.Name.LocalName == "PlanAffectingConvert")
-                    {
-                        var expr = warnNode.Attribute("Expression")?.Value;
-                        if (!string.IsNullOrEmpty(expr)) warnText += $"\n   [转换表达式]: {expr}";
-                    }
-                    else if (warnNode.Name.LocalName == "HashWarning" || warnNode.Name.LocalName == "SortWarning")
-                    {
-                        var memWarn = warnNode.Attribute("HashWarningDetail")?.Value ?? warnNode.Attribute("SortWarningDetail")?.Value;
-                        if (!string.IsNullOrEmpty(memWarn)) warnText += $" ({memWarn})";
-                    }
-                    warningsList.Add(warnText);
-                }
-            }
-
-            // 2. CONVERT_IMPLICIT check
-            var implicitConverts = relOp.Descendants(ns + "ScalarOperator")
-                .Where(op => op.Attribute("ScalarString")?.Value?.Contains("CONVERT_IMPLICIT") == true)
-                .Select(op => op.Attribute("ScalarString")?.Value)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .ToList();
-
-            if (implicitConverts.Count > 0)
-            {
-                warningsList.Add($"隐式类型转换 (CONVERT_IMPLICIT):\n   " + string.Join("\n   ", implicitConverts));
-            }
-
-            // 3. Global Memory Warnings (show on Root node)
-            if (nodeId == "0" || nodeId == "1") // 根节点通常显示整体内存信息
-            {
-                var memGrantInfo = relOp.Document?.Descendants(ns + "MemoryGrantInfo").FirstOrDefault();
-                if (memGrantInfo != null)
-                {
-                    double granted = safeFloat(memGrantInfo.Attribute("GrantedMemory")?.Value);
-                    double used = safeFloat(memGrantInfo.Attribute("MaxUsedMemory")?.Value);
-                    if (granted > 10240 && used > 0 && (used / granted) < 0.1)
-                        warningsList.Add($"内存预估过度 (申请 {granted / 1024.0:F1}MB, 仅用 {used / 1024.0:F1}MB)");
-                    else if (granted > 0 && used > granted)
-                        warningsList.Add($"内存不足溢出落盘 (申请 {granted / 1024.0:F1}MB, 实际需 {used / 1024.0:F1}MB)");
-                }
-
-                var globalWarnings = relOp.Document?.Descendants(ns + "Warnings").FirstOrDefault();
-                if (globalWarnings != null)
-                {
-                    var memWarn = globalWarnings.Element(ns + "MemoryGrantWarning");
-                    if (memWarn != null)
-                    {
-                        string type = memWarn.Attribute("GrantWarningKind")?.Value ?? "";
-                        warningsList.Add($"内存分配警告: {type}");
-                    }
-                }
-            }
-
-            if (isSkewed)
-                warningsList.Add("线程数据倾斜 (Thread Data Skew)");
-
-            if (hasResidualIOWarning)
-                warningsList.Add(residualIOWarningDetails);
-            else if (hasResidualWarning)
-                warningsList.Add("残差谓词寻址 (Residual Predicate)");
-
-            // ===== Rule Engine Execution =====
             var ruleResults = _ruleEngine.AnalyzeNode(relOp, ns);
-            string highestSeverity = "Info";
-            foreach (var r in ruleResults)
-            {
-                warningsList.Add($"[{r.Severity}] {r.Title}: {r.Message}");
-                if (r.Severity == "Critical") highestSeverity = "Critical";
-                else if (r.Severity == "Warning" && highestSeverity != "Critical") highestSeverity = "Warning";
-            }
-            // =================================
-
-            string warningsStr = string.Join("\n• ", warningsList);
-            if (warningsList.Count > 0) warningsStr = "• " + warningsStr;
+            Core.Services.PlanGraphWarningResult warningResult =
+                WarningService.BuildWarnings(
+                    relOp,
+                    ns,
+                    new Core.Services.PlanGraphWarningContext(
+                        nodeId,
+                        physical,
+                        residualPredicate,
+                        seekPredicate,
+                        hasActual,
+                        hasActualRead,
+                        actualRows,
+                        actualRowsRead,
+                        isSkewed,
+                        ResidualIOThreshold,
+                        ResidualIOMinRowsRead),
+                    ruleResults);
 
             // Parallelism
             bool isParallel = relOp.Attribute("Parallel")?.Value == "1" ||
@@ -572,8 +468,8 @@ namespace SqlXmlAnalyzer
                 PartitionCount = relOpDetails.PartitionCount,
                 PartitionRange = relOpDetails.PartitionRange,
                 IsParallel = isParallel,
-                Warnings = warningsStr,
-                NodeSeverity = highestSeverity,
+                Warnings = warningResult.WarningsText,
+                NodeSeverity = warningResult.HighestSeverity,
                 Location = new Point(50, 50)
             };
 
