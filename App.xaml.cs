@@ -175,6 +175,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.MermaidDiagramActionService>();
             services.AddSingleton<Core.Services.AnalysisReportController>();
             services.AddSingleton<Core.Services.HtmlReportActionService>();
+            services.AddSingleton<Core.Services.PortableReportActionService>();
             services.AddSingleton<Core.Services.TuningSessionService>();
             services.AddSingleton<Core.Services.PlanPropertyService>();
             services.AddSingleton<Core.Services.PlanTreeService>();

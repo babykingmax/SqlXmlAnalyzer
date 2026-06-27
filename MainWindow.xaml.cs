@@ -127,6 +127,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.MermaidDiagramActionService _mermaidDiagramActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.HtmlReportActionService _htmlReportActionService;
+        private readonly Core.Services.PortableReportActionService _portableReportActionService;
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
@@ -228,6 +229,7 @@ namespace SqlXmlAnalyzer
             Core.Services.MermaidDiagramActionService? mermaidDiagramActionService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.HtmlReportActionService? htmlReportActionService = null,
+            Core.Services.PortableReportActionService? portableReportActionService = null,
             Core.Services.HtmlReportExportService? htmlReportExportService = null,
             Core.Services.PortableReportExportService? portableReportExportService = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
@@ -293,6 +295,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
             _htmlReportActionService = htmlReportActionService
                 ?? new Core.Services.HtmlReportActionService(_analysisReportController);
+            _portableReportActionService = portableReportActionService
+                ?? new Core.Services.PortableReportActionService(_analysisReportController);
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
             _htmlReportExportService = htmlReportExportService
@@ -1827,49 +1831,37 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                Core.Services.PortableAnalysisReport report;
-                FrameworkElement? imageElement;
-
-                if (MainTabControl.SelectedIndex == 0)
-                {
-                    if (ViewModel.CurrentDeadlockDoc == null || ViewModel.CurrentDeadlockFilePath == null)
-                    {
-                        MessageBox.Show("There is no loaded deadlock document to export.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-
-                    report = _analysisReportController.BuildDeadlockPortableReport(
+                Core.Services.PortableReportActionResult action =
+                    _portableReportActionService.BuildReport(
+                        MainTabControl.SelectedIndex,
                         ViewModel.CurrentDeadlockFilePath,
                         DeadlockPatternsListBox.ItemsSource?.OfType<DeadlockPattern>(),
                         ViewModel.DeadlockPatternText,
-                        extension);
-                    imageElement = report.IncludeDeadlockDiagram ? DeadlockCanvasBorder : null;
-                }
-                else if (MainTabControl.SelectedIndex == 1)
-                {
-                    if (string.IsNullOrWhiteSpace(ViewModel.PlanWarningsText) || ViewModel.CurrentPlanFilePath == null)
-                    {
-                        MessageBox.Show("There are no execution plan diagnostics to export.", "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-
-                    report = _analysisReportController.BuildPlanPortableReport(
                         ViewModel.CurrentPlanFilePath,
                         ViewModel.PlanWarningsText,
                         extension);
-                    imageElement = null;
+
+                if (action.Status == Core.Services.PortableReportActionStatus.MissingContent)
+                {
+                    MessageBox.Show(action.UserMessage, "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
                 }
-                else
+
+                if (action.Status != Core.Services.PortableReportActionStatus.Ready ||
+                    action.Report == null)
                 {
                     return;
                 }
+
+                FrameworkElement? imageElement =
+                    action.IncludeDeadlockDiagram ? DeadlockCanvasBorder : null;
 
                 Core.Services.PortableReportExportResult result =
                     _portableReportExportService.Export(
                         new Core.Services.PortableReportExportRequest(
                             extension,
                             filter,
-                            report,
+                            action.Report,
                             imageElement));
 
                 if (result.Status == Core.Services.PortableReportExportStatus.Exported)
