@@ -2,7 +2,6 @@ using Nodify;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -1371,6 +1370,7 @@ namespace SqlXmlAnalyzer
     {
         private PlanNodeViewModel? _source;
         private PlanNodeViewModel? _target;
+        private static readonly Core.Services.PlanGraphConnectionDisplayService ConnectionDisplayService = new();
 
         private static readonly Brush DefaultBrush = new SolidColorBrush(Color.FromRgb(0x78, 0x90, 0x9C));
         private static readonly Brush RedBrush = new SolidColorBrush(Color.FromRgb(0xD3, 0x2F, 0x2F));
@@ -1383,6 +1383,39 @@ namespace SqlXmlAnalyzer
             RedBrush.Freeze();
             OrangeBrush.Freeze();
             GreenBrush.Freeze();
+        }
+
+        private static Core.Services.PlanGraphConnectionNodeInfo? ToConnectionNodeInfo(
+            PlanNodeViewModel? node)
+        {
+            return node == null
+                ? null
+                : new Core.Services.PlanGraphConnectionNodeInfo(
+                    node.PhysicalOp,
+                    node.EstRowsNum,
+                    node.ActualRows,
+                    node.ActualRowsNum,
+                    node.AvgRowSizeNum);
+        }
+
+        private static Core.Services.PlanGraphConnectionMetricKind ToMetricKind(
+            LinkMetricMode metricMode)
+        {
+            return metricMode == LinkMetricMode.DataSize
+                ? Core.Services.PlanGraphConnectionMetricKind.DataSize
+                : Core.Services.PlanGraphConnectionMetricKind.RowCount;
+        }
+
+        private static Brush ToStrokeBrush(
+            Core.Services.PlanGraphConnectionStrokeKey strokeKey)
+        {
+            return strokeKey switch
+            {
+                Core.Services.PlanGraphConnectionStrokeKey.Red => RedBrush,
+                Core.Services.PlanGraphConnectionStrokeKey.Orange => OrangeBrush,
+                Core.Services.PlanGraphConnectionStrokeKey.Green => GreenBrush,
+                _ => DefaultBrush
+            };
         }
 
         private PlanLayoutMode _layoutMode = PlanLayoutMode.Horizontal;
@@ -1486,19 +1519,21 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public double RowsCount => Source != null ? (Source.ActualRowsNum > 0 ? Source.ActualRowsNum : Source.EstRowsNum) : 0;
-        public double DataSizeVal => Source != null ? (Source.ActualRowsNum > 0 ? Source.ActualRowsNum * Source.AvgRowSizeNum : Source.EstRowsNum * Source.AvgRowSizeNum) : 0;
+        public double RowsCount =>
+            ConnectionDisplayService.CalculateRowsCount(
+                ToConnectionNodeInfo(Source));
+
+        public double DataSizeVal =>
+            ConnectionDisplayService.CalculateDataSize(
+                ToConnectionNodeInfo(Source));
 
         public double ThicknessValue
         {
             get
             {
-                double val = CurrentLinkMetric switch
-                {
-                    LinkMetricMode.RowCount => RowsCount,
-                    LinkMetricMode.DataSize => DataSizeVal,
-                    _ => RowsCount
-                };
+                double val = ConnectionDisplayService.GetMetricValue(
+                    ToMetricKind(CurrentLinkMetric),
+                    ToConnectionNodeInfo(Source));
 
                 return Core.Services.PlanGraphMetricService.CalculateLinkThickness(val);
             }
@@ -1599,51 +1634,20 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                if (Source == null) return DefaultBrush;
-
-                bool hasActual = Source.ActualRowsNum > 0 || (Source.ActualRowsDisplay != "N/A" && !string.IsNullOrEmpty(Source.ActualRows));
-                if (!hasActual)
-                {
-                    return DefaultBrush;
-                }
-
-                double est = Source.EstRowsNum;
-                double act = Source.ActualRowsNum;
-
-                if (est <= 0) est = 1.0;
-                if (act <= 0) act = 1.0;
-
-                double ratio = act / est;
-                if (ratio > 5.0 || ratio < 0.2)
-                {
-                    return RedBrush;
-                }
-                else if (ratio > 2.0 || ratio < 0.5)
-                {
-                    return OrangeBrush;
-                }
-                else
-                {
-                    return GreenBrush;
-                }
+                Core.Services.PlanGraphConnectionStrokeKey strokeKey =
+                    ConnectionDisplayService.GetStrokeKey(
+                        ToConnectionNodeInfo(Source));
+                return ToStrokeBrush(strokeKey);
             }
-        }
-
-        private static string FormatBytes(double bytes)
-        {
-            return Core.Services.PlanGraphMetricService.FormatBytes(bytes);
         }
 
         public string LabelText
         {
             get
             {
-                return CurrentLinkMetric switch
-                {
-                    LinkMetricMode.RowCount => PlanGraphControl.FormatNumber(RowsCount),
-                    LinkMetricMode.DataSize => FormatBytes(DataSizeVal),
-                    _ => PlanGraphControl.FormatNumber(RowsCount)
-                };
+                return ConnectionDisplayService.BuildLabel(
+                    ToMetricKind(CurrentLinkMetric),
+                    ToConnectionNodeInfo(Source));
             }
         }
 
@@ -1651,34 +1655,9 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                if (Source == null) return "未知数据流";
-
-                string estRowsStr = PlanGraphControl.FormatNumber(Source.EstRowsNum);
-                string actRowsStr = string.IsNullOrEmpty(Source.ActualRows) || Source.ActualRows == "N/A" ? "N/A" : PlanGraphControl.FormatNumber(Source.ActualRowsNum);
-
-                string estSizeStr = FormatBytes(Source.EstRowsNum * Source.AvgRowSizeNum);
-                string actSizeStr = string.IsNullOrEmpty(Source.ActualRows) || Source.ActualRows == "N/A" ? "N/A" : FormatBytes(Source.ActualRowsNum * Source.AvgRowSizeNum);
-
-                var sb = new StringBuilder();
-                sb.AppendLine($"数据流: {Source.PhysicalOp} ➔ {Target?.PhysicalOp}");
-                sb.AppendLine($"预估行数: {estRowsStr} ({Source.EstRowsNum:N0})");
-                if (actRowsStr != "N/A")
-                {
-                    sb.AppendLine($"实际行数: {actRowsStr} ({Source.ActualRowsNum:N0})");
-                }
-                sb.AppendLine($"平均行宽: {Source.AvgRowSizeNum:N0} 字节");
-                sb.AppendLine($"预估大小: {estSizeStr}");
-                if (actSizeStr != "N/A")
-                {
-                    sb.AppendLine($"实际大小: {actSizeStr}");
-                    double ratio = Source.EstRowsNum > 0 ? (Source.ActualRowsNum / Source.EstRowsNum) : 1.0;
-                    sb.AppendLine($"估算偏差: {ratio:F2} 倍");
-                    if (ratio > 5.0)
-                        sb.AppendLine("⚠️ 严重低估 (可能会引发非最优物理算法选择！)");
-                    else if (ratio < 0.2)
-                        sb.AppendLine("⚠️ 严重高估 (可能会导致过度的内存申请排队！)");
-                }
-                return sb.ToString().TrimEnd();
+                return ConnectionDisplayService.BuildToolTip(
+                    ToConnectionNodeInfo(Source),
+                    Target?.PhysicalOp);
             }
         }
 
