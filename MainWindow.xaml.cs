@@ -131,6 +131,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
+        private readonly Core.Services.FileAssociationRegistrationService _fileAssociationRegistrationService;
         private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
@@ -243,6 +244,7 @@ namespace SqlXmlAnalyzer
             Core.Services.SqlDiffDocumentRenderer? sqlDiffDocumentRenderer = null,
             Core.Services.SqlQuickFixService? sqlQuickFixService = null,
             Core.Services.IFileDialogService? fileDialogService = null,
+            Core.Services.FileAssociationRegistrationService? fileAssociationRegistrationService = null,
             Core.Services.AnalysisClipboardService? analysisClipboardService = null,
             Core.Services.MissingIndexDeploymentScriptService? missingIndexDeploymentScriptService = null,
             Core.Services.MissingIndexClipboardActionService? missingIndexClipboardActionService = null,
@@ -305,6 +307,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PortableReportActionService(_analysisReportController);
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
+            _fileAssociationRegistrationService = fileAssociationRegistrationService
+                ?? new Core.Services.FileAssociationRegistrationService();
             _htmlReportExportService = htmlReportExportService
                 ?? new Core.Services.HtmlReportExportService(
                     new Core.Services.HtmlReportWriter(),
@@ -1987,53 +1991,21 @@ namespace SqlXmlAnalyzer
             {
                 try
                 {
-                    RegisterFileAssociations();
+                    Core.Services.FileAssociationRegistrationResult registrationResult =
+                        _fileAssociationRegistrationService.RegisterCurrentUserAssociations();
+
+                    if (registrationResult.Status
+                        != Core.Services.FileAssociationRegistrationStatus.Registered)
+                    {
+                        MessageBox.Show("文件关联注册失败：无法访问当前用户的文件关联注册表。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     MessageBox.Show("文件关联注册成功！您现在可以直接双击或右键打开 .sqlplan 和 .xdl 文件了。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"注册文件关联失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        public static void RegisterFileAssociations()
-        {
-            string appPath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? "";
-            if (string.IsNullOrEmpty(appPath)) return;
-
-            using (var classesKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Classes", true))
-            {
-                if (classesKey == null) return;
-
-                // 1. .sqlplan 关联
-                using (var sqlplanKey = classesKey.CreateSubKey(".sqlplan"))
-                {
-                    sqlplanKey.SetValue("", "SqlXmlAnalyzer.sqlplan");
-                }
-                using (var sqlplanProgKey = classesKey.CreateSubKey("SqlXmlAnalyzer.sqlplan"))
-                {
-                    sqlplanProgKey.SetValue("", "SQL Server 执行计划文件 (.sqlplan)");
-                    sqlplanProgKey.SetValue("FriendlyTypeName", "SQL Server 执行计划文件 (.sqlplan)");
-                    using (var shellKey = sqlplanProgKey.CreateSubKey(@"shell\open\command"))
-                    {
-                        shellKey.SetValue("", $"\"{appPath}\" \"%1\"");
-                    }
-                }
-
-                // 2. .xdl 关联
-                using (var xdlKey = classesKey.CreateSubKey(".xdl"))
-                {
-                    xdlKey.SetValue("", "SqlXmlAnalyzer.xdl");
-                }
-                using (var xdlProgKey = classesKey.CreateSubKey("SqlXmlAnalyzer.xdl"))
-                {
-                    xdlProgKey.SetValue("", "SQL Server 死锁文件 (.xdl)");
-                    xdlProgKey.SetValue("FriendlyTypeName", "SQL Server 死锁文件 (.xdl)");
-                    using (var shellKey = xdlProgKey.CreateSubKey(@"shell\open\command"))
-                    {
-                        shellKey.SetValue("", $"\"{appPath}\" \"%1\"");
-                    }
                 }
             }
         }

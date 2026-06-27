@@ -185,6 +185,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.SqlDiffDocumentRenderer>();
             services.AddSingleton<Core.Services.SqlQuickFixService>();
             services.AddSingleton<Core.Services.IFileDialogService, Core.Services.WpfFileDialogService>();
+            services.AddSingleton<Core.Services.FileAssociationRegistrationService>();
             services.AddSingleton<Core.Services.IHtmlReportWriter, Core.Services.HtmlReportWriter>();
             services.AddSingleton<Core.Services.HtmlReportExportService>();
             services.AddSingleton<Core.Services.PortableReportExportService>();
