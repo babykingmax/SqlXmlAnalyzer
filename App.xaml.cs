@@ -159,6 +159,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<TemporaryFileManager>();
             services.AddSingleton<Core.Services.AnalysisSessionCoordinator>();
             services.AddSingleton<Core.Services.BrowserLauncher>();
+            services.AddSingleton<Core.Services.LogFolderActionService>();
             services.AddSingleton<Core.Services.PdfWordReportService>();
             services.AddSingleton<Core.Services.IPdfWordReportExporter>(sp =>
                 sp.GetRequiredService<Core.Services.PdfWordReportService>());

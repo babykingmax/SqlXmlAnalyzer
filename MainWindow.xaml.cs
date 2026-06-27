@@ -116,6 +116,7 @@ namespace SqlXmlAnalyzer
         private readonly TemporaryFileManager _temporaryFileManager;
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
+        private readonly Core.Services.LogFolderActionService _logFolderActionService;
         private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
@@ -221,6 +222,7 @@ namespace SqlXmlAnalyzer
             TemporaryFileManager? temporaryFileManager = null,
             Core.Services.AnalysisSessionCoordinator? analysisSessions = null,
             Core.Services.BrowserLauncher? browserLauncher = null,
+            Core.Services.LogFolderActionService? logFolderActionService = null,
             Core.Services.IPdfWordReportExporter? pdfWordReportService = null,
             Core.Services.DocumentOpenService? documentOpenService = null,
             Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
@@ -272,6 +274,8 @@ namespace SqlXmlAnalyzer
             _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
             _analysisSessions = analysisSessions ?? new Core.Services.AnalysisSessionCoordinator();
             _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
+            _logFolderActionService = logFolderActionService
+                ?? new Core.Services.LogFolderActionService();
             Core.Services.IPdfWordReportExporter effectiveReportExporter =
                 pdfWordReportService ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
             _documentOpenService = documentOpenService
@@ -1957,22 +1961,23 @@ namespace SqlXmlAnalyzer
 
         private void OpenLogsFolder_Click(object sender, RoutedEventArgs e)
         {
-            string logsPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log");
-            if (Directory.Exists(logsPath))
+            Core.Services.LogFolderActionResult result =
+                _logFolderActionService.BuildOpenLogsFolder();
+
+            if (result.Status == Core.Services.LogFolderActionStatus.MissingDirectory)
             {
-                try
-                {
-                    _browserLauncher.OpenFolder(logsPath);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException("OpenLogsFolder_Click", ex);
-                    MessageBox.Show($"无法打开日志文件夹: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show(result.UserMessage);
+                return;
             }
-            else
+
+            try
             {
-                MessageBox.Show("日志目录尚未创建。");
+                _browserLauncher.OpenFolder(result.FolderPath);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException("OpenLogsFolder_Click", ex);
+                MessageBox.Show($"无法打开日志文件夹: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
