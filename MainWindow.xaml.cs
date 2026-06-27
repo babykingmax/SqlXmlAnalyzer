@@ -134,6 +134,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
         private readonly Core.Services.DeadlockCanvasInteractionService _deadlockCanvasInteractionService;
         private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
+        private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -231,7 +232,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphViewportService? deadlockGraphViewportService = null,
             Core.Services.DeadlockGraphGeometryService? deadlockGraphGeometryService = null,
             Core.Services.DeadlockCanvasInteractionService? deadlockCanvasInteractionService = null,
-            Core.Services.DeadlockNodeDragService? deadlockNodeDragService = null)
+            Core.Services.DeadlockNodeDragService? deadlockNodeDragService = null,
+            Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -287,6 +289,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockCanvasInteractionService();
             _deadlockNodeDragService = deadlockNodeDragService
                 ?? new Core.Services.DeadlockNodeDragService();
+            _deadlockGraphSelectionService = deadlockGraphSelectionService
+                ?? new Core.Services.DeadlockGraphSelectionService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1460,29 +1464,25 @@ namespace SqlXmlAnalyzer
                 if (e.ClickCount == 2)
                 {
                     // 双击联动同步选择侧边栏
-                    if (id.StartsWith("res_single_"))
+                    LockResource? resource = _deadlockGraphSelectionService.FindResourceForNode(
+                        id,
+                        _resourceGroupDetails,
+                        DeadlockResourcesList.ItemsSource?.Cast<LockResource>());
+                    if (resource != null)
                     {
-                        if (_resourceGroupDetails.TryGetValue(id, out var details))
-                        {
-                            var resItem = DeadlockResourcesList.ItemsSource?.Cast<LockResource>()
-                                .FirstOrDefault(r => r.ObjectName == details.ObjectName && r.LockType == details.LockType);
-                            if (resItem != null)
-                            {
-                                DeadlockResourcesList.SelectedItem = resItem;
-                                DeadlockResourcesList.ScrollIntoView(resItem);
-                            }
-                        }
+                        DeadlockResourcesList.SelectedItem = resource;
+                        DeadlockResourcesList.ScrollIntoView(resource);
                     }
-                    else if (id.StartsWith("proc_id_"))
+
+                    DeadlockProcess? process = _deadlockGraphSelectionService.FindProcessForNode(
+                        id,
+                        DeadlockProcessesList.ItemsSource?.Cast<DeadlockProcess>());
+                    if (process != null)
                     {
-                        string procId = id.Replace("proc_id_", "");
-                        var procItem = DeadlockProcessesList.ItemsSource?.Cast<DeadlockProcess>().FirstOrDefault(p => p.Id == procId);
-                        if (procItem != null)
-                        {
-                            DeadlockProcessesList.SelectedItem = procItem;
-                            DeadlockProcessesList.ScrollIntoView(procItem);
-                        }
+                        DeadlockProcessesList.SelectedItem = process;
+                        DeadlockProcessesList.ScrollIntoView(process);
                     }
+
                     e.Handled = true;
                     return;
                 }
