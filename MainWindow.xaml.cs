@@ -127,6 +127,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
+        private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
@@ -212,6 +213,7 @@ namespace SqlXmlAnalyzer
             Core.Services.SqlDiffDocumentRenderer? sqlDiffDocumentRenderer = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             Core.Services.AnalysisClipboardService? analysisClipboardService = null,
+            Core.Services.MissingIndexDeploymentScriptService? missingIndexDeploymentScriptService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
         {
@@ -255,6 +257,8 @@ namespace SqlXmlAnalyzer
                     _fileDialogService);
             _analysisClipboardService = analysisClipboardService
                 ?? new Core.Services.AnalysisClipboardService();
+            _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
+                ?? new Core.Services.MissingIndexDeploymentScriptService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -2820,37 +2824,8 @@ namespace SqlXmlAnalyzer
         {
             if (sender is Button btn && btn.DataContext is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion mi)
             {
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine("/*******************************************************************************");
-                sb.AppendLine($" * SQL Server Missing Index Deployment Bundle");
-                sb.AppendLine($" * Table:  {mi.Table}");
-                if (!string.IsNullOrEmpty(mi.Schema))
-                {
-                    sb.AppendLine($" * Schema: {mi.Schema}");
-                }
-                sb.AppendLine($" * Impact: {mi.Impact:F2}%");
-                sb.AppendLine($" * Score:  {mi.Score}/100");
-                sb.AppendLine(" *******************************************************************************/");
-                sb.AppendLine();
-                sb.AppendLine("-- === 1. DEPLOYMENT DDL (CREATE INDEX) ===");
-                sb.AppendLine("BEGIN TRANSACTION;");
-                sb.AppendLine("BEGIN TRY");
-                sb.AppendLine("    " + mi.CreateIndexStatement);
-                sb.AppendLine("    COMMIT TRANSACTION;");
-                sb.AppendLine("    PRINT 'Missing Index deployed successfully.';");
-                sb.AppendLine("END TRY");
-                sb.AppendLine("BEGIN CATCH");
-                sb.AppendLine("    ROLLBACK TRANSACTION;");
-                sb.AppendLine("    DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();");
-                sb.AppendLine("    RAISERROR(@ErrMsg, 16, 1);");
-                sb.AppendLine("END CATCH");
-                sb.AppendLine();
-                sb.AppendLine("-- === 2. ROLLBACK DDL (DROP INDEX) ===");
-                sb.AppendLine("/*");
-                sb.AppendLine("    " + mi.RollbackStatement);
-                sb.AppendLine("*/");
-
-                Clipboard.SetText(sb.ToString());
+                string bundle = _missingIndexDeploymentScriptService.BuildDeploymentBundle(mi);
+                Clipboard.SetText(bundle);
                 MessageBox.Show("完整部署包 (包含安全事务与回滚脚本) 已复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }

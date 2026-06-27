@@ -181,6 +181,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.HtmlReportExportService>();
             services.AddSingleton<Core.Services.PortableReportExportService>();
             services.AddSingleton<Core.Services.AnalysisClipboardService>();
+            services.AddSingleton<Core.Services.MissingIndexDeploymentScriptService>();
             services.AddTransient<MainWindow>();
         }
 
