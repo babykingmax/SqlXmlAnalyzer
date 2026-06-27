@@ -137,6 +137,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
         private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
         private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
+        private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
         private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
         private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
@@ -148,7 +149,7 @@ namespace SqlXmlAnalyzer
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
-        private List<(string fromId, string toId, string label)> _edgesForDrawing = new List<(string, string, string)>();
+        private List<Core.Services.DeadlockGraphEdge> _edgesForDrawing = new();
 
         private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
         private DeadlockPlaybackViewModel? _playbackViewModel;
@@ -240,6 +241,7 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null,
             Core.Services.DeadlockGraphLayoutService? deadlockGraphLayoutService = null,
             Core.Services.DeadlockGraphEdgeService? deadlockGraphEdgeService = null,
+            Core.Services.DeadlockGraphEdgeRegistryService? deadlockGraphEdgeRegistryService = null,
             Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null,
             Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null)
         {
@@ -303,6 +305,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphLayoutService();
             _deadlockGraphEdgeService = deadlockGraphEdgeService
                 ?? new Core.Services.DeadlockGraphEdgeService();
+            _deadlockGraphEdgeRegistryService = deadlockGraphEdgeRegistryService
+                ?? new Core.Services.DeadlockGraphEdgeRegistryService();
             _deadlockGraphPlacementService = deadlockGraphPlacementService
                 ?? new Core.Services.DeadlockGraphPlacementService();
             _deadlockPlaybackStateService = deadlockPlaybackStateService
@@ -1018,10 +1022,16 @@ namespace SqlXmlAnalyzer
                 edge.arrowHead.Opacity = 1.0;
                 edge.label.Visibility = Visibility.Visible;
                 edge.label.Opacity = 1.0;
-                if (edge.line.Stroke is SolidColorBrush sb && sb.Color == Color.FromRgb(56, 142, 60))
-                    edge.line.StrokeDashArray = new DoubleCollection { 4, 3 };
-                else
-                    edge.line.StrokeDashArray = null;
+            }
+            foreach (var edge in _arrowCache)
+            {
+                bool isWaitEdge = _deadlockGraphEdgeRegistryService.IsWaitEdge(
+                    _edgesForDrawing,
+                    edge.Key.Item1,
+                    edge.Key.Item2);
+                edge.Value.line.StrokeDashArray = isWaitEdge
+                    ? null
+                    : new DoubleCollection { 4, 3 };
             }
             foreach (var b in _stepBadges.Values)
             {
@@ -1502,15 +1512,16 @@ namespace SqlXmlAnalyzer
 
         private void UpdateConnectionsForNode(string movedId)
         {
-            var edgesToUpdate = _edgesForDrawing.Where(e => e.fromId == movedId || e.toId == movedId).ToList();
+            IReadOnlyList<Core.Services.DeadlockGraphEdge> edgesToUpdate =
+                _deadlockGraphEdgeRegistryService.FindEdgesForNode(_edgesForDrawing, movedId);
 
             foreach (var edge in edgesToUpdate)
             {
-                var key = (edge.fromId, edge.toId);
+                var key = (edge.FromId, edge.ToId);
                 if (_arrowCache.TryGetValue(key, out var cached))
                 {
                     Core.Services.DeadlockConnectionPoints points =
-                        CalculateConnectionPoints(edge.fromId, edge.toId);
+                        CalculateConnectionPoints(edge.FromId, edge.ToId);
 
                     cached.line.X1 = points.From.X;
                     cached.line.Y1 = points.From.Y;
@@ -1618,7 +1629,7 @@ namespace SqlXmlAnalyzer
 
             var key = (fromId, toId);
             _arrowCache[key] = (line, arrowHead, border);
-            _edgesForDrawing.Add((fromId, toId, label));
+            _edgesForDrawing.Add(new Core.Services.DeadlockGraphEdge(fromId, toId, label, isWaitEdge));
         }
 
         private void BuildPlanVisualTree(XDocument doc, XNamespace ns)
