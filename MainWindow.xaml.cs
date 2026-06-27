@@ -142,6 +142,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
         private readonly Core.Services.DeadlockGraphVisualStateService _deadlockGraphVisualStateService;
         private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
+        private readonly Core.Services.WorkspacePanelLayoutService _workspacePanelLayoutService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -247,7 +248,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null,
             Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null,
             Core.Services.DeadlockGraphVisualStateService? deadlockGraphVisualStateService = null,
-            Core.Services.DeadlockStepBadgeService? deadlockStepBadgeService = null)
+            Core.Services.DeadlockStepBadgeService? deadlockStepBadgeService = null,
+            Core.Services.WorkspacePanelLayoutService? workspacePanelLayoutService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -319,6 +321,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphVisualStateService();
             _deadlockStepBadgeService = deadlockStepBadgeService
                 ?? new Core.Services.DeadlockStepBadgeService();
+            _workspacePanelLayoutService = workspacePanelLayoutService
+                ?? new Core.Services.WorkspacePanelLayoutService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1920,20 +1924,13 @@ namespace SqlXmlAnalyzer
 
         private void CompareSql_Click(object sender, RoutedEventArgs e)
         {
-            if (OriginalSqlCol.Width.Value == 0)
-            {
-                OriginalSqlCol.Width = new GridLength(1, GridUnitType.Star);
-                SqlSplitterCol.Width = new GridLength(4);
-                SqlGridSplitter.Visibility = Visibility.Visible;
-                BtnCompareSql.Content = "隐藏原始 SQL";
-            }
-            else
-            {
-                OriginalSqlCol.Width = new GridLength(0);
-                SqlSplitterCol.Width = new GridLength(0);
-                SqlGridSplitter.Visibility = Visibility.Collapsed;
-                BtnCompareSql.Content = "显示原始 SQL";
-            }
+            Core.Services.SqlComparePanelLayout layout =
+                _workspacePanelLayoutService.ToggleSqlCompare(OriginalSqlCol.Width);
+
+            OriginalSqlCol.Width = layout.OriginalSqlWidth;
+            SqlSplitterCol.Width = layout.SplitterWidth;
+            SqlGridSplitter.Visibility = layout.SplitterVisibility;
+            BtnCompareSql.Content = layout.ButtonContent;
         }
 
         private void ClearResults_Click(object sender, RoutedEventArgs e)
@@ -2068,31 +2065,21 @@ namespace SqlXmlAnalyzer
         private void ToggleLeft_Click(object sender, RoutedEventArgs e)
         {
             if (DeadlockLeftColumn == null) return;
-            if (DeadlockLeftColumn.Width.Value > 0)
-            {
-                DeadlockLeftColumn.Width = new GridLength(0);
-                ToggleLeftBtn.Content = "▶ 侧边栏";
-            }
-            else
-            {
-                DeadlockLeftColumn.Width = new GridLength(280);
-                ToggleLeftBtn.Content = "◀ 侧边栏";
-            }
+
+            Core.Services.SidePanelLayout layout =
+                _workspacePanelLayoutService.ToggleDeadlockLeftPanel(DeadlockLeftColumn.Width);
+            DeadlockLeftColumn.Width = layout.Width;
+            ToggleLeftBtn.Content = layout.ButtonContent;
         }
 
         private void ToggleRight_Click(object sender, RoutedEventArgs e)
         {
             if (DeadlockRightColumn == null) return;
-            if (DeadlockRightColumn.Width.Value > 0)
-            {
-                DeadlockRightColumn.Width = new GridLength(0);
-                ToggleRightBtn.Content = "◀ 属性栏";
-            }
-            else
-            {
-                DeadlockRightColumn.Width = new GridLength(320);
-                ToggleRightBtn.Content = "属性栏 ▶";
-            }
+
+            Core.Services.SidePanelLayout layout =
+                _workspacePanelLayoutService.ToggleDeadlockRightPanel(DeadlockRightColumn.Width);
+            DeadlockRightColumn.Width = layout.Width;
+            ToggleRightBtn.Content = layout.ButtonContent;
         }
 
         private void ZoomToFitDeadlock_Click(object sender, RoutedEventArgs e)
@@ -2135,30 +2122,38 @@ namespace SqlXmlAnalyzer
         private void LeftPanel_Expanded(object sender, RoutedEventArgs e)
         {
             if (PlanContentGrid != null && PlanContentGrid.ColumnDefinitions.Count > 0)
-                PlanContentGrid.ColumnDefinitions[0].Width = _leftColWidth;
+                PlanContentGrid.ColumnDefinitions[0].Width =
+                    _workspacePanelLayoutService.ExpandCollapsiblePanel(_leftColWidth);
         }
 
         private void LeftPanel_Collapsed(object sender, RoutedEventArgs e)
         {
             if (PlanContentGrid != null && PlanContentGrid.ColumnDefinitions.Count > 0)
             {
-                _leftColWidth = PlanContentGrid.ColumnDefinitions[0].Width;
-                PlanContentGrid.ColumnDefinitions[0].Width = GridLength.Auto;
+                Core.Services.CollapsiblePanelLayout layout =
+                    _workspacePanelLayoutService.CollapseCollapsiblePanel(
+                        PlanContentGrid.ColumnDefinitions[0].Width);
+                _leftColWidth = layout.StoredWidth;
+                PlanContentGrid.ColumnDefinitions[0].Width = layout.AppliedWidth;
             }
         }
 
         private void RightPanel_Expanded(object sender, RoutedEventArgs e)
         {
             if (PlanContentGrid != null && PlanContentGrid.ColumnDefinitions.Count > 4)
-                PlanContentGrid.ColumnDefinitions[4].Width = _rightColWidth;
+                PlanContentGrid.ColumnDefinitions[4].Width =
+                    _workspacePanelLayoutService.ExpandCollapsiblePanel(_rightColWidth);
         }
 
         private void RightPanel_Collapsed(object sender, RoutedEventArgs e)
         {
             if (PlanContentGrid != null && PlanContentGrid.ColumnDefinitions.Count > 4)
             {
-                _rightColWidth = PlanContentGrid.ColumnDefinitions[4].Width;
-                PlanContentGrid.ColumnDefinitions[4].Width = GridLength.Auto;
+                Core.Services.CollapsiblePanelLayout layout =
+                    _workspacePanelLayoutService.CollapseCollapsiblePanel(
+                        PlanContentGrid.ColumnDefinitions[4].Width);
+                _rightColWidth = layout.StoredWidth;
+                PlanContentGrid.ColumnDefinitions[4].Width = layout.AppliedWidth;
             }
         }
         #endregion
