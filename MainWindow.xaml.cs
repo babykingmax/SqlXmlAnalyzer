@@ -119,6 +119,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
+        private readonly Core.Services.DocumentRefreshActionService _documentRefreshActionService;
         private readonly Core.Services.PlanComparisonController _planComparisonController;
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
         private readonly Core.Services.PlanComparisonTreeViewRenderer _planComparisonTreeViewRenderer;
@@ -218,6 +219,7 @@ namespace SqlXmlAnalyzer
             Core.Services.DocumentOpenService? documentOpenService = null,
             Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
             Core.Services.PlanDocumentController? planDocumentController = null,
+            Core.Services.DocumentRefreshActionService? documentRefreshActionService = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
             Core.Services.PlanComparisonTreeViewRenderer? planComparisonTreeViewRenderer = null,
@@ -273,6 +275,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockDocumentController(effectiveDeadlockAnalysisService);
             _planDocumentController = planDocumentController
                 ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
+            _documentRefreshActionService = documentRefreshActionService
+                ?? new Core.Services.DocumentRefreshActionService();
             _planComparisonController = planComparisonController
                 ?? new Core.Services.PlanComparisonController();
             _planComparisonTreeService = planComparisonTreeService
@@ -2173,12 +2177,16 @@ namespace SqlXmlAnalyzer
 
         private void RefreshDeadlockGraph_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ViewModel.CurrentDeadlockFilePath))
+            Core.Services.DocumentRefreshActionResult result =
+                _documentRefreshActionService.BuildDeadlockRefresh(ViewModel.CurrentDeadlockFilePath);
+
+            if (result.Status == Core.Services.DocumentRefreshActionStatus.MissingFile)
             {
-                MessageBox.Show("没有已加载的死锁文件，无法刷新。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            AnalyzeFile(ViewModel.CurrentDeadlockFilePath);
+
+            AnalyzeFile(result.FilePath);
         }
 
         private void CopyDeadlockMermaid_Click(object sender, RoutedEventArgs e)
@@ -2204,12 +2212,16 @@ namespace SqlXmlAnalyzer
 
         private void RefreshPlanGraph_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ViewModel.CurrentPlanFilePath))
+            Core.Services.DocumentRefreshActionResult result =
+                _documentRefreshActionService.BuildPlanRefresh(ViewModel.CurrentPlanFilePath);
+
+            if (result.Status == Core.Services.DocumentRefreshActionStatus.MissingFile)
             {
-                MessageBox.Show("没有已加载的执行计划文件，无法刷新。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            AnalyzeFile(ViewModel.CurrentPlanFilePath);
+
+            AnalyzeFile(result.FilePath);
         }
 
         private void CopyPlanMermaid_Click(object sender, RoutedEventArgs e)

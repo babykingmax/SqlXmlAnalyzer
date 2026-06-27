@@ -167,6 +167,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.PlanAnalysisService>();
             services.AddSingleton<Core.Services.DeadlockDocumentController>();
             services.AddSingleton<Core.Services.PlanDocumentController>();
+            services.AddSingleton<Core.Services.DocumentRefreshActionService>();
             services.AddSingleton<Core.Services.PlanComparisonController>();
             services.AddSingleton<Core.Services.PlanComparisonTreeService>();
             services.AddSingleton<Core.Services.PlanComparisonTreeViewRenderer>();
