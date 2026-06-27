@@ -43,7 +43,9 @@ namespace SqlXmlAnalyzer
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
         private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
+        private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
+        private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly Core.Services.PlanGraphRelOpDetailsService RelOpDetailsService = new();
         private static readonly Core.Services.PlanGraphRuntimeCountersService RuntimeCountersService = new();
         private static readonly Core.Services.PlanGraphWarningService WarningService = new();
@@ -243,20 +245,17 @@ namespace SqlXmlAnalyzer
                 allNodes.Add(vm);
             }
 
-            // 关联 Missing Indexes 推荐到 Operator 节点
             var missingIndexes = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
-            foreach (var vm in allNodes)
+            IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion?> matchedSuggestions =
+                MissingIndexAssociationService.MatchSuggestions(
+                    allNodes
+                        .Select(node => new Core.Services.PlanGraphMissingIndexNodeInfo(
+                            node.TableName))
+                        .ToList(),
+                    missingIndexes);
+            for (int i = 0; i < allNodes.Count; i++)
             {
-                if (!string.IsNullOrEmpty(vm.TableName))
-                {
-                    string cleanVmTable = vm.TableName.Trim('[', ']');
-                    var match = missingIndexes.FirstOrDefault(mi =>
-                        string.Equals(mi.Table.Trim('[', ']'), cleanVmTable, StringComparison.OrdinalIgnoreCase));
-                    if (match != null)
-                    {
-                        vm.AssociatedSuggestion = match;
-                    }
-                }
+                allNodes[i].AssociatedSuggestion = matchedSuggestions[i];
             }
 
             ApplyCostCalculations(
@@ -269,22 +268,19 @@ namespace SqlXmlAnalyzer
             // 2. 简单分层初始布局 (类似 Plan Explorer 水平/垂直流)
             ApplyLayeredLayout(nodeMap, relOps, ns);
 
-            // 3. 构建父子连接 (子 -> 父，数据流向根)
-            foreach (var relOp in relOps)
+            foreach (Core.Services.PlanGraphConnectionPair connection in
+                ConnectionBuilderService.BuildConnections(relOps, ns))
             {
-                var parentVm = nodeMap[relOp];
-                foreach (var child in PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns))
+                if (nodeMap.TryGetValue(connection.SourceRelOp, out PlanNodeViewModel? sourceVm)
+                    && nodeMap.TryGetValue(connection.TargetRelOp, out PlanNodeViewModel? targetVm))
                 {
-                    if (nodeMap.TryGetValue(child, out var childVm))
+                    Connections.Add(new ConnectionViewModel
                     {
-                        Connections.Add(new ConnectionViewModel
-                        {
-                            Source = childVm,
-                            Target = parentVm,
-                            LayoutMode = initialLayout,
-                            CurrentLinkMetric = initialLinkMetric
-                        });
-                    }
+                        Source = sourceVm,
+                        Target = targetVm,
+                        LayoutMode = initialLayout,
+                        CurrentLinkMetric = initialLinkMetric
+                    });
                 }
             }
 
