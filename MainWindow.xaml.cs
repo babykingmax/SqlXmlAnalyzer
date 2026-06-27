@@ -122,6 +122,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanComparisonController _planComparisonController;
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
+        private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
@@ -199,6 +200,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
+            Core.Services.HtmlReportExportService? htmlReportExportService = null,
             Core.Services.PortableReportExportService? portableReportExportService = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.PlanPropertyService? planPropertyService = null,
@@ -237,6 +239,10 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.AnalysisReportController();
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
+            _htmlReportExportService = htmlReportExportService
+                ?? new Core.Services.HtmlReportExportService(
+                    new Core.Services.HtmlReportWriter(),
+                    _fileDialogService);
             _portableReportExportService = portableReportExportService
                 ?? new Core.Services.PortableReportExportService(
                     effectiveReportExporter,
@@ -1942,21 +1948,14 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                string? reportPath = ShowSaveFileDialog(
-                    "HTML report (*.html)|*.html",
-                    $"Save {report.AnalysisType} analysis report",
-                    ".html",
-                    report.DefaultFileName);
+                Core.Services.HtmlReportExportResult result =
+                    _htmlReportExportService.Export(
+                        new Core.Services.HtmlReportExportRequest(report));
 
-                if (reportPath != null)
+                if (result.Status == Core.Services.HtmlReportExportStatus.Exported &&
+                    result.OutputPath != null)
                 {
-                    HtmlReportGenerator.SaveReport(
-                        report.OriginalFilePath,
-                        report.AnalysisType,
-                        report.SummaryText,
-                        report.MermaidCode,
-                        report.Sections,
-                        reportPath);
+                    string reportPath = result.OutputPath;
                     Logger.Info($"{report.AnalysisType} HTML report saved to {reportPath}");
 
                     if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
