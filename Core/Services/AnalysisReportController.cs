@@ -26,6 +26,15 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed class AnalysisReportController
     {
+        private readonly MermaidDiagramService _mermaidDiagramService;
+
+        public AnalysisReportController(
+            MermaidDiagramService? mermaidDiagramService = null)
+        {
+            _mermaidDiagramService = mermaidDiagramService
+                ?? new MermaidDiagramService();
+        }
+
         public HtmlAnalysisReport BuildDeadlockHtmlReport(
             XDocument document,
             string filePath,
@@ -42,7 +51,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 parsed.Processes,
                 parsed.Resources,
                 parsed.VictimId);
-            string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
+            string mermaid = _mermaidDiagramService.BuildDeadlockDiagram(graph);
             string summaryText =
                 $"Deadlock file: {Path.GetFileName(filePath)}{Environment.NewLine}" +
                 $"Victim process: {parsed.VictimId}{Environment.NewLine}" +
@@ -83,7 +92,7 @@ namespace SqlXmlAnalyzer.Core.Services
             string filePath,
             XNamespace showplanNamespace)
         {
-            string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(
+            string mermaid = _mermaidDiagramService.BuildPlanDiagram(
                 document,
                 showplanNamespace);
             List<HtmlReportItem> reportItems = PlanDiagnosticAnalyzer

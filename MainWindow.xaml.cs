@@ -121,6 +121,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly Core.Services.PlanComparisonController _planComparisonController;
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
+        private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
@@ -199,6 +200,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanDocumentController? planDocumentController = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
+            Core.Services.MermaidDiagramService? mermaidDiagramService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.HtmlReportExportService? htmlReportExportService = null,
             Core.Services.PortableReportExportService? portableReportExportService = null,
@@ -235,8 +237,10 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanComparisonController();
             _planComparisonTreeService = planComparisonTreeService
                 ?? new Core.Services.PlanComparisonTreeService();
+            _mermaidDiagramService = mermaidDiagramService
+                ?? new Core.Services.MermaidDiagramService();
             _analysisReportController = analysisReportController
-                ?? new Core.Services.AnalysisReportController();
+                ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
             _htmlReportExportService = htmlReportExportService
@@ -2476,14 +2480,8 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var parseResult = DeadlockXmlParser.TryParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
-                if (!parseResult.IsSuccess || parseResult.Value == null)
-                {
-                    throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
-                }
-                var parsed = parseResult.Value;
-                var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
-                string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
+                string mermaid = _mermaidDiagramService.BuildDeadlockDiagram(
+                    ViewModel.CurrentDeadlockDoc);
 
                 Clipboard.SetText(mermaid);
                 MessageBox.Show("死锁 Mermaid 代码已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -2516,7 +2514,9 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
+                string mermaid = _mermaidDiagramService.BuildPlanDiagram(
+                    ViewModel.CurrentPlanDoc,
+                    _showplanNs);
                 Clipboard.SetText(mermaid);
                 MessageBox.Show("执行计划 Mermaid 代码已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 Logger.Info("已成功将执行计划 Mermaid 代码复制到剪贴板。");
@@ -2561,8 +2561,10 @@ namespace SqlXmlAnalyzer
         {
             if (ViewModel.CurrentPlanDoc != null)
             {
-                string mermaid = ExecutionPlanVisualizer.GenerateMermaidPlan(ViewModel.CurrentPlanDoc, _showplanNs);
-                OpenMermaidInBrowser(mermaid);
+                string mermaid = _mermaidDiagramService.BuildPlanDiagram(
+                    ViewModel.CurrentPlanDoc,
+                    _showplanNs);
+                _browserLauncher.OpenMermaid(mermaid);
             }
         }
 
@@ -2576,15 +2578,9 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var parseResult = DeadlockXmlParser.TryParseDeadlockXml(ViewModel.CurrentDeadlockDoc);
-                if (!parseResult.IsSuccess || parseResult.Value == null)
-                {
-                    throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
-                }
-                var parsed = parseResult.Value;
-                var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
-                string mermaid = DeadlockGraphBuilder.GenerateMermaid(graph, true);
-                OpenMermaidInBrowser(mermaid);
+                string mermaid = _mermaidDiagramService.BuildDeadlockDiagram(
+                    ViewModel.CurrentDeadlockDoc);
+                _browserLauncher.OpenMermaid(mermaid);
                 Logger.Info("已在浏览器中打开死锁 Mermaid 等待图。");
             }
             catch (Exception ex)
@@ -2592,11 +2588,6 @@ namespace SqlXmlAnalyzer
                 Logger.LogException("OpenDeadlockMermaidInBrowser", ex);
                 MessageBox.Show($"在浏览器中打开 Mermaid 图形失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private void OpenMermaidInBrowser(string mermaidCode)
-        {
-            _browserLauncher.OpenMermaid(mermaidCode);
         }
 
         #endregion

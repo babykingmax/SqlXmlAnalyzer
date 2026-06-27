@@ -160,6 +160,8 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.AnalysisSessionCoordinator>();
             services.AddSingleton<Core.Services.BrowserLauncher>();
             services.AddSingleton<Core.Services.PdfWordReportService>();
+            services.AddSingleton<Core.Services.IPdfWordReportExporter>(sp =>
+                sp.GetRequiredService<Core.Services.PdfWordReportService>());
             services.AddSingleton<Core.Services.DocumentOpenService>();
             services.AddSingleton<DeadlockAnalysisService>();
             services.AddSingleton<Core.Services.PlanAnalysisService>();
@@ -167,6 +169,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.PlanDocumentController>();
             services.AddSingleton<Core.Services.PlanComparisonController>();
             services.AddSingleton<Core.Services.PlanComparisonTreeService>();
+            services.AddSingleton<Core.Services.MermaidDiagramService>();
             services.AddSingleton<Core.Services.AnalysisReportController>();
             services.AddSingleton<Core.Services.TuningSessionService>();
             services.AddSingleton<Core.Services.PlanPropertyService>();
@@ -174,6 +177,9 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.SqlDiffService>();
             services.AddSingleton<Core.Services.SqlDiffDocumentRenderer>();
             services.AddSingleton<Core.Services.IFileDialogService, Core.Services.WpfFileDialogService>();
+            services.AddSingleton<Core.Services.IHtmlReportWriter, Core.Services.HtmlReportWriter>();
+            services.AddSingleton<Core.Services.HtmlReportExportService>();
+            services.AddSingleton<Core.Services.PortableReportExportService>();
             services.AddTransient<MainWindow>();
         }
 
