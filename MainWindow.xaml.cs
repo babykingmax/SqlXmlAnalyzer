@@ -151,6 +151,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.TuningSessionActionService _tuningSessionActionService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
+        private readonly Core.Services.PlanSelectionActionService _planSelectionActionService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
         private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
@@ -237,6 +238,7 @@ namespace SqlXmlAnalyzer
             Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.PlanPropertyService? planPropertyService = null,
             Core.Services.PlanTreeService? planTreeService = null,
+            Core.Services.PlanSelectionActionService? planSelectionActionService = null,
             Core.Services.SqlDiffService? sqlDiffService = null,
             Core.Services.SqlDiffDocumentRenderer? sqlDiffDocumentRenderer = null,
             Core.Services.SqlQuickFixService? sqlQuickFixService = null,
@@ -351,6 +353,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
                 ?? new Core.Services.PlanTreeService();
+            _planSelectionActionService = planSelectionActionService
+                ?? new Core.Services.PlanSelectionActionService();
             _planOperatorTreeViewRenderer = planOperatorTreeViewRenderer
                 ?? new Core.Services.PlanOperatorTreeViewRenderer();
             _sqlDiffService = sqlDiffService
@@ -2160,10 +2164,8 @@ namespace SqlXmlAnalyzer
 
         private void PlanOperatorTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is TreeViewItem item && item.Tag is XElement relOp)
-            {
-                BindPlanProperties(relOp);
-            }
+            BindPlanSelection(
+                _planSelectionActionService.SelectFromOperatorTreeItem(e.NewValue));
         }
 
         private void RefreshDeadlockGraph_Click(object sender, RoutedEventArgs e)
@@ -2240,23 +2242,29 @@ namespace SqlXmlAnalyzer
 
         private void PlanVisualTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is Core.Services.PlanVisualNode node && node.Tag is XElement relOp)
-            {
-                BindPlanProperties(relOp);
-            }
+            BindPlanSelection(
+                _planSelectionActionService.SelectFromVisualTreeNode(e.NewValue));
         }
 
         // Nodify 节点选中 -> 同步到主右侧属性面板 (Plan Explorer 风格)
         private void PlanNodifyGraph_NodeSelected(object sender, PlanNodeViewModel node)
         {
-            if (node?.RawElement == null) return;
-            BindPlanProperties(node.RawElement);
+            BindPlanSelection(
+                _planSelectionActionService.SelectFromGraphNode(node));
         }
 
         private void PlanNodifyGraph_NodeDoubleClicked(object sender, PlanNodeViewModel node)
         {
-            if (node == null || node.RawElement == null) return;
-            BindPlanProperties(node.RawElement);
+            BindPlanSelection(
+                _planSelectionActionService.SelectFromGraphNode(node));
+        }
+
+        private void BindPlanSelection(Core.Services.PlanSelectionResult result)
+        {
+            if (result.HasSelection && result.RelOp != null)
+            {
+                BindPlanProperties(result.RelOp);
+            }
         }
 
         private void BindPlanProperties(XElement relOp)

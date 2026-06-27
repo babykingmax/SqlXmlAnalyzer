@@ -179,6 +179,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.TuningSessionService>();
             services.AddSingleton<Core.Services.PlanPropertyService>();
             services.AddSingleton<Core.Services.PlanTreeService>();
+            services.AddSingleton<Core.Services.PlanSelectionActionService>();
             services.AddSingleton<Core.Services.PlanOperatorTreeViewRenderer>();
             services.AddSingleton<Core.Services.SqlDiffService>();
             services.AddSingleton<Core.Services.SqlDiffDocumentRenderer>();
