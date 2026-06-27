@@ -862,68 +862,81 @@ namespace SqlXmlAnalyzer
                 e.Handled = true; // MUST PREVENT NodifyEditor from capturing this click!
                 if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
                 {
-                    string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-                    if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
-                    var logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
-
-                    System.IO.File.AppendAllText(logFile, $"\n[{DateTime.Now:HH:mm:ss.fff}] --- START CLICK: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on [{node.NodeId}] {node.PhysicalOp} ---\n");
-
-                    var sb = new System.Text.StringBuilder();
-                    sb.AppendLine("==================================================");
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Action: {(node.IsCollapsed ? "Expand [+]" : "Collapse [-]")} on Node [{node.NodeId}] {node.PhysicalOp}");
-
-                    var oldVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
-                    var oldVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
+                    var logService = new Core.Services.PlanGraphCollapseLogService();
+                    DateTime timestamp = DateTime.Now;
+                    Core.Services.PlanGraphCollapseLogNode nodeBeforeToggle = ToCollapseLogNode(node);
+                    AppendCollapseLog(logService.BuildStartLine(nodeBeforeToggle, timestamp));
+                    Core.Services.PlanGraphCollapseLogSnapshot oldSnapshot =
+                        CaptureCollapseLogSnapshot();
 
                     // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
                     node.IsCollapsed = !node.IsCollapsed;
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Toggled IsCollapsed to {node.IsCollapsed}");
 
                     // 1. 先在完整树上计算所有节点的新绝对坐标
                     ReapplyLayout();
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] ReapplyLayout Completed");
 
                     // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
                     UpdateGraphVisibility();
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] UpdateGraphVisibility Completed");
-
-                    var newVisibleNodes = _masterNodes.Where(n => n.IsVisible).ToList();
-                    var newVisibleConns = _masterConnections.Where(c => c.IsVisible).ToList();
-
-                    var addedNodes = newVisibleNodes.Except(oldVisibleNodes).ToList();
-                    var removedNodes = oldVisibleNodes.Except(newVisibleNodes).ToList();
-
-                    var addedConns = newVisibleConns.Except(oldVisibleConns).ToList();
-                    var removedConns = oldVisibleConns.Except(newVisibleConns).ToList();
-
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Nodes Added (Expanded): {addedNodes.Count}");
-                    foreach (var n in addedNodes) sb.AppendLine($"  + [{n.NodeId}] {n.PhysicalOp} (Collapsed State: {n.IsCollapsed})");
-
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Nodes Removed (Hidden): {removedNodes.Count}");
-                    foreach (var n in removedNodes) sb.AppendLine($"  - [{n.NodeId}] {n.PhysicalOp}");
-
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Connections Added: {addedConns.Count}");
-                    foreach (var c in addedConns) sb.AppendLine($"  + [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
-
-                    sb.AppendLine($"[{DateTime.Now:HH:mm:ss.fff}] Connections Removed: {removedConns.Count}");
-                    foreach (var c in removedConns) sb.AppendLine($"  - [{c.Source?.NodeId}] {c.Source?.PhysicalOp} --> [{c.Target?.NodeId}] {c.Target?.PhysicalOp}");
-
-                    sb.AppendLine("==================================================");
-
-                    System.IO.File.AppendAllText(logFile, sb.ToString());
+                    Core.Services.PlanGraphCollapseLogSnapshot newSnapshot =
+                        CaptureCollapseLogSnapshot();
+                    AppendCollapseLog(
+                        logService.BuildToggleLog(
+                            nodeBeforeToggle,
+                            node.IsCollapsed,
+                            oldSnapshot,
+                            newSnapshot,
+                            timestamp));
                 }
             }
             catch (Exception ex)
             {
                 try
                 {
-                    string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-                    if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
-                    var logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
-                    System.IO.File.AppendAllText(logFile, $"\n[{DateTime.Now:HH:mm:ss.fff}] [EXCEPTION CAUGHT]: {ex}\n");
+                    var logService = new Core.Services.PlanGraphCollapseLogService();
+                    AppendCollapseLog(logService.BuildExceptionLog(ex, DateTime.Now));
                 }
                 catch { }
             }
+        }
+
+        private Core.Services.PlanGraphCollapseLogSnapshot CaptureCollapseLogSnapshot()
+        {
+            return new Core.Services.PlanGraphCollapseLogSnapshot(
+                _masterNodes
+                    .Where(n => n.IsVisible)
+                    .Select(ToCollapseLogNode)
+                    .ToList(),
+                _masterConnections
+                    .Where(c => c.IsVisible)
+                    .Select(ToCollapseLogConnection)
+                    .ToList());
+        }
+
+        private static Core.Services.PlanGraphCollapseLogNode ToCollapseLogNode(
+            PlanNodeViewModel node)
+        {
+            return new Core.Services.PlanGraphCollapseLogNode(
+                node.NodeId,
+                node.PhysicalOp,
+                node.IsCollapsed);
+        }
+
+        private static Core.Services.PlanGraphCollapseLogConnection ToCollapseLogConnection(
+            ConnectionViewModel connection)
+        {
+            return new Core.Services.PlanGraphCollapseLogConnection(
+                connection.Source?.NodeId,
+                connection.Source?.PhysicalOp,
+                connection.Target?.NodeId,
+                connection.Target?.PhysicalOp);
+        }
+
+        private static void AppendCollapseLog(string text)
+        {
+            string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+            if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
+            string logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
+            System.IO.File.AppendAllText(logFile, text);
         }
 
         private void UpdateGraphVisibility()
