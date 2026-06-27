@@ -823,43 +823,33 @@ namespace SqlXmlAnalyzer
         {
             if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
 
-            double maxSubtreeCost = _masterNodes.Max(n => n.SubtreeCost);
-            if (maxSubtreeCost <= 0) maxSubtreeCost = 1.0;
-
-            var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
+            var collapseNodes = new List<Core.Services.PlanGraphSmartCollapseNode>();
             foreach (var node in _masterNodes)
             {
-                if (node.RawElement != null) nodeMap[node.RawElement] = node;
                 node.IsCollapsed = false; // 先全部展开
-            }
-
-            var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
-
-            // 自底向上计算每个节点是否包含任何Warning/Critical子节点
-            var hasWarningSubtree = new HashSet<XElement>();
-            foreach (var op in relOps)
-            {
-                if (nodeMap.TryGetValue(op, out var vm) && vm.NodeSeverity != "Info")
+                if (node.RawElement != null)
                 {
-                    var ancestor = op;
-                    while (ancestor != null && ancestor.Name.LocalName == "RelOp")
-                    {
-                        hasWarningSubtree.Add(ancestor);
-                        ancestor = ancestor.Parent?.AncestorsAndSelf().FirstOrDefault(a => a.Name.LocalName == "RelOp");
-                    }
+                    collapseNodes.Add(
+                        new Core.Services.PlanGraphSmartCollapseNode(
+                            node.RawElement,
+                            node.HasChildren,
+                            node.SubtreeCost,
+                            node.NodeSeverity));
                 }
             }
+
+            var smartCollapseService = new Core.Services.PlanGraphSmartCollapseService();
+            Core.Services.PlanGraphSmartCollapseResult result =
+                smartCollapseService.CalculateCollapsedRelOps(collapseNodes);
 
             foreach (var n in _masterNodes)
             {
-                if (n.HasChildren && n.RawElement != null)
+                if (n.RawElement != null)
                 {
-                    if (!hasWarningSubtree.Contains(n.RawElement) && (n.SubtreeCost / maxSubtreeCost) < 0.05)
-                    {
-                        n.IsCollapsed = true;
-                    }
+                    n.IsCollapsed = result.CollapsedRelOps.Contains(n.RawElement);
                 }
             }
+
             UpdateGraphVisibility();
             ReapplyLayout();
         }
