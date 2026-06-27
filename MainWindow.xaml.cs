@@ -121,6 +121,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly Core.Services.PlanComparisonController _planComparisonController;
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
+        private readonly Core.Services.PlanComparisonTreeViewRenderer _planComparisonTreeViewRenderer;
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
@@ -202,6 +203,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanDocumentController? planDocumentController = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
+            Core.Services.PlanComparisonTreeViewRenderer? planComparisonTreeViewRenderer = null,
             Core.Services.MermaidDiagramService? mermaidDiagramService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.HtmlReportExportService? htmlReportExportService = null,
@@ -241,6 +243,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanComparisonController();
             _planComparisonTreeService = planComparisonTreeService
                 ?? new Core.Services.PlanComparisonTreeService();
+            _planComparisonTreeViewRenderer = planComparisonTreeViewRenderer
+                ?? new Core.Services.PlanComparisonTreeViewRenderer();
             _mermaidDiagramService = mermaidDiagramService
                 ?? new Core.Services.MermaidDiagramService();
             _analysisReportController = analysisReportController
@@ -1773,108 +1777,15 @@ namespace SqlXmlAnalyzer
 
             if (displayTree.PlanA != null)
             {
-                PlanATreeView.Items.Add(BuildDiffTreeView(displayTree.PlanA));
+                PlanATreeView.Items.Add(
+                    _planComparisonTreeViewRenderer.Render(displayTree.PlanA));
             }
 
             if (displayTree.PlanB != null)
             {
-                PlanBTreeView.Items.Add(BuildDiffTreeView(displayTree.PlanB));
+                PlanBTreeView.Items.Add(
+                    _planComparisonTreeViewRenderer.Render(displayTree.PlanB));
             }
-        }
-
-        private TreeViewItem BuildDiffTreeView(Core.Services.PlanComparisonTreeNode node)
-        {
-            var stackPanel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0, 2, 0, 2)
-            };
-
-            var textBlockOp = new TextBlock
-            {
-                Text = node.OperatorText,
-                FontWeight = FontWeights.SemiBold
-            };
-            var textBlockCost = new TextBlock
-            {
-                Text = node.CostText,
-                Foreground = GetComparisonCostBrush(node.CostTrend)
-            };
-
-            Border border = new Border
-            {
-                CornerRadius = new CornerRadius(3),
-                Padding = new Thickness(4, 2, 4, 2),
-                Margin = new Thickness(0, 0, 4, 0)
-            };
-
-            ApplyComparisonStateStyle(node, border, textBlockOp);
-
-            stackPanel.Children.Add(textBlockOp);
-            stackPanel.Children.Add(textBlockCost);
-
-            if (node.RuntimeDeltaTexts.Count > 0)
-            {
-                var textBlockRuntime = new TextBlock
-                {
-                    Text = " | " + string.Join(", ", node.RuntimeDeltaTexts),
-                    Foreground = node.IsPlanB ? Brushes.Purple : Brushes.Teal,
-                    FontWeight = FontWeights.Medium,
-                    Margin = new Thickness(4, 0, 0, 0)
-                };
-                stackPanel.Children.Add(textBlockRuntime);
-            }
-
-            border.Child = stackPanel;
-
-            var item = new TreeViewItem
-            {
-                Header = border,
-                Tag = node.Source,
-                IsExpanded = true
-            };
-
-            foreach (Core.Services.PlanComparisonTreeNode child in node.Children)
-            {
-                item.Items.Add(BuildDiffTreeView(child));
-            }
-
-            return item;
-        }
-
-        private static void ApplyComparisonStateStyle(
-            Core.Services.PlanComparisonTreeNode node,
-            Border border,
-            TextBlock textBlockOp)
-        {
-            switch (node.State)
-            {
-                case Core.Services.PlanComparisonNodeState.Added:
-                case Core.Services.PlanComparisonNodeState.Removed:
-                    border.Background = node.IsPlanB
-                        ? new SolidColorBrush(Color.FromArgb(40, 76, 175, 80))
-                        : new SolidColorBrush(Color.FromArgb(40, 244, 67, 54));
-                    border.BorderBrush = node.IsPlanB ? Brushes.Green : Brushes.Red;
-                    border.BorderThickness = new Thickness(1);
-                    textBlockOp.Foreground = node.IsPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
-                    break;
-                case Core.Services.PlanComparisonNodeState.OperatorChanged:
-                    border.Background = new SolidColorBrush(Color.FromArgb(40, 255, 152, 0));
-                    border.BorderBrush = Brushes.Orange;
-                    border.BorderThickness = new Thickness(1);
-                    textBlockOp.Foreground = Brushes.DarkOrange;
-                    break;
-            }
-        }
-
-        private static Brush GetComparisonCostBrush(Core.Services.PlanComparisonCostTrend costTrend)
-        {
-            return costTrend switch
-            {
-                Core.Services.PlanComparisonCostTrend.Higher => Brushes.Red,
-                Core.Services.PlanComparisonCostTrend.Lower => Brushes.Green,
-                _ => Brushes.Gray
-            };
         }
 
         #endregion
