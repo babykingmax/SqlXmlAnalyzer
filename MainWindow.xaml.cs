@@ -58,6 +58,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
+        private readonly DeadlockGraphEdgeElementFactory _deadlockGraphEdgeElementFactory;
         private readonly Core.Services.DeadlockCanvasInteractionService _deadlockCanvasInteractionService;
         private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
         private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
@@ -80,7 +81,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.SqlQuickFixService _sqlQuickFixService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
-        private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
+        private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
         private List<Core.Services.DeadlockGraphEdge> _edgesForDrawing = new();
 
         private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
@@ -253,6 +254,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphViewportService();
             _deadlockGraphGeometryService = deadlockGraphGeometryService
                 ?? new Core.Services.DeadlockGraphGeometryService();
+            _deadlockGraphEdgeElementFactory =
+                new DeadlockGraphEdgeElementFactory(_deadlockGraphGeometryService);
             _deadlockCanvasInteractionService = deadlockCanvasInteractionService
                 ?? new Core.Services.DeadlockCanvasInteractionService();
             _deadlockNodeDragService = deadlockNodeDragService
@@ -897,10 +900,10 @@ namespace SqlXmlAnalyzer
                         badge,
                         _deadlockStepBadgeService.PlaceBadge(
                             visualState.BadgeStepNumber.Value,
-                            visuals.line.X1,
-                            visuals.line.Y1,
-                            visuals.line.X2,
-                            visuals.line.Y2));
+                            visuals.Line.X1,
+                            visuals.Line.Y1,
+                            visuals.Line.X2,
+                            visuals.Line.Y2));
                     badge.Visibility = Visibility.Visible;
                 }
             }
@@ -967,20 +970,20 @@ namespace SqlXmlAnalyzer
         }
 
         private static void ApplyEdgeVisualState(
-            (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label) visuals,
+            DeadlockGraphEdgeElements visuals,
             Core.Services.DeadlockGraphEdgeVisualState visualState)
         {
             Visibility visibility = visualState.IsVisible
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            visuals.line.Visibility = visibility;
-            visuals.line.Opacity = visualState.Opacity;
-            visuals.line.StrokeDashArray = CreateStrokeDashArray(visualState.DashPattern);
-            visuals.arrowHead.Visibility = visibility;
-            visuals.arrowHead.Opacity = visualState.Opacity;
-            visuals.label.Visibility = visibility;
-            visuals.label.Opacity = visualState.Opacity;
+            visuals.Line.Visibility = visibility;
+            visuals.Line.Opacity = visualState.Opacity;
+            visuals.Line.StrokeDashArray = CreateStrokeDashArray(visualState.DashPattern);
+            visuals.ArrowHead.Visibility = visibility;
+            visuals.ArrowHead.Opacity = visualState.Opacity;
+            visuals.Label.Visibility = visibility;
+            visuals.Label.Opacity = visualState.Opacity;
         }
 
         private static DoubleCollection? CreateStrokeDashArray(
@@ -1334,24 +1337,7 @@ namespace SqlXmlAnalyzer
                 {
                     Core.Services.DeadlockConnectionPoints points =
                         CalculateConnectionPoints(edge.FromId, edge.ToId);
-
-                    cached.line.X1 = points.From.X;
-                    cached.line.Y1 = points.From.Y;
-                    cached.line.X2 = points.To.X;
-                    cached.line.Y2 = points.To.Y;
-
-                    if (cached.arrowHead != null)
-                    {
-                        UpdateArrowHeadPosition(cached.arrowHead, points.To, points.From);
-                    }
-
-                    if (cached.label != null)
-                    {
-                        double labelW = cached.label.ActualWidth > 0 ? cached.label.ActualWidth : 50;
-                        double labelH = cached.label.ActualHeight > 0 ? cached.label.ActualHeight : 16;
-                        Canvas.SetLeft(cached.label, (points.From.X + points.To.X) / 2 - labelW / 2);
-                        Canvas.SetTop(cached.label, (points.From.Y + points.To.Y) / 2 - labelH / 2);
-                    }
+                    _deadlockGraphEdgeElementFactory.UpdateEdge(cached, points);
                 }
             }
         }
@@ -1364,83 +1350,23 @@ namespace SqlXmlAnalyzer
                 toId);
         }
 
-        private System.Windows.Shapes.Polygon CreateArrowHead(Point tip, Point fromPoint, Brush fill)
-        {
-            Core.Services.DeadlockArrowHeadPoints points =
-                _deadlockGraphGeometryService.CalculateArrowHead(tip, fromPoint);
-
-            return new System.Windows.Shapes.Polygon
-            {
-                Points = new PointCollection { points.Tip, points.Left, points.Right },
-                Fill = fill,
-                Stroke = fill,
-                StrokeThickness = 0.5
-            };
-        }
-
-        private void UpdateArrowHeadPosition(System.Windows.Shapes.Polygon arrowHead, Point tip, Point fromPoint)
-        {
-            if (arrowHead == null) return;
-
-            Core.Services.DeadlockArrowHeadPoints points =
-                _deadlockGraphGeometryService.CalculateArrowHead(tip, fromPoint);
-
-            arrowHead.Points[0] = points.Tip;
-            arrowHead.Points[1] = points.Left;
-            arrowHead.Points[2] = points.Right;
-        }
-
         private void DrawArrowBetweenNodes(string fromId, string toId, string label, bool isWaitEdge)
         {
             Core.Services.DeadlockConnectionPoints points =
                 CalculateConnectionPoints(fromId, toId);
 
-            var brush = isWaitEdge ? new SolidColorBrush(Color.FromRgb(211, 47, 47)) : new SolidColorBrush(Color.FromRgb(56, 142, 60));
+            DeadlockGraphEdgeElements elements =
+                _deadlockGraphEdgeElementFactory.CreateEdge(
+                    points,
+                    label,
+                    isWaitEdge);
 
-            var line = new System.Windows.Shapes.Line
-            {
-                X1 = points.From.X,
-                Y1 = points.From.Y,
-                X2 = points.To.X,
-                Y2 = points.To.Y,
-                Stroke = brush,
-                StrokeThickness = isWaitEdge ? 2.5 : 2.0
-            };
-
-            if (!isWaitEdge)
-            {
-                line.StrokeDashArray = new DoubleCollection { 4, 3 };
-            }
-
-            DeadlockGraphCanvas.Children.Add(line);
-
-            var arrowHead = CreateArrowHead(points.To, points.From, brush);
-            DeadlockGraphCanvas.Children.Add(arrowHead);
-
-            var border = new Border
-            {
-                Background = new SolidColorBrush(Color.FromArgb(240, 255, 255, 255)),
-                BorderBrush = brush,
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(3),
-                Padding = new Thickness(4, 1, 4, 1),
-                IsHitTestVisible = false
-            };
-            var tb = new TextBlock
-            {
-                Text = label,
-                FontSize = 9,
-                FontWeight = FontWeights.Bold,
-                Foreground = brush
-            };
-            border.Child = tb;
-
-            Canvas.SetLeft(border, (points.From.X + points.To.X) / 2 - 25);
-            Canvas.SetTop(border, (points.From.Y + points.To.Y) / 2 - 8);
-            DeadlockGraphCanvas.Children.Add(border);
+            DeadlockGraphCanvas.Children.Add(elements.Line);
+            DeadlockGraphCanvas.Children.Add(elements.ArrowHead);
+            DeadlockGraphCanvas.Children.Add(elements.Label);
 
             var key = (fromId, toId);
-            _arrowCache[key] = (line, arrowHead, border);
+            _arrowCache[key] = elements;
             _edgesForDrawing.Add(new Core.Services.DeadlockGraphEdge(fromId, toId, label, isWaitEdge));
         }
 
