@@ -133,6 +133,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
         private readonly Core.Services.DeadlockCanvasInteractionService _deadlockCanvasInteractionService;
+        private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -227,7 +228,8 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null,
             Core.Services.DeadlockGraphViewportService? deadlockGraphViewportService = null,
             Core.Services.DeadlockGraphGeometryService? deadlockGraphGeometryService = null,
-            Core.Services.DeadlockCanvasInteractionService? deadlockCanvasInteractionService = null)
+            Core.Services.DeadlockCanvasInteractionService? deadlockCanvasInteractionService = null,
+            Core.Services.DeadlockNodeDragService? deadlockNodeDragService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -281,6 +283,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphGeometryService();
             _deadlockCanvasInteractionService = deadlockCanvasInteractionService
                 ?? new Core.Services.DeadlockCanvasInteractionService();
+            _deadlockNodeDragService = deadlockNodeDragService
+                ?? new Core.Services.DeadlockNodeDragService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1490,18 +1494,25 @@ namespace SqlXmlAnalyzer
                 if (isDragging)
                 {
                     var currentPos = e.GetPosition(DeadlockGraphCanvas);
-                    double dx = currentPos.X - lastPos.X;
-                    double dy = currentPos.Y - lastPos.Y;
+                    Point currentNodePosition =
+                        _deadlockNodeDragService.NormalizeCanvasPosition(
+                            Canvas.GetLeft(element),
+                            Canvas.GetTop(element));
+                    Core.Services.DeadlockNodeDragResult dragResult =
+                        _deadlockNodeDragService.Drag(
+                            currentNodePosition,
+                            lastPos,
+                            currentPos);
 
-                    double newLeft = Canvas.GetLeft(element) + dx;
-                    double newTop = Canvas.GetTop(element) + dy;
+                    double newLeft = dragResult.Position.X;
+                    double newTop = dragResult.Position.Y;
 
                     Canvas.SetLeft(element, newLeft);
                     Canvas.SetTop(element, newTop);
 
                     _nodePositions[id] = new Point(newLeft, newTop);
 
-                    lastPos = currentPos;
+                    lastPos = dragResult.LastPointer;
 
                     UpdateConnectionsForNode(id);
                 }
