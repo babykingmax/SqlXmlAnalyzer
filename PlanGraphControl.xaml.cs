@@ -1151,6 +1151,7 @@ namespace SqlXmlAnalyzer
         public string OperatorType { get; set; } = "Other";
         public bool IsParallel { get; set; }
         public string Warnings { get; set; } = "";
+        private static readonly Core.Services.PlanGraphRowSkewService RowSkewService = new();
 
         private SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion? _associatedSuggestion;
         public SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion? AssociatedSuggestion
@@ -1364,27 +1365,21 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                if (ActualRowsNum <= 0 || EstRowsNum <= 0) return Brushes.DimGray;
-                double ratio = ActualRowsNum / EstRowsNum;
-                if (ratio > 3.0 || ratio < 0.33) return Brushes.DarkRed;      // 严重倾斜
-                if (ratio > 1.5 || ratio < 0.7) return Brushes.DarkOrange;
-                return new SolidColorBrush(Color.FromRgb(0x2E, 0x7D, 0x32));
+                Core.Services.PlanGraphRowSkewResult result =
+                    RowSkewService.Analyze(ActualRowsNum, EstRowsNum);
+
+                return result.BrushKey switch
+                {
+                    Core.Services.PlanGraphRowSkewBrushKey.DarkRed => Brushes.DarkRed,
+                    Core.Services.PlanGraphRowSkewBrushKey.DarkOrange => Brushes.DarkOrange,
+                    Core.Services.PlanGraphRowSkewBrushKey.HealthyGreen => new SolidColorBrush(Color.FromRgb(0x2E, 0x7D, 0x32)),
+                    _ => Brushes.DimGray
+                };
             }
         }
 
-        public string SkewWarning
-        {
-            get
-            {
-                if (ActualRowsNum <= 0 || EstRowsNum <= 0) return "";
-                double ratio = ActualRowsNum / EstRowsNum;
-                if (ratio > 5) return "↑↑ 严重高估";
-                if (ratio > 2.5) return "↑ 高估";
-                if (ratio < 0.2) return "↓↓ 严重低估";
-                if (ratio < 0.5) return "↓ 低估";
-                return "";
-            }
-        }
+        public string SkewWarning =>
+            RowSkewService.Analyze(ActualRowsNum, EstRowsNum).Warning;
 
         public string HasObjectDetails => string.IsNullOrEmpty(ObjectDetails) ? "Collapsed" : "Visible";
         public string IsParallelVisible => IsParallel ? "Visible" : "Collapsed";
