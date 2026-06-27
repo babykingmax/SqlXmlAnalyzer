@@ -3,11 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
@@ -799,39 +797,4 @@ namespace SqlXmlAnalyzer
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    public class ConnectionThicknessConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return Core.Services.PlanGraphMetricService.CalculateLegacyConverterThickness(value);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class RelayCommand<T> : ICommand
-    {
-        private readonly Action<T> _execute;
-        public RelayCommand(Action<T> execute) => _execute = execute;
-        public bool CanExecute(object? parameter) => true;
-        public void Execute(object? parameter)
-        {
-            if (parameter is T val)
-            {
-                _execute(val);
-            }
-            else if (parameter == null)
-            {
-                _execute(default!);
-            }
-        }
-        public event EventHandler? CanExecuteChanged
-        {
-            add { }
-            remove { }
-        }
-    }
 }
