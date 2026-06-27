@@ -129,6 +129,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
+        private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -217,6 +218,7 @@ namespace SqlXmlAnalyzer
             Core.Services.IFileDialogService? fileDialogService = null,
             Core.Services.AnalysisClipboardService? analysisClipboardService = null,
             Core.Services.MissingIndexDeploymentScriptService? missingIndexDeploymentScriptService = null,
+            Core.Services.DeadlockSelectionDetailService? deadlockSelectionDetailService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null,
             Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null)
@@ -265,6 +267,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.AnalysisClipboardService();
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
+            _deadlockSelectionDetailService = deadlockSelectionDetailService
+                ?? new Core.Services.DeadlockSelectionDetailService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -2123,71 +2127,8 @@ namespace SqlXmlAnalyzer
         {
             if (DeadlockProcessesList.SelectedItem is DeadlockProcess proc)
             {
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine($"🔴 选中进程 (SPID {proc.Spid}) 详情：");
-                sb.AppendLine($"----------------------------------------");
-                sb.AppendLine($"标识 ID: {proc.Id}");
-                sb.AppendLine($"当前状态: {proc.Status} | 隔离级别: {proc.Isolationlevel}");
-                sb.AppendLine($"事务名称: {(!string.IsNullOrEmpty(proc.TransactionName) ? proc.TransactionName : "无")}");
-                sb.AppendLine($"运行数据库: {(!string.IsNullOrEmpty(proc.CurrentDbName) ? proc.CurrentDbName : "Unknown")}");
-                sb.AppendLine($"登录账号: {proc.Loginname} | 客户端主机: {proc.Hostname}");
-                if (!string.IsNullOrEmpty(proc.ClientApp))
-                    sb.AppendLine($"应用程序: {proc.ClientApp}");
-                if (!string.IsNullOrEmpty(proc.WaitResource))
-                    sb.AppendLine($"等待资源: {proc.WaitResource}");
-                if (!string.IsNullOrEmpty(proc.WaitTime))
-                    sb.AppendLine($"等待时间: {proc.WaitTime} ms");
-                sb.AppendLine();
-                sb.AppendLine($"📝 正在执行的 SQL 语句 (inputbuf):");
-                sb.AppendLine(proc.Inputbuf);
-
-                if (proc.ExecutionStack.Count > 0)
-                {
-                    sb.AppendLine();
-                    sb.AppendLine($"🥞 执行堆栈 (Execution Stack):");
-                    foreach (var frame in proc.ExecutionStack)
-                    {
-                        sb.AppendLine($"  • 过程: {frame.Procname} | 行号: {frame.Line}");
-                        if (!string.IsNullOrEmpty(frame.Statement))
-                            sb.AppendLine($"    SQL: {frame.Statement}");
-                    }
-                }
-
-                // 进行 SARGability & 索引友好度智能扫描 ( 联动性能检测 )
-                var sargWarnings = SargAnalyzer.Analyze(proc.Inputbuf);
-                if (proc.ExecutionStack.Count > 0)
-                {
-                    foreach (var frame in proc.ExecutionStack)
-                    {
-                        if (!string.IsNullOrEmpty(frame.Statement))
-                        {
-                            var frameWarns = SargAnalyzer.Analyze(frame.Statement);
-                            sargWarnings.AddRange(frameWarns);
-                        }
-                    }
-                }
-                sargWarnings = sargWarnings.GroupBy(w => w.Title).Select(g => g.First()).ToList();
-
-                if (sargWarnings.Count > 0)
-                {
-                    sb.AppendLine();
-                    sb.AppendLine($"⚡ SQL 语句性能与 SARG 扫描预警（DEADLOCK.py 专家级建议）：");
-                    sb.AppendLine($"========================================================================");
-                    foreach (var warn in sargWarnings)
-                    {
-                        sb.AppendLine($"【问题标题】 {warn.Title}");
-                        sb.AppendLine($"【物理成因】 {warn.Desc}");
-                        sb.AppendLine($"【解决方案】 {warn.Solution}");
-                        sb.AppendLine($"------------------------------------------------------------------------");
-                    }
-                }
-                else
-                {
-                    sb.AppendLine();
-                    sb.AppendLine($"💚 SQL 扫描通过：未检测到明显的前导模糊、函数致盲或负向查询等 SARG 索引致盲缺陷。");
-                }
-
-                ViewModel.DeadlockPatternText = sb.ToString();
+                ViewModel.DeadlockPatternText =
+                    _deadlockSelectionDetailService.BuildProcessDetail(proc);
             }
         }
 
@@ -2195,28 +2136,8 @@ namespace SqlXmlAnalyzer
         {
             if (DeadlockResourcesList.SelectedItem is LockResource res)
             {
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine($"🔑 涉及资源 ({res.LockType.ToUpperInvariant()}) 详情：");
-                sb.AppendLine($"----------------------------------------");
-                sb.AppendLine($"数据库 ID (DBID): {res.Dbid}");
-                sb.AppendLine($"对象名称: {res.ObjectName}");
-                if (!string.IsNullOrEmpty(res.IndexName))
-                    sb.AppendLine($"关联索引: {res.IndexName}");
-                sb.AppendLine($"HOBT ID: {res.Hobtid}");
-                sb.AppendLine();
-                sb.AppendLine($"✅ 持有该资源的进程 (Owners):");
-                foreach (var owner in res.Owners)
-                {
-                    sb.AppendLine($"  • 标识 ID: {owner.Id}   模式 (Mode): {owner.Mode}");
-                }
-                sb.AppendLine();
-                sb.AppendLine($"⏳ 等待该资源的进程 (Waiters):");
-                foreach (var waiter in res.Waiters)
-                {
-                    sb.AppendLine($"  • 标识 ID: {waiter.Id}   请求模式 (Mode): {waiter.Mode}  类型: {waiter.RequestType}");
-                }
-
-                ViewModel.DeadlockPatternText = sb.ToString();
+                ViewModel.DeadlockPatternText =
+                    _deadlockSelectionDetailService.BuildResourceDetail(res);
             }
         }
 
@@ -2308,10 +2229,7 @@ namespace SqlXmlAnalyzer
             if (DeadlockPatternsListBox.SelectedItem is DeadlockPattern pattern)
             {
                 ViewModel.DeadlockPatternText =
-                    $"类型: {pattern.TypeName}\n\n" +
-                    $"描述: {pattern.Description}\n\n" +
-                    $"可能原因: {pattern.LikelyCause}\n\n" +
-                    $"推荐措施: {pattern.Recommendation}";
+                    _deadlockSelectionDetailService.BuildPatternDetail(pattern);
             }
         }
 
