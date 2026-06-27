@@ -172,6 +172,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.PlanPropertyService>();
             services.AddSingleton<Core.Services.PlanTreeService>();
             services.AddSingleton<Core.Services.SqlDiffService>();
+            services.AddSingleton<Core.Services.SqlDiffDocumentRenderer>();
             services.AddSingleton<Core.Services.IFileDialogService, Core.Services.WpfFileDialogService>();
             services.AddTransient<MainWindow>();
         }

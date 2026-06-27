@@ -127,6 +127,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
+        private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -141,38 +142,6 @@ namespace SqlXmlAnalyzer
         private ScrollViewer? _originalScroll;
         private ScrollViewer? _refactoredScroll;
         private bool _isSynchronizingScroll = false;
-
-        private static readonly TextDecorationCollection SquigglyUnderline = CreateSquigglyUnderline();
-
-        private static TextDecorationCollection CreateSquigglyUnderline()
-        {
-            var brush = new DrawingBrush();
-            brush.Viewport = new Rect(0, 0, 6, 4);
-            brush.ViewportUnits = BrushMappingMode.Absolute;
-            brush.TileMode = TileMode.Tile;
-
-            var geometry = new GeometryGroup();
-            var path = new PathGeometry();
-            var figure = new PathFigure { StartPoint = new Point(0, 2) };
-            figure.Segments.Add(new BezierSegment(new Point(1.5, 0), new Point(1.5, 4), new Point(3, 2), true));
-            figure.Segments.Add(new BezierSegment(new Point(4.5, 0), new Point(4.5, 4), new Point(6, 2), true));
-            path.Figures.Add(figure);
-
-            var drawing = new GeometryDrawing(null, new Pen(Brushes.Red, 1.2), path);
-            brush.Drawing = drawing;
-
-            var dec = new TextDecoration
-            {
-                Location = TextDecorationLocation.Underline,
-                Pen = new Pen(brush, 3)
-            };
-
-            var decs = new TextDecorationCollection();
-            decs.Add(dec);
-            return decs;
-        }
-
-
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -234,6 +203,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanPropertyService? planPropertyService = null,
             Core.Services.PlanTreeService? planTreeService = null,
             Core.Services.SqlDiffService? sqlDiffService = null,
+            Core.Services.SqlDiffDocumentRenderer? sqlDiffDocumentRenderer = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
@@ -272,6 +242,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanTreeService();
             _sqlDiffService = sqlDiffService
                 ?? new Core.Services.SqlDiffService();
+            _sqlDiffDocumentRenderer = sqlDiffDocumentRenderer
+                ?? new Core.Services.SqlDiffDocumentRenderer(_sqlDiffService);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -2690,18 +2662,6 @@ namespace SqlXmlAnalyzer
 
         #region 可视化看板与交互展示 (GUI Dashboard Integration & Interactive Visualization)
 
-        private static readonly Brush AdditionBrush = CreateFrozenBrush(Color.FromRgb(232, 245, 233)); // #E8F5E9
-        private static readonly Brush DeletionBrush = CreateFrozenBrush(Color.FromRgb(255, 235, 238)); // #FFEBEE
-        private static readonly Brush ModificationBrush = CreateFrozenBrush(Color.FromRgb(227, 242, 253)); // #E3F2FD
-        private static readonly Brush PlaceholderBrush = CreateFrozenBrush(Color.FromRgb(245, 245, 245)); // #F5F5F5
-
-        private static Brush CreateFrozenBrush(Color color)
-        {
-            var brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
-        }
-
         private T? FindVisualChild<T>(DependencyObject? depObj) where T : DependencyObject
         {
             if (depObj != null)
@@ -2788,139 +2748,19 @@ namespace SqlXmlAnalyzer
             Core.Services.SqlAlignedLines alignedLines =
                 _sqlDiffService.AlignLines(linesOriginal, linesRefactored);
 
-            RenderAlignedDiff(OriginalSqlTextBox, alignedLines.Original, false, alignedLines.Refactored);
-            RenderAlignedDiff(RefactoredSqlTextBox, alignedLines.Refactored, true, alignedLines.Original);
-        }
-
-        private void RenderAlignedDiff(
-            RichTextBox rtb,
-            IReadOnlyList<string?> lines,
-            bool isRefactoredSide,
-            IReadOnlyList<string?> opposingLines)
-        {
-            rtb.Document.Blocks.Clear();
-            rtb.BeginChange();
-            try
-            {
-                List<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? subqueries = null;
-                IReadOnlyList<int>? lineStartOffsets = null;
-                HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? handledSubqueries = null;
-
-                if (!isRefactoredSide && !string.IsNullOrEmpty(_currentOriginalSql))
-                {
-                    subqueries = SqlXmlAnalyzer.Refactoring.Rules.ScalarSubqueryToJoinRule.GetRewriteableSubqueries(_currentOriginalSql);
-                    lineStartOffsets = _sqlDiffService.GetLineStartOffsets(_currentOriginalSql);
-                    handledSubqueries = new HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>();
-                }
-
-                int realLineIdx = 0;
-                for (int i = 0; i < lines.Count; i++)
-                {
-                    string? line = lines[i];
-                    string? opposingLine = opposingLines[i];
-
-                    Paragraph p = new Paragraph();
-                    p.Margin = new Thickness(0, 1, 0, 1);
-
-                    Brush defaultForeground = Brushes.Black;
-
-                    if (line == null)
-                    {
-                        p.Background = PlaceholderBrush;
-                        p.Inlines.Add(new Run(" ") { Foreground = Brushes.Transparent });
-                    }
-                    else
-                    {
-                        int lineStartOffset = 0;
-                        if (!isRefactoredSide && lineStartOffsets != null && realLineIdx < lineStartOffsets.Count)
-                        {
-                            lineStartOffset = lineStartOffsets[realLineIdx];
-                        }
-
-                        if (opposingLine == null)
-                        {
-                            p.Background = isRefactoredSide ? AdditionBrush : DeletionBrush;
-                            FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
-                        }
-                        else if (!_sqlDiffService.IsEquivalentForDiff(line, opposingLine))
-                        {
-                            p.Background = ModificationBrush;
-                            FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
-                        }
-                        else
-                        {
-                            FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
-                        }
-
-                        if (!isRefactoredSide)
-                        {
-                            realLineIdx++;
-                        }
-                    }
-
-                    rtb.Document.Blocks.Add(p);
-                }
-            }
-            finally
-            {
-                rtb.EndChange();
-            }
-        }
-
-        private void FormatSqlLine(Paragraph p, string text, Brush defaultForeground, List<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? subqueries = null, int lineStartOffset = 0, HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? handledSubqueries = null)
-        {
-            if (string.IsNullOrEmpty(text))
-            {
-                p.Inlines.Add(new Run(""));
-                return;
-            }
-
-            foreach (Core.Services.SqlDiffToken token in _sqlDiffService.TokenizeLine(text))
-            {
-                int tokenAbsoluteStart = lineStartOffset + token.Start;
-                int tokenAbsoluteEnd = tokenAbsoluteStart + token.Length;
-
-                    Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery? overlappingSubquery = null;
-                    if (subqueries != null)
-                    {
-                        foreach (var sub in subqueries)
-                        {
-                            int subStart = sub.StartOffset;
-                            int subEnd = subStart + sub.FragmentLength;
-                            if (tokenAbsoluteStart < subEnd && tokenAbsoluteEnd > subStart)
-                            {
-                                overlappingSubquery = sub;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (overlappingSubquery != null && handledSubqueries != null && !handledSubqueries.Contains(overlappingSubquery))
-                    {
-                        handledSubqueries.Add(overlappingSubquery);
-                        var lightbulbBtn = CreateLightbulbButton(overlappingSubquery);
-                        p.Inlines.Add(new InlineUIContainer(lightbulbBtn) { BaselineAlignment = BaselineAlignment.Center });
-                    }
-
-                Run run = token.Kind switch
-                {
-                    Core.Services.SqlDiffTokenKind.Comment =>
-                        new Run(token.Text) { Foreground = Brushes.Green },
-                    Core.Services.SqlDiffTokenKind.StringLiteral =>
-                        new Run(token.Text) { Foreground = Brushes.Brown },
-                    Core.Services.SqlDiffTokenKind.Keyword =>
-                        new Run(token.Text) { Foreground = Brushes.Blue, FontWeight = FontWeights.Bold },
-                    _ => new Run(token.Text) { Foreground = defaultForeground }
-                };
-
-                    if (overlappingSubquery != null)
-                    {
-                        run.TextDecorations = SquigglyUnderline;
-                        run.ToolTip = "标量子查询可优化为 JOIN，点击灯泡一键修复并对比效果";
-                    }
-
-                p.Inlines.Add(run);
-            }
+            _sqlDiffDocumentRenderer.Render(
+                OriginalSqlTextBox,
+                alignedLines.Original,
+                false,
+                alignedLines.Refactored,
+                _currentOriginalSql,
+                CreateLightbulbButton);
+            _sqlDiffDocumentRenderer.Render(
+                RefactoredSqlTextBox,
+                alignedLines.Refactored,
+                true,
+                alignedLines.Original,
+                _currentOriginalSql);
         }
 
         private UIElement CreateLightbulbButton(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
