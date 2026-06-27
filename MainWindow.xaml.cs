@@ -23,18 +23,6 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace SqlXmlAnalyzer
 {
-    public sealed class PlanVisualNode
-    {
-        public string PhysicalOp { get; set; } = "";
-        public string LogicalOp { get; set; } = "";
-        public double Cost { get; set; }
-        public string EstRows { get; set; } = "0";
-        public System.Windows.Media.Brush CostColor { get; set; } = System.Windows.Media.Brushes.Black;
-        public System.Windows.Media.ImageSource? OperatorIcon { get; set; }
-        public List<PlanVisualNode> Children { get; set; } = new List<PlanVisualNode>();
-        public XElement? Tag { get; set; }
-    }
-
     public partial class MainWindow : Window
     {
         protected override void OnSourceInitialized(EventArgs e)
@@ -136,6 +124,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
+        private readonly Core.Services.PlanTreeService _planTreeService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -240,6 +229,7 @@ namespace SqlXmlAnalyzer
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.PlanPropertyService? planPropertyService = null,
+            Core.Services.PlanTreeService? planTreeService = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
@@ -272,6 +262,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.WpfFileDialogService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
+            _planTreeService = planTreeService
+                ?? new Core.Services.PlanTreeService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -1737,72 +1729,27 @@ namespace SqlXmlAnalyzer
 
         private void BuildPlanVisualTree(XDocument doc, XNamespace ns)
         {
-            PlanVisualTree.ItemsSource = null;
-
-            var rootRelOp = doc.Descendants(ns + "RelOp").FirstOrDefault();
-            if (rootRelOp != null)
-            {
-                var rootNode = CreatePlanVisualNode(rootRelOp, ns);
-                PlanVisualTree.ItemsSource = new List<PlanVisualNode> { rootNode };
-            }
-        }
-
-        private PlanVisualNode CreatePlanVisualNode(XElement relOp, XNamespace ns)
-        {
-            string phys = relOp.Attribute("PhysicalOp")?.Value ?? "Unknown";
-            string logical = relOp.Attribute("LogicalOp")?.Value ?? "";
-            string costStr = relOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
-            string estRows = relOp.Attribute("EstimatedRows")?.Value ?? "0";
-
-            double cost = 0;
-            double.TryParse(costStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out cost);
-
-            var costBrush = System.Windows.Media.Brushes.Black;
-            if (cost > 10.0) costBrush = System.Windows.Media.Brushes.Red;
-            else if (cost > 5.0) costBrush = System.Windows.Media.Brushes.DarkOrange;
-
-            var node = new PlanVisualNode
-            {
-                PhysicalOp = phys,
-                LogicalOp = logical,
-                Cost = cost,
-                EstRows = estRows,
-                CostColor = costBrush,
-                Tag = relOp,
-                OperatorIcon = PlanIconManager.GetIcon(phys)
-            };
-
-            foreach (var child in PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns))
-            {
-                node.Children.Add(CreatePlanVisualNode(child, ns));
-            }
-
-            return node;
+            PlanVisualTree.ItemsSource = _planTreeService.BuildVisualTree(doc, ns);
         }
 
         // 简单构建执行计划 TreeView 节点 (参考 Plan Explorer 左侧树)
         private TreeViewItem? BuildPlanTreeView(XDocument doc, XNamespace ns)
         {
-            var rootRelOp = doc.Descendants(ns + "RelOp").FirstOrDefault();
-            if (rootRelOp == null) return null;
-
-            return BuildRelOpNode(rootRelOp, ns);
+            Core.Services.PlanOperatorTreeNode? root = _planTreeService.BuildOperatorTree(doc, ns);
+            return root == null ? null : CreateTreeViewItem(root);
         }
 
-        private TreeViewItem BuildRelOpNode(XElement relOp, XNamespace ns)
+        private static TreeViewItem CreateTreeViewItem(Core.Services.PlanOperatorTreeNode node)
         {
-            string phys = relOp.Attribute("PhysicalOp")?.Value ?? "Unknown";
-            string cost = relOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
-
             var item = new TreeViewItem
             {
-                Header = $"{phys} (Cost: {cost})",
-                Tag = relOp
+                Header = node.Header,
+                Tag = node.Source
             };
 
-            foreach (var child in PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns))
+            foreach (Core.Services.PlanOperatorTreeNode child in node.Children)
             {
-                item.Items.Add(BuildRelOpNode(child, ns));
+                item.Items.Add(CreateTreeViewItem(child));
             }
 
             return item;
@@ -2642,7 +2589,7 @@ namespace SqlXmlAnalyzer
 
         private void PlanVisualTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is PlanVisualNode node && node.Tag is XElement relOp)
+            if (e.NewValue is Core.Services.PlanVisualNode node && node.Tag is XElement relOp)
             {
                 BindPlanProperties(relOp);
             }
