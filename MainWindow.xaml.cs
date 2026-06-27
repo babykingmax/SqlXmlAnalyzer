@@ -140,6 +140,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
         private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
         private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
+        private readonly Core.Services.DeadlockGraphVisualStateService _deadlockGraphVisualStateService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -243,7 +244,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphEdgeService? deadlockGraphEdgeService = null,
             Core.Services.DeadlockGraphEdgeRegistryService? deadlockGraphEdgeRegistryService = null,
             Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null,
-            Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null)
+            Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null,
+            Core.Services.DeadlockGraphVisualStateService? deadlockGraphVisualStateService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -311,6 +313,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphPlacementService();
             _deadlockPlaybackStateService = deadlockPlaybackStateService
                 ?? new Core.Services.DeadlockPlaybackStateService();
+            _deadlockGraphVisualStateService = deadlockGraphVisualStateService
+                ?? new Core.Services.DeadlockGraphVisualStateService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -896,34 +900,9 @@ namespace SqlXmlAnalyzer
                 string id = kvp.Key;
                 var el = kvp.Value;
                 Core.Services.DeadlockPlaybackNodeState nodeState = playbackState.Nodes[id];
-
-                if (nodeState.IsCollapsed)
-                {
-                    el.Visibility = Visibility.Collapsed;
-                }
-                else if (nodeState.IsActive)
-                {
-                    el.Visibility = Visibility.Visible;
-                    el.Opacity = 1.0;
-                }
-                else
-                {
-                    el.Visibility = Visibility.Visible;
-                    el.Opacity = 0.2;
-                }
-
-                if (nodeState.IsVictim)
-                {
-                    if (el is Border b && b.Child is Grid)
-                    {
-                        b.BorderBrush = new SolidColorBrush(Color.FromRgb(211, 47, 47));
-                        b.BorderThickness = new Thickness(3);
-                        if (nodeState.IsVictimRevealed)
-                            b.Background = new SolidColorBrush(Color.FromArgb(50, 211, 47, 47));
-                        else
-                            b.Background = Brushes.White;
-                    }
-                }
+                Core.Services.DeadlockGraphNodeVisualState visualState =
+                    _deadlockGraphVisualStateService.CreatePlaybackNodeState(nodeState);
+                ApplyNodeVisualState(el, visualState);
             }
 
             foreach (var edge in _arrowCache)
@@ -932,57 +911,92 @@ namespace SqlXmlAnalyzer
                 var visuals = edge.Value;
                 var playbackEdgeKey = new Core.Services.DeadlockPlaybackEdgeKey(idPair.Item1, idPair.Item2);
                 Core.Services.DeadlockPlaybackEdgeState edgeState = playbackState.Edges[playbackEdgeKey];
+                Core.Services.DeadlockGraphEdgeVisualState visualState =
+                    _deadlockGraphVisualStateService.CreatePlaybackEdgeState(edgeState);
 
-                if (edgeState.IsCollapsed)
+                ApplyEdgeVisualState(visuals, visualState);
+
+                if (!visualState.IsVisible || !visualState.BadgeStepNumber.HasValue)
                 {
-                    visuals.line.Visibility = Visibility.Collapsed;
-                    visuals.arrowHead.Visibility = Visibility.Collapsed;
-                    visuals.label.Visibility = Visibility.Collapsed;
                     if (_stepBadges.TryGetValue(idPair, out var badge)) badge.Visibility = Visibility.Collapsed;
-                }
-                else if (edgeState.IsActive)
-                {
-                    visuals.line.Visibility = Visibility.Visible;
-                    visuals.line.Opacity = 1.0;
-                    visuals.line.StrokeDashArray = null;
-                    visuals.arrowHead.Visibility = Visibility.Visible;
-                    visuals.arrowHead.Opacity = 1.0;
-                    visuals.label.Visibility = Visibility.Visible;
-                    visuals.label.Opacity = 1.0;
-
-                    if (edgeState.BadgeStepNumber.HasValue)
-                    {
-                        if (!_stepBadges.TryGetValue(idPair, out var badge))
-                        {
-                            badge = new Border
-                            {
-                                Background = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
-                                CornerRadius = new CornerRadius(8),
-                                Width = 16,
-                                Height = 16,
-                                Child = new TextBlock { Text = edgeState.BadgeStepNumber.Value.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
-                            };
-                            _stepBadges[idPair] = badge;
-                            DeadlockGraphCanvas.Children.Add(badge);
-                            double x1 = visuals.line.X1, y1 = visuals.line.Y1, x2 = visuals.line.X2, y2 = visuals.line.Y2;
-                            Canvas.SetLeft(badge, (x1 + x2) / 2 + 10);
-                            Canvas.SetTop(badge, (y1 + y2) / 2 - 15);
-                        }
-                        badge.Visibility = Visibility.Visible;
-                    }
                 }
                 else
                 {
-                    visuals.line.Visibility = Visibility.Visible;
-                    visuals.line.Opacity = 0.2;
-                    visuals.line.StrokeDashArray = new DoubleCollection { 2, 2 };
-                    visuals.arrowHead.Visibility = Visibility.Visible;
-                    visuals.arrowHead.Opacity = 0.2;
-                    visuals.label.Visibility = Visibility.Visible;
-                    visuals.label.Opacity = 0.2;
-                    if (_stepBadges.TryGetValue(idPair, out var badge)) badge.Visibility = Visibility.Collapsed;
+                    if (!_stepBadges.TryGetValue(idPair, out var badge))
+                    {
+                        badge = new Border
+                        {
+                            Background = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
+                            CornerRadius = new CornerRadius(8),
+                            Width = 16,
+                            Height = 16,
+                            Child = new TextBlock { Text = visualState.BadgeStepNumber.Value.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
+                        };
+                        _stepBadges[idPair] = badge;
+                        DeadlockGraphCanvas.Children.Add(badge);
+                        double x1 = visuals.line.X1, y1 = visuals.line.Y1, x2 = visuals.line.X2, y2 = visuals.line.Y2;
+                        Canvas.SetLeft(badge, (x1 + x2) / 2 + 10);
+                        Canvas.SetTop(badge, (y1 + y2) / 2 - 15);
+                    }
+                    badge.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        private static void ApplyNodeVisualState(
+            FrameworkElement element,
+            Core.Services.DeadlockGraphNodeVisualState visualState)
+        {
+            element.Visibility = visualState.IsVisible
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            element.Opacity = visualState.Opacity;
+
+            if (element is Border border)
+            {
+                if (visualState.IsVictim)
+                {
+                    border.BorderBrush = new SolidColorBrush(Color.FromRgb(211, 47, 47));
+                    border.BorderThickness = new Thickness(3);
+                    border.Background = visualState.IsVictimRevealed
+                        ? new SolidColorBrush(Color.FromArgb(50, 211, 47, 47))
+                        : Brushes.White;
+                }
+                else if (visualState.UseDefaultChrome)
+                {
+                    border.BorderBrush = new SolidColorBrush(Color.FromRgb(176, 190, 197));
+                    border.BorderThickness = new Thickness(1.5);
+                    border.Background = Brushes.White;
+                }
+            }
+        }
+
+        private static void ApplyEdgeVisualState(
+            (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label) visuals,
+            Core.Services.DeadlockGraphEdgeVisualState visualState)
+        {
+            Visibility visibility = visualState.IsVisible
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            visuals.line.Visibility = visibility;
+            visuals.line.Opacity = visualState.Opacity;
+            visuals.line.StrokeDashArray = CreateStrokeDashArray(visualState.DashPattern);
+            visuals.arrowHead.Visibility = visibility;
+            visuals.arrowHead.Opacity = visualState.Opacity;
+            visuals.label.Visibility = visibility;
+            visuals.label.Opacity = visualState.Opacity;
+        }
+
+        private static DoubleCollection? CreateStrokeDashArray(
+            Core.Services.DeadlockGraphDashPattern dashPattern)
+        {
+            return dashPattern switch
+            {
+                Core.Services.DeadlockGraphDashPattern.Owner => new DoubleCollection { 4, 3 },
+                Core.Services.DeadlockGraphDashPattern.Preview => new DoubleCollection { 2, 2 },
+                _ => null
+            };
         }
 
         private void PlaybackModeToggle_Checked(object sender, RoutedEventArgs e)
@@ -1005,23 +1019,9 @@ namespace SqlXmlAnalyzer
 
             foreach (var el in _nodeElements.Values)
             {
-                el.Visibility = Visibility.Visible;
-                el.Opacity = 1.0;
-                if (el is Border b)
-                {
-                    b.BorderBrush = new SolidColorBrush(Color.FromRgb(176, 190, 197));
-                    b.BorderThickness = new Thickness(1.5);
-                    b.Background = Brushes.White;
-                }
-            }
-            foreach (var edge in _arrowCache.Values)
-            {
-                edge.line.Visibility = Visibility.Visible;
-                edge.line.Opacity = 1.0;
-                edge.arrowHead.Visibility = Visibility.Visible;
-                edge.arrowHead.Opacity = 1.0;
-                edge.label.Visibility = Visibility.Visible;
-                edge.label.Opacity = 1.0;
+                Core.Services.DeadlockGraphNodeVisualState resetState =
+                    _deadlockGraphVisualStateService.CreateResetNodeState();
+                ApplyNodeVisualState(el, resetState);
             }
             foreach (var edge in _arrowCache)
             {
@@ -1029,9 +1029,9 @@ namespace SqlXmlAnalyzer
                     _edgesForDrawing,
                     edge.Key.Item1,
                     edge.Key.Item2);
-                edge.Value.line.StrokeDashArray = isWaitEdge
-                    ? null
-                    : new DoubleCollection { 4, 3 };
+                Core.Services.DeadlockGraphEdgeVisualState resetState =
+                    _deadlockGraphVisualStateService.CreateResetEdgeState(isWaitEdge);
+                ApplyEdgeVisualState(edge.Value, resetState);
             }
             foreach (var b in _stepBadges.Values)
             {
