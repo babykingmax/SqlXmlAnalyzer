@@ -1152,6 +1152,7 @@ namespace SqlXmlAnalyzer
         public bool IsParallel { get; set; }
         public string Warnings { get; set; } = "";
         private static readonly Core.Services.PlanGraphCostVisualService CostVisualService = new();
+        private static readonly Core.Services.PlanGraphNodeDisplayService NodeDisplayService = new();
         private static readonly Core.Services.PlanGraphOperatorVisualService OperatorVisualService = new();
         private static readonly Core.Services.PlanGraphRowSkewService RowSkewService = new();
 
@@ -1207,23 +1208,18 @@ namespace SqlXmlAnalyzer
         public string PartitionCount { get; set; } = "";
         public string PartitionRange { get; set; } = "";
 
-        public bool IsFullPartitionScan => Partitioned == "True" && !string.IsNullOrEmpty(PartitionCount) && (PartitionRange == $"1 - {PartitionCount}" || PartitionRange == $"1-{PartitionCount}");
-        public string PartitionRangeColor => IsFullPartitionScan ? "#FF0000" : "#263238"; // Bright Red
-        public string PartitionLabelColor => IsFullPartitionScan ? "#FF0000" : "#546E7A"; // Bright Red
+        public bool IsFullPartitionScan => NodeDisplayService.IsFullPartitionScan(Partitioned, PartitionCount, PartitionRange);
+        public string PartitionRangeColor => NodeDisplayService.GetPartitionRangeColor(Partitioned, PartitionCount, PartitionRange);
+        public string PartitionLabelColor => NodeDisplayService.GetPartitionLabelColor(Partitioned, PartitionCount, PartitionRange);
 
-        public string HasSeekPredicates => string.IsNullOrEmpty(SeekPredicates) ? "Collapsed" : "Visible";
-        public string HasPredicate => string.IsNullOrEmpty(Predicate) ? "Collapsed" : "Visible";
-        public string HasOutputList => string.IsNullOrEmpty(OutputList) ? "Collapsed" : "Visible";
-        public string HasPartitionInfo => Partitioned == "True" ? "Visible" : "Collapsed";
+        public string HasSeekPredicates => NodeDisplayService.GetTextVisibility(SeekPredicates);
+        public string HasPredicate => NodeDisplayService.GetTextVisibility(Predicate);
+        public string HasOutputList => NodeDisplayService.GetTextVisibility(OutputList);
+        public string HasPartitionInfo => NodeDisplayService.GetPartitionInfoVisibility(Partitioned);
 
         public string NodeSeverity { get; set; } = "Info"; // Info, Warning, Critical
-        public string NodeSeverityColor => NodeSeverity switch
-        {
-            "Critical" => "#D32F2F", // Red
-            "Warning" => "#F57C00",  // Orange
-            _ => "Transparent"
-        };
-        public string NodeSeverityBorderThickness => NodeSeverity == "Info" ? "0" : "2";
+        public string NodeSeverityColor => NodeDisplayService.GetNodeSeverityColor(NodeSeverity);
+        public string NodeSeverityBorderThickness => NodeDisplayService.GetNodeSeverityBorderThickness(NodeSeverity);
 
         private bool _isCollapsed;
         public bool IsCollapsed
@@ -1263,7 +1259,7 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public string CollapseButtonVisibility => HasChildren ? "Visible" : "Collapsed";
+        public string CollapseButtonVisibility => NodeDisplayService.GetBooleanVisibility(HasChildren);
 
         private Point _location;
         public Point Location { get => _location; set { _location = value; OnPropertyChanged(nameof(Location)); } }
@@ -1362,10 +1358,10 @@ namespace SqlXmlAnalyzer
         public string SkewWarning =>
             RowSkewService.Analyze(ActualRowsNum, EstRowsNum).Warning;
 
-        public string HasObjectDetails => string.IsNullOrEmpty(ObjectDetails) ? "Collapsed" : "Visible";
-        public string IsParallelVisible => IsParallel ? "Visible" : "Collapsed";
-        public string HasWarningVisible => string.IsNullOrEmpty(Warnings) ? "Collapsed" : "Visible";
-        public string HasExtraInfo => (IsParallel || !string.IsNullOrEmpty(Warnings)) ? "Visible" : "Collapsed";
+        public string HasObjectDetails => NodeDisplayService.GetTextVisibility(ObjectDetails);
+        public string IsParallelVisible => NodeDisplayService.GetBooleanVisibility(IsParallel);
+        public string HasWarningVisible => NodeDisplayService.GetTextVisibility(Warnings);
+        public string HasExtraInfo => NodeDisplayService.GetExtraInfoVisibility(IsParallel, Warnings);
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
