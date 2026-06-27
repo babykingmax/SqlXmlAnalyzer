@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core;
 using SqlXmlAnalyzer.Core.Parsers;
@@ -19,6 +17,7 @@ using SqlXmlAnalyzer.ViewModels;
 using SqlXmlAnalyzer.Application;
 using SqlXmlAnalyzer.Application.Services;
 using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Services;
 using MessageBox = System.Windows.MessageBox;
 
 namespace SqlXmlAnalyzer
@@ -28,87 +27,7 @@ namespace SqlXmlAnalyzer
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            IntPtr handle = new WindowInteropHelper(this).Handle;
-            HwndSource.FromHwnd(handle).AddHook(new HwndSourceHook(WindowProc));
-        }
-
-        private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg == 0x0024) // WM_GETMINMAXINFO
-            {
-                WmGetMinMaxInfo(hwnd, lParam);
-                handled = true;
-            }
-            return IntPtr.Zero;
-        }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr MonitorFromWindow(IntPtr handle, uint flags);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int X;
-            public int Y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct MONITORINFO
-        {
-            public int cbSize;
-            public RECT rcMonitor;
-            public RECT rcWork;
-            public uint dwFlags;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
-        private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
-        {
-            MINMAXINFO mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-
-            const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
-            IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-
-            if (monitor != IntPtr.Zero)
-            {
-                MONITORINFO monitorInfo = new MONITORINFO();
-                monitorInfo.cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-                GetMonitorInfo(monitor, ref monitorInfo);
-
-                RECT rcWorkArea = monitorInfo.rcWork;
-                RECT rcMonitorArea = monitorInfo.rcMonitor;
-
-                mmi.ptMaxSize.X = Math.Abs(rcWorkArea.Right - rcWorkArea.Left);
-                mmi.ptMaxSize.Y = Math.Abs(rcWorkArea.Bottom - rcWorkArea.Top);
-                mmi.ptMaxPosition.X = Math.Abs(rcWorkArea.Left - rcMonitorArea.Left);
-                mmi.ptMaxPosition.Y = Math.Abs(rcWorkArea.Top - rcMonitorArea.Top);
-
-                mmi.ptMaxTrackSize.X = mmi.ptMaxSize.X;
-                mmi.ptMaxTrackSize.Y = mmi.ptMaxSize.Y;
-            }
-
-            Marshal.StructureToPtr(mmi, lParam, true);
+            WindowChromeInterop.Attach(this);
         }
 
         public Core.ViewModels.MainViewModel ViewModel { get; }
