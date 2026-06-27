@@ -81,5 +81,30 @@ namespace SqlXmlAnalyzer.Tests
             result.Text.Should().BeEmpty();
             result.UserMessage.Should().BeNull();
         }
+
+        [Fact]
+        public void BuildRefactoredSql_WhenSqlExists_ReturnsReadyText()
+        {
+            var service = new AnalysisClipboardService();
+
+            AnalysisClipboardResult result =
+                service.BuildRefactoredSql("SELECT 1;");
+
+            result.Status.Should().Be(AnalysisClipboardStatus.Ready);
+            result.Text.Should().Be("SELECT 1;");
+            result.UserMessage.Should().BeNull();
+        }
+
+        [Fact]
+        public void BuildRefactoredSql_WhenSqlIsEmpty_ReturnsEmptyMessage()
+        {
+            var service = new AnalysisClipboardService();
+
+            AnalysisClipboardResult result = service.BuildRefactoredSql("");
+
+            result.Status.Should().Be(AnalysisClipboardStatus.Empty);
+            result.Text.Should().BeEmpty();
+            result.UserMessage.Should().Be("当前没有重构后的 SQL 可复制！");
+        }
     }
 }

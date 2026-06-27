@@ -36,6 +36,22 @@ namespace SqlXmlAnalyzer.Core.Services
             };
         }
 
+        public AnalysisClipboardResult BuildRefactoredSql(string? refactoredSql)
+        {
+            if (string.IsNullOrEmpty(refactoredSql))
+            {
+                return new AnalysisClipboardResult(
+                    AnalysisClipboardStatus.Empty,
+                    string.Empty,
+                    "当前没有重构后的 SQL 可复制！");
+            }
+
+            return new AnalysisClipboardResult(
+                AnalysisClipboardStatus.Ready,
+                refactoredSql,
+                null);
+        }
+
         private static AnalysisClipboardResult Build(
             string? diagnostics,
             string header,

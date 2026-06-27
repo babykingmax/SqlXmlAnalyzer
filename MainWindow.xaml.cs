@@ -1926,9 +1926,12 @@ namespace SqlXmlAnalyzer
 
         private void CopyRefactoredSql_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(_currentRefactoredSql))
+            Core.Services.AnalysisClipboardResult result =
+                _analysisClipboardService.BuildRefactoredSql(_currentRefactoredSql);
+
+            if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
             {
-                Clipboard.SetText(_currentRefactoredSql);
+                Clipboard.SetText(result.Text);
                 MessageBox.Show("重构后的 SQL 已成功复制到剪贴板！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
