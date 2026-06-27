@@ -131,6 +131,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
+        private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
         private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
 
@@ -217,7 +218,8 @@ namespace SqlXmlAnalyzer
             Core.Services.AnalysisClipboardService? analysisClipboardService = null,
             Core.Services.MissingIndexDeploymentScriptService? missingIndexDeploymentScriptService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
-            Core.Services.PlanAnalysisService? planAnalysisService = null)
+            Core.Services.PlanAnalysisService? planAnalysisService = null,
+            Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -267,6 +269,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
                 ?? new Core.Services.PlanTreeService();
+            _planOperatorTreeViewRenderer = planOperatorTreeViewRenderer
+                ?? new Core.Services.PlanOperatorTreeViewRenderer();
             _sqlDiffService = sqlDiffService
                 ?? new Core.Services.SqlDiffService();
             _sqlDiffDocumentRenderer = sqlDiffDocumentRenderer
@@ -1743,23 +1747,7 @@ namespace SqlXmlAnalyzer
         private TreeViewItem? BuildPlanTreeView(XDocument doc, XNamespace ns)
         {
             Core.Services.PlanOperatorTreeNode? root = _planTreeService.BuildOperatorTree(doc, ns);
-            return root == null ? null : CreateTreeViewItem(root);
-        }
-
-        private static TreeViewItem CreateTreeViewItem(Core.Services.PlanOperatorTreeNode node)
-        {
-            var item = new TreeViewItem
-            {
-                Header = node.Header,
-                Tag = node.Source
-            };
-
-            foreach (Core.Services.PlanOperatorTreeNode child in node.Children)
-            {
-                item.Items.Add(CreateTreeViewItem(child));
-            }
-
-            return item;
+            return root == null ? null : _planOperatorTreeViewRenderer.Render(root);
         }
 
         private void RefreshABCompareTrees()
