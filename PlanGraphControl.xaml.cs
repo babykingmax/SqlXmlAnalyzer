@@ -45,6 +45,7 @@ namespace SqlXmlAnalyzer
         private static readonly Core.Services.PlanGraphCollapseStateService CollapseStateService = new();
         private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
+        private static readonly Core.Services.PlanGraphLayoutRefreshService LayoutRefreshService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
         private static readonly Core.Services.PlanGraphVisibilityStateService VisibilityStateService = new();
@@ -418,31 +419,32 @@ namespace SqlXmlAnalyzer
             return vm;
         }
 
-        private void ApplyLayeredLayout(
+        private Core.Services.PlanGraphLayoutRefreshResult ApplyLayeredLayout(
             Dictionary<XElement, PlanNodeViewModel> nodeMap,
             List<XElement> allRelOps,
             XNamespace ns)
         {
-            var collapsedRelOps = nodeMap
-                .Where(pair => pair.Value.IsCollapsed)
-                .Select(pair => pair.Key)
-                .ToHashSet();
-            var layoutService = new Core.Services.PlanGraphLayoutService();
-            IReadOnlyList<Core.Services.PlanGraphLayoutPosition> positions =
-                layoutService.CalculateLayout(
+            Core.Services.PlanGraphLayoutRefreshResult result =
+                LayoutRefreshService.Calculate(
                     allRelOps,
                     ns,
-                    collapsedRelOps,
+                    nodeMap
+                        .Select(pair => new Core.Services.PlanGraphLayoutRefreshNode(
+                            pair.Key,
+                            pair.Value.IsCollapsed))
+                        .ToList(),
                     ToGraphLayoutDirection(LayoutMode));
 
-            foreach (Core.Services.PlanGraphLayoutPosition position in positions)
+            foreach (Core.Services.PlanGraphLayoutRefreshPosition position in result.NodePositions)
             {
-                if (nodeMap.TryGetValue(position.Element, out PlanNodeViewModel? vm))
+                if (nodeMap.TryGetValue(position.RelOp, out PlanNodeViewModel? vm))
                 {
                     vm.SubtreeWidth = position.SubtreeWidth;
                     vm.Location = new Point(position.X, position.Y);
                 }
             }
+
+            return result;
         }
 
         private static Core.Services.PlanGraphLayoutDirection ToGraphLayoutDirection(
@@ -451,6 +453,14 @@ namespace SqlXmlAnalyzer
             return layoutMode == PlanLayoutMode.Horizontal
                 ? Core.Services.PlanGraphLayoutDirection.Horizontal
                 : Core.Services.PlanGraphLayoutDirection.Vertical;
+        }
+
+        private static PlanLayoutMode ToPlanLayoutMode(
+            Core.Services.PlanGraphLayoutDirection layoutDirection)
+        {
+            return layoutDirection == Core.Services.PlanGraphLayoutDirection.Horizontal
+                ? PlanLayoutMode.Horizontal
+                : PlanLayoutMode.Vertical;
         }
 
         public void ResetView()
@@ -742,11 +752,12 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            ApplyLayeredLayout(nodeMap, relOps, _currentNs);
+            Core.Services.PlanGraphLayoutRefreshResult layout =
+                ApplyLayeredLayout(nodeMap, relOps, _currentNs);
 
             foreach (var conn in _masterConnections)
             {
-                conn.LayoutMode = LayoutMode;
+                conn.LayoutMode = ToPlanLayoutMode(layout.ConnectionLayout);
             }
         }
 
