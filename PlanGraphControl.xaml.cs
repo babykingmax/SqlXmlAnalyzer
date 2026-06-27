@@ -42,18 +42,10 @@ namespace SqlXmlAnalyzer
 
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
-        private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
         private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
-        private static readonly Core.Services.PlanGraphRelOpDetailsService RelOpDetailsService = new();
-        private static readonly Core.Services.PlanGraphRuntimeCountersService RuntimeCountersService = new();
-        private static readonly Core.Services.PlanGraphWarningService WarningService = new();
-
-        static PlanGraphControl()
-        {
-            _ruleEngine.RegisterDefaultRules();
-        }
+        private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
         public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
@@ -359,134 +351,67 @@ namespace SqlXmlAnalyzer
 
         private PlanNodeViewModel CreateNodeFromRelOp(XElement relOp, XNamespace ns)
         {
-            string nodeId = relOp.Attribute("NodeId")?.Value ?? "?";
-            string physical = relOp.Attribute("PhysicalOp")?.Value ?? relOp.Attribute("LogicalOp")?.Value ?? "Unknown";
-            string logical = relOp.Attribute("LogicalOp")?.Value ?? "Unknown";
-
-            double estRows = safeFloat(relOp.Attribute("EstimateRows")?.Value);
-            double estRowsRead = safeFloat(relOp.Attribute("EstimatedRowsRead")?.Value, estRows);
-            double subtreeCost = safeFloat(relOp.Attribute("EstimatedTotalSubtreeCost")?.Value);
-
-            string estIoCost = relOp.Attribute("EstimateIO")?.Value ?? "0";
-            string estCpuCost = relOp.Attribute("EstimateCPU")?.Value ?? "0";
-            string estExecs = relOp.Attribute("EstimateRebinds") != null ?
-                (safeFloat(relOp.Attribute("EstimateRebinds")?.Value) + safeFloat(relOp.Attribute("EstimateRewinds")?.Value) + 1.0).ToString("0.0") : "1.0";
-            string estRowSize = relOp.Attribute("AvgRowSize")?.Value ?? "0";
-
-            Core.Services.PlanGraphRuntimeCountersResult runtimeCounters =
-                RuntimeCountersService.Parse(relOp, ns);
-            double actualRows = runtimeCounters.ActualRows;
-            double actualRowsRead = runtimeCounters.ActualRowsRead;
-            double actualExecutions = runtimeCounters.ActualExecutions;
-            bool hasActual = runtimeCounters.HasActual;
-            bool hasActualRead = runtimeCounters.HasActualRead;
-            double actualRebinds = runtimeCounters.ActualRebinds;
-            double actualRewinds = runtimeCounters.ActualRewinds;
-            bool isSkewed = runtimeCounters.IsThreadDataSkewed;
-
-            Core.Services.PlanGraphRelOpDetails relOpDetails =
-                RelOpDetailsService.Parse(relOp, ns, physical);
-            string residualPredicate = string.Join(" AND ", relOpDetails.Predicates);
-            string seekPredicate = string.Join(" AND ", relOpDetails.SeekPredicates);
-
-            double dEstRowSize = safeFloat(estRowSize);
-            double dEstCpu = safeFloat(estCpuCost);
-            double dEstIo = safeFloat(estIoCost);
-            double dEstDataSizeMB = (estRows * dEstRowSize) / (1024.0 * 1024.0);
-            double dActDataSizeMB = hasActual ? ((actualRows * dEstRowSize) / (1024.0 * 1024.0)) : 0.0;
-            string sEstDataSize = dEstDataSizeMB < 1.0 ? $"{(dEstDataSizeMB * 1024):F0} KB" : $"{dEstDataSizeMB:F0} MB";
-            string sActDataSize = dActDataSizeMB < 1.0 ? $"{(dActDataSizeMB * 1024):F0} KB" : $"{dActDataSizeMB:F0} MB";
-
-            var ruleResults = _ruleEngine.AnalyzeNode(relOp, ns);
-            Core.Services.PlanGraphWarningResult warningResult =
-                WarningService.BuildWarnings(
+            Core.Services.PlanGraphNodeBuildResult node =
+                NodeBuilderService.Build(
                     relOp,
                     ns,
-                    new Core.Services.PlanGraphWarningContext(
-                        nodeId,
-                        physical,
-                        residualPredicate,
-                        seekPredicate,
-                        hasActual,
-                        hasActualRead,
-                        actualRows,
-                        actualRowsRead,
-                        isSkewed,
+                    new Core.Services.PlanGraphNodeWarningSettings(
                         ResidualIOThreshold,
-                        ResidualIOMinRowsRead),
-                    ruleResults);
-
-            // Parallelism
-            bool isParallel = relOp.Attribute("Parallel")?.Value == "1" ||
-                              relOp.Descendants(ns + "ThreadStat").Any() ||
-                              physical.Contains("Parallelism");
-
-            // Calculate own cost (will subtract children subtree cost later in LoadFromExecutionPlan)
-            double ownCost = subtreeCost; // Temporary, subtracted later
-
-            double actualRecost = ownCost;
-            if (hasActual && estRows > 0)
-            {
-                actualRecost = ownCost * (actualRows / estRows);
-                if (double.IsInfinity(actualRecost) || double.IsNaN(actualRecost))
-                    actualRecost = ownCost;
-            }
+                        ResidualIOMinRowsRead));
 
             var vm = new PlanNodeViewModel
             {
-                RawElement = relOp,
-                NodeId = nodeId,
-                PhysicalOp = physical,
-                LogicalOp = logical,
-                ExecutionMode = relOp.Attribute("NodeId") != null ? "Row" : "Row",
-                Cost = ownCost, // Represents OwnCost
-                OwnCost = ownCost,
-                ActualRecost = actualRecost,
-                SubtreeCost = subtreeCost,
-                CostPercent = 1, // Will update globally
-                EstRows = FormatNumber(estRows),
-                EstRowsNum = estRows,
-                EstimatedRowsToBeRead = FormatNumber(estRowsRead),
-                EstimatedCPUCostNum = dEstCpu,
-                EstimatedIOCostNum = dEstIo,
-                AvgRowSizeNum = dEstRowSize,
-                EstimatedIOCost = estIoCost,
-                EstimatedCPUCost = estCpuCost,
-                EstimatedExecutions = estExecs,
-                ActualExecutions = hasActual ? actualExecutions.ToString("F0") : "",
-                ActualRows = hasActual ? actualRows.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "",
-                ActualRowsRead = hasActual && hasActualRead ? actualRowsRead.ToString("N0") : "",
-                ActualRowsNum = actualRows,
-                EstimatedOperatorCost = ownCost.ToString("0.0000000"),
-                EstimatedSubtreeCostStr = subtreeCost.ToString("0.0000000"),
-                EstimatedRowSize = dEstRowSize.ToString("0") + " B",
-                EstimatedDataSize = sEstDataSize,
-                ActualDataSize = hasActual ? sActDataSize : "",
-                ActualRebinds = hasActual ? actualRebinds.ToString() : "",
-                ActualRewinds = hasActual ? actualRewinds.ToString() : "",
-                Ordered = relOp.Attribute("LogicalOp")?.Value?.Contains("Sort") == true ? "True" : "False",
-                DatabaseName = relOpDetails.DatabaseName,
-                TableName = relOpDetails.TableName,
-                IndexName = relOpDetails.IndexName,
-                SeekPredicates = string.Join("\n", relOpDetails.SeekPredicates),
-                Predicate = string.Join("\n", relOpDetails.Predicates),
-                OutputList = string.Join(", ", relOpDetails.OutputColumns),
-                ObjectDetails = relOpDetails.ObjectDetails,
-                Partitioned = relOpDetails.IsPartitioned ? "True" : "False",
-                PartitionCount = relOpDetails.PartitionCount,
-                PartitionRange = relOpDetails.PartitionRange,
-                IsParallel = isParallel,
-                Warnings = warningResult.WarningsText,
-                NodeSeverity = warningResult.HighestSeverity,
+                RawElement = node.RawElement,
+                NodeId = node.NodeId,
+                PhysicalOp = node.PhysicalOp,
+                LogicalOp = node.LogicalOp,
+                ExecutionMode = node.ExecutionMode,
+                Cost = node.Cost,
+                OwnCost = node.OwnCost,
+                ActualRecost = node.ActualRecost,
+                SubtreeCost = node.SubtreeCost,
+                CostPercent = node.CostPercent,
+                EstRows = node.EstRows,
+                EstRowsNum = node.EstRowsNum,
+                EstimatedRowsToBeRead = node.EstimatedRowsToBeRead,
+                EstimatedCPUCostNum = node.EstimatedCPUCostNum,
+                EstimatedIOCostNum = node.EstimatedIOCostNum,
+                AvgRowSizeNum = node.AvgRowSizeNum,
+                EstimatedIOCost = node.EstimatedIOCost,
+                EstimatedCPUCost = node.EstimatedCPUCost,
+                EstimatedExecutions = node.EstimatedExecutions,
+                ActualExecutions = node.ActualExecutions,
+                ActualRows = node.ActualRows,
+                ActualRowsRead = node.ActualRowsRead,
+                ActualRowsNum = node.ActualRowsNum,
+                EstimatedOperatorCost = node.EstimatedOperatorCost,
+                EstimatedSubtreeCostStr = node.EstimatedSubtreeCostStr,
+                EstimatedRowSize = node.EstimatedRowSize,
+                EstimatedDataSize = node.EstimatedDataSize,
+                ActualDataSize = node.ActualDataSize,
+                ActualRebinds = node.ActualRebinds,
+                ActualRewinds = node.ActualRewinds,
+                Ordered = node.Ordered,
+                DatabaseName = node.DatabaseName,
+                TableName = node.TableName,
+                IndexName = node.IndexName,
+                SeekPredicates = node.SeekPredicates,
+                Predicate = node.Predicate,
+                OutputList = node.OutputList,
+                ObjectDetails = node.ObjectDetails,
+                Partitioned = node.Partitioned,
+                PartitionCount = node.PartitionCount,
+                PartitionRange = node.PartitionRange,
+                IsParallel = node.IsParallel,
+                Warnings = node.Warnings,
+                NodeSeverity = node.NodeSeverity,
+                OperatorType = node.OperatorType,
                 Location = new Point(50, 50)
             };
 
-            var iconInfo = PhysicalOpToIconMapper.Map(physical);
+            var iconInfo = PhysicalOpToIconMapper.Map(node.PhysicalOp);
             vm.IconGeometry = iconInfo.Geometry;
             vm.IconBrush = iconInfo.Brush;
-
-            var operatorTypeService = new Core.Services.PlanGraphOperatorTypeService();
-            vm.OperatorType = operatorTypeService.DetectOperatorType(physical, logical);
 
             return vm;
         }
@@ -524,11 +449,6 @@ namespace SqlXmlAnalyzer
             return layoutMode == PlanLayoutMode.Horizontal
                 ? Core.Services.PlanGraphLayoutDirection.Horizontal
                 : Core.Services.PlanGraphLayoutDirection.Vertical;
-        }
-
-        internal static string FormatNumber(double n)
-        {
-            return Core.Services.PlanGraphMetricService.FormatNumber(n);
         }
 
         public void ResetView()
