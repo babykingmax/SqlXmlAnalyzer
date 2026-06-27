@@ -131,6 +131,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
+        private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -223,7 +224,8 @@ namespace SqlXmlAnalyzer
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null,
             Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null,
-            Core.Services.DeadlockGraphViewportService? deadlockGraphViewportService = null)
+            Core.Services.DeadlockGraphViewportService? deadlockGraphViewportService = null,
+            Core.Services.DeadlockGraphGeometryService? deadlockGraphGeometryService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -273,6 +275,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockSelectionDetailService();
             _deadlockGraphViewportService = deadlockGraphViewportService
                 ?? new Core.Services.DeadlockGraphViewportService();
+            _deadlockGraphGeometryService = deadlockGraphGeometryService
+                ?? new Core.Services.DeadlockGraphGeometryService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1582,87 +1586,46 @@ namespace SqlXmlAnalyzer
                 var key = (edge.fromId, edge.toId);
                 if (_arrowCache.TryGetValue(key, out var cached))
                 {
-                    var (x1, y1, x2, y2) = CalculateConnectionPoints(edge.fromId, edge.toId);
+                    Core.Services.DeadlockConnectionPoints points =
+                        CalculateConnectionPoints(edge.fromId, edge.toId);
 
-                    cached.line.X1 = x1;
-                    cached.line.Y1 = y1;
-                    cached.line.X2 = x2;
-                    cached.line.Y2 = y2;
+                    cached.line.X1 = points.From.X;
+                    cached.line.Y1 = points.From.Y;
+                    cached.line.X2 = points.To.X;
+                    cached.line.Y2 = points.To.Y;
 
                     if (cached.arrowHead != null)
                     {
-                        UpdateArrowHeadPosition(cached.arrowHead, new Point(x2, y2), new Point(x1, y1));
+                        UpdateArrowHeadPosition(cached.arrowHead, points.To, points.From);
                     }
 
                     if (cached.label != null)
                     {
                         double labelW = cached.label.ActualWidth > 0 ? cached.label.ActualWidth : 50;
                         double labelH = cached.label.ActualHeight > 0 ? cached.label.ActualHeight : 16;
-                        Canvas.SetLeft(cached.label, (x1 + x2) / 2 - labelW / 2);
-                        Canvas.SetTop(cached.label, (y1 + y2) / 2 - labelH / 2);
+                        Canvas.SetLeft(cached.label, (points.From.X + points.To.X) / 2 - labelW / 2);
+                        Canvas.SetTop(cached.label, (points.From.Y + points.To.Y) / 2 - labelH / 2);
                     }
                 }
             }
         }
 
-        private (double x1, double y1, double x2, double y2) CalculateConnectionPoints(string fromId, string toId)
+        private Core.Services.DeadlockConnectionPoints CalculateConnectionPoints(string fromId, string toId)
         {
-            double procW = 220, procH = 90;
-            double resW = 160, resH = 50;
-
-            bool fromIsResource = fromId.StartsWith("res_");
-            bool toIsResource = toId.StartsWith("res_");
-
-            double fromW = fromIsResource ? resW : procW;
-            double fromH = fromIsResource ? resH : procH;
-            double toW = toIsResource ? resW : procW;
-            double toH = toIsResource ? resH : procH;
-
-            Point fromTopLeft = _nodePositions.TryGetValue(fromId, out var fp) ? fp : new Point(80, 150);
-            Point toTopLeft = _nodePositions.TryGetValue(toId, out var tp) ? tp : new Point(400, 150);
-
-            Point fromCenter = new Point(fromTopLeft.X + fromW / 2, fromTopLeft.Y + fromH / 2);
-            Point toCenter = new Point(toTopLeft.X + toW / 2, toTopLeft.Y + toH / 2);
-
-            double dx = toCenter.X - fromCenter.X;
-            double dy = toCenter.Y - fromCenter.Y;
-            double dist = Math.Sqrt(dx * dx + dy * dy);
-            if (dist < 0.1) dist = 0.1;
-            double ux = dx / dist;
-            double uy = dy / dist;
-
-            double factorFrom = Math.Min((fromW / 2) / Math.Max(0.001, Math.Abs(ux)), (fromH / 2) / Math.Max(0.001, Math.Abs(uy)));
-            double factorTo = Math.Min((toW / 2) / Math.Max(0.001, Math.Abs(ux)), (toH / 2) / Math.Max(0.001, Math.Abs(uy)));
-
-            double gap = 3;
-            double x1 = fromCenter.X + ux * (factorFrom + gap);
-            double y1 = fromCenter.Y + uy * (factorFrom + gap);
-            double x2 = toCenter.X - ux * (factorTo + gap);
-            double y2 = toCenter.Y - uy * (factorTo + gap);
-
-            return (x1, y1, x2, y2);
+            return _deadlockGraphGeometryService.CalculateConnectionPoints(
+                _nodePositions,
+                fromId,
+                toId);
         }
 
         private System.Windows.Shapes.Polygon CreateArrowHead(Point tip, Point fromPoint, Brush fill)
         {
-            double dx = tip.X - fromPoint.X;
-            double dy = tip.Y - fromPoint.Y;
-            double length = Math.Sqrt(dx * dx + dy * dy);
-            if (length < 0.1) length = 0.1;
-
-            double ux = dx / length;
-            double uy = dy / length;
-
-            double arrowSize = 10;
-            double arrowWidth = 6;
-
-            var p1 = tip;
-            var p2 = new Point(tip.X - ux * arrowSize - uy * arrowWidth, tip.Y - uy * arrowSize + ux * arrowWidth);
-            var p3 = new Point(tip.X - ux * arrowSize + uy * arrowWidth, tip.Y - uy * arrowSize - ux * arrowWidth);
+            Core.Services.DeadlockArrowHeadPoints points =
+                _deadlockGraphGeometryService.CalculateArrowHead(tip, fromPoint);
 
             return new System.Windows.Shapes.Polygon
             {
-                Points = new PointCollection { p1, p2, p3 },
+                Points = new PointCollection { points.Tip, points.Left, points.Right },
                 Fill = fill,
                 Stroke = fill,
                 StrokeThickness = 0.5
@@ -1673,38 +1636,27 @@ namespace SqlXmlAnalyzer
         {
             if (arrowHead == null) return;
 
-            double dx = tip.X - fromPoint.X;
-            double dy = tip.Y - fromPoint.Y;
-            double length = Math.Sqrt(dx * dx + dy * dy);
-            if (length < 0.1) length = 0.1;
+            Core.Services.DeadlockArrowHeadPoints points =
+                _deadlockGraphGeometryService.CalculateArrowHead(tip, fromPoint);
 
-            double ux = dx / length;
-            double uy = dy / length;
-
-            double arrowSize = 10;
-            double arrowWidth = 6;
-
-            var p1 = tip;
-            var p2 = new Point(tip.X - ux * arrowSize - uy * arrowWidth, tip.Y - uy * arrowSize + ux * arrowWidth);
-            var p3 = new Point(tip.X - ux * arrowSize + uy * arrowWidth, tip.Y - uy * arrowSize - ux * arrowWidth);
-
-            arrowHead.Points[0] = p1;
-            arrowHead.Points[1] = p2;
-            arrowHead.Points[2] = p3;
+            arrowHead.Points[0] = points.Tip;
+            arrowHead.Points[1] = points.Left;
+            arrowHead.Points[2] = points.Right;
         }
 
         private void DrawArrowBetweenNodes(string fromId, string toId, string label, bool isWaitEdge)
         {
-            var (x1, y1, x2, y2) = CalculateConnectionPoints(fromId, toId);
+            Core.Services.DeadlockConnectionPoints points =
+                CalculateConnectionPoints(fromId, toId);
 
             var brush = isWaitEdge ? new SolidColorBrush(Color.FromRgb(211, 47, 47)) : new SolidColorBrush(Color.FromRgb(56, 142, 60));
 
             var line = new System.Windows.Shapes.Line
             {
-                X1 = x1,
-                Y1 = y1,
-                X2 = x2,
-                Y2 = y2,
+                X1 = points.From.X,
+                Y1 = points.From.Y,
+                X2 = points.To.X,
+                Y2 = points.To.Y,
                 Stroke = brush,
                 StrokeThickness = isWaitEdge ? 2.5 : 2.0
             };
@@ -1716,7 +1668,7 @@ namespace SqlXmlAnalyzer
 
             DeadlockGraphCanvas.Children.Add(line);
 
-            var arrowHead = CreateArrowHead(new Point(x2, y2), new Point(x1, y1), brush);
+            var arrowHead = CreateArrowHead(points.To, points.From, brush);
             DeadlockGraphCanvas.Children.Add(arrowHead);
 
             var border = new Border
@@ -1737,8 +1689,8 @@ namespace SqlXmlAnalyzer
             };
             border.Child = tb;
 
-            Canvas.SetLeft(border, (x1 + x2) / 2 - 25);
-            Canvas.SetTop(border, (y1 + y2) / 2 - 8);
+            Canvas.SetLeft(border, (points.From.X + points.To.X) / 2 - 25);
+            Canvas.SetTop(border, (points.From.Y + points.To.Y) / 2 - 8);
             DeadlockGraphCanvas.Children.Add(border);
 
             var key = (fromId, toId);
