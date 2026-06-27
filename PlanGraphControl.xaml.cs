@@ -705,22 +705,10 @@ namespace SqlXmlAnalyzer
             vm.IconGeometry = iconInfo.Geometry;
             vm.IconBrush = iconInfo.Brush;
 
-            vm.OperatorType = DetectOperatorType(physical, logical);
+            var operatorTypeService = new Core.Services.PlanGraphOperatorTypeService();
+            vm.OperatorType = operatorTypeService.DetectOperatorType(physical, logical);
 
             return vm;
-        }
-
-        private string DetectOperatorType(string physical, string logical)
-        {
-            string p = (physical + " " + logical).ToLower();
-            if (p.Contains("scan")) return "Scan";
-            if (p.Contains("seek") || p.Contains("bookmark")) return "Seek";
-            if (p.Contains("join") || p.Contains("hash") || p.Contains("merge") || p.Contains("nested")) return "Join";
-            if (p.Contains("parallelism") || p.Contains("exchange") || p.Contains("distribute") || p.Contains("gather")) return "Parallelism";
-            if (p.Contains("sort") || p.Contains("top")) return "Sort";
-            if (p.Contains("spool") || p.Contains("table spool")) return "Spool";
-            if (p.Contains("compute") || p.Contains("scalar") || p.Contains("assign")) return "Compute";
-            return "Other";
         }
 
         private void ApplyLayeredLayout(
