@@ -48,6 +48,7 @@ namespace SqlXmlAnalyzer
         private static readonly Core.Services.PlanGraphLayoutRefreshService LayoutRefreshService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
+        private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
         private static readonly Core.Services.PlanGraphVisibilityStateService VisibilityStateService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
@@ -133,35 +134,38 @@ namespace SqlXmlAnalyzer
         public event EventHandler<PlanNodeViewModel?>? NodeSelected;
         public event EventHandler<PlanNodeViewModel?>? NodeDoubleClicked;
 
-        private Point _lastMousePosition;
-        private bool _isPanning;
+        private Core.Services.PlanGraphPanState _panState = new(false, new Point());
 
         private void Editor_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.OriginalSource is FrameworkElement fe && fe.DataContext is PlanNodeViewModel) return;
             if (e.OriginalSource is FrameworkElement fe2 && fe2.DataContext is ConnectionViewModel) return;
 
-            _isPanning = true;
-            _lastMousePosition = e.GetPosition(this);
+            _panState = PanInteractionService.Begin(e.GetPosition(this));
             Editor.CaptureMouse();
         }
 
         private void Editor_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (_isPanning)
+            Core.Services.PlanGraphPanUpdate? update =
+                PanInteractionService.Pan(
+                    _panState,
+                    e.GetPosition(this),
+                    Editor.ViewportLocation,
+                    Editor.ViewportZoom);
+
+            if (update != null)
             {
-                var currentPosition = e.GetPosition(this);
-                var delta = currentPosition - _lastMousePosition;
-                Editor.ViewportLocation = new Point(Editor.ViewportLocation.X - delta.X / Editor.ViewportZoom, Editor.ViewportLocation.Y - delta.Y / Editor.ViewportZoom);
-                _lastMousePosition = currentPosition;
+                _panState = update.State;
+                Editor.ViewportLocation = update.ViewportLocation;
             }
         }
 
         private void Editor_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isPanning)
+            if (_panState.IsPanning)
             {
-                _isPanning = false;
+                _panState = PanInteractionService.End(_panState);
                 Editor.ReleaseMouseCapture();
             }
         }
