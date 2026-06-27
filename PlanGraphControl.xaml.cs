@@ -46,6 +46,7 @@ namespace SqlXmlAnalyzer
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
+        private static readonly Core.Services.PlanGraphVisibilityStateService VisibilityStateService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
         public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
@@ -633,42 +634,29 @@ namespace SqlXmlAnalyzer
 
             var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
 
-            var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-            foreach (var node in _masterNodes)
-            {
-                if (node.RawElement != null) nodeMap[node.RawElement] = node;
-            }
+            IReadOnlyList<Core.Services.PlanGraphVisibilityStateNode> visibilityNodes =
+                _masterNodes
+                    .Where(node => node.RawElement != null)
+                    .Select(node => new Core.Services.PlanGraphVisibilityStateNode(
+                        node.RawElement!,
+                        node.IsCollapsed))
+                    .ToList();
+            IReadOnlyList<Core.Services.PlanGraphVisibilityStateConnection> visibilityConnections =
+                _masterConnections
+                    .Where(connection =>
+                        connection.Source?.RawElement != null
+                        && connection.Target?.RawElement != null)
+                    .Select(connection => new Core.Services.PlanGraphVisibilityStateConnection(
+                        connection.Source!.RawElement!,
+                        connection.Target!.RawElement!))
+                    .ToList();
 
-            var collapsedRelOps = nodeMap
-                .Where(pair => pair.Value.IsCollapsed)
-                .Select(pair => pair.Key)
-                .ToHashSet();
-            var visibilityService = new Core.Services.PlanGraphVisibilityService();
-            Core.Services.PlanGraphVisibilityResult visibility =
-                visibilityService.CalculateVisibility(
+            Core.Services.PlanGraphVisibilityStateResult visibility =
+                VisibilityStateService.Calculate(
                     relOps,
                     _currentNs,
-                    collapsedRelOps);
-
-            var visibleNodeVms = visibility.VisibleRelOps
-                .Where(nodeMap.ContainsKey)
-                .Select(relOp => nodeMap[relOp])
-                .ToHashSet();
-            var visibleConnVms = new HashSet<ConnectionViewModel>();
-
-            foreach (Core.Services.PlanGraphVisibleConnection visibleConnection in visibility.VisibleConnections)
-            {
-                if (nodeMap.TryGetValue(visibleConnection.SourceRelOp, out PlanNodeViewModel? sourceVm)
-                    && nodeMap.TryGetValue(visibleConnection.TargetRelOp, out PlanNodeViewModel? targetVm))
-                {
-                    ConnectionViewModel? connection = _masterConnections
-                        .FirstOrDefault(c => c.Source == sourceVm && c.Target == targetVm);
-                    if (connection != null)
-                    {
-                        visibleConnVms.Add(connection);
-                    }
-                }
-            }
+                    visibilityNodes,
+                    visibilityConnections);
 
             // ==================================================
             // 完全基于 Nodify 推荐的设计模式：纯数据绑定
@@ -680,13 +668,20 @@ namespace SqlXmlAnalyzer
 
             foreach (var n in _masterNodes)
             {
-                n.IsVisible = visibleNodeVms.Contains(n);
+                n.IsVisible = n.RawElement != null
+                    && visibility.VisibleRelOps.Contains(n.RawElement);
                 if (!Nodes.Contains(n)) Nodes.Add(n); // 确保集合包含全部节点（通常初始化时已包含）
             }
 
             foreach (var c in _masterConnections)
             {
-                c.IsVisible = visibleConnVms.Contains(c);
+                c.IsVisible =
+                    c.Source?.RawElement != null
+                    && c.Target?.RawElement != null
+                    && visibility.VisibleConnections.Contains(
+                        new Core.Services.PlanGraphVisibilityStateConnection(
+                            c.Source.RawElement,
+                            c.Target.RawElement));
                 if (!Connections.Contains(c)) Connections.Add(c); // 确保集合包含全部连接线
             }
         }
