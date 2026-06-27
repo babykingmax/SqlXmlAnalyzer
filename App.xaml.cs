@@ -203,6 +203,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.DeadlockGraphVisualStateService>();
             services.AddSingleton<Core.Services.DeadlockStepBadgeService>();
             services.AddSingleton<Core.Services.WorkspacePanelLayoutService>();
+            services.AddSingleton<Core.Services.TuningSessionActionService>();
             services.AddTransient<MainWindow>();
         }
 

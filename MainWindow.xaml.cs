@@ -147,6 +147,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphVisualStateService _deadlockGraphVisualStateService;
         private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
         private readonly Core.Services.WorkspacePanelLayoutService _workspacePanelLayoutService;
+        private readonly Core.Services.TuningSessionActionService _tuningSessionActionService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -257,7 +258,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null,
             Core.Services.DeadlockGraphVisualStateService? deadlockGraphVisualStateService = null,
             Core.Services.DeadlockStepBadgeService? deadlockStepBadgeService = null,
-            Core.Services.WorkspacePanelLayoutService? workspacePanelLayoutService = null)
+            Core.Services.WorkspacePanelLayoutService? workspacePanelLayoutService = null,
+            Core.Services.TuningSessionActionService? tuningSessionActionService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -339,6 +341,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockStepBadgeService();
             _workspacePanelLayoutService = workspacePanelLayoutService
                 ?? new Core.Services.WorkspacePanelLayoutService();
+            _tuningSessionActionService = tuningSessionActionService
+                ?? new Core.Services.TuningSessionActionService(_fileDialogService);
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -2355,11 +2359,7 @@ namespace SqlXmlAnalyzer
 
         private void SaveSession_Click(object sender, RoutedEventArgs e)
         {
-            string? fileName = ShowSaveFileDialog(
-                "SqlXmlAnalyzer tuning session (*.pesession)|*.pesession",
-                "Save current tuning session",
-                ".pesession",
-                "Tuning_Session.pesession");
+            string? fileName = _tuningSessionActionService.ChooseSaveSessionPath();
 
             if (fileName != null)
             {
@@ -2369,10 +2369,7 @@ namespace SqlXmlAnalyzer
 
         private void LoadSession_Click(object sender, RoutedEventArgs e)
         {
-            string? fileName = ShowOpenFileDialog(
-                "SqlXmlAnalyzer tuning session (*.pesession)|*.pesession",
-                "Open tuning session",
-                ".pesession");
+            string? fileName = _tuningSessionActionService.ChooseLoadSessionPath();
 
             if (fileName != null)
             {
@@ -2382,9 +2379,12 @@ namespace SqlXmlAnalyzer
 
         private void SwapPlanAB_Click(object sender, RoutedEventArgs e)
         {
-            var temp = ViewModel.PlanA;
-            ViewModel.PlanA = ViewModel.PlanB;
-            ViewModel.PlanB = temp;
+            Core.Services.PlanSwapResult result =
+                _tuningSessionActionService.SwapPlans(
+                    ViewModel.PlanA,
+                    ViewModel.PlanB);
+            ViewModel.PlanA = result.PlanA;
+            ViewModel.PlanB = result.PlanB;
         }
 
         private void StatisticsHistogramView_Loaded(object sender, RoutedEventArgs e)
