@@ -1073,20 +1073,15 @@ namespace SqlXmlAnalyzer
 
         private void UpdateConnectionHighlights()
         {
-            if (_selectedNode == null)
+            var highlightService = new Core.Services.PlanGraphConnectionHighlightService();
+            string? selectedNodeId = _selectedNode?.NodeId;
+
+            foreach (var conn in Connections)
             {
-                foreach (var conn in Connections)
-                {
-                    conn.IsHighlighted = true;
-                }
-            }
-            else
-            {
-                foreach (var conn in Connections)
-                {
-                    // 高亮与当前选中节点直接相连（作为其输入或输出）的数据流连接线
-                    conn.IsHighlighted = (conn.Source == _selectedNode || conn.Target == _selectedNode);
-                }
+                conn.IsHighlighted = highlightService.ShouldHighlight(
+                    selectedNodeId,
+                    conn.Source?.NodeId,
+                    conn.Target?.NodeId);
             }
         }
 
