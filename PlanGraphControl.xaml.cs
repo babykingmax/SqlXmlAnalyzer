@@ -43,6 +43,7 @@ namespace SqlXmlAnalyzer
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
         private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
+        private static readonly Core.Services.PlanGraphRuntimeCountersService RuntimeCountersService = new();
 
         static PlanGraphControl()
         {
@@ -362,54 +363,16 @@ namespace SqlXmlAnalyzer
                 (safeFloat(relOp.Attribute("EstimateRebinds")?.Value) + safeFloat(relOp.Attribute("EstimateRewinds")?.Value) + 1.0).ToString("0.0") : "1.0";
             string estRowSize = relOp.Attribute("AvgRowSize")?.Value ?? "0";
 
-            // Calculate actual information
-            double actualRows = 0.0;
-            double actualRowsRead = 0.0;
-            double actualExecutions = 0.0;
-            bool hasActual = false;
-            bool hasActualRead = false;
-            double actualRebinds = 0.0;
-            double actualRewinds = 0.0;
-            var threadRows = new Dictionary<string, double>();
-
-            var runInfo = relOp.Element(ns + "RunTimeInformation");
-            if (runInfo != null)
-            {
-                hasActual = true;
-                foreach (var rt in runInfo.Elements(ns + "RunTimeCountersPerThread"))
-                {
-                    string threadId = rt.Attribute("Thread")?.Value ?? "0";
-                    double rows = safeFloat(rt.Attribute("ActualRows")?.Value);
-                    double rowsRead = rows;
-                    if (rt.Attribute("ActualRowsRead") != null)
-                    {
-                        rowsRead = safeFloat(rt.Attribute("ActualRowsRead")?.Value);
-                        hasActualRead = true;
-                    }
-                    double execs = safeFloat(rt.Attribute("ActualExecutions")?.Value, 1.0);
-
-                    threadRows[threadId] = rows;
-                    actualRows += rows;
-                    actualRowsRead += rowsRead;
-                    actualExecutions += execs;
-
-                    actualRebinds += safeFloat(rt.Attribute("ActualRebinds")?.Value);
-                    actualRewinds += safeFloat(rt.Attribute("ActualRewinds")?.Value);
-                }
-            }
-            if (!hasActual) actualExecutions = 0.0;
-
-            // Thread Data Skew Detection
-            bool isSkewed = false;
-            var workerThreads = threadRows.Where(kv => kv.Key != "0").Select(kv => kv.Value).ToList();
-            if (workerThreads.Count > 1 && workerThreads.Sum() > 100)
-            {
-                double avgRows = workerThreads.Sum() / workerThreads.Count;
-                if (workerThreads.Max() > avgRows * 2.0)
-                {
-                    isSkewed = true;
-                }
-            }
+            Core.Services.PlanGraphRuntimeCountersResult runtimeCounters =
+                RuntimeCountersService.Parse(relOp, ns);
+            double actualRows = runtimeCounters.ActualRows;
+            double actualRowsRead = runtimeCounters.ActualRowsRead;
+            double actualExecutions = runtimeCounters.ActualExecutions;
+            bool hasActual = runtimeCounters.HasActual;
+            bool hasActualRead = runtimeCounters.HasActualRead;
+            double actualRebinds = runtimeCounters.ActualRebinds;
+            double actualRewinds = runtimeCounters.ActualRewinds;
+            bool isSkewed = runtimeCounters.IsThreadDataSkewed;
 
             // Object and Predicates Extract
             string objectDetails = "";
