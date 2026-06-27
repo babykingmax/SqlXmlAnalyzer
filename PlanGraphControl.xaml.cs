@@ -1151,6 +1151,7 @@ namespace SqlXmlAnalyzer
         public string OperatorType { get; set; } = "Other";
         public bool IsParallel { get; set; }
         public string Warnings { get; set; } = "";
+        private static readonly Core.Services.PlanGraphCostVisualService CostVisualService = new();
         private static readonly Core.Services.PlanGraphOperatorVisualService OperatorVisualService = new();
         private static readonly Core.Services.PlanGraphRowSkewService RowSkewService = new();
 
@@ -1292,24 +1293,16 @@ namespace SqlXmlAnalyzer
 
         public string ActualRowsDisplay => string.IsNullOrEmpty(ActualRows) ? "N/A" : ActualRows;
 
-        private static Color LerpColor(Color c1, Color c2, double t)
-        {
-            t = Math.Max(0, Math.Min(1, t));
-            byte r = (byte)(c1.R + (c2.R - c1.R) * t);
-            byte g = (byte)(c1.G + (c2.G - c1.G) * t);
-            byte b = (byte)(c1.B + (c2.B - c1.B) * t);
-            return Color.FromRgb(r, g, b);
-        }
-
         public Brush DynamicBackgroundBrush
         {
             get
             {
-                double t = Math.Min(100, ActivePercent) / 100.0;
-                // Premium Gradient: White/Gray to Vibrant Red
-                Color topColor = LerpColor(Color.FromRgb(255, 255, 255), Color.FromRgb(255, 230, 230), Math.Pow(t, 0.8));
-                Color botColor = LerpColor(Color.FromRgb(245, 247, 250), Color.FromRgb(255, 190, 190), Math.Pow(t, 0.6));
-                return new LinearGradientBrush(topColor, botColor, 90.0);
+                Core.Services.PlanGraphCostVisualStyle style =
+                    CostVisualService.GetStyle(ActivePercent);
+                return new LinearGradientBrush(
+                    CreateColor(style.BackgroundTopColorHex),
+                    CreateColor(style.BackgroundBottomColorHex),
+                    90.0);
             }
         }
 
@@ -1317,22 +1310,25 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                double t = Math.Min(100, ActivePercent) / 100.0;
-                // Elegant Border: Cool Blue-Gray to Deep Crimson
-                Color c = LerpColor(Color.FromRgb(176, 190, 197), Color.FromRgb(211, 47, 47), Math.Pow(t, 0.7));
-                return new SolidColorBrush(c);
+                Core.Services.PlanGraphCostVisualStyle style =
+                    CostVisualService.GetStyle(ActivePercent);
+                return CreateBrush(style.BorderColorHex);
             }
         }
 
-        public Thickness DynamicBorderThickness => ActivePercent >= 30 ? new Thickness(2.0) : new Thickness(1.0);
+        public Thickness DynamicBorderThickness =>
+            new(CostVisualService.GetStyle(ActivePercent).BorderThickness);
 
-        private static Brush CreateBrush(string colorHex)
+        private static Color CreateColor(string colorHex)
         {
             object? converted = ColorConverter.ConvertFromString(colorHex);
             return converted is Color color
-                ? new SolidColorBrush(color)
-                : Brushes.Transparent;
+                ? color
+                : Colors.Transparent;
         }
+
+        private static Brush CreateBrush(string colorHex)
+            => new SolidColorBrush(CreateColor(colorHex));
 
         public Brush AccentBrush =>
             CreateBrush(OperatorVisualService.GetStyle(OperatorType).AccentColorHex);
@@ -1340,11 +1336,11 @@ namespace SqlXmlAnalyzer
         public string OperatorGeometry =>
             OperatorVisualService.GetStyle(OperatorType).GeometryData;
 
-        public Brush CostBadgeBrush => ActivePercent >= 40 ? new SolidColorBrush(Color.FromRgb(0xEF, 0x53, 0x50))
-                                    : ActivePercent >= 15 ? new SolidColorBrush(Color.FromRgb(0xFF, 0xB3, 0x00))
-                                    : new SolidColorBrush(Color.FromRgb(0xCF, 0xD8, 0xDC));
+        public Brush CostBadgeBrush =>
+            CreateBrush(CostVisualService.GetStyle(ActivePercent).BadgeBackgroundColorHex);
 
-        public Brush CostBadgeForeground => ActivePercent >= 15 ? Brushes.White : Brushes.Black;
+        public Brush CostBadgeForeground =>
+            CreateBrush(CostVisualService.GetStyle(ActivePercent).BadgeForegroundColorHex);
 
         public Brush ActualRowsBrush
         {
