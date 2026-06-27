@@ -116,13 +116,13 @@ namespace SqlXmlAnalyzer
         private readonly TemporaryFileManager _temporaryFileManager;
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
-        private readonly Core.Services.PdfWordReportService _pdfWordReportService;
         private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly Core.Services.PlanComparisonController _planComparisonController;
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
+        private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
@@ -192,13 +192,14 @@ namespace SqlXmlAnalyzer
             TemporaryFileManager? temporaryFileManager = null,
             Core.Services.AnalysisSessionCoordinator? analysisSessions = null,
             Core.Services.BrowserLauncher? browserLauncher = null,
-            Core.Services.PdfWordReportService? pdfWordReportService = null,
+            Core.Services.IPdfWordReportExporter? pdfWordReportService = null,
             Core.Services.DocumentOpenService? documentOpenService = null,
             Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
             Core.Services.PlanDocumentController? planDocumentController = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
+            Core.Services.PortableReportExportService? portableReportExportService = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.PlanPropertyService? planPropertyService = null,
             Core.Services.PlanTreeService? planTreeService = null,
@@ -213,8 +214,8 @@ namespace SqlXmlAnalyzer
             _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
             _analysisSessions = analysisSessions ?? new Core.Services.AnalysisSessionCoordinator();
             _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
-            _pdfWordReportService = pdfWordReportService
-                ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
+            Core.Services.IPdfWordReportExporter effectiveReportExporter =
+                pdfWordReportService ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
             _documentOpenService = documentOpenService
                 ?? new Core.Services.DocumentOpenService();
             DeadlockAnalysisService effectiveDeadlockAnalysisService =
@@ -236,6 +237,10 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.AnalysisReportController();
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
+            _portableReportExportService = portableReportExportService
+                ?? new Core.Services.PortableReportExportService(
+                    effectiveReportExporter,
+                    _fileDialogService);
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -2018,20 +2023,16 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                string? fileName = ShowSaveFileDialog(
-                    filter,
-                    $"Save {extension.ToUpperInvariant()} analysis report",
-                    $".{extension}",
-                    report.DefaultFileName);
+                Core.Services.PortableReportExportResult result =
+                    _portableReportExportService.Export(
+                        new Core.Services.PortableReportExportRequest(
+                            extension,
+                            filter,
+                            report,
+                            imageElement));
 
-                if (fileName != null)
+                if (result.Status == Core.Services.PortableReportExportStatus.Exported)
                 {
-                    _pdfWordReportService.Export(
-                        extension,
-                        fileName,
-                        report.Title,
-                        report.Content,
-                        imageElement);
                     MessageBox.Show($"{extension.ToUpperInvariant()} report exported successfully.", "Export succeeded", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }

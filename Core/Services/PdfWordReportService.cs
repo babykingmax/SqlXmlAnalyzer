@@ -7,7 +7,17 @@ using SqlXmlAnalyzer.Core;
 
 namespace SqlXmlAnalyzer.Core.Services
 {
-    public sealed class PdfWordReportService
+    public interface IPdfWordReportExporter
+    {
+        void Export(
+            string extension,
+            string outputPath,
+            string title,
+            string content,
+            FrameworkElement? imageElement = null);
+    }
+
+    public sealed class PdfWordReportService : IPdfWordReportExporter
     {
         private readonly TemporaryFileManager _temporaryFileManager;
 
