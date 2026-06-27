@@ -822,10 +822,7 @@ namespace SqlXmlAnalyzer
 
         internal static string FormatNumber(double n)
         {
-            if (n >= 1_000_000) return (n / 1_000_000).ToString("0.0") + "M";
-            if (n >= 10_000) return (n / 1000).ToString("0.0") + "K";
-            if (n >= 1000) return (n / 1000).ToString("0") + "K";
-            return n.ToString("N0");
+            return Core.Services.PlanGraphMetricService.FormatNumber(n);
         }
 
         public void ResetView()
@@ -1682,16 +1679,7 @@ namespace SqlXmlAnalyzer
                     _ => RowsCount
                 };
 
-                if (val <= 0) return 1.5;
-
-                // 对数-双曲正切混合缩放模型
-                // W_link = W_min + (W_max - W_min) * tanh(alpha * log10(val + 1))
-                double wMin = 1.5;
-                double wMax = 12.0;
-                double alpha = 0.25;
-                double logVal = Math.Log10(val + 1);
-                double thickness = wMin + (wMax - wMin) * Math.Tanh(alpha * logVal);
-                return thickness;
+                return Core.Services.PlanGraphMetricService.CalculateLinkThickness(val);
             }
         }
 
@@ -1822,10 +1810,7 @@ namespace SqlXmlAnalyzer
 
         private static string FormatBytes(double bytes)
         {
-            if (bytes >= 1024 * 1024 * 1024) return (bytes / (1024 * 1024 * 1024)).ToString("0.0") + " GB";
-            if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).ToString("0.0") + " MB";
-            if (bytes >= 1024) return (bytes / 1024).ToString("0.0") + " KB";
-            return bytes.ToString("0") + " B";
+            return Core.Services.PlanGraphMetricService.FormatBytes(bytes);
         }
 
         public string LabelText
@@ -1908,18 +1893,7 @@ namespace SqlXmlAnalyzer
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double rows = 0;
-            if (value is double d) rows = d;
-            else if (value is float f) rows = f;
-            else if (value is int i) rows = i;
-            else if (value is long l) rows = l;
-            else if (value is string s && SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(s, out double parsed)) rows = parsed;
-
-            if (rows <= 0) return 1.0;
-
-            double logVal = Math.Log10(rows) * 1.6;
-            double thickness = Math.Max(1.0, Math.Min(14.0, logVal));
-            return thickness;
+            return Core.Services.PlanGraphMetricService.CalculateLegacyConverterThickness(value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
