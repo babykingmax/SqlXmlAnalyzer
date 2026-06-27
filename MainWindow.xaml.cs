@@ -130,6 +130,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
+        private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -221,7 +222,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockSelectionDetailService? deadlockSelectionDetailService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null,
-            Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null)
+            Core.Services.PlanOperatorTreeViewRenderer? planOperatorTreeViewRenderer = null,
+            Core.Services.DeadlockGraphViewportService? deadlockGraphViewportService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -269,6 +271,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
             _deadlockSelectionDetailService = deadlockSelectionDetailService
                 ?? new Core.Services.DeadlockSelectionDetailService();
+            _deadlockGraphViewportService = deadlockGraphViewportService
+                ?? new Core.Services.DeadlockGraphViewportService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -2178,50 +2182,21 @@ namespace SqlXmlAnalyzer
 
         private void DoZoomToFitDeadlock()
         {
-            if (_nodePositions.Count == 0) return;
+            Core.Services.DeadlockViewportState? viewport =
+                _deadlockGraphViewportService.CalculateZoomToFit(
+                    _nodePositions,
+                    DeadlockCanvasBorder.ActualWidth,
+                    DeadlockCanvasBorder.ActualHeight);
 
-            double minX = double.MaxValue, maxX = double.MinValue;
-            double minY = double.MaxValue, maxY = double.MinValue;
-
-            double procW = 220, procH = 90;
-            double resW = 160, resH = 50;
-
-            foreach (var kp in _nodePositions)
+            if (viewport == null)
             {
-                string id = kp.Key;
-                Point pos = kp.Value;
-                bool isResource = id.StartsWith("res_");
-                double w = isResource ? resW : procW;
-                double h = isResource ? resH : procH;
-
-                if (pos.X < minX) minX = pos.X;
-                if (pos.X + w > maxX) maxX = pos.X + w;
-                if (pos.Y < minY) minY = pos.Y;
-                if (pos.Y + h > maxY) maxY = pos.Y + h;
+                return;
             }
 
-            double margin = 60;
-            double contentW = (maxX - minX) + margin * 2;
-            double contentH = (maxY - minY) + margin * 2;
-
-            double viewW = DeadlockCanvasBorder.ActualWidth > 0 ? DeadlockCanvasBorder.ActualWidth : 800;
-            double viewH = DeadlockCanvasBorder.ActualHeight > 0 ? DeadlockCanvasBorder.ActualHeight : 600;
-
-            double scaleX = viewW / contentW;
-            double scaleY = viewH / contentH;
-            double scale = Math.Min(scaleX, scaleY);
-
-            if (scale < 0.2) scale = 0.2;
-            if (scale > 2.0) scale = 2.0;
-
-            DeadlockScaleTransform.ScaleX = scale;
-            DeadlockScaleTransform.ScaleY = scale;
-
-            double centerX = (minX + maxX) / 2;
-            double centerY = (minY + maxY) / 2;
-
-            DeadlockTranslateTransform.X = viewW / 2 - centerX * scale;
-            DeadlockTranslateTransform.Y = viewH / 2 - centerY * scale;
+            DeadlockScaleTransform.ScaleX = viewport.Scale;
+            DeadlockScaleTransform.ScaleY = viewport.Scale;
+            DeadlockTranslateTransform.X = viewport.TranslateX;
+            DeadlockTranslateTransform.Y = viewport.TranslateY;
         }
 
         private void DeadlockPatternsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
