@@ -168,6 +168,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.PlanComparisonController>();
             services.AddSingleton<Core.Services.AnalysisReportController>();
             services.AddSingleton<Core.Services.TuningSessionService>();
+            services.AddSingleton<Core.Services.PlanPropertyService>();
             services.AddSingleton<Core.Services.IFileDialogService, Core.Services.WpfFileDialogService>();
             services.AddTransient<MainWindow>();
         }

@@ -135,6 +135,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanComparisonController _planComparisonController;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.IFileDialogService _fileDialogService;
+        private readonly Core.Services.PlanPropertyService _planPropertyService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -238,6 +239,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanComparisonController? planComparisonController = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
+            Core.Services.PlanPropertyService? planPropertyService = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
@@ -268,6 +270,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.AnalysisReportController();
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
+            _planPropertyService = planPropertyService
+                ?? new Core.Services.PlanPropertyService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -2560,7 +2564,7 @@ namespace SqlXmlAnalyzer
         {
             if (e.NewValue is TreeViewItem item && item.Tag is XElement relOp)
             {
-                PlanPropertiesGrid.ItemsSource = GetGroupedProperties(relOp);
+                BindPlanProperties(relOp);
             }
         }
 
@@ -2640,117 +2644,29 @@ namespace SqlXmlAnalyzer
         {
             if (e.NewValue is PlanVisualNode node && node.Tag is XElement relOp)
             {
-                PlanPropertiesGrid.ItemsSource = GetGroupedProperties(relOp);
+                BindPlanProperties(relOp);
             }
         }
 
         // Nodify 节点选中 -> 同步到主右侧属性面板 (Plan Explorer 风格)
         private void PlanNodifyGraph_NodeSelected(object sender, PlanNodeViewModel node)
         {
-            if (node == null) return;
-
-            var props = new List<KeyValuePair<string, string>>
-            {
-                new("Physical Operator", node.PhysicalOp),
-                new("Logical Operator", node.LogicalOp),
-                new("Subtree Cost", node.Cost.ToString("F4")),
-                new("Cost % (heuristic)", node.CostPercent + "%"),
-                new("Est. Rows", node.EstRows),
-                new("Actual Rows", string.IsNullOrEmpty(node.ActualRows) ? "N/A (estimated only)" : node.ActualRows),
-                new("Object", string.IsNullOrEmpty(node.ObjectDetails) ? "(无对象引用)" : node.ObjectDetails),
-                new("Parallel", node.IsParallel ? "是" : "否"),
-            };
-            if (!string.IsNullOrEmpty(node.Warnings))
-                props.Add(new("Warnings", node.Warnings));
-
-            PlanPropertiesGrid.ItemsSource = props;
+            if (node?.RawElement == null) return;
+            BindPlanProperties(node.RawElement);
         }
 
         private void PlanNodifyGraph_NodeDoubleClicked(object sender, PlanNodeViewModel node)
         {
             if (node == null || node.RawElement == null) return;
-            PlanPropertiesGrid.ItemsSource = GetGroupedProperties(node.RawElement);
+            BindPlanProperties(node.RawElement);
         }
 
-        private System.Windows.Data.ListCollectionView GetGroupedProperties(XElement relOp)
+        private void BindPlanProperties(XElement relOp)
         {
-            var propertyItems = new List<PropertyItem>();
-
-            var map = new Dictionary<string, (string Group, string Name)>
-            {
-                { "NodeId", ("杂项", "节点 ID") },
-                { "PhysicalOp", ("所有执行的实际行数", "物理运算") },
-                { "LogicalOp", ("杂项", "逻辑操作") },
-                { "EstimateRows", ("所有执行的估计行数", "每个执行的估计行数") },
-                { "EstimateIO", ("杂项", "估计 I/O 开销") },
-                { "EstimateCPU", ("杂项", "估计 CPU 开销") },
-                { "AvgRowSize", ("杂项", "估计行大小") },
-                { "EstimatedTotalSubtreeCost", ("杂项", "估计子树大小") },
-                { "EstimateRebinds", ("杂项", "估计的重新绑定次数") },
-                { "EstimateRewinds", ("杂项", "估计的重绕次数") },
-                { "EstimatedExecutionMode", ("杂项", "估计的执行模式") },
-                { "Parallel", ("杂项", "并行") },
-                { "ActualExecutionMode", ("实际时间统计信息", "实际执行模式") }
-            };
-
-            foreach (var attr in relOp.Attributes())
-            {
-                string key = attr.Name.LocalName;
-                if (map.TryGetValue(key, out var translation))
-                {
-                    propertyItems.Add(new PropertyItem { Group = translation.Group, Name = translation.Name, Value = attr.Value });
-                }
-                else
-                {
-                    propertyItems.Add(new PropertyItem { Group = "杂项", Name = key, Value = attr.Value });
-                }
-            }
-
-            foreach (var child in relOp.Elements())
-            {
-                if (child.Name.LocalName == "OutputList")
-                {
-                    foreach (var col in child.Descendants(child.Name.Namespace + "ColumnReference"))
-                    {
-                        string db = col.Attribute("Database")?.Value ?? "";
-                        string schema = col.Attribute("Schema")?.Value ?? "";
-                        string table = col.Attribute("Table")?.Value ?? "";
-                        string column = col.Attribute("Column")?.Value ?? "";
-                        propertyItems.Add(new PropertyItem { Group = "输出列表", Name = $"[{db}].[{schema}].[{table}].{column}", Value = "" });
-                    }
-                }
-                else if (child.Name.LocalName == "RunTimeInformation")
-                {
-                    foreach (var rt in child.Elements())
-                    {
-                        foreach (var attr in rt.Attributes())
-                        {
-                            string g = "所有执行的实际行数";
-                            string n = attr.Name.LocalName;
-                            if (n == "ActualRows") n = "所有执行的实际行数";
-                            propertyItems.Add(new PropertyItem { Group = g, Name = n, Value = attr.Value });
-                        }
-                    }
-                }
-                else if (child.Name.LocalName != "RelOp")
-                {
-                    foreach (var attr in child.Attributes())
-                    {
-                        propertyItems.Add(new PropertyItem { Group = child.Name.LocalName, Name = attr.Name.LocalName, Value = attr.Value });
-                    }
-                }
-            }
-
-            var view = new System.Windows.Data.ListCollectionView(propertyItems);
+            var properties = _planPropertyService.BuildProperties(relOp).ToList();
+            var view = new System.Windows.Data.ListCollectionView(properties);
             view.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("Group"));
-            return view;
-        }
-
-        public class PropertyItem
-        {
-            public string Group { get; set; } = "";
-            public string Name { get; set; } = "";
-            public string Value { get; set; } = "";
+            PlanPropertiesGrid.ItemsSource = view;
         }
 
         private void OpenPlanMermaidInBrowser_Click(object sender, RoutedEventArgs e)
