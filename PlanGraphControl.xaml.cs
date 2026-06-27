@@ -43,6 +43,7 @@ namespace SqlXmlAnalyzer
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
         private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
+        private static readonly Core.Services.PlanGraphRelOpDetailsService RelOpDetailsService = new();
         private static readonly Core.Services.PlanGraphRuntimeCountersService RuntimeCountersService = new();
 
         static PlanGraphControl()
@@ -374,76 +375,10 @@ namespace SqlXmlAnalyzer
             double actualRewinds = runtimeCounters.ActualRewinds;
             bool isSkewed = runtimeCounters.IsThreadDataSkewed;
 
-            // Object and Predicates Extract
-            string objectDetails = "";
-            string databaseName = "";
-            string tableName = "";
-            string indexName = "";
-            var predsNormal = new List<string>();
-            var predsSeek = new List<string>();
-            var outputList = new List<string>();
-
-            foreach (var child in relOp.Elements())
-            {
-                string tagLocal = child.Name.LocalName;
-                if (tagLocal == "OutputList")
-                {
-                    foreach (var col in child.Descendants(ns + "ColumnReference"))
-                    {
-                        string cName = col.Attribute("Column")?.Value ?? "";
-                        if (!string.IsNullOrEmpty(cName) && !outputList.Contains(cName))
-                            outputList.Add(cName);
-                    }
-                }
-                else if (tagLocal != "Warnings" && tagLocal != "RunTimeInformation" && tagLocal != "RelOp")
-                {
-                    var obj = child.Descendants(ns + "Object").FirstOrDefault();
-                    if (obj != null)
-                    {
-                        databaseName = obj.Attribute("Database")?.Value?.TrimStart('[').TrimEnd(']') ?? "";
-                        tableName = obj.Attribute("Table")?.Value?.TrimStart('[').TrimEnd(']') ?? "";
-                        indexName = obj.Attribute("Index")?.Value?.TrimStart('[').TrimEnd(']') ?? "";
-                        string alias = obj.Attribute("Alias")?.Value?.TrimStart('[').TrimEnd(']') ?? "";
-
-                        if (!string.IsNullOrEmpty(tableName))
-                        {
-                            objectDetails = string.IsNullOrEmpty(indexName) ? $"[{tableName}]" : $"[{tableName}].[{indexName}]";
-                            if (!string.IsNullOrEmpty(alias) && alias != tableName)
-                                objectDetails += $" AS [{alias}]";
-                        }
-                    }
-
-                    // Find scalar operators under Predicate
-                    foreach (var pred in child.Descendants(ns + "Predicate"))
-                    {
-                        foreach (var op in pred.Descendants(ns + "ScalarOperator"))
-                        {
-                            string? s = op.Attribute("ScalarString")?.Value;
-                            if (!string.IsNullOrEmpty(s) && !predsNormal.Contains(s))
-                                predsNormal.Add(s);
-                        }
-                    }
-
-                    // Find scalar operators under SeekPredicates or SeekPredicateNew
-                    var seekPredsElements = child.Descendants(ns + "SeekPredicates")
-                                                .Concat(child.Descendants(ns + "SeekPredicateNew"));
-                    foreach (var seekPred in seekPredsElements)
-                    {
-                        foreach (var op in seekPred.Descendants(ns + "ScalarOperator"))
-                        {
-                            string? s = op.Attribute("ScalarString")?.Value;
-                            if (!string.IsNullOrEmpty(s) && !predsSeek.Contains(s))
-                                predsSeek.Add(s);
-                        }
-                    }
-                }
-            }
-
-            if (string.IsNullOrEmpty(objectDetails) && (physical.Contains("Scan") || physical.Contains("Seek")))
-                objectDetails = "(堆表或堆索引)";
-
-            string residualPredicate = string.Join(" AND ", predsNormal);
-            string seekPredicate = string.Join(" AND ", predsSeek);
+            Core.Services.PlanGraphRelOpDetails relOpDetails =
+                RelOpDetailsService.Parse(relOp, ns, physical);
+            string residualPredicate = string.Join(" AND ", relOpDetails.Predicates);
+            string seekPredicate = string.Join(" AND ", relOpDetails.SeekPredicates);
 
             double dEstRowSize = safeFloat(estRowSize);
             double dEstCpu = safeFloat(estCpuCost);
@@ -593,27 +528,6 @@ namespace SqlXmlAnalyzer
                     actualRecost = ownCost;
             }
 
-            var partAccessed = relOp.Descendants(ns + "PartitionsAccessed").FirstOrDefault();
-            string partitionCount = "";
-            string partitionRange = "";
-            bool isPartitioned = relOp.DescendantsAndSelf().Any(e => e.Attribute("Partitioned")?.Value?.ToLower() == "true" || e.Attribute("Partitioned")?.Value == "1");
-
-            if (partAccessed != null)
-            {
-                isPartitioned = true;
-                partitionCount = partAccessed.Attribute("PartitionCount")?.Value ?? "";
-                var pRange = partAccessed.Element(ns + "PartitionRange");
-                if (pRange != null)
-                {
-                    string start = pRange.Attribute("Start")?.Value ?? "";
-                    string end = pRange.Attribute("End")?.Value ?? "";
-                    if (!string.IsNullOrEmpty(start) && !string.IsNullOrEmpty(end))
-                        partitionRange = $"{start} - {end}";
-                    else if (!string.IsNullOrEmpty(start))
-                        partitionRange = start;
-                }
-            }
-
             var vm = new PlanNodeViewModel
             {
                 RawElement = relOp,
@@ -647,16 +561,16 @@ namespace SqlXmlAnalyzer
                 ActualRebinds = hasActual ? actualRebinds.ToString() : "",
                 ActualRewinds = hasActual ? actualRewinds.ToString() : "",
                 Ordered = relOp.Attribute("LogicalOp")?.Value?.Contains("Sort") == true ? "True" : "False",
-                DatabaseName = databaseName,
-                TableName = tableName,
-                IndexName = indexName,
-                SeekPredicates = string.Join("\n", predsSeek),
-                Predicate = string.Join("\n", predsNormal),
-                OutputList = string.Join(", ", outputList),
-                ObjectDetails = objectDetails,
-                Partitioned = isPartitioned ? "True" : "False",
-                PartitionCount = partitionCount,
-                PartitionRange = partitionRange,
+                DatabaseName = relOpDetails.DatabaseName,
+                TableName = relOpDetails.TableName,
+                IndexName = relOpDetails.IndexName,
+                SeekPredicates = string.Join("\n", relOpDetails.SeekPredicates),
+                Predicate = string.Join("\n", relOpDetails.Predicates),
+                OutputList = string.Join(", ", relOpDetails.OutputColumns),
+                ObjectDetails = relOpDetails.ObjectDetails,
+                Partitioned = relOpDetails.IsPartitioned ? "True" : "False",
+                PartitionCount = relOpDetails.PartitionCount,
+                PartitionRange = relOpDetails.PartitionRange,
                 IsParallel = isParallel,
                 Warnings = warningsStr,
                 NodeSeverity = highestSeverity,
