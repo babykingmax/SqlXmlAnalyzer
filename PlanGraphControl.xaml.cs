@@ -43,6 +43,7 @@ namespace SqlXmlAnalyzer
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
         private static readonly Core.Rules.RuleEngine _ruleEngine = new Core.Rules.RuleEngine();
+        private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
         private static readonly Core.Services.PlanGraphRelOpDetailsService RelOpDetailsService = new();
         private static readonly Core.Services.PlanGraphRuntimeCountersService RuntimeCountersService = new();
         private static readonly Core.Services.PlanGraphWarningService WarningService = new();
@@ -258,57 +259,12 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            // 计算真实的 own_cost 并从 subtree_cost 中减去子节点的 subtree_cost
-            foreach (var relOp in relOps)
-            {
-                var vm = nodeMap[relOp];
-                var childRelOps = PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns).ToList();
-                vm.HasChildren = childRelOps.Count > 0;
-                double childrenSubtreeCost = childRelOps.Sum(c =>
-                {
-                    if (nodeMap.TryGetValue(c, out var cvm)) return cvm.SubtreeCost;
-                    return safeFloat(c.Attribute("EstimatedTotalSubtreeCost")?.Value);
-                });
-
-                vm.OwnCost = Math.Max(0.0, vm.SubtreeCost - childrenSubtreeCost);
-                vm.Cost = vm.OwnCost; // 让 Cost 代表 OwnCost
-
-                if (vm.EstRowsNum > 0 && !string.IsNullOrEmpty(vm.ActualRows))
-                {
-                    vm.ActualRecost = vm.OwnCost * (vm.ActualRowsNum / vm.EstRowsNum);
-                    if (double.IsInfinity(vm.ActualRecost) || double.IsNaN(vm.ActualRecost))
-                        vm.ActualRecost = vm.OwnCost;
-                }
-                else
-                {
-                    vm.ActualRecost = vm.OwnCost;
-                }
-            }
-
-            // 计算和分配自身成本百分比 CostPercent, CpuPercent, IoPercent
-            double maxSubtreeCost = allNodes.Count > 0 ? allNodes.Max(n => n.SubtreeCost) : 0.0;
-            if (maxSubtreeCost <= 0) maxSubtreeCost = 1.0;
-
-            double maxCpuCost = allNodes.Count > 0 ? allNodes.Max(n => n.EstimatedCPUCostNum) : 0.0;
-            if (maxCpuCost <= 0) maxCpuCost = 1.0;
-
-            double maxIoCost = allNodes.Count > 0 ? allNodes.Max(n => n.EstimatedIOCostNum) : 0.0;
-            if (maxIoCost <= 0) maxIoCost = 1.0;
-
-            foreach (var vm in allNodes)
-            {
-                double pct = (vm.OwnCost / maxSubtreeCost) * 100.0;
-                vm.CostPercent = (int)Math.Min(100, Math.Max(0, Math.Round(pct)));
-
-                double cpuPct = (vm.EstimatedCPUCostNum / maxCpuCost) * 100.0;
-                vm.CpuPercent = Math.Min(100.0, Math.Max(0.0, cpuPct));
-
-                double ioPct = (vm.EstimatedIOCostNum / maxIoCost) * 100.0;
-                vm.IoPercent = Math.Min(100.0, Math.Max(0.0, ioPct));
-
-                vm.ViewMode = initialView;
-                vm.ColorMode = initialColor;
-            }
+            ApplyCostCalculations(
+                relOps,
+                nodeMap,
+                ns,
+                initialView,
+                initialColor);
 
             // 2. 简单分层初始布局 (类似 Plan Explorer 水平/垂直流)
             ApplyLayeredLayout(nodeMap, relOps, ns);
@@ -339,6 +295,62 @@ namespace SqlXmlAnalyzer
 
             // 默认选中根节点 (最高成本或第一个)
             SelectedNode = allNodes.OrderByDescending(n => n.CostPercent).FirstOrDefault() ?? allNodes.FirstOrDefault();
+        }
+
+        private static void ApplyCostCalculations(
+            List<XElement> relOps,
+            Dictionary<XElement, PlanNodeViewModel> nodeMap,
+            XNamespace ns,
+            DiagramViewMode initialView,
+            PlanColorMode initialColor)
+        {
+            var inputs = new List<Core.Services.PlanGraphNodeCostInput>();
+
+            foreach (XElement relOp in relOps)
+            {
+                PlanNodeViewModel vm = nodeMap[relOp];
+                List<XElement> childRelOps =
+                    PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns).ToList();
+                vm.HasChildren = childRelOps.Count > 0;
+                List<double> childSubtreeCosts = childRelOps
+                    .Select(child =>
+                    {
+                        if (nodeMap.TryGetValue(child, out PlanNodeViewModel? childVm))
+                        {
+                            return childVm.SubtreeCost;
+                        }
+
+                        return safeFloat(
+                            child.Attribute("EstimatedTotalSubtreeCost")?.Value);
+                    })
+                    .ToList();
+
+                inputs.Add(new Core.Services.PlanGraphNodeCostInput(
+                    vm.SubtreeCost,
+                    childSubtreeCosts,
+                    vm.EstimatedCPUCostNum,
+                    vm.EstimatedIOCostNum,
+                    vm.EstRowsNum,
+                    vm.ActualRowsNum,
+                    !string.IsNullOrEmpty(vm.ActualRows)));
+            }
+
+            IReadOnlyList<Core.Services.PlanGraphNodeCostResult> results =
+                CostCalculationService.Calculate(inputs);
+
+            for (int i = 0; i < relOps.Count; i++)
+            {
+                PlanNodeViewModel vm = nodeMap[relOps[i]];
+                Core.Services.PlanGraphNodeCostResult result = results[i];
+                vm.OwnCost = result.OwnCost;
+                vm.Cost = result.DisplayCost;
+                vm.ActualRecost = result.ActualRecost;
+                vm.CostPercent = result.CostPercent;
+                vm.CpuPercent = result.CpuPercent;
+                vm.IoPercent = result.IoPercent;
+                vm.ViewMode = initialView;
+                vm.ColorMode = initialColor;
+            }
         }
 
         private static double safeFloat(string? val, double defaultValue = 0.0)
