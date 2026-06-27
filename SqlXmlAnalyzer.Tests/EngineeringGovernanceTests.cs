@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Linq;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core;
 using SqlXmlAnalyzer.Core.Services;
@@ -49,6 +52,67 @@ namespace SqlXmlAnalyzer.Tests
                 .Which.Should().Be(typeof(SqlRefactoringEngine));
             legacyEngine.Should().NotBeNull();
             legacyEngine!.IsNotPublic.Should().BeTrue();
+        }
+
+        [Fact]
+        public void CiWorkflow_RunsDependencyVulnerabilityScan()
+        {
+            string workflow = ReadRepositoryFile(".github", "workflows", "ci.yml");
+
+            workflow.Should().Contain("dotnet list SqlXmlAnalyzer.sln package --vulnerable --include-transitive");
+            workflow.Should().Contain("has the following vulnerable packages");
+            workflow.Should().Contain("具有下列易受攻击的包");
+            workflow.Should().Contain("Vulnerable NuGet packages were found");
+        }
+
+        [Fact]
+        public void CiWorkflow_FailsWhenTestsProduceArtifacts()
+        {
+            string workflow = ReadRepositoryFile(".github", "workflows", "ci.yml");
+
+            workflow.Should().Contain("git status --porcelain --untracked-files=all");
+            workflow.Should().Contain("Working tree changed during CI");
+        }
+
+        [Fact]
+        public void GitIgnore_ExcludesLocalGeneratedReviewReports()
+        {
+            string gitIgnore = ReadRepositoryFile(".gitignore");
+
+            gitIgnore.Should().Contain("SqlXmlAnalyzer_Review_Report_*.docx");
+        }
+
+        [Fact]
+        public void DirectoryPackages_PinsKnownVulnerableTransitiveDependenciesToSafeVersions()
+        {
+            string packageVersions = ReadRepositoryFile("Directory.Packages.props");
+
+            packageVersions.Should().Contain("<PackageVersion Include=\"Azure.Identity\" Version=\"1.21.0\" />");
+            packageVersions.Should().Contain("<PackageVersion Include=\"Microsoft.Identity.Client\" Version=\"4.85.2\" />");
+            packageVersions.Should().Contain("<PackageVersion Include=\"Microsoft.Identity.Client.Extensions.Msal\" Version=\"4.85.2\" />");
+            packageVersions.Should().Contain("<PackageVersion Include=\"System.Formats.Asn1\" Version=\"10.0.9\" />");
+        }
+
+        private static string ReadRepositoryFile(params string[] relativePathParts)
+        {
+            string repositoryRoot = FindRepositoryRoot();
+            return File.ReadAllText(Path.Combine(new[] { repositoryRoot }.Concat(relativePathParts).ToArray()));
+        }
+
+        private static string FindRepositoryRoot()
+        {
+            DirectoryInfo? directory = new(AppContext.BaseDirectory);
+            while (directory != null)
+            {
+                if (File.Exists(Path.Combine(directory.FullName, "SqlXmlAnalyzer.sln")))
+                {
+                    return directory.FullName;
+                }
+
+                directory = directory.Parent;
+            }
+
+            throw new DirectoryNotFoundException("Unable to locate repository root from test output directory.");
         }
     }
 }

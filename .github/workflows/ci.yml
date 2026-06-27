@@ -22,8 +22,32 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore SqlXmlAnalyzer.sln
 
+    - name: Check vulnerable dependencies
+      shell: pwsh
+      run: |
+        $output = dotnet list SqlXmlAnalyzer.sln package --vulnerable --include-transitive
+        $exitCode = $LASTEXITCODE
+        $output | ForEach-Object { Write-Host $_ }
+        if ($exitCode -ne 0) {
+          exit $exitCode
+        }
+        if ($output -match "has the following vulnerable packages" -or $output -match "具有下列易受攻击的包") {
+          Write-Error "Vulnerable NuGet packages were found. Update or remove them before merging."
+          exit 1
+        }
+
     - name: Build
       run: dotnet build SqlXmlAnalyzer.sln --no-restore --configuration Release
 
     - name: Test
       run: dotnet test SqlXmlAnalyzer.sln --no-build --configuration Release --verbosity normal
+
+    - name: Check artifact cleanliness
+      shell: pwsh
+      run: |
+        $status = git status --porcelain --untracked-files=all
+        if ($status) {
+          Write-Error "Working tree changed during CI. Tests or tools produced source-tree artifacts:"
+          $status | ForEach-Object { Write-Error $_ }
+          exit 1
+        }

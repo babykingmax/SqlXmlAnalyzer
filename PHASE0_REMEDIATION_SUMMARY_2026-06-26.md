@@ -248,6 +248,20 @@ Completed:
 - Non-source artifact removed.
 - Build and test suite pass.
 - Phase implementation plan saved as `SqlXmlAnalyzer_Phased_Implementation_Plan_2026-06-26.txt`.
+- CI now runs a NuGet vulnerable-package scan and fails when vulnerable packages are reported.
+- CI now checks `git status --porcelain --untracked-files=all` after tests so generated source-tree artifacts fail the build.
+- Local generated review Word reports are ignored through `.gitignore`.
+- Engineering governance tests now lock the CI vulnerability scan, artifact cleanliness check, and review-report ignore rule.
+- Vulnerable transitive dependencies from the SQL Server XEvent dependency chain are centrally pinned to safe versions:
+  - `Azure.Identity` `1.21.0`
+  - `Microsoft.Identity.Client` `4.85.2`
+  - `Microsoft.Identity.Client.Extensions.Msal` `4.85.2`
+  - `System.Formats.Asn1` `10.0.9`
+
+Additional hardening commit:
+
+- Date: 2026-06-27
+- Scope: complete the remaining Phase 0 CI and working-tree hygiene acceptance items.
 
 Remaining for later phases:
 
