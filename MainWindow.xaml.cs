@@ -126,6 +126,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
+        private readonly Core.Services.SqlDiffService _sqlDiffService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -232,6 +233,7 @@ namespace SqlXmlAnalyzer
             Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.PlanPropertyService? planPropertyService = null,
             Core.Services.PlanTreeService? planTreeService = null,
+            Core.Services.SqlDiffService? sqlDiffService = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
@@ -268,6 +270,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
                 ?? new Core.Services.PlanTreeService();
+            _sqlDiffService = sqlDiffService
+                ?? new Core.Services.SqlDiffService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -2698,21 +2702,6 @@ namespace SqlXmlAnalyzer
             return brush;
         }
 
-        private static readonly HashSet<string> SqlKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "SELECT", "FROM", "WHERE", "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "ON", "GROUP", "BY", "ORDER",
-            "HAVING", "AND", "OR", "NOT", "IN", "EXISTS", "LIKE", "AS", "CREATE", "INDEX", "DROP", "TABLE",
-            "INSERT", "UPDATE", "DELETE", "INTO", "VALUES", "SET", "EXEC", "PROCEDURE", "DECLARE", "WITH",
-            "UNION", "ALL", "CASE", "WHEN", "THEN", "ELSE", "END", "NULL", "IS", "CAST", "CONVERT", "GO",
-            "CROSS", "APPLY", "TOP", "DISTINCT"
-        };
-
-        private static readonly System.Text.RegularExpressions.Regex SqlTokenizerRegex =
-            new System.Text.RegularExpressions.Regex(
-                @"(--.*)|('[^']*(?:''[^']*)*')|([a-zA-Z_#@][a-zA-Z0-9_]*)|(\s+)|(.)",
-                System.Text.RegularExpressions.RegexOptions.Compiled,
-                TimeSpan.FromMilliseconds(100));
-
         private T? FindVisualChild<T>(DependencyObject? depObj) where T : DependencyObject
         {
             if (depObj != null)
@@ -2796,135 +2785,31 @@ namespace SqlXmlAnalyzer
             string[] linesOriginal = _currentOriginalSql.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             string[] linesRefactored = _currentRefactoredSql.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-            var (alignedOriginal, alignedRefactored) = AlignLines(linesOriginal, linesRefactored);
+            Core.Services.SqlAlignedLines alignedLines =
+                _sqlDiffService.AlignLines(linesOriginal, linesRefactored);
 
-            RenderAlignedDiff(OriginalSqlTextBox, alignedOriginal, false, alignedRefactored);
-            RenderAlignedDiff(RefactoredSqlTextBox, alignedRefactored, true, alignedOriginal);
+            RenderAlignedDiff(OriginalSqlTextBox, alignedLines.Original, false, alignedLines.Refactored);
+            RenderAlignedDiff(RefactoredSqlTextBox, alignedLines.Refactored, true, alignedLines.Original);
         }
 
-        private (List<string?> alignedOriginal, List<string?> alignedRefactored) AlignLines(string[] linesA, string[] linesB)
-        {
-            int N = linesA.Length;
-            int M = linesB.Length;
-
-            if (N > 1000 || M > 1000)
-            {
-                // Fallback: simple line-by-line alignment without DP to avoid OOM or UI freezing for massive queries
-                List<string?> fallbackA = new List<string?>();
-                List<string?> fallbackB = new List<string?>();
-                int minLen = Math.Min(N, M);
-                for (int i = 0; i < minLen; i++)
-                {
-                    fallbackA.Add(linesA[i]);
-                    fallbackB.Add(linesB[i]);
-                }
-                if (N > M)
-                {
-                    for (int i = minLen; i < N; i++)
-                    {
-                        fallbackA.Add(linesA[i]);
-                        fallbackB.Add(null);
-                    }
-                }
-                else if (M > N)
-                {
-                    for (int i = minLen; i < M; i++)
-                    {
-                        fallbackA.Add(null);
-                        fallbackB.Add(linesB[i]);
-                    }
-                }
-                return (fallbackA, fallbackB);
-            }
-
-            int[,] dp = new int[N + 1, M + 1];
-
-            for (int i = 1; i <= N; i++)
-            {
-                for (int j = 1; j <= M; j++)
-                {
-                    if (NormalizeForDiff(linesA[i - 1]) == NormalizeForDiff(linesB[j - 1]))
-                    {
-                        dp[i, j] = dp[i - 1, j - 1] + 1;
-                    }
-                    else
-                    {
-                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
-                    }
-                }
-            }
-
-            List<string?> alignedA = new List<string?>();
-            List<string?> alignedB = new List<string?>();
-            int currI = N;
-            int currJ = M;
-
-            while (currI > 0 || currJ > 0)
-            {
-                if (currI > 0 && currJ > 0 && NormalizeForDiff(linesA[currI - 1]) == NormalizeForDiff(linesB[currJ - 1]))
-                {
-                    alignedA.Add(linesA[currI - 1]);
-                    alignedB.Add(linesB[currJ - 1]);
-                    currI--;
-                    currJ--;
-                }
-                else if (currJ > 0 && (currI == 0 || dp[currI, currJ - 1] >= dp[currI - 1, currJ]))
-                {
-                    alignedA.Add(null);
-                    alignedB.Add(linesB[currJ - 1]);
-                    currJ--;
-                }
-                else
-                {
-                    alignedA.Add(linesA[currI - 1]);
-                    alignedB.Add(null);
-                    currI--;
-                }
-            }
-
-            alignedA.Reverse();
-            alignedB.Reverse();
-
-            // Post-process single line diffs to pair them up side-by-side
-            for (int i = 0; i < alignedA.Count - 1; i++)
-            {
-                if (alignedA[i] != null && alignedB[i] == null && alignedA[i + 1] == null && alignedB[i + 1] != null)
-                {
-                    alignedB[i] = alignedB[i + 1];
-                    alignedA.RemoveAt(i + 1);
-                    alignedB.RemoveAt(i + 1);
-                }
-                else if (alignedA[i] == null && alignedB[i] != null && alignedA[i + 1] != null && alignedB[i + 1] == null)
-                {
-                    alignedA[i] = alignedA[i + 1];
-                    alignedA.RemoveAt(i + 1);
-                    alignedB.RemoveAt(i + 1);
-                }
-            }
-
-            return (alignedA, alignedB);
-        }
-
-        private string NormalizeForDiff(string s)
-        {
-            if (s == null) return "";
-            return System.Text.RegularExpressions.Regex.Replace(s, @"\s+", "").ToLowerInvariant();
-        }
-
-        private void RenderAlignedDiff(RichTextBox rtb, List<string?> lines, bool isRefactoredSide, List<string?> opposingLines)
+        private void RenderAlignedDiff(
+            RichTextBox rtb,
+            IReadOnlyList<string?> lines,
+            bool isRefactoredSide,
+            IReadOnlyList<string?> opposingLines)
         {
             rtb.Document.Blocks.Clear();
             rtb.BeginChange();
             try
             {
                 List<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? subqueries = null;
-                List<int>? lineStartOffsets = null;
+                IReadOnlyList<int>? lineStartOffsets = null;
                 HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>? handledSubqueries = null;
 
                 if (!isRefactoredSide && !string.IsNullOrEmpty(_currentOriginalSql))
                 {
                     subqueries = SqlXmlAnalyzer.Refactoring.Rules.ScalarSubqueryToJoinRule.GetRewriteableSubqueries(_currentOriginalSql);
-                    lineStartOffsets = GetLineStartOffsets(_currentOriginalSql);
+                    lineStartOffsets = _sqlDiffService.GetLineStartOffsets(_currentOriginalSql);
                     handledSubqueries = new HashSet<Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery>();
                 }
 
@@ -2957,7 +2842,7 @@ namespace SqlXmlAnalyzer
                             p.Background = isRefactoredSide ? AdditionBrush : DeletionBrush;
                             FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
                         }
-                        else if (NormalizeForDiff(line) != NormalizeForDiff(opposingLine))
+                        else if (!_sqlDiffService.IsEquivalentForDiff(line, opposingLine))
                         {
                             p.Background = ModificationBrush;
                             FormatSqlLine(p, line, defaultForeground, subqueries, lineStartOffset, handledSubqueries);
@@ -2990,13 +2875,10 @@ namespace SqlXmlAnalyzer
                 return;
             }
 
-            try
+            foreach (Core.Services.SqlDiffToken token in _sqlDiffService.TokenizeLine(text))
             {
-                var matches = SqlTokenizerRegex.Matches(text);
-                foreach (System.Text.RegularExpressions.Match match in matches)
-                {
-                    int tokenAbsoluteStart = lineStartOffset + match.Index;
-                    int tokenAbsoluteEnd = tokenAbsoluteStart + match.Length;
+                int tokenAbsoluteStart = lineStartOffset + token.Start;
+                int tokenAbsoluteEnd = tokenAbsoluteStart + token.Length;
 
                     Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery? overlappingSubquery = null;
                     if (subqueries != null)
@@ -3020,31 +2902,16 @@ namespace SqlXmlAnalyzer
                         p.Inlines.Add(new InlineUIContainer(lightbulbBtn) { BaselineAlignment = BaselineAlignment.Center });
                     }
 
-                    Run run;
-                    if (match.Groups[1].Success) // Comment
-                    {
-                        run = new Run(match.Value) { Foreground = Brushes.Green };
-                    }
-                    else if (match.Groups[2].Success) // String literal
-                    {
-                        run = new Run(match.Value) { Foreground = Brushes.Brown };
-                    }
-                    else if (match.Groups[3].Success) // Word / Identifier
-                    {
-                        string val = match.Value;
-                        if (SqlKeywords.Contains(val))
-                        {
-                            run = new Run(val) { Foreground = Brushes.Blue, FontWeight = FontWeights.Bold };
-                        }
-                        else
-                        {
-                            run = new Run(val) { Foreground = defaultForeground };
-                        }
-                    }
-                    else // Whitespace, operators, or anything else
-                    {
-                        run = new Run(match.Value) { Foreground = defaultForeground };
-                    }
+                Run run = token.Kind switch
+                {
+                    Core.Services.SqlDiffTokenKind.Comment =>
+                        new Run(token.Text) { Foreground = Brushes.Green },
+                    Core.Services.SqlDiffTokenKind.StringLiteral =>
+                        new Run(token.Text) { Foreground = Brushes.Brown },
+                    Core.Services.SqlDiffTokenKind.Keyword =>
+                        new Run(token.Text) { Foreground = Brushes.Blue, FontWeight = FontWeights.Bold },
+                    _ => new Run(token.Text) { Foreground = defaultForeground }
+                };
 
                     if (overlappingSubquery != null)
                     {
@@ -3052,38 +2919,8 @@ namespace SqlXmlAnalyzer
                         run.ToolTip = "标量子查询可优化为 JOIN，点击灯泡一键修复并对比效果";
                     }
 
-                    p.Inlines.Add(run);
-                }
+                p.Inlines.Add(run);
             }
-            catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
-            {
-                // Fallback to plain text on timeout to prevent freezing
-                p.Inlines.Add(new Run(text) { Foreground = defaultForeground });
-            }
-        }
-
-        private List<int> GetLineStartOffsets(string sql)
-        {
-            var list = new List<int>();
-            if (string.IsNullOrEmpty(sql)) return list;
-
-            list.Add(0);
-            for (int i = 0; i < sql.Length; i++)
-            {
-                if (sql[i] == '\r')
-                {
-                    if (i + 1 < sql.Length && sql[i + 1] == '\n')
-                    {
-                        i++;
-                    }
-                    list.Add(i + 1);
-                }
-                else if (sql[i] == '\n')
-                {
-                    list.Add(i + 1);
-                }
-            }
-            return list;
         }
 
         private UIElement CreateLightbulbButton(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
