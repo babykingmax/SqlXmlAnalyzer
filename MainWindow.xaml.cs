@@ -137,6 +137,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
         private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
         private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
+        private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -237,7 +238,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockNodeDragService? deadlockNodeDragService = null,
             Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null,
             Core.Services.DeadlockGraphLayoutService? deadlockGraphLayoutService = null,
-            Core.Services.DeadlockGraphEdgeService? deadlockGraphEdgeService = null)
+            Core.Services.DeadlockGraphEdgeService? deadlockGraphEdgeService = null,
+            Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -299,6 +301,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphLayoutService();
             _deadlockGraphEdgeService = deadlockGraphEdgeService
                 ?? new Core.Services.DeadlockGraphEdgeService();
+            _deadlockGraphPlacementService = deadlockGraphPlacementService
+                ?? new Core.Services.DeadlockGraphPlacementService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1082,59 +1086,46 @@ namespace SqlXmlAnalyzer
                 return;
             }
 
-            // 节点尺寸
-            double procW = 220, procH = 90;
-            double resW = 160, resH = 50;
-
             // 还原缩放和平移，使每次打开新文件时居中
             DeadlockScaleTransform.ScaleX = 1.0;
             DeadlockScaleTransform.ScaleY = 1.0;
             DeadlockTranslateTransform.X = 0;
             DeadlockTranslateTransform.Y = 0;
 
-            // 环形布局（Circular Layout）参数计算，参考 SQL_Deadlock_Dashboard 风格
             double canvasWidth = DeadlockCanvasBorder.ActualWidth > 0 ? DeadlockCanvasBorder.ActualWidth : 800;
             double canvasHeight = DeadlockCanvasBorder.ActualHeight > 0 ? DeadlockCanvasBorder.ActualHeight : 600;
-            double centerX = canvasWidth / 2;
-            double centerY = canvasHeight / 2;
-
-            // 动态计算半径，防止节点重叠
-            int totalNodes = collapsedProcesses.Count + collapsedResources.Count;
-            double minRadius = 250;
-            double dynamicRadius = Math.Max(minRadius, (totalNodes * 120) / (2 * Math.PI));
-            double radiusX = dynamicRadius;
-            double radiusY = dynamicRadius * 0.8; // 稍微扁一点的椭圆更契合宽屏
-
-            int nodeIndex = 0;
+            Core.Services.DeadlockGraphPlacementResult placement =
+                _deadlockGraphPlacementService.PlaceNodes(
+                    layout,
+                    graph.VictimProcessId,
+                    canvasWidth,
+                    canvasHeight);
 
             // 3. 绘制并排版独立的进程节点（环形分布）
-            for (int i = 0; i < collapsedProcesses.Count; i++)
+            foreach (Core.Services.DeadlockGraphProcessPlacement processPlacement in placement.Processes)
             {
-                var collapsedProc = collapsedProcesses[i];
-                var proc = collapsedProc.PrimaryProcess;
-                bool isVictim = collapsedProc.Threads.Any(t => t.Id == graph.VictimProcessId);
-                string nodeId = $"proc_id_{collapsedProc.PrimaryId}";
-
-                double angle = 2 * Math.PI * nodeIndex / totalNodes;
-                double x = centerX + radiusX * Math.Cos(angle) - procW / 2;
-                double y = centerY + radiusY * Math.Sin(angle) - procH / 2;
-
-                DrawDraggableProcessNode(x, y, procW, procH, proc, isVictim, nodeId, collapsedProc.ThreadCount);
-                nodeIndex++;
+                DrawDraggableProcessNode(
+                    processPlacement.Position.X,
+                    processPlacement.Position.Y,
+                    processPlacement.Width,
+                    processPlacement.Height,
+                    processPlacement.Process.PrimaryProcess,
+                    processPlacement.IsVictim,
+                    processPlacement.NodeId,
+                    processPlacement.Process.ThreadCount);
             }
 
             // 4. 绘制并排版独立的资源节点（环形分布）
-            for (int j = 0; j < collapsedResources.Count; j++)
+            foreach (Core.Services.DeadlockGraphResourcePlacement resourcePlacement in placement.Resources)
             {
-                var collapsedRes = collapsedResources[j];
-                var res = collapsedRes.RawResources.First();
-
-                double angle = 2 * Math.PI * nodeIndex / totalNodes;
-                double x = centerX + radiusX * Math.Cos(angle) - resW / 2;
-                double y = centerY + radiusY * Math.Sin(angle) - resH / 2;
-
-                DrawDraggableResourceNode(x, y, resW, resH, res, collapsedRes.Id, collapsedRes.LockCount);
-                nodeIndex++;
+                DrawDraggableResourceNode(
+                    resourcePlacement.Position.X,
+                    resourcePlacement.Position.Y,
+                    resourcePlacement.Width,
+                    resourcePlacement.Height,
+                    resourcePlacement.Resource.RawResources.First(),
+                    resourcePlacement.NodeId,
+                    resourcePlacement.Resource.LockCount);
             }
 
             foreach (Core.Services.DeadlockGraphEdge edge in _deadlockGraphEdgeService.BuildEdges(collapsedResources))
@@ -1151,8 +1142,8 @@ namespace SqlXmlAnalyzer
                 Foreground = Brushes.SlateGray,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
-            Canvas.SetLeft(tip, 50);
-            Canvas.SetTop(tip, centerY + radiusY + 60);
+            Canvas.SetLeft(tip, placement.TipPosition.X);
+            Canvas.SetTop(tip, placement.TipPosition.Y);
             DeadlockGraphCanvas.Children.Add(tip);
         }
 
