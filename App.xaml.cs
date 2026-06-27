@@ -189,6 +189,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.PortableReportExportService>();
             services.AddSingleton<Core.Services.AnalysisClipboardService>();
             services.AddSingleton<Core.Services.MissingIndexDeploymentScriptService>();
+            services.AddSingleton<Core.Services.MissingIndexClipboardActionService>();
             services.AddSingleton<Core.Services.DeadlockSelectionDetailService>();
             services.AddSingleton<Core.Services.DeadlockGraphViewportService>();
             services.AddSingleton<Core.Services.DeadlockGraphGeometryService>();

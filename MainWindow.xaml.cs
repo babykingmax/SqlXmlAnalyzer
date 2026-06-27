@@ -133,6 +133,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
+        private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
@@ -242,6 +243,7 @@ namespace SqlXmlAnalyzer
             Core.Services.IFileDialogService? fileDialogService = null,
             Core.Services.AnalysisClipboardService? analysisClipboardService = null,
             Core.Services.MissingIndexDeploymentScriptService? missingIndexDeploymentScriptService = null,
+            Core.Services.MissingIndexClipboardActionService? missingIndexClipboardActionService = null,
             Core.Services.DeadlockSelectionDetailService? deadlockSelectionDetailService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null,
@@ -313,6 +315,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.AnalysisClipboardService();
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
+            _missingIndexClipboardActionService = missingIndexClipboardActionService
+                ?? new Core.Services.MissingIndexClipboardActionService(_missingIndexDeploymentScriptService);
             _deadlockSelectionDetailService = deadlockSelectionDetailService
                 ?? new Core.Services.DeadlockSelectionDetailService();
             _deadlockGraphViewportService = deadlockGraphViewportService
@@ -2547,29 +2551,40 @@ namespace SqlXmlAnalyzer
 
         private void CopyIndexDdl_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.Tag is string ddl && !string.IsNullOrEmpty(ddl))
-            {
-                Clipboard.SetText(ddl);
-                MessageBox.Show("CREATE INDEX DDL 已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            Core.Services.MissingIndexClipboardActionResult result =
+                _missingIndexClipboardActionService.BuildCreateScript(
+                    sender is Button btn ? btn.Tag as string : null);
+
+            CopyMissingIndexClipboardResult(result);
         }
 
         private void CopyRollbackDdl_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.Tag is string ddl && !string.IsNullOrEmpty(ddl))
-            {
-                Clipboard.SetText(ddl);
-                MessageBox.Show("DROP INDEX (回滚) DDL 已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            Core.Services.MissingIndexClipboardActionResult result =
+                _missingIndexClipboardActionService.BuildRollbackScript(
+                    sender is Button btn ? btn.Tag as string : null);
+
+            CopyMissingIndexClipboardResult(result);
         }
 
         private void CopyDeploymentBundle_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion mi)
+            Core.Services.MissingIndexClipboardActionResult result =
+                _missingIndexClipboardActionService.BuildDeploymentBundle(
+                    sender is Button btn
+                        ? btn.DataContext as SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion
+                        : null);
+
+            CopyMissingIndexClipboardResult(result);
+        }
+
+        private static void CopyMissingIndexClipboardResult(
+            Core.Services.MissingIndexClipboardActionResult result)
+        {
+            if (result.Status == Core.Services.MissingIndexClipboardActionStatus.Ready)
             {
-                string bundle = _missingIndexDeploymentScriptService.BuildDeploymentBundle(mi);
-                Clipboard.SetText(bundle);
-                MessageBox.Show("完整部署包 (包含安全事务与回滚脚本) 已复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                Clipboard.SetText(result.Text);
+                MessageBox.Show(result.SuccessMessage, "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
