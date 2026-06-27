@@ -139,6 +139,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
         private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
+        private readonly Core.Services.SqlQuickFixService _sqlQuickFixService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)> _arrowCache = new Dictionary<(string, string), (System.Windows.Shapes.Line line, System.Windows.Shapes.Polygon arrowHead, Border label)>();
@@ -219,6 +220,7 @@ namespace SqlXmlAnalyzer
             Core.Services.PlanTreeService? planTreeService = null,
             Core.Services.SqlDiffService? sqlDiffService = null,
             Core.Services.SqlDiffDocumentRenderer? sqlDiffDocumentRenderer = null,
+            Core.Services.SqlQuickFixService? sqlQuickFixService = null,
             Core.Services.IFileDialogService? fileDialogService = null,
             Core.Services.AnalysisClipboardService? analysisClipboardService = null,
             Core.Services.MissingIndexDeploymentScriptService? missingIndexDeploymentScriptService = null,
@@ -295,6 +297,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.SqlDiffService();
             _sqlDiffDocumentRenderer = sqlDiffDocumentRenderer
                 ?? new Core.Services.SqlDiffDocumentRenderer(_sqlDiffService);
+            _sqlQuickFixService = sqlQuickFixService
+                ?? new Core.Services.SqlQuickFixService();
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -2544,27 +2548,29 @@ namespace SqlXmlAnalyzer
 
         private void QuickFix_Click(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
         {
-            if (!SqlXmlAnalyzer.Refactoring.Rules.ScalarSubqueryToJoinRule.TryRewriteSelectedSubquery(
+            Core.Services.SqlQuickFixResult quickFix =
+                _sqlQuickFixService.TryRewriteSelectedSubquery(
                     _currentOriginalSql,
                     subquery.StartOffset,
-                    subquery.FragmentLength,
-                    out var selectedRewriteSql))
+                    subquery.FragmentLength);
+
+            if (!quickFix.IsAvailable)
             {
-                MessageBox.Show("无法安全地重写所选标量子查询。SQL 未被修改。", "快速修复不可用", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(quickFix.FailureMessage, "快速修复不可用", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var dialog = new QuickFixWindow(_currentOriginalSql, selectedRewriteSql, subquery)
+            var dialog = new QuickFixWindow(_currentOriginalSql, quickFix.RewrittenSql, subquery)
             {
                 Owner = this
             };
             dialog.ShowDialog();
             if (dialog.Applied)
             {
-                _currentOriginalSql = selectedRewriteSql;
-                _currentRefactoredSql = selectedRewriteSql;
+                _currentOriginalSql = quickFix.RewrittenSql;
+                _currentRefactoredSql = quickFix.RewrittenSql;
                 UpdateSqlDiffViews();
-                PlanStatementTextBox.Text = _currentOriginalSql.Length > 800 ? _currentOriginalSql.Substring(0, 800) + "..." : _currentOriginalSql;
+                PlanStatementTextBox.Text = quickFix.StatementPreview;
                 MessageBox.Show("已仅应用所选标量子查询的 JOIN 重写。", "修复成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
