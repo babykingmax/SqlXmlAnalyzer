@@ -121,6 +121,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly Core.Services.PlanComparisonController _planComparisonController;
+        private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
@@ -226,6 +227,7 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockDocumentController? deadlockDocumentController = null,
             Core.Services.PlanDocumentController? planDocumentController = null,
             Core.Services.PlanComparisonController? planComparisonController = null,
+            Core.Services.PlanComparisonTreeService? planComparisonTreeService = null,
             Core.Services.AnalysisReportController? analysisReportController = null,
             Core.Services.TuningSessionService? tuningSessionService = null,
             Core.Services.PlanPropertyService? planPropertyService = null,
@@ -256,6 +258,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
             _planComparisonController = planComparisonController
                 ?? new Core.Services.PlanComparisonController();
+            _planComparisonTreeService = planComparisonTreeService
+                ?? new Core.Services.PlanComparisonTreeService();
             _analysisReportController = analysisReportController
                 ?? new Core.Services.AnalysisReportController();
             _fileDialogService = fileDialogService
@@ -1765,21 +1769,21 @@ namespace SqlXmlAnalyzer
                     ViewModel.PlanA,
                     ViewModel.PlanB,
                     _showplanNs);
+            Core.Services.PlanComparisonTreeResult displayTree =
+                _planComparisonTreeService.BuildTree(comparison);
 
-            if (comparison.PlanA != null)
+            if (displayTree.PlanA != null)
             {
-                PlanATreeView.Items.Add(BuildDiffTreeView(comparison.PlanA, false));
+                PlanATreeView.Items.Add(BuildDiffTreeView(displayTree.PlanA));
             }
 
-            if (comparison.PlanB != null)
+            if (displayTree.PlanB != null)
             {
-                PlanBTreeView.Items.Add(BuildDiffTreeView(comparison.PlanB, true));
+                PlanBTreeView.Items.Add(BuildDiffTreeView(displayTree.PlanB));
             }
         }
 
-        private TreeViewItem BuildDiffTreeView(
-            Core.Services.PlanComparisonNode node,
-            bool isPlanB)
+        private TreeViewItem BuildDiffTreeView(Core.Services.PlanComparisonTreeNode node)
         {
             var stackPanel = new StackPanel
             {
@@ -1789,13 +1793,13 @@ namespace SqlXmlAnalyzer
 
             var textBlockOp = new TextBlock
             {
-                Text = GetComparisonOperatorText(node, isPlanB),
+                Text = node.OperatorText,
                 FontWeight = FontWeights.SemiBold
             };
             var textBlockCost = new TextBlock
             {
-                Text = $" (Cost: {node.Cost:F4})",
-                Foreground = Brushes.Gray
+                Text = node.CostText,
+                Foreground = GetComparisonCostBrush(node.CostTrend)
             };
 
             Border border = new Border
@@ -1805,18 +1809,17 @@ namespace SqlXmlAnalyzer
                 Margin = new Thickness(0, 0, 4, 0)
             };
 
-            ApplyComparisonStateStyle(node.State, isPlanB, border, textBlockOp);
-            ApplyCostDeltaStyle(node, textBlockCost);
+            ApplyComparisonStateStyle(node, border, textBlockOp);
 
             stackPanel.Children.Add(textBlockOp);
             stackPanel.Children.Add(textBlockCost);
 
-            if (node.RuntimeDeltas.Count > 0)
+            if (node.RuntimeDeltaTexts.Count > 0)
             {
                 var textBlockRuntime = new TextBlock
                 {
-                    Text = " | " + string.Join(", ", node.RuntimeDeltas.Select(FormatRuntimeDelta)),
-                    Foreground = isPlanB ? Brushes.Purple : Brushes.Teal,
+                    Text = " | " + string.Join(", ", node.RuntimeDeltaTexts),
+                    Foreground = node.IsPlanB ? Brushes.Purple : Brushes.Teal,
                     FontWeight = FontWeights.Medium,
                     Margin = new Thickness(4, 0, 0, 0)
                 };
@@ -1832,44 +1835,29 @@ namespace SqlXmlAnalyzer
                 IsExpanded = true
             };
 
-            foreach (Core.Services.PlanComparisonNode child in node.Children)
+            foreach (Core.Services.PlanComparisonTreeNode child in node.Children)
             {
-                item.Items.Add(BuildDiffTreeView(child, isPlanB));
+                item.Items.Add(BuildDiffTreeView(child));
             }
 
             return item;
         }
 
-        private static string GetComparisonOperatorText(
-            Core.Services.PlanComparisonNode node,
-            bool isPlanB)
-        {
-            return node.State switch
-            {
-                Core.Services.PlanComparisonNodeState.Added => $"{node.PhysicalOp} [Added]",
-                Core.Services.PlanComparisonNodeState.Removed => $"{node.PhysicalOp} [Removed]",
-                Core.Services.PlanComparisonNodeState.OperatorChanged =>
-                    $"{node.PhysicalOp} [from {node.OtherPhysicalOp}]",
-                _ => node.PhysicalOp
-            };
-        }
-
         private static void ApplyComparisonStateStyle(
-            Core.Services.PlanComparisonNodeState state,
-            bool isPlanB,
+            Core.Services.PlanComparisonTreeNode node,
             Border border,
             TextBlock textBlockOp)
         {
-            switch (state)
+            switch (node.State)
             {
                 case Core.Services.PlanComparisonNodeState.Added:
                 case Core.Services.PlanComparisonNodeState.Removed:
-                    border.Background = isPlanB
+                    border.Background = node.IsPlanB
                         ? new SolidColorBrush(Color.FromArgb(40, 76, 175, 80))
                         : new SolidColorBrush(Color.FromArgb(40, 244, 67, 54));
-                    border.BorderBrush = isPlanB ? Brushes.Green : Brushes.Red;
+                    border.BorderBrush = node.IsPlanB ? Brushes.Green : Brushes.Red;
                     border.BorderThickness = new Thickness(1);
-                    textBlockOp.Foreground = isPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
+                    textBlockOp.Foreground = node.IsPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
                     break;
                 case Core.Services.PlanComparisonNodeState.OperatorChanged:
                     border.Background = new SolidColorBrush(Color.FromArgb(40, 255, 152, 0));
@@ -1880,37 +1868,14 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        private static void ApplyCostDeltaStyle(
-            Core.Services.PlanComparisonNode node,
-            TextBlock textBlockCost)
+        private static Brush GetComparisonCostBrush(Core.Services.PlanComparisonCostTrend costTrend)
         {
-            if (node.State != Core.Services.PlanComparisonNodeState.Unchanged ||
-                Math.Abs(node.CostPercentDelta) <= 5)
+            return costTrend switch
             {
-                return;
-            }
-
-            if (node.CostPercentDelta > 0)
-            {
-                textBlockCost.Foreground = Brushes.Red;
-                textBlockCost.Text += $" (+{node.CostPercentDelta:F1}%)";
-            }
-            else
-            {
-                textBlockCost.Foreground = Brushes.Green;
-                textBlockCost.Text += $" ({node.CostPercentDelta:F1}%)";
-            }
-        }
-
-        private static string FormatRuntimeDelta(Core.Services.RuntimeMetricDelta delta)
-        {
-            if (Math.Abs(delta.Delta) < 1e-9)
-            {
-                return $"{delta.Label}: {delta.Value}";
-            }
-
-            string sign = delta.Delta > 0 ? "+" : "-";
-            return $"{delta.Label}: {delta.Value} ({sign}{Math.Abs(delta.Delta)})";
+                Core.Services.PlanComparisonCostTrend.Higher => Brushes.Red,
+                Core.Services.PlanComparisonCostTrend.Lower => Brushes.Green,
+                _ => Brushes.Gray
+            };
         }
 
         #endregion
