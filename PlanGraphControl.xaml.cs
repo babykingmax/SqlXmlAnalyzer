@@ -779,32 +779,33 @@ namespace SqlXmlAnalyzer
         {
             if (sender is MenuItem mi && mi.DataContext is PlanNodeViewModel node)
             {
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine($"Node ID: {node.NodeId}");
-                sb.AppendLine($"Physical Op: {node.PhysicalOp}");
-                sb.AppendLine($"Logical Op: {node.LogicalOp}");
-                sb.AppendLine($"Estimated Cost: {node.SubtreeCost} ({node.CostPercent:F1}%)");
-                sb.AppendLine($"Estimated Rows: {node.EstRows}");
-                sb.AppendLine($"Actual Rows: {node.ActualRows}");
-                sb.AppendLine($"Estimated Data Size: {node.EstimatedDataSize}");
-
-                if (!string.IsNullOrEmpty(node.ObjectDetails))
-                    sb.AppendLine($"Object: {node.ObjectDetails}");
-                if (!string.IsNullOrEmpty(node.OutputList))
-                    sb.AppendLine($"Output List: {node.OutputList}");
-                if (!string.IsNullOrEmpty(node.SeekPredicates))
-                    sb.AppendLine($"Seek Predicates: {node.SeekPredicates}");
-                if (!string.IsNullOrEmpty(node.Predicate))
-                    sb.AppendLine($"Predicate: {node.Predicate}");
-                if (!string.IsNullOrEmpty(node.Warnings))
-                    sb.AppendLine($"Warnings: {node.Warnings}");
-
-                System.Windows.Clipboard.SetText(sb.ToString());
+                var clipboardService = new Core.Services.PlanGraphNodeClipboardService();
+                string text = clipboardService.BuildNodeInfo(ToClipboardInfo(node));
+                System.Windows.Clipboard.SetText(text);
 
                 ToastPopup.IsOpen = true;
                 System.Threading.Tasks.Task.Delay(2000).ContinueWith(_ => Dispatcher.Invoke(() => ToastPopup.IsOpen = false));
 
             }
+        }
+
+        private static Core.Services.PlanGraphNodeClipboardInfo ToClipboardInfo(
+            PlanNodeViewModel node)
+        {
+            return new Core.Services.PlanGraphNodeClipboardInfo(
+                node.NodeId,
+                node.PhysicalOp,
+                node.LogicalOp,
+                node.SubtreeCost,
+                node.CostPercent,
+                node.EstRows,
+                node.ActualRows,
+                node.EstimatedDataSize,
+                node.ObjectDetails,
+                node.OutputList,
+                node.SeekPredicates,
+                node.Predicate,
+                node.Warnings);
         }
 
         private void ResetView_Click(object sender, RoutedEventArgs e) => ResetView();
