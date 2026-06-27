@@ -63,6 +63,29 @@ namespace SqlXmlAnalyzer.Tests
             result.PlanB.Should().BeNull();
         }
 
+        [Fact]
+        public void OpenHistorySnapshot_WhenSelectionIsPlanSnapshot_ReturnsReady()
+        {
+            var service = new TuningSessionActionService(new FakeFileDialogService());
+            var snapshot = new PlanSnapshot { Title = "Captured Plan" };
+
+            PlanSnapshotOpenResult result = service.OpenHistorySnapshot(snapshot);
+
+            result.Status.Should().Be(PlanSnapshotOpenStatus.Ready);
+            result.Snapshot.Should().BeSameAs(snapshot);
+        }
+
+        [Fact]
+        public void OpenHistorySnapshot_WhenSelectionIsNotPlanSnapshot_ReturnsMissingSelection()
+        {
+            var service = new TuningSessionActionService(new FakeFileDialogService());
+
+            PlanSnapshotOpenResult result = service.OpenHistorySnapshot(new object());
+
+            result.Status.Should().Be(PlanSnapshotOpenStatus.MissingSelection);
+            result.Snapshot.Should().BeNull();
+        }
+
         private sealed class FakeFileDialogService : IFileDialogService
         {
             private readonly string? _openPath;

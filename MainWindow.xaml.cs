@@ -2334,13 +2334,17 @@ namespace SqlXmlAnalyzer
         // --- 调优历史与 A/B 并排对比事件处理器 ---
         private async void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (TuningHistoryListView.SelectedItem is Core.ViewModels.PlanSnapshot snapshot)
+            Core.Services.PlanSnapshotOpenResult result =
+                _tuningSessionActionService.OpenHistorySnapshot(TuningHistoryListView.SelectedItem);
+
+            if (result.Status == Core.Services.PlanSnapshotOpenStatus.Ready
+                && result.Snapshot != null)
             {
                 var session = _analysisSessions.Begin();
-                ViewModel.CurrentPlanFilePath = snapshot.FilePath;
+                ViewModel.CurrentPlanFilePath = result.Snapshot.FilePath;
                 await AnalyzeExecutionPlanDocumentAsync(
-                    snapshot.Document,
-                    snapshot.FilePath,
+                    result.Snapshot.Document,
+                    result.Snapshot.FilePath,
                     session.RequestId,
                     session.Token);
             }

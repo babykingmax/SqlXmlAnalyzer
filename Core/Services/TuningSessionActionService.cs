@@ -6,6 +6,16 @@ namespace SqlXmlAnalyzer.Core.Services
         PlanSnapshot? PlanA,
         PlanSnapshot? PlanB);
 
+    public enum PlanSnapshotOpenStatus
+    {
+        Ready,
+        MissingSelection
+    }
+
+    public sealed record PlanSnapshotOpenResult(
+        PlanSnapshotOpenStatus Status,
+        PlanSnapshot? Snapshot);
+
     public sealed class TuningSessionActionService
     {
         private const string SessionFilter = "SqlXmlAnalyzer tuning session (*.pesession)|*.pesession";
@@ -40,6 +50,17 @@ namespace SqlXmlAnalyzer.Core.Services
             PlanSnapshot? planB)
         {
             return new PlanSwapResult(planB, planA);
+        }
+
+        public PlanSnapshotOpenResult OpenHistorySnapshot(object? selectedItem)
+        {
+            return selectedItem is PlanSnapshot snapshot
+                ? new PlanSnapshotOpenResult(
+                    PlanSnapshotOpenStatus.Ready,
+                    snapshot)
+                : new PlanSnapshotOpenResult(
+                    PlanSnapshotOpenStatus.MissingSelection,
+                    null);
         }
     }
 }
