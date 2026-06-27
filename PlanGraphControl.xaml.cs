@@ -940,7 +940,6 @@ namespace SqlXmlAnalyzer
             if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
 
             var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
-            var roots = relOps.Where(r => !relOps.Any(p => PlanDiagnosticAnalyzer.GetDirectChildRelOps(p, _currentNs).Contains(r))).ToList();
 
             var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
             foreach (var node in _masterNodes)
@@ -948,37 +947,35 @@ namespace SqlXmlAnalyzer
                 if (node.RawElement != null) nodeMap[node.RawElement] = node;
             }
 
-            var visibleNodeVms = new HashSet<PlanNodeViewModel>();
+            var collapsedRelOps = nodeMap
+                .Where(pair => pair.Value.IsCollapsed)
+                .Select(pair => pair.Key)
+                .ToHashSet();
+            var visibilityService = new Core.Services.PlanGraphVisibilityService();
+            Core.Services.PlanGraphVisibilityResult visibility =
+                visibilityService.CalculateVisibility(
+                    relOps,
+                    _currentNs,
+                    collapsedRelOps);
+
+            var visibleNodeVms = visibility.VisibleRelOps
+                .Where(nodeMap.ContainsKey)
+                .Select(relOp => nodeMap[relOp])
+                .ToHashSet();
             var visibleConnVms = new HashSet<ConnectionViewModel>();
 
-            // Traverse and calculate which nodes/connections should be visible
-            void Traverse(XElement el, bool isVisible)
+            foreach (Core.Services.PlanGraphVisibleConnection visibleConnection in visibility.VisibleConnections)
             {
-                if (nodeMap.TryGetValue(el, out var vm))
+                if (nodeMap.TryGetValue(visibleConnection.SourceRelOp, out PlanNodeViewModel? sourceVm)
+                    && nodeMap.TryGetValue(visibleConnection.TargetRelOp, out PlanNodeViewModel? targetVm))
                 {
-                    if (isVisible) visibleNodeVms.Add(vm);
-                    bool childrenVisible = isVisible && !vm.IsCollapsed;
-
-                    var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(el, _currentNs).ToList();
-
-                    foreach (var child in children)
+                    ConnectionViewModel? connection = _masterConnections
+                        .FirstOrDefault(c => c.Source == sourceVm && c.Target == targetVm);
+                    if (connection != null)
                     {
-                        if (nodeMap.TryGetValue(child, out var childVm))
-                        {
-                            var conn = _masterConnections.FirstOrDefault(c => c.Source == childVm && c.Target == vm);
-                            if (conn != null)
-                            {
-                                if (childrenVisible) visibleConnVms.Add(conn);
-                            }
-                        }
-                        Traverse(child, childrenVisible);
+                        visibleConnVms.Add(connection);
                     }
                 }
-            }
-
-            foreach (var root in roots)
-            {
-                Traverse(root, true);
             }
 
             // ==================================================
