@@ -180,6 +180,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.IHtmlReportWriter, Core.Services.HtmlReportWriter>();
             services.AddSingleton<Core.Services.HtmlReportExportService>();
             services.AddSingleton<Core.Services.PortableReportExportService>();
+            services.AddSingleton<Core.Services.AnalysisClipboardService>();
             services.AddTransient<MainWindow>();
         }
 

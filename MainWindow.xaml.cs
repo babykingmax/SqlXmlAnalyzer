@@ -126,6 +126,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
+        private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
@@ -210,6 +211,7 @@ namespace SqlXmlAnalyzer
             Core.Services.SqlDiffService? sqlDiffService = null,
             Core.Services.SqlDiffDocumentRenderer? sqlDiffDocumentRenderer = null,
             Core.Services.IFileDialogService? fileDialogService = null,
+            Core.Services.AnalysisClipboardService? analysisClipboardService = null,
             DeadlockAnalysisService? deadlockAnalysisService = null,
             Core.Services.PlanAnalysisService? planAnalysisService = null)
         {
@@ -251,6 +253,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PortableReportExportService(
                     effectiveReportExporter,
                     _fileDialogService);
+            _analysisClipboardService = analysisClipboardService
+                ?? new Core.Services.AnalysisClipboardService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -2050,29 +2054,21 @@ namespace SqlXmlAnalyzer
         {
             try
             {
-                string textToCopy = "";
-                if (MainTabControl.SelectedIndex == 0)
+                Core.Services.AnalysisClipboardResult result =
+                    _analysisClipboardService.BuildForTab(
+                        MainTabControl.SelectedIndex,
+                        ViewModel.DeadlockPatternText,
+                        ViewModel.PlanWarningsText);
+
+                if (result.Status == Core.Services.AnalysisClipboardStatus.Empty)
                 {
-                    if (string.IsNullOrWhiteSpace(ViewModel.DeadlockPatternText))
-                    {
-                        MessageBox.Show("当前没有死锁诊断结果可复制！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-                    textToCopy = "=== SQL Server 死锁诊断报告 ===\r\n\r\n" + ViewModel.DeadlockPatternText;
-                }
-                else if (MainTabControl.SelectedIndex == 1)
-                {
-                    if (string.IsNullOrWhiteSpace(ViewModel.PlanWarningsText))
-                    {
-                        MessageBox.Show("当前没有执行计划诊断结果可复制！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
-                    }
-                    textToCopy = "=== SQL Server 执行计划诊断报告 ===\r\n\r\n" + ViewModel.PlanWarningsText;
+                    MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
                 }
 
-                if (!string.IsNullOrEmpty(textToCopy))
+                if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
                 {
-                    Clipboard.SetText(textToCopy);
+                    Clipboard.SetText(result.Text);
                     MessageBox.Show("诊断结果已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
