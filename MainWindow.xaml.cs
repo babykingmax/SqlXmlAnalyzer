@@ -65,6 +65,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
         private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
+        private readonly DeadlockGraphNodeElementFactory _deadlockGraphNodeElementFactory;
         private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
         private readonly Core.Services.DeadlockGraphVisualStateService _deadlockGraphVisualStateService;
         private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
@@ -266,6 +267,7 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphEdgeRegistryService();
             _deadlockGraphPlacementService = deadlockGraphPlacementService
                 ?? new Core.Services.DeadlockGraphPlacementService();
+            _deadlockGraphNodeElementFactory = new DeadlockGraphNodeElementFactory();
             _deadlockPlaybackStateService = deadlockPlaybackStateService
                 ?? new Core.Services.DeadlockPlaybackStateService();
             _deadlockGraphVisualStateService = deadlockGraphVisualStateService
@@ -1129,120 +1131,13 @@ namespace SqlXmlAnalyzer
 
         private FrameworkElement DrawDraggableProcessNode(double x, double y, double w, double h, DeadlockProcess proc, bool isVictim, string id, int threadCount)
         {
-            var card = new Border
-            {
-                Width = w,
-                Height = h,
-                Background = isVictim ? new SolidColorBrush(Color.FromRgb(255, 240, 240)) : new SolidColorBrush(Color.FromRgb(240, 248, 255)),
-                BorderBrush = isVictim ? new SolidColorBrush(Color.FromRgb(220, 50, 50)) : new SolidColorBrush(Color.FromRgb(70, 130, 180)),
-                BorderThickness = isVictim ? new Thickness(2.5) : new Thickness(1.5),
-                CornerRadius = new CornerRadius(6),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    Color = Colors.Gray,
-                    Direction = 315,
-                    ShadowDepth = 2,
-                    Opacity = 0.3,
-                    BlurRadius = 4
-                },
-                Tag = id
-            };
-
-            var mainGrid = new Grid();
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24) });
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-            // 顶部标题栏
-            var headerBar = new Border
-            {
-                Background = isVictim ? new SolidColorBrush(Color.FromRgb(220, 50, 50)) : new SolidColorBrush(Color.FromRgb(70, 130, 180)),
-                CornerRadius = new CornerRadius(4, 4, 0, 0)
-            };
-            var headerText = new TextBlock
-            {
-                Text = $"{(isVictim ? "💀 " : "👤 ")}SPID {proc.Spid} [{(isVictim ? "Victim" : "Survivor")}]" + (threadCount > 1 ? $" ({threadCount} 线程)" : ""),
-                Foreground = Brushes.White,
-                FontWeight = FontWeights.Bold,
-                FontSize = 11,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(6, 0, 6, 0)
-            };
-            headerBar.Child = headerText;
-            Grid.SetRow(headerBar, 0);
-            mainGrid.Children.Add(headerBar);
-
-            // 内容展示区
-            var contentStack = new StackPanel { Margin = new Thickness(8, 4, 8, 4) };
-
-            // 数据库与事务名称
-            string dbTxText = $"DB: {(!string.IsNullOrEmpty(proc.CurrentDbName) ? proc.CurrentDbName : "Unknown")}";
-            if (!string.IsNullOrEmpty(proc.TransactionName))
-                dbTxText += $" | Tx: {proc.TransactionName}";
-
-            contentStack.Children.Add(new TextBlock
-            {
-                Text = dbTxText,
-                FontSize = 9.5,
-                FontWeight = FontWeights.SemiBold,
-                Foreground = Brushes.DarkSlateGray,
-                TextTrimming = TextTrimming.CharacterEllipsis
-            });
-
-            // 登录名和主机名
-            string loginHost = $"User: {proc.Loginname} ({proc.Hostname})";
-            contentStack.Children.Add(new TextBlock
-            {
-                Text = loginHost,
-                FontSize = 9,
-                Foreground = Brushes.Gray,
-                Margin = new Thickness(0, 2, 0, 0),
-                TextTrimming = TextTrimming.CharacterEllipsis
-            });
-
-            // SQL 语句
-            string sql = "";
-            if (proc.ExecutionStack.Count > 0 && !string.IsNullOrEmpty(proc.ExecutionStack[0].Statement))
-            {
-                sql = proc.ExecutionStack[0].Statement;
-            }
-            else if (!string.IsNullOrEmpty(proc.Inputbuf))
-            {
-                sql = proc.Inputbuf;
-            }
-            else
-            {
-                sql = "No statement info";
-            }
-
-            sql = System.Text.RegularExpressions.Regex.Replace(sql, @"\s+", " ").Trim();
-            if (sql.Length > 85)
-                sql = sql.Substring(0, 82) + "...";
-
-            var sqlText = new TextBlock
-            {
-                Text = sql,
-                FontSize = 9,
-                FontFamily = new FontFamily("Consolas"),
-                Foreground = new SolidColorBrush(Color.FromRgb(40, 40, 120)),
-                Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)),
-                Padding = new Thickness(4, 2, 4, 2),
-                Margin = new Thickness(0, 4, 0, 0),
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                ToolTip = new ToolTip
-                {
-                    Content = new TextBlock
-                    {
-                        Text = string.IsNullOrEmpty(proc.Inputbuf) ? sql : proc.Inputbuf,
-                        MaxWidth = 400,
-                        TextWrapping = TextWrapping.Wrap
-                    }
-                }
-            };
-            contentStack.Children.Add(sqlText);
-
-            Grid.SetRow(contentStack, 1);
-            mainGrid.Children.Add(contentStack);
-            card.Child = mainGrid;
+            FrameworkElement card = _deadlockGraphNodeElementFactory.CreateProcessNode(
+                w,
+                h,
+                proc,
+                isVictim,
+                id,
+                threadCount);
 
             Canvas.SetLeft(card, x);
             Canvas.SetTop(card, y);
@@ -1258,88 +1153,12 @@ namespace SqlXmlAnalyzer
 
         private FrameworkElement DrawDraggableResourceNode(double x, double y, double w, double h, LockResource res, string id, int lockCount)
         {
-            var container = new Grid
-            {
-                Width = w,
-                Height = h,
-                Tag = id,
-                Background = Brushes.Transparent
-            };
-
-            var points = new PointCollection
-            {
-                new Point(0, h / 2),
-                new Point(12, 0),
-                new Point(w - 12, 0),
-                new Point(w, h / 2),
-                new Point(w - 12, h),
-                new Point(12, h)
-            };
-
-            var poly = new System.Windows.Shapes.Polygon
-            {
-                Points = points,
-                Fill = new SolidColorBrush(Color.FromRgb(255, 248, 225)), // #FFF8E1
-                Stroke = new SolidColorBrush(Color.FromRgb(255, 179, 0)), // #FFB300
-                StrokeThickness = 2,
-                Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    Color = Colors.Gray,
-                    Direction = 315,
-                    ShadowDepth = 1.5,
-                    Opacity = 0.25,
-                    BlurRadius = 3
-                }
-            };
-            container.Children.Add(poly);
-
-            var textStack = new StackPanel
-            {
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(14, 0, 14, 0),
-                IsHitTestVisible = false
-            };
-
-            string lockTypeText = $"{res.LockType.ToUpperInvariant()}";
-            if (lockCount > 1)
-                lockTypeText += $" ({lockCount} 锁)";
-            else if (!string.IsNullOrEmpty(res.Dbid))
-                lockTypeText += $" (DB: {res.Dbid})";
-
-            textStack.Children.Add(new TextBlock
-            {
-                Text = lockTypeText,
-                FontSize = 9.5,
-                FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(183, 28, 28)),
-                HorizontalAlignment = HorizontalAlignment.Center
-            });
-
-            string objName = !string.IsNullOrEmpty(res.ObjectName) ? res.ObjectName : "(Object)";
-            if (objName.Contains("."))
-            {
-                var parts = objName.Split('.');
-                if (parts.Length > 1)
-                    objName = string.Join(".", parts.Skip(Math.Max(0, parts.Length - 2)));
-            }
-
-            if (!string.IsNullOrEmpty(res.IndexName))
-                objName += $" ({res.IndexName})";
-
-            var objTextBlock = new TextBlock
-            {
-                Text = objName,
-                FontSize = 8.5,
-                Foreground = new SolidColorBrush(Color.FromRgb(66, 66, 66)),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                MaxWidth = w - 28,
-                ToolTip = new ToolTip { Content = res.ObjectName + (!string.IsNullOrEmpty(res.IndexName) ? $" ({res.IndexName})" : "") }
-            };
-            textStack.Children.Add(objTextBlock);
-
-            container.Children.Add(textStack);
+            FrameworkElement container = _deadlockGraphNodeElementFactory.CreateResourceNode(
+                w,
+                h,
+                res,
+                id,
+                lockCount);
 
             Canvas.SetLeft(container, x);
             Canvas.SetTop(container, y);
