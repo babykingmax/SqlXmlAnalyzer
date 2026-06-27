@@ -1371,6 +1371,7 @@ namespace SqlXmlAnalyzer
         private PlanNodeViewModel? _source;
         private PlanNodeViewModel? _target;
         private static readonly Core.Services.PlanGraphConnectionDisplayService ConnectionDisplayService = new();
+        private static readonly Core.Services.PlanGraphConnectionGeometryService ConnectionGeometryService = new();
 
         private static readonly Brush DefaultBrush = new SolidColorBrush(Color.FromRgb(0x78, 0x90, 0x9C));
         private static readonly Brush RedBrush = new SolidColorBrush(Color.FromRgb(0xD3, 0x2F, 0x2F));
@@ -1406,6 +1407,36 @@ namespace SqlXmlAnalyzer
                 : Core.Services.PlanGraphConnectionMetricKind.RowCount;
         }
 
+        private static Core.Services.PlanGraphConnectionGeometryNode? ToGeometryNode(
+            PlanNodeViewModel? node)
+        {
+            return node == null
+                ? null
+                : new Core.Services.PlanGraphConnectionGeometryNode(
+                    node.Location.X,
+                    node.Location.Y);
+        }
+
+        private static Core.Services.PlanGraphConnectionLayout ToConnectionLayout(
+            PlanLayoutMode layoutMode)
+        {
+            return layoutMode == PlanLayoutMode.Horizontal
+                ? Core.Services.PlanGraphConnectionLayout.Horizontal
+                : Core.Services.PlanGraphConnectionLayout.Vertical;
+        }
+
+        private static Point ToPoint(
+            Core.Services.PlanGraphConnectionPoint point)
+        {
+            return new Point(point.X, point.Y);
+        }
+
+        private static Core.Services.PlanGraphConnectionPoint ToConnectionPoint(
+            Point point)
+        {
+            return new Core.Services.PlanGraphConnectionPoint(point.X, point.Y);
+        }
+
         private static Brush ToStrokeBrush(
             Core.Services.PlanGraphConnectionStrokeKey strokeKey)
         {
@@ -1424,7 +1455,8 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                return LayoutMode == PlanLayoutMode.Horizontal ? 180 : -90;
+                return ConnectionGeometryService.GetArrowAngle(
+                    ToConnectionLayout(LayoutMode));
             }
         }
 
@@ -1543,28 +1575,10 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                if (Source == null) return default;
-
-                if (LayoutMode == PlanLayoutMode.Horizontal)
-                {
-                    if (Target == null)
-                        return new Point(Source.Location.X, Source.Location.Y + 35);
-
-                    if (Source.Location.X > Target.Location.X)
-                        return new Point(Source.Location.X, Source.Location.Y + 35); // Left edge
-                    else
-                        return new Point(Source.Location.X + 228, Source.Location.Y + 35); // Right edge
-                }
-                else // Vertical layout: child is below parent (Source Y > Target Y)
-                {
-                    if (Target == null)
-                        return new Point(Source.Location.X + 115, Source.Location.Y);
-
-                    if (Source.Location.Y > Target.Location.Y)
-                        return new Point(Source.Location.X + 115, Source.Location.Y); // Top edge
-                    else
-                        return new Point(Source.Location.X + 115, Source.Location.Y + 70); // Bottom edge
-                }
+                return ToPoint(ConnectionGeometryService.CalculateSourceLocation(
+                    ToGeometryNode(Source),
+                    ToGeometryNode(Target),
+                    ToConnectionLayout(LayoutMode)));
             }
         }
 
@@ -1572,49 +1586,21 @@ namespace SqlXmlAnalyzer
         {
             get
             {
-                if (Target == null) return default;
-
-                if (LayoutMode == PlanLayoutMode.Horizontal)
-                {
-                    if (Source == null)
-                        return new Point(Target.Location.X + 228, Target.Location.Y + 35);
-
-                    if (Source.Location.X > Target.Location.X)
-                        return new Point(Target.Location.X + 228, Target.Location.Y + 35); // Right edge
-                    else
-                        return new Point(Target.Location.X, Target.Location.Y + 35); // Left edge
-                }
-                else // Vertical layout: child is below parent (Source Y > Target Y)
-                {
-                    if (Source == null)
-                        return new Point(Target.Location.X + 115, Target.Location.Y + 70);
-
-                    if (Source.Location.Y > Target.Location.Y)
-                        return new Point(Target.Location.X + 115, Target.Location.Y + 70); // Bottom edge
-                    else
-                        return new Point(Target.Location.X + 115, Target.Location.Y); // Top edge
-                }
+                return ToPoint(ConnectionGeometryService.CalculateTargetLocation(
+                    ToGeometryNode(Source),
+                    ToGeometryNode(Target),
+                    ToConnectionLayout(LayoutMode)));
             }
         }
 
-        public double MidpointX
-        {
-            get
-            {
-                double x = (SourceLocation.X + TargetLocation.X) / 2;
-                double estimatedWidth = 8 + (LabelText?.Length ?? 1) * 5.2;
-                return x - estimatedWidth / 2;
-            }
-        }
+        private Core.Services.PlanGraphConnectionPoint LabelLocation =>
+            ConnectionGeometryService.CalculateLabelLocation(
+                ToConnectionPoint(SourceLocation),
+                ToConnectionPoint(TargetLocation),
+                LabelText);
 
-        public double MidpointY
-        {
-            get
-            {
-                double y = (SourceLocation.Y + TargetLocation.Y) / 2;
-                return y - 8;
-            }
-        }
+        public double MidpointX => LabelLocation.X;
+        public double MidpointY => LabelLocation.Y;
 
         private bool _isHighlighted = true;
         public bool IsHighlighted
