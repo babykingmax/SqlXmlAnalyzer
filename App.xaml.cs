@@ -197,6 +197,7 @@ namespace SqlXmlAnalyzer
             services.AddSingleton<Core.Services.DeadlockGraphPlacementService>();
             services.AddSingleton<Core.Services.DeadlockPlaybackStateService>();
             services.AddSingleton<Core.Services.DeadlockGraphVisualStateService>();
+            services.AddSingleton<Core.Services.DeadlockStepBadgeService>();
             services.AddTransient<MainWindow>();
         }
 

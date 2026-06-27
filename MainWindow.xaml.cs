@@ -141,6 +141,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
         private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
         private readonly Core.Services.DeadlockGraphVisualStateService _deadlockGraphVisualStateService;
+        private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -245,7 +246,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphEdgeRegistryService? deadlockGraphEdgeRegistryService = null,
             Core.Services.DeadlockGraphPlacementService? deadlockGraphPlacementService = null,
             Core.Services.DeadlockPlaybackStateService? deadlockPlaybackStateService = null,
-            Core.Services.DeadlockGraphVisualStateService? deadlockGraphVisualStateService = null)
+            Core.Services.DeadlockGraphVisualStateService? deadlockGraphVisualStateService = null,
+            Core.Services.DeadlockStepBadgeService? deadlockStepBadgeService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -315,6 +317,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockPlaybackStateService();
             _deadlockGraphVisualStateService = deadlockGraphVisualStateService
                 ?? new Core.Services.DeadlockGraphVisualStateService();
+            _deadlockStepBadgeService = deadlockStepBadgeService
+                ?? new Core.Services.DeadlockStepBadgeService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -924,23 +928,53 @@ namespace SqlXmlAnalyzer
                 {
                     if (!_stepBadges.TryGetValue(idPair, out var badge))
                     {
-                        badge = new Border
-                        {
-                            Background = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
-                            CornerRadius = new CornerRadius(8),
-                            Width = 16,
-                            Height = 16,
-                            Child = new TextBlock { Text = visualState.BadgeStepNumber.Value.ToString(), Foreground = Brushes.White, FontSize = 9, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }
-                        };
+                        badge = CreateStepBadge();
                         _stepBadges[idPair] = badge;
                         DeadlockGraphCanvas.Children.Add(badge);
-                        double x1 = visuals.line.X1, y1 = visuals.line.Y1, x2 = visuals.line.X2, y2 = visuals.line.Y2;
-                        Canvas.SetLeft(badge, (x1 + x2) / 2 + 10);
-                        Canvas.SetTop(badge, (y1 + y2) / 2 - 15);
                     }
+                    ApplyStepBadgePlacement(
+                        badge,
+                        _deadlockStepBadgeService.PlaceBadge(
+                            visualState.BadgeStepNumber.Value,
+                            visuals.line.X1,
+                            visuals.line.Y1,
+                            visuals.line.X2,
+                            visuals.line.Y2));
                     badge.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        private static Border CreateStepBadge()
+        {
+            return new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
+                CornerRadius = new CornerRadius(8),
+                Width = 16,
+                Height = 16,
+                Child = new TextBlock
+                {
+                    Foreground = Brushes.White,
+                    FontSize = 9,
+                    FontWeight = FontWeights.Bold,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                }
+            };
+        }
+
+        private static void ApplyStepBadgePlacement(
+            Border badge,
+            Core.Services.DeadlockStepBadgePlacement placement)
+        {
+            if (badge.Child is TextBlock textBlock)
+            {
+                textBlock.Text = placement.Text;
+            }
+
+            Canvas.SetLeft(badge, placement.Left);
+            Canvas.SetTop(badge, placement.Top);
         }
 
         private static void ApplyNodeVisualState(
