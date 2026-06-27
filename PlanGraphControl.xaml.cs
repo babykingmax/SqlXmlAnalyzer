@@ -309,7 +309,7 @@ namespace SqlXmlAnalyzer
             }
 
             // 2. 简单分层初始布局 (类似 Plan Explorer 水平/垂直流)
-            ApplyLayeredLayout(allNodes, nodeMap, relOps, ns);
+            ApplyLayeredLayout(nodeMap, relOps, ns);
 
             // 3. 构建父子连接 (子 -> 父，数据流向根)
             foreach (var relOp in relOps)
@@ -723,101 +723,39 @@ namespace SqlXmlAnalyzer
             return "Other";
         }
 
-        private void ApplyLayeredLayout(List<PlanNodeViewModel> allNodes, Dictionary<XElement, PlanNodeViewModel> nodeMap,
-                                        List<XElement> allRelOps, XNamespace ns)
+        private void ApplyLayeredLayout(
+            Dictionary<XElement, PlanNodeViewModel> nodeMap,
+            List<XElement> allRelOps,
+            XNamespace ns)
         {
-            var roots = allRelOps.Where(r => !allRelOps.Any(p => PlanDiagnosticAnalyzer.GetDirectChildRelOps(p, ns).Contains(r))).ToList();
-            if (roots.Count == 0 && allRelOps.Count > 0)
+            var collapsedRelOps = nodeMap
+                .Where(pair => pair.Value.IsCollapsed)
+                .Select(pair => pair.Key)
+                .ToHashSet();
+            var layoutService = new Core.Services.PlanGraphLayoutService();
+            IReadOnlyList<Core.Services.PlanGraphLayoutPosition> positions =
+                layoutService.CalculateLayout(
+                    allRelOps,
+                    ns,
+                    collapsedRelOps,
+                    ToGraphLayoutDirection(LayoutMode));
+
+            foreach (Core.Services.PlanGraphLayoutPosition position in positions)
             {
-                roots.Add(allRelOps[0]);
-            }
-
-            var childrenMap = new Dictionary<XElement, List<XElement>>();
-            foreach (var op in allRelOps)
-            {
-                childrenMap[op] = PlanDiagnosticAnalyzer.GetDirectChildRelOps(op, ns).ToList();
-            }
-
-            double CalculateSubtreeWidth(XElement node)
-            {
-                var vm = nodeMap[node];
-                if (vm.IsCollapsed)
+                if (nodeMap.TryGetValue(position.Element, out PlanNodeViewModel? vm))
                 {
-                    vm.SubtreeWidth = 1;
-                    return 1;
-                }
-
-                var children = childrenMap[node];
-                if (children.Count == 0)
-                {
-                    vm.SubtreeWidth = 1;
-                    return 1;
-                }
-
-                double totalWidth = 0;
-                foreach (var child in children)
-                {
-                    totalWidth += CalculateSubtreeWidth(child);
-                }
-                vm.SubtreeWidth = Math.Max(1, totalWidth);
-                return vm.SubtreeWidth;
-            }
-
-            double horizontalSpacing = 280;
-            double verticalSpacing = 160;
-
-            void SetNodePositions(XElement node, double startY, double depthX)
-            {
-                var vm = nodeMap[node];
-                vm.Location = new Point(depthX, startY + (vm.SubtreeWidth - 1) * verticalSpacing / 2);
-
-                if (vm.IsCollapsed) return;
-
-                var children = childrenMap[node];
-                double childStartY = startY;
-                foreach (var child in children)
-                {
-                    SetNodePositions(child, childStartY, depthX + horizontalSpacing);
-                    childStartY += nodeMap[child].SubtreeWidth * verticalSpacing;
+                    vm.SubtreeWidth = position.SubtreeWidth;
+                    vm.Location = new Point(position.X, position.Y);
                 }
             }
+        }
 
-            void SetNodePositionsVertical(XElement node, double startX, double depthY)
-            {
-                var vm = nodeMap[node];
-                vm.Location = new Point(startX + (vm.SubtreeWidth - 1) * horizontalSpacing / 2, depthY);
-
-                if (vm.IsCollapsed) return;
-
-                var children = childrenMap[node];
-                double childStartX = startX;
-                foreach (var child in children)
-                {
-                    SetNodePositionsVertical(child, childStartX, depthY + verticalSpacing);
-                    childStartX += nodeMap[child].SubtreeWidth * horizontalSpacing;
-                }
-            }
-
-            if (LayoutMode == PlanLayoutMode.Horizontal)
-            {
-                double currentY = 50;
-                foreach (var root in roots)
-                {
-                    CalculateSubtreeWidth(root);
-                    SetNodePositions(root, currentY, 50);
-                    currentY += nodeMap[root].SubtreeWidth * verticalSpacing + 50;
-                }
-            }
-            else
-            {
-                double currentX = 50;
-                foreach (var root in roots)
-                {
-                    CalculateSubtreeWidth(root);
-                    SetNodePositionsVertical(root, currentX, 50);
-                    currentX += nodeMap[root].SubtreeWidth * horizontalSpacing + 50;
-                }
-            }
+        private static Core.Services.PlanGraphLayoutDirection ToGraphLayoutDirection(
+            PlanLayoutMode layoutMode)
+        {
+            return layoutMode == PlanLayoutMode.Horizontal
+                ? Core.Services.PlanGraphLayoutDirection.Horizontal
+                : Core.Services.PlanGraphLayoutDirection.Vertical;
         }
 
         internal static string FormatNumber(double n)
@@ -1108,7 +1046,7 @@ namespace SqlXmlAnalyzer
                 }
             }
 
-            ApplyLayeredLayout(_masterNodes, nodeMap, relOps, _currentNs);
+            ApplyLayeredLayout(nodeMap, relOps, _currentNs);
 
             foreach (var conn in _masterConnections)
             {
