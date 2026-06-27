@@ -136,6 +136,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
         private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
         private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
+        private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -235,7 +236,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockCanvasInteractionService? deadlockCanvasInteractionService = null,
             Core.Services.DeadlockNodeDragService? deadlockNodeDragService = null,
             Core.Services.DeadlockGraphSelectionService? deadlockGraphSelectionService = null,
-            Core.Services.DeadlockGraphLayoutService? deadlockGraphLayoutService = null)
+            Core.Services.DeadlockGraphLayoutService? deadlockGraphLayoutService = null,
+            Core.Services.DeadlockGraphEdgeService? deadlockGraphEdgeService = null)
         {
             InitializeComponent();
             _xelReader = xelReader ?? new Core.XelReader();
@@ -295,6 +297,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphSelectionService();
             _deadlockGraphLayoutService = deadlockGraphLayoutService
                 ?? new Core.Services.DeadlockGraphLayoutService();
+            _deadlockGraphEdgeService = deadlockGraphEdgeService
+                ?? new Core.Services.DeadlockGraphEdgeService();
             _planPropertyService = planPropertyService
                 ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
@@ -1133,31 +1137,9 @@ namespace SqlXmlAnalyzer
                 nodeIndex++;
             }
 
-            // 5. 绘制逻辑有向箭头边（Thread 进程 -> 独立物理资源）
-            foreach (var collapsedRes in collapsedResources)
+            foreach (Core.Services.DeadlockGraphEdge edge in _deadlockGraphEdgeService.BuildEdges(collapsedResources))
             {
-                var rawRes = collapsedRes.RawResources.First();
-
-                // 等待边（Waiters）：Thread -> 资源组
-                foreach (var waiterId in collapsedRes.WaiterSpids)
-                {
-                    string waiterNodeId = $"proc_id_{waiterId}";
-                    var waiter = rawRes.Waiters.FirstOrDefault(w => w.Id == waiterId);
-                    string mode = waiter?.Mode ?? "";
-                    if (string.IsNullOrEmpty(mode)) mode = waiter?.RequestType ?? "";
-                    if (string.IsNullOrEmpty(mode) && rawRes.LockType == "exchangeEvent") mode = "Sync";
-                    DrawArrowBetweenNodes(waiterNodeId, collapsedRes.Id, string.IsNullOrEmpty(mode) ? "Req" : $"Req: {mode}", isWaitEdge: true);
-                }
-
-                // 持有边（Owners）：资源组 -> Thread
-                foreach (var ownerId in collapsedRes.OwnerSpids)
-                {
-                    string ownerNodeId = $"proc_id_{ownerId}";
-                    var owner = rawRes.Owners.FirstOrDefault(o => o.Id == ownerId);
-                    string mode = owner?.Mode ?? "";
-                    if (string.IsNullOrEmpty(mode) && rawRes.LockType == "exchangeEvent") mode = "Sync";
-                    DrawArrowBetweenNodes(collapsedRes.Id, ownerNodeId, string.IsNullOrEmpty(mode) ? "Own" : $"Own: {mode}", isWaitEdge: false);
-                }
+                DrawArrowBetweenNodes(edge.FromId, edge.ToId, edge.Label, edge.IsWaitEdge);
             }
 
             // 添加底部提示标签
