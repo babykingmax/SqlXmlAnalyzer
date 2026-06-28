@@ -60,8 +60,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
         private readonly DeadlockGraphEdgeElementFactory _deadlockGraphEdgeElementFactory;
         private readonly DeadlockCanvasInteractionBinder _deadlockCanvasInteractionBinder;
-        private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
-        private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
+        private readonly DeadlockNodeInteractionBinder _deadlockNodeInteractionBinder;
         private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
         private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
@@ -261,10 +260,10 @@ namespace SqlXmlAnalyzer
                 new DeadlockCanvasInteractionBinder(
                     deadlockCanvasInteractionService
                     ?? new Core.Services.DeadlockCanvasInteractionService());
-            _deadlockNodeDragService = deadlockNodeDragService
-                ?? new Core.Services.DeadlockNodeDragService();
-            _deadlockGraphSelectionService = deadlockGraphSelectionService
-                ?? new Core.Services.DeadlockGraphSelectionService();
+            _deadlockNodeInteractionBinder =
+                new DeadlockNodeInteractionBinder(
+                    deadlockNodeDragService ?? new Core.Services.DeadlockNodeDragService(),
+                    deadlockGraphSelectionService ?? new Core.Services.DeadlockGraphSelectionService());
             _deadlockGraphLayoutService = deadlockGraphLayoutService
                 ?? new Core.Services.DeadlockGraphLayoutService();
             _deadlockGraphEdgeService = deadlockGraphEdgeService
@@ -1070,7 +1069,7 @@ namespace SqlXmlAnalyzer
             _nodeElements[id] = card;
             _nodePositions[id] = new Point(x, y);
 
-            AttachDragBehavior(card, id);
+            AttachNodeInteraction(card, id);
 
             return card;
         }
@@ -1091,88 +1090,22 @@ namespace SqlXmlAnalyzer
             _nodeElements[id] = container;
             _nodePositions[id] = new Point(x, y);
 
-            AttachDragBehavior(container, id);
+            AttachNodeInteraction(container, id);
 
             return container;
         }
 
-        private void AttachDragBehavior(FrameworkElement element, string id)
+        private void AttachNodeInteraction(FrameworkElement element, string id)
         {
-            bool isDragging = false;
-            Point lastPos = default;
-
-            element.MouseLeftButtonDown += (s, e) =>
-            {
-                if (e.ClickCount == 2)
-                {
-                    // 双击联动同步选择侧边栏
-                    LockResource? resource = _deadlockGraphSelectionService.FindResourceForNode(
-                        id,
-                        _resourceGroupDetails,
-                        DeadlockResourcesList.ItemsSource?.Cast<LockResource>());
-                    if (resource != null)
-                    {
-                        DeadlockResourcesList.SelectedItem = resource;
-                        DeadlockResourcesList.ScrollIntoView(resource);
-                    }
-
-                    DeadlockProcess? process = _deadlockGraphSelectionService.FindProcessForNode(
-                        id,
-                        DeadlockProcessesList.ItemsSource?.Cast<DeadlockProcess>());
-                    if (process != null)
-                    {
-                        DeadlockProcessesList.SelectedItem = process;
-                        DeadlockProcessesList.ScrollIntoView(process);
-                    }
-
-                    e.Handled = true;
-                    return;
-                }
-
-                isDragging = true;
-                lastPos = e.GetPosition(DeadlockGraphCanvas);
-                element.CaptureMouse();
-                e.Handled = true;
-            };
-
-            element.MouseMove += (s, e) =>
-            {
-                if (isDragging)
-                {
-                    var currentPos = e.GetPosition(DeadlockGraphCanvas);
-                    Point currentNodePosition =
-                        _deadlockNodeDragService.NormalizeCanvasPosition(
-                            Canvas.GetLeft(element),
-                            Canvas.GetTop(element));
-                    Core.Services.DeadlockNodeDragResult dragResult =
-                        _deadlockNodeDragService.Drag(
-                            currentNodePosition,
-                            lastPos,
-                            currentPos);
-
-                    double newLeft = dragResult.Position.X;
-                    double newTop = dragResult.Position.Y;
-
-                    Canvas.SetLeft(element, newLeft);
-                    Canvas.SetTop(element, newTop);
-
-                    _nodePositions[id] = new Point(newLeft, newTop);
-
-                    lastPos = dragResult.LastPointer;
-
-                    UpdateConnectionsForNode(id);
-                }
-            };
-
-            element.MouseLeftButtonUp += (s, e) =>
-            {
-                if (isDragging)
-                {
-                    isDragging = false;
-                    element.ReleaseMouseCapture();
-                    e.Handled = true;
-                }
-            };
+            _deadlockNodeInteractionBinder.Attach(
+                element,
+                id,
+                DeadlockGraphCanvas,
+                _nodePositions,
+                _resourceGroupDetails,
+                DeadlockProcessesList,
+                DeadlockResourcesList,
+                UpdateConnectionsForNode);
         }
 
         private void UpdateConnectionsForNode(string movedId)
