@@ -59,7 +59,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
         private readonly DeadlockGraphEdgeElementFactory _deadlockGraphEdgeElementFactory;
-        private readonly Core.Services.DeadlockCanvasInteractionService _deadlockCanvasInteractionService;
+        private readonly DeadlockCanvasInteractionBinder _deadlockCanvasInteractionBinder;
         private readonly Core.Services.DeadlockNodeDragService _deadlockNodeDragService;
         private readonly Core.Services.DeadlockGraphSelectionService _deadlockGraphSelectionService;
         private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
@@ -257,8 +257,10 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockGraphGeometryService();
             _deadlockGraphEdgeElementFactory =
                 new DeadlockGraphEdgeElementFactory(_deadlockGraphGeometryService);
-            _deadlockCanvasInteractionService = deadlockCanvasInteractionService
-                ?? new Core.Services.DeadlockCanvasInteractionService();
+            _deadlockCanvasInteractionBinder =
+                new DeadlockCanvasInteractionBinder(
+                    deadlockCanvasInteractionService
+                    ?? new Core.Services.DeadlockCanvasInteractionService());
             _deadlockNodeDragService = deadlockNodeDragService
                 ?? new Core.Services.DeadlockNodeDragService();
             _deadlockGraphSelectionService = deadlockGraphSelectionService
@@ -302,7 +304,11 @@ namespace SqlXmlAnalyzer
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
-            SetupCanvasZoomPan();
+            _deadlockCanvasInteractionBinder.Attach(
+                DeadlockGraphCanvas,
+                DeadlockCanvasBorder,
+                DeadlockScaleTransform,
+                DeadlockTranslateTransform);
             this.Loaded += (s, e) => SetupSynchronizedScrolling();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
@@ -1164,77 +1170,6 @@ namespace SqlXmlAnalyzer
                 {
                     isDragging = false;
                     element.ReleaseMouseCapture();
-                    e.Handled = true;
-                }
-            };
-        }
-
-        private Point _lastPanPoint;
-        private bool _isPanning = false;
-
-        private void SetupCanvasZoomPan()
-        {
-            DeadlockGraphCanvas.MouseWheel += (s, e) =>
-            {
-                Point mousePos = e.GetPosition(DeadlockGraphCanvas);
-                Core.Services.DeadlockCanvasTransformState? transform =
-                    _deadlockCanvasInteractionService.ZoomAt(
-                        e.Delta,
-                        mousePos,
-                        DeadlockScaleTransform.ScaleX,
-                        DeadlockTranslateTransform.X,
-                        DeadlockTranslateTransform.Y);
-
-                if (transform == null)
-                {
-                    return;
-                }
-
-                DeadlockScaleTransform.ScaleX = transform.Scale;
-                DeadlockScaleTransform.ScaleY = transform.Scale;
-                DeadlockTranslateTransform.X = transform.TranslateX;
-                DeadlockTranslateTransform.Y = transform.TranslateY;
-                e.Handled = true;
-            };
-
-            DeadlockGraphCanvas.MouseDown += (s, e) =>
-            {
-                if (e.MiddleButton == MouseButtonState.Pressed || e.LeftButton == MouseButtonState.Pressed)
-                {
-                    _isPanning = true;
-                    _lastPanPoint = e.GetPosition(DeadlockCanvasBorder);
-                    DeadlockGraphCanvas.CaptureMouse();
-                    e.Handled = true;
-                }
-            };
-
-            DeadlockGraphCanvas.MouseMove += (s, e) =>
-            {
-                if (_isPanning)
-                {
-                    Point current = e.GetPosition(DeadlockCanvasBorder);
-                    Core.Services.DeadlockCanvasTransformState transform =
-                        _deadlockCanvasInteractionService.Pan(
-                            DeadlockScaleTransform.ScaleX,
-                            DeadlockTranslateTransform.X,
-                            DeadlockTranslateTransform.Y,
-                            _lastPanPoint,
-                            current);
-
-                    DeadlockTranslateTransform.X = transform.TranslateX;
-                    DeadlockTranslateTransform.Y = transform.TranslateY;
-
-                    _lastPanPoint = current;
-                    e.Handled = true;
-                }
-            };
-
-            DeadlockGraphCanvas.MouseUp += (s, e) =>
-            {
-                if (_isPanning)
-                {
-                    _isPanning = false;
-                    DeadlockGraphCanvas.ReleaseMouseCapture();
                     e.Handled = true;
                 }
             };
