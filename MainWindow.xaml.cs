@@ -44,7 +44,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
         private readonly Core.Services.PlanComparisonTreeViewRenderer _planComparisonTreeViewRenderer;
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
-        private readonly Core.Services.MermaidDiagramActionService _mermaidDiagramActionService;
+        private readonly MermaidDiagramUiActionService _mermaidDiagramUiActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly Core.Services.HtmlReportActionService _htmlReportActionService;
         private readonly Core.Services.PortableReportActionService _portableReportActionService;
@@ -223,8 +223,13 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanComparisonTreeViewRenderer();
             _mermaidDiagramService = mermaidDiagramService
                 ?? new Core.Services.MermaidDiagramService();
-            _mermaidDiagramActionService = mermaidDiagramActionService
+            Core.Services.MermaidDiagramActionService effectiveMermaidDiagramActionService =
+                mermaidDiagramActionService
                 ?? new Core.Services.MermaidDiagramActionService(_mermaidDiagramService);
+            _mermaidDiagramUiActionService =
+                new MermaidDiagramUiActionService(
+                    effectiveMermaidDiagramActionService,
+                    _browserLauncher);
             _analysisReportController = analysisReportController
                 ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
             _htmlReportActionService = htmlReportActionService
@@ -1535,23 +1540,7 @@ namespace SqlXmlAnalyzer
 
         private void CopyDeadlockMermaid_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Core.Services.MermaidDiagramActionResult result =
-                    _mermaidDiagramActionService.BuildDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
-
-                if (ShowMissingMermaidDocumentIfNeeded(result))
-                {
-                    return;
-                }
-
-                CopyMermaidResult(result, "死锁 Mermaid 代码已成功复制到剪贴板！");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("CopyDeadlockMermaid", ex);
-                MessageBox.Show($"复制 Mermaid 代码失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _mermaidDiagramUiActionService.CopyDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
         }
 
         private void RefreshPlanGraph_Click(object sender, RoutedEventArgs e)
@@ -1570,25 +1559,9 @@ namespace SqlXmlAnalyzer
 
         private void CopyPlanMermaid_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Core.Services.MermaidDiagramActionResult result =
-                    _mermaidDiagramActionService.BuildPlanDiagram(
-                        ViewModel.CurrentPlanDoc,
-                        _showplanNs);
-
-                if (ShowMissingMermaidDocumentIfNeeded(result))
-                {
-                    return;
-                }
-
-                CopyMermaidResult(result, "执行计划 Mermaid 代码已成功复制到剪贴板！");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("CopyPlanMermaid", ex);
-                MessageBox.Show($"复制 Mermaid 代码失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _mermaidDiagramUiActionService.CopyPlanDiagram(
+                ViewModel.CurrentPlanDoc,
+                _showplanNs);
         }
 
         private void PlanVisualTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -1628,74 +1601,14 @@ namespace SqlXmlAnalyzer
 
         private void OpenPlanMermaidInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Core.Services.MermaidDiagramActionResult result =
-                    _mermaidDiagramActionService.BuildPlanDiagram(
-                        ViewModel.CurrentPlanDoc,
-                        _showplanNs);
-
-                if (ShowMissingMermaidDocumentIfNeeded(result))
-                {
-                    return;
-                }
-
-                OpenMermaidResultInBrowser(result);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("OpenPlanMermaidInBrowser", ex);
-                MessageBox.Show($"在浏览器中打开 Mermaid 图形失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _mermaidDiagramUiActionService.OpenPlanDiagram(
+                ViewModel.CurrentPlanDoc,
+                _showplanNs);
         }
 
         private void OpenDeadlockMermaidInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Core.Services.MermaidDiagramActionResult result =
-                    _mermaidDiagramActionService.BuildDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
-
-                if (ShowMissingMermaidDocumentIfNeeded(result))
-                {
-                    return;
-                }
-
-                OpenMermaidResultInBrowser(result);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("OpenDeadlockMermaidInBrowser", ex);
-                MessageBox.Show($"在浏览器中打开 Mermaid 图形失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private static bool ShowMissingMermaidDocumentIfNeeded(
-            Core.Services.MermaidDiagramActionResult result)
-        {
-            if (result.Status != Core.Services.MermaidDiagramActionStatus.MissingDocument)
-            {
-                return false;
-            }
-
-            MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return true;
-        }
-
-        private static void CopyMermaidResult(
-            Core.Services.MermaidDiagramActionResult result,
-            string successMessage)
-        {
-            Clipboard.SetText(result.MermaidCode);
-            MessageBox.Show(successMessage, "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-            Logger.Info($"{result.LogMessage} 已成功复制到剪贴板。");
-        }
-
-        private void OpenMermaidResultInBrowser(
-            Core.Services.MermaidDiagramActionResult result)
-        {
-            _browserLauncher.OpenMermaid(result.MermaidCode);
-            Logger.Info($"{result.LogMessage} 已在浏览器中打开。");
+            _mermaidDiagramUiActionService.OpenDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
         }
 
         #endregion
