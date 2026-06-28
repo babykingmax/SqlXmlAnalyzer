@@ -35,7 +35,7 @@ namespace SqlXmlAnalyzer
         private readonly TemporaryFileManager _temporaryFileManager;
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
-        private readonly Core.Services.LogFolderActionService _logFolderActionService;
+        private readonly MainWindowShellActionService _shellActionService;
         private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
@@ -51,8 +51,6 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
-        private readonly Core.Services.FileAssociationRegistrationService _fileAssociationRegistrationService;
-        private readonly Core.Services.AnalysisClipboardService _analysisClipboardService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
@@ -195,8 +193,11 @@ namespace SqlXmlAnalyzer
             _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
             _analysisSessions = analysisSessions ?? new Core.Services.AnalysisSessionCoordinator();
             _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
-            _logFolderActionService = logFolderActionService
-                ?? new Core.Services.LogFolderActionService();
+            _shellActionService = new MainWindowShellActionService(
+                analysisClipboardService ?? new Core.Services.AnalysisClipboardService(),
+                logFolderActionService ?? new Core.Services.LogFolderActionService(),
+                _browserLauncher,
+                fileAssociationRegistrationService ?? new Core.Services.FileAssociationRegistrationService());
             Core.Services.IPdfWordReportExporter effectiveReportExporter =
                 pdfWordReportService ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
             _documentOpenService = documentOpenService
@@ -232,8 +233,6 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PortableReportActionService(_analysisReportController);
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
-            _fileAssociationRegistrationService = fileAssociationRegistrationService
-                ?? new Core.Services.FileAssociationRegistrationService();
             _htmlReportExportService = htmlReportExportService
                 ?? new Core.Services.HtmlReportExportService(
                     new Core.Services.HtmlReportWriter(),
@@ -242,8 +241,6 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PortableReportExportService(
                     effectiveReportExporter,
                     _fileDialogService);
-            _analysisClipboardService = analysisClipboardService
-                ?? new Core.Services.AnalysisClipboardService();
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
             _missingIndexClipboardActionService = missingIndexClipboardActionService
@@ -1345,42 +1342,15 @@ namespace SqlXmlAnalyzer
 
         private void CopyAnalysisResult_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Core.Services.AnalysisClipboardResult result =
-                    _analysisClipboardService.BuildForTab(
-                        MainTabControl.SelectedIndex,
-                        ViewModel.DeadlockPatternText,
-                        ViewModel.PlanWarningsText);
-
-                if (result.Status == Core.Services.AnalysisClipboardStatus.Empty)
-                {
-                    MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-
-                if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
-                {
-                    Clipboard.SetText(result.Text);
-                    MessageBox.Show("诊断结果已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"复制失败:\n{ex.Message}", "失败", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _shellActionService.CopyAnalysisResult(
+                MainTabControl.SelectedIndex,
+                ViewModel.DeadlockPatternText,
+                ViewModel.PlanWarningsText);
         }
 
         private void CopyRefactoredSql_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.AnalysisClipboardResult result =
-                _analysisClipboardService.BuildRefactoredSql(_currentRefactoredSql);
-
-            if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
-            {
-                Clipboard.SetText(result.Text);
-                MessageBox.Show("重构后的 SQL 已成功复制到剪贴板！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            _shellActionService.CopyRefactoredSql(_currentRefactoredSql);
         }
 
         private void CompareSql_Click(object sender, RoutedEventArgs e)
@@ -1411,63 +1381,17 @@ namespace SqlXmlAnalyzer
 
         private void OpenLogsFolder_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.LogFolderActionResult result =
-                _logFolderActionService.BuildOpenLogsFolder();
-
-            if (result.Status == Core.Services.LogFolderActionStatus.MissingDirectory)
-            {
-                MessageBox.Show(result.UserMessage);
-                return;
-            }
-
-            try
-            {
-                _browserLauncher.OpenFolder(result.FolderPath);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("OpenLogsFolder_Click", ex);
-                MessageBox.Show($"无法打开日志文件夹: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _shellActionService.OpenLogsFolder();
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("SqlXmlAnalyzer 专业图形界面版 v2.0\n\n" +
-                                         "功能特性：\n" +
-                                         "1. 完美的执行计划可视化与智能折叠 (基于 Nodify)\n" +
-                                         "2. 深度死锁回放与有向图关键路径聚焦\n" +
-                                         "3. 索引调优沙盒与 Tipping Point 临界线分析\n" +
-                                         "4. 参数嗅探并排对比与直方图绘制\n\n" +
-                                         "是否关联 .sqlplan 与 .xdl 文件到系统右键菜单？\n" +
-                                         "（点击“是”将为当前用户注册文件关联，“否”则仅关闭此窗口）",
-                                         "关于 & 关联设置", MessageBoxButton.YesNo, MessageBoxImage.Information);
-            if (result == MessageBoxResult.Yes)
-            {
-                try
-                {
-                    Core.Services.FileAssociationRegistrationResult registrationResult =
-                        _fileAssociationRegistrationService.RegisterCurrentUserAssociations();
-
-                    if (registrationResult.Status
-                        != Core.Services.FileAssociationRegistrationStatus.Registered)
-                    {
-                        MessageBox.Show("文件关联注册失败：无法访问当前用户的文件关联注册表。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    MessageBox.Show("文件关联注册成功！您现在可以直接双击或右键打开 .sqlplan 和 .xdl 文件了。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"注册文件关联失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
+            _shellActionService.ShowAboutAndRegisterAssociations();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            _shellActionService.ExitApplication();
         }
 
         #endregion
