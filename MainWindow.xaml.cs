@@ -73,6 +73,7 @@ namespace SqlXmlAnalyzer
         private readonly SqlDiffScrollSyncService _sqlDiffScrollSyncService;
         private readonly SqlDiffUiActionService _sqlDiffUiActionService;
         private readonly SqlQuickFixUiActionService _sqlQuickFixUiActionService;
+        private readonly PlanStatisticsUiActionService _planStatisticsUiActionService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
@@ -339,6 +340,8 @@ namespace SqlXmlAnalyzer
                     effectiveSqlQuickFixService,
                     () => _currentOriginalSql,
                     ApplySqlQuickFixResult);
+            _planStatisticsUiActionService =
+                new PlanStatisticsUiActionService(StatisticsHistogramView);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -713,31 +716,7 @@ namespace SqlXmlAnalyzer
 
                 try
                 {
-                    var paramList = doc.Descendants(_showplanNs + "ParameterList").Descendants(_showplanNs + "ColumnReference");
-                    var sniffedParam = paramList.FirstOrDefault(p =>
-                        !string.IsNullOrEmpty(p.Attribute("ParameterCompiledValue")?.Value) &&
-                        !string.IsNullOrEmpty(p.Attribute("ParameterRuntimeValue")?.Value) &&
-                        p.Attribute("ParameterCompiledValue")?.Value != p.Attribute("ParameterRuntimeValue")?.Value);
-
-                    if (sniffedParam != null)
-                    {
-                        string col = sniffedParam.Attribute("Column")?.Value ?? "@Param";
-                        string comp = sniffedParam.Attribute("ParameterCompiledValue")?.Value ?? "";
-                        string run = sniffedParam.Attribute("ParameterRuntimeValue")?.Value ?? "";
-                        StatisticsHistogramView.LoadParameterData(col, comp, run);
-                    }
-                    else
-                    {
-                        var firstParam = paramList.FirstOrDefault();
-                        if (firstParam != null)
-                        {
-                            string col = firstParam.Attribute("Column")?.Value ?? "@Param";
-                            string comp = firstParam.Attribute("ParameterCompiledValue")?.Value ?? "1";
-                            string run = firstParam.Attribute("ParameterRuntimeValue")?.Value ?? "1";
-                            StatisticsHistogramView.LoadParameterData(col, comp, run);
-                        }
-                    }
-                    StatisticsHistogramView.LoadStatisticsUsage(doc, _showplanNs);
+                    _planStatisticsUiActionService.LoadFromPlan(doc, _showplanNs);
                 }
                 catch (Exception ex)
                 {
