@@ -37,7 +37,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
-        private readonly Core.Services.DocumentRefreshActionService _documentRefreshActionService;
+        private readonly DocumentRefreshUiActionService _documentRefreshUiActionService;
         private readonly PlanComparisonUiActionService _planComparisonUiActionService;
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
         private readonly MermaidDiagramUiActionService _mermaidDiagramUiActionService;
@@ -51,7 +51,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly MissingIndexClipboardUiActionService _missingIndexClipboardUiActionService;
         private readonly DeadlockSelectionUiActionService _deadlockSelectionUiActionService;
-        private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
+        private readonly DeadlockViewportUiActionService _deadlockViewportUiActionService;
         private readonly DeadlockCanvasInteractionBinder _deadlockCanvasInteractionBinder;
         private readonly DeadlockGraphRenderUiActionService _deadlockGraphRenderUiActionService;
         private readonly DeadlockGraphElementUiActionService _deadlockGraphElementUiActionService;
@@ -179,8 +179,11 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockDocumentController(effectiveDeadlockAnalysisService);
             _planDocumentController = planDocumentController
                 ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
-            _documentRefreshActionService = documentRefreshActionService
-                ?? new Core.Services.DocumentRefreshActionService();
+            _documentRefreshUiActionService =
+                new DocumentRefreshUiActionService(
+                    documentRefreshActionService
+                    ?? new Core.Services.DocumentRefreshActionService(),
+                    AnalyzeFile);
             Core.Services.PlanComparisonController effectivePlanComparisonController =
                 planComparisonController
                 ?? new Core.Services.PlanComparisonController();
@@ -247,7 +250,8 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockSelectionDetailService effectiveDeadlockSelectionDetailService =
                 deadlockSelectionDetailService
                 ?? new Core.Services.DeadlockSelectionDetailService();
-            _deadlockGraphViewportService = deadlockGraphViewportService
+            Core.Services.DeadlockGraphViewportService effectiveDeadlockGraphViewportService =
+                deadlockGraphViewportService
                 ?? new Core.Services.DeadlockGraphViewportService();
             Core.Services.DeadlockGraphGeometryService effectiveDeadlockGraphGeometryService =
                 deadlockGraphGeometryService
@@ -373,6 +377,13 @@ namespace SqlXmlAnalyzer
                     _edgesForDrawing,
                     _arrowCache,
                     _resourceGroupDetails);
+            _deadlockViewportUiActionService =
+                new DeadlockViewportUiActionService(
+                    effectiveDeadlockGraphViewportService,
+                    DeadlockCanvasBorder,
+                    DeadlockScaleTransform,
+                    DeadlockTranslateTransform,
+                    _nodePositions);
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
                     ViewModel,
@@ -765,7 +776,9 @@ namespace SqlXmlAnalyzer
         private void BuildDeadlockWaitForTree(DeadlockGraph graph)
         {
             DrawDeadlockBipartiteGraph(graph);
-            Dispatcher.BeginInvoke(new Action(() => DoZoomToFitDeadlock()), System.Windows.Threading.DispatcherPriority.Loaded);
+            Dispatcher.BeginInvoke(
+                new Action(_deadlockViewportUiActionService.ZoomToFit),
+                System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
         private readonly Dictionary<string, Point> _nodePositions = new();
@@ -895,26 +908,7 @@ namespace SqlXmlAnalyzer
 
         private void ZoomToFitDeadlock_Click(object sender, RoutedEventArgs e)
         {
-            DoZoomToFitDeadlock();
-        }
-
-        private void DoZoomToFitDeadlock()
-        {
-            Core.Services.DeadlockViewportState? viewport =
-                _deadlockGraphViewportService.CalculateZoomToFit(
-                    _nodePositions,
-                    DeadlockCanvasBorder.ActualWidth,
-                    DeadlockCanvasBorder.ActualHeight);
-
-            if (viewport == null)
-            {
-                return;
-            }
-
-            DeadlockScaleTransform.ScaleX = viewport.Scale;
-            DeadlockScaleTransform.ScaleY = viewport.Scale;
-            DeadlockTranslateTransform.X = viewport.TranslateX;
-            DeadlockTranslateTransform.Y = viewport.TranslateY;
+            _deadlockViewportUiActionService.ZoomToFit();
         }
 
         private void DeadlockPatternsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -952,16 +946,7 @@ namespace SqlXmlAnalyzer
 
         private void RefreshDeadlockGraph_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.DocumentRefreshActionResult result =
-                _documentRefreshActionService.BuildDeadlockRefresh(ViewModel.CurrentDeadlockFilePath);
-
-            if (result.Status == Core.Services.DocumentRefreshActionStatus.MissingFile)
-            {
-                MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            AnalyzeFile(result.FilePath);
+            _documentRefreshUiActionService.RefreshDeadlockGraph(ViewModel.CurrentDeadlockFilePath);
         }
 
         private void CopyDeadlockMermaid_Click(object sender, RoutedEventArgs e)
@@ -971,16 +956,7 @@ namespace SqlXmlAnalyzer
 
         private void RefreshPlanGraph_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.DocumentRefreshActionResult result =
-                _documentRefreshActionService.BuildPlanRefresh(ViewModel.CurrentPlanFilePath);
-
-            if (result.Status == Core.Services.DocumentRefreshActionStatus.MissingFile)
-            {
-                MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            AnalyzeFile(result.FilePath);
+            _documentRefreshUiActionService.RefreshPlanGraph(ViewModel.CurrentPlanFilePath);
         }
 
         private void CopyPlanMermaid_Click(object sender, RoutedEventArgs e)
