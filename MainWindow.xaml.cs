@@ -62,10 +62,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
         private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
         private readonly DeadlockGraphNodeElementFactory _deadlockGraphNodeElementFactory;
-        private readonly Core.Services.DeadlockPlaybackStateService _deadlockPlaybackStateService;
-        private readonly Core.Services.DeadlockGraphVisualStateService _deadlockGraphVisualStateService;
-        private readonly DeadlockGraphPlaybackVisualService _deadlockGraphPlaybackVisualService;
-        private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
+        private readonly DeadlockPlaybackUiActionService _deadlockPlaybackUiActionService;
         private readonly WorkspacePanelUiActionService _workspacePanelUiActionService;
         private readonly TuningSessionUiActionService _tuningSessionUiActionService;
         private readonly PlanAnalysisUiActionService _planAnalysisUiActionService;
@@ -297,13 +294,16 @@ namespace SqlXmlAnalyzer
             _deadlockGraphPlacementService = deadlockGraphPlacementService
                 ?? new Core.Services.DeadlockGraphPlacementService();
             _deadlockGraphNodeElementFactory = new DeadlockGraphNodeElementFactory();
-            _deadlockPlaybackStateService = deadlockPlaybackStateService
+            Core.Services.DeadlockPlaybackStateService effectiveDeadlockPlaybackStateService =
+                deadlockPlaybackStateService
                 ?? new Core.Services.DeadlockPlaybackStateService();
-            _deadlockGraphVisualStateService = deadlockGraphVisualStateService
+            Core.Services.DeadlockGraphVisualStateService effectiveDeadlockGraphVisualStateService =
+                deadlockGraphVisualStateService
                 ?? new Core.Services.DeadlockGraphVisualStateService();
-            _deadlockGraphPlaybackVisualService =
-                new DeadlockGraphPlaybackVisualService();
-            _deadlockStepBadgeService = deadlockStepBadgeService
+            DeadlockGraphPlaybackVisualService effectiveDeadlockGraphPlaybackVisualService =
+                new();
+            Core.Services.DeadlockStepBadgeService effectiveDeadlockStepBadgeService =
+                deadlockStepBadgeService
                 ?? new Core.Services.DeadlockStepBadgeService();
             Core.Services.WorkspacePanelLayoutService effectiveWorkspacePanelLayoutService =
                 workspacePanelLayoutService
@@ -368,6 +368,15 @@ namespace SqlXmlAnalyzer
                     BuildDeadlockWaitForTree,
                     (s, e) => UpdatePlaybackGraphVisibility(),
                     _stepBadges);
+            _deadlockPlaybackUiActionService =
+                new DeadlockPlaybackUiActionService(
+                    effectiveDeadlockPlaybackStateService,
+                    effectiveDeadlockGraphVisualStateService,
+                    effectiveDeadlockGraphPlaybackVisualService,
+                    effectiveDeadlockStepBadgeService,
+                    _deadlockGraphEdgeRegistryService,
+                    DeadlockGraphCanvas,
+                    PlaybackControl);
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
                     ViewModel,
@@ -714,104 +723,30 @@ namespace SqlXmlAnalyzer
 
         private void UpdatePlaybackGraphVisibility()
         {
-            if (_currentTimeline == null || _playbackViewModel == null || PlaybackModeToggle.IsChecked != true)
-                return;
-
-            int currentStep = _playbackViewModel.CurrentStep;
-            bool focusCritical = _playbackViewModel.FocusCriticalPath;
-
-            Core.Services.DeadlockPlaybackGraphState playbackState =
-                _deadlockPlaybackStateService.BuildState(
-                    _currentTimeline,
-                    currentStep,
-                    focusCritical,
-                    _nodeElements.Keys,
-                    _arrowCache.Keys.Select(edge => new Core.Services.DeadlockPlaybackEdgeKey(edge.Item1, edge.Item2)));
-
-            foreach (var kvp in _nodeElements)
-            {
-                string id = kvp.Key;
-                var el = kvp.Value;
-                Core.Services.DeadlockPlaybackNodeState nodeState = playbackState.Nodes[id];
-                Core.Services.DeadlockGraphNodeVisualState visualState =
-                    _deadlockGraphVisualStateService.CreatePlaybackNodeState(nodeState);
-                _deadlockGraphPlaybackVisualService.ApplyNodeVisualState(el, visualState);
-            }
-
-            foreach (var edge in _arrowCache)
-            {
-                var idPair = edge.Key;
-                var visuals = edge.Value;
-                var playbackEdgeKey = new Core.Services.DeadlockPlaybackEdgeKey(idPair.Item1, idPair.Item2);
-                Core.Services.DeadlockPlaybackEdgeState edgeState = playbackState.Edges[playbackEdgeKey];
-                Core.Services.DeadlockGraphEdgeVisualState visualState =
-                    _deadlockGraphVisualStateService.CreatePlaybackEdgeState(edgeState);
-
-                _deadlockGraphPlaybackVisualService.ApplyEdgeVisualState(visuals, visualState);
-
-                if (!visualState.IsVisible || !visualState.BadgeStepNumber.HasValue)
-                {
-                    if (_stepBadges.TryGetValue(idPair, out var badge)) badge.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    if (!_stepBadges.TryGetValue(idPair, out var badge))
-                    {
-                        badge = _deadlockGraphPlaybackVisualService.CreateStepBadge();
-                        _stepBadges[idPair] = badge;
-                        DeadlockGraphCanvas.Children.Add(badge);
-                    }
-                    _deadlockGraphPlaybackVisualService.ApplyStepBadgePlacement(
-                        badge,
-                        _deadlockStepBadgeService.PlaceBadge(
-                            visualState.BadgeStepNumber.Value,
-                            visuals.Line.X1,
-                            visuals.Line.Y1,
-                            visuals.Line.X2,
-                            visuals.Line.Y2));
-                    badge.Visibility = Visibility.Visible;
-                }
-            }
+            _deadlockPlaybackUiActionService.UpdateGraphVisibility(
+                _currentTimeline,
+                _playbackViewModel,
+                PlaybackModeToggle.IsChecked == true,
+                _nodeElements,
+                _arrowCache,
+                _stepBadges);
         }
 
         private void PlaybackModeToggle_Checked(object sender, RoutedEventArgs e)
         {
-            PlaybackControl.Visibility = Visibility.Visible;
-            if (_playbackViewModel != null)
-            {
-                _playbackViewModel.CurrentStep = 0;
-            }
-            UpdatePlaybackGraphVisibility();
+            _deadlockPlaybackUiActionService.ShowPlayback(
+                _playbackViewModel,
+                UpdatePlaybackGraphVisibility);
         }
 
         private void PlaybackModeToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            PlaybackControl.Visibility = Visibility.Collapsed;
-            if (_playbackViewModel != null)
-            {
-                _playbackViewModel.IsPlaying = false;
-            }
-
-            foreach (var el in _nodeElements.Values)
-            {
-                Core.Services.DeadlockGraphNodeVisualState resetState =
-                    _deadlockGraphVisualStateService.CreateResetNodeState();
-                _deadlockGraphPlaybackVisualService.ApplyNodeVisualState(el, resetState);
-            }
-            foreach (var edge in _arrowCache)
-            {
-                bool isWaitEdge = _deadlockGraphEdgeRegistryService.IsWaitEdge(
-                    _edgesForDrawing,
-                    edge.Key.Item1,
-                    edge.Key.Item2);
-                Core.Services.DeadlockGraphEdgeVisualState resetState =
-                    _deadlockGraphVisualStateService.CreateResetEdgeState(isWaitEdge);
-                _deadlockGraphPlaybackVisualService.ApplyEdgeVisualState(edge.Value, resetState);
-            }
-            foreach (var b in _stepBadges.Values)
-            {
-                b.Visibility = Visibility.Collapsed;
-            }
+            _deadlockPlaybackUiActionService.HidePlayback(
+                _playbackViewModel,
+                _nodeElements,
+                _arrowCache,
+                _edgesForDrawing,
+                _stepBadges.Values);
         }
 
         private void BuildDeadlockWaitForTree(DeadlockGraph graph)
