@@ -51,7 +51,7 @@ namespace SqlXmlAnalyzer
         private readonly XelDeadlockUiActionService _xelDeadlockUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly MissingIndexClipboardUiActionService _missingIndexClipboardUiActionService;
-        private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
+        private readonly DeadlockSelectionUiActionService _deadlockSelectionUiActionService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
         private readonly DeadlockGraphEdgeElementFactory _deadlockGraphEdgeElementFactory;
@@ -268,7 +268,8 @@ namespace SqlXmlAnalyzer
                     missingIndexClipboardActionService
                     ?? new Core.Services.MissingIndexClipboardActionService(
                         effectiveMissingIndexDeploymentScriptService));
-            _deadlockSelectionDetailService = deadlockSelectionDetailService
+            Core.Services.DeadlockSelectionDetailService effectiveDeadlockSelectionDetailService =
+                deadlockSelectionDetailService
                 ?? new Core.Services.DeadlockSelectionDetailService();
             _deadlockGraphViewportService = deadlockGraphViewportService
                 ?? new Core.Services.DeadlockGraphViewportService();
@@ -340,6 +341,10 @@ namespace SqlXmlAnalyzer
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
+            _deadlockSelectionUiActionService =
+                new DeadlockSelectionUiActionService(
+                    effectiveDeadlockSelectionDetailService,
+                    ViewModel);
             _workspacePanelUiActionService =
                 new WorkspacePanelUiActionService(
                     effectiveWorkspacePanelLayoutService,
@@ -1179,20 +1184,12 @@ namespace SqlXmlAnalyzer
 
         private void DeadlockProcessesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DeadlockProcessesList.SelectedItem is DeadlockProcess proc)
-            {
-                ViewModel.DeadlockPatternText =
-                    _deadlockSelectionDetailService.BuildProcessDetail(proc);
-            }
+            _deadlockSelectionUiActionService.SelectProcess(DeadlockProcessesList.SelectedItem);
         }
 
         private void DeadlockResourcesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DeadlockResourcesList.SelectedItem is LockResource res)
-            {
-                ViewModel.DeadlockPatternText =
-                    _deadlockSelectionDetailService.BuildResourceDetail(res);
-            }
+            _deadlockSelectionUiActionService.SelectResource(DeadlockResourcesList.SelectedItem);
         }
 
         private void ToggleLeft_Click(object sender, RoutedEventArgs e)
@@ -1231,11 +1228,7 @@ namespace SqlXmlAnalyzer
 
         private void DeadlockPatternsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DeadlockPatternsListBox.SelectedItem is DeadlockPattern pattern)
-            {
-                ViewModel.DeadlockPatternText =
-                    _deadlockSelectionDetailService.BuildPatternDetail(pattern);
-            }
+            _deadlockSelectionUiActionService.SelectPattern(DeadlockPatternsListBox.SelectedItem);
         }
 
         #region 折叠面板事件处理
