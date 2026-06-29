@@ -67,9 +67,8 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
         private readonly WorkspacePanelUiActionService _workspacePanelUiActionService;
         private readonly TuningSessionUiActionService _tuningSessionUiActionService;
-        private readonly Core.Services.PlanTreeService _planTreeService;
+        private readonly PlanAnalysisUiActionService _planAnalysisUiActionService;
         private readonly PlanSelectionUiActionService _planSelectionUiActionService;
-        private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
         private readonly SqlDiffScrollSyncService _sqlDiffScrollSyncService;
         private readonly SqlDiffUiActionService _sqlDiffUiActionService;
         private readonly SqlQuickFixUiActionService _sqlQuickFixUiActionService;
@@ -311,13 +310,14 @@ namespace SqlXmlAnalyzer
             Core.Services.TuningSessionActionService effectiveTuningSessionActionService =
                 tuningSessionActionService
                 ?? new Core.Services.TuningSessionActionService(_fileDialogService);
-            _planTreeService = planTreeService
+            Core.Services.PlanTreeService effectivePlanTreeService = planTreeService
                 ?? new Core.Services.PlanTreeService();
             _planSelectionUiActionService = new PlanSelectionUiActionService(
                 planSelectionActionService ?? new Core.Services.PlanSelectionActionService(),
                 planPropertyService ?? new Core.Services.PlanPropertyService(),
                 PlanPropertiesGrid);
-            _planOperatorTreeViewRenderer = planOperatorTreeViewRenderer
+            Core.Services.PlanOperatorTreeViewRenderer effectivePlanOperatorTreeViewRenderer =
+                planOperatorTreeViewRenderer
                 ?? new Core.Services.PlanOperatorTreeViewRenderer();
             Core.Services.SqlDiffService effectiveSqlDiffService = sqlDiffService
                 ?? new Core.Services.SqlDiffService();
@@ -355,6 +355,19 @@ namespace SqlXmlAnalyzer
                     DeadlockPatternsListBox,
                     PlanOperatorTree,
                     StatusTextBlock);
+            _planAnalysisUiActionService =
+                new PlanAnalysisUiActionService(
+                    ViewModel,
+                    effectivePlanTreeService,
+                    effectivePlanOperatorTreeViewRenderer,
+                    PlanXmlTextBox,
+                    PlanStatementTextBox,
+                    PlanWarningsTextBox,
+                    PlanOperatorTree,
+                    PlanVisualTree,
+                    PlanNodifyGraph,
+                    MainTabControl,
+                    PlanGraphTabControl);
             _planComparisonUiActionService =
                 new PlanComparisonUiActionService(
                     effectivePlanComparisonController,
@@ -673,47 +686,12 @@ namespace SqlXmlAnalyzer
                 }
 
                 var result = documentResult.Analysis;
-                ViewModel.CurrentPlanDoc = documentResult.Document;
-                ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.ExecutionPlan);
-                Logger.Info($"[ExecutionPlan] 已生成 Mermaid 代码，长度: {result.Mermaid.Length} 字符");
-                BuildPlanVisualTree(doc, _showplanNs);
-
-                ViewModel.MissingIndexes.Clear();
-                foreach (var mi in result.MissingIndexes)
-                {
-                    ViewModel.MissingIndexes.Add(mi);
-                }
-
-                PlanXmlTextBox.Text = result.DocumentText;
-                PlanStatementTextBox.Text = result.QueryText.Length > 800
-                    ? result.QueryText.Substring(0, 800) + "..."
-                    : result.QueryText;
-                _currentOriginalSql = result.QueryText;
-                _currentRefactoredSql = result.RefactoredSql;
+                Logger.Info($"[ExecutionPlan] Mermaid length: {result.Mermaid.Length} characters");
+                PlanAnalysisUiResult uiResult =
+                    _planAnalysisUiActionService.Apply(documentResult);
+                _currentOriginalSql = uiResult.QueryText;
+                _currentRefactoredSql = uiResult.RefactoredSql;
                 UpdateSqlDiffViews();
-
-                var tree = BuildPlanTreeView(doc, _showplanNs);
-                PlanOperatorTree.Items.Clear();
-                if (tree != null) PlanOperatorTree.Items.Add(tree);
-
-                PlanWarningsTextBox.Text = result.WarningsText;
-
-                try
-                {
-                    PlanNodifyGraph?.LoadFromExecutionPlan(doc, _showplanNs);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException("Load Nodify Graph", ex);
-                }
-
-                MainTabControl.SelectedIndex = 1;
-
-                if (PlanGraphTabControl != null)
-                {
-                    PlanGraphTabControl.SelectedIndex = 1;
-                }
-
                 try
                 {
                     _planStatisticsUiActionService.LoadFromPlan(doc, _showplanNs);
@@ -1039,18 +1017,6 @@ namespace SqlXmlAnalyzer
             var key = (fromId, toId);
             _arrowCache[key] = elements;
             _edgesForDrawing.Add(new Core.Services.DeadlockGraphEdge(fromId, toId, label, isWaitEdge));
-        }
-
-        private void BuildPlanVisualTree(XDocument doc, XNamespace ns)
-        {
-            PlanVisualTree.ItemsSource = _planTreeService.BuildVisualTree(doc, ns);
-        }
-
-        // 简单构建执行计划 TreeView 节点 (参考 Plan Explorer 左侧树)
-        private TreeViewItem? BuildPlanTreeView(XDocument doc, XNamespace ns)
-        {
-            Core.Services.PlanOperatorTreeNode? root = _planTreeService.BuildOperatorTree(doc, ns);
-            return root == null ? null : _planOperatorTreeViewRenderer.Render(root);
         }
 
         private void RefreshABCompareTrees()
