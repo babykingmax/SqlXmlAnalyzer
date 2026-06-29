@@ -31,7 +31,6 @@ namespace SqlXmlAnalyzer
         }
 
         public Core.ViewModels.MainViewModel ViewModel { get; }
-        private readonly Core.XelReader _xelReader;
         private readonly TemporaryFileManager _temporaryFileManager;
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
@@ -49,6 +48,7 @@ namespace SqlXmlAnalyzer
         private readonly ReportExportUiActionService _reportExportUiActionService;
         private readonly PlanObfuscationExportUiActionService _planObfuscationExportUiActionService;
         private readonly FileOpenUiActionService _fileOpenUiActionService;
+        private readonly XelDeadlockUiActionService _xelDeadlockUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
@@ -188,7 +188,6 @@ namespace SqlXmlAnalyzer
             Core.Services.TuningSessionActionService? tuningSessionActionService = null)
         {
             InitializeComponent();
-            _xelReader = xelReader ?? new Core.XelReader();
             _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
             _analysisSessions = analysisSessions ?? new Core.Services.AnalysisSessionCoordinator();
             _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
@@ -259,6 +258,13 @@ namespace SqlXmlAnalyzer
                 new PlanObfuscationExportUiActionService(_fileDialogService);
             _fileOpenUiActionService =
                 new FileOpenUiActionService(_fileDialogService);
+            _xelDeadlockUiActionService =
+                new XelDeadlockUiActionService(
+                    xelReader ?? new Core.XelReader(),
+                    _analysisSessions,
+                    XelDeadlockSelector,
+                    MainTabControl,
+                    AnalyzeDeadlockXmlAsync);
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
             _missingIndexClipboardActionService = missingIndexClipboardActionService
@@ -353,56 +359,12 @@ namespace SqlXmlAnalyzer
 
         private async Task AnalyzeXelFileAsync(string filePath)
         {
-            var session = _analysisSessions.Begin();
-            try
-            {
-                var reports = await _xelReader.ReadDeadlocksAsync(filePath, session.Token);
-                if (!_analysisSessions.IsCurrent(session.RequestId))
-                {
-                    return;
-                }
-                if (reports.Count == 0)
-                {
-                    MessageBox.Show("该 XEL 文件中没有找到任何 xml_deadlock_report 事件。");
-                    return;
-                }
-
-                XelDeadlockSelector.ItemsSource = reports;
-                XelDeadlockSelector.Visibility = Visibility.Visible;
-                XelDeadlockSelector.SelectedIndex = 0;
-                MainTabControl.SelectedIndex = 0;
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Verbose($"XEL 分析已取消: {filePath}");
-            }
-            catch (Exception ex)
-            {
-                if (!_analysisSessions.IsCurrent(session.RequestId))
-                {
-                    return;
-                }
-                Logger.LogException("MainWindow.AnalyzeXelFileAsync", ex);
-                MessageBox.Show("解析 XEL 文件时发生错误: " + ex.Message);
-            }
+            await _xelDeadlockUiActionService.AnalyzeXelFileAsync(filePath);
         }
 
         private async void XelDeadlockSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (XelDeadlockSelector.SelectedItem is Core.XelDeadlockReport report)
-            {
-                try
-                {
-                    await AnalyzeDeadlockXmlAsync(
-                        report.DeadlockXml,
-                        $"XEL 死锁事件 {report.Timestamp}");
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException("渲染死锁图失败 (Selector_SelectionChanged)", ex);
-                    MessageBox.Show("渲染死锁图失败: " + ex.Message);
-                }
-            }
+            await _xelDeadlockUiActionService.HandleSelectionChangedAsync();
         }
 
         private void OpenPlanFile_Click(object sender, RoutedEventArgs e)
