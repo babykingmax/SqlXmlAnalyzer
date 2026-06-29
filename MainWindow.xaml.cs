@@ -74,6 +74,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.SqlDiffService _sqlDiffService;
         private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
         private readonly Core.Services.SqlQuickFixService _sqlQuickFixService;
+        private readonly SqlDiffScrollSyncService _sqlDiffScrollSyncService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
@@ -85,9 +86,6 @@ namespace SqlXmlAnalyzer
 
         private string _currentOriginalSql = "";
         private string _currentRefactoredSql = "";
-        private ScrollViewer? _originalScroll;
-        private ScrollViewer? _refactoredScroll;
-        private bool _isSynchronizingScroll = false;
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -322,6 +320,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.SqlDiffDocumentRenderer(_sqlDiffService);
             _sqlQuickFixService = sqlQuickFixService
                 ?? new Core.Services.SqlQuickFixService();
+            _sqlDiffScrollSyncService =
+                new SqlDiffScrollSyncService(OriginalSqlTextBox, RefactoredSqlTextBox);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -331,7 +331,7 @@ namespace SqlXmlAnalyzer
                 DeadlockCanvasBorder,
                 DeadlockScaleTransform,
                 DeadlockTranslateTransform);
-            this.Loaded += (s, e) => SetupSynchronizedScrolling();
+            this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
             // 监听 PlanA / PlanB 快照变化，动态重构并排对比的操作符结构树
@@ -1403,77 +1403,6 @@ namespace SqlXmlAnalyzer
         }
 
         #region 可视化看板与交互展示 (GUI Dashboard Integration & Interactive Visualization)
-
-        private T? FindVisualChild<T>(DependencyObject? depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        return (T)child;
-                    }
-
-                    T? childItem = FindVisualChild<T>(child);
-                    if (childItem != null)
-                    {
-                        return childItem;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private void SetupSynchronizedScrolling()
-        {
-            _originalScroll = FindVisualChild<ScrollViewer>(OriginalSqlTextBox);
-            _refactoredScroll = FindVisualChild<ScrollViewer>(RefactoredSqlTextBox);
-
-            if (_originalScroll != null)
-            {
-                _originalScroll.ScrollChanged += OriginalScroll_ScrollChanged;
-            }
-            if (_refactoredScroll != null)
-            {
-                _refactoredScroll.ScrollChanged += RefactoredScroll_ScrollChanged;
-            }
-        }
-
-        private void OriginalScroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            if (_isSynchronizingScroll) return;
-            if (_refactoredScroll == null || _originalScroll == null) return;
-
-            _isSynchronizingScroll = true;
-            try
-            {
-                _refactoredScroll.ScrollToVerticalOffset(e.VerticalOffset);
-                _refactoredScroll.ScrollToHorizontalOffset(e.HorizontalOffset);
-            }
-            finally
-            {
-                _isSynchronizingScroll = false;
-            }
-        }
-
-        private void RefactoredScroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            if (_isSynchronizingScroll) return;
-            if (_originalScroll == null || _refactoredScroll == null) return;
-
-            _isSynchronizingScroll = true;
-            try
-            {
-                _originalScroll.ScrollToVerticalOffset(e.VerticalOffset);
-                _originalScroll.ScrollToHorizontalOffset(e.HorizontalOffset);
-            }
-            finally
-            {
-                _isSynchronizingScroll = false;
-            }
-        }
 
         private void UpdateSqlDiffViews()
         {
