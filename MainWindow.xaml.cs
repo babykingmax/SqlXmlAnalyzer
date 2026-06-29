@@ -71,9 +71,9 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly PlanSelectionUiActionService _planSelectionUiActionService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
-        private readonly Core.Services.SqlQuickFixService _sqlQuickFixService;
         private readonly SqlDiffScrollSyncService _sqlDiffScrollSyncService;
         private readonly SqlDiffUiActionService _sqlDiffUiActionService;
+        private readonly SqlQuickFixUiActionService _sqlQuickFixUiActionService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
@@ -318,7 +318,7 @@ namespace SqlXmlAnalyzer
             Core.Services.SqlDiffDocumentRenderer effectiveSqlDiffDocumentRenderer =
                 sqlDiffDocumentRenderer
                 ?? new Core.Services.SqlDiffDocumentRenderer(effectiveSqlDiffService);
-            _sqlQuickFixService = sqlQuickFixService
+            Core.Services.SqlQuickFixService effectiveSqlQuickFixService = sqlQuickFixService
                 ?? new Core.Services.SqlQuickFixService();
             _sqlDiffScrollSyncService =
                 new SqlDiffScrollSyncService(OriginalSqlTextBox, RefactoredSqlTextBox);
@@ -328,6 +328,12 @@ namespace SqlXmlAnalyzer
                     effectiveSqlDiffDocumentRenderer,
                     OriginalSqlTextBox,
                     RefactoredSqlTextBox);
+            _sqlQuickFixUiActionService =
+                new SqlQuickFixUiActionService(
+                    this,
+                    effectiveSqlQuickFixService,
+                    () => _currentOriginalSql,
+                    ApplySqlQuickFixResult);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -1415,59 +1421,16 @@ namespace SqlXmlAnalyzer
             _sqlDiffUiActionService.RenderDiff(
                 _currentOriginalSql,
                 _currentRefactoredSql,
-                CreateLightbulbButton);
+                _sqlQuickFixUiActionService.CreateLightbulbButton);
         }
 
-        private UIElement CreateLightbulbButton(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
+        private void ApplySqlQuickFixResult(SqlQuickFixAppliedResult result)
         {
-            var textBlock = new TextBlock
-            {
-                Text = "💡",
-                ToolTip = "标量子查询可优化为 JOIN，点击一键修复并对比效果",
-                Cursor = Cursors.Hand,
-                Margin = new Thickness(2, 0, 2, 0),
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            textBlock.MouseDown += (s, e) =>
-            {
-                if (e.ChangedButton == MouseButton.Left)
-                {
-                    e.Handled = true;
-                    QuickFix_Click(subquery);
-                }
-            };
-            return textBlock;
+            _currentOriginalSql = result.RewrittenSql;
+            _currentRefactoredSql = result.RewrittenSql;
+            UpdateSqlDiffViews();
+            PlanStatementTextBox.Text = result.StatementPreview;
         }
-
-        private void QuickFix_Click(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
-        {
-            Core.Services.SqlQuickFixResult quickFix =
-                _sqlQuickFixService.TryRewriteSelectedSubquery(
-                    _currentOriginalSql,
-                    subquery.StartOffset,
-                    subquery.FragmentLength);
-
-            if (!quickFix.IsAvailable)
-            {
-                MessageBox.Show(quickFix.FailureMessage, "快速修复不可用", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var dialog = new QuickFixWindow(_currentOriginalSql, quickFix.RewrittenSql, subquery)
-            {
-                Owner = this
-            };
-            dialog.ShowDialog();
-            if (dialog.Applied)
-            {
-                _currentOriginalSql = quickFix.RewrittenSql;
-                _currentRefactoredSql = quickFix.RewrittenSql;
-                UpdateSqlDiffViews();
-                PlanStatementTextBox.Text = quickFix.StatementPreview;
-                MessageBox.Show("已仅应用所选标量子查询的 JOIN 重写。", "修复成功", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
         private void CopyIndexDdl_Click(object sender, RoutedEventArgs e)
         {
             _missingIndexClipboardUiActionService.CopyCreateScript(sender);
