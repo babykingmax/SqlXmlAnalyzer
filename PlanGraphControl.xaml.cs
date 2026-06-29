@@ -41,7 +41,7 @@ namespace SqlXmlAnalyzer
 
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
-        private static readonly Core.Services.PlanGraphCollapseStateService CollapseStateService = new();
+        private static readonly PlanGraphCollapseUiActionService CollapseUiActionService = new();
         private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
         private static readonly Core.Services.PlanGraphLayoutRefreshService LayoutRefreshService = new();
@@ -49,7 +49,6 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
         private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
-        private static readonly Core.Services.PlanGraphVisibilityStateService VisibilityStateService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
         public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
@@ -516,9 +515,9 @@ namespace SqlXmlAnalyzer
 
         private void ExpandAll_Click(object sender, RoutedEventArgs e)
         {
-            ApplyCollapseStates(
-                CollapseStateService.CalculateExpandAll(
-                    BuildCollapseStateNodes()).CollapsedStates);
+            CollapseUiActionService.ApplyCollapseStates(
+                _masterNodes,
+                CollapseUiActionService.CalculateExpandAll(_masterNodes));
             UpdateGraphVisibility();
             ReapplyLayout();
         }
@@ -527,9 +526,9 @@ namespace SqlXmlAnalyzer
         {
             if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
 
-            ApplyCollapseStates(
-                CollapseStateService.CalculateSmartCollapse(
-                    BuildCollapseStateNodes()).CollapsedStates);
+            CollapseUiActionService.ApplyCollapseStates(
+                _masterNodes,
+                CollapseUiActionService.CalculateSmartCollapse(_masterNodes));
 
             UpdateGraphVisibility();
             ReapplyLayout();
@@ -544,18 +543,22 @@ namespace SqlXmlAnalyzer
                 {
                     var logService = new Core.Services.PlanGraphCollapseLogService();
                     DateTime timestamp = DateTime.Now;
-                    Core.Services.PlanGraphCollapseLogNode nodeBeforeToggle = ToCollapseLogNode(node);
-                    AppendCollapseLog(logService.BuildStartLine(nodeBeforeToggle, timestamp));
+                    Core.Services.PlanGraphCollapseLogNode nodeBeforeToggle =
+                        CollapseUiActionService.ToCollapseLogNode(node);
+                    CollapseUiActionService.AppendCollapseLog(logService.BuildStartLine(nodeBeforeToggle, timestamp));
                     Core.Services.PlanGraphCollapseLogSnapshot oldSnapshot =
-                        CaptureCollapseLogSnapshot();
+                        CollapseUiActionService.CaptureLogSnapshot(
+                            _masterNodes,
+                            _masterConnections);
 
                     // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
                     if (node.RawElement != null)
                     {
-                        ApplyCollapseStates(
-                            CollapseStateService.CalculateToggle(
-                                BuildCollapseStateNodes(),
-                                node.RawElement).CollapsedStates);
+                        CollapseUiActionService.ApplyCollapseStates(
+                            _masterNodes,
+                            CollapseUiActionService.CalculateToggle(
+                                _masterNodes,
+                                node.RawElement));
                     }
                     else
                     {
@@ -568,8 +571,10 @@ namespace SqlXmlAnalyzer
                     // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
                     UpdateGraphVisibility();
                     Core.Services.PlanGraphCollapseLogSnapshot newSnapshot =
-                        CaptureCollapseLogSnapshot();
-                    AppendCollapseLog(
+                        CollapseUiActionService.CaptureLogSnapshot(
+                            _masterNodes,
+                            _masterConnections);
+                    CollapseUiActionService.AppendCollapseLog(
                         logService.BuildToggleLog(
                             nodeBeforeToggle,
                             node.IsCollapsed,
@@ -583,133 +588,21 @@ namespace SqlXmlAnalyzer
                 try
                 {
                     var logService = new Core.Services.PlanGraphCollapseLogService();
-                    AppendCollapseLog(logService.BuildExceptionLog(ex, DateTime.Now));
+                    CollapseUiActionService.AppendCollapseLog(logService.BuildExceptionLog(ex, DateTime.Now));
                 }
                 catch { }
             }
         }
 
-        private IReadOnlyList<Core.Services.PlanGraphCollapseStateNode> BuildCollapseStateNodes()
-        {
-            return _masterNodes
-                .Where(node => node.RawElement != null)
-                .Select(node => new Core.Services.PlanGraphCollapseStateNode(
-                    node.RawElement!,
-                    node.HasChildren,
-                    node.SubtreeCost,
-                    node.NodeSeverity,
-                    node.IsCollapsed))
-                .ToList();
-        }
-
-        private void ApplyCollapseStates(
-            IReadOnlyDictionary<XElement, bool> collapsedStates)
-        {
-            foreach (var node in _masterNodes)
-            {
-                node.IsCollapsed =
-                    node.RawElement != null
-                    && collapsedStates.TryGetValue(node.RawElement, out bool isCollapsed)
-                    && isCollapsed;
-            }
-        }
-
-        private Core.Services.PlanGraphCollapseLogSnapshot CaptureCollapseLogSnapshot()
-        {
-            return new Core.Services.PlanGraphCollapseLogSnapshot(
-                _masterNodes
-                    .Where(n => n.IsVisible)
-                    .Select(ToCollapseLogNode)
-                    .ToList(),
-                _masterConnections
-                    .Where(c => c.IsVisible)
-                    .Select(ToCollapseLogConnection)
-                    .ToList());
-        }
-
-        private static Core.Services.PlanGraphCollapseLogNode ToCollapseLogNode(
-            PlanNodeViewModel node)
-        {
-            return new Core.Services.PlanGraphCollapseLogNode(
-                node.NodeId,
-                node.PhysicalOp,
-                node.IsCollapsed);
-        }
-
-        private static Core.Services.PlanGraphCollapseLogConnection ToCollapseLogConnection(
-            ConnectionViewModel connection)
-        {
-            return new Core.Services.PlanGraphCollapseLogConnection(
-                connection.Source?.NodeId,
-                connection.Source?.PhysicalOp,
-                connection.Target?.NodeId,
-                connection.Target?.PhysicalOp);
-        }
-
-        private static void AppendCollapseLog(string text)
-        {
-            string logDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-            if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
-            string logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
-            System.IO.File.AppendAllText(logFile, text);
-        }
-
         private void UpdateGraphVisibility()
         {
-            if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
-
-            var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
-
-            IReadOnlyList<Core.Services.PlanGraphVisibilityStateNode> visibilityNodes =
-                _masterNodes
-                    .Where(node => node.RawElement != null)
-                    .Select(node => new Core.Services.PlanGraphVisibilityStateNode(
-                        node.RawElement!,
-                        node.IsCollapsed))
-                    .ToList();
-            IReadOnlyList<Core.Services.PlanGraphVisibilityStateConnection> visibilityConnections =
-                _masterConnections
-                    .Where(connection =>
-                        connection.Source?.RawElement != null
-                        && connection.Target?.RawElement != null)
-                    .Select(connection => new Core.Services.PlanGraphVisibilityStateConnection(
-                        connection.Source!.RawElement!,
-                        connection.Target!.RawElement!))
-                    .ToList();
-
-            Core.Services.PlanGraphVisibilityStateResult visibility =
-                VisibilityStateService.Calculate(
-                    relOps,
-                    _currentNs,
-                    visibilityNodes,
-                    visibilityConnections);
-
-            // ==================================================
-            // 完全基于 Nodify 推荐的设计模式：纯数据绑定
-            // 不再动态向 ObservableCollection 中 Add/Remove 节点，
-            // 而是所有节点都在集合中，仅通过更新 IsVisible 属性，
-            // 让 ItemContainerStyle 中的 Visibility 绑定自动接管显示隐藏。
-            // 这样彻底避免了虚拟化面板的集合变更 Bug 和动画丢失问题。
-            // ==================================================
-
-            foreach (var n in _masterNodes)
-            {
-                n.IsVisible = n.RawElement != null
-                    && visibility.VisibleRelOps.Contains(n.RawElement);
-                if (!Nodes.Contains(n)) Nodes.Add(n); // 确保集合包含全部节点（通常初始化时已包含）
-            }
-
-            foreach (var c in _masterConnections)
-            {
-                c.IsVisible =
-                    c.Source?.RawElement != null
-                    && c.Target?.RawElement != null
-                    && visibility.VisibleConnections.Contains(
-                        new Core.Services.PlanGraphVisibilityStateConnection(
-                            c.Source.RawElement,
-                            c.Target.RawElement));
-                if (!Connections.Contains(c)) Connections.Add(c); // 确保集合包含全部连接线
-            }
+            CollapseUiActionService.UpdateVisibility(
+                _currentDoc,
+                _currentNs,
+                _masterNodes,
+                _masterConnections,
+                Nodes,
+                Connections);
         }
 
         private void CmbViewMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
