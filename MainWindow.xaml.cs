@@ -46,10 +46,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
         private readonly MermaidDiagramUiActionService _mermaidDiagramUiActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
-        private readonly Core.Services.HtmlReportActionService _htmlReportActionService;
-        private readonly Core.Services.PortableReportActionService _portableReportActionService;
-        private readonly Core.Services.HtmlReportExportService _htmlReportExportService;
-        private readonly Core.Services.PortableReportExportService _portableReportExportService;
+        private readonly ReportExportUiActionService _reportExportUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
@@ -232,20 +229,30 @@ namespace SqlXmlAnalyzer
                     _browserLauncher);
             _analysisReportController = analysisReportController
                 ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
-            _htmlReportActionService = htmlReportActionService
+            Core.Services.HtmlReportActionService effectiveHtmlReportActionService =
+                htmlReportActionService
                 ?? new Core.Services.HtmlReportActionService(_analysisReportController);
-            _portableReportActionService = portableReportActionService
+            Core.Services.PortableReportActionService effectivePortableReportActionService =
+                portableReportActionService
                 ?? new Core.Services.PortableReportActionService(_analysisReportController);
             _fileDialogService = fileDialogService
                 ?? new Core.Services.WpfFileDialogService();
-            _htmlReportExportService = htmlReportExportService
+            Core.Services.HtmlReportExportService effectiveHtmlReportExportService =
+                htmlReportExportService
                 ?? new Core.Services.HtmlReportExportService(
                     new Core.Services.HtmlReportWriter(),
                     _fileDialogService);
-            _portableReportExportService = portableReportExportService
+            Core.Services.PortableReportExportService effectivePortableReportExportService =
+                portableReportExportService
                 ?? new Core.Services.PortableReportExportService(
                     effectiveReportExporter,
                     _fileDialogService);
+            _reportExportUiActionService = new ReportExportUiActionService(
+                effectiveHtmlReportActionService,
+                effectiveHtmlReportExportService,
+                effectivePortableReportActionService,
+                effectivePortableReportExportService,
+                _browserLauncher);
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
             _missingIndexClipboardActionService = missingIndexClipboardActionService
@@ -1234,56 +1241,15 @@ namespace SqlXmlAnalyzer
 
         private void GenerateHtmlReport_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Core.Services.HtmlReportActionResult action =
-                    _htmlReportActionService.BuildReport(
-                        MainTabControl.SelectedIndex,
-                        ViewModel.CurrentDeadlockDoc,
-                        ViewModel.CurrentDeadlockFilePath,
-                        ViewModel.DeadlockPatternText,
-                        ViewModel.CurrentPlanDoc,
-                        ViewModel.CurrentPlanFilePath,
-                        _showplanNs);
-
-                if (action.Status != Core.Services.HtmlReportActionStatus.Ready ||
-                    action.Report == null)
-                {
-                    MessageBox.Show(action.UserMessage, "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                Core.Services.HtmlAnalysisReport report = action.Report;
-                if (MainTabControl.SelectedIndex == 1)
-                {
-                    ViewModel.MissingIndexes.Clear();
-                    foreach (var missingIndex in report.MissingIndexes)
-                    {
-                        ViewModel.MissingIndexes.Add(missingIndex);
-                    }
-                }
-
-                Core.Services.HtmlReportExportResult result =
-                    _htmlReportExportService.Export(
-                        new Core.Services.HtmlReportExportRequest(report));
-
-                if (result.Status == Core.Services.HtmlReportExportStatus.Exported &&
-                    result.OutputPath != null)
-                {
-                    string reportPath = result.OutputPath;
-                    Logger.Info($"{report.AnalysisType} HTML report saved to {reportPath}");
-
-                    if (MessageBox.Show("Report saved successfully. Open it now?", "Save succeeded", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                    {
-                        _browserLauncher.OpenFile(reportPath);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("GenerateHtmlReport_Click", ex);
-                MessageBox.Show($"HTML report generation failed: {ex.Message}\n\nDetails were written to the log.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _reportExportUiActionService.GenerateHtmlReport(
+                MainTabControl.SelectedIndex,
+                ViewModel.CurrentDeadlockDoc,
+                ViewModel.CurrentDeadlockFilePath,
+                ViewModel.DeadlockPatternText,
+                ViewModel.CurrentPlanDoc,
+                ViewModel.CurrentPlanFilePath,
+                _showplanNs,
+                ViewModel.MissingIndexes);
         }
 
         private void ExportToPdf_Click(object sender, RoutedEventArgs e)
@@ -1298,51 +1264,16 @@ namespace SqlXmlAnalyzer
 
         private void ExportReport(string extension, string filter)
         {
-            try
-            {
-                Core.Services.PortableReportActionResult action =
-                    _portableReportActionService.BuildReport(
-                        MainTabControl.SelectedIndex,
-                        ViewModel.CurrentDeadlockFilePath,
-                        DeadlockPatternsListBox.ItemsSource?.OfType<DeadlockPattern>(),
-                        ViewModel.DeadlockPatternText,
-                        ViewModel.CurrentPlanFilePath,
-                        ViewModel.PlanWarningsText,
-                        extension);
-
-                if (action.Status == Core.Services.PortableReportActionStatus.MissingContent)
-                {
-                    MessageBox.Show(action.UserMessage, "Notice", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-
-                if (action.Status != Core.Services.PortableReportActionStatus.Ready ||
-                    action.Report == null)
-                {
-                    return;
-                }
-
-                FrameworkElement? imageElement =
-                    action.IncludeDeadlockDiagram ? DeadlockCanvasBorder : null;
-
-                Core.Services.PortableReportExportResult result =
-                    _portableReportExportService.Export(
-                        new Core.Services.PortableReportExportRequest(
-                            extension,
-                            filter,
-                            action.Report,
-                            imageElement));
-
-                if (result.Status == Core.Services.PortableReportExportStatus.Exported)
-                {
-                    MessageBox.Show($"{extension.ToUpperInvariant()} report exported successfully.", "Export succeeded", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException($"ExportTo{extension.ToUpperInvariant()}_Click", ex);
-                MessageBox.Show($"Export failed:\n{ex.Message}", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _reportExportUiActionService.ExportPortableReport(
+                MainTabControl.SelectedIndex,
+                ViewModel.CurrentDeadlockFilePath,
+                DeadlockPatternsListBox.ItemsSource?.OfType<DeadlockPattern>(),
+                ViewModel.DeadlockPatternText,
+                ViewModel.CurrentPlanFilePath,
+                ViewModel.PlanWarningsText,
+                DeadlockCanvasBorder,
+                extension,
+                filter);
         }
 
         private void CopyAnalysisResult_Click(object sender, RoutedEventArgs e)
