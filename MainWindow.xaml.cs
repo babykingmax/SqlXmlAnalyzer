@@ -67,7 +67,7 @@ namespace SqlXmlAnalyzer
         private readonly DeadlockGraphPlaybackVisualService _deadlockGraphPlaybackVisualService;
         private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
         private readonly Core.Services.WorkspacePanelLayoutService _workspacePanelLayoutService;
-        private readonly Core.Services.TuningSessionActionService _tuningSessionActionService;
+        private readonly TuningSessionUiActionService _tuningSessionUiActionService;
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly PlanSelectionUiActionService _planSelectionUiActionService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
@@ -303,7 +303,8 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockStepBadgeService();
             _workspacePanelLayoutService = workspacePanelLayoutService
                 ?? new Core.Services.WorkspacePanelLayoutService();
-            _tuningSessionActionService = tuningSessionActionService
+            Core.Services.TuningSessionActionService effectiveTuningSessionActionService =
+                tuningSessionActionService
                 ?? new Core.Services.TuningSessionActionService(_fileDialogService);
             _planTreeService = planTreeService
                 ?? new Core.Services.PlanTreeService();
@@ -338,6 +339,10 @@ namespace SqlXmlAnalyzer
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
+            _tuningSessionUiActionService =
+                new TuningSessionUiActionService(
+                    effectiveTuningSessionActionService,
+                    ViewModel);
             _deadlockCanvasInteractionBinder.Attach(
                 DeadlockGraphCanvas,
                 DeadlockCanvasBorder,
@@ -1363,17 +1368,17 @@ namespace SqlXmlAnalyzer
         // --- 调优历史与 A/B 并排对比事件处理器 ---
         private async void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Core.Services.PlanSnapshotOpenResult result =
-                _tuningSessionActionService.OpenHistorySnapshot(TuningHistoryListView.SelectedItem);
+            Core.ViewModels.PlanSnapshot? snapshot =
+                _tuningSessionUiActionService.GetSelectedHistorySnapshot(
+                    TuningHistoryListView.SelectedItem);
 
-            if (result.Status == Core.Services.PlanSnapshotOpenStatus.Ready
-                && result.Snapshot != null)
+            if (snapshot != null)
             {
                 var session = _analysisSessions.Begin();
-                ViewModel.CurrentPlanFilePath = result.Snapshot.FilePath;
+                ViewModel.CurrentPlanFilePath = snapshot.FilePath;
                 await AnalyzeExecutionPlanDocumentAsync(
-                    result.Snapshot.Document,
-                    result.Snapshot.FilePath,
+                    snapshot.Document,
+                    snapshot.FilePath,
                     session.RequestId,
                     session.Token);
             }
@@ -1381,32 +1386,17 @@ namespace SqlXmlAnalyzer
 
         private void SaveSession_Click(object sender, RoutedEventArgs e)
         {
-            string? fileName = _tuningSessionActionService.ChooseSaveSessionPath();
-
-            if (fileName != null)
-            {
-                ViewModel.SaveSession(fileName);
-            }
+            _tuningSessionUiActionService.SaveSession();
         }
 
         private void LoadSession_Click(object sender, RoutedEventArgs e)
         {
-            string? fileName = _tuningSessionActionService.ChooseLoadSessionPath();
-
-            if (fileName != null)
-            {
-                ViewModel.LoadSession(fileName);
-            }
+            _tuningSessionUiActionService.LoadSession();
         }
 
         private void SwapPlanAB_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.PlanSwapResult result =
-                _tuningSessionActionService.SwapPlans(
-                    ViewModel.PlanA,
-                    ViewModel.PlanB);
-            ViewModel.PlanA = result.PlanA;
-            ViewModel.PlanB = result.PlanB;
+            _tuningSessionUiActionService.SwapPlans();
         }
 
         private void StatisticsHistogramView_Loaded(object sender, RoutedEventArgs e)
