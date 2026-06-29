@@ -47,6 +47,7 @@ namespace SqlXmlAnalyzer
         private readonly MermaidDiagramUiActionService _mermaidDiagramUiActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly ReportExportUiActionService _reportExportUiActionService;
+        private readonly PlanObfuscationExportUiActionService _planObfuscationExportUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
@@ -253,6 +254,8 @@ namespace SqlXmlAnalyzer
                 effectivePortableReportActionService,
                 effectivePortableReportExportService,
                 _browserLauncher);
+            _planObfuscationExportUiActionService =
+                new PlanObfuscationExportUiActionService(_fileDialogService);
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
             _missingIndexClipboardActionService = missingIndexClipboardActionService
@@ -345,20 +348,6 @@ namespace SqlXmlAnalyzer
             string? fileName = null)
         {
             return _fileDialogService.ShowOpenFile(
-                new Core.Services.FileDialogRequest(
-                    filter,
-                    title,
-                    defaultExtension,
-                    fileName));
-        }
-
-        private string? ShowSaveFileDialog(
-            string filter,
-            string title,
-            string? defaultExtension = null,
-            string? fileName = null)
-        {
-            return _fileDialogService.ShowSaveFile(
                 new Core.Services.FileDialogRequest(
                     filter,
                     title,
@@ -1206,37 +1195,9 @@ namespace SqlXmlAnalyzer
 
         private void ExportObfuscatedPlan_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.CurrentPlanDoc == null)
-            {
-                MessageBox.Show("Please load an execution plan first.", "Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            string? fileName = ShowSaveFileDialog(
-                "Execution plan files (*.sqlplan)|*.sqlplan|XML files (*.xml)|*.xml",
-                "Export obfuscated execution plan",
-                ".sqlplan",
-                "Obfuscated_Plan.sqlplan");
-
-            if (fileName == null)
-            {
-                return;
-            }
-
-            try
-            {
-                StatusTextBlock.Text = "Generating obfuscated plan...";
-                var maskedDoc = SqlXmlAnalyzer.Core.Services.PlanObfuscatorService.ObfuscatePlan(ViewModel.CurrentPlanDoc);
-                maskedDoc.Save(fileName);
-                MessageBox.Show($"Obfuscated execution plan saved to:\n{fileName}\n\nSensitive table names and SQL text have been replaced, and the file remains readable by SSMS.", "Export succeeded", MessageBoxButton.OK, MessageBoxImage.Information);
-                StatusTextBlock.Text = "Ready";
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("ExportObfuscatedPlan_Click", ex);
-                MessageBox.Show($"Export failed:\n{ex.Message}", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusTextBlock.Text = "Obfuscated export failed";
-            }
+            _planObfuscationExportUiActionService.Export(
+                ViewModel.CurrentPlanDoc,
+                status => StatusTextBlock.Text = status);
         }
 
         private void GenerateHtmlReport_Click(object sender, RoutedEventArgs e)
