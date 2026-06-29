@@ -53,13 +53,9 @@ namespace SqlXmlAnalyzer
         private readonly MissingIndexClipboardUiActionService _missingIndexClipboardUiActionService;
         private readonly DeadlockSelectionUiActionService _deadlockSelectionUiActionService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
-        private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
-        private readonly DeadlockGraphEdgeElementFactory _deadlockGraphEdgeElementFactory;
         private readonly DeadlockCanvasInteractionBinder _deadlockCanvasInteractionBinder;
-        private readonly DeadlockNodeInteractionBinder _deadlockNodeInteractionBinder;
         private readonly DeadlockGraphRenderUiActionService _deadlockGraphRenderUiActionService;
-        private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
-        private readonly DeadlockGraphNodeElementFactory _deadlockGraphNodeElementFactory;
+        private readonly DeadlockGraphElementUiActionService _deadlockGraphElementUiActionService;
         private readonly DeadlockPlaybackUiActionService _deadlockPlaybackUiActionService;
         private readonly WorkspacePanelUiActionService _workspacePanelUiActionService;
         private readonly TuningSessionUiActionService _tuningSessionUiActionService;
@@ -271,16 +267,17 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.DeadlockSelectionDetailService();
             _deadlockGraphViewportService = deadlockGraphViewportService
                 ?? new Core.Services.DeadlockGraphViewportService();
-            _deadlockGraphGeometryService = deadlockGraphGeometryService
+            Core.Services.DeadlockGraphGeometryService effectiveDeadlockGraphGeometryService =
+                deadlockGraphGeometryService
                 ?? new Core.Services.DeadlockGraphGeometryService();
-            _deadlockGraphEdgeElementFactory =
-                new DeadlockGraphEdgeElementFactory(_deadlockGraphGeometryService);
+            DeadlockGraphEdgeElementFactory effectiveDeadlockGraphEdgeElementFactory =
+                new(effectiveDeadlockGraphGeometryService);
             _deadlockCanvasInteractionBinder =
                 new DeadlockCanvasInteractionBinder(
                     deadlockCanvasInteractionService
                     ?? new Core.Services.DeadlockCanvasInteractionService());
-            _deadlockNodeInteractionBinder =
-                new DeadlockNodeInteractionBinder(
+            DeadlockNodeInteractionBinder effectiveDeadlockNodeInteractionBinder =
+                new(
                     deadlockNodeDragService ?? new Core.Services.DeadlockNodeDragService(),
                     deadlockGraphSelectionService ?? new Core.Services.DeadlockGraphSelectionService());
             Core.Services.DeadlockGraphLayoutService effectiveDeadlockGraphLayoutService =
@@ -289,12 +286,13 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphEdgeService effectiveDeadlockGraphEdgeService =
                 deadlockGraphEdgeService
                 ?? new Core.Services.DeadlockGraphEdgeService();
-            _deadlockGraphEdgeRegistryService = deadlockGraphEdgeRegistryService
+            Core.Services.DeadlockGraphEdgeRegistryService effectiveDeadlockGraphEdgeRegistryService =
+                deadlockGraphEdgeRegistryService
                 ?? new Core.Services.DeadlockGraphEdgeRegistryService();
             Core.Services.DeadlockGraphPlacementService effectiveDeadlockGraphPlacementService =
                 deadlockGraphPlacementService
                 ?? new Core.Services.DeadlockGraphPlacementService();
-            _deadlockGraphNodeElementFactory = new DeadlockGraphNodeElementFactory();
+            DeadlockGraphNodeElementFactory effectiveDeadlockGraphNodeElementFactory = new();
             Core.Services.DeadlockPlaybackStateService effectiveDeadlockPlaybackStateService =
                 deadlockPlaybackStateService
                 ?? new Core.Services.DeadlockPlaybackStateService();
@@ -375,9 +373,24 @@ namespace SqlXmlAnalyzer
                     effectiveDeadlockGraphVisualStateService,
                     effectiveDeadlockGraphPlaybackVisualService,
                     effectiveDeadlockStepBadgeService,
-                    _deadlockGraphEdgeRegistryService,
+                    effectiveDeadlockGraphEdgeRegistryService,
                     DeadlockGraphCanvas,
                     PlaybackControl);
+            _deadlockGraphElementUiActionService =
+                new DeadlockGraphElementUiActionService(
+                    effectiveDeadlockGraphNodeElementFactory,
+                    effectiveDeadlockGraphEdgeElementFactory,
+                    effectiveDeadlockNodeInteractionBinder,
+                    effectiveDeadlockGraphEdgeRegistryService,
+                    effectiveDeadlockGraphGeometryService,
+                    DeadlockGraphCanvas,
+                    DeadlockProcessesList,
+                    DeadlockResourcesList,
+                    _nodePositions,
+                    _nodeElements,
+                    _edgesForDrawing,
+                    _arrowCache,
+                    _resourceGroupDetails);
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
                     ViewModel,
@@ -437,28 +450,9 @@ namespace SqlXmlAnalyzer
                     _edgesForDrawing,
                     _arrowCache,
                     _resourceGroupDetails,
-                    processPlacement => DrawDraggableProcessNode(
-                        processPlacement.Position.X,
-                        processPlacement.Position.Y,
-                        processPlacement.Width,
-                        processPlacement.Height,
-                        processPlacement.Process.PrimaryProcess,
-                        processPlacement.IsVictim,
-                        processPlacement.NodeId,
-                        processPlacement.Process.ThreadCount),
-                    resourcePlacement => DrawDraggableResourceNode(
-                        resourcePlacement.Position.X,
-                        resourcePlacement.Position.Y,
-                        resourcePlacement.Width,
-                        resourcePlacement.Height,
-                        resourcePlacement.Resource.RawResources.First(),
-                        resourcePlacement.NodeId,
-                        resourcePlacement.Resource.LockCount),
-                    edge => DrawArrowBetweenNodes(
-                        edge.FromId,
-                        edge.ToId,
-                        edge.Label,
-                        edge.IsWaitEdge));
+                    _deadlockGraphElementUiActionService.DrawProcessNode,
+                    _deadlockGraphElementUiActionService.DrawResourceNode,
+                    _deadlockGraphElementUiActionService.DrawEdge);
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
@@ -798,107 +792,6 @@ namespace SqlXmlAnalyzer
         private void DrawDeadlockBipartiteGraph(DeadlockGraph graph)
         {
             _deadlockGraphRenderUiActionService.Render(graph);
-        }
-
-        private FrameworkElement DrawDraggableProcessNode(double x, double y, double w, double h, DeadlockProcess proc, bool isVictim, string id, int threadCount)
-        {
-            FrameworkElement card = _deadlockGraphNodeElementFactory.CreateProcessNode(
-                w,
-                h,
-                proc,
-                isVictim,
-                id,
-                threadCount);
-
-            Canvas.SetLeft(card, x);
-            Canvas.SetTop(card, y);
-            DeadlockGraphCanvas.Children.Add(card);
-
-            _nodeElements[id] = card;
-            _nodePositions[id] = new Point(x, y);
-
-            AttachNodeInteraction(card, id);
-
-            return card;
-        }
-
-        private FrameworkElement DrawDraggableResourceNode(double x, double y, double w, double h, LockResource res, string id, int lockCount)
-        {
-            FrameworkElement container = _deadlockGraphNodeElementFactory.CreateResourceNode(
-                w,
-                h,
-                res,
-                id,
-                lockCount);
-
-            Canvas.SetLeft(container, x);
-            Canvas.SetTop(container, y);
-            DeadlockGraphCanvas.Children.Add(container);
-
-            _nodeElements[id] = container;
-            _nodePositions[id] = new Point(x, y);
-
-            AttachNodeInteraction(container, id);
-
-            return container;
-        }
-
-        private void AttachNodeInteraction(FrameworkElement element, string id)
-        {
-            _deadlockNodeInteractionBinder.Attach(
-                element,
-                id,
-                DeadlockGraphCanvas,
-                _nodePositions,
-                _resourceGroupDetails,
-                DeadlockProcessesList,
-                DeadlockResourcesList,
-                UpdateConnectionsForNode);
-        }
-
-        private void UpdateConnectionsForNode(string movedId)
-        {
-            IReadOnlyList<Core.Services.DeadlockGraphEdge> edgesToUpdate =
-                _deadlockGraphEdgeRegistryService.FindEdgesForNode(_edgesForDrawing, movedId);
-
-            foreach (var edge in edgesToUpdate)
-            {
-                var key = (edge.FromId, edge.ToId);
-                if (_arrowCache.TryGetValue(key, out var cached))
-                {
-                    Core.Services.DeadlockConnectionPoints points =
-                        CalculateConnectionPoints(edge.FromId, edge.ToId);
-                    _deadlockGraphEdgeElementFactory.UpdateEdge(cached, points);
-                }
-            }
-        }
-
-        private Core.Services.DeadlockConnectionPoints CalculateConnectionPoints(string fromId, string toId)
-        {
-            return _deadlockGraphGeometryService.CalculateConnectionPoints(
-                _nodePositions,
-                fromId,
-                toId);
-        }
-
-        private void DrawArrowBetweenNodes(string fromId, string toId, string label, bool isWaitEdge)
-        {
-            Core.Services.DeadlockConnectionPoints points =
-                CalculateConnectionPoints(fromId, toId);
-
-            DeadlockGraphEdgeElements elements =
-                _deadlockGraphEdgeElementFactory.CreateEdge(
-                    points,
-                    label,
-                    isWaitEdge);
-
-            DeadlockGraphCanvas.Children.Add(elements.Line);
-            DeadlockGraphCanvas.Children.Add(elements.ArrowHead);
-            DeadlockGraphCanvas.Children.Add(elements.Label);
-
-            var key = (fromId, toId);
-            _arrowCache[key] = elements;
-            _edgesForDrawing.Add(new Core.Services.DeadlockGraphEdge(fromId, toId, label, isWaitEdge));
         }
 
         private void RefreshABCompareTrees()
