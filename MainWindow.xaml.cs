@@ -71,10 +71,9 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.PlanTreeService _planTreeService;
         private readonly PlanSelectionUiActionService _planSelectionUiActionService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
-        private readonly Core.Services.SqlDiffService _sqlDiffService;
-        private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
         private readonly Core.Services.SqlQuickFixService _sqlQuickFixService;
         private readonly SqlDiffScrollSyncService _sqlDiffScrollSyncService;
+        private readonly SqlDiffUiActionService _sqlDiffUiActionService;
 
         private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
         private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
@@ -314,14 +313,21 @@ namespace SqlXmlAnalyzer
                 PlanPropertiesGrid);
             _planOperatorTreeViewRenderer = planOperatorTreeViewRenderer
                 ?? new Core.Services.PlanOperatorTreeViewRenderer();
-            _sqlDiffService = sqlDiffService
+            Core.Services.SqlDiffService effectiveSqlDiffService = sqlDiffService
                 ?? new Core.Services.SqlDiffService();
-            _sqlDiffDocumentRenderer = sqlDiffDocumentRenderer
-                ?? new Core.Services.SqlDiffDocumentRenderer(_sqlDiffService);
+            Core.Services.SqlDiffDocumentRenderer effectiveSqlDiffDocumentRenderer =
+                sqlDiffDocumentRenderer
+                ?? new Core.Services.SqlDiffDocumentRenderer(effectiveSqlDiffService);
             _sqlQuickFixService = sqlQuickFixService
                 ?? new Core.Services.SqlQuickFixService();
             _sqlDiffScrollSyncService =
                 new SqlDiffScrollSyncService(OriginalSqlTextBox, RefactoredSqlTextBox);
+            _sqlDiffUiActionService =
+                new SqlDiffUiActionService(
+                    effectiveSqlDiffService,
+                    effectiveSqlDiffDocumentRenderer,
+                    OriginalSqlTextBox,
+                    RefactoredSqlTextBox);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
@@ -1406,32 +1412,10 @@ namespace SqlXmlAnalyzer
 
         private void UpdateSqlDiffViews()
         {
-            if (string.IsNullOrEmpty(_currentOriginalSql) && string.IsNullOrEmpty(_currentRefactoredSql))
-            {
-                OriginalSqlTextBox.Document.Blocks.Clear();
-                RefactoredSqlTextBox.Document.Blocks.Clear();
-                return;
-            }
-
-            string[] linesOriginal = _currentOriginalSql.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-            string[] linesRefactored = _currentRefactoredSql.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-            Core.Services.SqlAlignedLines alignedLines =
-                _sqlDiffService.AlignLines(linesOriginal, linesRefactored);
-
-            _sqlDiffDocumentRenderer.Render(
-                OriginalSqlTextBox,
-                alignedLines.Original,
-                false,
-                alignedLines.Refactored,
+            _sqlDiffUiActionService.RenderDiff(
                 _currentOriginalSql,
+                _currentRefactoredSql,
                 CreateLightbulbButton);
-            _sqlDiffDocumentRenderer.Render(
-                RefactoredSqlTextBox,
-                alignedLines.Refactored,
-                true,
-                alignedLines.Original,
-                _currentOriginalSql);
         }
 
         private UIElement CreateLightbulbButton(Microsoft.SqlServer.TransactSql.ScriptDom.ScalarSubquery subquery)
