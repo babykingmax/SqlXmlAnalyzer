@@ -48,6 +48,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.AnalysisReportController _analysisReportController;
         private readonly ReportExportUiActionService _reportExportUiActionService;
         private readonly PlanObfuscationExportUiActionService _planObfuscationExportUiActionService;
+        private readonly FileOpenUiActionService _fileOpenUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
         private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
@@ -256,6 +257,8 @@ namespace SqlXmlAnalyzer
                 _browserLauncher);
             _planObfuscationExportUiActionService =
                 new PlanObfuscationExportUiActionService(_fileDialogService);
+            _fileOpenUiActionService =
+                new FileOpenUiActionService(_fileDialogService);
             _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
             _missingIndexClipboardActionService = missingIndexClipboardActionService
@@ -341,38 +344,11 @@ namespace SqlXmlAnalyzer
 
         #region 文件打开
 
-        private string? ShowOpenFileDialog(
-            string filter,
-            string title,
-            string? defaultExtension = null,
-            string? fileName = null)
-        {
-            return _fileDialogService.ShowOpenFile(
-                new Core.Services.FileDialogRequest(
-                    filter,
-                    title,
-                    defaultExtension,
-                    fileName));
-        }
-
         private async void OpenDeadlockFile_Click(object sender, RoutedEventArgs e)
         {
-            string? fileName = ShowOpenFileDialog(
-                "Deadlock files (*.xml;*.xdl;*.xel)|*.xml;*.xdl;*.xel|All files (*.*)|*.*",
-                "Open deadlock report");
-
-            if (fileName != null)
-            {
-                string ext = System.IO.Path.GetExtension(fileName).ToLowerInvariant();
-                if (ext == ".xel")
-                {
-                    await AnalyzeXelFileAsync(fileName);
-                }
-                else
-                {
-                    AnalyzeDeadlockFile(fileName);
-                }
-            }
+            await _fileOpenUiActionService.OpenDeadlockAsync(
+                AnalyzeXelFileAsync,
+                AnalyzeDeadlockFile);
         }
 
         private async Task AnalyzeXelFileAsync(string filePath)
@@ -431,50 +407,21 @@ namespace SqlXmlAnalyzer
 
         private void OpenPlanFile_Click(object sender, RoutedEventArgs e)
         {
-            string? fileName = ShowOpenFileDialog(
-                "Execution plan files (*.sqlplan;*.xml)|*.sqlplan;*.xml|All files (*.*)|*.*",
-                "Open execution plan");
-
-            if (fileName != null)
-            {
-                AnalyzeExecutionPlanFile(fileName);
-            }
+            _fileOpenUiActionService.OpenPlan(AnalyzeExecutionPlanFile);
         }
 
         private void Window_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effects = DragDropEffects.Copy;
+            _fileOpenUiActionService.HandleDragEnter(e);
         }
 
         private async void Window_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length > 0)
-                {
-                    string file = files[0];
-                    string ext = System.IO.Path.GetExtension(file).ToLower();
-
-                    if (ext == ".xml" || ext == ".xdl")
-                    {
-                        AnalyzeDeadlockFile(file);
-                    }
-                    else if (ext == ".xel")
-                    {
-                        await AnalyzeXelFileAsync(file);
-                    }
-                    else if (ext == ".sqlplan")
-                    {
-                        AnalyzeExecutionPlanFile(file);
-                    }
-                    else
-                    {
-                        MessageBox.Show("不支持的文件类型，请选择死锁(XML/XEL)或执行计划(.sqlplan)文件。");
-                    }
-                }
-            }
+            await _fileOpenUiActionService.HandleDropAsync(
+                e,
+                AnalyzeXelFileAsync,
+                AnalyzeDeadlockFile,
+                AnalyzeExecutionPlanFile);
         }
 
         #endregion
@@ -491,59 +438,6 @@ namespace SqlXmlAnalyzer
         private void AnalyzeExecutionPlanFile(string filePath)
         {
             _ = AnalyzeFileAsync(filePath);
-        }
-
-        private static bool IsDeadlockXml(XDocument doc)
-        {
-            if (doc?.Root == null) return false;
-            return doc.Root.Name.LocalName.Equals("deadlock", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static bool IsExecutionPlanXml(XDocument doc)
-        {
-            if (doc?.Root == null) return false;
-            var name = doc.Root.Name;
-            if (!name.LocalName.Equals("ShowPlanXML", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            string ns = name.Namespace.NamespaceName;
-            return ns == "http://schemas.microsoft.com/sqlserver/2004/07/showplan" ||
-                   ns.Contains("showplan", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private XDocument LoadXmlDocument(string filePath)
-        {
-            Logger.Info($"开始加载 XML 文件: {filePath}");
-            try
-            {
-                var doc = SafeXmlHelper.LoadSafe(filePath);
-                Logger.Info("使用 SafeXmlHelper.LoadSafe 成功加载文件");
-                return doc;
-            }
-            catch (System.Xml.XmlException ex) when (ex.Message.Contains("encoding", StringComparison.OrdinalIgnoreCase) ||
-                                                   ex.Message.Contains("BOM", StringComparison.OrdinalIgnoreCase) ||
-                                                   ex.Message.Contains("字符", StringComparison.OrdinalIgnoreCase))
-            {
-                Logger.Warning($"加载 XML 时遇到编码/BOM问题: {ex.Message}，尝试使用自动编码检测机制重试...");
-                try
-                {
-                    using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    using var sr = new StreamReader(fs, detectEncodingFromByteOrderMarks: true);
-                    var doc = SafeXmlHelper.LoadSafe(sr);
-                    Logger.Info("使用 StreamReader + 自动编码检测重试加载成功");
-                    return doc;
-                }
-                catch (Exception innerEx)
-                {
-                    Logger.Error("使用自动编码检测重试加载 XML 依然失败", innerEx);
-                    throw;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"加载 XML 发生异常: {ex.Message}", ex);
-                throw;
-            }
         }
 
         public async void AnalyzeFile(string filePath)
