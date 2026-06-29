@@ -50,8 +50,7 @@ namespace SqlXmlAnalyzer
         private readonly FileOpenUiActionService _fileOpenUiActionService;
         private readonly XelDeadlockUiActionService _xelDeadlockUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
-        private readonly Core.Services.MissingIndexDeploymentScriptService _missingIndexDeploymentScriptService;
-        private readonly Core.Services.MissingIndexClipboardActionService _missingIndexClipboardActionService;
+        private readonly MissingIndexClipboardUiActionService _missingIndexClipboardUiActionService;
         private readonly Core.Services.DeadlockSelectionDetailService _deadlockSelectionDetailService;
         private readonly Core.Services.DeadlockGraphViewportService _deadlockGraphViewportService;
         private readonly Core.Services.DeadlockGraphGeometryService _deadlockGraphGeometryService;
@@ -264,10 +263,14 @@ namespace SqlXmlAnalyzer
                     XelDeadlockSelector,
                     MainTabControl,
                     AnalyzeDeadlockXmlAsync);
-            _missingIndexDeploymentScriptService = missingIndexDeploymentScriptService
+            Core.Services.MissingIndexDeploymentScriptService effectiveMissingIndexDeploymentScriptService =
+                missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
-            _missingIndexClipboardActionService = missingIndexClipboardActionService
-                ?? new Core.Services.MissingIndexClipboardActionService(_missingIndexDeploymentScriptService);
+            _missingIndexClipboardUiActionService =
+                new MissingIndexClipboardUiActionService(
+                    missingIndexClipboardActionService
+                    ?? new Core.Services.MissingIndexClipboardActionService(
+                        effectiveMissingIndexDeploymentScriptService));
             _deadlockSelectionDetailService = deadlockSelectionDetailService
                 ?? new Core.Services.DeadlockSelectionDetailService();
             _deadlockGraphViewportService = deadlockGraphViewportService
@@ -1554,31 +1557,17 @@ namespace SqlXmlAnalyzer
 
         private void CopyIndexDdl_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.MissingIndexClipboardActionResult result =
-                _missingIndexClipboardActionService.BuildCreateScript(
-                    sender is Button btn ? btn.Tag as string : null);
-
-            CopyMissingIndexClipboardResult(result);
+            _missingIndexClipboardUiActionService.CopyCreateScript(sender);
         }
 
         private void CopyRollbackDdl_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.MissingIndexClipboardActionResult result =
-                _missingIndexClipboardActionService.BuildRollbackScript(
-                    sender is Button btn ? btn.Tag as string : null);
-
-            CopyMissingIndexClipboardResult(result);
+            _missingIndexClipboardUiActionService.CopyRollbackScript(sender);
         }
 
         private void CopyDeploymentBundle_Click(object sender, RoutedEventArgs e)
         {
-            Core.Services.MissingIndexClipboardActionResult result =
-                _missingIndexClipboardActionService.BuildDeploymentBundle(
-                    sender is Button btn
-                        ? btn.DataContext as SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion
-                        : null);
-
-            CopyMissingIndexClipboardResult(result);
+            _missingIndexClipboardUiActionService.CopyDeploymentBundle(sender);
         }
 
         private static void CopyMissingIndexClipboardResult(
