@@ -48,6 +48,7 @@ namespace SqlXmlAnalyzer
         private readonly FileOpenUiActionService _fileOpenUiActionService;
         private readonly XelDeadlockUiActionService _xelDeadlockUiActionService;
         private readonly AnalysisResultsUiActionService _analysisResultsUiActionService;
+        private readonly DeadlockAnalysisUiActionService _deadlockAnalysisUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly MissingIndexClipboardUiActionService _missingIndexClipboardUiActionService;
         private readonly DeadlockSelectionUiActionService _deadlockSelectionUiActionService;
@@ -355,6 +356,18 @@ namespace SqlXmlAnalyzer
                     DeadlockPatternsListBox,
                     PlanOperatorTree,
                     StatusTextBlock);
+            _deadlockAnalysisUiActionService =
+                new DeadlockAnalysisUiActionService(
+                    ViewModel,
+                    DeadlockProcessesList,
+                    DeadlockResourcesList,
+                    DeadlockPatternsListBox,
+                    DeadlockGraphCanvas,
+                    PlaybackControl,
+                    MainTabControl,
+                    BuildDeadlockWaitForTree,
+                    (s, e) => UpdatePlaybackGraphVisibility(),
+                    _stepBadges);
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
                     ViewModel,
@@ -619,34 +632,12 @@ namespace SqlXmlAnalyzer
                     return;
                 }
 
-                var result = documentResult.Analysis;
-                ViewModel.CurrentDeadlockDoc = documentResult.Document;
-                ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Deadlock);
-                DeadlockProcessesList.ItemsSource = result.Processes;
-                DeadlockResourcesList.ItemsSource = result.Resources;
-                DeadlockPatternsListBox.ItemsSource = result.Patterns;
-
-                _currentTimeline = result.Timeline;
-                _playbackViewModel = new DeadlockPlaybackViewModel(_currentTimeline.Events);
-                _playbackViewModel.StepChanged += (s, e) => UpdatePlaybackGraphVisibility();
-                PlaybackControl.DataContext = _playbackViewModel;
-
-                foreach (var b in _stepBadges.Values) { DeadlockGraphCanvas.Children.Remove(b); }
-                _stepBadges.Clear();
-
-                BuildDeadlockWaitForTree(result.Graph);
-
+                DeadlockAnalysisUiResult uiResult =
+                    _deadlockAnalysisUiActionService.Apply(documentResult);
+                _currentTimeline = uiResult.Timeline;
+                _playbackViewModel = uiResult.PlaybackViewModel;
                 UpdatePlaybackGraphVisibility();
-
-                MainTabControl.SelectedIndex = 0;
-                foreach (string warning in result.Warnings)
-                {
-                    Logger.Warning(warning);
-                }
-
-                StatusTextBlock.Text = result.Warnings.Count == 0
-                    ? "死锁分析完成"
-                    : $"死锁分析完成（{result.Warnings.Count} 条警告）";
+                StatusTextBlock.Text = uiResult.StatusText;
             }
             catch (OperationCanceledException)
             {
