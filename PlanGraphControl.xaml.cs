@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
+using SqlXmlAnalyzer.Services;
 
 namespace SqlXmlAnalyzer
 {
@@ -45,6 +46,7 @@ namespace SqlXmlAnalyzer
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
         private static readonly Core.Services.PlanGraphLayoutRefreshService LayoutRefreshService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
+        private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
         private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
         private static readonly Core.Services.PlanGraphVisibilityStateService VisibilityStateService = new();
@@ -713,29 +715,31 @@ namespace SqlXmlAnalyzer
         private void CmbViewMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CmbViewMode == null || Nodes == null) return;
-            var mode = (DiagramViewMode)CmbViewMode.SelectedIndex;
-            foreach (var node in Nodes)
-            {
-                node.ViewMode = mode;
-            }
+            ModeUiActionService.ApplyViewMode(CmbViewMode.SelectedIndex, Nodes);
         }
 
         private void CmbLayoutMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CmbLayoutMode == null || Nodes == null) return;
-            LayoutMode = (PlanLayoutMode)CmbLayoutMode.SelectedIndex;
+            ModeUiActionService.ApplyLayoutMode(
+                CmbLayoutMode.SelectedIndex,
+                mode => LayoutMode = mode);
         }
 
         private void CmbColorMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CmbColorMode == null || Nodes == null) return;
-            ColorMode = (PlanColorMode)CmbColorMode.SelectedIndex;
+            ModeUiActionService.ApplyColorMode(
+                CmbColorMode.SelectedIndex,
+                mode => ColorMode = mode);
         }
 
         private void CmbLinkMetric_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CmbLinkMetric == null || Nodes == null) return;
-            LinkMetric = (LinkMetricMode)CmbLinkMetric.SelectedIndex;
+            ModeUiActionService.ApplyLinkMetric(
+                CmbLinkMetric.SelectedIndex,
+                metric => LinkMetric = metric);
         }
 
         private void ReapplyLayout()
@@ -765,18 +769,12 @@ namespace SqlXmlAnalyzer
 
         private void ReapplyColorMode()
         {
-            foreach (var node in Nodes)
-            {
-                node.ColorMode = ColorMode;
-            }
+            ModeUiActionService.ApplyColorMode(ColorMode, Nodes);
         }
 
         private void ReapplyLinkMetric()
         {
-            foreach (var conn in Connections)
-            {
-                conn.CurrentLinkMetric = LinkMetric;
-            }
+            ModeUiActionService.ApplyLinkMetric(LinkMetric, Connections);
         }
 
         private void UpdateConnectionHighlights()
