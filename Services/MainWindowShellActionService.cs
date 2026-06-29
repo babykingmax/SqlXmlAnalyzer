@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using MaterialDesignThemes.Wpf;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -115,6 +116,50 @@ namespace SqlXmlAnalyzer.Services
         public void ExitApplication()
         {
             global::System.Windows.Application.Current.Shutdown();
+        }
+
+        public void HandleTitleBarMouseLeftButtonDown(Window window, int clickCount)
+        {
+            ArgumentNullException.ThrowIfNull(window);
+
+            if (clickCount == 2)
+            {
+                ToggleMaximize(window);
+                return;
+            }
+
+            window.DragMove();
+        }
+
+        public void Minimize(Window window)
+        {
+            ArgumentNullException.ThrowIfNull(window);
+
+            window.WindowState = WindowState.Minimized;
+        }
+
+        public void ToggleMaximize(Window window)
+        {
+            ArgumentNullException.ThrowIfNull(window);
+
+            window.WindowState = window.WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        public void Close(Window window)
+        {
+            ArgumentNullException.ThrowIfNull(window);
+
+            window.Close();
+        }
+
+        public void SetTheme(bool useDarkTheme)
+        {
+            var paletteHelper = new PaletteHelper();
+            var theme = paletteHelper.GetTheme();
+            theme.SetBaseTheme(useDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
+            paletteHelper.SetTheme(theme);
         }
 
         private void RegisterAssociations()

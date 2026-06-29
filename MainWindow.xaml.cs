@@ -1,4 +1,3 @@
-using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -79,44 +78,27 @@ namespace SqlXmlAnalyzer
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
-            {
-                if (this.WindowState == System.Windows.WindowState.Maximized)
-                    this.WindowState = System.Windows.WindowState.Normal;
-                else
-                    this.WindowState = System.Windows.WindowState.Maximized;
-            }
-            else
-            {
-                this.DragMove();
-            }
+            _shellActionService.HandleTitleBarMouseLeftButtonDown(this, e.ClickCount);
         }
 
         private void Minimize_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Minimized;
+            _shellActionService.Minimize(this);
         }
 
         private void Maximize_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (this.WindowState == System.Windows.WindowState.Maximized)
-                this.WindowState = System.Windows.WindowState.Normal;
-            else
-                this.WindowState = System.Windows.WindowState.Maximized;
+            _shellActionService.ToggleMaximize(this);
         }
 
         private void Close_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.Close();
+            _shellActionService.Close(this);
         }
 
         private void ThemeToggle_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
-            if (theme == null) return;
-            theme.SetBaseTheme(ThemeToggle.IsChecked == true ? BaseTheme.Dark : BaseTheme.Light);
-            paletteHelper.SetTheme(theme);
+            _shellActionService.SetTheme(ThemeToggle.IsChecked == true);
         }
 
         public MainWindow(
