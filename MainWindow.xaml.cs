@@ -69,9 +69,8 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockStepBadgeService _deadlockStepBadgeService;
         private readonly Core.Services.WorkspacePanelLayoutService _workspacePanelLayoutService;
         private readonly Core.Services.TuningSessionActionService _tuningSessionActionService;
-        private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly Core.Services.PlanTreeService _planTreeService;
-        private readonly Core.Services.PlanSelectionActionService _planSelectionActionService;
+        private readonly PlanSelectionUiActionService _planSelectionUiActionService;
         private readonly Core.Services.PlanOperatorTreeViewRenderer _planOperatorTreeViewRenderer;
         private readonly Core.Services.SqlDiffService _sqlDiffService;
         private readonly Core.Services.SqlDiffDocumentRenderer _sqlDiffDocumentRenderer;
@@ -306,12 +305,12 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.WorkspacePanelLayoutService();
             _tuningSessionActionService = tuningSessionActionService
                 ?? new Core.Services.TuningSessionActionService(_fileDialogService);
-            _planPropertyService = planPropertyService
-                ?? new Core.Services.PlanPropertyService();
             _planTreeService = planTreeService
                 ?? new Core.Services.PlanTreeService();
-            _planSelectionActionService = planSelectionActionService
-                ?? new Core.Services.PlanSelectionActionService();
+            _planSelectionUiActionService = new PlanSelectionUiActionService(
+                planSelectionActionService ?? new Core.Services.PlanSelectionActionService(),
+                planPropertyService ?? new Core.Services.PlanPropertyService(),
+                PlanPropertiesGrid);
             _planOperatorTreeViewRenderer = planOperatorTreeViewRenderer
                 ?? new Core.Services.PlanOperatorTreeViewRenderer();
             _sqlDiffService = sqlDiffService
@@ -1268,8 +1267,7 @@ namespace SqlXmlAnalyzer
 
         private void PlanOperatorTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            BindPlanSelection(
-                _planSelectionActionService.SelectFromOperatorTreeItem(e.NewValue));
+            _planSelectionUiActionService.SelectFromOperatorTreeItem(e.NewValue);
         }
 
         private void RefreshDeadlockGraph_Click(object sender, RoutedEventArgs e)
@@ -1314,37 +1312,18 @@ namespace SqlXmlAnalyzer
 
         private void PlanVisualTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            BindPlanSelection(
-                _planSelectionActionService.SelectFromVisualTreeNode(e.NewValue));
+            _planSelectionUiActionService.SelectFromVisualTreeNode(e.NewValue);
         }
 
         // Nodify 节点选中 -> 同步到主右侧属性面板 (Plan Explorer 风格)
         private void PlanNodifyGraph_NodeSelected(object sender, PlanNodeViewModel node)
         {
-            BindPlanSelection(
-                _planSelectionActionService.SelectFromGraphNode(node));
+            _planSelectionUiActionService.SelectFromGraphNode(node);
         }
 
         private void PlanNodifyGraph_NodeDoubleClicked(object sender, PlanNodeViewModel node)
         {
-            BindPlanSelection(
-                _planSelectionActionService.SelectFromGraphNode(node));
-        }
-
-        private void BindPlanSelection(Core.Services.PlanSelectionResult result)
-        {
-            if (result.HasSelection && result.RelOp != null)
-            {
-                BindPlanProperties(result.RelOp);
-            }
-        }
-
-        private void BindPlanProperties(XElement relOp)
-        {
-            var properties = _planPropertyService.BuildProperties(relOp).ToList();
-            var view = new System.Windows.Data.ListCollectionView(properties);
-            view.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("Group"));
-            PlanPropertiesGrid.ItemsSource = view;
+            _planSelectionUiActionService.SelectFromGraphNode(node);
         }
 
         private void OpenPlanMermaidInBrowser_Click(object sender, RoutedEventArgs e)
