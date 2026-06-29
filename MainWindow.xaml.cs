@@ -49,6 +49,7 @@ namespace SqlXmlAnalyzer
         private readonly PlanObfuscationExportUiActionService _planObfuscationExportUiActionService;
         private readonly FileOpenUiActionService _fileOpenUiActionService;
         private readonly XelDeadlockUiActionService _xelDeadlockUiActionService;
+        private readonly AnalysisResultsUiActionService _analysisResultsUiActionService;
         private readonly Core.Services.IFileDialogService _fileDialogService;
         private readonly MissingIndexClipboardUiActionService _missingIndexClipboardUiActionService;
         private readonly DeadlockSelectionUiActionService _deadlockSelectionUiActionService;
@@ -341,6 +342,15 @@ namespace SqlXmlAnalyzer
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
+            _analysisResultsUiActionService =
+                new AnalysisResultsUiActionService(
+                    ViewModel,
+                    DeadlockGraphCanvas,
+                    DeadlockProcessesList,
+                    DeadlockResourcesList,
+                    DeadlockPatternsListBox,
+                    PlanOperatorTree,
+                    StatusTextBlock);
             _deadlockSelectionUiActionService =
                 new DeadlockSelectionUiActionService(
                     effectiveDeadlockSelectionDetailService,
@@ -1150,19 +1160,8 @@ namespace SqlXmlAnalyzer
 
         private void ClearResults_Click(object sender, RoutedEventArgs e)
         {
-            // 清空 ViewModel
-            ViewModel.ClearResults();
-
-            // 清空主要控件
-            DeadlockGraphCanvas.Children.Clear();
-            DeadlockProcessesList.ItemsSource = null;
-            DeadlockResourcesList.ItemsSource = null;
-            DeadlockPatternsListBox.ItemsSource = null;
-            PlanOperatorTree.Items.Clear();
-            DeadlockPatternsListBox.Items.Clear();
-            StatusTextBlock.Text = "结果已清空";
+            _analysisResultsUiActionService.ClearResults();
         }
-
         private void OpenLogsFolder_Click(object sender, RoutedEventArgs e)
         {
             _shellActionService.OpenLogsFolder();
