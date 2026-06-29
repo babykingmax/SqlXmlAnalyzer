@@ -39,9 +39,7 @@ namespace SqlXmlAnalyzer
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly Core.Services.DocumentRefreshActionService _documentRefreshActionService;
-        private readonly Core.Services.PlanComparisonController _planComparisonController;
-        private readonly Core.Services.PlanComparisonTreeService _planComparisonTreeService;
-        private readonly Core.Services.PlanComparisonTreeViewRenderer _planComparisonTreeViewRenderer;
+        private readonly PlanComparisonUiActionService _planComparisonUiActionService;
         private readonly Core.Services.MermaidDiagramService _mermaidDiagramService;
         private readonly MermaidDiagramUiActionService _mermaidDiagramUiActionService;
         private readonly Core.Services.AnalysisReportController _analysisReportController;
@@ -209,11 +207,14 @@ namespace SqlXmlAnalyzer
                 ?? new Core.Services.PlanDocumentController(effectivePlanAnalysisService);
             _documentRefreshActionService = documentRefreshActionService
                 ?? new Core.Services.DocumentRefreshActionService();
-            _planComparisonController = planComparisonController
+            Core.Services.PlanComparisonController effectivePlanComparisonController =
+                planComparisonController
                 ?? new Core.Services.PlanComparisonController();
-            _planComparisonTreeService = planComparisonTreeService
+            Core.Services.PlanComparisonTreeService effectivePlanComparisonTreeService =
+                planComparisonTreeService
                 ?? new Core.Services.PlanComparisonTreeService();
-            _planComparisonTreeViewRenderer = planComparisonTreeViewRenderer
+            Core.Services.PlanComparisonTreeViewRenderer effectivePlanComparisonTreeViewRenderer =
+                planComparisonTreeViewRenderer
                 ?? new Core.Services.PlanComparisonTreeViewRenderer();
             _mermaidDiagramService = mermaidDiagramService
                 ?? new Core.Services.MermaidDiagramService();
@@ -351,6 +352,13 @@ namespace SqlXmlAnalyzer
                     DeadlockPatternsListBox,
                     PlanOperatorTree,
                     StatusTextBlock);
+            _planComparisonUiActionService =
+                new PlanComparisonUiActionService(
+                    effectivePlanComparisonController,
+                    effectivePlanComparisonTreeService,
+                    effectivePlanComparisonTreeViewRenderer,
+                    PlanATreeView,
+                    PlanBTreeView);
             _deadlockSelectionUiActionService =
                 new DeadlockSelectionUiActionService(
                     effectiveDeadlockSelectionDetailService,
@@ -1068,28 +1076,10 @@ namespace SqlXmlAnalyzer
 
         private void RefreshABCompareTrees()
         {
-            PlanATreeView.Items.Clear();
-            PlanBTreeView.Items.Clear();
-
-            Core.Services.PlanComparisonResult comparison =
-                _planComparisonController.BuildComparison(
-                    ViewModel.PlanA,
-                    ViewModel.PlanB,
-                    _showplanNs);
-            Core.Services.PlanComparisonTreeResult displayTree =
-                _planComparisonTreeService.BuildTree(comparison);
-
-            if (displayTree.PlanA != null)
-            {
-                PlanATreeView.Items.Add(
-                    _planComparisonTreeViewRenderer.Render(displayTree.PlanA));
-            }
-
-            if (displayTree.PlanB != null)
-            {
-                PlanBTreeView.Items.Add(
-                    _planComparisonTreeViewRenderer.Render(displayTree.PlanB));
-            }
+            _planComparisonUiActionService.RefreshCompareTrees(
+                ViewModel.PlanA,
+                ViewModel.PlanB,
+                _showplanNs);
         }
 
         #endregion
