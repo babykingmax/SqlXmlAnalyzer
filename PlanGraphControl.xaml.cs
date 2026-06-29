@@ -44,7 +44,7 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphCollapseUiActionService CollapseUiActionService = new();
         private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
         private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
-        private static readonly Core.Services.PlanGraphLayoutRefreshService LayoutRefreshService = new();
+        private static readonly PlanGraphLayoutUiActionService LayoutUiActionService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
@@ -264,7 +264,11 @@ namespace SqlXmlAnalyzer
                 initialColor);
 
             // 2. 简单分层初始布局 (类似 Plan Explorer 水平/垂直流)
-            ApplyLayeredLayout(nodeMap, relOps, ns);
+            LayoutUiActionService.ApplyLayeredLayout(
+                relOps,
+                ns,
+                nodeMap,
+                initialLayout);
 
             foreach (Core.Services.PlanGraphConnectionPair connection in
                 ConnectionBuilderService.BuildConnections(relOps, ns))
@@ -420,50 +424,6 @@ namespace SqlXmlAnalyzer
             vm.IconBrush = iconInfo.Brush;
 
             return vm;
-        }
-
-        private Core.Services.PlanGraphLayoutRefreshResult ApplyLayeredLayout(
-            Dictionary<XElement, PlanNodeViewModel> nodeMap,
-            List<XElement> allRelOps,
-            XNamespace ns)
-        {
-            Core.Services.PlanGraphLayoutRefreshResult result =
-                LayoutRefreshService.Calculate(
-                    allRelOps,
-                    ns,
-                    nodeMap
-                        .Select(pair => new Core.Services.PlanGraphLayoutRefreshNode(
-                            pair.Key,
-                            pair.Value.IsCollapsed))
-                        .ToList(),
-                    ToGraphLayoutDirection(LayoutMode));
-
-            foreach (Core.Services.PlanGraphLayoutRefreshPosition position in result.NodePositions)
-            {
-                if (nodeMap.TryGetValue(position.RelOp, out PlanNodeViewModel? vm))
-                {
-                    vm.SubtreeWidth = position.SubtreeWidth;
-                    vm.Location = new Point(position.X, position.Y);
-                }
-            }
-
-            return result;
-        }
-
-        private static Core.Services.PlanGraphLayoutDirection ToGraphLayoutDirection(
-            PlanLayoutMode layoutMode)
-        {
-            return layoutMode == PlanLayoutMode.Horizontal
-                ? Core.Services.PlanGraphLayoutDirection.Horizontal
-                : Core.Services.PlanGraphLayoutDirection.Vertical;
-        }
-
-        private static PlanLayoutMode ToPlanLayoutMode(
-            Core.Services.PlanGraphLayoutDirection layoutDirection)
-        {
-            return layoutDirection == Core.Services.PlanGraphLayoutDirection.Horizontal
-                ? PlanLayoutMode.Horizontal
-                : PlanLayoutMode.Vertical;
         }
 
         public void ResetView()
@@ -637,27 +597,12 @@ namespace SqlXmlAnalyzer
 
         private void ReapplyLayout()
         {
-            if (_currentDoc == null || _currentNs == null || _masterNodes.Count == 0) return;
-
-            var relOps = _currentDoc.Descendants(_currentNs + "RelOp").ToList();
-            if (relOps.Count == 0) return;
-
-            var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-            foreach (var node in _masterNodes)
-            {
-                if (node.RawElement != null)
-                {
-                    nodeMap[node.RawElement] = node;
-                }
-            }
-
-            Core.Services.PlanGraphLayoutRefreshResult layout =
-                ApplyLayeredLayout(nodeMap, relOps, _currentNs);
-
-            foreach (var conn in _masterConnections)
-            {
-                conn.LayoutMode = ToPlanLayoutMode(layout.ConnectionLayout);
-            }
+            LayoutUiActionService.ReapplyLayout(
+                _currentDoc,
+                _currentNs,
+                _masterNodes,
+                _masterConnections,
+                LayoutMode);
         }
 
         private void ReapplyColorMode()
