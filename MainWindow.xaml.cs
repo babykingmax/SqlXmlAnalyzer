@@ -57,10 +57,8 @@ namespace SqlXmlAnalyzer
         private readonly DeadlockGraphEdgeElementFactory _deadlockGraphEdgeElementFactory;
         private readonly DeadlockCanvasInteractionBinder _deadlockCanvasInteractionBinder;
         private readonly DeadlockNodeInteractionBinder _deadlockNodeInteractionBinder;
-        private readonly Core.Services.DeadlockGraphLayoutService _deadlockGraphLayoutService;
-        private readonly Core.Services.DeadlockGraphEdgeService _deadlockGraphEdgeService;
+        private readonly DeadlockGraphRenderUiActionService _deadlockGraphRenderUiActionService;
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _deadlockGraphEdgeRegistryService;
-        private readonly Core.Services.DeadlockGraphPlacementService _deadlockGraphPlacementService;
         private readonly DeadlockGraphNodeElementFactory _deadlockGraphNodeElementFactory;
         private readonly DeadlockPlaybackUiActionService _deadlockPlaybackUiActionService;
         private readonly WorkspacePanelUiActionService _workspacePanelUiActionService;
@@ -285,13 +283,16 @@ namespace SqlXmlAnalyzer
                 new DeadlockNodeInteractionBinder(
                     deadlockNodeDragService ?? new Core.Services.DeadlockNodeDragService(),
                     deadlockGraphSelectionService ?? new Core.Services.DeadlockGraphSelectionService());
-            _deadlockGraphLayoutService = deadlockGraphLayoutService
+            Core.Services.DeadlockGraphLayoutService effectiveDeadlockGraphLayoutService =
+                deadlockGraphLayoutService
                 ?? new Core.Services.DeadlockGraphLayoutService();
-            _deadlockGraphEdgeService = deadlockGraphEdgeService
+            Core.Services.DeadlockGraphEdgeService effectiveDeadlockGraphEdgeService =
+                deadlockGraphEdgeService
                 ?? new Core.Services.DeadlockGraphEdgeService();
             _deadlockGraphEdgeRegistryService = deadlockGraphEdgeRegistryService
                 ?? new Core.Services.DeadlockGraphEdgeRegistryService();
-            _deadlockGraphPlacementService = deadlockGraphPlacementService
+            Core.Services.DeadlockGraphPlacementService effectiveDeadlockGraphPlacementService =
+                deadlockGraphPlacementService
                 ?? new Core.Services.DeadlockGraphPlacementService();
             _deadlockGraphNodeElementFactory = new DeadlockGraphNodeElementFactory();
             Core.Services.DeadlockPlaybackStateService effectiveDeadlockPlaybackStateService =
@@ -422,6 +423,42 @@ namespace SqlXmlAnalyzer
                 DeadlockCanvasBorder,
                 DeadlockScaleTransform,
                 DeadlockTranslateTransform);
+            _deadlockGraphRenderUiActionService =
+                new DeadlockGraphRenderUiActionService(
+                    effectiveDeadlockGraphLayoutService,
+                    effectiveDeadlockGraphPlacementService,
+                    effectiveDeadlockGraphEdgeService,
+                    DeadlockGraphCanvas,
+                    DeadlockCanvasBorder,
+                    DeadlockScaleTransform,
+                    DeadlockTranslateTransform,
+                    _nodePositions,
+                    _nodeElements,
+                    _edgesForDrawing,
+                    _arrowCache,
+                    _resourceGroupDetails,
+                    processPlacement => DrawDraggableProcessNode(
+                        processPlacement.Position.X,
+                        processPlacement.Position.Y,
+                        processPlacement.Width,
+                        processPlacement.Height,
+                        processPlacement.Process.PrimaryProcess,
+                        processPlacement.IsVictim,
+                        processPlacement.NodeId,
+                        processPlacement.Process.ThreadCount),
+                    resourcePlacement => DrawDraggableResourceNode(
+                        resourcePlacement.Position.X,
+                        resourcePlacement.Position.Y,
+                        resourcePlacement.Width,
+                        resourcePlacement.Height,
+                        resourcePlacement.Resource.RawResources.First(),
+                        resourcePlacement.NodeId,
+                        resourcePlacement.Resource.LockCount),
+                    edge => DrawArrowBetweenNodes(
+                        edge.FromId,
+                        edge.ToId,
+                        edge.Label,
+                        edge.IsWaitEdge));
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
@@ -760,88 +797,7 @@ namespace SqlXmlAnalyzer
 
         private void DrawDeadlockBipartiteGraph(DeadlockGraph graph)
         {
-            DeadlockGraphCanvas.Children.Clear();
-            _nodePositions.Clear();
-            _nodeElements.Clear();
-            _edgesForDrawing.Clear();
-            _arrowCache.Clear();
-            _resourceGroupDetails.Clear();
-
-            var layout = _deadlockGraphLayoutService.BuildLayout(graph);
-            var collapsedProcesses = layout.Processes;
-            var collapsedResources = layout.Resources;
-
-            foreach (var detail in layout.ResourceGroupDetails)
-            {
-                _resourceGroupDetails[detail.Key] = detail.Value;
-            }
-
-            if (collapsedProcesses.Count == 0)
-            {
-                var tb = new TextBlock { Text = "无有效的死锁进程数据", Margin = new Thickness(20), FontSize = 12, Foreground = Brushes.Gray };
-                DeadlockGraphCanvas.Children.Add(tb);
-                return;
-            }
-
-            // 还原缩放和平移，使每次打开新文件时居中
-            DeadlockScaleTransform.ScaleX = 1.0;
-            DeadlockScaleTransform.ScaleY = 1.0;
-            DeadlockTranslateTransform.X = 0;
-            DeadlockTranslateTransform.Y = 0;
-
-            double canvasWidth = DeadlockCanvasBorder.ActualWidth > 0 ? DeadlockCanvasBorder.ActualWidth : 800;
-            double canvasHeight = DeadlockCanvasBorder.ActualHeight > 0 ? DeadlockCanvasBorder.ActualHeight : 600;
-            Core.Services.DeadlockGraphPlacementResult placement =
-                _deadlockGraphPlacementService.PlaceNodes(
-                    layout,
-                    graph.VictimProcessId,
-                    canvasWidth,
-                    canvasHeight);
-
-            // 3. 绘制并排版独立的进程节点（环形分布）
-            foreach (Core.Services.DeadlockGraphProcessPlacement processPlacement in placement.Processes)
-            {
-                DrawDraggableProcessNode(
-                    processPlacement.Position.X,
-                    processPlacement.Position.Y,
-                    processPlacement.Width,
-                    processPlacement.Height,
-                    processPlacement.Process.PrimaryProcess,
-                    processPlacement.IsVictim,
-                    processPlacement.NodeId,
-                    processPlacement.Process.ThreadCount);
-            }
-
-            // 4. 绘制并排版独立的资源节点（环形分布）
-            foreach (Core.Services.DeadlockGraphResourcePlacement resourcePlacement in placement.Resources)
-            {
-                DrawDraggableResourceNode(
-                    resourcePlacement.Position.X,
-                    resourcePlacement.Position.Y,
-                    resourcePlacement.Width,
-                    resourcePlacement.Height,
-                    resourcePlacement.Resource.RawResources.First(),
-                    resourcePlacement.NodeId,
-                    resourcePlacement.Resource.LockCount);
-            }
-
-            foreach (Core.Services.DeadlockGraphEdge edge in _deadlockGraphEdgeService.BuildEdges(collapsedResources))
-            {
-                DrawArrowBetweenNodes(edge.FromId, edge.ToId, edge.Label, edge.IsWaitEdge);
-            }
-
-            // 添加底部提示标签
-            var tip = new TextBlock
-            {
-                Text = "⚡ [全景节点引擎已激活] 展示死锁快照中的所有独立并行线程与独立物理页锁（N节点环形拓扑），与底层 XML 的连接路径完全对应一致。",
-                FontSize = 10,
-                FontWeight = FontWeights.SemiBold,
-                Foreground = Brushes.SlateGray,
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            Canvas.SetLeft(tip, placement.TipPosition.X);
-            Canvas.SetTop(tip, placement.TipPosition.Y);
-            DeadlockGraphCanvas.Children.Add(tip);
+            _deadlockGraphRenderUiActionService.Render(graph);
         }
 
         private FrameworkElement DrawDraggableProcessNode(double x, double y, double w, double h, DeadlockProcess proc, bool isVictim, string id, int threadCount)
