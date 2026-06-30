@@ -47,6 +47,7 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphLayoutUiActionService LayoutUiActionService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
+        private static readonly PlanGraphNodeClipboardUiActionService NodeClipboardUiActionService = new();
         private static readonly PlanGraphNodeUiActionService NodeUiActionService = new();
         private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
 
@@ -307,33 +308,13 @@ namespace SqlXmlAnalyzer
         {
             if (sender is MenuItem mi && mi.DataContext is PlanNodeViewModel node)
             {
-                var clipboardService = new Core.Services.PlanGraphNodeClipboardService();
-                string text = clipboardService.BuildNodeInfo(ToClipboardInfo(node));
+                string text = NodeClipboardUiActionService.BuildNodeInfo(node);
                 System.Windows.Clipboard.SetText(text);
 
                 ToastPopup.IsOpen = true;
                 System.Threading.Tasks.Task.Delay(2000).ContinueWith(_ => Dispatcher.Invoke(() => ToastPopup.IsOpen = false));
 
             }
-        }
-
-        private static Core.Services.PlanGraphNodeClipboardInfo ToClipboardInfo(
-            PlanNodeViewModel node)
-        {
-            return new Core.Services.PlanGraphNodeClipboardInfo(
-                node.NodeId,
-                node.PhysicalOp,
-                node.LogicalOp,
-                node.SubtreeCost,
-                node.CostPercent,
-                node.EstRows,
-                node.ActualRows,
-                node.EstimatedDataSize,
-                node.ObjectDetails,
-                node.OutputList,
-                node.SeekPredicates,
-                node.Predicate,
-                node.Warnings);
         }
 
         private void ResetView_Click(object sender, RoutedEventArgs e) => ResetView();
