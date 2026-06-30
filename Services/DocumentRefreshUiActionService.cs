@@ -7,15 +7,29 @@ namespace SqlXmlAnalyzer.Services
     {
         private readonly Core.Services.DocumentRefreshActionService _refreshActionService;
         private readonly Action<string> _analyzeFile;
+        private readonly Core.ViewModels.MainViewModel _viewModel;
 
         public DocumentRefreshUiActionService(
             Core.Services.DocumentRefreshActionService refreshActionService,
-            Action<string> analyzeFile)
+            Action<string> analyzeFile,
+            Core.ViewModels.MainViewModel viewModel)
         {
             _refreshActionService = refreshActionService
                 ?? throw new ArgumentNullException(nameof(refreshActionService));
             _analyzeFile = analyzeFile
                 ?? throw new ArgumentNullException(nameof(analyzeFile));
+            _viewModel = viewModel
+                ?? throw new ArgumentNullException(nameof(viewModel));
+        }
+
+        public void RefreshDeadlockGraph()
+        {
+            RefreshDeadlockGraph(_viewModel.CurrentDeadlockFilePath);
+        }
+
+        public void RefreshPlanGraph()
+        {
+            RefreshPlanGraph(_viewModel.CurrentPlanFilePath);
         }
 
         public void RefreshDeadlockGraph(string? currentFilePath)

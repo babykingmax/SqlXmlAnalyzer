@@ -183,7 +183,8 @@ namespace SqlXmlAnalyzer
                 new DocumentRefreshUiActionService(
                     documentRefreshActionService
                     ?? new Core.Services.DocumentRefreshActionService(),
-                    AnalyzeFile);
+                    AnalyzeFile,
+                    ViewModel);
             Core.Services.PlanComparisonController effectivePlanComparisonController =
                 planComparisonController
                 ?? new Core.Services.PlanComparisonController();
@@ -201,7 +202,9 @@ namespace SqlXmlAnalyzer
             _mermaidDiagramUiActionService =
                 new MermaidDiagramUiActionService(
                     effectiveMermaidDiagramActionService,
-                    _browserLauncher);
+                    _browserLauncher,
+                    ViewModel,
+                    _showplanNs);
             _analysisReportController = analysisReportController
                 ?? new Core.Services.AnalysisReportController(_mermaidDiagramService);
             Core.Services.HtmlReportActionService effectiveHtmlReportActionService =
@@ -928,24 +931,22 @@ namespace SqlXmlAnalyzer
 
         private void RefreshDeadlockGraph_Click(object sender, RoutedEventArgs e)
         {
-            _documentRefreshUiActionService.RefreshDeadlockGraph(ViewModel.CurrentDeadlockFilePath);
+            _documentRefreshUiActionService.RefreshDeadlockGraph();
         }
 
         private void CopyDeadlockMermaid_Click(object sender, RoutedEventArgs e)
         {
-            _mermaidDiagramUiActionService.CopyDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
+            _mermaidDiagramUiActionService.CopyDeadlockDiagram();
         }
 
         private void RefreshPlanGraph_Click(object sender, RoutedEventArgs e)
         {
-            _documentRefreshUiActionService.RefreshPlanGraph(ViewModel.CurrentPlanFilePath);
+            _documentRefreshUiActionService.RefreshPlanGraph();
         }
 
         private void CopyPlanMermaid_Click(object sender, RoutedEventArgs e)
         {
-            _mermaidDiagramUiActionService.CopyPlanDiagram(
-                ViewModel.CurrentPlanDoc,
-                _showplanNs);
+            _mermaidDiagramUiActionService.CopyPlanDiagram();
         }
 
         private void PlanVisualTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -966,14 +967,12 @@ namespace SqlXmlAnalyzer
 
         private void OpenPlanMermaidInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            _mermaidDiagramUiActionService.OpenPlanDiagram(
-                ViewModel.CurrentPlanDoc,
-                _showplanNs);
+            _mermaidDiagramUiActionService.OpenPlanDiagram();
         }
 
         private void OpenDeadlockMermaidInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            _mermaidDiagramUiActionService.OpenDeadlockDiagram(ViewModel.CurrentDeadlockDoc);
+            _mermaidDiagramUiActionService.OpenDeadlockDiagram();
         }
 
         #endregion

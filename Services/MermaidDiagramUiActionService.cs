@@ -8,15 +8,43 @@ namespace SqlXmlAnalyzer.Services
     {
         private readonly Core.Services.MermaidDiagramActionService _actionService;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
+        private readonly Core.ViewModels.MainViewModel _viewModel;
+        private readonly XNamespace _showplanNamespace;
 
         public MermaidDiagramUiActionService(
             Core.Services.MermaidDiagramActionService actionService,
-            Core.Services.BrowserLauncher browserLauncher)
+            Core.Services.BrowserLauncher browserLauncher,
+            Core.ViewModels.MainViewModel viewModel,
+            XNamespace showplanNamespace)
         {
             _actionService = actionService
                 ?? throw new ArgumentNullException(nameof(actionService));
             _browserLauncher = browserLauncher
                 ?? throw new ArgumentNullException(nameof(browserLauncher));
+            _viewModel = viewModel
+                ?? throw new ArgumentNullException(nameof(viewModel));
+            _showplanNamespace = showplanNamespace
+                ?? throw new ArgumentNullException(nameof(showplanNamespace));
+        }
+
+        public void CopyDeadlockDiagram()
+        {
+            CopyDeadlockDiagram(_viewModel.CurrentDeadlockDoc);
+        }
+
+        public void CopyPlanDiagram()
+        {
+            CopyPlanDiagram(_viewModel.CurrentPlanDoc, _showplanNamespace);
+        }
+
+        public void OpenPlanDiagram()
+        {
+            OpenPlanDiagram(_viewModel.CurrentPlanDoc, _showplanNamespace);
+        }
+
+        public void OpenDeadlockDiagram()
+        {
+            OpenDeadlockDiagram(_viewModel.CurrentDeadlockDoc);
         }
 
         public void CopyDeadlockDiagram(XDocument? document)
