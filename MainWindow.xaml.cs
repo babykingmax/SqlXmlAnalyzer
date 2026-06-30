@@ -346,7 +346,8 @@ namespace SqlXmlAnalyzer
                     DeadlockResourcesList,
                     DeadlockPatternsListBox,
                     PlanOperatorTree,
-                    StatusTextBlock);
+                    StatusTextBlock,
+                    _deadlockGraphState);
             _deadlockAnalysisUiActionService =
                 new DeadlockAnalysisUiActionService(
                     ViewModel,

@@ -12,6 +12,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly ListBox _deadlockPatternsListBox;
         private readonly TreeView _planOperatorTree;
         private readonly TextBlock _statusTextBlock;
+        private readonly DeadlockGraphUiState _deadlockGraphState;
 
         public AnalysisResultsUiActionService(
             Core.ViewModels.MainViewModel viewModel,
@@ -20,7 +21,8 @@ namespace SqlXmlAnalyzer.Services
             ListBox deadlockResourcesList,
             ListBox deadlockPatternsListBox,
             TreeView planOperatorTree,
-            TextBlock statusTextBlock)
+            TextBlock statusTextBlock,
+            DeadlockGraphUiState deadlockGraphState)
         {
             _viewModel = viewModel
                 ?? throw new ArgumentNullException(nameof(viewModel));
@@ -36,18 +38,26 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(planOperatorTree));
             _statusTextBlock = statusTextBlock
                 ?? throw new ArgumentNullException(nameof(statusTextBlock));
+            _deadlockGraphState = deadlockGraphState
+                ?? throw new ArgumentNullException(nameof(deadlockGraphState));
         }
 
         public void ClearResults()
         {
             _viewModel.ClearResults();
             _deadlockGraphCanvas.Children.Clear();
+            _deadlockGraphState.NodePositions.Clear();
+            _deadlockGraphState.NodeElements.Clear();
+            _deadlockGraphState.EdgesForDrawing.Clear();
+            _deadlockGraphState.ArrowCache.Clear();
+            _deadlockGraphState.ResourceGroupDetails.Clear();
+            _deadlockGraphState.StepBadges.Clear();
             _deadlockProcessesList.ItemsSource = null;
             _deadlockResourcesList.ItemsSource = null;
             _deadlockPatternsListBox.ItemsSource = null;
             _planOperatorTree.Items.Clear();
             _deadlockPatternsListBox.Items.Clear();
-            _statusTextBlock.Text = "结果已清空";
+            _statusTextBlock.Text = "Results cleared";
         }
     }
 }
