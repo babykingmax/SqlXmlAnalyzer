@@ -42,7 +42,7 @@ namespace SqlXmlAnalyzer
     public partial class PlanGraphControl : UserControl, INotifyPropertyChanged
     {
         private static readonly PlanGraphCollapseUiActionService CollapseUiActionService = new();
-        private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
+        private static readonly PlanGraphConnectionUiActionService ConnectionUiActionService = new();
         private static readonly PlanGraphCostUiActionService CostUiActionService = new();
         private static readonly PlanGraphLayoutUiActionService LayoutUiActionService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
@@ -274,21 +274,13 @@ namespace SqlXmlAnalyzer
                 nodeMap,
                 initialLayout);
 
-            foreach (Core.Services.PlanGraphConnectionPair connection in
-                ConnectionBuilderService.BuildConnections(relOps, ns))
-            {
-                if (nodeMap.TryGetValue(connection.SourceRelOp, out PlanNodeViewModel? sourceVm)
-                    && nodeMap.TryGetValue(connection.TargetRelOp, out PlanNodeViewModel? targetVm))
-                {
-                    Connections.Add(new ConnectionViewModel
-                    {
-                        Source = sourceVm,
-                        Target = targetVm,
-                        LayoutMode = initialLayout,
-                        CurrentLinkMetric = initialLinkMetric
-                    });
-                }
-            }
+            ConnectionUiActionService.BuildConnections(
+                relOps,
+                ns,
+                nodeMap,
+                Connections,
+                initialLayout,
+                initialLinkMetric);
 
             // 添加到集合 (Nodify 会自动响应)
             _masterNodes = allNodes;
@@ -490,16 +482,7 @@ namespace SqlXmlAnalyzer
 
         private void UpdateConnectionHighlights()
         {
-            var highlightService = new Core.Services.PlanGraphConnectionHighlightService();
-            string? selectedNodeId = _selectedNode?.NodeId;
-
-            foreach (var conn in Connections)
-            {
-                conn.IsHighlighted = highlightService.ShouldHighlight(
-                    selectedNodeId,
-                    conn.Source?.NodeId,
-                    conn.Target?.NodeId);
-            }
+            ConnectionUiActionService.UpdateHighlights(_selectedNode?.NodeId, Connections);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
