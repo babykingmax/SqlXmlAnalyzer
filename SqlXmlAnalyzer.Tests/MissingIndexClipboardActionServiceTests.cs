@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MissingIndexClipboardActionStatus.Ready);
             result.Text.Should().Be("CREATE INDEX IX_Test ON dbo.Orders(Id);");
-            result.SuccessMessage.Should().Be("CREATE INDEX DDL 已成功复制到剪贴板！");
+            result.SuccessMessage.Should().Be("CREATE INDEX DDL copied to clipboard.");
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MissingIndexClipboardActionStatus.Ready);
             result.Text.Should().Be("DROP INDEX IX_Test ON dbo.Orders;");
-            result.SuccessMessage.Should().Be("DROP INDEX (回滚) DDL 已成功复制到剪贴板！");
+            result.SuccessMessage.Should().Be("DROP INDEX rollback DDL copied to clipboard.");
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace SqlXmlAnalyzer.Tests
             result.Text.Should().Contain("SQL Server Missing Index Deployment Bundle");
             result.Text.Should().Contain("CREATE NONCLUSTERED INDEX [IX_Orders_CustomerId]");
             result.Text.Should().Contain("DROP INDEX [IX_Orders_CustomerId] ON [sales].[Orders];");
-            result.SuccessMessage.Should().Be("完整部署包 (包含安全事务与回滚脚本) 已复制到剪贴板！");
+            result.SuccessMessage.Should().Be("Deployment bundle copied to clipboard.");
         }
 
         [Fact]

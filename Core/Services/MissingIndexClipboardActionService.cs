@@ -29,14 +29,14 @@ namespace SqlXmlAnalyzer.Core.Services
         {
             return BuildDdlResult(
                 ddl,
-                "CREATE INDEX DDL 已成功复制到剪贴板！");
+                "CREATE INDEX DDL copied to clipboard.");
         }
 
         public MissingIndexClipboardActionResult BuildRollbackScript(string? ddl)
         {
             return BuildDdlResult(
                 ddl,
-                "DROP INDEX (回滚) DDL 已成功复制到剪贴板！");
+                "DROP INDEX rollback DDL copied to clipboard.");
         }
 
         public MissingIndexClipboardActionResult BuildDeploymentBundle(
@@ -50,7 +50,7 @@ namespace SqlXmlAnalyzer.Core.Services
             return new MissingIndexClipboardActionResult(
                 MissingIndexClipboardActionStatus.Ready,
                 _deploymentScriptService.BuildDeploymentBundle(suggestion),
-                "完整部署包 (包含安全事务与回滚脚本) 已复制到剪贴板！");
+                "Deployment bundle copied to clipboard.");
         }
 
         private static MissingIndexClipboardActionResult BuildDdlResult(

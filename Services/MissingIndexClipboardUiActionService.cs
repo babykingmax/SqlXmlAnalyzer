@@ -44,7 +44,7 @@ namespace SqlXmlAnalyzer.Services
             if (result.Status == Core.Services.MissingIndexClipboardActionStatus.Ready)
             {
                 Clipboard.SetText(result.Text);
-                MessageBox.Show(result.SuccessMessage, "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(result.SuccessMessage, "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }
