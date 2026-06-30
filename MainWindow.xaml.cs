@@ -75,27 +75,27 @@ namespace SqlXmlAnalyzer
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _shellActionService.HandleTitleBarMouseLeftButtonDown(this, e.ClickCount);
+            _shellActionService.HandleTitleBarMouseLeftButtonDown(e.ClickCount);
         }
 
         private void Minimize_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _shellActionService.Minimize(this);
+            _shellActionService.Minimize();
         }
 
         private void Maximize_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _shellActionService.ToggleMaximize(this);
+            _shellActionService.ToggleMaximize();
         }
 
         private void Close_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _shellActionService.Close(this);
+            _shellActionService.Close();
         }
 
         private void ThemeToggle_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _shellActionService.SetTheme(ThemeToggle.IsChecked == true);
+            _shellActionService.SetTheme();
         }
 
         public MainWindow(
@@ -163,7 +163,11 @@ namespace SqlXmlAnalyzer
                 analysisClipboardService ?? new Core.Services.AnalysisClipboardService(),
                 logFolderActionService ?? new Core.Services.LogFolderActionService(),
                 _browserLauncher,
-                fileAssociationRegistrationService ?? new Core.Services.FileAssociationRegistrationService());
+                fileAssociationRegistrationService ?? new Core.Services.FileAssociationRegistrationService(),
+                this,
+                MainTabControl,
+                ViewModel,
+                () => ThemeToggle.IsChecked == true);
             Core.Services.IPdfWordReportExporter effectiveReportExporter =
                 pdfWordReportService ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
             _documentOpenService = documentOpenService
@@ -838,10 +842,7 @@ namespace SqlXmlAnalyzer
 
         private void CopyAnalysisResult_Click(object sender, RoutedEventArgs e)
         {
-            _shellActionService.CopyAnalysisResult(
-                MainTabControl.SelectedIndex,
-                ViewModel.DeadlockPatternText,
-                ViewModel.PlanWarningsText);
+            _shellActionService.CopyAnalysisResult();
         }
 
         private void CopyRefactoredSql_Click(object sender, RoutedEventArgs e)

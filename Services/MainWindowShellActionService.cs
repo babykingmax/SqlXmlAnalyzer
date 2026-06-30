@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using MaterialDesignThemes.Wpf;
 
 namespace SqlXmlAnalyzer.Services
@@ -10,12 +11,20 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.LogFolderActionService _logFolderActionService;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
         private readonly Core.Services.FileAssociationRegistrationService _fileAssociationRegistrationService;
+        private readonly Window _owner;
+        private readonly TabControl _mainTabControl;
+        private readonly Core.ViewModels.MainViewModel _viewModel;
+        private readonly Func<bool> _useDarkThemeProvider;
 
         public MainWindowShellActionService(
             Core.Services.AnalysisClipboardService clipboardService,
             Core.Services.LogFolderActionService logFolderActionService,
             Core.Services.BrowserLauncher browserLauncher,
-            Core.Services.FileAssociationRegistrationService fileAssociationRegistrationService)
+            Core.Services.FileAssociationRegistrationService fileAssociationRegistrationService,
+            Window owner,
+            TabControl mainTabControl,
+            Core.ViewModels.MainViewModel viewModel,
+            Func<bool> useDarkThemeProvider)
         {
             _clipboardService = clipboardService
                 ?? throw new ArgumentNullException(nameof(clipboardService));
@@ -25,6 +34,21 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(browserLauncher));
             _fileAssociationRegistrationService = fileAssociationRegistrationService
                 ?? throw new ArgumentNullException(nameof(fileAssociationRegistrationService));
+            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+            _mainTabControl = mainTabControl
+                ?? throw new ArgumentNullException(nameof(mainTabControl));
+            _viewModel = viewModel
+                ?? throw new ArgumentNullException(nameof(viewModel));
+            _useDarkThemeProvider = useDarkThemeProvider
+                ?? throw new ArgumentNullException(nameof(useDarkThemeProvider));
+        }
+
+        public void CopyAnalysisResult()
+        {
+            CopyAnalysisResult(
+                _mainTabControl.SelectedIndex,
+                _viewModel.DeadlockPatternText,
+                _viewModel.PlanWarningsText);
         }
 
         public void CopyAnalysisResult(
@@ -118,6 +142,11 @@ namespace SqlXmlAnalyzer.Services
             global::System.Windows.Application.Current.Shutdown();
         }
 
+        public void HandleTitleBarMouseLeftButtonDown(int clickCount)
+        {
+            HandleTitleBarMouseLeftButtonDown(_owner, clickCount);
+        }
+
         public void HandleTitleBarMouseLeftButtonDown(Window window, int clickCount)
         {
             ArgumentNullException.ThrowIfNull(window);
@@ -138,6 +167,11 @@ namespace SqlXmlAnalyzer.Services
             window.WindowState = WindowState.Minimized;
         }
 
+        public void Minimize()
+        {
+            Minimize(_owner);
+        }
+
         public void ToggleMaximize(Window window)
         {
             ArgumentNullException.ThrowIfNull(window);
@@ -147,11 +181,26 @@ namespace SqlXmlAnalyzer.Services
                 : WindowState.Maximized;
         }
 
+        public void ToggleMaximize()
+        {
+            ToggleMaximize(_owner);
+        }
+
         public void Close(Window window)
         {
             ArgumentNullException.ThrowIfNull(window);
 
             window.Close();
+        }
+
+        public void Close()
+        {
+            Close(_owner);
+        }
+
+        public void SetTheme()
+        {
+            SetTheme(_useDarkThemeProvider());
         }
 
         public void SetTheme(bool useDarkTheme)
