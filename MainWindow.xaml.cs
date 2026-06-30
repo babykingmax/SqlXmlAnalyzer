@@ -69,8 +69,6 @@ namespace SqlXmlAnalyzer
         private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
         private List<Core.Services.DeadlockGraphEdge> _edgesForDrawing = new();
 
-        private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
-        private DeadlockPlaybackViewModel? _playbackViewModel;
         private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -683,8 +681,9 @@ namespace SqlXmlAnalyzer
 
                 DeadlockAnalysisUiResult uiResult =
                     _deadlockAnalysisUiActionService.Apply(documentResult);
-                _currentTimeline = uiResult.Timeline;
-                _playbackViewModel = uiResult.PlaybackViewModel;
+                _deadlockPlaybackUiActionService.SetCurrentPlayback(
+                    uiResult.Timeline,
+                    uiResult.PlaybackViewModel);
                 UpdatePlaybackGraphVisibility();
                 StatusTextBlock.Text = uiResult.StatusText;
             }
@@ -765,8 +764,6 @@ namespace SqlXmlAnalyzer
         private void UpdatePlaybackGraphVisibility()
         {
             _deadlockPlaybackUiActionService.UpdateGraphVisibility(
-                _currentTimeline,
-                _playbackViewModel,
                 PlaybackModeToggle.IsChecked == true,
                 _nodeElements,
                 _arrowCache,
@@ -776,14 +773,12 @@ namespace SqlXmlAnalyzer
         private void PlaybackModeToggle_Checked(object sender, RoutedEventArgs e)
         {
             _deadlockPlaybackUiActionService.ShowPlayback(
-                _playbackViewModel,
                 UpdatePlaybackGraphVisibility);
         }
 
         private void PlaybackModeToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             _deadlockPlaybackUiActionService.HidePlayback(
-                _playbackViewModel,
                 _nodeElements,
                 _arrowCache,
                 _edgesForDrawing,

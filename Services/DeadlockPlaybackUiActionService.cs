@@ -16,6 +16,8 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _edgeRegistryService;
         private readonly Canvas _graphCanvas;
         private readonly Control _playbackControl;
+        private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
+        private DeadlockPlaybackViewModel? _playbackViewModel;
 
         public DeadlockPlaybackUiActionService(
             Core.Services.DeadlockPlaybackStateService playbackStateService,
@@ -41,30 +43,35 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(playbackControl));
         }
 
-        public void ShowPlayback(
-            DeadlockPlaybackViewModel? playbackViewModel,
-            Action updateVisibility)
+        public void SetCurrentPlayback(
+            DeadlockTimelineParser.ParsedDeadlock? currentTimeline,
+            DeadlockPlaybackViewModel? playbackViewModel)
+        {
+            _currentTimeline = currentTimeline;
+            _playbackViewModel = playbackViewModel;
+        }
+
+        public void ShowPlayback(Action updateVisibility)
         {
             _playbackControl.Visibility = Visibility.Visible;
-            if (playbackViewModel != null)
+            if (_playbackViewModel != null)
             {
-                playbackViewModel.CurrentStep = 0;
+                _playbackViewModel.CurrentStep = 0;
             }
 
             updateVisibility();
         }
 
         public void HidePlayback(
-            DeadlockPlaybackViewModel? playbackViewModel,
             IReadOnlyDictionary<string, FrameworkElement> nodeElements,
             IReadOnlyDictionary<(string, string), DeadlockGraphEdgeElements> arrowCache,
             IReadOnlyList<Core.Services.DeadlockGraphEdge> edgesForDrawing,
             IEnumerable<Border> stepBadges)
         {
             _playbackControl.Visibility = Visibility.Collapsed;
-            if (playbackViewModel != null)
+            if (_playbackViewModel != null)
             {
-                playbackViewModel.IsPlaying = false;
+                _playbackViewModel.IsPlaying = false;
             }
 
             foreach (FrameworkElement element in nodeElements.Values)
@@ -92,23 +99,21 @@ namespace SqlXmlAnalyzer.Services
         }
 
         public void UpdateGraphVisibility(
-            DeadlockTimelineParser.ParsedDeadlock? currentTimeline,
-            DeadlockPlaybackViewModel? playbackViewModel,
             bool isPlaybackEnabled,
             IReadOnlyDictionary<string, FrameworkElement> nodeElements,
             IReadOnlyDictionary<(string, string), DeadlockGraphEdgeElements> arrowCache,
             Dictionary<(string, string), Border> stepBadges)
         {
-            if (currentTimeline == null || playbackViewModel == null || !isPlaybackEnabled)
+            if (_currentTimeline == null || _playbackViewModel == null || !isPlaybackEnabled)
             {
                 return;
             }
 
             Core.Services.DeadlockPlaybackGraphState playbackState =
                 _playbackStateService.BuildState(
-                    currentTimeline,
-                    playbackViewModel.CurrentStep,
-                    playbackViewModel.FocusCriticalPath,
+                    _currentTimeline,
+                    _playbackViewModel.CurrentStep,
+                    _playbackViewModel.FocusCriticalPath,
                     nodeElements.Keys,
                     CreatePlaybackEdgeKeys(arrowCache.Keys));
 
