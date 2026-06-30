@@ -24,6 +24,19 @@ namespace SqlXmlAnalyzer.Core.Services
         public bool IsSuccess => ErrorMessage == null;
     }
 
+    public enum DocumentDropActionStatus
+    {
+        Ready,
+        Empty,
+        Unsupported
+    }
+
+    public sealed record DocumentDropActionResult(
+        DocumentDropActionStatus Status,
+        AnalysisDocumentKind Kind,
+        string FilePath,
+        string? UserMessage);
+
     public sealed class DocumentOpenService
     {
         private const string ShowPlanNamespace =
@@ -64,6 +77,34 @@ namespace SqlXmlAnalyzer.Core.Services
             }
 
             return AnalysisDocumentKind.Unknown;
+        }
+
+        public DocumentDropActionResult BuildDropAction(string? filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                return new DocumentDropActionResult(
+                    DocumentDropActionStatus.Empty,
+                    AnalysisDocumentKind.Unknown,
+                    string.Empty,
+                    null);
+            }
+
+            AnalysisDocumentKind kind = ClassifyDroppedPath(filePath);
+            if (kind == AnalysisDocumentKind.Unknown)
+            {
+                return new DocumentDropActionResult(
+                    DocumentDropActionStatus.Unsupported,
+                    kind,
+                    filePath,
+                    "Unsupported file type. Choose a deadlock XML/XDL/XEL file or an execution plan .sqlplan file.");
+            }
+
+            return new DocumentDropActionResult(
+                DocumentDropActionStatus.Ready,
+                kind,
+                filePath,
+                null);
         }
 
         public async Task<DocumentOpenResult> OpenAsync(

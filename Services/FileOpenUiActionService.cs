@@ -73,21 +73,32 @@ namespace SqlXmlAnalyzer.Services
                 return;
             }
 
-            string file = files[0];
-            AnalysisDocumentKind kind = _documentOpenService.ClassifyDroppedPath(file);
-            switch (kind)
+            Core.Services.DocumentDropActionResult action =
+                _documentOpenService.BuildDropAction(files[0]);
+
+            switch (action.Status)
+            {
+                case Core.Services.DocumentDropActionStatus.Empty:
+                    return;
+                case Core.Services.DocumentDropActionStatus.Unsupported:
+                    MessageBox.Show(
+                        action.UserMessage,
+                        "Unsupported file",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+            }
+
+            switch (action.Kind)
             {
                 case AnalysisDocumentKind.DeadlockXml:
-                    analyzeDeadlockFile(file);
+                    analyzeDeadlockFile(action.FilePath);
                     break;
                 case AnalysisDocumentKind.XelDeadlockTrace:
-                    await analyzeXelFileAsync(file);
+                    await analyzeXelFileAsync(action.FilePath);
                     break;
                 case AnalysisDocumentKind.ExecutionPlanXml:
-                    analyzeExecutionPlanFile(file);
-                    break;
-                default:
-                    MessageBox.Show("不支持的文件类型，请选择死锁 XML/XDL/XEL 文件或执行计划 .sqlplan 文件。");
+                    analyzeExecutionPlanFile(action.FilePath);
                     break;
             }
         }

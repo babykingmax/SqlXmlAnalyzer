@@ -135,6 +135,45 @@ namespace SqlXmlAnalyzer.Tests
             kind.Should().Be(expected);
         }
 
+        [Fact]
+        public void BuildDropAction_WhenPathIsEmpty_ReturnsEmpty()
+        {
+            DocumentDropActionResult result = _service.BuildDropAction(" ");
+
+            result.Status.Should().Be(DocumentDropActionStatus.Empty);
+            result.Kind.Should().Be(AnalysisDocumentKind.Unknown);
+            result.FilePath.Should().BeEmpty();
+            result.UserMessage.Should().BeNull();
+        }
+
+        [Fact]
+        public void BuildDropAction_WhenPathIsUnsupported_ReturnsUserMessage()
+        {
+            DocumentDropActionResult result = _service.BuildDropAction("notes.txt");
+
+            result.Status.Should().Be(DocumentDropActionStatus.Unsupported);
+            result.Kind.Should().Be(AnalysisDocumentKind.Unknown);
+            result.FilePath.Should().Be("notes.txt");
+            result.UserMessage.Should().Be(
+                "Unsupported file type. Choose a deadlock XML/XDL/XEL file or an execution plan .sqlplan file.");
+        }
+
+        [Theory]
+        [InlineData("deadlock.xdl", AnalysisDocumentKind.DeadlockXml)]
+        [InlineData("trace.xel", AnalysisDocumentKind.XelDeadlockTrace)]
+        [InlineData("plan.sqlplan", AnalysisDocumentKind.ExecutionPlanXml)]
+        public void BuildDropAction_WhenPathIsSupported_ReturnsReady(
+            string fileName,
+            AnalysisDocumentKind expected)
+        {
+            DocumentDropActionResult result = _service.BuildDropAction(fileName);
+
+            result.Status.Should().Be(DocumentDropActionStatus.Ready);
+            result.Kind.Should().Be(expected);
+            result.FilePath.Should().Be(fileName);
+            result.UserMessage.Should().BeNull();
+        }
+
         private string WriteFile(string fileName, string contents)
         {
             string path = Path.Combine(_tempDirectory, fileName);
