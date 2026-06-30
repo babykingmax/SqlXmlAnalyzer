@@ -14,14 +14,15 @@ namespace SqlXmlAnalyzer.Tests
         public async Task OpenSelectedHistorySnapshotAsync_WhenSelectionIsMissing_DoesNotAnalyze()
         {
             var viewModel = new MainViewModel();
+            object? selectedItem = new object();
             var service = new TuningSessionUiActionService(
                 new TuningSessionActionService(new FakeFileDialogService()),
-                viewModel);
+                viewModel,
+                () => selectedItem);
             using var sessions = new AnalysisSessionCoordinator();
             bool analyzed = false;
 
             await service.OpenSelectedHistorySnapshotAsync(
-                selectedItem: new object(),
                 sessions,
                 (_, _, _, _) =>
                 {
@@ -37,9 +38,6 @@ namespace SqlXmlAnalyzer.Tests
         public async Task OpenSelectedHistorySnapshotAsync_WhenSelectionIsSnapshot_UpdatesPathAndAnalyzes()
         {
             var viewModel = new MainViewModel();
-            var service = new TuningSessionUiActionService(
-                new TuningSessionActionService(new FakeFileDialogService()),
-                viewModel);
             using var sessions = new AnalysisSessionCoordinator();
             XDocument document = new(new XElement("ShowPlanXML"));
             var snapshot = new PlanSnapshot
@@ -47,13 +45,17 @@ namespace SqlXmlAnalyzer.Tests
                 FilePath = "C:\\Plans\\captured.sqlplan",
                 Document = document
             };
+            object? selectedItem = snapshot;
+            var service = new TuningSessionUiActionService(
+                new TuningSessionActionService(new FakeFileDialogService()),
+                viewModel,
+                () => selectedItem);
             XDocument? analyzedDocument = null;
             string? analyzedPath = null;
             long requestId = 0;
             CancellationToken token = CancellationToken.None;
 
             await service.OpenSelectedHistorySnapshotAsync(
-                snapshot,
                 sessions,
                 (doc, path, id, cancellationToken) =>
                 {

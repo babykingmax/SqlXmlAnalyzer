@@ -429,7 +429,8 @@ namespace SqlXmlAnalyzer
             _tuningSessionUiActionService =
                 new TuningSessionUiActionService(
                     effectiveTuningSessionActionService,
-                    ViewModel);
+                    ViewModel,
+                    () => TuningHistoryListView.SelectedItem);
             _deadlockCanvasInteractionBinder.Attach(
                 DeadlockGraphCanvas,
                 DeadlockCanvasBorder,
@@ -977,16 +978,11 @@ namespace SqlXmlAnalyzer
 
         #endregion
 
-        private void PlanNodifyGraph_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         // --- 调优历史与 A/B 并排对比事件处理器 ---
         private async void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             await _tuningSessionUiActionService.OpenSelectedHistorySnapshotAsync(
-                TuningHistoryListView.SelectedItem,
                 _analysisSessions,
                 AnalyzeExecutionPlanDocumentAsync);
         }
@@ -1006,10 +1002,6 @@ namespace SqlXmlAnalyzer
             _tuningSessionUiActionService.SwapPlans();
         }
 
-        private void StatisticsHistogramView_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         #region 可视化看板与交互展示 (GUI Dashboard Integration & Interactive Visualization)
 

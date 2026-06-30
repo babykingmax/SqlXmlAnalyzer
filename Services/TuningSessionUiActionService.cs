@@ -10,15 +10,19 @@ namespace SqlXmlAnalyzer.Services
     {
         private readonly Core.Services.TuningSessionActionService _actionService;
         private readonly Core.ViewModels.MainViewModel _viewModel;
+        private readonly Func<object?> _selectedSnapshotProvider;
 
         public TuningSessionUiActionService(
             Core.Services.TuningSessionActionService actionService,
-            Core.ViewModels.MainViewModel viewModel)
+            Core.ViewModels.MainViewModel viewModel,
+            Func<object?> selectedSnapshotProvider)
         {
             _actionService = actionService
                 ?? throw new ArgumentNullException(nameof(actionService));
             _viewModel = viewModel
                 ?? throw new ArgumentNullException(nameof(viewModel));
+            _selectedSnapshotProvider = selectedSnapshotProvider
+                ?? throw new ArgumentNullException(nameof(selectedSnapshotProvider));
         }
 
         public PlanSnapshot? GetSelectedHistorySnapshot(object? selectedItem)
@@ -32,14 +36,13 @@ namespace SqlXmlAnalyzer.Services
         }
 
         public async Task OpenSelectedHistorySnapshotAsync(
-            object? selectedItem,
             Core.Services.AnalysisSessionCoordinator analysisSessions,
             Func<XDocument, string, long, CancellationToken, Task> analyzeExecutionPlanDocumentAsync)
         {
             ArgumentNullException.ThrowIfNull(analysisSessions);
             ArgumentNullException.ThrowIfNull(analyzeExecutionPlanDocumentAsync);
 
-            PlanSnapshot? snapshot = GetSelectedHistorySnapshot(selectedItem);
+            PlanSnapshot? snapshot = GetSelectedHistorySnapshot(_selectedSnapshotProvider());
             if (snapshot == null)
             {
                 return;
