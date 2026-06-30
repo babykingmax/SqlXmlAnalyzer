@@ -19,6 +19,8 @@ namespace SqlXmlAnalyzer.Services
         private readonly Action<Core.Services.DeadlockGraphProcessPlacement> _drawProcessNode;
         private readonly Action<Core.Services.DeadlockGraphResourcePlacement> _drawResourceNode;
         private readonly Action<Core.Services.DeadlockGraphEdge> _drawEdge;
+        private readonly Action<Action> _invokeWhenLoaded;
+        private readonly Action _zoomToFit;
 
         public DeadlockGraphRenderUiActionService(
             Core.Services.DeadlockGraphLayoutService layoutService,
@@ -31,7 +33,9 @@ namespace SqlXmlAnalyzer.Services
             DeadlockGraphUiState graphState,
             Action<Core.Services.DeadlockGraphProcessPlacement> drawProcessNode,
             Action<Core.Services.DeadlockGraphResourcePlacement> drawResourceNode,
-            Action<Core.Services.DeadlockGraphEdge> drawEdge)
+            Action<Core.Services.DeadlockGraphEdge> drawEdge,
+            Action<Action> invokeWhenLoaded,
+            Action zoomToFit)
         {
             _layoutService = layoutService ?? throw new ArgumentNullException(nameof(layoutService));
             _placementService = placementService ?? throw new ArgumentNullException(nameof(placementService));
@@ -46,6 +50,15 @@ namespace SqlXmlAnalyzer.Services
             _drawResourceNode = drawResourceNode
                 ?? throw new ArgumentNullException(nameof(drawResourceNode));
             _drawEdge = drawEdge ?? throw new ArgumentNullException(nameof(drawEdge));
+            _invokeWhenLoaded = invokeWhenLoaded
+                ?? throw new ArgumentNullException(nameof(invokeWhenLoaded));
+            _zoomToFit = zoomToFit ?? throw new ArgumentNullException(nameof(zoomToFit));
+        }
+
+        public void RenderAndZoomToFit(DeadlockGraph graph)
+        {
+            Render(graph);
+            _invokeWhenLoaded(_zoomToFit);
         }
 
         public void Render(DeadlockGraph graph)

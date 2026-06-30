@@ -356,7 +356,7 @@ namespace SqlXmlAnalyzer
                     DeadlockGraphCanvas,
                     PlaybackControl,
                     MainTabControl,
-                    BuildDeadlockWaitForTree,
+                    RenderDeadlockGraphAndZoom,
                     (s, e) => UpdatePlaybackGraphVisibility(),
                     _deadlockGraphState.StepBadges);
             _deadlockPlaybackUiActionService =
@@ -451,7 +451,11 @@ namespace SqlXmlAnalyzer
                     _deadlockGraphState,
                     _deadlockGraphElementUiActionService.DrawProcessNode,
                     _deadlockGraphElementUiActionService.DrawResourceNode,
-                    _deadlockGraphElementUiActionService.DrawEdge);
+                    _deadlockGraphElementUiActionService.DrawEdge,
+                    action => Dispatcher.BeginInvoke(
+                        action,
+                        System.Windows.Threading.DispatcherPriority.Loaded),
+                    _deadlockViewportUiActionService.ZoomToFit);
             _documentAnalysisUiActionService =
                 new DocumentAnalysisUiActionService(
                     _analysisSessions,
@@ -589,17 +593,9 @@ namespace SqlXmlAnalyzer
             _deadlockPlaybackUiActionService.HidePlayback();
         }
 
-        private void BuildDeadlockWaitForTree(DeadlockGraph graph)
+        private void RenderDeadlockGraphAndZoom(DeadlockGraph graph)
         {
-            DrawDeadlockBipartiteGraph(graph);
-            Dispatcher.BeginInvoke(
-                new Action(_deadlockViewportUiActionService.ZoomToFit),
-                System.Windows.Threading.DispatcherPriority.Loaded);
-        }
-
-        private void DrawDeadlockBipartiteGraph(DeadlockGraph graph)
-        {
-            _deadlockGraphRenderUiActionService.Render(graph);
+            _deadlockGraphRenderUiActionService.RenderAndZoomToFit(graph);
         }
 
         #endregion
