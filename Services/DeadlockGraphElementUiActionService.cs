@@ -16,11 +16,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly Canvas _graphCanvas;
         private readonly ListView _processesList;
         private readonly ListView _resourcesList;
-        private readonly Dictionary<string, Point> _nodePositions;
-        private readonly Dictionary<string, FrameworkElement> _nodeElements;
-        private readonly List<Core.Services.DeadlockGraphEdge> _edgesForDrawing;
-        private readonly Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache;
-        private readonly Dictionary<string, (string LockType, string ObjectName)> _resourceGroupDetails;
+        private readonly DeadlockGraphUiState _graphState;
 
         public DeadlockGraphElementUiActionService(
             DeadlockGraphNodeElementFactory nodeElementFactory,
@@ -31,11 +27,7 @@ namespace SqlXmlAnalyzer.Services
             Canvas graphCanvas,
             ListView processesList,
             ListView resourcesList,
-            Dictionary<string, Point> nodePositions,
-            Dictionary<string, FrameworkElement> nodeElements,
-            List<Core.Services.DeadlockGraphEdge> edgesForDrawing,
-            Dictionary<(string, string), DeadlockGraphEdgeElements> arrowCache,
-            Dictionary<string, (string LockType, string ObjectName)> resourceGroupDetails)
+            DeadlockGraphUiState graphState)
         {
             _nodeElementFactory = nodeElementFactory
                 ?? throw new ArgumentNullException(nameof(nodeElementFactory));
@@ -50,12 +42,7 @@ namespace SqlXmlAnalyzer.Services
             _graphCanvas = graphCanvas ?? throw new ArgumentNullException(nameof(graphCanvas));
             _processesList = processesList ?? throw new ArgumentNullException(nameof(processesList));
             _resourcesList = resourcesList ?? throw new ArgumentNullException(nameof(resourcesList));
-            _nodePositions = nodePositions ?? throw new ArgumentNullException(nameof(nodePositions));
-            _nodeElements = nodeElements ?? throw new ArgumentNullException(nameof(nodeElements));
-            _edgesForDrawing = edgesForDrawing ?? throw new ArgumentNullException(nameof(edgesForDrawing));
-            _arrowCache = arrowCache ?? throw new ArgumentNullException(nameof(arrowCache));
-            _resourceGroupDetails = resourceGroupDetails
-                ?? throw new ArgumentNullException(nameof(resourceGroupDetails));
+            _graphState = graphState ?? throw new ArgumentNullException(nameof(graphState));
         }
 
         public void DrawProcessNode(Core.Services.DeadlockGraphProcessPlacement placement)
@@ -87,7 +74,7 @@ namespace SqlXmlAnalyzer.Services
         {
             Core.Services.DeadlockConnectionPoints points =
                 _geometryService.CalculateConnectionPoints(
-                    _nodePositions,
+                    _graphState.NodePositions,
                     edge.FromId,
                     edge.ToId);
 
@@ -101,8 +88,8 @@ namespace SqlXmlAnalyzer.Services
             _graphCanvas.Children.Add(elements.ArrowHead);
             _graphCanvas.Children.Add(elements.Label);
 
-            _arrowCache[(edge.FromId, edge.ToId)] = elements;
-            _edgesForDrawing.Add(edge);
+            _graphState.ArrowCache[(edge.FromId, edge.ToId)] = elements;
+            _graphState.EdgesForDrawing.Add(edge);
         }
 
         private void AddNode(
@@ -115,15 +102,15 @@ namespace SqlXmlAnalyzer.Services
             Canvas.SetTop(element, y);
             _graphCanvas.Children.Add(element);
 
-            _nodeElements[nodeId] = element;
-            _nodePositions[nodeId] = new Point(x, y);
+            _graphState.NodeElements[nodeId] = element;
+            _graphState.NodePositions[nodeId] = new Point(x, y);
 
             _nodeInteractionBinder.Attach(
                 element,
                 nodeId,
                 _graphCanvas,
-                _nodePositions,
-                _resourceGroupDetails,
+                _graphState.NodePositions,
+                _graphState.ResourceGroupDetails,
                 _processesList,
                 _resourcesList,
                 UpdateConnectionsForNode);
@@ -132,16 +119,16 @@ namespace SqlXmlAnalyzer.Services
         private void UpdateConnectionsForNode(string movedId)
         {
             IReadOnlyList<Core.Services.DeadlockGraphEdge> edgesToUpdate =
-                _edgeRegistryService.FindEdgesForNode(_edgesForDrawing, movedId);
+                _edgeRegistryService.FindEdgesForNode(_graphState.EdgesForDrawing, movedId);
 
             foreach (Core.Services.DeadlockGraphEdge edge in edgesToUpdate)
             {
                 var key = (edge.FromId, edge.ToId);
-                if (_arrowCache.TryGetValue(key, out DeadlockGraphEdgeElements? cached))
+                if (_graphState.ArrowCache.TryGetValue(key, out DeadlockGraphEdgeElements? cached))
                 {
                     Core.Services.DeadlockConnectionPoints points =
                         _geometryService.CalculateConnectionPoints(
-                            _nodePositions,
+                            _graphState.NodePositions,
                             edge.FromId,
                             edge.ToId);
                     _edgeElementFactory.UpdateEdge(cached, points);

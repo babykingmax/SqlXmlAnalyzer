@@ -65,11 +65,7 @@ namespace SqlXmlAnalyzer
         private readonly SqlQuickFixUiActionService _sqlQuickFixUiActionService;
         private readonly PlanStatisticsUiActionService _planStatisticsUiActionService;
 
-        private Dictionary<string, FrameworkElement> _nodeElements = new Dictionary<string, FrameworkElement>();
-        private Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache = new Dictionary<(string, string), DeadlockGraphEdgeElements>();
-        private List<Core.Services.DeadlockGraphEdge> _edgesForDrawing = new();
-
-        private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
+        private readonly DeadlockGraphUiState _deadlockGraphState = new();
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -362,7 +358,7 @@ namespace SqlXmlAnalyzer
                     MainTabControl,
                     BuildDeadlockWaitForTree,
                     (s, e) => UpdatePlaybackGraphVisibility(),
-                    _stepBadges);
+                    _deadlockGraphState.StepBadges);
             _deadlockPlaybackUiActionService =
                 new DeadlockPlaybackUiActionService(
                     effectiveDeadlockPlaybackStateService,
@@ -371,7 +367,8 @@ namespace SqlXmlAnalyzer
                     effectiveDeadlockStepBadgeService,
                     effectiveDeadlockGraphEdgeRegistryService,
                     DeadlockGraphCanvas,
-                    PlaybackControl);
+                    PlaybackControl,
+                    _deadlockGraphState);
             _deadlockGraphElementUiActionService =
                 new DeadlockGraphElementUiActionService(
                     effectiveDeadlockGraphNodeElementFactory,
@@ -382,18 +379,14 @@ namespace SqlXmlAnalyzer
                     DeadlockGraphCanvas,
                     DeadlockProcessesList,
                     DeadlockResourcesList,
-                    _nodePositions,
-                    _nodeElements,
-                    _edgesForDrawing,
-                    _arrowCache,
-                    _resourceGroupDetails);
+                    _deadlockGraphState);
             _deadlockViewportUiActionService =
                 new DeadlockViewportUiActionService(
                     effectiveDeadlockGraphViewportService,
                     DeadlockCanvasBorder,
                     DeadlockScaleTransform,
                     DeadlockTranslateTransform,
-                    _nodePositions);
+                    _deadlockGraphState.NodePositions);
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
                     ViewModel,
@@ -452,11 +445,7 @@ namespace SqlXmlAnalyzer
                     DeadlockCanvasBorder,
                     DeadlockScaleTransform,
                     DeadlockTranslateTransform,
-                    _nodePositions,
-                    _nodeElements,
-                    _edgesForDrawing,
-                    _arrowCache,
-                    _resourceGroupDetails,
+                    _deadlockGraphState,
                     _deadlockGraphElementUiActionService.DrawProcessNode,
                     _deadlockGraphElementUiActionService.DrawResourceNode,
                     _deadlockGraphElementUiActionService.DrawEdge);
@@ -764,10 +753,7 @@ namespace SqlXmlAnalyzer
         private void UpdatePlaybackGraphVisibility()
         {
             _deadlockPlaybackUiActionService.UpdateGraphVisibility(
-                PlaybackModeToggle.IsChecked == true,
-                _nodeElements,
-                _arrowCache,
-                _stepBadges);
+                PlaybackModeToggle.IsChecked == true);
         }
 
         private void PlaybackModeToggle_Checked(object sender, RoutedEventArgs e)
@@ -778,11 +764,7 @@ namespace SqlXmlAnalyzer
 
         private void PlaybackModeToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            _deadlockPlaybackUiActionService.HidePlayback(
-                _nodeElements,
-                _arrowCache,
-                _edgesForDrawing,
-                _stepBadges.Values);
+            _deadlockPlaybackUiActionService.HidePlayback();
         }
 
         private void BuildDeadlockWaitForTree(DeadlockGraph graph)
@@ -792,9 +774,6 @@ namespace SqlXmlAnalyzer
                 new Action(_deadlockViewportUiActionService.ZoomToFit),
                 System.Windows.Threading.DispatcherPriority.Loaded);
         }
-
-        private readonly Dictionary<string, Point> _nodePositions = new();
-        private readonly Dictionary<string, (string LockType, string ObjectName)> _resourceGroupDetails = new();
 
         private void DrawDeadlockBipartiteGraph(DeadlockGraph graph)
         {

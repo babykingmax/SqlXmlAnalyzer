@@ -15,11 +15,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly Border _canvasBorder;
         private readonly ScaleTransform _scaleTransform;
         private readonly TranslateTransform _translateTransform;
-        private readonly Dictionary<string, Point> _nodePositions;
-        private readonly Dictionary<string, FrameworkElement> _nodeElements;
-        private readonly List<Core.Services.DeadlockGraphEdge> _edgesForDrawing;
-        private readonly Dictionary<(string, string), DeadlockGraphEdgeElements> _arrowCache;
-        private readonly Dictionary<string, (string LockType, string ObjectName)> _resourceGroupDetails;
+        private readonly DeadlockGraphUiState _graphState;
         private readonly Action<Core.Services.DeadlockGraphProcessPlacement> _drawProcessNode;
         private readonly Action<Core.Services.DeadlockGraphResourcePlacement> _drawResourceNode;
         private readonly Action<Core.Services.DeadlockGraphEdge> _drawEdge;
@@ -32,11 +28,7 @@ namespace SqlXmlAnalyzer.Services
             Border canvasBorder,
             ScaleTransform scaleTransform,
             TranslateTransform translateTransform,
-            Dictionary<string, Point> nodePositions,
-            Dictionary<string, FrameworkElement> nodeElements,
-            List<Core.Services.DeadlockGraphEdge> edgesForDrawing,
-            Dictionary<(string, string), DeadlockGraphEdgeElements> arrowCache,
-            Dictionary<string, (string LockType, string ObjectName)> resourceGroupDetails,
+            DeadlockGraphUiState graphState,
             Action<Core.Services.DeadlockGraphProcessPlacement> drawProcessNode,
             Action<Core.Services.DeadlockGraphResourcePlacement> drawResourceNode,
             Action<Core.Services.DeadlockGraphEdge> drawEdge)
@@ -48,12 +40,7 @@ namespace SqlXmlAnalyzer.Services
             _canvasBorder = canvasBorder ?? throw new ArgumentNullException(nameof(canvasBorder));
             _scaleTransform = scaleTransform ?? throw new ArgumentNullException(nameof(scaleTransform));
             _translateTransform = translateTransform ?? throw new ArgumentNullException(nameof(translateTransform));
-            _nodePositions = nodePositions ?? throw new ArgumentNullException(nameof(nodePositions));
-            _nodeElements = nodeElements ?? throw new ArgumentNullException(nameof(nodeElements));
-            _edgesForDrawing = edgesForDrawing ?? throw new ArgumentNullException(nameof(edgesForDrawing));
-            _arrowCache = arrowCache ?? throw new ArgumentNullException(nameof(arrowCache));
-            _resourceGroupDetails = resourceGroupDetails
-                ?? throw new ArgumentNullException(nameof(resourceGroupDetails));
+            _graphState = graphState ?? throw new ArgumentNullException(nameof(graphState));
             _drawProcessNode = drawProcessNode
                 ?? throw new ArgumentNullException(nameof(drawProcessNode));
             _drawResourceNode = drawResourceNode
@@ -68,7 +55,7 @@ namespace SqlXmlAnalyzer.Services
             Core.Services.DeadlockGraphLayout layout = _layoutService.BuildLayout(graph);
             foreach (KeyValuePair<string, (string LockType, string ObjectName)> detail in layout.ResourceGroupDetails)
             {
-                _resourceGroupDetails[detail.Key] = detail.Value;
+                _graphState.ResourceGroupDetails[detail.Key] = detail.Value;
             }
 
             if (layout.Processes.Count == 0)
@@ -107,11 +94,11 @@ namespace SqlXmlAnalyzer.Services
         private void ClearGraphState()
         {
             _graphCanvas.Children.Clear();
-            _nodePositions.Clear();
-            _nodeElements.Clear();
-            _edgesForDrawing.Clear();
-            _arrowCache.Clear();
-            _resourceGroupDetails.Clear();
+            _graphState.NodePositions.Clear();
+            _graphState.NodeElements.Clear();
+            _graphState.EdgesForDrawing.Clear();
+            _graphState.ArrowCache.Clear();
+            _graphState.ResourceGroupDetails.Clear();
         }
 
         private void ResetViewport()

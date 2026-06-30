@@ -16,6 +16,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _edgeRegistryService;
         private readonly Canvas _graphCanvas;
         private readonly Control _playbackControl;
+        private readonly DeadlockGraphUiState _graphState;
         private DeadlockTimelineParser.ParsedDeadlock? _currentTimeline;
         private DeadlockPlaybackViewModel? _playbackViewModel;
 
@@ -26,7 +27,8 @@ namespace SqlXmlAnalyzer.Services
             Core.Services.DeadlockStepBadgeService stepBadgeService,
             Core.Services.DeadlockGraphEdgeRegistryService edgeRegistryService,
             Canvas graphCanvas,
-            Control playbackControl)
+            Control playbackControl,
+            DeadlockGraphUiState graphState)
         {
             _playbackStateService = playbackStateService
                 ?? throw new ArgumentNullException(nameof(playbackStateService));
@@ -41,6 +43,7 @@ namespace SqlXmlAnalyzer.Services
             _graphCanvas = graphCanvas ?? throw new ArgumentNullException(nameof(graphCanvas));
             _playbackControl = playbackControl
                 ?? throw new ArgumentNullException(nameof(playbackControl));
+            _graphState = graphState ?? throw new ArgumentNullException(nameof(graphState));
         }
 
         public void SetCurrentPlayback(
@@ -62,11 +65,7 @@ namespace SqlXmlAnalyzer.Services
             updateVisibility();
         }
 
-        public void HidePlayback(
-            IReadOnlyDictionary<string, FrameworkElement> nodeElements,
-            IReadOnlyDictionary<(string, string), DeadlockGraphEdgeElements> arrowCache,
-            IReadOnlyList<Core.Services.DeadlockGraphEdge> edgesForDrawing,
-            IEnumerable<Border> stepBadges)
+        public void HidePlayback()
         {
             _playbackControl.Visibility = Visibility.Collapsed;
             if (_playbackViewModel != null)
@@ -74,17 +73,17 @@ namespace SqlXmlAnalyzer.Services
                 _playbackViewModel.IsPlaying = false;
             }
 
-            foreach (FrameworkElement element in nodeElements.Values)
+            foreach (FrameworkElement element in _graphState.NodeElements.Values)
             {
                 Core.Services.DeadlockGraphNodeVisualState resetState =
                     _visualStateService.CreateResetNodeState();
                 _playbackVisualService.ApplyNodeVisualState(element, resetState);
             }
 
-            foreach (KeyValuePair<(string, string), DeadlockGraphEdgeElements> edge in arrowCache)
+            foreach (KeyValuePair<(string, string), DeadlockGraphEdgeElements> edge in _graphState.ArrowCache)
             {
                 bool isWaitEdge = _edgeRegistryService.IsWaitEdge(
-                    edgesForDrawing,
+                    _graphState.EdgesForDrawing,
                     edge.Key.Item1,
                     edge.Key.Item2);
                 Core.Services.DeadlockGraphEdgeVisualState resetState =
@@ -92,17 +91,13 @@ namespace SqlXmlAnalyzer.Services
                 _playbackVisualService.ApplyEdgeVisualState(edge.Value, resetState);
             }
 
-            foreach (Border badge in stepBadges)
+            foreach (Border badge in _graphState.StepBadges.Values)
             {
                 badge.Visibility = Visibility.Collapsed;
             }
         }
 
-        public void UpdateGraphVisibility(
-            bool isPlaybackEnabled,
-            IReadOnlyDictionary<string, FrameworkElement> nodeElements,
-            IReadOnlyDictionary<(string, string), DeadlockGraphEdgeElements> arrowCache,
-            Dictionary<(string, string), Border> stepBadges)
+        public void UpdateGraphVisibility(bool isPlaybackEnabled)
         {
             if (_currentTimeline == null || _playbackViewModel == null || !isPlaybackEnabled)
             {
@@ -114,10 +109,10 @@ namespace SqlXmlAnalyzer.Services
                     _currentTimeline,
                     _playbackViewModel.CurrentStep,
                     _playbackViewModel.FocusCriticalPath,
-                    nodeElements.Keys,
-                    CreatePlaybackEdgeKeys(arrowCache.Keys));
+                    _graphState.NodeElements.Keys,
+                    CreatePlaybackEdgeKeys(_graphState.ArrowCache.Keys));
 
-            foreach (KeyValuePair<string, FrameworkElement> node in nodeElements)
+            foreach (KeyValuePair<string, FrameworkElement> node in _graphState.NodeElements)
             {
                 Core.Services.DeadlockPlaybackNodeState nodeState =
                     playbackState.Nodes[node.Key];
@@ -126,16 +121,15 @@ namespace SqlXmlAnalyzer.Services
                 _playbackVisualService.ApplyNodeVisualState(node.Value, visualState);
             }
 
-            foreach (KeyValuePair<(string, string), DeadlockGraphEdgeElements> edge in arrowCache)
+            foreach (KeyValuePair<(string, string), DeadlockGraphEdgeElements> edge in _graphState.ArrowCache)
             {
-                ApplyEdgePlaybackState(edge, playbackState, stepBadges);
+                ApplyEdgePlaybackState(edge, playbackState);
             }
         }
 
         private void ApplyEdgePlaybackState(
             KeyValuePair<(string, string), DeadlockGraphEdgeElements> edge,
-            Core.Services.DeadlockPlaybackGraphState playbackState,
-            Dictionary<(string, string), Border> stepBadges)
+            Core.Services.DeadlockPlaybackGraphState playbackState)
         {
             (string, string) idPair = edge.Key;
             var playbackEdgeKey =
@@ -148,7 +142,7 @@ namespace SqlXmlAnalyzer.Services
             _playbackVisualService.ApplyEdgeVisualState(edge.Value, visualState);
             if (!visualState.IsVisible || !visualState.BadgeStepNumber.HasValue)
             {
-                if (stepBadges.TryGetValue(idPair, out Border? badge))
+                if (_graphState.StepBadges.TryGetValue(idPair, out Border? badge))
                 {
                     badge.Visibility = Visibility.Collapsed;
                 }
@@ -156,10 +150,10 @@ namespace SqlXmlAnalyzer.Services
                 return;
             }
 
-            if (!stepBadges.TryGetValue(idPair, out Border? visibleBadge))
+            if (!_graphState.StepBadges.TryGetValue(idPair, out Border? visibleBadge))
             {
                 visibleBadge = _playbackVisualService.CreateStepBadge();
-                stepBadges[idPair] = visibleBadge;
+                _graphState.StepBadges[idPair] = visibleBadge;
                 _graphCanvas.Children.Add(visibleBadge);
             }
 
