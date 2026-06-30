@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -406,8 +405,11 @@ namespace SqlXmlAnalyzer
                     effectivePlanComparisonController,
                     effectivePlanComparisonTreeService,
                     effectivePlanComparisonTreeViewRenderer,
+                    ViewModel,
+                    MainTabControl,
                     PlanATreeView,
-                    PlanBTreeView);
+                    PlanBTreeView,
+                    _showplanNs);
             _deadlockSelectionUiActionService =
                 new DeadlockSelectionUiActionService(
                     effectiveDeadlockSelectionDetailService,
@@ -470,20 +472,7 @@ namespace SqlXmlAnalyzer
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
-            // 监听 PlanA / PlanB 快照变化，动态重构并排对比的操作符结构树
-            ViewModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(ViewModel.PlanA) || e.PropertyName == nameof(ViewModel.PlanB))
-                {
-                    RefreshABCompareTrees();
-                    if (ViewModel.PlanA != null && ViewModel.PlanB != null)
-                    {
-                        ViewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Compare);
-                        var tab = MainTabControl.Items.OfType<System.Windows.Controls.TabItem>().FirstOrDefault(t => t.Header?.ToString()?.Contains("A/B") == true);
-                        if (tab != null) MainTabControl.SelectedItem = tab;
-                    }
-                }
-            };
+            ViewModel.PropertyChanged += _planComparisonUiActionService.HandleViewModelPropertyChanged;
         }
 
         #region 文件打开
@@ -611,14 +600,6 @@ namespace SqlXmlAnalyzer
         private void DrawDeadlockBipartiteGraph(DeadlockGraph graph)
         {
             _deadlockGraphRenderUiActionService.Render(graph);
-        }
-
-        private void RefreshABCompareTrees()
-        {
-            _planComparisonUiActionService.RefreshCompareTrees(
-                ViewModel.PlanA,
-                ViewModel.PlanB,
-                _showplanNs);
         }
 
         #endregion
