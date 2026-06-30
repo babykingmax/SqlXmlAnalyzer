@@ -47,7 +47,7 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphLoadUiActionService LoadUiActionService = new();
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly PlanGraphNodeClipboardUiActionService NodeClipboardUiActionService = new();
-        private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
+        private static readonly PlanGraphPanUiActionService PanUiActionService = new();
         private static readonly PlanGraphViewportUiActionService ViewportUiActionService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
@@ -137,36 +137,28 @@ namespace SqlXmlAnalyzer
 
         private void Editor_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.OriginalSource is FrameworkElement fe && fe.DataContext is PlanNodeViewModel) return;
-            if (e.OriginalSource is FrameworkElement fe2 && fe2.DataContext is ConnectionViewModel) return;
-
-            _panState = PanInteractionService.Begin(e.GetPosition(this));
-            Editor.CaptureMouse();
+            _panState = PanUiActionService.BeginPan(
+                e.OriginalSource,
+                e.GetPosition(this),
+                () => Editor.CaptureMouse(),
+                _panState);
         }
 
         private void Editor_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Core.Services.PlanGraphPanUpdate? update =
-                PanInteractionService.Pan(
-                    _panState,
-                    e.GetPosition(this),
-                    Editor.ViewportLocation,
-                    Editor.ViewportZoom);
-
-            if (update != null)
-            {
-                _panState = update.State;
-                Editor.ViewportLocation = update.ViewportLocation;
-            }
+            _panState = PanUiActionService.Pan(
+                _panState,
+                e.GetPosition(this),
+                Editor.ViewportLocation,
+                Editor.ViewportZoom,
+                location => Editor.ViewportLocation = location);
         }
 
         private void Editor_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_panState.IsPanning)
-            {
-                _panState = PanInteractionService.End(_panState);
-                Editor.ReleaseMouseCapture();
-            }
+            _panState = PanUiActionService.EndPan(
+                _panState,
+                Editor.ReleaseMouseCapture);
         }
 
         private void Node_MouseDoubleClick(object sender, MouseButtonEventArgs e)
