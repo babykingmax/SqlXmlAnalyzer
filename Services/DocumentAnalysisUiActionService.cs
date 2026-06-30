@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
+using SqlXmlAnalyzer.Core;
 
 namespace SqlXmlAnalyzer.Services
 {
     internal sealed class DocumentAnalysisUiActionService
     {
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
+        private readonly Core.ViewModels.MainViewModel _viewModel;
+        private readonly Core.Services.DocumentOpenService _documentOpenService;
         private readonly Core.Services.DeadlockDocumentController _deadlockDocumentController;
         private readonly Core.Services.PlanDocumentController _planDocumentController;
         private readonly DeadlockAnalysisUiActionService _deadlockAnalysisUiActionService;
@@ -21,9 +24,12 @@ namespace SqlXmlAnalyzer.Services
         private readonly TextBlock _statusTextBlock;
         private readonly XNamespace _showplanNamespace;
         private readonly Action _updatePlaybackGraphVisibility;
+        private readonly Func<string, Task> _analyzeXelFileAsync;
 
         public DocumentAnalysisUiActionService(
             Core.Services.AnalysisSessionCoordinator analysisSessions,
+            Core.ViewModels.MainViewModel viewModel,
+            Core.Services.DocumentOpenService documentOpenService,
             Core.Services.DeadlockDocumentController deadlockDocumentController,
             Core.Services.PlanDocumentController planDocumentController,
             DeadlockAnalysisUiActionService deadlockAnalysisUiActionService,
@@ -34,10 +40,15 @@ namespace SqlXmlAnalyzer.Services
             PlanStatisticsUiActionService planStatisticsUiActionService,
             TextBlock statusTextBlock,
             XNamespace showplanNamespace,
-            Action updatePlaybackGraphVisibility)
+            Action updatePlaybackGraphVisibility,
+            Func<string, Task> analyzeXelFileAsync)
         {
             _analysisSessions = analysisSessions
                 ?? throw new ArgumentNullException(nameof(analysisSessions));
+            _viewModel = viewModel
+                ?? throw new ArgumentNullException(nameof(viewModel));
+            _documentOpenService = documentOpenService
+                ?? throw new ArgumentNullException(nameof(documentOpenService));
             _deadlockDocumentController = deadlockDocumentController
                 ?? throw new ArgumentNullException(nameof(deadlockDocumentController));
             _planDocumentController = planDocumentController
@@ -60,6 +71,130 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(showplanNamespace));
             _updatePlaybackGraphVisibility = updatePlaybackGraphVisibility
                 ?? throw new ArgumentNullException(nameof(updatePlaybackGraphVisibility));
+            _analyzeXelFileAsync = analyzeXelFileAsync
+                ?? throw new ArgumentNullException(nameof(analyzeXelFileAsync));
+        }
+
+        public async Task AnalyzeFileAsync(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !System.IO.File.Exists(filePath))
+            {
+                Logger.Error($"Attempted to analyze a missing file: {filePath}");
+                MessageBox.Show("The specified file does not exist or the path is invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Core.Services.AnalysisSession session = _analysisSessions.Begin();
+            try
+            {
+                _statusTextBlock.Text = $"Loading and identifying file: {System.IO.Path.GetFileName(filePath)}...";
+                Core.Services.DocumentOpenResult openResult =
+                    await _documentOpenService.OpenAsync(filePath, session.Token);
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
+
+                if (!openResult.IsSuccess)
+                {
+                    Logger.Error($"Document open failed: {filePath}. {openResult.ErrorMessage}");
+                    MessageBox.Show("The document could not be opened.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _statusTextBlock.Text = "File load failed";
+                    return;
+                }
+
+                if (openResult.Kind == Core.Services.AnalysisDocumentKind.XelDeadlockTrace)
+                {
+                    await _analyzeXelFileAsync(filePath);
+                    return;
+                }
+
+                XDocument? doc = openResult.Document;
+                if (doc == null)
+                {
+                    MessageBox.Show(
+                        "The file did not produce an XML document.",
+                        "File load failed",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    _statusTextBlock.Text = "File load failed";
+                    return;
+                }
+
+                if (openResult.Kind == Core.Services.AnalysisDocumentKind.DeadlockXml)
+                {
+                    Logger.Info($"File identified as a deadlock report: {filePath}");
+                    _viewModel.CurrentDeadlockFilePath = filePath;
+                    await AnalyzeDeadlockDocumentAsync(doc, filePath, session.RequestId, session.Token);
+                }
+                else if (openResult.Kind == Core.Services.AnalysisDocumentKind.ExecutionPlanXml)
+                {
+                    Logger.Info($"File identified as a SQL Server execution plan: {filePath}");
+                    _viewModel.CurrentPlanFilePath = filePath;
+                    await AnalyzeExecutionPlanDocumentAsync(doc, filePath, session.RequestId, session.Token);
+                }
+                else
+                {
+                    Logger.Warning($"File format could not be identified: {filePath}. Root LocalName: {doc.Root?.Name.LocalName}, Namespace: {doc.Root?.Name.Namespace.NamespaceName}");
+                    MessageBox.Show("The XML file type could not be identified. Please choose a SQL Server deadlock XML file or execution plan XML file.", "Unrecognized format", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    _statusTextBlock.Text = "Unknown file type";
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"File analysis was canceled: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
+
+                Logger.LogException("AnalyzeFile", ex);
+                MessageBox.Show($"File analysis failed: {ex.Message}\n\nDetails were written to the log.", "Analysis error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _statusTextBlock.Text = "Analysis failed";
+            }
+        }
+
+        public async Task AnalyzeDeadlockXmlAsync(string xml, string displayName)
+        {
+            Core.Services.AnalysisSession session = _analysisSessions.Begin();
+            try
+            {
+                _statusTextBlock.Text = $"Analyzing: {displayName}...";
+                XDocument doc = await Task.Run(
+                    () =>
+                    {
+                        session.Token.ThrowIfCancellationRequested();
+                        XDocument parsed = SafeXmlHelper.ParseSafe(xml);
+                        session.Token.ThrowIfCancellationRequested();
+                        return parsed;
+                    },
+                    session.Token);
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
+
+                _viewModel.CurrentDeadlockFilePath = displayName;
+                await AnalyzeDeadlockDocumentAsync(doc, displayName, session.RequestId, session.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Verbose($"In-memory deadlock analysis was canceled: {displayName}");
+            }
+            catch (Exception ex)
+            {
+                if (!_analysisSessions.IsCurrent(session.RequestId))
+                {
+                    return;
+                }
+
+                Logger.LogException("AnalyzeDeadlockXmlAsync", ex);
+                MessageBox.Show($"Deadlock analysis failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _statusTextBlock.Text = "Analysis failed";
+            }
         }
 
         public async Task AnalyzeDeadlockDocumentAsync(
@@ -70,7 +205,7 @@ namespace SqlXmlAnalyzer.Services
         {
             try
             {
-                _statusTextBlock.Text = $"正在分析死锁文件：{System.IO.Path.GetFileName(filePath)}...";
+                _statusTextBlock.Text = $"Analyzing deadlock file: {System.IO.Path.GetFileName(filePath)}...";
 
                 Core.Services.DeadlockDocumentResult documentResult =
                     await _deadlockDocumentController.AnalyzeAsync(
@@ -92,7 +227,7 @@ namespace SqlXmlAnalyzer.Services
             }
             catch (OperationCanceledException)
             {
-                Logger.Verbose($"死锁分析已取消: {filePath}");
+                Logger.Verbose($"Deadlock analysis was canceled: {filePath}");
             }
             catch (Exception ex)
             {
@@ -102,8 +237,8 @@ namespace SqlXmlAnalyzer.Services
                 }
 
                 Logger.LogException("AnalyzeDeadlockDocument", ex);
-                MessageBox.Show($"分析死锁内容失败: {ex.Message}\n\n完整错误已记录到日志文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                _statusTextBlock.Text = "分析失败";
+                MessageBox.Show($"Deadlock analysis failed: {ex.Message}\n\nDetails were written to the log.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _statusTextBlock.Text = "Analysis failed";
             }
         }
 
@@ -115,7 +250,7 @@ namespace SqlXmlAnalyzer.Services
         {
             try
             {
-                _statusTextBlock.Text = $"正在分析执行计划：{System.IO.Path.GetFileName(filePath)}...";
+                _statusTextBlock.Text = $"Analyzing execution plan: {System.IO.Path.GetFileName(filePath)}...";
 
                 Core.Services.PlanDocumentResult documentResult =
                     await _planDocumentController.AnalyzeAsync(
@@ -145,11 +280,11 @@ namespace SqlXmlAnalyzer.Services
                     Logger.LogException("Load Histogram", ex);
                 }
 
-                _statusTextBlock.Text = "执行计划分析完成";
+                _statusTextBlock.Text = "Execution plan analysis complete";
             }
             catch (OperationCanceledException)
             {
-                Logger.Verbose($"执行计划分析已取消: {filePath}");
+                Logger.Verbose($"Execution plan analysis was canceled: {filePath}");
             }
             catch (Exception ex)
             {
@@ -159,8 +294,8 @@ namespace SqlXmlAnalyzer.Services
                 }
 
                 Logger.LogException("AnalyzeExecutionPlanDocument", ex);
-                MessageBox.Show($"分析执行计划失败: {ex.Message}\n\n完整错误已记录到日志文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                _statusTextBlock.Text = "分析失败";
+                MessageBox.Show($"Execution plan analysis failed: {ex.Message}\n\nDetails were written to the log.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _statusTextBlock.Text = "Analysis failed";
             }
         }
     }

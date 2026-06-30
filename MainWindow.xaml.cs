@@ -453,6 +453,8 @@ namespace SqlXmlAnalyzer
             _documentAnalysisUiActionService =
                 new DocumentAnalysisUiActionService(
                     _analysisSessions,
+                    ViewModel,
+                    _documentOpenService,
                     _deadlockDocumentController,
                     _planDocumentController,
                     _deadlockAnalysisUiActionService,
@@ -463,7 +465,8 @@ namespace SqlXmlAnalyzer
                     _planStatisticsUiActionService,
                     StatusTextBlock,
                     _showplanNs,
-                    UpdatePlaybackGraphVisibility);
+                    UpdatePlaybackGraphVisibility,
+                    AnalyzeXelFileAsync);
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
@@ -544,123 +547,12 @@ namespace SqlXmlAnalyzer
 
         public async Task AnalyzeFileAsync(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-            {
-                Logger.Error($"尝试分析不存在的文件: {filePath}");
-                MessageBox.Show("指定的文件不存在或路径无效！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            var session = _analysisSessions.Begin();
-            try
-            {
-                StatusTextBlock.Text = $"正在加载并识别文件：{System.IO.Path.GetFileName(filePath)}...";
-                Core.Services.DocumentOpenResult openResult =
-                    await _documentOpenService.OpenAsync(filePath, session.Token);
-                if (!_analysisSessions.IsCurrent(session.RequestId))
-                {
-                    return;
-                }
-
-                if (!openResult.IsSuccess)
-                {
-                    Logger.Error($"Document open failed: {filePath}. {openResult.ErrorMessage}");
-                    MessageBox.Show("鎸囧畾鐨勬枃浠朵笉瀛樺湪鎴栬矾寰勬棤鏁堬紒", "閿欒", MessageBoxButton.OK, MessageBoxImage.Error);
-                    StatusTextBlock.Text = "鏂囦欢鍔犺浇澶辫触";
-                    return;
-                }
-
-                if (openResult.Kind == Core.Services.AnalysisDocumentKind.XelDeadlockTrace)
-                {
-                    await AnalyzeXelFileAsync(filePath);
-                    return;
-                }
-
-                XDocument? doc = openResult.Document;
-                if (doc == null)
-                {
-                    MessageBox.Show(
-                        "The file did not produce an XML document.",
-                        "File load failed",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                    StatusTextBlock.Text = "File load failed";
-                    return;
-                }
-
-                if (openResult.Kind == Core.Services.AnalysisDocumentKind.DeadlockXml)
-                {
-                    Logger.Info($"文件被识别为死锁报告: {filePath}");
-                    ViewModel.CurrentDeadlockFilePath = filePath;
-                    await AnalyzeDeadlockDocumentAsync(doc, filePath, session.RequestId, session.Token);
-                }
-                else if (openResult.Kind == Core.Services.AnalysisDocumentKind.ExecutionPlanXml)
-                {
-                    Logger.Info($"文件被识别为 SQL Server 执行计划: {filePath}");
-                    ViewModel.CurrentPlanFilePath = filePath;
-                    await AnalyzeExecutionPlanDocumentAsync(doc, filePath, session.RequestId, session.Token);
-                }
-                else
-                {
-                    Logger.Warning($"文件格式无法自动识别: {filePath}. 根节点 LocalName: {doc.Root?.Name.LocalName}, Namespace: {doc.Root?.Name.Namespace.NamespaceName}");
-                    MessageBox.Show("无法自动识别该 XML 文件的类型！\n\n请确认该文件是标准的 SQL Server 死锁 XML（根节点为 <deadlock>）或执行计划 XML（根节点为 <ShowPlanXML>）。",
-                                    "格式未识别", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    StatusTextBlock.Text = "未知文件类型";
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Verbose($"文件分析已取消: {filePath}");
-            }
-            catch (Exception ex)
-            {
-                if (!_analysisSessions.IsCurrent(session.RequestId))
-                {
-                    return;
-                }
-                Logger.LogException("AnalyzeFile", ex);
-                MessageBox.Show($"解析文件失败: {ex.Message}\n\n详细错误已记录到日志。", "分析错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusTextBlock.Text = "解析失败";
-            }
+            await _documentAnalysisUiActionService.AnalyzeFileAsync(filePath);
         }
 
         private async Task AnalyzeDeadlockXmlAsync(string xml, string displayName)
         {
-            var session = _analysisSessions.Begin();
-            try
-            {
-                StatusTextBlock.Text = $"正在分析：{displayName}...";
-                XDocument doc = await Task.Run(
-                    () =>
-                    {
-                        session.Token.ThrowIfCancellationRequested();
-                        XDocument parsed = SafeXmlHelper.ParseSafe(xml);
-                        session.Token.ThrowIfCancellationRequested();
-                        return parsed;
-                    },
-                    session.Token);
-                if (!_analysisSessions.IsCurrent(session.RequestId))
-                {
-                    return;
-                }
-
-                ViewModel.CurrentDeadlockFilePath = displayName;
-                await AnalyzeDeadlockDocumentAsync(doc, displayName, session.RequestId, session.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Verbose($"内存死锁分析已取消: {displayName}");
-            }
-            catch (Exception ex)
-            {
-                if (!_analysisSessions.IsCurrent(session.RequestId))
-                {
-                    return;
-                }
-                Logger.LogException("AnalyzeDeadlockXmlAsync", ex);
-                MessageBox.Show($"分析死锁内容失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusTextBlock.Text = "分析失败";
-            }
+            await _documentAnalysisUiActionService.AnalyzeDeadlockXmlAsync(xml, displayName);
         }
 
         private async Task AnalyzeDeadlockDocumentAsync(
