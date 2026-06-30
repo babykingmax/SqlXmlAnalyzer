@@ -43,12 +43,10 @@ namespace SqlXmlAnalyzer
     {
         private static readonly PlanGraphCollapseUiActionService CollapseUiActionService = new();
         private static readonly PlanGraphConnectionUiActionService ConnectionUiActionService = new();
-        private static readonly PlanGraphCostUiActionService CostUiActionService = new();
         private static readonly PlanGraphLayoutUiActionService LayoutUiActionService = new();
-        private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
+        private static readonly PlanGraphLoadUiActionService LoadUiActionService = new();
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly PlanGraphNodeClipboardUiActionService NodeClipboardUiActionService = new();
-        private static readonly PlanGraphNodeUiActionService NodeUiActionService = new();
         private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
@@ -204,25 +202,7 @@ namespace SqlXmlAnalyzer
         /// </summary>
         public void LoadFromExecutionPlan(XDocument doc, XNamespace ns)
         {
-            Nodes.Clear();
-            Connections.Clear();
             ShowEmptyHint(false);
-
-            if (doc?.Root == null)
-            {
-                ShowEmptyHint(true);
-                return;
-            }
-
-            var relOps = doc.Descendants(ns + "RelOp").ToList();
-            if (relOps.Count == 0)
-            {
-                ShowEmptyHint(true);
-                return;
-            }
-
-            _currentDoc = doc;
-            _currentNs = ns;
 
             PlanLayoutMode initialLayout = CmbLayoutMode != null && CmbLayoutMode.SelectedIndex >= 0 ? (PlanLayoutMode)CmbLayoutMode.SelectedIndex : PlanLayoutMode.Horizontal;
             PlanColorMode initialColor = CmbColorMode != null && CmbColorMode.SelectedIndex >= 0 ? (PlanColorMode)CmbColorMode.SelectedIndex : PlanColorMode.TotalCost;
@@ -233,63 +213,33 @@ namespace SqlXmlAnalyzer
             _colorMode = initialColor;
             _linkMetric = initialLinkMetric;
 
-            // 1. 解析所有 RelOp 到 ViewModel (带 Object / 警告 / 并行信息)
-            var nodeMap = new Dictionary<XElement, PlanNodeViewModel>();
-            var allNodes = new List<PlanNodeViewModel>();
-
-            foreach (var relOp in relOps)
-            {
-                var vm = NodeUiActionService.CreateNodeFromRelOp(
-                    relOp,
+            PlanGraphLoadUiActionResult result =
+                LoadUiActionService.Load(
+                    doc,
                     ns,
-                    ResidualIOThreshold,
-                    ResidualIOMinRowsRead);
-                nodeMap[relOp] = vm;
-                allNodes.Add(vm);
-            }
+                    Nodes,
+                    Connections,
+                    new PlanGraphLoadUiActionOptions
+                    {
+                        InitialLayout = initialLayout,
+                        InitialColor = initialColor,
+                        InitialView = initialView,
+                        InitialLinkMetric = initialLinkMetric,
+                        ResidualIoThreshold = ResidualIOThreshold,
+                        ResidualIoMinRowsRead = ResidualIOMinRowsRead
+                    });
 
-            var missingIndexes = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
-            IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion?> matchedSuggestions =
-                MissingIndexAssociationService.MatchSuggestions(
-                    allNodes
-                        .Select(node => new Core.Services.PlanGraphMissingIndexNodeInfo(
-                            node.TableName))
-                        .ToList(),
-                    missingIndexes);
-            for (int i = 0; i < allNodes.Count; i++)
+            if (!result.HasGraph)
             {
-                allNodes[i].AssociatedSuggestion = matchedSuggestions[i];
+                ShowEmptyHint(true);
+                return;
             }
 
-            CostUiActionService.ApplyCostCalculations(
-                relOps,
-                nodeMap,
-                ns,
-                initialView,
-                initialColor);
-
-            // 2. 简单分层初始布局 (类似 Plan Explorer 水平/垂直流)
-            LayoutUiActionService.ApplyLayeredLayout(
-                relOps,
-                ns,
-                nodeMap,
-                initialLayout);
-
-            ConnectionUiActionService.BuildConnections(
-                relOps,
-                ns,
-                nodeMap,
-                Connections,
-                initialLayout,
-                initialLinkMetric);
-
-            // 添加到集合 (Nodify 会自动响应)
-            _masterNodes = allNodes;
-            _masterConnections = Connections.ToList();
-            foreach (var n in allNodes) Nodes.Add(n);
-
-            // 默认选中根节点 (最高成本或第一个)
-            SelectedNode = allNodes.OrderByDescending(n => n.CostPercent).FirstOrDefault() ?? allNodes.FirstOrDefault();
+            _currentDoc = doc;
+            _currentNs = ns;
+            _masterNodes = result.MasterNodes.ToList();
+            _masterConnections = result.MasterConnections.ToList();
+            SelectedNode = result.SelectedNode;
         }
 
         public void ResetView()
