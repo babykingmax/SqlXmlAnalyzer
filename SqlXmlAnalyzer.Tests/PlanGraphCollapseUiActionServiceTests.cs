@@ -118,5 +118,55 @@ namespace SqlXmlAnalyzer.Tests
             visibleNodes.Should().BeEquivalentTo([rootNode, childNode]);
             visibleConnections.Should().ContainSingle().Which.Should().BeSameAs(connection);
         }
+
+        [Fact]
+        public void ToggleNode_WhenNodeHasNoRawElement_TogglesStateAndInvokesRefreshCallbacks()
+        {
+            var service = new PlanGraphCollapseUiActionService();
+            var node = new PlanNodeViewModel
+            {
+                NodeId = "manual",
+                PhysicalOp = "Manual",
+                IsCollapsed = false,
+                IsVisible = true
+            };
+            bool layoutRefreshed = false;
+            bool visibilityRefreshed = false;
+
+            service.ToggleNode(
+                node,
+                [node],
+                [],
+                () => layoutRefreshed = true,
+                () => visibilityRefreshed = true);
+
+            node.IsCollapsed.Should().BeTrue();
+            layoutRefreshed.Should().BeTrue();
+            visibilityRefreshed.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ToggleNode_WhenNodeHasRawElement_AppliesCalculatedCollapseState()
+        {
+            var service = new PlanGraphCollapseUiActionService();
+            XElement relOp = new("RelOp", new XAttribute("NodeId", "1"));
+            var node = new PlanNodeViewModel
+            {
+                RawElement = relOp,
+                NodeId = "1",
+                PhysicalOp = "Index Seek",
+                IsCollapsed = false,
+                IsVisible = true
+            };
+
+            service.ToggleNode(
+                node,
+                [node],
+                [],
+                () => { },
+                () => { });
+
+            node.IsCollapsed.Should().BeTrue();
+        }
     }
 }

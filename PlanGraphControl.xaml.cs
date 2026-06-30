@@ -289,61 +289,15 @@ namespace SqlXmlAnalyzer
 
         private void ToggleCollapse_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            try
+            e.Handled = true;
+            if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
             {
-                e.Handled = true; // MUST PREVENT NodifyEditor from capturing this click!
-                if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
-                {
-                    var logService = new Core.Services.PlanGraphCollapseLogService();
-                    DateTime timestamp = DateTime.Now;
-                    Core.Services.PlanGraphCollapseLogNode nodeBeforeToggle =
-                        CollapseUiActionService.ToCollapseLogNode(node);
-                    CollapseUiActionService.AppendCollapseLog(logService.BuildStartLine(nodeBeforeToggle, timestamp));
-                    Core.Services.PlanGraphCollapseLogSnapshot oldSnapshot =
-                        CollapseUiActionService.CaptureLogSnapshot(
-                            _masterNodes,
-                            _masterConnections);
-
-                    // 仅切换当前节点的折叠状态，保留其子孙节点原有的折叠状态（状态记忆）
-                    if (node.RawElement != null)
-                    {
-                        CollapseUiActionService.ApplyCollapseStates(
-                            _masterNodes,
-                            CollapseUiActionService.CalculateToggle(
-                                _masterNodes,
-                                node.RawElement));
-                    }
-                    else
-                    {
-                        node.IsCollapsed = !node.IsCollapsed;
-                    }
-
-                    // 1. 先在完整树上计算所有节点的新绝对坐标
-                    ReapplyLayout();
-
-                    // 2. 根据最新的折叠状态更新 IsVisible，触发 Nodify 容器隐藏/显示
-                    UpdateGraphVisibility();
-                    Core.Services.PlanGraphCollapseLogSnapshot newSnapshot =
-                        CollapseUiActionService.CaptureLogSnapshot(
-                            _masterNodes,
-                            _masterConnections);
-                    CollapseUiActionService.AppendCollapseLog(
-                        logService.BuildToggleLog(
-                            nodeBeforeToggle,
-                            node.IsCollapsed,
-                            oldSnapshot,
-                            newSnapshot,
-                            timestamp));
-                }
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    var logService = new Core.Services.PlanGraphCollapseLogService();
-                    CollapseUiActionService.AppendCollapseLog(logService.BuildExceptionLog(ex, DateTime.Now));
-                }
-                catch { }
+                CollapseUiActionService.ToggleNode(
+                    node,
+                    _masterNodes,
+                    _masterConnections,
+                    ReapplyLayout,
+                    UpdateGraphVisibility);
             }
         }
 
