@@ -1062,16 +1062,6 @@ namespace SqlXmlAnalyzer
             _missingIndexClipboardUiActionService.CopyDeploymentBundle(sender);
         }
 
-        private static void CopyMissingIndexClipboardResult(
-            Core.Services.MissingIndexClipboardActionResult result)
-        {
-            if (result.Status == Core.Services.MissingIndexClipboardActionStatus.Ready)
-            {
-                Clipboard.SetText(result.Text);
-                MessageBox.Show(result.SuccessMessage, "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
         #endregion
     }
 }
