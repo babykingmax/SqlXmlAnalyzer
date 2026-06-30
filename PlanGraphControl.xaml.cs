@@ -47,7 +47,7 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphLayoutUiActionService LayoutUiActionService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
-        private static readonly Core.Services.PlanGraphNodeBuilderService NodeBuilderService = new();
+        private static readonly PlanGraphNodeUiActionService NodeUiActionService = new();
         private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
@@ -238,7 +238,11 @@ namespace SqlXmlAnalyzer
 
             foreach (var relOp in relOps)
             {
-                var vm = CreateNodeFromRelOp(relOp, ns);
+                var vm = NodeUiActionService.CreateNodeFromRelOp(
+                    relOp,
+                    ns,
+                    ResidualIOThreshold,
+                    ResidualIOMinRowsRead);
                 nodeMap[relOp] = vm;
                 allNodes.Add(vm);
             }
@@ -293,73 +297,6 @@ namespace SqlXmlAnalyzer
 
             // 默认选中根节点 (最高成本或第一个)
             SelectedNode = allNodes.OrderByDescending(n => n.CostPercent).FirstOrDefault() ?? allNodes.FirstOrDefault();
-        }
-
-        private PlanNodeViewModel CreateNodeFromRelOp(XElement relOp, XNamespace ns)
-        {
-            Core.Services.PlanGraphNodeBuildResult node =
-                NodeBuilderService.Build(
-                    relOp,
-                    ns,
-                    new Core.Services.PlanGraphNodeWarningSettings(
-                        ResidualIOThreshold,
-                        ResidualIOMinRowsRead));
-
-            var vm = new PlanNodeViewModel
-            {
-                RawElement = node.RawElement,
-                NodeId = node.NodeId,
-                PhysicalOp = node.PhysicalOp,
-                LogicalOp = node.LogicalOp,
-                ExecutionMode = node.ExecutionMode,
-                Cost = node.Cost,
-                OwnCost = node.OwnCost,
-                ActualRecost = node.ActualRecost,
-                SubtreeCost = node.SubtreeCost,
-                CostPercent = node.CostPercent,
-                EstRows = node.EstRows,
-                EstRowsNum = node.EstRowsNum,
-                EstimatedRowsToBeRead = node.EstimatedRowsToBeRead,
-                EstimatedCPUCostNum = node.EstimatedCPUCostNum,
-                EstimatedIOCostNum = node.EstimatedIOCostNum,
-                AvgRowSizeNum = node.AvgRowSizeNum,
-                EstimatedIOCost = node.EstimatedIOCost,
-                EstimatedCPUCost = node.EstimatedCPUCost,
-                EstimatedExecutions = node.EstimatedExecutions,
-                ActualExecutions = node.ActualExecutions,
-                ActualRows = node.ActualRows,
-                ActualRowsRead = node.ActualRowsRead,
-                ActualRowsNum = node.ActualRowsNum,
-                EstimatedOperatorCost = node.EstimatedOperatorCost,
-                EstimatedSubtreeCostStr = node.EstimatedSubtreeCostStr,
-                EstimatedRowSize = node.EstimatedRowSize,
-                EstimatedDataSize = node.EstimatedDataSize,
-                ActualDataSize = node.ActualDataSize,
-                ActualRebinds = node.ActualRebinds,
-                ActualRewinds = node.ActualRewinds,
-                Ordered = node.Ordered,
-                DatabaseName = node.DatabaseName,
-                TableName = node.TableName,
-                IndexName = node.IndexName,
-                SeekPredicates = node.SeekPredicates,
-                Predicate = node.Predicate,
-                OutputList = node.OutputList,
-                ObjectDetails = node.ObjectDetails,
-                Partitioned = node.Partitioned,
-                PartitionCount = node.PartitionCount,
-                PartitionRange = node.PartitionRange,
-                IsParallel = node.IsParallel,
-                Warnings = node.Warnings,
-                NodeSeverity = node.NodeSeverity,
-                OperatorType = node.OperatorType,
-                Location = new Point(50, 50)
-            };
-
-            var iconInfo = PhysicalOpToIconMapper.Map(node.PhysicalOp);
-            vm.IconGeometry = iconInfo.Geometry;
-            vm.IconBrush = iconInfo.Brush;
-
-            return vm;
         }
 
         public void ResetView()
