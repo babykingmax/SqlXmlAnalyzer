@@ -107,6 +107,34 @@ namespace SqlXmlAnalyzer.Tests
             kind.Should().Be(AnalysisDocumentKind.ExecutionPlanXml);
         }
 
+        [Theory]
+        [InlineData("deadlocks.xel", AnalysisDocumentKind.XelDeadlockTrace)]
+        [InlineData("deadlock.xdl", AnalysisDocumentKind.DeadlockXml)]
+        [InlineData("deadlock.xml", AnalysisDocumentKind.DeadlockXml)]
+        public void ClassifyDeadlockOpenPath_WhenDeadlockPickerPathIsKnown_ReturnsExpectedKind(
+            string fileName,
+            AnalysisDocumentKind expected)
+        {
+            AnalysisDocumentKind kind = _service.ClassifyDeadlockOpenPath(fileName);
+
+            kind.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("deadlock.xml", AnalysisDocumentKind.DeadlockXml)]
+        [InlineData("deadlock.xdl", AnalysisDocumentKind.DeadlockXml)]
+        [InlineData("trace.xel", AnalysisDocumentKind.XelDeadlockTrace)]
+        [InlineData("plan.sqlplan", AnalysisDocumentKind.ExecutionPlanXml)]
+        [InlineData("notes.txt", AnalysisDocumentKind.Unknown)]
+        public void ClassifyDroppedPath_WhenPathIsDropped_ReturnsExpectedKind(
+            string fileName,
+            AnalysisDocumentKind expected)
+        {
+            AnalysisDocumentKind kind = _service.ClassifyDroppedPath(fileName);
+
+            kind.Should().Be(expected);
+        }
+
         private string WriteFile(string fileName, string contents)
         {
             string path = Path.Combine(_tempDirectory, fileName);

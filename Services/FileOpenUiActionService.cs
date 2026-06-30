@@ -1,18 +1,23 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Services
 {
     internal sealed class FileOpenUiActionService
     {
         private readonly Core.Services.IFileDialogService _fileDialogService;
+        private readonly DocumentOpenService _documentOpenService;
 
-        public FileOpenUiActionService(Core.Services.IFileDialogService fileDialogService)
+        public FileOpenUiActionService(
+            Core.Services.IFileDialogService fileDialogService,
+            DocumentOpenService documentOpenService)
         {
             _fileDialogService = fileDialogService
                 ?? throw new ArgumentNullException(nameof(fileDialogService));
+            _documentOpenService = documentOpenService
+                ?? throw new ArgumentNullException(nameof(documentOpenService));
         }
 
         public async Task OpenDeadlockAsync(
@@ -69,33 +74,31 @@ namespace SqlXmlAnalyzer.Services
             }
 
             string file = files[0];
-            string extension = Path.GetExtension(file).ToLowerInvariant();
-
-            if (extension == ".xml" || extension == ".xdl")
+            AnalysisDocumentKind kind = _documentOpenService.ClassifyDroppedPath(file);
+            switch (kind)
             {
-                analyzeDeadlockFile(file);
-            }
-            else if (extension == ".xel")
-            {
-                await analyzeXelFileAsync(file);
-            }
-            else if (extension == ".sqlplan")
-            {
-                analyzeExecutionPlanFile(file);
-            }
-            else
-            {
-                MessageBox.Show("不支持的文件类型，请选择死锁(XML/XEL)或执行计划(.sqlplan)文件。");
+                case AnalysisDocumentKind.DeadlockXml:
+                    analyzeDeadlockFile(file);
+                    break;
+                case AnalysisDocumentKind.XelDeadlockTrace:
+                    await analyzeXelFileAsync(file);
+                    break;
+                case AnalysisDocumentKind.ExecutionPlanXml:
+                    analyzeExecutionPlanFile(file);
+                    break;
+                default:
+                    MessageBox.Show("不支持的文件类型，请选择死锁 XML/XDL/XEL 文件或执行计划 .sqlplan 文件。");
+                    break;
             }
         }
 
-        private static async Task AnalyzeDeadlockPathAsync(
+        private async Task AnalyzeDeadlockPathAsync(
             string fileName,
             Func<string, Task> analyzeXelFileAsync,
             Action<string> analyzeDeadlockFile)
         {
-            string extension = Path.GetExtension(fileName).ToLowerInvariant();
-            if (extension == ".xel")
+            AnalysisDocumentKind kind = _documentOpenService.ClassifyDeadlockOpenPath(fileName);
+            if (kind == AnalysisDocumentKind.XelDeadlockTrace)
             {
                 await analyzeXelFileAsync(fileName);
             }

@@ -37,6 +37,35 @@ namespace SqlXmlAnalyzer.Core.Services
                 : AnalysisDocumentKind.Unknown;
         }
 
+        public AnalysisDocumentKind ClassifyDeadlockOpenPath(string filePath)
+        {
+            return ClassifyPath(filePath) == AnalysisDocumentKind.XelDeadlockTrace
+                ? AnalysisDocumentKind.XelDeadlockTrace
+                : AnalysisDocumentKind.DeadlockXml;
+        }
+
+        public AnalysisDocumentKind ClassifyDroppedPath(string filePath)
+        {
+            string extension = Path.GetExtension(filePath);
+            if (extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) ||
+                extension.Equals(".xdl", StringComparison.OrdinalIgnoreCase))
+            {
+                return AnalysisDocumentKind.DeadlockXml;
+            }
+
+            if (extension.Equals(".xel", StringComparison.OrdinalIgnoreCase))
+            {
+                return AnalysisDocumentKind.XelDeadlockTrace;
+            }
+
+            if (extension.Equals(".sqlplan", StringComparison.OrdinalIgnoreCase))
+            {
+                return AnalysisDocumentKind.ExecutionPlanXml;
+            }
+
+            return AnalysisDocumentKind.Unknown;
+        }
+
         public async Task<DocumentOpenResult> OpenAsync(
             string filePath,
             CancellationToken cancellationToken = default)

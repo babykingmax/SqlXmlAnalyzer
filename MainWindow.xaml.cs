@@ -231,7 +231,7 @@ namespace SqlXmlAnalyzer
             _planObfuscationExportUiActionService =
                 new PlanObfuscationExportUiActionService(_fileDialogService);
             _fileOpenUiActionService =
-                new FileOpenUiActionService(_fileDialogService);
+                new FileOpenUiActionService(_fileDialogService, _documentOpenService);
             _xelDeadlockUiActionService =
                 new XelDeadlockUiActionService(
                     xelReader ?? new Core.XelReader(),
