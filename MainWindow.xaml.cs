@@ -309,7 +309,9 @@ namespace SqlXmlAnalyzer
             _planSelectionUiActionService = new PlanSelectionUiActionService(
                 planSelectionActionService ?? new Core.Services.PlanSelectionActionService(),
                 planPropertyService ?? new Core.Services.PlanPropertyService(),
-                PlanPropertiesGrid);
+                PlanPropertiesGrid,
+                () => PlanOperatorTree.SelectedItem,
+                () => PlanVisualTree.SelectedItem);
             Core.Services.PlanOperatorTreeViewRenderer effectivePlanOperatorTreeViewRenderer =
                 planOperatorTreeViewRenderer
                 ?? new Core.Services.PlanOperatorTreeViewRenderer();
@@ -413,7 +415,10 @@ namespace SqlXmlAnalyzer
             _deadlockSelectionUiActionService =
                 new DeadlockSelectionUiActionService(
                     effectiveDeadlockSelectionDetailService,
-                    ViewModel);
+                    ViewModel,
+                    () => DeadlockProcessesList.SelectedItem,
+                    () => DeadlockResourcesList.SelectedItem,
+                    () => DeadlockPatternsListBox.SelectedItem);
             _workspacePanelUiActionService =
                 new WorkspacePanelUiActionService(
                     effectiveWorkspacePanelLayoutService,
@@ -874,12 +879,12 @@ namespace SqlXmlAnalyzer
 
         private void DeadlockProcessesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _deadlockSelectionUiActionService.SelectProcess(DeadlockProcessesList.SelectedItem);
+            _deadlockSelectionUiActionService.SelectCurrentProcess();
         }
 
         private void DeadlockResourcesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _deadlockSelectionUiActionService.SelectResource(DeadlockResourcesList.SelectedItem);
+            _deadlockSelectionUiActionService.SelectCurrentResource();
         }
 
         private void ToggleLeft_Click(object sender, RoutedEventArgs e)
@@ -899,7 +904,7 @@ namespace SqlXmlAnalyzer
 
         private void DeadlockPatternsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _deadlockSelectionUiActionService.SelectPattern(DeadlockPatternsListBox.SelectedItem);
+            _deadlockSelectionUiActionService.SelectCurrentPattern();
         }
 
         #region 折叠面板事件处理
@@ -927,7 +932,7 @@ namespace SqlXmlAnalyzer
 
         private void PlanOperatorTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            _planSelectionUiActionService.SelectFromOperatorTreeItem(e.NewValue);
+            _planSelectionUiActionService.SelectCurrentOperatorTreeItem();
         }
 
         private void RefreshDeadlockGraph_Click(object sender, RoutedEventArgs e)
@@ -952,7 +957,7 @@ namespace SqlXmlAnalyzer
 
         private void PlanVisualTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            _planSelectionUiActionService.SelectFromVisualTreeNode(e.NewValue);
+            _planSelectionUiActionService.SelectCurrentVisualTreeNode();
         }
 
         // Nodify 节点选中 -> 同步到主右侧属性面板 (Plan Explorer 风格)

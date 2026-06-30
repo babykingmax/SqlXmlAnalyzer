@@ -9,11 +9,15 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.PlanSelectionActionService _selectionActionService;
         private readonly Core.Services.PlanPropertyService _planPropertyService;
         private readonly DataGrid _propertiesGrid;
+        private readonly Func<object?> _operatorTreeSelectionProvider;
+        private readonly Func<object?> _visualTreeSelectionProvider;
 
         public PlanSelectionUiActionService(
             Core.Services.PlanSelectionActionService selectionActionService,
             Core.Services.PlanPropertyService planPropertyService,
-            DataGrid propertiesGrid)
+            DataGrid propertiesGrid,
+            Func<object?> operatorTreeSelectionProvider,
+            Func<object?> visualTreeSelectionProvider)
         {
             _selectionActionService = selectionActionService
                 ?? throw new ArgumentNullException(nameof(selectionActionService));
@@ -21,6 +25,20 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(planPropertyService));
             _propertiesGrid = propertiesGrid
                 ?? throw new ArgumentNullException(nameof(propertiesGrid));
+            _operatorTreeSelectionProvider = operatorTreeSelectionProvider
+                ?? throw new ArgumentNullException(nameof(operatorTreeSelectionProvider));
+            _visualTreeSelectionProvider = visualTreeSelectionProvider
+                ?? throw new ArgumentNullException(nameof(visualTreeSelectionProvider));
+        }
+
+        public void SelectCurrentOperatorTreeItem()
+        {
+            SelectFromOperatorTreeItem(_operatorTreeSelectionProvider());
+        }
+
+        public void SelectCurrentVisualTreeNode()
+        {
+            SelectFromVisualTreeNode(_visualTreeSelectionProvider());
         }
 
         public void SelectFromOperatorTreeItem(object? selectedValue)

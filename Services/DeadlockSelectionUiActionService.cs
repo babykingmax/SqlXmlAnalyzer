@@ -6,15 +6,42 @@ namespace SqlXmlAnalyzer.Services
     {
         private readonly Core.Services.DeadlockSelectionDetailService _detailService;
         private readonly Core.ViewModels.MainViewModel _viewModel;
+        private readonly Func<object?> _selectedProcessProvider;
+        private readonly Func<object?> _selectedResourceProvider;
+        private readonly Func<object?> _selectedPatternProvider;
 
         public DeadlockSelectionUiActionService(
             Core.Services.DeadlockSelectionDetailService detailService,
-            Core.ViewModels.MainViewModel viewModel)
+            Core.ViewModels.MainViewModel viewModel,
+            Func<object?> selectedProcessProvider,
+            Func<object?> selectedResourceProvider,
+            Func<object?> selectedPatternProvider)
         {
             _detailService = detailService
                 ?? throw new ArgumentNullException(nameof(detailService));
             _viewModel = viewModel
                 ?? throw new ArgumentNullException(nameof(viewModel));
+            _selectedProcessProvider = selectedProcessProvider
+                ?? throw new ArgumentNullException(nameof(selectedProcessProvider));
+            _selectedResourceProvider = selectedResourceProvider
+                ?? throw new ArgumentNullException(nameof(selectedResourceProvider));
+            _selectedPatternProvider = selectedPatternProvider
+                ?? throw new ArgumentNullException(nameof(selectedPatternProvider));
+        }
+
+        public void SelectCurrentProcess()
+        {
+            SelectProcess(_selectedProcessProvider());
+        }
+
+        public void SelectCurrentResource()
+        {
+            SelectResource(_selectedResourceProvider());
+        }
+
+        public void SelectCurrentPattern()
+        {
+            SelectPattern(_selectedPatternProvider());
         }
 
         public void SelectProcess(object? selectedItem)
