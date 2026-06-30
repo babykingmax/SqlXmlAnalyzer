@@ -64,6 +64,7 @@ namespace SqlXmlAnalyzer
         private readonly SqlDiffUiActionService _sqlDiffUiActionService;
         private readonly SqlQuickFixUiActionService _sqlQuickFixUiActionService;
         private readonly PlanStatisticsUiActionService _planStatisticsUiActionService;
+        private readonly DocumentAnalysisUiActionService _documentAnalysisUiActionService;
 
         private readonly DeadlockGraphUiState _deadlockGraphState = new();
 
@@ -449,6 +450,20 @@ namespace SqlXmlAnalyzer
                     _deadlockGraphElementUiActionService.DrawProcessNode,
                     _deadlockGraphElementUiActionService.DrawResourceNode,
                     _deadlockGraphElementUiActionService.DrawEdge);
+            _documentAnalysisUiActionService =
+                new DocumentAnalysisUiActionService(
+                    _analysisSessions,
+                    _deadlockDocumentController,
+                    _planDocumentController,
+                    _deadlockAnalysisUiActionService,
+                    _deadlockPlaybackUiActionService,
+                    _planAnalysisUiActionService,
+                    _sqlDiffUiActionService,
+                    _sqlQuickFixUiActionService,
+                    _planStatisticsUiActionService,
+                    StatusTextBlock,
+                    _showplanNs,
+                    UpdatePlaybackGraphVisibility);
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
@@ -654,42 +669,11 @@ namespace SqlXmlAnalyzer
             long requestId,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                StatusTextBlock.Text = $"正在分析死锁文件：{System.IO.Path.GetFileName(filePath)}...";
-
-                Core.Services.DeadlockDocumentResult documentResult =
-                    await _deadlockDocumentController.AnalyzeAsync(
-                        doc,
-                        filePath,
-                        cancellationToken);
-                if (!_analysisSessions.IsCurrent(requestId))
-                {
-                    return;
-                }
-
-                DeadlockAnalysisUiResult uiResult =
-                    _deadlockAnalysisUiActionService.Apply(documentResult);
-                _deadlockPlaybackUiActionService.SetCurrentPlayback(
-                    uiResult.Timeline,
-                    uiResult.PlaybackViewModel);
-                UpdatePlaybackGraphVisibility();
-                StatusTextBlock.Text = uiResult.StatusText;
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Verbose($"死锁分析已取消: {filePath}");
-            }
-            catch (Exception ex)
-            {
-                if (!_analysisSessions.IsCurrent(requestId))
-                {
-                    return;
-                }
-                Logger.LogException("AnalyzeDeadlockDocument", ex);
-                MessageBox.Show($"分析死锁内容失败: {ex.Message}\n\n完整错误已记录到日志文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusTextBlock.Text = "分析失败";
-            }
+            await _documentAnalysisUiActionService.AnalyzeDeadlockDocumentAsync(
+                doc,
+                filePath,
+                requestId,
+                cancellationToken);
         }
 
         private async Task AnalyzeExecutionPlanDocumentAsync(
@@ -698,54 +682,11 @@ namespace SqlXmlAnalyzer
             long requestId,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                StatusTextBlock.Text = $"正在分析执行计划：{System.IO.Path.GetFileName(filePath)}...";
-
-                Core.Services.PlanDocumentResult documentResult =
-                    await _planDocumentController.AnalyzeAsync(
-                        doc,
-                        filePath,
-                        _showplanNs,
-                        cancellationToken);
-                if (!_analysisSessions.IsCurrent(requestId))
-                {
-                    return;
-                }
-
-                var result = documentResult.Analysis;
-                Logger.Info($"[ExecutionPlan] Mermaid length: {result.Mermaid.Length} characters");
-                PlanAnalysisUiResult uiResult =
-                    _planAnalysisUiActionService.Apply(documentResult);
-                _sqlDiffUiActionService.SetSql(
-                    uiResult.QueryText,
-                    uiResult.RefactoredSql,
-                    _sqlQuickFixUiActionService.CreateLightbulbButton);
-                try
-                {
-                    _planStatisticsUiActionService.LoadFromPlan(doc, _showplanNs);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException("Load Histogram", ex);
-                }
-
-                StatusTextBlock.Text = "执行计划分析完成";
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Verbose($"执行计划分析已取消: {filePath}");
-            }
-            catch (Exception ex)
-            {
-                if (!_analysisSessions.IsCurrent(requestId))
-                {
-                    return;
-                }
-                Logger.LogException("AnalyzeExecutionPlanDocument", ex);
-                MessageBox.Show($"分析执行计划失败: {ex.Message}\n\n完整错误已记录到日志文件。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                StatusTextBlock.Text = "分析失败";
-            }
+            await _documentAnalysisUiActionService.AnalyzeExecutionPlanDocumentAsync(
+                doc,
+                filePath,
+                requestId,
+                cancellationToken);
         }
 
         // Helper method removed. Calling DeadlockXmlParser.ParseDeadlockXml instead.
