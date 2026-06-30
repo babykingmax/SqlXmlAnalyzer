@@ -48,6 +48,7 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly PlanGraphNodeClipboardUiActionService NodeClipboardUiActionService = new();
         private static readonly Core.Services.PlanGraphPanInteractionService PanInteractionService = new();
+        private static readonly PlanGraphViewportUiActionService ViewportUiActionService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
         public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
@@ -244,13 +245,9 @@ namespace SqlXmlAnalyzer
 
         public void ResetView()
         {
-            Editor.ViewportZoom = 1.0;
-            if (Nodes.Count > 0)
-            {
-                var first = Nodes[0].Location;
-                Nodes[0].Location = new Point(first.X + 1, first.Y);
-                Nodes[0].Location = first;
-            }
+            ViewportUiActionService.ResetView(
+                zoom => Editor.ViewportZoom = zoom,
+                Nodes);
         }
 
 
