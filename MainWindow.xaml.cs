@@ -153,6 +153,9 @@ namespace SqlXmlAnalyzer
             Core.Services.TuningSessionActionService? tuningSessionActionService = null)
         {
             InitializeComponent();
+            ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
+            ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
+            this.DataContext = ViewModel;
             _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
             _analysisSessions = analysisSessions ?? new Core.Services.AnalysisSessionCoordinator();
             _browserLauncher = browserLauncher ?? new Core.Services.BrowserLauncher(_temporaryFileManager);
@@ -224,7 +227,12 @@ namespace SqlXmlAnalyzer
                 effectiveHtmlReportExportService,
                 effectivePortableReportActionService,
                 effectivePortableReportExportService,
-                _browserLauncher);
+                _browserLauncher,
+                ViewModel,
+                MainTabControl,
+                DeadlockPatternsListBox,
+                DeadlockCanvasBorder,
+                _showplanNs);
             _planObfuscationExportUiActionService =
                 new PlanObfuscationExportUiActionService(_fileDialogService);
             _fileOpenUiActionService =
@@ -327,9 +335,6 @@ namespace SqlXmlAnalyzer
             _planStatisticsUiActionService =
                 new PlanStatisticsUiActionService(StatisticsHistogramView);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
-            ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
-            ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
-            this.DataContext = ViewModel;
             _analysisResultsUiActionService =
                 new AnalysisResultsUiActionService(
                     ViewModel,
@@ -809,39 +814,17 @@ namespace SqlXmlAnalyzer
 
         private void GenerateHtmlReport_Click(object sender, RoutedEventArgs e)
         {
-            _reportExportUiActionService.GenerateHtmlReport(
-                MainTabControl.SelectedIndex,
-                ViewModel.CurrentDeadlockDoc,
-                ViewModel.CurrentDeadlockFilePath,
-                ViewModel.DeadlockPatternText,
-                ViewModel.CurrentPlanDoc,
-                ViewModel.CurrentPlanFilePath,
-                _showplanNs,
-                ViewModel.MissingIndexes);
+            _reportExportUiActionService.GenerateHtmlReport();
         }
 
         private void ExportToPdf_Click(object sender, RoutedEventArgs e)
         {
-            ExportReport("pdf", "PDF 报告 (*.pdf)|*.pdf");
+            _reportExportUiActionService.ExportPdfReport();
         }
 
         private void ExportToWord_Click(object sender, RoutedEventArgs e)
         {
-            ExportReport("docx", "Word 报告 (*.docx)|*.docx");
-        }
-
-        private void ExportReport(string extension, string filter)
-        {
-            _reportExportUiActionService.ExportPortableReport(
-                MainTabControl.SelectedIndex,
-                ViewModel.CurrentDeadlockFilePath,
-                DeadlockPatternsListBox.ItemsSource?.OfType<DeadlockPattern>(),
-                ViewModel.DeadlockPatternText,
-                ViewModel.CurrentPlanFilePath,
-                ViewModel.PlanWarningsText,
-                DeadlockCanvasBorder,
-                extension,
-                filter);
+            _reportExportUiActionService.ExportWordReport();
         }
 
         private void CopyAnalysisResult_Click(object sender, RoutedEventArgs e)

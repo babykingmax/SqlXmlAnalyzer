@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core;
 using SqlXmlAnalyzer.Core.Models;
@@ -15,13 +17,23 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.PortableReportActionService _portableReportActionService;
         private readonly Core.Services.PortableReportExportService _portableReportExportService;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
+        private readonly Core.ViewModels.MainViewModel _viewModel;
+        private readonly TabControl _mainTabControl;
+        private readonly ListBox _deadlockPatternsListBox;
+        private readonly FrameworkElement _deadlockDiagramElement;
+        private readonly XNamespace _showplanNamespace;
 
         public ReportExportUiActionService(
             Core.Services.HtmlReportActionService htmlReportActionService,
             Core.Services.HtmlReportExportService htmlReportExportService,
             Core.Services.PortableReportActionService portableReportActionService,
             Core.Services.PortableReportExportService portableReportExportService,
-            Core.Services.BrowserLauncher browserLauncher)
+            Core.Services.BrowserLauncher browserLauncher,
+            Core.ViewModels.MainViewModel viewModel,
+            TabControl mainTabControl,
+            ListBox deadlockPatternsListBox,
+            FrameworkElement deadlockDiagramElement,
+            XNamespace showplanNamespace)
         {
             _htmlReportActionService = htmlReportActionService
                 ?? throw new ArgumentNullException(nameof(htmlReportActionService));
@@ -33,6 +45,53 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(portableReportExportService));
             _browserLauncher = browserLauncher
                 ?? throw new ArgumentNullException(nameof(browserLauncher));
+            _viewModel = viewModel
+                ?? throw new ArgumentNullException(nameof(viewModel));
+            _mainTabControl = mainTabControl
+                ?? throw new ArgumentNullException(nameof(mainTabControl));
+            _deadlockPatternsListBox = deadlockPatternsListBox
+                ?? throw new ArgumentNullException(nameof(deadlockPatternsListBox));
+            _deadlockDiagramElement = deadlockDiagramElement
+                ?? throw new ArgumentNullException(nameof(deadlockDiagramElement));
+            _showplanNamespace = showplanNamespace
+                ?? throw new ArgumentNullException(nameof(showplanNamespace));
+        }
+
+        public void GenerateHtmlReport()
+        {
+            GenerateHtmlReport(
+                _mainTabControl.SelectedIndex,
+                _viewModel.CurrentDeadlockDoc,
+                _viewModel.CurrentDeadlockFilePath,
+                _viewModel.DeadlockPatternText,
+                _viewModel.CurrentPlanDoc,
+                _viewModel.CurrentPlanFilePath,
+                _showplanNamespace,
+                _viewModel.MissingIndexes);
+        }
+
+        public void ExportPdfReport()
+        {
+            ExportPortableReport("pdf", "PDF 报告 (*.pdf)|*.pdf");
+        }
+
+        public void ExportWordReport()
+        {
+            ExportPortableReport("docx", "Word 报告 (*.docx)|*.docx");
+        }
+
+        private void ExportPortableReport(string extension, string filter)
+        {
+            ExportPortableReport(
+                _mainTabControl.SelectedIndex,
+                _viewModel.CurrentDeadlockFilePath,
+                _deadlockPatternsListBox.ItemsSource?.OfType<DeadlockPattern>(),
+                _viewModel.DeadlockPatternText,
+                _viewModel.CurrentPlanFilePath,
+                _viewModel.PlanWarningsText,
+                _deadlockDiagramElement,
+                extension,
+                filter);
         }
 
         public void GenerateHtmlReport(
