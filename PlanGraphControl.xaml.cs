@@ -43,7 +43,7 @@ namespace SqlXmlAnalyzer
     {
         private static readonly PlanGraphCollapseUiActionService CollapseUiActionService = new();
         private static readonly Core.Services.PlanGraphConnectionBuilderService ConnectionBuilderService = new();
-        private static readonly Core.Services.PlanGraphCostCalculationService CostCalculationService = new();
+        private static readonly PlanGraphCostUiActionService CostUiActionService = new();
         private static readonly PlanGraphLayoutUiActionService LayoutUiActionService = new();
         private static readonly Core.Services.PlanGraphMissingIndexAssociationService MissingIndexAssociationService = new();
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
@@ -256,7 +256,7 @@ namespace SqlXmlAnalyzer
                 allNodes[i].AssociatedSuggestion = matchedSuggestions[i];
             }
 
-            ApplyCostCalculations(
+            CostUiActionService.ApplyCostCalculations(
                 relOps,
                 nodeMap,
                 ns,
@@ -293,70 +293,6 @@ namespace SqlXmlAnalyzer
 
             // 默认选中根节点 (最高成本或第一个)
             SelectedNode = allNodes.OrderByDescending(n => n.CostPercent).FirstOrDefault() ?? allNodes.FirstOrDefault();
-        }
-
-        private static void ApplyCostCalculations(
-            List<XElement> relOps,
-            Dictionary<XElement, PlanNodeViewModel> nodeMap,
-            XNamespace ns,
-            DiagramViewMode initialView,
-            PlanColorMode initialColor)
-        {
-            var inputs = new List<Core.Services.PlanGraphNodeCostInput>();
-
-            foreach (XElement relOp in relOps)
-            {
-                PlanNodeViewModel vm = nodeMap[relOp];
-                List<XElement> childRelOps =
-                    PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns).ToList();
-                vm.HasChildren = childRelOps.Count > 0;
-                List<double> childSubtreeCosts = childRelOps
-                    .Select(child =>
-                    {
-                        if (nodeMap.TryGetValue(child, out PlanNodeViewModel? childVm))
-                        {
-                            return childVm.SubtreeCost;
-                        }
-
-                        return safeFloat(
-                            child.Attribute("EstimatedTotalSubtreeCost")?.Value);
-                    })
-                    .ToList();
-
-                inputs.Add(new Core.Services.PlanGraphNodeCostInput(
-                    vm.SubtreeCost,
-                    childSubtreeCosts,
-                    vm.EstimatedCPUCostNum,
-                    vm.EstimatedIOCostNum,
-                    vm.EstRowsNum,
-                    vm.ActualRowsNum,
-                    !string.IsNullOrEmpty(vm.ActualRows)));
-            }
-
-            IReadOnlyList<Core.Services.PlanGraphNodeCostResult> results =
-                CostCalculationService.Calculate(inputs);
-
-            for (int i = 0; i < relOps.Count; i++)
-            {
-                PlanNodeViewModel vm = nodeMap[relOps[i]];
-                Core.Services.PlanGraphNodeCostResult result = results[i];
-                vm.OwnCost = result.OwnCost;
-                vm.Cost = result.DisplayCost;
-                vm.ActualRecost = result.ActualRecost;
-                vm.CostPercent = result.CostPercent;
-                vm.CpuPercent = result.CpuPercent;
-                vm.IoPercent = result.IoPercent;
-                vm.ViewMode = initialView;
-                vm.ColorMode = initialColor;
-            }
-        }
-
-        private static double safeFloat(string? val, double defaultValue = 0.0)
-        {
-            if (string.IsNullOrEmpty(val)) return defaultValue;
-            if (double.TryParse(val, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double parsed))
-                return parsed;
-            return defaultValue;
         }
 
         private PlanNodeViewModel CreateNodeFromRelOp(XElement relOp, XNamespace ns)
