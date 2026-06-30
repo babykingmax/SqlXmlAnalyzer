@@ -1,4 +1,7 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.ViewModels;
 
 namespace SqlXmlAnalyzer.Services
@@ -26,6 +29,29 @@ namespace SqlXmlAnalyzer.Services
             return result.Status == Core.Services.PlanSnapshotOpenStatus.Ready
                 ? result.Snapshot
                 : null;
+        }
+
+        public async Task OpenSelectedHistorySnapshotAsync(
+            object? selectedItem,
+            Core.Services.AnalysisSessionCoordinator analysisSessions,
+            Func<XDocument, string, long, CancellationToken, Task> analyzeExecutionPlanDocumentAsync)
+        {
+            ArgumentNullException.ThrowIfNull(analysisSessions);
+            ArgumentNullException.ThrowIfNull(analyzeExecutionPlanDocumentAsync);
+
+            PlanSnapshot? snapshot = GetSelectedHistorySnapshot(selectedItem);
+            if (snapshot == null)
+            {
+                return;
+            }
+
+            Core.Services.AnalysisSession session = analysisSessions.Begin();
+            _viewModel.CurrentPlanFilePath = snapshot.FilePath;
+            await analyzeExecutionPlanDocumentAsync(
+                snapshot.Document,
+                snapshot.FilePath,
+                session.RequestId,
+                session.Token);
         }
 
         public void SaveSession()

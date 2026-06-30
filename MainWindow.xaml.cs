@@ -1004,20 +1004,10 @@ namespace SqlXmlAnalyzer
         // --- 调优历史与 A/B 并排对比事件处理器 ---
         private async void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Core.ViewModels.PlanSnapshot? snapshot =
-                _tuningSessionUiActionService.GetSelectedHistorySnapshot(
-                    TuningHistoryListView.SelectedItem);
-
-            if (snapshot != null)
-            {
-                var session = _analysisSessions.Begin();
-                ViewModel.CurrentPlanFilePath = snapshot.FilePath;
-                await AnalyzeExecutionPlanDocumentAsync(
-                    snapshot.Document,
-                    snapshot.FilePath,
-                    session.RequestId,
-                    session.Token);
-            }
+            await _tuningSessionUiActionService.OpenSelectedHistorySnapshotAsync(
+                TuningHistoryListView.SelectedItem,
+                _analysisSessions,
+                AnalyzeExecutionPlanDocumentAsync);
         }
 
         private void SaveSession_Click(object sender, RoutedEventArgs e)
