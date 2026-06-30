@@ -66,19 +66,19 @@ namespace SqlXmlAnalyzer.Services
 
                 if (result.Status == Core.Services.AnalysisClipboardStatus.Empty)
                 {
-                    MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
                 if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
                 {
                     Clipboard.SetText(result.Text);
-                    MessageBox.Show("诊断结果已成功复制到剪贴板！", "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Diagnostic results copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"复制失败:\n{ex.Message}", "失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Copy failed:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -90,7 +90,11 @@ namespace SqlXmlAnalyzer.Services
             if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
             {
                 Clipboard.SetText(result.Text);
-                MessageBox.Show("重构后的 SQL 已成功复制到剪贴板！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Refactored SQL copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (result.Status == Core.Services.AnalysisClipboardStatus.Empty)
+            {
+                MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -101,7 +105,7 @@ namespace SqlXmlAnalyzer.Services
 
             if (result.Status == Core.Services.LogFolderActionStatus.MissingDirectory)
             {
-                MessageBox.Show(result.UserMessage);
+                MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -112,22 +116,21 @@ namespace SqlXmlAnalyzer.Services
             catch (Exception ex)
             {
                 Logger.LogException("OpenLogsFolder_Click", ex);
-                MessageBox.Show($"无法打开日志文件夹: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unable to open the log folder: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         public void ShowAboutAndRegisterAssociations()
         {
             MessageBoxResult result = MessageBox.Show(
-                "SqlXmlAnalyzer 专业图形界面版 v2.0\n\n" +
-                "功能特性：\n" +
-                "1. 完美的执行计划可视化与智能折叠 (基于 Nodify)\n" +
-                "2. 深度死锁回放与有向图关键路径聚焦\n" +
-                "3. 索引调优沙盒与 Tipping Point 临界线分析\n" +
-                "4. 参数嗅探并排对比与直方图绘制\n\n" +
-                "是否关联 .sqlplan 与 .xdl 文件到系统右键菜单？\n" +
-                "（点击“是”将为当前用户注册文件关联，“否”则仅关闭此窗口）",
-                "关于 & 关联设置",
+                "SqlXmlAnalyzer v2.0\n\n" +
+                "Highlights:\n" +
+                "1. Execution plan visualization with smart graph collapse.\n" +
+                "2. Deadlock playback with focused graph paths.\n" +
+                "3. Missing-index tuning sandbox with tipping-point analysis.\n" +
+                "4. Parameter-sensitivity comparison and updated diagram exports.\n\n" +
+                "Register .sqlplan and .xdl file associations for the current user?",
+                "About & File Associations",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Information);
 
@@ -221,15 +224,15 @@ namespace SqlXmlAnalyzer.Services
                 if (registrationResult.Status
                     != Core.Services.FileAssociationRegistrationStatus.Registered)
                 {
-                    MessageBox.Show("文件关联注册失败：无法访问当前用户的文件关联注册表。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("File association registration failed: the current-user registry keys are not accessible.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                MessageBox.Show("文件关联注册成功！您现在可以直接双击或右键打开 .sqlplan 和 .xdl 文件了。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("File associations registered. You can now open .sqlplan and .xdl files directly.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"注册文件关联失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"File association registration failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

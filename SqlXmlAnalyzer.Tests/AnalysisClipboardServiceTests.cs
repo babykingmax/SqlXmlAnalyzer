@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Ready);
             result.Text.Should().Be(
-                "=== SQL Server 死锁诊断报告 ===\r\n\r\nDeadlock details");
+                "=== SQL Server Deadlock Diagnostic Report ===\r\n\r\nDeadlock details");
             result.UserMessage.Should().BeNull();
         }
 
@@ -33,7 +33,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Ready);
             result.Text.Should().Be(
-                "=== SQL Server 执行计划诊断报告 ===\r\n\r\nPlan details");
+                "=== SQL Server Execution Plan Diagnostic Report ===\r\n\r\nPlan details");
             result.UserMessage.Should().BeNull();
         }
 
@@ -49,7 +49,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Empty);
             result.Text.Should().BeEmpty();
-            result.UserMessage.Should().Be("当前没有死锁诊断结果可复制！");
+            result.UserMessage.Should().Be("There are no deadlock diagnostics to copy.");
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Empty);
             result.Text.Should().BeEmpty();
-            result.UserMessage.Should().Be("当前没有执行计划诊断结果可复制！");
+            result.UserMessage.Should().Be("There are no execution plan diagnostics to copy.");
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Empty);
             result.Text.Should().BeEmpty();
-            result.UserMessage.Should().Be("当前没有重构后的 SQL 可复制！");
+            result.UserMessage.Should().Be("There is no refactored SQL to copy.");
         }
     }
 }

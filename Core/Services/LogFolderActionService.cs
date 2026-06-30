@@ -40,7 +40,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 : new LogFolderActionResult(
                     LogFolderActionStatus.MissingDirectory,
                     logsPath,
-                    "日志目录尚未创建。");
+                    "The log folder has not been created yet.");
         }
     }
 }

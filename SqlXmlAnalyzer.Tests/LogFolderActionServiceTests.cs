@@ -35,7 +35,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(LogFolderActionStatus.MissingDirectory);
             result.FolderPath.Should().Be(expectedPath);
-            result.UserMessage.Should().Be("日志目录尚未创建。");
+            result.UserMessage.Should().Be("The log folder has not been created yet.");
         }
     }
 }

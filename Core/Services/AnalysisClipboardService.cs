@@ -23,12 +23,12 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 0 => Build(
                     deadlockDiagnostics,
-                    "=== SQL Server 死锁诊断报告 ===",
-                    "当前没有死锁诊断结果可复制！"),
+                    "=== SQL Server Deadlock Diagnostic Report ===",
+                    "There are no deadlock diagnostics to copy."),
                 1 => Build(
                     planDiagnostics,
-                    "=== SQL Server 执行计划诊断报告 ===",
-                    "当前没有执行计划诊断结果可复制！"),
+                    "=== SQL Server Execution Plan Diagnostic Report ===",
+                    "There are no execution plan diagnostics to copy."),
                 _ => new AnalysisClipboardResult(
                     AnalysisClipboardStatus.UnsupportedTab,
                     string.Empty,
@@ -43,7 +43,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 return new AnalysisClipboardResult(
                     AnalysisClipboardStatus.Empty,
                     string.Empty,
-                    "当前没有重构后的 SQL 可复制！");
+                    "There is no refactored SQL to copy.");
             }
 
             return new AnalysisClipboardResult(
