@@ -73,9 +73,6 @@ namespace SqlXmlAnalyzer
         private DeadlockPlaybackViewModel? _playbackViewModel;
         private Dictionary<(string, string), Border> _stepBadges = new Dictionary<(string, string), Border>();
 
-        private string _currentOriginalSql = "";
-        private string _currentRefactoredSql = "";
-
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             _shellActionService.HandleTitleBarMouseLeftButtonDown(this, e.ClickCount);
@@ -319,13 +316,14 @@ namespace SqlXmlAnalyzer
                     effectiveSqlDiffService,
                     effectiveSqlDiffDocumentRenderer,
                     OriginalSqlTextBox,
-                    RefactoredSqlTextBox);
+                    RefactoredSqlTextBox,
+                    PlanStatementTextBox);
             _sqlQuickFixUiActionService =
                 new SqlQuickFixUiActionService(
                     this,
                     effectiveSqlQuickFixService,
-                    () => _currentOriginalSql,
-                    ApplySqlQuickFixResult);
+                    () => _sqlDiffUiActionService.CurrentOriginalSql,
+                    _sqlDiffUiActionService.ApplyQuickFixResult);
             _planStatisticsUiActionService =
                 new PlanStatisticsUiActionService(StatisticsHistogramView);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
@@ -713,9 +711,10 @@ namespace SqlXmlAnalyzer
                 Logger.Info($"[ExecutionPlan] Mermaid length: {result.Mermaid.Length} characters");
                 PlanAnalysisUiResult uiResult =
                     _planAnalysisUiActionService.Apply(documentResult);
-                _currentOriginalSql = uiResult.QueryText;
-                _currentRefactoredSql = uiResult.RefactoredSql;
-                UpdateSqlDiffViews();
+                _sqlDiffUiActionService.SetSql(
+                    uiResult.QueryText,
+                    uiResult.RefactoredSql,
+                    _sqlQuickFixUiActionService.CreateLightbulbButton);
                 try
                 {
                     _planStatisticsUiActionService.LoadFromPlan(doc, _showplanNs);
@@ -855,7 +854,7 @@ namespace SqlXmlAnalyzer
 
         private void CopyRefactoredSql_Click(object sender, RoutedEventArgs e)
         {
-            _shellActionService.CopyRefactoredSql(_currentRefactoredSql);
+            _shellActionService.CopyRefactoredSql(_sqlDiffUiActionService.CurrentRefactoredSql);
         }
 
         private void CompareSql_Click(object sender, RoutedEventArgs e)
@@ -1032,21 +1031,6 @@ namespace SqlXmlAnalyzer
 
         #region 可视化看板与交互展示 (GUI Dashboard Integration & Interactive Visualization)
 
-        private void UpdateSqlDiffViews()
-        {
-            _sqlDiffUiActionService.RenderDiff(
-                _currentOriginalSql,
-                _currentRefactoredSql,
-                _sqlQuickFixUiActionService.CreateLightbulbButton);
-        }
-
-        private void ApplySqlQuickFixResult(SqlQuickFixAppliedResult result)
-        {
-            _currentOriginalSql = result.RewrittenSql;
-            _currentRefactoredSql = result.RewrittenSql;
-            UpdateSqlDiffViews();
-            PlanStatementTextBox.Text = result.StatementPreview;
-        }
         private void CopyIndexDdl_Click(object sender, RoutedEventArgs e)
         {
             _missingIndexClipboardUiActionService.CopyCreateScript(sender);
