@@ -8,7 +8,7 @@ namespace SqlXmlAnalyzer
         {
             _planObfuscationExportUiActionService.Export(
                 ViewModel.CurrentPlanDoc,
-                status => StatusTextBlock.Text = status);
+                status => ShellStatus.StatusTextBlock.Text = status);
         }
 
         private void GenerateHtmlReport_Click(object sender, RoutedEventArgs e)

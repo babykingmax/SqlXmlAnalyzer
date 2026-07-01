@@ -264,7 +264,7 @@ namespace SqlXmlAnalyzer
                     DeadlockResourcesList,
                     DeadlockPatternsListBox,
                     PlanOperatorTree,
-                    StatusTextBlock,
+                    ShellStatus.StatusTextBlock,
                     _deadlockGraphState);
             _deadlockAnalysisUiActionService =
                 new DeadlockAnalysisUiActionService(
@@ -388,7 +388,7 @@ namespace SqlXmlAnalyzer
                     _sqlDiffUiActionService,
                     _sqlQuickFixUiActionService,
                     _planStatisticsUiActionService,
-                    StatusTextBlock,
+                    ShellStatus.StatusTextBlock,
                     _showplanNs,
                     UpdatePlaybackGraphVisibility,
                     _xelDeadlockUiActionService.AnalyzeXelFileAsync);

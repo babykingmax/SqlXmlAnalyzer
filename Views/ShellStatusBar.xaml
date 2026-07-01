@@ -1,0 +1,18 @@
+<UserControl x:Class="SqlXmlAnalyzer.Views.ShellStatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StatusBar Background="{StaticResource AccentBrush}"
+               Foreground="White">
+        <StatusBarItem>
+            <TextBlock x:Name="PART_StatusTextBlock"
+                       Text="{Binding StatusText}"
+                       Foreground="White"
+                       FontWeight="SemiBold"/>
+        </StatusBarItem>
+        <Separator Background="#88FFFFFF"/>
+        <StatusBarItem HorizontalAlignment="Right">
+            <TextBlock Text="SqlXmlAnalyzer v2.0 | 2026 Modern UI"
+                       Foreground="White"/>
+        </StatusBarItem>
+    </StatusBar>
+</UserControl>

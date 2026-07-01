@@ -24,34 +24,11 @@
         Background="{DynamicResource MaterialDesignPaper}">
 
     <Window.Resources>
-        <conv:ScoreToColorConverter x:Key="ScoreColorConv"/>
-        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <!-- 执行计划操作符模板 (Plan Explorer 风格) -->
-        <HierarchicalDataTemplate x:Key="PlanOperatorTemplate" ItemsSource="{Binding Children}">
-            <StackPanel Orientation="Horizontal" Margin="2">
-                <Image Source="{Binding OperatorIcon}" Width="16" Height="16" Margin="0,0,4,0" VerticalAlignment="Center" SnapsToDevicePixels="True"/>
-                <TextBlock Text="{Binding PhysicalOp}" FontWeight="SemiBold" Foreground="{Binding CostColor}"/>
-                <TextBlock Text=" (" Foreground="Gray"/>
-                <TextBlock Text="{Binding LogicalOp}" Foreground="Gray"/>
-                <TextBlock Text=")" Foreground="Gray"/>
-                <TextBlock Text="  Cost: " Foreground="#666"/>
-                <TextBlock Text="{Binding Cost, StringFormat={}{0:F2}}" Foreground="{Binding CostColor}"/>
-                <TextBlock Text="  Rows: " Foreground="#666"/>
-                <TextBlock Text="{Binding EstRows}" Foreground="#666"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
-        <!-- 死锁等待关系模板 -->
-        <HierarchicalDataTemplate x:Key="DeadlockRelationTemplate" ItemsSource="{Binding Waiters}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="🔒 " />
-                <TextBlock Text="{Binding ResourceName}" FontWeight="SemiBold"/>
-                <TextBlock Text="  被 " />
-                <TextBlock Text="{Binding Holder}" Foreground="#0066CC"/>
-                <TextBlock Text=" 持有，等待者: " />
-                <TextBlock Text="{Binding WaiterCount}" Foreground="Red"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/MainWindowResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
@@ -766,14 +743,6 @@
         </Grid>
 
         <!-- 状态栏 -->
-        <StatusBar Grid.Row="2" Background="{StaticResource AccentBrush}" Foreground="White">
-            <StatusBarItem>
-                <TextBlock Name="StatusTextBlock" Text="{Binding StatusText}" Foreground="White" FontWeight="SemiBold"/>
-            </StatusBarItem>
-            <Separator Background="#88FFFFFF"/>
-            <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="SqlXmlAnalyzer v2.0 | 2026 Modern UI" Foreground="White"/>
-            </StatusBarItem>
-        </StatusBar>
+        <views:ShellStatusBar x:Name="ShellStatus" Grid.Row="2"/>
     </Grid>
 </Window>
