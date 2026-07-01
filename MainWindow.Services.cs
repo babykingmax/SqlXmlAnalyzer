@@ -79,7 +79,7 @@ namespace SqlXmlAnalyzer
                 this,
                 MainTabControl,
                 ViewModel,
-                () => ThemeToggle.IsChecked == true);
+                () => NavigationRail.IsThemeToggleChecked);
             Core.Services.IPdfWordReportExporter effectiveReportExporter =
                 pdfWordReportService ?? new Core.Services.PdfWordReportService(_temporaryFileManager);
             _documentOpenService = documentOpenService

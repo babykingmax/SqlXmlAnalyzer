@@ -62,28 +62,11 @@
         </Grid.RowDefinitions>
 
         <!-- 自定义沉浸式标题栏 -->
-        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="12,0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <materialDesign:PackIcon Kind="DatabaseSearchOutline" Width="18" Height="18" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
-                    <TextBlock Text="智能诊断引擎 (SqlXmlAnalyzer)" FontSize="13" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <!-- 系统控制按钮 -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button Click="Minimize_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="46" Height="32" Padding="0" Content="—" Foreground="{DynamicResource MaterialDesignBody}"/>
-                    <Button Click="Maximize_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="46" Height="32" Padding="0" Content="☐" Foreground="{DynamicResource MaterialDesignBody}"/>
-                    <Button Click="Close_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="46" Height="32" Padding="0" Content="✕" Foreground="{DynamicResource MaterialDesignBody}" x:Name="CloseButton">
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </materialDesign:ColorZone>
+        <views:ShellTitleBar Grid.Row="0"
+                             TitleBarMouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                             MinimizeClicked="Minimize_Click"
+                             MaximizeClicked="Maximize_Click"
+                             CloseClicked="Close_Click"/>
 
         <!-- 主内容区: 左侧 Navigation Rail + 右侧 TabControl -->
         <Grid Grid.Row="1">
@@ -93,52 +76,18 @@
             </Grid.ColumnDefinitions>
             
             <!-- 现代化侧边导航 (Navigation Rail) -->
-            <Border Grid.Column="0" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,1,0" Padding="0,12,0,12">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Grid.Row="0">
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="OpenDeadlockFile_Click" ToolTip="打开死锁 XML" Width="48" Height="48" Margin="0,0,0,8">
-                            <materialDesign:PackIcon Kind="LockAlert" Width="24" Height="24" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="OpenPlanFile_Click" ToolTip="打开执行计划 XML" Width="48" Height="48" Margin="0,0,0,16">
-                            <materialDesign:PackIcon Kind="ChartTree" Width="24" Height="24" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
-                        </Button>
-                        <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="12,0,12,16"/>
-                        
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="GenerateHtmlReport_Click" ToolTip="导出 HTML 报告" Width="48" Height="48" Margin="0,0,0,8">
-                            <materialDesign:PackIcon Kind="LanguageHtml5" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ExportToWord_Click" ToolTip="导出 Word 报告" Width="48" Height="48" Margin="0,0,0,8">
-                            <materialDesign:PackIcon Kind="FileWordOutline" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ExportToPdf_Click" ToolTip="导出 PDF" Width="48" Height="48" Margin="0,0,0,8">
-                            <materialDesign:PackIcon Kind="FilePdfBox" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ExportObfuscatedPlan_Click" ToolTip="脱敏导出执行计划" Width="48" Height="48" Margin="0,0,0,16">
-                            <materialDesign:PackIcon Kind="Incognito" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2">
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="CopyAnalysisResult_Click" ToolTip="复制结果到剪贴板" Width="48" Height="48" Margin="0,0,0,8">
-                            <materialDesign:PackIcon Kind="ContentCopy" Width="20" Height="20" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="ClearResults_Click" ToolTip="清空所有视图" Width="48" Height="48" Margin="0,0,0,16">
-                            <materialDesign:PackIcon Kind="Broom" Width="20" Height="20" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                        <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="12,0,12,16"/>
-                        <ToggleButton x:Name="ThemeToggle" Style="{StaticResource MaterialDesignSwitchToggleButton}" Click="ThemeToggle_Click" ToolTip="深色/浅色切换" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Click="About_Click" ToolTip="关于" Width="48" Height="48">
-                            <materialDesign:PackIcon Kind="InformationOutline" Width="22" Height="22" Foreground="{DynamicResource MaterialDesignBody}"/>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Border>
+            <views:ShellNavigationRail x:Name="NavigationRail"
+                                       Grid.Column="0"
+                                       OpenDeadlockClicked="OpenDeadlockFile_Click"
+                                       OpenPlanClicked="OpenPlanFile_Click"
+                                       GenerateHtmlReportClicked="GenerateHtmlReport_Click"
+                                       ExportWordClicked="ExportToWord_Click"
+                                       ExportPdfClicked="ExportToPdf_Click"
+                                       ExportObfuscatedPlanClicked="ExportObfuscatedPlan_Click"
+                                       CopyAnalysisResultClicked="CopyAnalysisResult_Click"
+                                       ClearResultsClicked="ClearResults_Click"
+                                       ThemeToggled="ThemeToggle_Click"
+                                       AboutClicked="About_Click"/>
             
             <!-- 主内容区 Tabs -->
 <TabControl Grid.Column="1" Margin="2" Name="MainTabControl" SelectedIndex="0" Background="{DynamicResource MaterialDesignPaper}">
