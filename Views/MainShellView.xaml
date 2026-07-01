@@ -1,0 +1,71 @@
+<UserControl x:Class="SqlXmlAnalyzer.Views.MainShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:SqlXmlAnalyzer.Views">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <views:ShellTitleBar Grid.Row="0"
+                             TitleBarMouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                             MinimizeClicked="Minimize_Click"
+                             MaximizeClicked="Maximize_Click"
+                             CloseClicked="Close_Click"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <views:ShellNavigationRail x:Name="NavigationRail"
+                                       Grid.Column="0"
+                                       OpenDeadlockClicked="OpenDeadlockFile_Click"
+                                       OpenPlanClicked="OpenPlanFile_Click"
+                                       GenerateHtmlReportClicked="GenerateHtmlReport_Click"
+                                       ExportWordClicked="ExportToWord_Click"
+                                       ExportPdfClicked="ExportToPdf_Click"
+                                       ExportObfuscatedPlanClicked="ExportObfuscatedPlan_Click"
+                                       CopyAnalysisResultClicked="CopyAnalysisResult_Click"
+                                       ClearResultsClicked="ClearResults_Click"
+                                       ThemeToggled="ThemeToggle_Click"
+                                       AboutClicked="About_Click"/>
+
+            <views:MainWorkspaceView x:Name="MainWorkspace"
+                                     Grid.Column="1"
+                                     DeadlockProcessesSelectionChanged="DeadlockProcessesList_SelectionChanged"
+                                     DeadlockResourcesSelectionChanged="DeadlockResourcesList_SelectionChanged"
+                                     XelDeadlockSelectionChanged="XelDeadlockSelector_SelectionChanged"
+                                     DeadlockToggleLeftClicked="ToggleLeft_Click"
+                                     DeadlockToggleRightClicked="ToggleRight_Click"
+                                     DeadlockZoomToFitClicked="ZoomToFitDeadlock_Click"
+                                     DeadlockPlaybackModeChecked="PlaybackModeToggle_Checked"
+                                     DeadlockPlaybackModeUnchecked="PlaybackModeToggle_Unchecked"
+                                     CopyDeadlockMermaidClicked="CopyDeadlockMermaid_Click"
+                                     OpenDeadlockMermaidClicked="OpenDeadlockMermaidInBrowser_Click"
+                                     DeadlockPatternsSelectionChanged="DeadlockPatternsListBox_SelectionChanged"
+                                     PlanLeftPanelExpanded="LeftPanel_Expanded"
+                                     PlanLeftPanelCollapsed="LeftPanel_Collapsed"
+                                     PlanRightPanelExpanded="RightPanel_Expanded"
+                                     PlanRightPanelCollapsed="RightPanel_Collapsed"
+                                     PlanOperatorTreeSelectedItemChanged="PlanOperatorTree_SelectedItemChanged"
+                                     PlanVisualTreeSelectedItemChanged="PlanVisualTree_SelectedItemChanged"
+                                     PlanGraphNodeSelected="PlanNodifyGraph_NodeSelected"
+                                     PlanGraphNodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"
+                                     CopyRefactoredSqlClicked="CopyRefactoredSql_Click"
+                                     CompareSqlClicked="CompareSql_Click"
+                                     CopyIndexDdlClicked="CopyIndexDdl_Click"
+                                     CopyDeploymentBundleClicked="CopyDeploymentBundle_Click"
+                                     CopyRollbackDdlClicked="CopyRollbackDdl_Click"
+                                     TuningHistoryMouseDoubleClicked="TuningHistoryListView_MouseDoubleClick"
+                                     SaveSessionClicked="SaveSession_Click"
+                                     LoadSessionClicked="LoadSession_Click"
+                                     SwapPlanABClicked="SwapPlanAB_Click"/>
+        </Grid>
+
+        <views:ShellStatusBar x:Name="ShellStatus" Grid.Row="2"/>
+    </Grid>
+</UserControl>

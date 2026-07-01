@@ -31,75 +31,47 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="32"/> <!-- 标题栏 -->
-            <RowDefinition Height="*"/>  <!-- 内容区 -->
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <!-- 自定义沉浸式标题栏 -->
-        <views:ShellTitleBar Grid.Row="0"
-                             TitleBarMouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
-                             MinimizeClicked="Minimize_Click"
-                             MaximizeClicked="Maximize_Click"
-                             CloseClicked="Close_Click"/>
-
-        <!-- 主内容区: 左侧 Navigation Rail + 右侧 TabControl -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="64"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!-- 现代化侧边导航 (Navigation Rail) -->
-            <views:ShellNavigationRail x:Name="NavigationRail"
-                                       Grid.Column="0"
-                                       OpenDeadlockClicked="OpenDeadlockFile_Click"
-                                       OpenPlanClicked="OpenPlanFile_Click"
-                                       GenerateHtmlReportClicked="GenerateHtmlReport_Click"
-                                       ExportWordClicked="ExportToWord_Click"
-                                       ExportPdfClicked="ExportToPdf_Click"
-                                       ExportObfuscatedPlanClicked="ExportObfuscatedPlan_Click"
-                                       CopyAnalysisResultClicked="CopyAnalysisResult_Click"
-                                       ClearResultsClicked="ClearResults_Click"
-                                       ThemeToggled="ThemeToggle_Click"
-                                       AboutClicked="About_Click"/>
-            
-            <!-- 主内容区 Tabs -->
-            <views:MainWorkspaceView x:Name="MainWorkspace"
-                                     Grid.Column="1"
-                                     DeadlockProcessesSelectionChanged="DeadlockProcessesList_SelectionChanged"
-                                     DeadlockResourcesSelectionChanged="DeadlockResourcesList_SelectionChanged"
-                                     XelDeadlockSelectionChanged="XelDeadlockSelector_SelectionChanged"
-                                     DeadlockToggleLeftClicked="ToggleLeft_Click"
-                                     DeadlockToggleRightClicked="ToggleRight_Click"
-                                     DeadlockZoomToFitClicked="ZoomToFitDeadlock_Click"
-                                     DeadlockPlaybackModeChecked="PlaybackModeToggle_Checked"
-                                     DeadlockPlaybackModeUnchecked="PlaybackModeToggle_Unchecked"
-                                     CopyDeadlockMermaidClicked="CopyDeadlockMermaid_Click"
-                                     OpenDeadlockMermaidClicked="OpenDeadlockMermaidInBrowser_Click"
-                                     DeadlockPatternsSelectionChanged="DeadlockPatternsListBox_SelectionChanged"
-                                     PlanLeftPanelExpanded="LeftPanel_Expanded"
-                                     PlanLeftPanelCollapsed="LeftPanel_Collapsed"
-                                     PlanRightPanelExpanded="RightPanel_Expanded"
-                                     PlanRightPanelCollapsed="RightPanel_Collapsed"
-                                     PlanOperatorTreeSelectedItemChanged="PlanOperatorTree_SelectedItemChanged"
-                                     PlanVisualTreeSelectedItemChanged="PlanVisualTree_SelectedItemChanged"
-                                     PlanGraphNodeSelected="PlanNodifyGraph_NodeSelected"
-                                     PlanGraphNodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"
-                                     CopyRefactoredSqlClicked="CopyRefactoredSql_Click"
-                                     CompareSqlClicked="CompareSql_Click"
-                                     CopyIndexDdlClicked="CopyIndexDdl_Click"
-                                     CopyDeploymentBundleClicked="CopyDeploymentBundle_Click"
-                                     CopyRollbackDdlClicked="CopyRollbackDdl_Click"
-                                     TuningHistoryMouseDoubleClicked="TuningHistoryListView_MouseDoubleClick"
-                                     SaveSessionClicked="SaveSession_Click"
-                                     LoadSessionClicked="LoadSession_Click"
-                                     SwapPlanABClicked="SwapPlanAB_Click"/>
-        </Grid>
-
-        <!-- 状态栏 -->
-        <views:ShellStatusBar x:Name="ShellStatus" Grid.Row="2"/>
-    </Grid>
+    <views:MainShellView x:Name="MainShell"
+                         TitleBarMouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                         MinimizeClicked="Minimize_Click"
+                         MaximizeClicked="Maximize_Click"
+                         CloseClicked="Close_Click"
+                         OpenDeadlockClicked="OpenDeadlockFile_Click"
+                         OpenPlanClicked="OpenPlanFile_Click"
+                         GenerateHtmlReportClicked="GenerateHtmlReport_Click"
+                         ExportWordClicked="ExportToWord_Click"
+                         ExportPdfClicked="ExportToPdf_Click"
+                         ExportObfuscatedPlanClicked="ExportObfuscatedPlan_Click"
+                         CopyAnalysisResultClicked="CopyAnalysisResult_Click"
+                         ClearResultsClicked="ClearResults_Click"
+                         ThemeToggled="ThemeToggle_Click"
+                         AboutClicked="About_Click"
+                         DeadlockProcessesSelectionChanged="DeadlockProcessesList_SelectionChanged"
+                         DeadlockResourcesSelectionChanged="DeadlockResourcesList_SelectionChanged"
+                         XelDeadlockSelectionChanged="XelDeadlockSelector_SelectionChanged"
+                         DeadlockToggleLeftClicked="ToggleLeft_Click"
+                         DeadlockToggleRightClicked="ToggleRight_Click"
+                         DeadlockZoomToFitClicked="ZoomToFitDeadlock_Click"
+                         DeadlockPlaybackModeChecked="PlaybackModeToggle_Checked"
+                         DeadlockPlaybackModeUnchecked="PlaybackModeToggle_Unchecked"
+                         CopyDeadlockMermaidClicked="CopyDeadlockMermaid_Click"
+                         OpenDeadlockMermaidClicked="OpenDeadlockMermaidInBrowser_Click"
+                         DeadlockPatternsSelectionChanged="DeadlockPatternsListBox_SelectionChanged"
+                         PlanLeftPanelExpanded="LeftPanel_Expanded"
+                         PlanLeftPanelCollapsed="LeftPanel_Collapsed"
+                         PlanRightPanelExpanded="RightPanel_Expanded"
+                         PlanRightPanelCollapsed="RightPanel_Collapsed"
+                         PlanOperatorTreeSelectedItemChanged="PlanOperatorTree_SelectedItemChanged"
+                         PlanVisualTreeSelectedItemChanged="PlanVisualTree_SelectedItemChanged"
+                         PlanGraphNodeSelected="PlanNodifyGraph_NodeSelected"
+                         PlanGraphNodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"
+                         CopyRefactoredSqlClicked="CopyRefactoredSql_Click"
+                         CompareSqlClicked="CompareSql_Click"
+                         CopyIndexDdlClicked="CopyIndexDdl_Click"
+                         CopyDeploymentBundleClicked="CopyDeploymentBundle_Click"
+                         CopyRollbackDdlClicked="CopyRollbackDdl_Click"
+                         TuningHistoryMouseDoubleClicked="TuningHistoryListView_MouseDoubleClick"
+                         SaveSessionClicked="SaveSession_Click"
+                         LoadSessionClicked="LoadSession_Click"
+                         SwapPlanABClicked="SwapPlanAB_Click"/>
 </Window>
