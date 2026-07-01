@@ -45,7 +45,11 @@ namespace SqlXmlAnalyzer.Services
 
                 if (reports.Count == 0)
                 {
-                    MessageBox.Show("该 XEL 文件中没有找到任何 xml_deadlock_report 事件。");
+                    MessageBox.Show(
+                        "No xml_deadlock_report events were found in this XEL file.",
+                        "No deadlocks found",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                     return;
                 }
 
@@ -56,7 +60,7 @@ namespace SqlXmlAnalyzer.Services
             }
             catch (OperationCanceledException)
             {
-                Logger.Verbose($"XEL 分析已取消: {filePath}");
+                Logger.Verbose($"XEL analysis canceled: {filePath}");
             }
             catch (Exception ex)
             {
@@ -66,7 +70,11 @@ namespace SqlXmlAnalyzer.Services
                 }
 
                 Logger.LogException("MainWindow.AnalyzeXelFileAsync", ex);
-                MessageBox.Show("解析 XEL 文件时发生错误: " + ex.Message);
+                MessageBox.Show(
+                    "Failed to parse the XEL file: " + ex.Message,
+                    "XEL parse failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -81,12 +89,16 @@ namespace SqlXmlAnalyzer.Services
             {
                 await _analyzeDeadlockXmlAsync(
                     report.DeadlockXml,
-                    $"XEL 死锁事件 {report.Timestamp}");
+                    $"XEL deadlock event {report.Timestamp}");
             }
             catch (Exception ex)
             {
-                Logger.LogException("渲染死锁图失败 (Selector_SelectionChanged)", ex);
-                MessageBox.Show("渲染死锁图失败: " + ex.Message);
+                Logger.LogException("Render XEL deadlock graph failed (Selector_SelectionChanged)", ex);
+                MessageBox.Show(
+                    "Failed to render the selected deadlock graph: " + ex.Message,
+                    "Deadlock render failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
     }

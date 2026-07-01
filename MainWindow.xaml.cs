@@ -473,7 +473,7 @@ namespace SqlXmlAnalyzer
                     StatusTextBlock,
                     _showplanNs,
                     UpdatePlaybackGraphVisibility,
-                    AnalyzeXelFileAsync);
+                    _xelDeadlockUiActionService.AnalyzeXelFileAsync);
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 
@@ -485,13 +485,8 @@ namespace SqlXmlAnalyzer
         private async void OpenDeadlockFile_Click(object sender, RoutedEventArgs e)
         {
             await _fileOpenUiActionService.OpenDeadlockAsync(
-                AnalyzeXelFileAsync,
+                _xelDeadlockUiActionService.AnalyzeXelFileAsync,
                 AnalyzeDeadlockFile);
-        }
-
-        private async Task AnalyzeXelFileAsync(string filePath)
-        {
-            await _xelDeadlockUiActionService.AnalyzeXelFileAsync(filePath);
         }
 
         private async void XelDeadlockSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -513,7 +508,7 @@ namespace SqlXmlAnalyzer
         {
             await _fileOpenUiActionService.HandleDropAsync(
                 e,
-                AnalyzeXelFileAsync,
+                _xelDeadlockUiActionService.AnalyzeXelFileAsync,
                 AnalyzeDeadlockFile,
                 AnalyzeExecutionPlanFile);
         }
