@@ -149,8 +149,8 @@ namespace SqlXmlAnalyzer
                 _browserLauncher,
                 ViewModel,
                 MainTabControl,
-                DeadlockPatternsListBox,
-                DeadlockCanvasBorder,
+                DeadlockWorkspace.PatternsListBox,
+                DeadlockWorkspace.CanvasBorder,
                 _showplanNs);
             _planObfuscationExportUiActionService =
                 new PlanObfuscationExportUiActionService(_fileDialogService);
@@ -160,7 +160,7 @@ namespace SqlXmlAnalyzer
                 new XelDeadlockUiActionService(
                     xelReader ?? new Core.XelReader(),
                     _analysisSessions,
-                    XelDeadlockSelector,
+                    DeadlockWorkspace.XelSelector,
                     MainTabControl,
                     AnalyzeDeadlockXmlAsync);
             Core.Services.MissingIndexDeploymentScriptService effectiveMissingIndexDeploymentScriptService =
@@ -259,21 +259,21 @@ namespace SqlXmlAnalyzer
             _analysisResultsUiActionService =
                 new AnalysisResultsUiActionService(
                     ViewModel,
-                    DeadlockGraphCanvas,
-                    DeadlockProcessesList,
-                    DeadlockResourcesList,
-                    DeadlockPatternsListBox,
+                    DeadlockWorkspace.GraphCanvas,
+                    DeadlockWorkspace.ProcessesList,
+                    DeadlockWorkspace.ResourcesList,
+                    DeadlockWorkspace.PatternsListBox,
                     PlanOperatorTree,
                     ShellStatus.StatusTextBlock,
                     _deadlockGraphState);
             _deadlockAnalysisUiActionService =
                 new DeadlockAnalysisUiActionService(
                     ViewModel,
-                    DeadlockProcessesList,
-                    DeadlockResourcesList,
-                    DeadlockPatternsListBox,
-                    DeadlockGraphCanvas,
-                    PlaybackControl,
+                    DeadlockWorkspace.ProcessesList,
+                    DeadlockWorkspace.ResourcesList,
+                    DeadlockWorkspace.PatternsListBox,
+                    DeadlockWorkspace.GraphCanvas,
+                    DeadlockWorkspace.Playback,
                     MainTabControl,
                     RenderDeadlockGraphAndZoom,
                     (s, e) => UpdatePlaybackGraphVisibility(),
@@ -285,8 +285,8 @@ namespace SqlXmlAnalyzer
                     effectiveDeadlockGraphPlaybackVisualService,
                     effectiveDeadlockStepBadgeService,
                     effectiveDeadlockGraphEdgeRegistryService,
-                    DeadlockGraphCanvas,
-                    PlaybackControl,
+                    DeadlockWorkspace.GraphCanvas,
+                    DeadlockWorkspace.Playback,
                     _deadlockGraphState);
             _deadlockGraphElementUiActionService =
                 new DeadlockGraphElementUiActionService(
@@ -295,16 +295,16 @@ namespace SqlXmlAnalyzer
                     effectiveDeadlockNodeInteractionBinder,
                     effectiveDeadlockGraphEdgeRegistryService,
                     effectiveDeadlockGraphGeometryService,
-                    DeadlockGraphCanvas,
-                    DeadlockProcessesList,
-                    DeadlockResourcesList,
+                    DeadlockWorkspace.GraphCanvas,
+                    DeadlockWorkspace.ProcessesList,
+                    DeadlockWorkspace.ResourcesList,
                     _deadlockGraphState);
             _deadlockViewportUiActionService =
                 new DeadlockViewportUiActionService(
                     effectiveDeadlockGraphViewportService,
-                    DeadlockCanvasBorder,
-                    DeadlockScaleTransform,
-                    DeadlockTranslateTransform,
+                    DeadlockWorkspace.CanvasBorder,
+                    DeadlockWorkspace.ScaleTransform,
+                    DeadlockWorkspace.TranslateTransform,
                     _deadlockGraphState.NodePositions);
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
@@ -333,9 +333,9 @@ namespace SqlXmlAnalyzer
                 new DeadlockSelectionUiActionService(
                     effectiveDeadlockSelectionDetailService,
                     ViewModel,
-                    () => DeadlockProcessesList.SelectedItem,
-                    () => DeadlockResourcesList.SelectedItem,
-                    () => DeadlockPatternsListBox.SelectedItem);
+                    () => DeadlockWorkspace.ProcessesList.SelectedItem,
+                    () => DeadlockWorkspace.ResourcesList.SelectedItem,
+                    () => DeadlockWorkspace.PatternsListBox.SelectedItem);
             _workspacePanelUiActionService =
                 new WorkspacePanelUiActionService(
                     effectiveWorkspacePanelLayoutService,
@@ -343,10 +343,10 @@ namespace SqlXmlAnalyzer
                     SqlSplitterCol,
                     SqlGridSplitter,
                     BtnCompareSql,
-                    DeadlockLeftColumn,
-                    DeadlockRightColumn,
-                    ToggleLeftBtn,
-                    ToggleRightBtn,
+                    DeadlockWorkspace.LeftColumn,
+                    DeadlockWorkspace.RightColumn,
+                    DeadlockWorkspace.ToggleLeftButton,
+                    DeadlockWorkspace.ToggleRightButton,
                     PlanContentGrid);
             _tuningSessionUiActionService =
                 new TuningSessionUiActionService(
@@ -354,19 +354,19 @@ namespace SqlXmlAnalyzer
                     ViewModel,
                     () => TuningHistoryListView.SelectedItem);
             _deadlockCanvasInteractionBinder.Attach(
-                DeadlockGraphCanvas,
-                DeadlockCanvasBorder,
-                DeadlockScaleTransform,
-                DeadlockTranslateTransform);
+                DeadlockWorkspace.GraphCanvas,
+                DeadlockWorkspace.CanvasBorder,
+                DeadlockWorkspace.ScaleTransform,
+                DeadlockWorkspace.TranslateTransform);
             _deadlockGraphRenderUiActionService =
                 new DeadlockGraphRenderUiActionService(
                     effectiveDeadlockGraphLayoutService,
                     effectiveDeadlockGraphPlacementService,
                     effectiveDeadlockGraphEdgeService,
-                    DeadlockGraphCanvas,
-                    DeadlockCanvasBorder,
-                    DeadlockScaleTransform,
-                    DeadlockTranslateTransform,
+                    DeadlockWorkspace.GraphCanvas,
+                    DeadlockWorkspace.CanvasBorder,
+                    DeadlockWorkspace.ScaleTransform,
+                    DeadlockWorkspace.TranslateTransform,
                     _deadlockGraphState,
                     _deadlockGraphElementUiActionService.DrawProcessNode,
                     _deadlockGraphElementUiActionService.DrawResourceNode,

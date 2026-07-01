@@ -71,123 +71,18 @@
 
             <!-- ==================== 死锁分析 Tab (A) ==================== -->
             <TabItem Header="🔴 死锁分析" Margin="0,0,-16,0">
-
-    <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition x:Name="DeadlockLeftColumn" Width="280" MinWidth="0"/>
-                        <ColumnDefinition Width="4"/>
-                        <ColumnDefinition Width="*" MinWidth="100"/>
-                        <ColumnDefinition Width="4"/>
-                        <ColumnDefinition x:Name="DeadlockRightColumn" Width="320" MinWidth="0"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- 左侧：进程与资源列表 -->
-                    <Grid Grid.Column="0" Margin="4">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Text="参与进程 (Processes)" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <ListView Grid.Row="1" Name="DeadlockProcessesList" 
-                                  SelectionChanged="DeadlockProcessesList_SelectionChanged">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="SPID" DisplayMemberBinding="{Binding Spid}" Width="45"/>
-                                    <GridViewColumn Header="事务" DisplayMemberBinding="{Binding TransactionName}" Width="80"/>
-                                    <GridViewColumn Header="状态" DisplayMemberBinding="{Binding Status}" Width="65"/>
-                                    <GridViewColumn Header="登录账号" DisplayMemberBinding="{Binding Loginname}" Width="120"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-
-                        <TextBlock Grid.Row="2" Text="涉及资源 (Resources)" FontWeight="SemiBold" Margin="0,8,0,4"/>
-                        <ListView Grid.Row="3" Name="DeadlockResourcesList" 
-                                  SelectionChanged="DeadlockResourcesList_SelectionChanged">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="资源" DisplayMemberBinding="{Binding LockType}" Width="55"/>
-                                    <GridViewColumn Header="涉及数据表" DisplayMemberBinding="{Binding CleanTableName}" Width="110"/>
-                                    <GridViewColumn Header="锁流向冲突" DisplayMemberBinding="{Binding ConflictSummary}" Width="115"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </Grid>
-
-                    <!-- 中间：死锁关系可视化 (纯 WPF 原生控件) -->
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Orientation="Horizontal" Margin="4,2,4,4">
-                            <TextBlock Text="死锁等待图 (原生拓扑视图)" FontWeight="SemiBold" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource MaterialDesignBody}"/>
-                            <ComboBox x:Name="XelDeadlockSelector" Width="170" Margin="12,0,4,0" Visibility="Collapsed" SelectionChanged="XelDeadlockSelector_SelectionChanged" DisplayMemberPath="Timestamp" ToolTip="选择 XEL 文件中的死锁记录"/>
-                            <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开左侧进程和资源面板"/>
-                            <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开右侧类型诊断和详情面板"/>
-                            <Button Content="🔍 适屏" Click="ZoomToFitDeadlock_Click" Margin="4,0,8,0" Padding="8,2" ToolTip="自适应缩放并平移以使全部节点适配当前窗口尺寸"/>
-                            <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 回放模式" Checked="PlaybackModeToggle_Checked" Unchecked="PlaybackModeToggle_Unchecked" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
-                            <Button Content="复制 Mermaid" Click="CopyDeadlockMermaid_Click" Margin="4,0" Padding="6,2"/>
-                            <Button Content="浏览器大图" Click="OpenDeadlockMermaidInBrowser_Click" Margin="4,0" Padding="6,2"/>
-                        </StackPanel>
-
-
-                        <!-- Canvas 图形化死锁等待图 - 支持节点拖拽 + 鼠标滚轮缩放 + 中键平移 (纯 WPF 原生) -->
-                        <Border x:Name="DeadlockCanvasBorder" Grid.Row="1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1" Margin="2" Background="{DynamicResource MaterialDesignPaper}" CornerRadius="6" ClipToBounds="True">
-                            <Canvas x:Name="DeadlockGraphCanvas" Width="1600" Height="1200">
-                                <Canvas.Background>
-                                    <!-- 专家级微点网格背景 (Visual Brush) -->
-                                    <DrawingBrush TileMode="Tile" Viewport="0,0,24,24" ViewportUnits="Absolute">
-                                        <DrawingBrush.Drawing>
-                                            <GeometryDrawing>
-                                                <GeometryDrawing.Geometry>
-                                                    <GeometryGroup>
-                                                        <LineGeometry StartPoint="0,0" EndPoint="24,0"/>
-                                                        <LineGeometry StartPoint="0,0" EndPoint="0,24"/>
-                                                    </GeometryGroup>
-                                                </GeometryDrawing.Geometry>
-                                                <GeometryDrawing.Pen>
-                                                    <Pen Brush="#F1F1F1" Thickness="0.75"/>
-                                                </GeometryDrawing.Pen>
-                                            </GeometryDrawing>
-                                        </DrawingBrush.Drawing>
-                                    </DrawingBrush>
-                                </Canvas.Background>
-                                <Canvas.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform x:Name="DeadlockScaleTransform" ScaleX="1" ScaleY="1"/>
-                                        <TranslateTransform x:Name="DeadlockTranslateTransform" X="0" Y="0"/>
-                                    </TransformGroup>
-                                </Canvas.RenderTransform>
-                            </Canvas>
-                        </Border>
-
-                        <views:DeadlockPlaybackControl x:Name="PlaybackControl" Grid.Row="1" VerticalAlignment="Top" Margin="10,10,10,0" Panel.ZIndex="10" Visibility="Collapsed" />
-                    </Grid>
-
-                    <!-- 右侧：死锁类型诊断 + 详情 -->
-                    <Grid Grid.Column="4" Margin="4">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Text="死锁类型诊断 ( 专家级诊断启发式 )" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <ListBox Grid.Row="1" Name="DeadlockPatternsListBox" Margin="0,0,0,4"
-                                 SelectionChanged="DeadlockPatternsListBox_SelectionChanged"/>
-
-                        <TextBlock Grid.Row="2" Text="分析与选中项详情 ( Consolas 等宽对齐 )" FontWeight="SemiBold" Margin="0,8,0,4"/>
-                        <TextBox Grid.Row="3" Name="DeadlockPatternDetail" Text="{Binding DeadlockPatternText, Mode=TwoWay}"
-                                 IsReadOnly="True" TextWrapping="Wrap"
-                                 FontFamily="Consolas" FontSize="11"
-                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
-                    </Grid>
-                </Grid>
+                <views:DeadlockWorkspaceView x:Name="DeadlockWorkspace"
+                                             ProcessesSelectionChanged="DeadlockProcessesList_SelectionChanged"
+                                             ResourcesSelectionChanged="DeadlockResourcesList_SelectionChanged"
+                                             XelSelectionChanged="XelDeadlockSelector_SelectionChanged"
+                                             ToggleLeftClicked="ToggleLeft_Click"
+                                             ToggleRightClicked="ToggleRight_Click"
+                                             ZoomToFitClicked="ZoomToFitDeadlock_Click"
+                                             PlaybackModeChecked="PlaybackModeToggle_Checked"
+                                             PlaybackModeUnchecked="PlaybackModeToggle_Unchecked"
+                                             CopyDeadlockMermaidClicked="CopyDeadlockMermaid_Click"
+                                             OpenDeadlockMermaidClicked="OpenDeadlockMermaidInBrowser_Click"
+                                             PatternsSelectionChanged="DeadlockPatternsListBox_SelectionChanged"/>
             </TabItem>
 
             <!-- ==================== 执行计划分析 Tab (B) - 参考 Plan Explorer ==================== -->

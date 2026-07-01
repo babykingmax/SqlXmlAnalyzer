@@ -8,7 +8,7 @@ namespace SqlXmlAnalyzer
         private void UpdatePlaybackGraphVisibility()
         {
             _deadlockPlaybackUiActionService.UpdateGraphVisibility(
-                PlaybackModeToggle.IsChecked == true);
+                DeadlockWorkspace.PlaybackModeToggleButton.IsChecked == true);
         }
 
         private void PlaybackModeToggle_Checked(object sender, RoutedEventArgs e)
