@@ -49,7 +49,7 @@ namespace SqlXmlAnalyzer.Services
         {
             if (result.Status == Core.Services.DocumentRefreshActionStatus.MissingFile)
             {
-                MessageBox.Show(result.UserMessage, "鎻愮ず", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

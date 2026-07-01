@@ -17,14 +17,14 @@ namespace SqlXmlAnalyzer.Core.Services
         {
             return BuildRefresh(
                 currentFilePath,
-                "没有已加载的死锁文件，无法刷新。");
+                "No loaded deadlock file is available to refresh.");
         }
 
         public DocumentRefreshActionResult BuildPlanRefresh(string? currentFilePath)
         {
             return BuildRefresh(
                 currentFilePath,
-                "没有已加载的执行计划文件，无法刷新。");
+                "No loaded execution plan file is available to refresh.");
         }
 
         private static DocumentRefreshActionResult BuildRefresh(
@@ -34,12 +34,12 @@ namespace SqlXmlAnalyzer.Core.Services
             return string.IsNullOrEmpty(currentFilePath)
                 ? new DocumentRefreshActionResult(
                     DocumentRefreshActionStatus.MissingFile,
-                    "",
+                    string.Empty,
                     missingMessage)
                 : new DocumentRefreshActionResult(
                     DocumentRefreshActionStatus.Ready,
                     currentFilePath,
-                    "");
+                    string.Empty);
         }
     }
 }

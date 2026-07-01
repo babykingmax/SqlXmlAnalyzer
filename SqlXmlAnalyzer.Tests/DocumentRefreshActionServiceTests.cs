@@ -14,7 +14,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(DocumentRefreshActionStatus.MissingFile);
             result.FilePath.Should().BeEmpty();
-            result.UserMessage.Should().Be("没有已加载的死锁文件，无法刷新。");
+            result.UserMessage.Should().Be("No loaded deadlock file is available to refresh.");
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(DocumentRefreshActionStatus.MissingFile);
             result.FilePath.Should().BeEmpty();
-            result.UserMessage.Should().Be("没有已加载的执行计划文件，无法刷新。");
+            result.UserMessage.Should().Be("No loaded execution plan file is available to refresh.");
         }
 
         [Fact]

@@ -19,7 +19,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MermaidDiagramActionStatus.MissingDocument);
             result.MermaidCode.Should().BeEmpty();
-            result.UserMessage.Should().Be("当前没有加载的死锁文件！");
+            result.UserMessage.Should().Be("No deadlock document is loaded.");
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MermaidDiagramActionStatus.Ready);
             result.MermaidCode.Should().Contain("flowchart TD");
-            result.LogMessage.Should().Be("已生成死锁 Mermaid 等待图。");
+            result.LogMessage.Should().Be("Generated deadlock Mermaid diagram.");
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MermaidDiagramActionStatus.MissingDocument);
             result.MermaidCode.Should().BeEmpty();
-            result.UserMessage.Should().Be("当前没有加载的执行计划文件！");
+            result.UserMessage.Should().Be("No execution plan document is loaded.");
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MermaidDiagramActionStatus.Ready);
             result.MermaidCode.Should().Contain("flowchart TD");
-            result.LogMessage.Should().Be("已生成执行计划 Mermaid 图。");
+            result.LogMessage.Should().Be("Generated execution plan Mermaid diagram.");
         }
     }
 }

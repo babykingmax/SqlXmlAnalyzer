@@ -51,7 +51,7 @@ namespace SqlXmlAnalyzer.Services
         {
             CopyDiagram(
                 () => _actionService.BuildDeadlockDiagram(document),
-                "死锁 Mermaid 代码已成功复制到剪贴板！",
+                "Deadlock Mermaid code copied to clipboard.",
                 "CopyDeadlockMermaid");
         }
 
@@ -61,7 +61,7 @@ namespace SqlXmlAnalyzer.Services
         {
             CopyDiagram(
                 () => _actionService.BuildPlanDiagram(document, showplanNamespace),
-                "执行计划 Mermaid 代码已成功复制到剪贴板！",
+                "Execution plan Mermaid code copied to clipboard.",
                 "CopyPlanMermaid");
         }
 
@@ -96,13 +96,13 @@ namespace SqlXmlAnalyzer.Services
                 }
 
                 Clipboard.SetText(result.MermaidCode);
-                MessageBox.Show(successMessage, "复制成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                Logger.Info($"{result.LogMessage} 已成功复制到剪贴板。");
+                MessageBox.Show(successMessage, "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
+                Logger.Info($"{result.LogMessage} Copied to clipboard.");
             }
             catch (Exception ex)
             {
                 Logger.LogException(logScope, ex);
-                MessageBox.Show($"复制 Mermaid 代码失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to copy Mermaid code: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -120,12 +120,12 @@ namespace SqlXmlAnalyzer.Services
                 }
 
                 _browserLauncher.OpenMermaid(result.MermaidCode);
-                Logger.Info($"{result.LogMessage} 已在浏览器中打开。");
+                Logger.Info($"{result.LogMessage} Opened in browser.");
             }
             catch (Exception ex)
             {
                 Logger.LogException(logScope, ex);
-                MessageBox.Show($"在浏览器中打开 Mermaid 图形失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to open the Mermaid diagram in a browser: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -137,7 +137,7 @@ namespace SqlXmlAnalyzer.Services
                 return false;
             }
 
-            MessageBox.Show(result.UserMessage, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Warning);
             return true;
         }
     }

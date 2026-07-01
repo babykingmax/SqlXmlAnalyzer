@@ -30,16 +30,16 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 return new MermaidDiagramActionResult(
                     MermaidDiagramActionStatus.MissingDocument,
-                    "",
-                    "当前没有加载的死锁文件！",
-                    "");
+                    string.Empty,
+                    "No deadlock document is loaded.",
+                    string.Empty);
             }
 
             return new MermaidDiagramActionResult(
                 MermaidDiagramActionStatus.Ready,
                 _mermaidDiagramService.BuildDeadlockDiagram(document),
-                "",
-                "已生成死锁 Mermaid 等待图。");
+                string.Empty,
+                "Generated deadlock Mermaid diagram.");
         }
 
         public MermaidDiagramActionResult BuildPlanDiagram(
@@ -52,16 +52,16 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 return new MermaidDiagramActionResult(
                     MermaidDiagramActionStatus.MissingDocument,
-                    "",
-                    "当前没有加载的执行计划文件！",
-                    "");
+                    string.Empty,
+                    "No execution plan document is loaded.",
+                    string.Empty);
             }
 
             return new MermaidDiagramActionResult(
                 MermaidDiagramActionStatus.Ready,
                 _mermaidDiagramService.BuildPlanDiagram(document, showplanNamespace),
-                "",
-                "已生成执行计划 Mermaid 图。");
+                string.Empty,
+                "Generated execution plan Mermaid diagram.");
         }
     }
 }
