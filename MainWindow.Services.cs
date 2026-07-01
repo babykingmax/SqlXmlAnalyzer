@@ -326,8 +326,8 @@ namespace SqlXmlAnalyzer
                     effectivePlanComparisonTreeViewRenderer,
                     ViewModel,
                     MainTabControl,
-                    PlanATreeView,
-                    PlanBTreeView,
+                    PlanComparisonWorkspace.PlanATree,
+                    PlanComparisonWorkspace.PlanBTree,
                     _showplanNs);
             _deadlockSelectionUiActionService =
                 new DeadlockSelectionUiActionService(
@@ -352,7 +352,7 @@ namespace SqlXmlAnalyzer
                 new TuningSessionUiActionService(
                     effectiveTuningSessionActionService,
                     ViewModel,
-                    () => TuningHistoryListView.SelectedItem);
+                    () => PlanComparisonWorkspace.TuningHistoryList.SelectedItem);
             _deadlockCanvasInteractionBinder.Attach(
                 DeadlockWorkspace.GraphCanvas,
                 DeadlockWorkspace.CanvasBorder,
