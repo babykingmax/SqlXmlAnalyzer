@@ -225,9 +225,9 @@ namespace SqlXmlAnalyzer
             _planSelectionUiActionService = new PlanSelectionUiActionService(
                 planSelectionActionService ?? new Core.Services.PlanSelectionActionService(),
                 planPropertyService ?? new Core.Services.PlanPropertyService(),
-                PlanPropertiesGrid,
-                () => PlanOperatorTree.SelectedItem,
-                () => PlanVisualTree.SelectedItem);
+                PlanWorkspace.PropertiesGrid,
+                () => PlanWorkspace.OperatorTree.SelectedItem,
+                () => PlanWorkspace.VisualTree.SelectedItem);
             Core.Services.PlanOperatorTreeViewRenderer effectivePlanOperatorTreeViewRenderer =
                 planOperatorTreeViewRenderer
                 ?? new Core.Services.PlanOperatorTreeViewRenderer();
@@ -239,14 +239,14 @@ namespace SqlXmlAnalyzer
             Core.Services.SqlQuickFixService effectiveSqlQuickFixService = sqlQuickFixService
                 ?? new Core.Services.SqlQuickFixService();
             _sqlDiffScrollSyncService =
-                new SqlDiffScrollSyncService(OriginalSqlTextBox, RefactoredSqlTextBox);
+                new SqlDiffScrollSyncService(PlanWorkspace.OriginalSqlText, PlanWorkspace.RefactoredSqlText);
             _sqlDiffUiActionService =
                 new SqlDiffUiActionService(
                     effectiveSqlDiffService,
                     effectiveSqlDiffDocumentRenderer,
-                    OriginalSqlTextBox,
-                    RefactoredSqlTextBox,
-                    PlanStatementTextBox);
+                    PlanWorkspace.OriginalSqlText,
+                    PlanWorkspace.RefactoredSqlText,
+                    PlanWorkspace.StatementTextBox);
             _sqlQuickFixUiActionService =
                 new SqlQuickFixUiActionService(
                     this,
@@ -254,7 +254,7 @@ namespace SqlXmlAnalyzer
                     () => _sqlDiffUiActionService.CurrentOriginalSql,
                     _sqlDiffUiActionService.ApplyQuickFixResult);
             _planStatisticsUiActionService =
-                new PlanStatisticsUiActionService(StatisticsHistogramView);
+                new PlanStatisticsUiActionService(PlanWorkspace.StatisticsHistogram);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             _analysisResultsUiActionService =
                 new AnalysisResultsUiActionService(
@@ -263,7 +263,7 @@ namespace SqlXmlAnalyzer
                     DeadlockWorkspace.ProcessesList,
                     DeadlockWorkspace.ResourcesList,
                     DeadlockWorkspace.PatternsListBox,
-                    PlanOperatorTree,
+                    PlanWorkspace.OperatorTree,
                     ShellStatus.StatusTextBlock,
                     _deadlockGraphState);
             _deadlockAnalysisUiActionService =
@@ -311,14 +311,14 @@ namespace SqlXmlAnalyzer
                     ViewModel,
                     effectivePlanTreeService,
                     effectivePlanOperatorTreeViewRenderer,
-                    PlanXmlTextBox,
-                    PlanStatementTextBox,
-                    PlanWarningsTextBox,
-                    PlanOperatorTree,
-                    PlanVisualTree,
-                    PlanNodifyGraph,
+                    PlanWorkspace.XmlTextBox,
+                    PlanWorkspace.StatementTextBox,
+                    PlanWorkspace.WarningsTextBox,
+                    PlanWorkspace.OperatorTree,
+                    PlanWorkspace.VisualTree,
+                    PlanWorkspace.NodifyGraph,
                     MainTabControl,
-                    PlanGraphTabControl);
+                    PlanWorkspace.GraphTabControl);
             _planComparisonUiActionService =
                 new PlanComparisonUiActionService(
                     effectivePlanComparisonController,
@@ -339,15 +339,15 @@ namespace SqlXmlAnalyzer
             _workspacePanelUiActionService =
                 new WorkspacePanelUiActionService(
                     effectiveWorkspacePanelLayoutService,
-                    OriginalSqlCol,
-                    SqlSplitterCol,
-                    SqlGridSplitter,
-                    BtnCompareSql,
+                    PlanWorkspace.OriginalSqlColumn,
+                    PlanWorkspace.SqlSplitterColumn,
+                    PlanWorkspace.SqlSplitter,
+                    PlanWorkspace.CompareSqlButton,
                     DeadlockWorkspace.LeftColumn,
                     DeadlockWorkspace.RightColumn,
                     DeadlockWorkspace.ToggleLeftButton,
                     DeadlockWorkspace.ToggleRightButton,
-                    PlanContentGrid);
+                    PlanWorkspace.ContentGrid);
             _tuningSessionUiActionService =
                 new TuningSessionUiActionService(
                     effectiveTuningSessionActionService,
