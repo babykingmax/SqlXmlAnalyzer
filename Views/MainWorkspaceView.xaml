@@ -1,0 +1,50 @@
+<UserControl x:Class="SqlXmlAnalyzer.Views.MainWorkspaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:SqlXmlAnalyzer.Views">
+    <!-- 主内容区 Tabs -->
+    <TabControl Margin="2" x:Name="MainTabControl" SelectedIndex="0" Background="{DynamicResource MaterialDesignPaper}">
+
+            <!-- ==================== 死锁分析 Tab (A) ==================== -->
+            <TabItem Header="🔴 死锁分析" Margin="0,0,-16,0">
+                <views:DeadlockWorkspaceView x:Name="DeadlockWorkspace"
+                                             ProcessesSelectionChanged="DeadlockProcessesList_SelectionChanged"
+                                             ResourcesSelectionChanged="DeadlockResourcesList_SelectionChanged"
+                                             XelSelectionChanged="XelDeadlockSelector_SelectionChanged"
+                                             ToggleLeftClicked="ToggleLeft_Click"
+                                             ToggleRightClicked="ToggleRight_Click"
+                                             ZoomToFitClicked="ZoomToFitDeadlock_Click"
+                                             PlaybackModeChecked="PlaybackModeToggle_Checked"
+                                             PlaybackModeUnchecked="PlaybackModeToggle_Unchecked"
+                                             CopyDeadlockMermaidClicked="CopyDeadlockMermaid_Click"
+                                             OpenDeadlockMermaidClicked="OpenDeadlockMermaidInBrowser_Click"
+                                             PatternsSelectionChanged="DeadlockPatternsListBox_SelectionChanged"/>
+            </TabItem>
+
+            <!-- ==================== 执行计划分析 Tab (B) - 参考 Plan Explorer ==================== -->
+            <TabItem Header="📈 执行计划分析" Margin="24,0,-42,0">
+                <views:PlanWorkspaceView x:Name="PlanWorkspace"
+                                         LeftPanelExpanded="LeftPanel_Expanded"
+                                         LeftPanelCollapsed="LeftPanel_Collapsed"
+                                         RightPanelExpanded="RightPanel_Expanded"
+                                         RightPanelCollapsed="RightPanel_Collapsed"
+                                         OperatorTreeSelectedItemChanged="PlanOperatorTree_SelectedItemChanged"
+                                         VisualTreeSelectedItemChanged="PlanVisualTree_SelectedItemChanged"
+                                         GraphNodeSelected="PlanNodifyGraph_NodeSelected"
+                                         GraphNodeDoubleClicked="PlanNodifyGraph_NodeDoubleClicked"
+                                         CopyRefactoredSqlClicked="CopyRefactoredSql_Click"
+                                         CompareSqlClicked="CompareSql_Click"
+                                         CopyIndexDdlClicked="CopyIndexDdl_Click"
+                                         CopyDeploymentBundleClicked="CopyDeploymentBundle_Click"
+                                         CopyRollbackDdlClicked="CopyRollbackDdl_Click"/>
+            </TabItem>
+            <!-- ==================== A/B 并排对比 Tab (C) ==================== -->
+            <TabItem Header="⚖️ A/B 比对分析" Margin="42,0,-60,0">
+                <views:PlanComparisonWorkspaceView x:Name="PlanComparisonWorkspace"
+                                                   TuningHistoryMouseDoubleClicked="TuningHistoryListView_MouseDoubleClick"
+                                                   SaveSessionClicked="SaveSession_Click"
+                                                   LoadSessionClicked="LoadSession_Click"
+                                                   SwapPlanABClicked="SwapPlanAB_Click"/>
+            </TabItem>
+    </TabControl>
+</UserControl>
