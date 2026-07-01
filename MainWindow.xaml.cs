@@ -67,124 +67,6 @@ namespace SqlXmlAnalyzer
 
         private readonly DeadlockGraphUiState _deadlockGraphState = new();
 
-        private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            _shellActionService.HandleTitleBarMouseLeftButtonDown(e.ClickCount);
-        }
-
-        private void Minimize_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _shellActionService.Minimize();
-        }
-
-        private void Maximize_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _shellActionService.ToggleMaximize();
-        }
-
-        private void Close_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _shellActionService.Close();
-        }
-
-        private void ThemeToggle_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _shellActionService.SetTheme();
-        }
-
-
-        #region 鏂囦欢鎵撳紑
-
-        private async void OpenDeadlockFile_Click(object sender, RoutedEventArgs e)
-        {
-            await _fileOpenUiActionService.OpenDeadlockAsync(
-                _xelDeadlockUiActionService.AnalyzeXelFileAsync,
-                AnalyzeDeadlockFile);
-        }
-
-        private async void XelDeadlockSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            await _xelDeadlockUiActionService.HandleSelectionChangedAsync();
-        }
-
-        private void OpenPlanFile_Click(object sender, RoutedEventArgs e)
-        {
-            _fileOpenUiActionService.OpenPlan(AnalyzeExecutionPlanFile);
-        }
-
-        private void Window_DragEnter(object sender, DragEventArgs e)
-        {
-            _fileOpenUiActionService.HandleDragEnter(e);
-        }
-
-        private async void Window_Drop(object sender, DragEventArgs e)
-        {
-            await _fileOpenUiActionService.HandleDropAsync(
-                e,
-                _xelDeadlockUiActionService.AnalyzeXelFileAsync,
-                AnalyzeDeadlockFile,
-                AnalyzeExecutionPlanFile);
-        }
-
-        #endregion
-
-        #region 鏍稿績鍒嗘瀽璋冪敤
-
-        private XNamespace _showplanNs = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
-
-        private void AnalyzeDeadlockFile(string filePath)
-        {
-            _ = AnalyzeFileAsync(filePath);
-        }
-
-        private void AnalyzeExecutionPlanFile(string filePath)
-        {
-            _ = AnalyzeFileAsync(filePath);
-        }
-
-        public async void AnalyzeFile(string filePath)
-        {
-            await AnalyzeFileAsync(filePath);
-        }
-
-        public async Task AnalyzeFileAsync(string filePath)
-        {
-            await _documentAnalysisUiActionService.AnalyzeFileAsync(filePath);
-        }
-
-        private async Task AnalyzeDeadlockXmlAsync(string xml, string displayName)
-        {
-            await _documentAnalysisUiActionService.AnalyzeDeadlockXmlAsync(xml, displayName);
-        }
-
-        private async Task AnalyzeDeadlockDocumentAsync(
-            XDocument doc,
-            string filePath,
-            long requestId,
-            CancellationToken cancellationToken)
-        {
-            await _documentAnalysisUiActionService.AnalyzeDeadlockDocumentAsync(
-                doc,
-                filePath,
-                requestId,
-                cancellationToken);
-        }
-
-        private async Task AnalyzeExecutionPlanDocumentAsync(
-            XDocument doc,
-            string filePath,
-            long requestId,
-            CancellationToken cancellationToken)
-        {
-            await _documentAnalysisUiActionService.AnalyzeExecutionPlanDocumentAsync(
-                doc,
-                filePath,
-                requestId,
-                cancellationToken);
-        }
-
-        // Helper method removed. Calling DeadlockXmlParser.ParseDeadlockXml instead.
-
         private void UpdatePlaybackGraphVisibility()
         {
             _deadlockPlaybackUiActionService.UpdateGraphVisibility(
@@ -207,9 +89,8 @@ namespace SqlXmlAnalyzer
             _deadlockGraphRenderUiActionService.RenderAndZoomToFit(graph);
         }
 
-        #endregion
 
-        #region 鍏朵粬鍔熻兘
+        #region 闁稿繑婀圭划顒勫礉閻旇鍘?
 
         private void ExportObfuscatedPlan_Click(object sender, RoutedEventArgs e)
         {
@@ -269,7 +150,7 @@ namespace SqlXmlAnalyzer
 
         #endregion
 
-        #region 浜嬩欢澶勭悊 (琛ュ厖)
+        #region 濞存粌顑勫▎銏″緞閸曨厽鍊?(閻炴稏鍎遍崢?
 
         private void DeadlockProcessesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -301,7 +182,7 @@ namespace SqlXmlAnalyzer
             _deadlockSelectionUiActionService.SelectCurrentPattern();
         }
 
-        #region 鎶樺彔闈㈡澘浜嬩欢澶勭悊
+        #region 闁硅埖锚瑜版棃妫冮姀鈩冪凡濞存粌顑勫▎銏″緞閸曨厽鍊?
         private void LeftPanel_Expanded(object sender, RoutedEventArgs e)
         {
             _workspacePanelUiActionService.ExpandPlanLeftPanel();
@@ -354,7 +235,7 @@ namespace SqlXmlAnalyzer
             _planSelectionUiActionService.SelectCurrentVisualTreeNode();
         }
 
-        // Nodify 鑺傜偣閫変腑 -> 鍚屾鍒颁富鍙充晶灞炴€ч潰鏉?(Plan Explorer 椋庢牸)
+        // Nodify 闁煎搫鍊婚崑锝夋焻婢跺鍘?-> 闁告艾鏈鐐哄礆妫颁礁鐦滈柛娆忓帠閺呭墎浠﹂悙绮瑰亾瑜斿浼村级?(Plan Explorer 濡炲瀛╅悧?
         private void PlanNodifyGraph_NodeSelected(object sender, PlanNodeViewModel node)
         {
             _planSelectionUiActionService.SelectFromGraphNode(node);
@@ -378,7 +259,7 @@ namespace SqlXmlAnalyzer
         #endregion
 
 
-        // --- 璋冧紭鍘嗗彶涓?A/B 骞舵帓瀵规瘮浜嬩欢澶勭悊鍣?---
+        // --- 閻犲鍟╃槐顓㈠储閸℃钑夊☉?A/B 妤犵偠鍩栫敮鎾垛偓浣冾潐閻︻喗绂嶇€ｂ晜顐藉璺哄閹﹪宕?---
         private async void TuningHistoryListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             await _tuningSessionUiActionService.OpenSelectedHistorySnapshotAsync(
@@ -402,7 +283,7 @@ namespace SqlXmlAnalyzer
         }
 
 
-        #region 鍙鍖栫湅鏉夸笌浜や簰灞曠ず (GUI Dashboard Integration & Interactive Visualization)
+        #region 闁告瑯鍨甸～瀣礌閺嶎偅绠欓柡澶娿仒缁楀本绂嶉妶鍕瀺閻忕偞娲滈妵?(GUI Dashboard Integration & Interactive Visualization)
 
         private void CopyIndexDdl_Click(object sender, RoutedEventArgs e)
         {
