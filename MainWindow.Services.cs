@@ -65,6 +65,7 @@ namespace SqlXmlAnalyzer
             Core.Services.TuningSessionActionService? tuningSessionActionService = null)
         {
             InitializeComponent();
+            WireMainShellEvents();
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
