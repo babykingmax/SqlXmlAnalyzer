@@ -1,0 +1,3 @@
+SELECT 1 AS N;
+GO
+SELECT 2 AS N;

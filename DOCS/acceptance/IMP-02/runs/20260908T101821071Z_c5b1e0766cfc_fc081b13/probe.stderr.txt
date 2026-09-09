@@ -1,0 +1,5 @@
+[ERROR] 2026-09-08T18:18:45.6898350+08:00 SQL 写回失败：SqlWriteback.CreateBackup
+System.IO.IOException: Synthetic backup failure
+   at Program.FailingBackupFiles.CreateNew(String p, String sourcePath) in C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-4d08ced744d24cb498e8009c329311ba\Program.cs:line 185
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.CreateOwnedFile(String sourcePath, String extension, CancellationToken token, String& ownedPath) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 149
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.WriteBack(SqlFileSnapshot snapshot, String sql, CancellationToken cancellationToken) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 61

@@ -1,0 +1,1687 @@
+[
+  {
+    "path": "build-development-01.log",
+    "bytes": 1165,
+    "sha256": "554A50E44DCC0D602758368E6422ACF467B377AAC253CE817A02E21FC3FCB058"
+  },
+  {
+    "path": "build-development-02.log",
+    "bytes": 871,
+    "sha256": "47B0804A167CE6AB996A60B6F707D9B7998E2A88C4ADFF447D97C1D46AB97B8F"
+  },
+  {
+    "path": "change-ownership-v2.json",
+    "bytes": 12054,
+    "sha256": "5AE354FE881B4C25BB917FC5A14567AD884A5974FFCB8C6CCA03D47A6A409FA9"
+  },
+  {
+    "path": "change-ownership.json",
+    "bytes": 12054,
+    "sha256": "5AE354FE881B4C25BB917FC5A14567AD884A5974FFCB8C6CCA03D47A6A409FA9"
+  },
+  {
+    "path": "deliverable-validation.json",
+    "bytes": 8449,
+    "sha256": "692FFB2677B416D907D61587986157D8211C0386D23E05B9CCEEAAAA868619B3"
+  },
+  {
+    "path": "diff-check.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "diff-check.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "docs-before/acceptance/IMP-02/README.md.snapshot",
+    "bytes": 10555,
+    "sha256": "41664EF91217631F7FAA09261249C3130A2419CDA849B512E1C88F0EE4A3683F"
+  },
+  {
+    "path": "docs-before/acceptance/IMP-02/WPF验收操作脚本.md.snapshot",
+    "bytes": 4535,
+    "sha256": "CFCEB4476D219168E85AE81E6B41245923FF4BAF19F2F0E6C5EDC8B8423FE1F1"
+  },
+  {
+    "path": "docs-before/IMP-02审查反例验收矩阵.md.snapshot",
+    "bytes": 40165,
+    "sha256": "A2D2A6481409558C7E6DE049D7F7CC3209033B9A349E86C0E4E80DC79CD3DECF"
+  },
+  {
+    "path": "docs-before/UI改进和功能改善文档.md.snapshot",
+    "bytes": 20293,
+    "sha256": "5D8EF551F334C623AA57FE7D1D392AEDEA769DC86DAEDE87A07F8B516D56BB6A"
+  },
+  {
+    "path": "docs-before/代码Review报告.md.snapshot",
+    "bytes": 19138,
+    "sha256": "812630E9090A074DEAD10B715CFCD0A5C051EF8671CD68A15637175A7FBA306F"
+  },
+  {
+    "path": "docs-before/检索来源与验证记录.md.snapshot",
+    "bytes": 14056,
+    "sha256": "6918E01C2223DF6636D255B02607374DEC1CCFDA38BADC80EE9DAC1D403FBE67"
+  },
+  {
+    "path": "docs-before/软件改善实施规划.md.snapshot",
+    "bytes": 43469,
+    "sha256": "2262D2F0748269F609B6C1E36E4B9AFF88FC57A739F3DDF6A429CCA199CBED0E"
+  },
+  {
+    "path": "docs-before/软件详细设计与问题分析.md.snapshot",
+    "bytes": 20423,
+    "sha256": "84E1798E21B7BB1D2B55095376F7C45A1D77440801D950AD85307F8EAEE65A0E"
+  },
+  {
+    "path": "field-catalog-origin.json",
+    "bytes": 290,
+    "sha256": "CD155C893747D2264F5F9E1C869C3CE76F78FDB7B3F9971B29808A27A2F1F245"
+  },
+  {
+    "path": "field-catalog.json",
+    "bytes": 21765,
+    "sha256": "82893A4CFE6D207C71002414FE6D6640765EB70FD20AE9CF6EB829D1DCD7E8C3"
+  },
+  {
+    "path": "full-debug-01.log",
+    "bytes": 1910,
+    "sha256": "D7B33C5E3DC14A6F81FBB7825425ED70AA7EEB709E40F2D8D927BD5D1C93F400"
+  },
+  {
+    "path": "full-debug-02.log",
+    "bytes": 1910,
+    "sha256": "DAF7535B94D8D496D6A384BC7131A5F52C585D3CD54F4431F4FFF813ED26ECF4"
+  },
+  {
+    "path": "full-release-01.log",
+    "bytes": 1344,
+    "sha256": "650C2282E6FE0DEF85DF16733FC8CAEBA5492D44ABE990BE1F6E05DE50B5CD43"
+  },
+  {
+    "path": "input-after.json",
+    "bytes": 106361,
+    "sha256": "302FEBEC02AD464E9BD33D12FA32A37AC5BB64DFDD9367173B458727616B8C80"
+  },
+  {
+    "path": "input-before.json",
+    "bytes": 104607,
+    "sha256": "699CB2F12CDF20403DE0CE77E424849FB8E88615520B7CB8F58ECC6A43159F6E"
+  },
+  {
+    "path": "pdf-inspection-repro.json",
+    "bytes": 719,
+    "sha256": "2C8DE4038CEBB4985A274957A3710D38037CCCDEBB21A161FA05D6E5F13B0D2A"
+  },
+  {
+    "path": "pdf-inspection.json",
+    "bytes": 531,
+    "sha256": "3026F8C58C6208DF0822300016B02446E65D32108EC0E62CE97CD17E5601F484"
+  },
+  {
+    "path": "process-01/AcceptanceInfrastructure.psm1",
+    "bytes": 13011,
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "path": "process-01/Debug/build.command.json",
+    "bytes": 474,
+    "sha256": "63999BCCD05AC8BFFE4E7EA0CDDF82F6FE73773E5863E4F014315336D7691E6D"
+  },
+  {
+    "path": "process-01/Debug/build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-01/Debug/build.stdout.txt",
+    "bytes": 2946,
+    "sha256": "651B1E87595C34F83D2D905DD64EBB73C5C2C9148D90C35047BF9B207097EC00"
+  },
+  {
+    "path": "process-01/PrivacyVerification.cs.txt",
+    "bytes": 10046,
+    "sha256": "223BC3945F25084B3116C34ACD17D672B0E76CB877E9DADEF5985E51AECB2EBB"
+  },
+  {
+    "path": "process-01/PrivacyVerification.csproj.snapshot",
+    "bytes": 395,
+    "sha256": "3E6D8AD90DDB3DD5F41A45C4D6C90388DBC3642B4B9AAC20BE7BA716A2365D95"
+  },
+  {
+    "path": "process-01/Run-PrivacyVerification.ps1",
+    "bytes": 7908,
+    "sha256": "EEAEC05A767C6AE914EDD9DE933C0F1DF5CDBCABF67B1EBC68652F9BBF2FBA8D"
+  },
+  {
+    "path": "process-01/verification-results.json",
+    "bytes": 222960,
+    "sha256": "27211ED1BC0909D38541AD9A63DE62D8688EFD339F37810DA4ABB7CF68F1CF65"
+  },
+  {
+    "path": "process-01.log",
+    "bytes": 289,
+    "sha256": "7CD43CA497518E3985711C0738637EFCA3BDBFBF14BA32A745072F8F02FDA749"
+  },
+  {
+    "path": "process-02/AcceptanceInfrastructure.psm1",
+    "bytes": 13011,
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "path": "process-02/Debug/application.log",
+    "bytes": 3039,
+    "sha256": "B5623FC0AC3134F27E2E7431C1C5937D877B0F89093F8CD4E146855E41FEA484"
+  },
+  {
+    "path": "process-02/Debug/build.command.json",
+    "bytes": 474,
+    "sha256": "3B26C89F2EF6E8523692F5F688870CEF4908AE474EFD94C8318BC0278C6E2233"
+  },
+  {
+    "path": "process-02/Debug/build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Debug/build.stdout.txt",
+    "bytes": 1092,
+    "sha256": "32A3162F3D9A4380DABA740D2DEFB04460F509C5601A3719A3D11AF45371F38D"
+  },
+  {
+    "path": "process-02/Debug/cli-blocked.command.json",
+    "bytes": 671,
+    "sha256": "13FF0DF2AB534876126E9FC43F86F36C80BC8ECB8092862CA181442F11D99917"
+  },
+  {
+    "path": "process-02/Debug/cli-blocked.stderr.txt",
+    "bytes": 243,
+    "sha256": "405E27CBEEE8D7B29240CD72777CDC2554BB50535CB831A86B7819E49B09ABE9"
+  },
+  {
+    "path": "process-02/Debug/cli-blocked.stdout.txt",
+    "bytes": 1206,
+    "sha256": "294C7EB1B1B73CD216D599F348E75450475298F490C449DDAF660C08FF4FF3AE"
+  },
+  {
+    "path": "process-02/Debug/cli-raw-json.command.json",
+    "bytes": 562,
+    "sha256": "C4078B1DBA9E098372B824982204EA353467FF4BD9F245B2CB9E4688F0661A71"
+  },
+  {
+    "path": "process-02/Debug/cli-raw-json.stderr.txt",
+    "bytes": 266,
+    "sha256": "95543770AE3AA0479CAEAD9622D53CB262270ED89B607E9DA917B109970D2D00"
+  },
+  {
+    "path": "process-02/Debug/cli-raw-json.stdout.txt",
+    "bytes": 2005,
+    "sha256": "F36A13A339CFF524519A26BF633BBCB107260F81B9E056AA9932B4EFD31E0CA9"
+  },
+  {
+    "path": "process-02/Debug/cli-raw-junit.command.json",
+    "bytes": 563,
+    "sha256": "3994FB54D1AE403EB1A35161B33E04BC5F597ED0DC5E3F26CC8ED0B95F2892DD"
+  },
+  {
+    "path": "process-02/Debug/cli-raw-junit.stderr.txt",
+    "bytes": 266,
+    "sha256": "EAA898FDC1CB4E742BED51D117D3CEF2E19A479297877A23BA088B1922B7E51B"
+  },
+  {
+    "path": "process-02/Debug/cli-raw-junit.stdout.txt",
+    "bytes": 529,
+    "sha256": "33A273A299639780481D67998EEE36720B5755D27C662793A9E0585A037FC594"
+  },
+  {
+    "path": "process-02/Debug/cli-redact.command.json",
+    "bytes": 690,
+    "sha256": "C143F1FAE4D5A500955E3F6A80F80CDC44D70C5EAF81B5A5CB0879DB9945952B"
+  },
+  {
+    "path": "process-02/Debug/cli-redact.stderr.txt",
+    "bytes": 295,
+    "sha256": "C926BB08CA2F37A604FAA3EC4558F019C8434557514A207AC524DAD644E59FA4"
+  },
+  {
+    "path": "process-02/Debug/cli-redact.stdout.txt",
+    "bytes": 3296,
+    "sha256": "372A82156CA2A7392ED58FE30F8E24D02E8056662654F280447894C0792B5528"
+  },
+  {
+    "path": "process-02/Debug/cli-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-02/Debug/cli-refactor.command.json",
+    "bytes": 577,
+    "sha256": "3B648E372C14DE3546108E70FD4823EEB0C26239EA7D95EC5B3A01CCC357838C"
+  },
+  {
+    "path": "process-02/Debug/cli-refactor.stderr.txt",
+    "bytes": 681,
+    "sha256": "04E043266D47F3E5A967ECC341726A468CC1C89C20CB5D91269A11B9C837E56C"
+  },
+  {
+    "path": "process-02/Debug/cli-refactor.stdout.txt",
+    "bytes": 670,
+    "sha256": "61C8193AE8A9769B0191177AD8CD65ED2FBFC0D630C0684358D56BDEE3828C5C"
+  },
+  {
+    "path": "process-02/Debug/cli-same-path.command.json",
+    "bytes": 702,
+    "sha256": "4C163FAE872EE387AFE86ADBB5D8630AE697D22D0D29531137577249D0FF64B5"
+  },
+  {
+    "path": "process-02/Debug/cli-same-path.stderr.txt",
+    "bytes": 373,
+    "sha256": "6B864192E0680D184BF8A34460C0D56E3D254FF8D09C5AD99D5B178366A12020"
+  },
+  {
+    "path": "process-02/Debug/cli-same-path.stdout.txt",
+    "bytes": 3119,
+    "sha256": "48F3F26822C336F6D2242089D8486C3F3BB116A123B64DA1777CC963A289CC43"
+  },
+  {
+    "path": "process-02/Debug/cli-unsupported-redact.command.json",
+    "bytes": 581,
+    "sha256": "BD7C0B3704703CF309B1AB9682143D135E03F4DD8ED0C82DC6B79C4C714459DE"
+  },
+  {
+    "path": "process-02/Debug/cli-unsupported-redact.stderr.txt",
+    "bytes": 129,
+    "sha256": "24B307EA1C3358A44C7B948C7655791C8446D5B4632FDC81AD49F6EA47897741"
+  },
+  {
+    "path": "process-02/Debug/cli-unsupported-redact.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Debug/desktop-cli.txt",
+    "bytes": 3131,
+    "sha256": "478C66C0D230113722A324E3587B6DBDD11892F716CF8BA2216E97D2B9C4585D"
+  },
+  {
+    "path": "process-02/Debug/desktop-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-02/Debug/input.sql",
+    "bytes": 35,
+    "sha256": "C90779D450E8BFD2F3391A6C51040DD777947CD817397DAB8ADEDE4D9BCF8E5F"
+  },
+  {
+    "path": "process-02/Debug/private-dumps/20260908T101916988Z_45412_65cd42b4a260452a937b7f3abc843ae4/exception.json",
+    "bytes": 1042,
+    "sha256": "01D4EBBC1063EEC8753F94F350E96C99294F65E8B0502401869B474AB53F2525"
+  },
+  {
+    "path": "process-02/Debug/private-dumps/20260908T101916988Z_45412_65cd42b4a260452a937b7f3abc843ae4/process.dmp",
+    "bytes": 474299,
+    "sha256": "D9DB46F8FC821494BE68104B4B76076EAB6F0E1E52AB61B2D7B9C57D56979BC0"
+  },
+  {
+    "path": "process-02/Debug/process-results.json",
+    "bytes": 3366,
+    "sha256": "8F732E7744D01B8AA0D2FEECEF100F36EBC34C9911D035A93E83000F68E8A264"
+  },
+  {
+    "path": "process-02/Debug/process.command.json",
+    "bytes": 562,
+    "sha256": "7CA3D214746F5FC6407A3089B81CD8D8AB2C5E8A03CC18C4A1FB929D95B74C89"
+  },
+  {
+    "path": "process-02/Debug/process.stderr.txt",
+    "bytes": 3027,
+    "sha256": "40B3A0DDD1F5CE0D03592988444121765B9AED04CAC7CE650A2605D65CD77CA1"
+  },
+  {
+    "path": "process-02/Debug/process.stdout.txt",
+    "bytes": 307,
+    "sha256": "3A992404A344EE76B8F9369F202708A4407226EB8A2668F60BA143D71A811CE9"
+  },
+  {
+    "path": "process-02/Debug/raw.docx",
+    "bytes": 6526,
+    "sha256": "CB6AB7A51DEA66DA2E0DBE3CFBC412E2947EC9C394E2708EC0E4B5E02CB047E9"
+  },
+  {
+    "path": "process-02/Debug/raw.html",
+    "bytes": 4617,
+    "sha256": "2FF7F62FCC80F5A7007FCC5D33FC299E3268A0E4D1865DDC91A1C4556CA60F80"
+  },
+  {
+    "path": "process-02/Debug/raw.pdf",
+    "bytes": 82020,
+    "sha256": "C54372A15EDA4DED42B5EB88E2516B827162134A328B3DF99E8315F400DA36D8"
+  },
+  {
+    "path": "process-02/Debug/redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-02/Debug/SECRET_IMP05_PROCESS_7238.sqlplan",
+    "bytes": 1196,
+    "sha256": "B77F2DC3C3055B82850C8B253CC29D845A620F4C0D2DF76896B6445F3B44D4E5"
+  },
+  {
+    "path": "process-02/Debug/unknown-error.json",
+    "bytes": 1854,
+    "sha256": "D189D06DB0677B8044B25C6385715BBC58A22D967590FD0DB8BD57D131064821"
+  },
+  {
+    "path": "process-02/Debug/unknown.sqlplan",
+    "bytes": 1302,
+    "sha256": "6D12780E18A84B7F26B1E47CBF3F0E6C9010FF3CBB57623007ACD86EDC9DF1F9"
+  },
+  {
+    "path": "process-02/PrivacyVerification.cs.txt",
+    "bytes": 10048,
+    "sha256": "DB76D5ED55B5CA686F0207C32CE597CB7DE7DE565059462DE7FBE5B7A5E4424A"
+  },
+  {
+    "path": "process-02/PrivacyVerification.csproj.snapshot",
+    "bytes": 395,
+    "sha256": "3E6D8AD90DDB3DD5F41A45C4D6C90388DBC3642B4B9AAC20BE7BA716A2365D95"
+  },
+  {
+    "path": "process-02/Release/application.log",
+    "bytes": 1552,
+    "sha256": "DDBD4F3709E1000553C2829E24EE863884D283D83A1E9380F1D8710401FF75FD"
+  },
+  {
+    "path": "process-02/Release/build.command.json",
+    "bytes": 476,
+    "sha256": "1EFB33089547940556C010469B7A47279D612314D300211B18C7289DBEBF623C"
+  },
+  {
+    "path": "process-02/Release/build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/build.stdout.txt",
+    "bytes": 930,
+    "sha256": "1FB3EE9F193ACC413DEFEEBAAC665C9A8B6727AE09C411D1879A2F8AA6B50365"
+  },
+  {
+    "path": "process-02/Release/cli-blocked.command.json",
+    "bytes": 677,
+    "sha256": "BA7FE9BE1D5DC475B8E4D6EC902FEC3D6BF3615FEC76B79213108DD603BBBDE4"
+  },
+  {
+    "path": "process-02/Release/cli-blocked.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/cli-blocked.stdout.txt",
+    "bytes": 1206,
+    "sha256": "294C7EB1B1B73CD216D599F348E75450475298F490C449DDAF660C08FF4FF3AE"
+  },
+  {
+    "path": "process-02/Release/cli-raw-json.command.json",
+    "bytes": 566,
+    "sha256": "70EB3C23076B01234A7EF0C02B53904335ADD5FFDE145E22B9A84A90B68999CC"
+  },
+  {
+    "path": "process-02/Release/cli-raw-json.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/cli-raw-json.stdout.txt",
+    "bytes": 2007,
+    "sha256": "D6262B27F7F5A9AC276A92D9B5A3A2E54CCCB7BD8B7A581542D4BB320BAB2C56"
+  },
+  {
+    "path": "process-02/Release/cli-raw-junit.command.json",
+    "bytes": 567,
+    "sha256": "6C6FB79D3F4984B0EC6450F0447288E962930C174E82EE2489F41E3F48ED6EA3"
+  },
+  {
+    "path": "process-02/Release/cli-raw-junit.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/cli-raw-junit.stdout.txt",
+    "bytes": 529,
+    "sha256": "D0F70B2FC2823725B4B57674392D8CAC00FC49B6C1F719E8338BC7664AC95173"
+  },
+  {
+    "path": "process-02/Release/cli-redact.command.json",
+    "bytes": 696,
+    "sha256": "A8C5A2A760B8A652672B11BD5E8B57EFDE343683F0B6D0223E852E0ACA89B5B0"
+  },
+  {
+    "path": "process-02/Release/cli-redact.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/cli-redact.stdout.txt",
+    "bytes": 3296,
+    "sha256": "372A82156CA2A7392ED58FE30F8E24D02E8056662654F280447894C0792B5528"
+  },
+  {
+    "path": "process-02/Release/cli-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-02/Release/cli-refactor.command.json",
+    "bytes": 581,
+    "sha256": "7AFD3553A3EA87377BAAAD0ACD4F99BFBA747B507502F1B4B65B08173D8CD739"
+  },
+  {
+    "path": "process-02/Release/cli-refactor.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/cli-refactor.stdout.txt",
+    "bytes": 670,
+    "sha256": "15151A51CC80EEACEB84A5F89955C497FF7EFAC735ED442CCDE5FA5468E63BB9"
+  },
+  {
+    "path": "process-02/Release/cli-same-path.command.json",
+    "bytes": 709,
+    "sha256": "5A57943E9642902694F64C4EBE5F9EC9B17D674986C7C4793D8139FB510095A4"
+  },
+  {
+    "path": "process-02/Release/cli-same-path.stderr.txt",
+    "bytes": 151,
+    "sha256": "75D3090C7468421DF5C252CDE59B83079EB20B59F374DDBC81571C5EA4CA2D5E"
+  },
+  {
+    "path": "process-02/Release/cli-same-path.stdout.txt",
+    "bytes": 3119,
+    "sha256": "48F3F26822C336F6D2242089D8486C3F3BB116A123B64DA1777CC963A289CC43"
+  },
+  {
+    "path": "process-02/Release/cli-unsupported-redact.command.json",
+    "bytes": 585,
+    "sha256": "22A364425BDE3CE4B892E3109D9F8F16D3DE8C200977F5682DE5BE8AB6A56BCD"
+  },
+  {
+    "path": "process-02/Release/cli-unsupported-redact.stderr.txt",
+    "bytes": 129,
+    "sha256": "24B307EA1C3358A44C7B948C7655791C8446D5B4632FDC81AD49F6EA47897741"
+  },
+  {
+    "path": "process-02/Release/cli-unsupported-redact.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-02/Release/desktop-cli.txt",
+    "bytes": 3131,
+    "sha256": "478C66C0D230113722A324E3587B6DBDD11892F716CF8BA2216E97D2B9C4585D"
+  },
+  {
+    "path": "process-02/Release/desktop-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-02/Release/input.sql",
+    "bytes": 35,
+    "sha256": "C90779D450E8BFD2F3391A6C51040DD777947CD817397DAB8ADEDE4D9BCF8E5F"
+  },
+  {
+    "path": "process-02/Release/private-dumps/20260908T101921602Z_66244_ca983e0317e347b1a765f40e8cd35c29/exception.json",
+    "bytes": 1044,
+    "sha256": "B32857B055404C1A54D7A35CB523FE4544634CA58FC12946A200892DA4334893"
+  },
+  {
+    "path": "process-02/Release/private-dumps/20260908T101921602Z_66244_ca983e0317e347b1a765f40e8cd35c29/process.dmp",
+    "bytes": 470808,
+    "sha256": "E0D8043CB8D8A024F1598CF2D2D4D7633EC9F5A15130F30382AEAAB918493E08"
+  },
+  {
+    "path": "process-02/Release/process-results.json",
+    "bytes": 3370,
+    "sha256": "7BFD40F92C7684963C04645C2175A74F6BC560D8C4CCBEFCB9DFE6A2190FF7D0"
+  },
+  {
+    "path": "process-02/Release/process.command.json",
+    "bytes": 566,
+    "sha256": "D6E04438FF38299DD71CCD75D5D3A7481643AC531EC924BA66205E39787D6BBE"
+  },
+  {
+    "path": "process-02/Release/process.stderr.txt",
+    "bytes": 1540,
+    "sha256": "A665F9756AD46F0D679ECB031C07D14B9C3DC2908862840437B835A36CACDCE4"
+  },
+  {
+    "path": "process-02/Release/process.stdout.txt",
+    "bytes": 307,
+    "sha256": "3A992404A344EE76B8F9369F202708A4407226EB8A2668F60BA143D71A811CE9"
+  },
+  {
+    "path": "process-02/Release/raw.docx",
+    "bytes": 6526,
+    "sha256": "95A78A4F35B56189A01887D4DBE14FD18062FC6073CD345A6EE7E17E4632F3E2"
+  },
+  {
+    "path": "process-02/Release/raw.html",
+    "bytes": 4617,
+    "sha256": "2AD14D5397596BCF53A3E826489B132EB8407316EE0F4FCE7B162CB71B4C0AB4"
+  },
+  {
+    "path": "process-02/Release/raw.pdf",
+    "bytes": 82026,
+    "sha256": "1BC380B81E9B6467275B6DD55BED895998C1C9AD864259BAF505C6B0A576D9D4"
+  },
+  {
+    "path": "process-02/Release/redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-02/Release/SECRET_IMP05_PROCESS_7238.sqlplan",
+    "bytes": 1196,
+    "sha256": "B77F2DC3C3055B82850C8B253CC29D845A620F4C0D2DF76896B6445F3B44D4E5"
+  },
+  {
+    "path": "process-02/Release/unknown-error.json",
+    "bytes": 1866,
+    "sha256": "F91995FC26FF0386BE38087F26005DD0262EE29E57D58C80B6B31D498C935E97"
+  },
+  {
+    "path": "process-02/Release/unknown.sqlplan",
+    "bytes": 1302,
+    "sha256": "6D12780E18A84B7F26B1E47CBF3F0E6C9010FF3CBB57623007ACD86EDC9DF1F9"
+  },
+  {
+    "path": "process-02/Run-PrivacyVerification.ps1",
+    "bytes": 8079,
+    "sha256": "5F0895C3A560A420E876E6A554847D1388DF7EE1EFD534161BA85AD14EB088A6"
+  },
+  {
+    "path": "process-02/verification-results.json",
+    "bytes": 225248,
+    "sha256": "35D7B7FA807E6D2B6523B947865CFA703BE48CE1847B9965E9A34557EA3E8175"
+  },
+  {
+    "path": "process-02.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/AcceptanceInfrastructure.psm1",
+    "bytes": 13011,
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "path": "process-03/Debug/application.log",
+    "bytes": 3039,
+    "sha256": "DAFB45D1A0CD1BF478FE6B6872FB39364F9D2FFDBA08C54256AF81EEA0B45F09"
+  },
+  {
+    "path": "process-03/Debug/build.command.json",
+    "bytes": 474,
+    "sha256": "675164AD6AF8DCC46B173C03E65ACCA786C2B421B2DA300B3D0EB77C30C1CD0A"
+  },
+  {
+    "path": "process-03/Debug/build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Debug/build.stdout.txt",
+    "bytes": 1092,
+    "sha256": "AE7DBDA326755073672AEC21B0BBAA08A5B0FF74485429846CD3F233AB37A9A6"
+  },
+  {
+    "path": "process-03/Debug/cli-blocked.command.json",
+    "bytes": 671,
+    "sha256": "AFDAD0CD328357A3924F3DAEB4F28C8BB31ECE8EA60F0D01C23283652D72B51D"
+  },
+  {
+    "path": "process-03/Debug/cli-blocked.stderr.txt",
+    "bytes": 243,
+    "sha256": "EC9746C8FFED338F54851FF8DFE3ED7357A5E8C4B652F95DED489E861B3DE4AD"
+  },
+  {
+    "path": "process-03/Debug/cli-blocked.stdout.txt",
+    "bytes": 1206,
+    "sha256": "294C7EB1B1B73CD216D599F348E75450475298F490C449DDAF660C08FF4FF3AE"
+  },
+  {
+    "path": "process-03/Debug/cli-raw-json.command.json",
+    "bytes": 562,
+    "sha256": "5D6495735CFDC8BEEF502FEE9EED9C53BCA4F8C135814AD8912CB65EB20E3B45"
+  },
+  {
+    "path": "process-03/Debug/cli-raw-json.stderr.txt",
+    "bytes": 266,
+    "sha256": "4A7CEBCB553AD4C990AAC2204049366E9F514F860DB0FC095544F63651602F33"
+  },
+  {
+    "path": "process-03/Debug/cli-raw-json.stdout.txt",
+    "bytes": 2005,
+    "sha256": "3F1A7FDB85F41D411AAB9BF848335E3BC9C94EFD1EAD8912A7C2909D64C0EDA6"
+  },
+  {
+    "path": "process-03/Debug/cli-raw-junit.command.json",
+    "bytes": 563,
+    "sha256": "5FCA56CD41B05DF7229FCDB9D5CC3B67FC2559F453DC2C05B3101BB0E82BE6F7"
+  },
+  {
+    "path": "process-03/Debug/cli-raw-junit.stderr.txt",
+    "bytes": 266,
+    "sha256": "0A9BC0E112B03EC270F7DDCD48B670F9537BC3B6B1B45895354755AFBE144946"
+  },
+  {
+    "path": "process-03/Debug/cli-raw-junit.stdout.txt",
+    "bytes": 529,
+    "sha256": "E4C5E1A2167DECA1B911E12BA78CD79025A6640C9F25B3121B551AB31DF14209"
+  },
+  {
+    "path": "process-03/Debug/cli-redact.command.json",
+    "bytes": 690,
+    "sha256": "CFFBA429306817B4B150F6A4B575EDF81E535E75AC6B6DA97FB8456D4537AA0A"
+  },
+  {
+    "path": "process-03/Debug/cli-redact.stderr.txt",
+    "bytes": 295,
+    "sha256": "2C29A6EF2E10B177347C45C76BEEEA002B239894E220CD70372EBC96DC1F69C9"
+  },
+  {
+    "path": "process-03/Debug/cli-redact.stdout.txt",
+    "bytes": 3296,
+    "sha256": "372A82156CA2A7392ED58FE30F8E24D02E8056662654F280447894C0792B5528"
+  },
+  {
+    "path": "process-03/Debug/cli-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-03/Debug/cli-refactor.command.json",
+    "bytes": 577,
+    "sha256": "E376445A628CAAE754E4E74E8402DFB224563910B86329AD8F9FE37A062AC6F2"
+  },
+  {
+    "path": "process-03/Debug/cli-refactor.stderr.txt",
+    "bytes": 681,
+    "sha256": "9391428498FB2C438A657F63835299AF01E4C30B625CFD13C72AE552053ABEFD"
+  },
+  {
+    "path": "process-03/Debug/cli-refactor.stdout.txt",
+    "bytes": 670,
+    "sha256": "98C32DFAD4182A284EB6FC3A9B8F831E99A8A846511F062B473474B3F0DECEC4"
+  },
+  {
+    "path": "process-03/Debug/cli-same-path.command.json",
+    "bytes": 703,
+    "sha256": "605B39A93D01DCFAF9BD7D4BCAE4A72E59A3CAAB695F25259F2B347321B6B8F5"
+  },
+  {
+    "path": "process-03/Debug/cli-same-path.stderr.txt",
+    "bytes": 373,
+    "sha256": "E5C704DB12860E35EF23D8F7FF58EE901940BAC035064AEF34670D6388F82940"
+  },
+  {
+    "path": "process-03/Debug/cli-same-path.stdout.txt",
+    "bytes": 3119,
+    "sha256": "48F3F26822C336F6D2242089D8486C3F3BB116A123B64DA1777CC963A289CC43"
+  },
+  {
+    "path": "process-03/Debug/cli-unsupported-redact.command.json",
+    "bytes": 581,
+    "sha256": "00D0BCB19B482C2E48A82D3D38C38B79554680737856F3BC6C2FF18C0D0C5B0B"
+  },
+  {
+    "path": "process-03/Debug/cli-unsupported-redact.stderr.txt",
+    "bytes": 129,
+    "sha256": "24B307EA1C3358A44C7B948C7655791C8446D5B4632FDC81AD49F6EA47897741"
+  },
+  {
+    "path": "process-03/Debug/cli-unsupported-redact.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Debug/desktop-cli.txt",
+    "bytes": 3131,
+    "sha256": "478C66C0D230113722A324E3587B6DBDD11892F716CF8BA2216E97D2B9C4585D"
+  },
+  {
+    "path": "process-03/Debug/desktop-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-03/Debug/input.sql",
+    "bytes": 35,
+    "sha256": "C90779D450E8BFD2F3391A6C51040DD777947CD817397DAB8ADEDE4D9BCF8E5F"
+  },
+  {
+    "path": "process-03/Debug/pdf-extracted.txt",
+    "bytes": 300,
+    "sha256": "BB3989BE747C7802284C5DD371F58B3ED97C22F40BF54ADE0109F9D20FEC3B75"
+  },
+  {
+    "path": "process-03/Debug/private-dumps/20260908T102002196Z_69152_39d7deb6008e45fbb4e2c6a7f1b94da4/exception.json",
+    "bytes": 1042,
+    "sha256": "F6C2928BBFC26BF167B00266EC41AA1865C51DDC22BA8A521481FDC7D4A674D2"
+  },
+  {
+    "path": "process-03/Debug/private-dumps/20260908T102002196Z_69152_39d7deb6008e45fbb4e2c6a7f1b94da4/process.dmp",
+    "bytes": 474765,
+    "sha256": "F0B73CC89C34E7574BC4C31391EBA0005576CDC4102996EEEDD5A165726C564C"
+  },
+  {
+    "path": "process-03/Debug/process-results.json",
+    "bytes": 1774,
+    "sha256": "2767761D1388B62B5A807B52FFE9FEC67D3C3FD42B339B3A61D68C7878F7A775"
+  },
+  {
+    "path": "process-03/Debug/process.command.json",
+    "bytes": 562,
+    "sha256": "D7C375C68793D4A43F80C4BAD87C26B953D7DED0018407704AB2EE6238B6767C"
+  },
+  {
+    "path": "process-03/Debug/process.stderr.txt",
+    "bytes": 3027,
+    "sha256": "435F388C06057920D23D658314B5CAD5810640FEB230566F1175F5AB9D47278E"
+  },
+  {
+    "path": "process-03/Debug/process.stdout.txt",
+    "bytes": 307,
+    "sha256": "3A992404A344EE76B8F9369F202708A4407226EB8A2668F60BA143D71A811CE9"
+  },
+  {
+    "path": "process-03/Debug/raw.docx",
+    "bytes": 6524,
+    "sha256": "AA33EB6888529854F5818A9B1C870AE510DA6B20405AF1314478AFFC15BC8216"
+  },
+  {
+    "path": "process-03/Debug/raw.html",
+    "bytes": 4617,
+    "sha256": "C2D3972D8EF7BCE89759142B71CB48561A4296A807F8DA0C559095D48F185F0F"
+  },
+  {
+    "path": "process-03/Debug/raw.pdf",
+    "bytes": 82021,
+    "sha256": "D39B445B736EB0D80B0C0C20D951FD8D2BCDCAFF20AA09FC472039182C5E8048"
+  },
+  {
+    "path": "process-03/Debug/redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-03/Debug/SECRET_IMP05_PROCESS_7238.sqlplan",
+    "bytes": 1196,
+    "sha256": "B77F2DC3C3055B82850C8B253CC29D845A620F4C0D2DF76896B6445F3B44D4E5"
+  },
+  {
+    "path": "process-03/Debug/unknown-error.json",
+    "bytes": 1854,
+    "sha256": "8FB0CE4AC9760FD07E240B13D37968AC2A30BC80E0DAF9C27289A3793D13F85A"
+  },
+  {
+    "path": "process-03/Debug/unknown.sqlplan",
+    "bytes": 1302,
+    "sha256": "6D12780E18A84B7F26B1E47CBF3F0E6C9010FF3CBB57623007ACD86EDC9DF1F9"
+  },
+  {
+    "path": "process-03/PrivacyVerification.cs.txt",
+    "bytes": 10048,
+    "sha256": "904045024295263B0061BCBC2FB40DE437B7FA16076831A14A35BBA79F71D367"
+  },
+  {
+    "path": "process-03/PrivacyVerification.csproj.snapshot",
+    "bytes": 395,
+    "sha256": "3E6D8AD90DDB3DD5F41A45C4D6C90388DBC3642B4B9AAC20BE7BA716A2365D95"
+  },
+  {
+    "path": "process-03/Release/application.log",
+    "bytes": 1552,
+    "sha256": "04988746E70B069469AFA6AF51CB5BF4B147A9A7744EDAFE62942AA19F9BE07C"
+  },
+  {
+    "path": "process-03/Release/build.command.json",
+    "bytes": 476,
+    "sha256": "48DE5E09546A55A21D3AC283F9934E0C22C454E55F6CDF58F2CE520D2A4907AE"
+  },
+  {
+    "path": "process-03/Release/build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/build.stdout.txt",
+    "bytes": 930,
+    "sha256": "8DB667E5EACB6F698233442A6BAD1D052EF1DAE5427C539811C118943174114E"
+  },
+  {
+    "path": "process-03/Release/cli-blocked.command.json",
+    "bytes": 677,
+    "sha256": "50240373D01952ADAA2F25A0605611D44168E88CF5DCFF1BB4CC0507517C3758"
+  },
+  {
+    "path": "process-03/Release/cli-blocked.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/cli-blocked.stdout.txt",
+    "bytes": 1206,
+    "sha256": "294C7EB1B1B73CD216D599F348E75450475298F490C449DDAF660C08FF4FF3AE"
+  },
+  {
+    "path": "process-03/Release/cli-raw-json.command.json",
+    "bytes": 566,
+    "sha256": "5CD445326C45B77DD589A095D6B35C7310E1090B926D5CA3FE986F3A00076758"
+  },
+  {
+    "path": "process-03/Release/cli-raw-json.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/cli-raw-json.stdout.txt",
+    "bytes": 2007,
+    "sha256": "E6B4F436825DEFB676000B4D8CA0F4280394F5DABDF20EA39C98C26AEC9473F7"
+  },
+  {
+    "path": "process-03/Release/cli-raw-junit.command.json",
+    "bytes": 567,
+    "sha256": "E76395BC164F81A0A80E77AA1836D0C5EAC574AF4AC0DCB32F2847D5613E704A"
+  },
+  {
+    "path": "process-03/Release/cli-raw-junit.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/cli-raw-junit.stdout.txt",
+    "bytes": 529,
+    "sha256": "D0F70B2FC2823725B4B57674392D8CAC00FC49B6C1F719E8338BC7664AC95173"
+  },
+  {
+    "path": "process-03/Release/cli-redact.command.json",
+    "bytes": 696,
+    "sha256": "E977A0DF7A7556E40D3FDC78C9BBE611975C48BD16CBC339562FE354052C04A4"
+  },
+  {
+    "path": "process-03/Release/cli-redact.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/cli-redact.stdout.txt",
+    "bytes": 3296,
+    "sha256": "372A82156CA2A7392ED58FE30F8E24D02E8056662654F280447894C0792B5528"
+  },
+  {
+    "path": "process-03/Release/cli-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-03/Release/cli-refactor.command.json",
+    "bytes": 581,
+    "sha256": "827F35B00C95EAB8AF74CCCCF45FB4AFE78C5175B7548AD54A518251A691B7B1"
+  },
+  {
+    "path": "process-03/Release/cli-refactor.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/cli-refactor.stdout.txt",
+    "bytes": 670,
+    "sha256": "F1BBE4E5D441024F559CAB60DCFF7BE17EA5E21C4FB7D619B8982AE2E8CC81CB"
+  },
+  {
+    "path": "process-03/Release/cli-same-path.command.json",
+    "bytes": 709,
+    "sha256": "DD58F4FECE70D9914585F62C29436C2ECC9BB96CF8DA0F8006F2B6179D5A67DF"
+  },
+  {
+    "path": "process-03/Release/cli-same-path.stderr.txt",
+    "bytes": 151,
+    "sha256": "DAA1895D170F27FD97F852F683C555FD8351F6EA480A6661E224994CA2C09A65"
+  },
+  {
+    "path": "process-03/Release/cli-same-path.stdout.txt",
+    "bytes": 3119,
+    "sha256": "48F3F26822C336F6D2242089D8486C3F3BB116A123B64DA1777CC963A289CC43"
+  },
+  {
+    "path": "process-03/Release/cli-unsupported-redact.command.json",
+    "bytes": 585,
+    "sha256": "6832EC8596D721CCF8B2BF649FB1713ACCF5C6C12E7DD1EBDFFCEA58D6AC38A8"
+  },
+  {
+    "path": "process-03/Release/cli-unsupported-redact.stderr.txt",
+    "bytes": 129,
+    "sha256": "24B307EA1C3358A44C7B948C7655791C8446D5B4632FDC81AD49F6EA47897741"
+  },
+  {
+    "path": "process-03/Release/cli-unsupported-redact.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-03/Release/desktop-cli.txt",
+    "bytes": 3131,
+    "sha256": "478C66C0D230113722A324E3587B6DBDD11892F716CF8BA2216E97D2B9C4585D"
+  },
+  {
+    "path": "process-03/Release/desktop-redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-03/Release/input.sql",
+    "bytes": 35,
+    "sha256": "C90779D450E8BFD2F3391A6C51040DD777947CD817397DAB8ADEDE4D9BCF8E5F"
+  },
+  {
+    "path": "process-03/Release/pdf-extracted.txt",
+    "bytes": 300,
+    "sha256": "E442CB9F385679CF56F1459C3680AB93D9DBEF2C622334FEC7F2B60D3861A1C8"
+  },
+  {
+    "path": "process-03/Release/private-dumps/20260908T102006743Z_69444_2083b46518874d71943b82d7581e6a53/exception.json",
+    "bytes": 1043,
+    "sha256": "A8292702E5F0DBEFC9AF414E7F9FFD6C9659AAAF101278AEC552E4A8E98F2E69"
+  },
+  {
+    "path": "process-03/Release/private-dumps/20260908T102006743Z_69444_2083b46518874d71943b82d7581e6a53/process.dmp",
+    "bytes": 471738,
+    "sha256": "CF2E526AC707E0CBA7EF77A933D3E83879FF03A0C01858F0E5863673AB8F2AE5"
+  },
+  {
+    "path": "process-03/Release/process-results.json",
+    "bytes": 1776,
+    "sha256": "ABD9651A15019E3822B70EC9A01EB5084F1086BF1D708B223C710A1596E27BB9"
+  },
+  {
+    "path": "process-03/Release/process.command.json",
+    "bytes": 566,
+    "sha256": "340F19BAEEBEAA6B305FEFF550404A75AAA74B76FB39B189D3831E8C2902EBB7"
+  },
+  {
+    "path": "process-03/Release/process.stderr.txt",
+    "bytes": 1540,
+    "sha256": "33BC13EC66490AC7B9F42D1135D300F18001C4291CEF5E142BFA27D7FBF96FC1"
+  },
+  {
+    "path": "process-03/Release/process.stdout.txt",
+    "bytes": 307,
+    "sha256": "3A992404A344EE76B8F9369F202708A4407226EB8A2668F60BA143D71A811CE9"
+  },
+  {
+    "path": "process-03/Release/raw.docx",
+    "bytes": 6525,
+    "sha256": "BCC117171A1DABB2D623D564F0CCBADF581EC9080B4D9728754A43C0B95939AC"
+  },
+  {
+    "path": "process-03/Release/raw.html",
+    "bytes": 4617,
+    "sha256": "B352F43A49542F0DC383CF30D44168EC85179405DA60384D132ED878D2D3D54A"
+  },
+  {
+    "path": "process-03/Release/raw.pdf",
+    "bytes": 82020,
+    "sha256": "0D520D95D56C3FC920568F7A6D3B0144E51C6BA9AA193E8A045DBA5FE6D9010B"
+  },
+  {
+    "path": "process-03/Release/redacted.sqlplan",
+    "bytes": 1083,
+    "sha256": "50BBADD4309E34B210257E7FED6D815055D7E769FE2DA0C474B3610BB73B3CFF"
+  },
+  {
+    "path": "process-03/Release/SECRET_IMP05_PROCESS_7238.sqlplan",
+    "bytes": 1196,
+    "sha256": "B77F2DC3C3055B82850C8B253CC29D845A620F4C0D2DF76896B6445F3B44D4E5"
+  },
+  {
+    "path": "process-03/Release/unknown-error.json",
+    "bytes": 1866,
+    "sha256": "BAF1CA52AA0C5D6C44477FB08CE4C3AA0E48A828A2F75E84196B6DA9620FF590"
+  },
+  {
+    "path": "process-03/Release/unknown.sqlplan",
+    "bytes": 1302,
+    "sha256": "6D12780E18A84B7F26B1E47CBF3F0E6C9010FF3CBB57623007ACD86EDC9DF1F9"
+  },
+  {
+    "path": "process-03/Run-PrivacyVerification.ps1",
+    "bytes": 8079,
+    "sha256": "5F0895C3A560A420E876E6A554847D1388DF7EE1EFD534161BA85AD14EB088A6"
+  },
+  {
+    "path": "process-03/verification-results.json",
+    "bytes": 225052,
+    "sha256": "6DF90132169B48F6B5675BA653D343352D7981E80F36FBAED2F939AFE6804E6B"
+  },
+  {
+    "path": "process-03.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "schema-reference-sql2022.json",
+    "bytes": 354,
+    "sha256": "6CB0313418DFAE5EA312FFA48E7D7A8E771B41BEC816632E23EC561F241BD1D7"
+  },
+  {
+    "path": "schema-reference.json",
+    "bytes": 242,
+    "sha256": "8582F982E50DA1253B03976E905B0887F49D672344EDD88C34531A4BD2D07E1F"
+  },
+  {
+    "path": "showplan-sql2022.xsd.reference",
+    "bytes": 121510,
+    "sha256": "BAFD9C633F872B6BFD6E0C6198CF8F1CD6981B7A599564ABD9F1E63BBC069E81"
+  },
+  {
+    "path": "showplanxml.xsd.reference",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "snapshot-manifest-v2.json",
+    "bytes": 13100,
+    "sha256": "53D13E5082E5362D97A743DC50725FBEB1684BEBCF52A8135BB2FE19BF021408"
+  },
+  {
+    "path": "snapshot-manifest.json",
+    "bytes": 12941,
+    "sha256": "EBF9455E923E1DB21BAE393DA13DB7B9974D09BF8F0C513959672A9A70084D6D"
+  },
+  {
+    "path": "snapshots/Core/Services/AnalysisClipboardService.cs.snapshot",
+    "bytes": 2423,
+    "sha256": "451A6C109D69FF2D429AF713B948FF81E3912815AEBC20FD332A9A272C874630"
+  },
+  {
+    "path": "snapshots/Core/Services/BrowserLauncher.cs.snapshot",
+    "bytes": 2584,
+    "sha256": "72325DD41908291AFB3593303D02691D66A3ADDE79B985A949B4D7C2D2D1F07A"
+  },
+  {
+    "path": "snapshots/Core/Services/CliService.cs.snapshot",
+    "bytes": 10932,
+    "sha256": "9CEA131B7013AAD3BC7410E83A5747302E07F801A20CFA81051685BD06D0BCAB"
+  },
+  {
+    "path": "snapshots/Core/Services/HtmlReportExportService.cs.snapshot",
+    "bytes": 2861,
+    "sha256": "7BB16BA7878C0A100244FC5BD6DCEDF2E9CC41A417C0B774CDEBCB25834C7C00"
+  },
+  {
+    "path": "snapshots/Core/Services/MermaidDiagramActionService.cs.snapshot",
+    "bytes": 2282,
+    "sha256": "F4001391A5092EFE098D0CEB57004A728E4AAD94F3D4DD8CBE3E0640A2B38B1A"
+  },
+  {
+    "path": "snapshots/Core/Services/MissingIndexClipboardActionService.cs.snapshot",
+    "bytes": 2578,
+    "sha256": "F8D34857E19FB16E19F3F1F1E003A97E9B1B2171052EC59624540DD0C37D0334"
+  },
+  {
+    "path": "snapshots/Core/Services/PlanGraphNodeClipboardService.cs.snapshot",
+    "bytes": 1920,
+    "sha256": "F4E384D8A3F3B6F49C049F1D4FC005E0CE93C8CCB593FF0B5A7149CBA77A000A"
+  },
+  {
+    "path": "snapshots/Core/Services/PlanObfuscatorService.cs.snapshot",
+    "bytes": 713,
+    "sha256": "1C1C01D0B39795A019F4469F423D865C87F62FF620AE6AA8E92DD64DAFFC8D0B"
+  },
+  {
+    "path": "snapshots/Core/Services/PortableReportExportService.cs.snapshot",
+    "bytes": 3035,
+    "sha256": "119FA56D9F40D3AF965D848FAB07C19CC4514A4F41DA6D15C23E246EC9FCFDF7"
+  },
+  {
+    "path": "snapshots/Core/Services/ReportExportService.cs.snapshot",
+    "bytes": 4104,
+    "sha256": "4F2F86E64B48290FF2099AC3F7764E03067B1D748DA7710E9C328E18E6DAC017"
+  },
+  {
+    "path": "snapshots/Core/Services/TuningSessionActionService.cs.snapshot",
+    "bytes": 2056,
+    "sha256": "1E70143F02D682E7E99EC07B55C58A4A67C167477B90D97942BBDEA52FC7DA86"
+  },
+  {
+    "path": "snapshots/Core/Services/TuningSessionService.cs.snapshot",
+    "bytes": 9115,
+    "sha256": "D370DDD8C6E24D4197E211518FAEBD56B05D70252DB1A41CEB2ACD20A21C9201"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/acceptance-matrix.json.snapshot",
+    "bytes": 23569,
+    "sha256": "CC5A09C04BDB8886279B7E954F49FA8E322D2DA1D01C8233061A2E7D4029BFA4"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1.snapshot",
+    "bytes": 13011,
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt.snapshot",
+    "bytes": 16523,
+    "sha256": "5979910287D55D8ECD53FADC338C06D42713C933717B140B0B71ED5752E0266F"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/cross-scenarios.json.snapshot",
+    "bytes": 6710,
+    "sha256": "5557E6A3D8AE261E6D6B0BB278A88ADC5AF182163F9A70718F43DE6BCAE0B9E9"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/README.md.snapshot",
+    "bytes": 11178,
+    "sha256": "6D0CA79B52A1C9F5EAB5821332F4149C135473E5B1E5D5BB9AF9C0EACF2D2498"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1.snapshot",
+    "bytes": 18666,
+    "sha256": "73C14676CC54DFDADFB362D88B0C72F6F4E25BE8D578C6872A5FF6CA969782B7"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1.snapshot",
+    "bytes": 18972,
+    "sha256": "4D9D1ECCBF57E19FEC8FB43803C86BE37E39F61CFD201F5BECE012E1A798F45A"
+  },
+  {
+    "path": "snapshots/DOCS/acceptance/IMP-02/WPF验收操作脚本.md.snapshot",
+    "bytes": 5861,
+    "sha256": "E88B6B8DF5D3B370D160ACE9448443B9832FB0689E267B518E47839F4A4EDBA9"
+  },
+  {
+    "path": "snapshots/DOCS/IMP-02审查反例验收矩阵.md.snapshot",
+    "bytes": 40790,
+    "sha256": "61FCD625151E4073A0453881A8F467AB644F10FF4D58A45851157E25074D46CE"
+  },
+  {
+    "path": "snapshots/DOCS/IMP-05脱敏覆盖与输出入口验证.md.snapshot",
+    "bytes": 19119,
+    "sha256": "CDCF4758B23965890C4F005ED8FA171DC6A8C7B0866D4BF73F7230EBE5374A91"
+  },
+  {
+    "path": "snapshots/DOCS/implementation/IMP-05/Finalize-Delivery.py.txt.snapshot",
+    "bytes": 10410,
+    "sha256": "2020876C507107B140635B5C431E7BF651191F466CEC3C0E6A96E5A06527AE27"
+  },
+  {
+    "path": "snapshots/DOCS/implementation/IMP-05/Inspect-PdfOutputs.py.txt.snapshot",
+    "bytes": 1260,
+    "sha256": "66B434A93A9E3895A6FAEADCE3CCC487B02F3C5F18C2240EB5A3226E926F3E63"
+  },
+  {
+    "path": "snapshots/DOCS/implementation/IMP-05/PrivacyVerification.cs.txt.snapshot",
+    "bytes": 10048,
+    "sha256": "904045024295263B0061BCBC2FB40DE437B7FA16076831A14A35BBA79F71D367"
+  },
+  {
+    "path": "snapshots/DOCS/implementation/IMP-05/Run-PrivacyVerification.ps1.snapshot",
+    "bytes": 8079,
+    "sha256": "5F0895C3A560A420E876E6A554847D1388DF7EE1EFD534161BA85AD14EB088A6"
+  },
+  {
+    "path": "snapshots/DOCS/UI改进和功能改善文档.md.snapshot",
+    "bytes": 20935,
+    "sha256": "FDCB62C27FDE1984C58C2BE7BCF33EFAAB5873FF8A14A4B4E460161899FA6DDE"
+  },
+  {
+    "path": "snapshots/DOCS/代码Review报告.md.snapshot",
+    "bytes": 19661,
+    "sha256": "2F4FF27F694585FED1F70A813D3ACF88909C0327B0713E81922AC9590FC5BFCC"
+  },
+  {
+    "path": "snapshots/DOCS/检索来源与验证记录.md.snapshot",
+    "bytes": 14746,
+    "sha256": "9A02B51F0144FA2B8396C32C0BBA7B3B52E6AC21E49F6B2F605F7A4C9BA5906B"
+  },
+  {
+    "path": "snapshots/DOCS/软件改善实施规划.md.snapshot",
+    "bytes": 44404,
+    "sha256": "84E4C3E05AD6AE1B77312F5A4D18D864CAA2F7ACC0C58886996C8653B9E0DFA2"
+  },
+  {
+    "path": "snapshots/DOCS/软件详细设计与问题分析.md.snapshot",
+    "bytes": 20957,
+    "sha256": "FC51C5A8BD968C0ACE5BCC7FC981CDA87A31E17E3BF75753DC239920A2A6ECBA"
+  },
+  {
+    "path": "snapshots/Services/MainWindowShellActionService.cs.snapshot",
+    "bytes": 9254,
+    "sha256": "E4F8012BF4DD6B20CA19E1BE7F24EB6690B152E2E785403B1F8B366CC37353AA"
+  },
+  {
+    "path": "snapshots/Services/PlanObfuscationExportUiActionService.cs.snapshot",
+    "bytes": 3806,
+    "sha256": "877611F7D4FD723B418FDB55ADD700C8035D7364E3B0C6A7436456E8BD03F1AD"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.CLI/Program.cs.snapshot",
+    "bytes": 42450,
+    "sha256": "4EC82DE0BA01F9EE5BF7F958D870DA631EB93875E6F8DD02DC9269B9567A4CDC"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Core/HtmlReportGenerator.cs.snapshot",
+    "bytes": 14383,
+    "sha256": "8CE08BC4152A086374EF7EA24EDD12EE6586B75BCAE0410CB5715FFD427E9B6A"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs.snapshot",
+    "bytes": 702,
+    "sha256": "ED8E806A2328DFDDCE8539D803F00F41351777846C0980A75B0F0648B14BD853"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs.snapshot",
+    "bytes": 1981,
+    "sha256": "AFA865344C432507A8C4CE0A0836F3C3EFE7968AFAD274610540706A6B83A8DA"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs.snapshot",
+    "bytes": 7608,
+    "sha256": "1C2A62836722C47184BB27CB173ED2A5AC0D6C4B6FAB178B1B77916AF89BDEA7"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs.snapshot",
+    "bytes": 31404,
+    "sha256": "A84F81FD26ACDD0ECAEF55ACB7E0F0253E3B2B8202797B6B688EE3962E23A4C2"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs.snapshot",
+    "bytes": 4262,
+    "sha256": "9D68F9A6192D6B1B413C7A7178F93CF657B89FF69D65B5CBDF07D8F645DEE127"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs.snapshot",
+    "bytes": 4627,
+    "sha256": "0E014BFC93B04AFDC0AE50E740FC8FC1A41D6A49521646FB623AC8A4CD49280B"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs.snapshot",
+    "bytes": 3952,
+    "sha256": "C444B6E0B96DCE7F99379E71110B8CE3B5872DD8CAE4BEE5DAFB341D2CB24A36"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs.snapshot",
+    "bytes": 4510,
+    "sha256": "0803AFD9C591E74B9224669CFF046CE82066BC2CC4AC0597C0C6FEEE8761BC24"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs.snapshot",
+    "bytes": 4766,
+    "sha256": "25DA1736825CFD6D7A11B8A479802A928B169E13C90F71FCDB3284FFAC3DF12F"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs.snapshot",
+    "bytes": 8971,
+    "sha256": "26B6D0A8E48E0E43E2D4363A5E9518CCB7ACBFA17D1C6E8A0FD11DB890F217C6"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs.snapshot",
+    "bytes": 7327,
+    "sha256": "4D635F80B73CCC2380CB460887876869B963C6C8C2E30165BEE8C510B15183FA"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs.snapshot",
+    "bytes": 5797,
+    "sha256": "B3A8690ED4FFD68BD827A9DED88EEE8767CAB8CA32D9CA4C08EA7A39F995C4D8"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs.snapshot",
+    "bytes": 4055,
+    "sha256": "7BA1682F1A8EDE3CA02594AC585864F09C20CAEC61DBA9276979C2C75E059124"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs.snapshot",
+    "bytes": 4854,
+    "sha256": "71D49CB1EE14C8A53BF28D486C00A2D7A6FD0A012FA1504A1AFB69B4C6C83821"
+  },
+  {
+    "path": "snapshots/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs.snapshot",
+    "bytes": 1965,
+    "sha256": "648BF21F78D3A28B97E937B3386CEC4D12420E304368D44AC9FCF7725AE0F90F"
+  },
+  {
+    "path": "snapshots/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs.snapshot",
+    "bytes": 17883,
+    "sha256": "7E8A614E08C45B04050C314ED9E32E149E3222901051E6972FF2E2D3C877375F"
+  },
+  {
+    "path": "snapshots/src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs.snapshot",
+    "bytes": 5365,
+    "sha256": "F718BA0B141CF9012C155D63522BE35D774AD598EFE6F12631FC8E007F855AD6"
+  },
+  {
+    "path": "snapshots/Views/IndexSandboxWindow.xaml.cs.snapshot",
+    "bytes": 1047,
+    "sha256": "A7E500DF6FE67DEDDD394D90AF7D0080B5DF894799F472A221680253253F274E"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/AnalysisClipboardService.cs.snapshot",
+    "bytes": 2423,
+    "sha256": "451A6C109D69FF2D429AF713B948FF81E3912815AEBC20FD332A9A272C874630"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/BrowserLauncher.cs.snapshot",
+    "bytes": 2584,
+    "sha256": "72325DD41908291AFB3593303D02691D66A3ADDE79B985A949B4D7C2D2D1F07A"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/CliService.cs.snapshot",
+    "bytes": 10932,
+    "sha256": "9CEA131B7013AAD3BC7410E83A5747302E07F801A20CFA81051685BD06D0BCAB"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/HtmlReportExportService.cs.snapshot",
+    "bytes": 2861,
+    "sha256": "7BB16BA7878C0A100244FC5BD6DCEDF2E9CC41A417C0B774CDEBCB25834C7C00"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/MermaidDiagramActionService.cs.snapshot",
+    "bytes": 2282,
+    "sha256": "F4001391A5092EFE098D0CEB57004A728E4AAD94F3D4DD8CBE3E0640A2B38B1A"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/MissingIndexClipboardActionService.cs.snapshot",
+    "bytes": 2578,
+    "sha256": "F8D34857E19FB16E19F3F1F1E003A97E9B1B2171052EC59624540DD0C37D0334"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/PlanGraphNodeClipboardService.cs.snapshot",
+    "bytes": 1920,
+    "sha256": "F4E384D8A3F3B6F49C049F1D4FC005E0CE93C8CCB593FF0B5A7149CBA77A000A"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/PlanObfuscatorService.cs.snapshot",
+    "bytes": 713,
+    "sha256": "1C1C01D0B39795A019F4469F423D865C87F62FF620AE6AA8E92DD64DAFFC8D0B"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/PortableReportExportService.cs.snapshot",
+    "bytes": 3035,
+    "sha256": "119FA56D9F40D3AF965D848FAB07C19CC4514A4F41DA6D15C23E246EC9FCFDF7"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/ReportExportService.cs.snapshot",
+    "bytes": 4104,
+    "sha256": "4F2F86E64B48290FF2099AC3F7764E03067B1D748DA7710E9C328E18E6DAC017"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/TuningSessionActionService.cs.snapshot",
+    "bytes": 2056,
+    "sha256": "1E70143F02D682E7E99EC07B55C58A4A67C167477B90D97942BBDEA52FC7DA86"
+  },
+  {
+    "path": "snapshots-v2/Core/Services/TuningSessionService.cs.snapshot",
+    "bytes": 9115,
+    "sha256": "D370DDD8C6E24D4197E211518FAEBD56B05D70252DB1A41CEB2ACD20A21C9201"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/acceptance-matrix.json.snapshot",
+    "bytes": 23569,
+    "sha256": "CC5A09C04BDB8886279B7E954F49FA8E322D2DA1D01C8233061A2E7D4029BFA4"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1.snapshot",
+    "bytes": 13011,
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt.snapshot",
+    "bytes": 16523,
+    "sha256": "5979910287D55D8ECD53FADC338C06D42713C933717B140B0B71ED5752E0266F"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/cross-scenarios.json.snapshot",
+    "bytes": 6710,
+    "sha256": "5557E6A3D8AE261E6D6B0BB278A88ADC5AF182163F9A70718F43DE6BCAE0B9E9"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/README.md.snapshot",
+    "bytes": 11178,
+    "sha256": "6D0CA79B52A1C9F5EAB5821332F4149C135473E5B1E5D5BB9AF9C0EACF2D2498"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1.snapshot",
+    "bytes": 18666,
+    "sha256": "73C14676CC54DFDADFB362D88B0C72F6F4E25BE8D578C6872A5FF6CA969782B7"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1.snapshot",
+    "bytes": 18972,
+    "sha256": "4D9D1ECCBF57E19FEC8FB43803C86BE37E39F61CFD201F5BECE012E1A798F45A"
+  },
+  {
+    "path": "snapshots-v2/DOCS/acceptance/IMP-02/WPF验收操作脚本.md.snapshot",
+    "bytes": 5861,
+    "sha256": "E88B6B8DF5D3B370D160ACE9448443B9832FB0689E267B518E47839F4A4EDBA9"
+  },
+  {
+    "path": "snapshots-v2/DOCS/IMP-02审查反例验收矩阵.md.snapshot",
+    "bytes": 40790,
+    "sha256": "61FCD625151E4073A0453881A8F467AB644F10FF4D58A45851157E25074D46CE"
+  },
+  {
+    "path": "snapshots-v2/DOCS/IMP-05脱敏覆盖与输出入口验证.md.snapshot",
+    "bytes": 19119,
+    "sha256": "CDCF4758B23965890C4F005ED8FA171DC6A8C7B0866D4BF73F7230EBE5374A91"
+  },
+  {
+    "path": "snapshots-v2/DOCS/implementation/IMP-05/Finalize-Delivery.py.txt.snapshot",
+    "bytes": 10539,
+    "sha256": "284773855694F8BBD192144345F4E7EFE50890EBBDE86EDCBD0895CA99510ED4"
+  },
+  {
+    "path": "snapshots-v2/DOCS/implementation/IMP-05/Inspect-PdfOutputs.py.txt.snapshot",
+    "bytes": 1260,
+    "sha256": "66B434A93A9E3895A6FAEADCE3CCC487B02F3C5F18C2240EB5A3226E926F3E63"
+  },
+  {
+    "path": "snapshots-v2/DOCS/implementation/IMP-05/PrivacyVerification.cs.txt.snapshot",
+    "bytes": 10048,
+    "sha256": "904045024295263B0061BCBC2FB40DE437B7FA16076831A14A35BBA79F71D367"
+  },
+  {
+    "path": "snapshots-v2/DOCS/implementation/IMP-05/Run-PrivacyVerification.ps1.snapshot",
+    "bytes": 8079,
+    "sha256": "5F0895C3A560A420E876E6A554847D1388DF7EE1EFD534161BA85AD14EB088A6"
+  },
+  {
+    "path": "snapshots-v2/DOCS/UI改进和功能改善文档.md.snapshot",
+    "bytes": 20935,
+    "sha256": "FDCB62C27FDE1984C58C2BE7BCF33EFAAB5873FF8A14A4B4E460161899FA6DDE"
+  },
+  {
+    "path": "snapshots-v2/DOCS/代码Review报告.md.snapshot",
+    "bytes": 19661,
+    "sha256": "2F4FF27F694585FED1F70A813D3ACF88909C0327B0713E81922AC9590FC5BFCC"
+  },
+  {
+    "path": "snapshots-v2/DOCS/检索来源与验证记录.md.snapshot",
+    "bytes": 14746,
+    "sha256": "9A02B51F0144FA2B8396C32C0BBA7B3B52E6AC21E49F6B2F605F7A4C9BA5906B"
+  },
+  {
+    "path": "snapshots-v2/DOCS/软件改善实施规划.md.snapshot",
+    "bytes": 44404,
+    "sha256": "84E4C3E05AD6AE1B77312F5A4D18D864CAA2F7ACC0C58886996C8653B9E0DFA2"
+  },
+  {
+    "path": "snapshots-v2/DOCS/软件详细设计与问题分析.md.snapshot",
+    "bytes": 20957,
+    "sha256": "FC51C5A8BD968C0ACE5BCC7FC981CDA87A31E17E3BF75753DC239920A2A6ECBA"
+  },
+  {
+    "path": "snapshots-v2/Services/MainWindowShellActionService.cs.snapshot",
+    "bytes": 9254,
+    "sha256": "E4F8012BF4DD6B20CA19E1BE7F24EB6690B152E2E785403B1F8B366CC37353AA"
+  },
+  {
+    "path": "snapshots-v2/Services/PlanObfuscationExportUiActionService.cs.snapshot",
+    "bytes": 3806,
+    "sha256": "877611F7D4FD723B418FDB55ADD700C8035D7364E3B0C6A7436456E8BD03F1AD"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.CLI/Program.cs.snapshot",
+    "bytes": 42450,
+    "sha256": "4EC82DE0BA01F9EE5BF7F958D870DA631EB93875E6F8DD02DC9269B9567A4CDC"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Core/HtmlReportGenerator.cs.snapshot",
+    "bytes": 14383,
+    "sha256": "8CE08BC4152A086374EF7EA24EDD12EE6586B75BCAE0410CB5715FFD427E9B6A"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs.snapshot",
+    "bytes": 702,
+    "sha256": "ED8E806A2328DFDDCE8539D803F00F41351777846C0980A75B0F0648B14BD853"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs.snapshot",
+    "bytes": 1981,
+    "sha256": "AFA865344C432507A8C4CE0A0836F3C3EFE7968AFAD274610540706A6B83A8DA"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs.snapshot",
+    "bytes": 7608,
+    "sha256": "1C2A62836722C47184BB27CB173ED2A5AC0D6C4B6FAB178B1B77916AF89BDEA7"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs.snapshot",
+    "bytes": 31404,
+    "sha256": "A84F81FD26ACDD0ECAEF55ACB7E0F0253E3B2B8202797B6B688EE3962E23A4C2"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs.snapshot",
+    "bytes": 4262,
+    "sha256": "9D68F9A6192D6B1B413C7A7178F93CF657B89FF69D65B5CBDF07D8F645DEE127"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs.snapshot",
+    "bytes": 4627,
+    "sha256": "0E014BFC93B04AFDC0AE50E740FC8FC1A41D6A49521646FB623AC8A4CD49280B"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs.snapshot",
+    "bytes": 3952,
+    "sha256": "C444B6E0B96DCE7F99379E71110B8CE3B5872DD8CAE4BEE5DAFB341D2CB24A36"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs.snapshot",
+    "bytes": 4510,
+    "sha256": "0803AFD9C591E74B9224669CFF046CE82066BC2CC4AC0597C0C6FEEE8761BC24"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs.snapshot",
+    "bytes": 4766,
+    "sha256": "25DA1736825CFD6D7A11B8A479802A928B169E13C90F71FCDB3284FFAC3DF12F"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs.snapshot",
+    "bytes": 8971,
+    "sha256": "26B6D0A8E48E0E43E2D4363A5E9518CCB7ACBFA17D1C6E8A0FD11DB890F217C6"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs.snapshot",
+    "bytes": 7327,
+    "sha256": "4D635F80B73CCC2380CB460887876869B963C6C8C2E30165BEE8C510B15183FA"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs.snapshot",
+    "bytes": 5797,
+    "sha256": "B3A8690ED4FFD68BD827A9DED88EEE8767CAB8CA32D9CA4C08EA7A39F995C4D8"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs.snapshot",
+    "bytes": 4055,
+    "sha256": "7BA1682F1A8EDE3CA02594AC585864F09C20CAEC61DBA9276979C2C75E059124"
+  },
+  {
+    "path": "snapshots-v2/SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs.snapshot",
+    "bytes": 4854,
+    "sha256": "71D49CB1EE14C8A53BF28D486C00A2D7A6FD0A012FA1504A1AFB69B4C6C83821"
+  },
+  {
+    "path": "snapshots-v2/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs.snapshot",
+    "bytes": 1965,
+    "sha256": "648BF21F78D3A28B97E937B3386CEC4D12420E304368D44AC9FCF7725AE0F90F"
+  },
+  {
+    "path": "snapshots-v2/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs.snapshot",
+    "bytes": 17883,
+    "sha256": "7E8A614E08C45B04050C314ED9E32E149E3222901051E6972FF2E2D3C877375F"
+  },
+  {
+    "path": "snapshots-v2/src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs.snapshot",
+    "bytes": 5365,
+    "sha256": "F718BA0B141CF9012C155D63522BE35D774AD598EFE6F12631FC8E007F855AD6"
+  },
+  {
+    "path": "snapshots-v2/Views/IndexSandboxWindow.xaml.cs.snapshot",
+    "bytes": 1047,
+    "sha256": "A7E500DF6FE67DEDDD394D90AF7D0080B5DF894799F472A221680253253F274E"
+  },
+  {
+    "path": "source-changes.json",
+    "bytes": 8554,
+    "sha256": "569C7E378772DF60D68CA438745E19E4BF924C7AAA2133477DACAA6A363B02A7"
+  },
+  {
+    "path": "targeted-01/targeted-01.trx",
+    "bytes": 114428,
+    "sha256": "AE8EE3AD2352E1A9EBC762FFADD43F22C9D4E6EAEB886D3AF8AA5F87B001E284"
+  },
+  {
+    "path": "targeted-01.log",
+    "bytes": 12416,
+    "sha256": "1D4B7D926480E12469949592604A684BEB01461BBE2950082158C5355CE09F0A"
+  },
+  {
+    "path": "targeted-02/targeted-02.trx",
+    "bytes": 89044,
+    "sha256": "D3A0AFB053820E8EDF23953F388E9ED6E6FE02BB905C1FDD2C7B2409B34C0A35"
+  },
+  {
+    "path": "targeted-02.log",
+    "bytes": 1242,
+    "sha256": "B5C1D91060B0CCAD35232506EE604B3F5A68F0C65482DD85A33A3D5A9EBC6194"
+  },
+  {
+    "path": "targeted-03/targeted-03.trx",
+    "bytes": 80542,
+    "sha256": "11C282CF5E945068394CEBB6A62FA4B4FA4FA22A53737372293F6AAE82FC7B47"
+  },
+  {
+    "path": "targeted-03.log",
+    "bytes": 4007,
+    "sha256": "6EB329B3D710E28E822D17533EE26AC726ACC879AD009FDC757C53A54C4E3810"
+  },
+  {
+    "path": "targeted-04/targeted-04.trx",
+    "bytes": 75002,
+    "sha256": "6D5798542365A9F150B247E79B550D4810F2B64AA9A99226F90EDE276C58A185"
+  },
+  {
+    "path": "targeted-04.log",
+    "bytes": 1242,
+    "sha256": "CA5E6389DE60EB96A7532FACFD059EAB40D66701F217E11D391E0FCC7B433D4B"
+  },
+  {
+    "path": "working-tree-before.patch",
+    "bytes": 113206,
+    "sha256": "8381E66EAFDCF5EA1DC27BE0736EDF2020730F103EADF393C702B88EEAB08677"
+  }
+]

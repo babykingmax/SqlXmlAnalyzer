@@ -1,0 +1,1150 @@
+{
+  "Input": "SqlXmlAnalyzer.Tests/TestData/imp14_cardinality_residual.sqlplan",
+  "ObservedExitCode": 1,
+  "ExitReason": "Synthetic input hits Critical threshold",
+  "HasFailures": false,
+  "Diagnostics": [
+    {
+      "DiagnosticId": "0DD3CE8C447EF62C20898EE6AE2984027EC695AC5CA64EA93142CC034952022F",
+      "SemanticCode": "CARDINALITY_ROWS_PER_EXECUTION",
+      "NodeId": "0",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 1
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 6,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+      },
+      "Severity": "Critical",
+      "Origins": [
+        {
+          "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Compares estimated and actual rows per logical execution.",
+            "Version": "2.0.0"
+          },
+          "RunId": "2263BA20F68DAD6D72A22231C20EF378756AD1B10DCDCF983F46CDE43C3A83E0",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 6,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+          }
+        },
+        {
+          "RuleId": "RULE_030_CARDINALITY_ERROR",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_030_CARDINALITY_ERROR",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects large per-execution deviations without asserting a root cause.",
+            "Version": "2.0.0"
+          },
+          "RunId": "3E46C00D946639F3F08C9C1E5AA2BC1503A5AAEDE5F5AD53BFED18AF8D67BB9C",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 6,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+          }
+        }
+      ]
+    },
+    {
+      "DiagnosticId": "C6E4C25F2FD6FE71F23BB313FF0E6CCD6BD73DCDFA1CA1820D04D9905035C8F1",
+      "SemanticCode": "CARDINALITY_ROWS_PER_EXECUTION",
+      "NodeId": "0",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 2
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 2
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 16,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+      },
+      "Severity": "Critical",
+      "Origins": [
+        {
+          "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Compares estimated and actual rows per logical execution.",
+            "Version": "2.0.0"
+          },
+          "RunId": "5F9D347BD70086256C3E780EB5076F3F29E782D18356D3D878F55E258C0FC229",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 2
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 2
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 16,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+          }
+        },
+        {
+          "RuleId": "RULE_030_CARDINALITY_ERROR",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_030_CARDINALITY_ERROR",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects large per-execution deviations without asserting a root cause.",
+            "Version": "2.0.0"
+          },
+          "RunId": "05CA9C87B2A5CEDF265ABD63EE7D8084D5D9CE7747F9F834BA6B3204D8DE6913",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 2
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 2
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 16,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+          }
+        }
+      ]
+    },
+    {
+      "DiagnosticId": "C07212529CE90D8AE9F7A6A8A702BB5F5B71714878BCBB1129B8A7D7C89BEA9E",
+      "SemanticCode": "RESIDUAL_READ_AMPLIFICATION",
+      "NodeId": "0",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 1
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 6,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+      },
+      "Severity": "Warning",
+      "Origins": [
+        {
+          "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+            "Category": 7,
+            "Scope": 2,
+            "DefaultSeverity": "Info",
+            "Description": "Reports local residual predicates and measured read amplification when available.",
+            "Version": "2.0.0"
+          },
+          "RunId": "354D39A089678F8F35B09140CFFC1FF6E3B7A536FDF833AE1D177C0FAF7B96CB",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 6,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+          }
+        },
+        {
+          "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+            "Category": 7,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects measured read/output differences on Scan or Seek operators with residual predicates.",
+            "Version": "2.0.0"
+          },
+          "RunId": "1D32A1AA330B13D36B7E8CECEBED2EAA130433D7BD4E2C208003166B386B5FC6",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 6,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+          }
+        }
+      ]
+    },
+    {
+      "DiagnosticId": "0BC3DAE5F2EB3AC1DABC620CF5D42C4BCC9F154BB90FCC0B923A154703ECE024",
+      "SemanticCode": "RESIDUAL_READ_AMPLIFICATION",
+      "NodeId": "0",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 2
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 2
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 16,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+      },
+      "Severity": "Warning",
+      "Origins": [
+        {
+          "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+            "Category": 7,
+            "Scope": 2,
+            "DefaultSeverity": "Info",
+            "Description": "Reports local residual predicates and measured read amplification when available.",
+            "Version": "2.0.0"
+          },
+          "RunId": "2E95E606782770AD345669CA42863A695D396132DC26C6C0A8EA9CDFE6D799F1",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 2
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 2
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 16,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+          }
+        },
+        {
+          "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+          "RuleVersion": "2.0.0",
+          "Metadata": {
+            "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+            "Category": 7,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects measured read/output differences on Scan or Seek operators with residual predicates.",
+            "Version": "2.0.0"
+          },
+          "RunId": "62C309E0FA9DD9862A9117EAB35F13FF0EBBE65276391BB2468C16BD684425BE",
+          "InvocationLocation": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 2
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 2
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 16,
+              "Column": 22,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+          }
+        }
+      ]
+    }
+  ],
+  "Runs": [
+    {
+      "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 1
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 6,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "0DD3CE8C447EF62C20898EE6AE2984027EC695AC5CA64EA93142CC034952022F"
+      ]
+    },
+    {
+      "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 2
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 2
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 16,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "C6E4C25F2FD6FE71F23BB313FF0E6CCD6BD73DCDFA1CA1820D04D9905035C8F1"
+      ]
+    },
+    {
+      "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 1
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 6,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "C07212529CE90D8AE9F7A6A8A702BB5F5B71714878BCBB1129B8A7D7C89BEA9E"
+      ]
+    },
+    {
+      "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 2
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 2
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 16,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "0BC3DAE5F2EB3AC1DABC620CF5D42C4BCC9F154BB90FCC0B923A154703ECE024"
+      ]
+    },
+    {
+      "RuleId": "RULE_030_CARDINALITY_ERROR",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 1
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 6,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "0DD3CE8C447EF62C20898EE6AE2984027EC695AC5CA64EA93142CC034952022F"
+      ]
+    },
+    {
+      "RuleId": "RULE_030_CARDINALITY_ERROR",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 2
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 2
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 16,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "C6E4C25F2FD6FE71F23BB313FF0E6CCD6BD73DCDFA1CA1820D04D9905035C8F1"
+      ]
+    },
+    {
+      "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 1
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 6,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S1/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "C07212529CE90D8AE9F7A6A8A702BB5F5B71714878BCBB1129B8A7D7C89BEA9E"
+      ]
+    },
+    {
+      "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+      "NodeId": "0",
+      "Status": "Hit",
+      "Location": {
+        "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+        "Batch": {
+          "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+          "BatchOrdinal": 1
+        },
+        "Statement": {
+          "Batch": {
+            "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+            "BatchOrdinal": 1
+          },
+          "StatementOrdinal": 2
+        },
+        "QueryPlan": {
+          "Statement": {
+            "Batch": {
+              "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 2
+          },
+          "QueryPlanOrdinal": 1
+        },
+        "Operator": {
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "NodeId": "0",
+          "OperatorOrdinal": 1
+        },
+        "Source": {
+          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+          "Line": 16,
+          "Column": 22,
+          "EventIndex": null,
+          "ByteOffset": null,
+          "ByteLength": null
+        },
+        "DisplayScope": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1"
+      },
+      "DiagnosticIds": [
+        "0BC3DAE5F2EB3AC1DABC620CF5D42C4BCC9F154BB90FCC0B923A154703ECE024"
+      ]
+    }
+  ]
+}

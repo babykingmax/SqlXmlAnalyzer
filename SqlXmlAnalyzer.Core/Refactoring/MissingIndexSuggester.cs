@@ -20,7 +20,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                 var fragment = parser.Parse(reader, out var errors);
                 if (errors.Count > 0)
                 {
-                    return suggestions; // Return empty if syntax errors exist
+                    Logger.Warning("IMP-15: INDEX_SQL_INVALID；SQL 无法解析，未生成索引候选。");
+                    return suggestions;
                 }
 
                 suggestions.AddRange(SuggestIndexes(fragment));
@@ -38,6 +39,15 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
     public class IndexSuggestionVisitor : TSqlFragmentVisitor
     {
+        private readonly HashSet<string> _cteNames = new(StringComparer.Ordinal);
+        public override void ExplicitVisit(SelectStatement node)
+        {
+            var previous = _cteNames.ToArray();
+            foreach (var cte in node.WithCtesAndXmlNamespaces?.CommonTableExpressions ?? Enumerable.Empty<CommonTableExpression>())
+                _cteNames.Add(cte.ExpressionName.Value);
+            try { base.ExplicitVisit(node); }
+            finally { _cteNames.Clear(); _cteNames.UnionWith(previous); }
+        }
         private readonly List<MissingIndexSuggestion> _suggestions = new();
         private readonly Stack<QueryScope> _scopes = new();
 
@@ -53,15 +63,15 @@ namespace SqlXmlAnalyzer.Core.Refactoring
             {
                 foreach (var tableRef in node.FromClause.TableReferences)
                 {
-                    ExtractTableReferences(tableRef, scope.Tables);
+                    ExtractTableReferences(tableRef, scope);
                 }
             }
 
             // Initialize dictionaries for tables
             foreach (var table in scope.Tables)
             {
-                scope.ColumnUsages[table] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                scope.IncludeColumnCandidates[table] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                scope.ColumnUsages[table] = new Dictionary<string, string>(StringComparer.Ordinal);
+                scope.IncludeColumnCandidates[table] = new HashSet<string>(StringComparer.Ordinal);
             }
 
             // 2. Extract key columns from WHERE clause
@@ -122,13 +132,13 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                     // Add Equality keys first
                     foreach (var kv in usages.Where(u => u.Value == "EQUALITY"))
                     {
-                        keyCols.Add(new IndexColumn { Name = "[" + kv.Key + "]", Usage = "EQUALITY" });
+                        keyCols.Add(new IndexColumn { Name = IndexDdlCompiler.QuoteIdentifier(kv.Key), Usage = "EQUALITY" });
                     }
 
                     // Add Inequality keys next
                     foreach (var kv in usages.Where(u => u.Value == "INEQUALITY"))
                     {
-                        keyCols.Add(new IndexColumn { Name = "[" + kv.Key + "]", Usage = "INEQUALITY" });
+                        keyCols.Add(new IndexColumn { Name = IndexDdlCompiler.QuoteIdentifier(kv.Key), Usage = "INEQUALITY" });
                     }
 
                     if (keyCols.Count > 0)
@@ -139,7 +149,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                             // A column cannot be both a key column and an include column
                             if (!usages.ContainsKey(inc))
                             {
-                                includeCols.Add(new IndexColumn { Name = "[" + inc + "]", Usage = "INCLUDE" });
+                                includeCols.Add(new IndexColumn { Name = IndexDdlCompiler.QuoteIdentifier(inc), Usage = "INCLUDE" });
                             }
                         }
 
@@ -147,9 +157,13 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                         {
                             Schema = table.Schema,
                             Table = table.Table,
+                            Database = table.Database,
+                            Server = table.Server,
+                            ObjectIdentity = new(table.Server, table.Database, string.IsNullOrEmpty(table.Schema) ? null : table.Schema, table.Table),
                             KeyColumns = keyCols,
                             IncludeColumns = includeCols,
-                            Impact = 80.0, // Default impact heuristic
+                            Impact = 0, // No SQL Server Impact was captured for a syntax-derived candidate.
+                            Source = IndexSuggestionSource.SqlSyntax,
                             Score = 0 // Computed later
                         });
                     }
@@ -157,29 +171,44 @@ namespace SqlXmlAnalyzer.Core.Refactoring
             }
         }
 
-        private void ExtractTableReferences(TableReference tableRef, List<TableReferenceInfo> list)
+        private void ExtractTableReferences(TableReference tableRef, QueryScope scope)
         {
+            var list = scope.Tables;
             if (tableRef is NamedTableReference namedRef)
             {
-                string schema = namedRef.SchemaObject.SchemaIdentifier?.Value ?? "dbo";
+                if (namedRef.SchemaObject.Identifiers.Count == 1 && _cteNames.Contains(namedRef.SchemaObject.BaseIdentifier.Value))
+                {
+                    scope.HasUnresolvedSources = true;
+                    scope.UnresolvedQualifiers.Add(namedRef.Alias?.Value ?? namedRef.SchemaObject.BaseIdentifier.Value);
+                    return;
+                }
+                string schema = namedRef.SchemaObject.SchemaIdentifier?.Value ?? "";
                 string table = namedRef.SchemaObject.BaseIdentifier?.Value ?? "";
                 string alias = namedRef.Alias?.Value ?? table;
 
-                list.Add(new TableReferenceInfo { Schema = schema, Table = table, Alias = alias });
+                list.Add(new TableReferenceInfo { Schema = schema, Table = table, Alias = alias,
+                    HasAlias = namedRef.Alias != null, Database = namedRef.SchemaObject.DatabaseIdentifier?.Value,
+                    Server = namedRef.SchemaObject.ServerIdentifier?.Value });
             }
             else if (tableRef is QualifiedJoin qualifiedJoin)
             {
-                ExtractTableReferences(qualifiedJoin.FirstTableReference, list);
-                ExtractTableReferences(qualifiedJoin.SecondTableReference, list);
+                ExtractTableReferences(qualifiedJoin.FirstTableReference, scope);
+                ExtractTableReferences(qualifiedJoin.SecondTableReference, scope);
             }
             else if (tableRef is UnqualifiedJoin unqualifiedJoin)
             {
-                ExtractTableReferences(unqualifiedJoin.FirstTableReference, list);
-                ExtractTableReferences(unqualifiedJoin.SecondTableReference, list);
+                ExtractTableReferences(unqualifiedJoin.FirstTableReference, scope);
+                ExtractTableReferences(unqualifiedJoin.SecondTableReference, scope);
             }
             else if (tableRef is JoinParenthesisTableReference parenthesizedRef)
             {
-                ExtractTableReferences(parenthesizedRef.Join, list);
+                ExtractTableReferences(parenthesizedRef.Join, scope);
+            }
+            else
+            {
+                scope.HasUnresolvedSources = true;
+                if (tableRef is TableReferenceWithAlias withAlias && withAlias.Alias != null)
+                    scope.UnresolvedQualifiers.Add(withAlias.Alias.Value);
             }
         }
 
@@ -193,34 +222,31 @@ namespace SqlXmlAnalyzer.Core.Refactoring
                 string qualifier = mpi.Identifiers[mpi.Identifiers.Count - 2].Value;
                 string? schemaQualifier = mpi.Identifiers.Count > 2 ? mpi.Identifiers[mpi.Identifiers.Count - 3].Value : null;
 
+                string? database = mpi.Identifiers.Count > 3 ? mpi.Identifiers[^4].Value : null;
+                string? server = mpi.Identifiers.Count > 4 ? mpi.Identifiers[^5].Value : null;
                 foreach (var scope in _scopes)
                 {
-                    foreach (var table in scope.Tables)
-                    {
-                        if (string.Equals(table.Alias, qualifier, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return table;
-                        }
-                        if (string.Equals(table.Table, qualifier, StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (schemaQualifier == null || string.Equals(table.Schema, schemaQualifier, StringComparison.OrdinalIgnoreCase))
-                            {
-                                return table;
-                            }
-                        }
-                    }
+                    if (scope.UnresolvedQualifiers.Contains(qualifier)) return null;
+                    var matches = scope.Tables.Where(table => mpi.Identifiers.Count == 2 && table.Alias == qualifier
+                        || !table.HasAlias && table.Table == qualifier
+                            && (schemaQualifier == null || table.Schema == schemaQualifier)
+                            && (database == null || table.Database == database)
+                            && (server == null || table.Server == server)).Take(2).ToArray();
+                    if (matches.Length != 0) return matches.Length == 1 ? matches[0] : null;
                 }
+                return null;
             }
 
             foreach (var scope in _scopes)
             {
+                if (scope.HasUnresolvedSources) return null;
                 if (scope.Tables.Count > 0)
                 {
-                    return scope.Tables[0];
+                    return scope.Tables.Count == 1 ? scope.Tables[0] : null;
                 }
             }
 
-            return tables.Count > 0 ? tables[0] : null;
+            return null;
         }
 
         private string GetColumnName(ColumnReferenceExpression colRef)
@@ -232,13 +258,18 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
         private class TableReferenceInfo
         {
-            public string Schema { get; set; } = "dbo";
+            public string Schema { get; set; } = "";
+            public string? Database { get; set; }
+            public string? Server { get; set; }
+            public bool HasAlias { get; set; }
             public string Table { get; set; } = "";
             public string Alias { get; set; } = "";
         }
 
         private class QueryScope
         {
+            public bool HasUnresolvedSources { get; set; }
+            public HashSet<string> UnresolvedQualifiers { get; } = new(StringComparer.Ordinal);
             public List<TableReferenceInfo> Tables { get; } = new();
             public Dictionary<TableReferenceInfo, Dictionary<string, string>> ColumnUsages { get; } = new();
             public Dictionary<TableReferenceInfo, HashSet<string>> IncludeColumnCandidates { get; } = new();
@@ -246,6 +277,7 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
         private class ColumnFinder : TSqlFragmentVisitor
         {
+            public override void ExplicitVisit(QuerySpecification node) { }
             public List<ColumnReferenceExpression> Columns { get; } = new();
             public override void ExplicitVisit(ColumnReferenceExpression node)
             {
@@ -256,6 +288,8 @@ namespace SqlXmlAnalyzer.Core.Refactoring
 
         private class PredicateVisitor : TSqlFragmentVisitor
         {
+            // Nested query blocks are visited by IndexSuggestionVisitor in their own scope.
+            public override void ExplicitVisit(QuerySpecification node) { }
             private readonly QueryScope _scope;
             private readonly IndexSuggestionVisitor _parent;
 

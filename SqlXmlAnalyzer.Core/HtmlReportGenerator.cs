@@ -78,6 +78,7 @@ namespace SqlXmlAnalyzer
 
                 sb.AppendLine("    <div class=\"header\">");
                 sb.AppendLine($"      <h1>🔍 {Encode(title)}</h1>");
+                sb.AppendLine($"      <p class=\"privacy-notice\">{Encode(Core.Privacy.OutputPrivacy.RawNotice)}</p>");
                 sb.AppendLine($"      <p class=\"subtitle\">由 SqlXmlAnalyzer v{Encode(Core.ProductInfo.Version)} 生成 | 分析时间: {Encode(timestamp)}</p>");
                 sb.AppendLine($"      <p class=\"subtitle\">原始文件: {Encode(fileToShow)}</p>");
                 sb.AppendLine("    </div>");

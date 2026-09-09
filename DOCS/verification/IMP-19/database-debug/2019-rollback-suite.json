@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "Name": "rollback",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": ""
+    }
+  ],
+  "CompatibilityLevel": 150,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2019"
+}

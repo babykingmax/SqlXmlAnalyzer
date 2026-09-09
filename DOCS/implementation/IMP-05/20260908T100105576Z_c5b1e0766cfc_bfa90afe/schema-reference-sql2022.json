@@ -1,0 +1,7 @@
+{
+  "url": "https://schemas.microsoft.com/sqlserver/2004/07/showplan/sql2022/showplanxml.xsd",
+  "status": 200,
+  "retrievedUtc": "2026-09-08T10:02:20.6229605Z",
+  "sha256": "BAFD9C633F872B6BFD6E0C6198CF8F1CD6981B7A599564ABD9F1E63BBC069E81",
+  "purpose": "Derive field names, primitive kinds and enumeration values; not full schema validation."
+}

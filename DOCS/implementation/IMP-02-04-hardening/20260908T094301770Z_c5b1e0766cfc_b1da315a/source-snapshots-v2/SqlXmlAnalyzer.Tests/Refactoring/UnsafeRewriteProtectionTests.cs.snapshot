@@ -1,0 +1,213 @@
+using System.IO;
+using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
+
+namespace SqlXmlAnalyzer.Tests.Refactoring;
+
+public sealed class UnsafeRewriteProtectionTests
+{
+    private static readonly AnalysisReport EmptyReport = new(Array.Empty<IAnalysisIssue>());
+    private static SqlRefactoringEngine Engine(params ISqlRefactorRule[] rules) =>
+        new(rules, new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance, new RecordingDiagnostics());
+
+    [Theory]
+    [InlineData("LTRIM(Name) = N'admin'", false)]
+    [InlineData("TRIM(Name) = N'admin'", true)]
+    [InlineData("LTRIM(RTRIM(Name)) <> N'admin'", false)]
+    [InlineData("N'admin' = LTRIM(Name)", true)]
+    [InlineData("LTRIM(Name) = N' admin'", false)]
+    [InlineData("RTRIM(Name) != N'admin '", true)]
+    [InlineData("TRIM(Name) IS NULL", false)]
+    public void Run_WhenTrimDataDomainIsUnproven_PreservesOriginalAndExplainsPrerequisites(string predicate, bool dryRun)
+    {
+        string sql = $"SELECT Name FROM (VALUES(N' admin'),(N'admin'),(N''),(NULL)) AS input(Name) WHERE {predicate};";
+        var result = Engine(new TrimRefactorRule()).Run(sql, EmptyReport, new(), dryRun);
+        result.IsSuccess.Should().BeTrue();
+        result.OutputSql.Should().Be(sql);
+        result.Errors.Should().BeEmpty();
+        result.Context.RefactorChanges.Should().BeEmpty();
+        result.Context.Changed.Should().BeFalse();
+        var skip = result.Context.SafetySkips.Should().ContainSingle().Which;
+        skip.ReasonCode.Should().Be("UnprovenTrimEquivalence");
+        skip.RequiredEvidence.Should().Contain("NULL").And.Contain("排序规则");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Run_WithRollbackAndExistingTemporaryTable_DoesNotCreateDropOrReplaceObjects(bool dryRun)
+    {
+        const string sql = "CREATE TABLE #stage(Id int); DECLARE @stage TABLE(Id int); BEGIN TRAN; INSERT @stage VALUES(1); ROLLBACK; SELECT * FROM @stage; SELECT * FROM #stage;";
+        var engine = Engine(new TableVariableRefactorRule());
+        var result = engine.Run(sql, EmptyReport, new(), dryRun);
+        result.IsSuccess.Should().BeTrue();
+        result.OutputSql.Should().Be(sql).And.NotContain("DROP TABLE");
+        result.Context.SafetySkips.Should().ContainSingle().Which.RequiredEvidence.Should().Contain("回滚").And.Contain("同名");
+        engine.Run(result.OutputSql, EmptyReport, new(), dryRun).OutputSql.Should().Be(sql);
+    }
+
+    [Theory]
+    [InlineData("REF_RULE_103_TRIM", "SELECT LTRIM(Name) FROM Users;")]
+    [InlineData("REF_RULE_002_TABLE_VAR", "DECLARE @stage TABLE(Id int); SELECT * FROM @stage;")]
+    public void Run_WhenUnsafeRuleIsExplicitlySelected_StillRequiresEvidence(string ruleId, string sql)
+    {
+        var engine = Engine(new TrimRefactorRule(), new TableVariableRefactorRule());
+        var result = engine.Run(sql, EmptyReport, new(new[] { ruleId }), false);
+        result.OutputSql.Should().Be(sql);
+        result.Context.SafetySkips.Should().ContainSingle(s => s.RuleId == ruleId);
+    }
+
+    [Fact]
+    public void Apply_WhenCalledDirectly_CannotBypassTableVariableSafetyGuard()
+    {
+        const string sql = "DECLARE @stage TABLE(Id int);";
+        var fragment = new TSql160Parser(true).Parse(new StringReader(sql), out var errors);
+        errors.Should().BeEmpty();
+        var context = new RefactorContext(sql);
+        var result = new TableVariableRefactorRule().Apply(fragment, context);
+        result.IsApplied.Should().BeFalse();
+        result.Fragment.Should().BeSameAs(fragment);
+        context.SafetySkips.Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Run_WhenAnotherRuleMakesProgress_DeduplicatesSafetyNoticesAcrossPasses()
+    {
+        const string sql = "SELECT * FROM Users WHERE LTRIM(Name) = 'admin' AND Age + 10 > 50;";
+        var result = Engine(new ConstantFoldingRefactorRule(), new TrimRefactorRule()).Run(sql, EmptyReport, new(), false);
+        result.IsSuccess.Should().BeTrue();
+        result.OutputSql.Should().Contain("LTRIM(Name)").And.Contain("Age > 40");
+        result.Context.SafetySkips.Should().ContainSingle();
+        result.Context.Warnings.Count(w => w.Contains("REF_RULE_103_TRIM")).Should().Be(1);
+        result.Context.RefactorChanges.Should().OnlyContain(c => c.RuleId != "REF_RULE_103_TRIM");
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Run_WhenRuleThrows_AbortsAndDiscardsPartialAstAndChanges(bool throwInCanApply)
+    {
+        var diagnostics = new RecordingDiagnostics();
+        var next = new ThrowingRule(false, new Exception("must not run"));
+        var engine = new SqlRefactoringEngine(new[] { new ThrowingRule(throwInCanApply, new InvalidOperationException("unexpected rule failure")), next },
+            new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance, diagnostics);
+        const string sql = "SELECT 1;";
+        var result = engine.Run(sql, EmptyReport, new(), false);
+        result.IsSuccess.Should().BeFalse();
+        result.OutputSql.Should().Be(sql);
+        result.Context.Changed.Should().BeFalse();
+        result.Context.RefactorChanges.Should().BeEmpty();
+        result.Context.RefactorFailures.Should().ContainSingle();
+        diagnostics.Calls.Should().Be(1);
+        result.Diagnostic.Should().BeSameAs(diagnostics.Result);
+        next.Calls.Should().Be(0);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Run_WhenCanceledOrStorageFails_ReturnsFailureWithoutUnknownErrorDump(bool canceled)
+    {
+        var diagnostics = new RecordingDiagnostics();
+        Exception exception = canceled ? new OperationCanceledException() : new IOException("storage unavailable");
+        var engine = new SqlRefactoringEngine(new[] { new ThrowingRule(false, exception) }, new DefaultRuleFilter(),
+            NullLogger<SqlRefactoringEngine>.Instance, diagnostics);
+        var result = engine.Run("SELECT 1;", EmptyReport, new(), false);
+        result.IsSuccess.Should().BeFalse();
+        result.OutputSql.Should().Be("SELECT 1;");
+        diagnostics.Calls.Should().Be(0);
+    }
+
+    [Fact]
+    public void Run_WhenRuleDiscoveryThrows_ReportsDumpFailureAndKeepsOriginalSql()
+    {
+        var diagnostics = new RecordingDiagnostics { Result = new(null, null, "disk full") };
+        var engine = new SqlRefactoringEngine(Array.Empty<ISqlRefactorRule>(), new ThrowingFilter(),
+            NullLogger<SqlRefactoringEngine>.Instance, diagnostics);
+        var result = engine.Run("SELECT 1;", EmptyReport, new(), false);
+        result.IsSuccess.Should().BeFalse();
+        result.OutputSql.Should().Be("SELECT 1;");
+        result.Errors.Should().Contain(e => e.Contains("DUMP 生成失败") && e.Contains("disk full"));
+        diagnostics.Calls.Should().Be(1);
+    }
+
+    private sealed class ThrowingFilter : IRuleFilter
+    {
+        public IEnumerable<ISqlRefactorRule> Filter(IEnumerable<ISqlRefactorRule> rules, RefactorOptions options) => throw new InvalidOperationException("filter failed");
+    }
+
+    [Fact]
+    public void Run_WhenDiagnosticProviderThrows_StillReturnsOriginalSqlAndPrimaryError()
+    {
+        var engine = new SqlRefactoringEngine(new[] { new ThrowingRule(false, new InvalidOperationException("primary rule failure")) },
+            new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance, new BrokenDiagnostics());
+        var result = engine.Run("SELECT 1;", EmptyReport, new(), false);
+        result.IsSuccess.Should().BeFalse();
+        result.OutputSql.Should().Be("SELECT 1;");
+        result.Context.RefactorChanges.Should().BeEmpty();
+        result.Errors.Should().Contain(e => e.Contains("primary rule failure") && e.Contains("诊断组件失败"));
+    }
+
+    private sealed class BrokenDiagnostics : IUnexpectedErrorReporter
+    {
+        public UnexpectedErrorReport Report(Exception exception, string operation) => throw new InvalidOperationException("reporter failure");
+    }
+
+    [Fact]
+    public void Run_WhenExceptionCannotFormat_PreservesFailureAndDiagnostic()
+    {
+        var diagnostics = new RecordingDiagnostics();
+        var engine = new SqlRefactoringEngine(new[] { new ThrowingRule(false, new UnformattableException()) },
+            new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance, diagnostics);
+        var result = engine.Run("SELECT 1;", EmptyReport, new(), false);
+        result.IsSuccess.Should().BeFalse();
+        result.OutputSql.Should().Be("SELECT 1;");
+        result.Context.RefactorFailures.Should().ContainSingle().Which.ExceptionName.Should().Be(nameof(UnformattableException));
+        diagnostics.Calls.Should().Be(1);
+    }
+
+    private sealed class UnformattableException : Exception
+    {
+        public override string Message => throw new InvalidOperationException("Bad message");
+        public override string ToString() => throw new InvalidOperationException("Bad formatting");
+    }
+
+    private sealed class ThrowingRule(bool throwInCanApply, Exception failure) : ISqlRefactorRule
+    {
+        public string RuleId => "TEST_THROW";
+        public string Name => "Throwing test rule";
+        public string Description => Name;
+        public int Priority => 10;
+        public int Calls { get; private set; }
+        public bool CanApply(TSqlFragment fragment, RefactorContext context)
+        {
+            Calls++;
+            if (throwInCanApply) throw failure;
+            return true;
+        }
+        public RuleResult Apply(TSqlFragment fragment, RefactorContext context)
+        {
+            fragment.Accept(new MutatingVisitor());
+            context.RecordChange(RuleId, "Partial change before exception");
+            throw failure;
+        }
+        private sealed class MutatingVisitor : TSqlFragmentVisitor
+        {
+            public override void ExplicitVisit(IntegerLiteral node) => node.Value = "999";
+        }
+    }
+
+    internal sealed class RecordingDiagnostics : IUnexpectedErrorReporter
+    {
+        public int Calls { get; private set; }
+        public UnexpectedErrorReport Result { get; set; } = new("synthetic.dmp", "synthetic.json", null);
+        public UnexpectedErrorReport Report(Exception exception, string operation) { Calls++; return Result; }
+    }
+}

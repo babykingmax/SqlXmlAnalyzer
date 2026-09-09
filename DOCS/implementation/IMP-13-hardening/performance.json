@@ -1,0 +1,29 @@
+{
+  "TimestampUtc": "2026-09-09T02:02:00.6588464Z",
+  "Configuration": "Release",
+  "Scope": "Local one-shot parser measurements; excludes SafeXmlHelper reading; not a CI timing threshold or SQL Server workload benchmark",
+  "CoreAssemblySha256": "650186640B08C869742852C7857912D9A3AFD0AA1078017F6C67241CAD786BB9",
+  "Results": [
+    {
+      "Processes": 10000,
+      "Victims": 10000,
+      "Characters": 578022,
+      "ParseMilliseconds": 143.5756,
+      "Warnings": 0
+    },
+    {
+      "Processes": 50000,
+      "Victims": 50000,
+      "Characters": 2978022,
+      "ParseMilliseconds": 353.6258,
+      "Warnings": 0
+    },
+    {
+      "Processes": 100000,
+      "Victims": 100000,
+      "Characters": 5978022,
+      "ParseMilliseconds": 557.3942,
+      "Warnings": 0
+    }
+  ]
+}

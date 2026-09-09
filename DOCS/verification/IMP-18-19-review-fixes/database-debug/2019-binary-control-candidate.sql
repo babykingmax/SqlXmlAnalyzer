@@ -1,0 +1,1 @@
+SELECT CAST(0x01D8 AS varbinary(2)) AS Value;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="15.0.2000.5">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementId="1" StatementType="CREATE TABLE" StatementText="CREATE TABLE #imp06 (Id int);" />
+        <StmtUseDb StatementId="2" StatementType="USE DATABASE" StatementText="USE tempdb;" Database="tempdb" />
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

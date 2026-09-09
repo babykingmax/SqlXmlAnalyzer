@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "Name": "unicode-prefix",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": "CREATE TABLE dbo.InputText(Id int, Value nvarchar(20)); INSERT dbo.InputText VALUES(1,N'漢'),(2,N'?');"
+    }
+  ],
+  "CompatibilityLevel": 150,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2019"
+}

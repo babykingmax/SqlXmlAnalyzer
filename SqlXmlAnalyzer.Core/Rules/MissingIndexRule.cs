@@ -10,38 +10,33 @@ namespace SqlXmlAnalyzer.Core.Rules
         public string RuleId => "RULE_020_MISSING_INDEX";
         public string Name => "Missing Index Suggestion";
         public string Description => "Extracts and scores missing indexes.";
+        public RuleMetadata Metadata => RuleMetadataCatalog.Get(RuleId, Description) with { Version = "2.1.1" };
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var doc = relOp.Document;
+            if (doc == null) return null;
+
+            var missingIndexes = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
+            var messages = new List<string>();
+
+            foreach (var mi in missingIndexes)
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
-
-                var missingIndexes = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
-                var messages = new List<string>();
-
-                foreach (var mi in missingIndexes)
-                {
-                    string dbaTip = mi.IncludeColumns.Count > 0 ? "\n   [DBA 提示] 包含 (INCLUDE) 列的总长度在某些 SQL Server 版本中受 1023 字节或 32 个列的限制，请视情况裁剪。" : "";
-                    messages.Add($"⭐ 评分: {mi.Score}/100 | 预估提升: {mi.Impact:F1}% | 推荐覆盖索引建表 DDL:\n   👉 {mi.CreateIndexStatement}{dbaTip}");
-                }
-
-                if (messages.Any())
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = this.RuleId,
-                        Severity = "Warning",
-                        Title = "缺失索引建议与 DDL",
-                        Message = string.Join("|||", messages),
-                        NodeId = "0"
-                    };
-                }
+                string impact = mi.CapturedImpact is { } value ? value.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "%" : "N/A";
+                messages.Add($"⭐ 工具评分: {mi.Score}/100 | SQL Server Impact: {impact}（优化器估算） | 对象: {mi.ObjectIdentity?.DisplayName} | 来源: {mi.Location?.DisplayScope}\n评分模型 {mi.ScoreAssessment?.ModelVersion}；{mi.ScoreAssessment?.Breakdown}\n   👉 {mi.CreateIndexStatement}\n既有索引目录、列类型与版本限制未核验，不判断重复或已被覆盖；评分不是实测收益。");
             }
-            catch (Exception ex)
+
+            if (messages.Any())
             {
-                Logger.Warning($"MissingIndexRule failed: {ex.Message}");
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = "Warning",
+                    Title = "缺失索引建议与 DDL",
+                    Message = string.Join("|||", messages),
+                    NodeId = string.Empty,
+                    ResultScope = RuleScope.Plan
+                };
             }
 
             return null;

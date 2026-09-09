@@ -1,0 +1,12 @@
+[
+  {
+    "Instance": "SqlXmlAnalyzer_IMP19_2019",
+    "ProductVersion": "15.0.4382.1",
+    "RemainingValidationDatabases": 0
+  },
+  {
+    "Instance": "SqlXmlAnalyzer_IMP19_2025",
+    "ProductVersion": "17.0.4075.5",
+    "RemainingValidationDatabases": 0
+  }
+]

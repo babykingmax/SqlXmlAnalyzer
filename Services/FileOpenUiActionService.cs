@@ -98,6 +98,7 @@ namespace SqlXmlAnalyzer.Services
                     await analyzeXelFileAsync(action.FilePath);
                     break;
                 case AnalysisDocumentKind.ExecutionPlanXml:
+                case AnalysisDocumentKind.Unknown:
                     analyzeExecutionPlanFile(action.FilePath);
                     break;
             }

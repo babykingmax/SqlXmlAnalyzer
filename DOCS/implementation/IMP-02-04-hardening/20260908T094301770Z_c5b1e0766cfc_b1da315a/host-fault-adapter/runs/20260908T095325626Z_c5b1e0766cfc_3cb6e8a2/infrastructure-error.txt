@@ -1,0 +1,6 @@
+InvalidOperation: E:\SqlXmlAnalyzer\DOCS\implementation\IMP-02-04-hardening\20260908T094301770Z_c5b1e0766cfc_b1da315a\host-fault-adapter\Run-AcceptanceMatrix.ps1:86
+Line |
+  86 |      if (@(Compare-Object $expectedIds @($matrix.cases.reviewId)).Coun …
+     |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | The property 'reviewId' cannot be found on this object. Verify that the property exists.
+

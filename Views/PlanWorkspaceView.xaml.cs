@@ -6,6 +6,24 @@ namespace SqlXmlAnalyzer.Views
 {
     public partial class PlanWorkspaceView : UserControl
     {
+        private void ReviewProposals_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DataContext is not Core.ViewModels.MainViewModel model || model.CurrentRewriteReview == null)
+                {
+                    MessageBox.Show("当前没有可审核提案；请先分析单条语句的执行计划。", "SQL 改写提案");
+                    return;
+                }
+                new RewriteReviewWindow(model.CurrentRewriteSource, model.CurrentRewriteReview)
+                    { Owner = Window.GetWindow(this) }.ShowDialog();
+            }
+            catch (System.Exception exception)
+            {
+                string detail = Core.Diagnostics.ExceptionPolicy.Describe(exception, "RewriteReview.Open");
+                MessageBox.Show(detail, "提案审核失败", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         public PlanWorkspaceView()
         {
             InitializeComponent();

@@ -1,0 +1,215 @@
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Xml.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.ViewModels;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class DisplayUiProbe
+{
+    private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        string repository = args[0], output = args[1];
+        Directory.CreateDirectory(output);
+        var app = new ProbeApp();
+        Assembly.Load("MaterialDesignThemes.Wpf");
+        Assembly.Load("MaterialDesignColors");
+        var appXml = SafeXmlHelper.LoadSafe(Path.Combine(repository, "App.xaml"));
+        XNamespace presentation = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+        var dictionary = new XElement(appXml.Root!.Element(presentation + "Application.Resources")!.Element(presentation + "ResourceDictionary")!);
+        foreach (var declaration in appXml.Root.Attributes().Where(a => a.IsNamespaceDeclaration))
+            if (dictionary.Attribute(declaration.Name) == null) dictionary.Add(new XAttribute(declaration));
+        app.Resources = (ResourceDictionary)XamlReader.Parse(dictionary.ToString(),
+            new ParserContext { BaseUri = new Uri("pack://application:,,,/SqlXmlAnalyzer;component/") });
+        var registrations = new ServiceCollection();
+        typeof(App).GetMethod("ConfigureServices", PrivateInstance)!.Invoke(app, new object[] { registrations });
+        using var provider = registrations.BuildServiceProvider();
+        typeof(App).GetProperty("ServiceProvider")!.SetValue(null, provider);
+        var window = provider.GetRequiredService<MainWindow>();
+        var comparisons = new List<object>();
+        var inference = new List<object>();
+
+        _ = app.Dispatcher.InvokeAsync(async () =>
+        {
+            try
+            {
+                var actual = SafeXmlHelper.LoadSafe(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan"));
+                XNamespace ns = actual.Root!.Name.Namespace;
+                XElement counter = actual.Descendants(ns + "RunTimeCountersPerThread").Single();
+                counter.SetAttributeValue("ActualElapsedms", "100");
+                counter.SetAttributeValue("ActualLogicalReads", "200");
+                var estimated = new XDocument(actual);
+                estimated.Descendants(ns + "RunTimeInformation").Remove();
+                var zero = new XDocument(actual);
+                foreach (var count in zero.Descendants(ns + "RunTimeCountersPerThread"))
+                {
+                    count.SetAttributeValue("ActualElapsedms", "0");
+                    count.SetAttributeValue("ActualLogicalReads", "0");
+                }
+                var main = (MainViewModel)window.DataContext;
+                var compareView = Workspace<PlanComparisonWorkspaceView>(window, "PlanComparisonWorkspace");
+                main.PlanA = Snapshot(actual, "A：已采集运行指标");
+                foreach (var scenario in new[] { ("estimated", estimated), ("zero", zero), ("estimated-again", estimated) })
+                {
+                    main.PlanB = Snapshot(scenario.Item2, "B：" + scenario.Item1);
+                    Layout(window, 1600, 950);
+                    Layout(compareView, 1600, 800);
+                    string text = TreeText(compareView.PlanBTree);
+                    if (scenario.Item1 == "zero") Require(text.Contains("Elapsed (ms): 0 (-100)"), "observed zero delta");
+                    else Require(text.Contains("Elapsed (ms): N/A") && text.Contains("Logical reads (页): N/A") && !text.Contains("(-100)"), "unknown runtime delta");
+                    Require(text.Contains("估算子树成本"), "cost nature");
+                    var notice = (TextBlock)compareView.FindName("ComparisonEvidenceNotice");
+                    Require(notice.Text == AnalysisDisplayText.ComparisonNotice && notice.ActualHeight > 0,
+                        $"comparison notice (height={notice.ActualHeight}, visibility={notice.Visibility}, compare={main.CompareVisible})");
+                    comparisons.Add(new { Scenario = scenario.Item1, Text = text, Notice = notice.Text });
+                    SaveImage(compareView, Path.Combine(output, "comparison-" + scenario.Item1 + ".png"));
+                }
+
+                await window.AnalyzeFileAsync(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/deadlock_bookmark_lookup.xdl"));
+                var deadlock = Workspace<DeadlockWorkspaceView>(window, "DeadlockWorkspace");
+                deadlock.PlaybackModeToggleButton.IsChecked = true;
+                Layout(window, 1600, 950);
+                Require(deadlock.Playback.Visibility == Visibility.Visible, "real playback toggle");
+                var playback = (DeadlockPlaybackViewModel)deadlock.Playback.DataContext;
+                CheckInference(deadlock.Playback, playback, "initial", output, inference);
+                playback.PlayCommand.Execute(null);
+                CheckInference(deadlock.Playback, playback, "playing", output, inference);
+                playback.IsPlaying = false;
+                CheckInference(deadlock.Playback, playback, "paused", output, inference);
+                playback.CurrentStep = Math.Min(1, playback.TotalSteps);
+                CheckInference(deadlock.Playback, playback, "first", output, inference);
+                playback.CurrentStep = playback.TotalSteps;
+                playback.FocusCriticalPath = true;
+                CheckInference(deadlock.Playback, playback, "last-filtered", output, inference);
+                playback.ResetCommand.Execute(null);
+                CheckInference(deadlock.Playback, playback, "reset", output, inference);
+
+                await window.AnalyzeFileAsync(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/deadlock_multiple_events.xdl"));
+                Require(deadlock.XelSelector.Items.Count == 2, "multi-event selection");
+                foreach (int index in new[] { 0, 1 })
+                {
+                    deadlock.XelSelector.SelectedIndex = index;
+                    deadlock.PlaybackModeToggleButton.IsChecked = false;
+                    deadlock.PlaybackModeToggleButton.IsChecked = true;
+                    Layout(window, 1600, 950);
+                    playback = (DeadlockPlaybackViewModel)deadlock.Playback.DataContext;
+                    CheckInference(deadlock.Playback, playback, "event-" + index, output, inference);
+                }
+
+                var legacy = new DeadlockView();
+                var legacyControl = (DeadlockPlaybackControl)legacy.FindName("PlaybackControl");
+                var empty = new DeadlockPlaybackViewModel([]);
+                legacyControl.DataContext = empty;
+                legacyControl.Visibility = Visibility.Visible;
+                Layout(legacy, 1600, 950);
+                CheckInference(legacyControl, empty, "legacy-empty", output, inference);
+
+                var suggestion = new MissingIndexSuggestion
+                {
+                    Schema = "[dbo]", Table = "[Orders]", Impact = 90,
+                    KeyColumns = [new IndexColumn { Name = "[Id]", Usage = "EQUALITY" }],
+                    IncludeColumns = [new IndexColumn { Name = "[Price]", Usage = "INCLUDE" }]
+                };
+                var sandboxVm = new IndexSandboxViewModel(suggestion);
+                var sandbox = new IndexSandboxWindow { DataContext = sandboxVm };
+                var sandboxContent = (FrameworkElement)sandbox.Content;
+                Layout(sandboxContent, 1100, 1100);
+                var summary = (TextBlock)sandbox.FindName("CostReductionSummaryText");
+                var sandboxNotice = (TextBlock)sandbox.FindName("SimulationNoticeText");
+                Require(summary.Text.Contains("N/A") && !summary.Text.Contains('%'), "no precise benefit");
+                Require(summary.GetBindingExpression(TextBlock.TextProperty)!.Status == BindingStatus.Active, "sandbox binding");
+                Require(sandboxNotice.Text == AnalysisDisplayText.SandboxNotice && sandboxNotice.ActualHeight > 0, "sandbox notice");
+                sandboxVm.ReturnedRows = 100;
+                sandboxVm.RemoveIncludeColumnCommand.Execute(sandboxVm.IncludeColumns.Single());
+                Layout(sandboxContent, 1100, 1100);
+                Require(summary.Text.Contains("N/A") && sandboxVm.TippingPointStatus.Contains("假设"), "sandbox edits preserve guard");
+                SaveImage(sandboxContent, Path.Combine(output, "sandbox.png"));
+                File.WriteAllText(Path.Combine(output, "observed.json"), JsonSerializer.Serialize(new
+                {
+                    Passed = true, Comparisons = comparisons, InferenceStates = inference,
+                    Sandbox = new { Summary = summary.Text, Notice = sandboxNotice.Text, sandboxVm.TippingPointStatus, sandboxVm.TippingPointDetails },
+                    WindowShown = false, SqlServerExecutionPerformed = false
+                }, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            catch (Exception exception) { Console.Error.WriteLine(exception); Environment.ExitCode = 1; }
+            finally
+            {
+                // This offscreen host owns Dispatcher.Run. Stop before queued rendering outlives App resources.
+                app.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Send);
+                app.Shutdown(Environment.ExitCode);
+            }
+        });
+        Dispatcher.Run();
+    }
+
+    private static T Workspace<T>(MainWindow window, string name) =>
+        (T)typeof(MainWindow).GetProperty(name, PrivateInstance)!.GetValue(window)!;
+
+    private static PlanSnapshot Snapshot(XDocument document, string title) => new()
+    {
+        Document = new XDocument(document), Title = title, TotalCost = 1, OperatorCount = 1
+    };
+
+    private static string TreeText(TreeView tree)
+    {
+        Require(tree.Items.Count == 1, "comparison tree populated by UI service");
+        var root = (TreeViewItem)tree.Items[0];
+        return string.Join(" ", ((StackPanel)((Border)root.Header).Child).Children.OfType<TextBlock>().Select(t => t.Text));
+    }
+
+    private static void CheckInference(DeadlockPlaybackControl control, DeadlockPlaybackViewModel vm,
+        string state, string output, List<object> observations)
+    {
+        Layout(control, 1150, 240);
+        var notice = (TextBlock)control.FindName("DependencyInferenceNotice");
+        Require(notice.Text == AnalysisDisplayText.DeadlockInferenceNotice && notice.Visibility == Visibility.Visible
+            && notice.ActualHeight > 0 && notice.ActualWidth > 0, "persistent notice: " + state);
+        Require(vm.CurrentStepDescription.Contains("依赖推演"), "step wording: " + state);
+        observations.Add(new { State = state, Notice = notice.Text, NoticeHeight = notice.ActualHeight,
+            vm.CurrentStepDescription, vm.CurrentStep, vm.TotalSteps, vm.IsPlaying });
+        SaveImage(control, Path.Combine(output, "inference-" + state + ".png"));
+    }
+
+    private static void Layout(FrameworkElement element, int width, int height)
+    {
+        element.Measure(new Size(width, height));
+        element.Arrange(new Rect(0, 0, width, height));
+        element.UpdateLayout();
+        Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    }
+
+    private static void SaveImage(FrameworkElement element, string path)
+    {
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(element.ActualWidth), (int)Math.Ceiling(element.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(element);
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(path);
+        encoder.Save(stream);
+    }
+
+    private static void Require(bool condition, string description)
+    {
+        if (!condition) throw new InvalidOperationException("UI verification failed: " + description);
+    }
+
+    private sealed class ProbeApp : App
+    {
+        protected override void OnStartup(StartupEventArgs e) { }
+    }
+}

@@ -84,7 +84,7 @@ namespace SqlXmlAnalyzer.Core.Services
                     position,
                     ProcessWidth,
                     ProcessHeight,
-                    process.Threads.Any(thread => thread.Id == victimProcessId)));
+                    process.IsVictim || process.Threads.Any(thread => thread.Id == victimProcessId)));
 
                 nodeIndex++;
             }

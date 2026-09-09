@@ -1,0 +1,18 @@
+﻿{
+  "IsSuccess": false,
+  "ErrorMessage": "INPUT_MALFORMED_XML: XML 内容为空、格式错误或包含禁止的 DTD。",
+  "Warnings": [],
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "Writeback": null,
+  "HasChanges": false,
+  "SourceWritten": false,
+  "Outcome": "Failed",
+  "Changes": [],
+  "Failures": [],
+  "WarningsList": [],
+  "Errors": [
+    "INPUT_MALFORMED_XML: XML 内容为空、格式错误或包含禁止的 DTD。"
+  ],
+  "OriginalSql": null,
+  "RefactoredSql": null
+}

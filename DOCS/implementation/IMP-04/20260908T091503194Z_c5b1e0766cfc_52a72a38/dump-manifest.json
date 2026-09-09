@@ -1,0 +1,20 @@
+[
+  {
+    "configuration": "Debug",
+    "path": "process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\process.dmp",
+    "bytes": 479690,
+    "sha256": "E5D4B34B5B9272C46380DD5AA5C289015EB83BD8699E08E6E9C0FB1F30BC1E90",
+    "metadata": "process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\exception.json",
+    "signature": 1347241037,
+    "streams": 14
+  },
+  {
+    "configuration": "Release",
+    "path": "process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\process.dmp",
+    "bytes": 471811,
+    "sha256": "5A31630899F4F8884AC31E28A3DD7F8F3E625528B753C179FFCE5E1FACD7F054",
+    "metadata": "process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\exception.json",
+    "signature": 1347241037,
+    "streams": 14
+  }
+]

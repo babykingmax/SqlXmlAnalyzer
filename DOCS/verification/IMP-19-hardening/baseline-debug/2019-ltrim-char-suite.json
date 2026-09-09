@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2019",
+  "CompatibilityLevel": 150,
+  "Scenarios": [
+    {
+      "Name": "ltrim-char",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": "CREATE TABLE dbo.InputText(Id int, Value char(20) NULL); INSERT dbo.InputText VALUES(1,N' x'),(2,N'x'),(3,NULL),(4,N'x '),(5,N'  '),(6,N'X');"
+    }
+  ]
+}

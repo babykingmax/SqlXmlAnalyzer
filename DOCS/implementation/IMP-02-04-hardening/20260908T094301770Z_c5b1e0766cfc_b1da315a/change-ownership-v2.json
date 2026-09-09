@@ -1,0 +1,108 @@
+{
+  "sourceChanges": [
+    {
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "beforeSha256": "728807BBAA8E57DE93A4EEE8E54C283557DF95608DA49E11866513C6C99B4F0A",
+      "afterSha256": "8A4CEC9C3B6F2457DE22E9B25F08A17D63958697FF3830593F89215AF77B8ADE",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "beforeSha256": "B6089E605FEDF38E21B6A92F326A026D00FCC6B06764CE4D6B027F7BA4F9EA18",
+      "afterSha256": "AC7AEA7BE8E626ADC1476AA423F306176308FB0D4B5F67A0C0860C725137905C",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/MinidumpValidator.cs",
+      "beforeSha256": null,
+      "afterSha256": "4614C552DCF6B15F4057F15EBD2F7C2C3F6A553E87026636B2BE026B9CBA1DDA",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+      "beforeSha256": "8ACE45DA547E24F8A11A33BCDA2ECE20E0B99C402B9733192E05487DE27CE13A",
+      "afterSha256": "3BDA8B6130B0B9252C0846B462705F736CB2B6EE5736D5338B8CA6BDE6D676AD",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+      "beforeSha256": "7301BD57F57F53FB60AD9A7D79326FF01FF3B0DB574DC3173E971C23C62FF374",
+      "afterSha256": "C9A218DBD11A9D392CFAEF19607BC8EAE56BE9A4A8FA6CAFEFD8DB61E18321F4",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Logger.cs",
+      "beforeSha256": "CEF550CD56CE010EB3DF96A8406E06975BBF3388862FA095A65D82E836478630",
+      "afterSha256": "34A4C4987266BA0CFBB657785DFEA484AEF2E473B035262763BD0CDF5E1AB05D",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+      "beforeSha256": "D0BBE90EDB0356D5F89E8375BE304AC99647080D0038DDBC0392F14BB0237C99",
+      "afterSha256": "D04569686625697A0666AFFF9D2F5BC38D75CF1AF1DDD376D6FDA0275231762A",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs",
+      "beforeSha256": "780659EB28C4CD6FA26861C6F6BA717DCADB25B0AA8D2D14CEEB2AFAA2EE92D8",
+      "afterSha256": "FA9D5F5CE65EBB8D85C8656BF713388E63A4F2943E85047EC3C3AE32D662CC9A",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs",
+      "beforeSha256": "17AE3BE6691C528CDB5A6D66B0F73EA31C02CA1B082116A405B5FDE54DD9925E",
+      "afterSha256": "36691F788B76BB2144631348EF8041A51EAA7EB1002FAC8DDC01536F88A1AD7E",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "beforeSha256": "9B67F5A3D973C13FB5820083FD61D4A7C78DD8C141E69D27C90822D2632C9CB9",
+      "afterSha256": "1ED6D25F4480545314DEB1317C0A9C308230D74DC8AFF3D14EA8CE99EC948D2B",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs",
+      "beforeSha256": "A75238F528E25BE81E5929DF41955EEA00B988A65F751DE1C8A766F161E4C043",
+      "afterSha256": "FA5332DDA2FEEE6C7D36658473A9C277698CC09D49C0E8666AD5EFF7B6096FF6",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs",
+      "beforeSha256": "3656B6EAF10A98743609D3AE1ADFFCD5FE98C68A0798FE93FFF22ECD6E2EB738",
+      "afterSha256": "6092DAA9683C2297ED1A0C67E5E21FBC156435095B144990EC824031C1A742C3",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+      "beforeSha256": "114664AD54A574242658791837AF3491D8E09D699937BBE4CA38AA35437310EC",
+      "afterSha256": "744D586B0249350F56EF974B5C8899D5CB70348BC0A42808627561C87A2C65A2",
+      "owner": "IMP-02-04 joint hardening"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs",
+      "beforeSha256": "36DA1B63B8726742977AD89677882AFC420156AE0D513F1D79561E8CDCD94D4E",
+      "afterSha256": "4C66D33A6AB1E377F6755D8796584A2DEEDA5CA85F302BB9107AAF858EE2B7E5",
+      "owner": "IMP-02-04 joint hardening"
+    }
+  ],
+  "documentationFiles": [
+    "DOCS/IMP-02-04加固与实施符合性核对.md",
+    "DOCS/软件改善实施规划.md",
+    "DOCS/IMP-02审查反例验收矩阵.md",
+    "DOCS/IMP-03安全写回与恢复说明.md",
+    "DOCS/IMP-04高风险改写限制与诊断说明.md",
+    "DOCS/acceptance/IMP-02/README.md"
+  ],
+  "adapterFiles": [
+    "DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1",
+    "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+    "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+    "DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1"
+  ],
+  "preservedUserChanges": [
+    "AGENTS.md",
+    "MainWindow.Services.cs",
+    "MainWindow.KeyboardShortcuts.cs",
+    "Views/ShellNavigationRail.xaml"
+  ]
+}

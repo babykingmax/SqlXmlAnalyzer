@@ -57,6 +57,12 @@ namespace SqlXmlAnalyzer.Services
                         ? new SolidColorBrush(Color.FromArgb(50, 211, 47, 47))
                         : Brushes.White;
                 }
+                else if (visualState.IsInCycle)
+                {
+                    border.BorderBrush = Brushes.DarkOrange;
+                    border.BorderThickness = new Thickness(3);
+                    border.Background = Brushes.White;
+                }
                 else if (visualState.UseDefaultChrome)
                 {
                     border.BorderBrush = new SolidColorBrush(Color.FromRgb(176, 190, 197));

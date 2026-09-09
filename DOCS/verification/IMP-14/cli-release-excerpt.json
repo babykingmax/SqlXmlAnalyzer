@@ -1,0 +1,258 @@
+{
+  "Configuration": "release",
+  "Command": "dotnet SqlXmlAnalyzer.CLI/bin/<configuration>/net8.0/SqlXmlAnalyzer.CLI.dll scan --path SqlXmlAnalyzer.Tests/TestData/imp14_cardinality_residual.sqlplan --format json",
+  "ExpectedAndObservedExitCode": 1,
+  "Status": "Failed",
+  "HasRuleFailures": false,
+  "Note": "Excerpt of IMP-14 diagnostic fields from a synthetic fixture; other default-rule results are omitted.",
+  "Diagnostics": [
+    {
+      "SemanticCode": "CARDINALITY_ROWS_PER_EXECUTION",
+      "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+      "RuleVersion": "2.0.0",
+      "Severity": "Critical",
+      "Statement": 1,
+      "NodeId": "0",
+      "Origins": [
+        "RULE_004_ESTIMATE_MISMATCH",
+        "RULE_030_CARDINALITY_ERROR"
+      ],
+      "Evidence": [
+        {
+          "Name": "EstimatedRows",
+          "Value": "100",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "OutputRows",
+          "Value": "10000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "LogicalExecutions",
+          "Value": "1",
+          "Unit": "executions",
+          "State": "Available"
+        },
+        {
+          "Name": "RowsPerExecution",
+          "Value": "10000",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "ComparisonDenominator",
+          "Value": "100",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "DeviationRatio",
+          "Value": "100",
+          "Unit": "ratio",
+          "State": "Available"
+        },
+        {
+          "Name": "AbsoluteRowDifference",
+          "Value": "9900",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[T].[A]=(3)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[T].[V]=(2)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "SeekPredicate",
+          "Value": "[T].[K]=(1)",
+          "Unit": null,
+          "State": null
+        }
+      ]
+    },
+    {
+      "SemanticCode": "CARDINALITY_ROWS_PER_EXECUTION",
+      "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+      "RuleVersion": "2.0.0",
+      "Severity": "Critical",
+      "Statement": 2,
+      "NodeId": "0",
+      "Origins": [
+        "RULE_004_ESTIMATE_MISMATCH",
+        "RULE_030_CARDINALITY_ERROR"
+      ],
+      "Evidence": [
+        {
+          "Name": "EstimatedRows",
+          "Value": "100",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "OutputRows",
+          "Value": "10000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "LogicalExecutions",
+          "Value": "1",
+          "Unit": "executions",
+          "State": "Available"
+        },
+        {
+          "Name": "RowsPerExecution",
+          "Value": "10000",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "ComparisonDenominator",
+          "Value": "100",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "DeviationRatio",
+          "Value": "100",
+          "Unit": "ratio",
+          "State": "Available"
+        },
+        {
+          "Name": "AbsoluteRowDifference",
+          "Value": "9900",
+          "Unit": "rows/execution",
+          "State": "Available"
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[U].[A]=(3)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[U].[V]=(2)",
+          "Unit": null,
+          "State": null
+        }
+      ]
+    },
+    {
+      "SemanticCode": "RESIDUAL_READ_AMPLIFICATION",
+      "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+      "RuleVersion": "2.0.0",
+      "Severity": "Warning",
+      "Statement": 1,
+      "NodeId": "0",
+      "Origins": [
+        "RULE_006_RESIDUAL_PREDICATE",
+        "RULE_034_RESIDUAL_PRED_OP"
+      ],
+      "Evidence": [
+        {
+          "Name": "OutputRows",
+          "Value": "10000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "RowsRead",
+          "Value": "100000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[T].[A]=(3)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[T].[V]=(2)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "SeekPredicate",
+          "Value": "[T].[K]=(1)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "RowsReadMinusOutput",
+          "Value": "90000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "ReadAmplificationRatio",
+          "Value": "10",
+          "Unit": "ratio",
+          "State": "Available"
+        }
+      ]
+    },
+    {
+      "SemanticCode": "RESIDUAL_READ_AMPLIFICATION",
+      "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+      "RuleVersion": "2.0.0",
+      "Severity": "Warning",
+      "Statement": 2,
+      "NodeId": "0",
+      "Origins": [
+        "RULE_006_RESIDUAL_PREDICATE",
+        "RULE_034_RESIDUAL_PRED_OP"
+      ],
+      "Evidence": [
+        {
+          "Name": "OutputRows",
+          "Value": "10000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "RowsRead",
+          "Value": "100000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[U].[A]=(3)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "ResidualPredicate",
+          "Value": "[U].[V]=(2)",
+          "Unit": null,
+          "State": null
+        },
+        {
+          "Name": "RowsReadMinusOutput",
+          "Value": "90000",
+          "Unit": "rows",
+          "State": "Available"
+        },
+        {
+          "Name": "ReadAmplificationRatio",
+          "Value": "10",
+          "Unit": "ratio",
+          "State": "Available"
+        }
+      ]
+    }
+  ]
+}

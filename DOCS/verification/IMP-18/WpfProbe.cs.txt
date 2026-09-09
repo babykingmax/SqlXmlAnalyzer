@@ -1,0 +1,95 @@
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        App? app = null;
+        try
+        {
+            if (args.Length > 1) throw new InvalidDataException("Usage: Probe [new-output-directory]; no arguments opens the review window.");
+            if (args.Length == 1) Directory.CreateDirectory(args[0]);
+            app = new App(); app.InitializeComponent();
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            var bindingErrors = new StringWriter();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(bindingErrors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            const string sql = "-- Review example\r\nSELECT * FROM Customers\r\nWHERE Age + 10 > 50 AND LTRIM(Name) = N'admin';";
+            var engine = new SqlRefactoringEngine([new ConstantFoldingRefactorRule(), new TrimRefactorRule()],
+                new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var result = engine.Run(sql, new AnalysisReport([]), new RefactorOptions(), true);
+            if (!result.IsSuccess || result.Review == null) throw new InvalidDataException("Proposal generation failed.");
+            var window = new RewriteReviewWindow(sql, result.Review);
+            if (args.Length == 0)
+            {
+                window.ShowDialog();
+                return 0;
+            }
+            var vm = (RewriteReviewViewModel)window.DataContext;
+            var view = (Grid)window.Content;
+            window.Content = null;
+            view.DataContext = vm;
+            foreach (bool selected in new[] { false, true })
+            {
+                vm.Items[0].IsSelected = selected;
+                if (vm.CanApply || vm.PreviewSql != (selected ? result.OutputSql : sql))
+                    throw new InvalidOperationException("Review selection contract failed.");
+                view.Measure(new Size(1160, 800)); view.Arrange(new Rect(0, 0, 1160, 800)); view.UpdateLayout();
+                Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+                var frame = new DispatcherFrame();
+                var timer = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(400) };
+                timer.Tick += (_, _) => { timer.Stop(); frame.Continue = false; };
+                timer.Start(); Dispatcher.PushFrame(frame);
+                view.UpdateLayout();
+                var bitmap = new RenderTargetBitmap(1160, 800, 96, 96, PixelFormats.Pbgra32);
+                var drawing = new DrawingVisual();
+                using (var context = drawing.RenderOpen())
+                {
+                    context.DrawRectangle(window.Background, null, new Rect(0, 0, 1160, 800));
+                    context.DrawRectangle(new VisualBrush(view), null, new Rect(0, 0, 1160, 800));
+                }
+                bitmap.Render(drawing);
+                byte[] pixels = new byte[1160 * 800 * 4]; bitmap.CopyPixels(pixels, 1160 * 4, 0);
+                if (pixels.Where((_, index) => index % 4 != 3).Count(v => v > 20 && v < 180) < 10000)
+                    throw new InvalidOperationException("Screenshot has no usable rendered content.");
+                var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                using var output = new FileStream(Path.Combine(args[0], selected ? "review-selected.png" : "review-unselected.png"),
+                    FileMode.CreateNew, FileAccess.Write, FileShare.None);
+                encoder.Save(output);
+            }
+            vm.Items[0].IsSelected = false;
+            if (vm.PreviewSql != sql || bindingErrors.ToString().Length != 0)
+                throw new InvalidOperationException("Source restoration or WPF binding failed: " + bindingErrors);
+            window.Close();
+            Console.WriteLine("PASS: production review window; default/select/deselect; no apply; two screenshots; zero binding errors.");
+            return 0;
+        }
+        catch (Exception exception)
+        {
+            Logger.Error(ExceptionPolicy.Describe(exception, "IMP18.WpfProbe"));
+            return 1;
+        }
+        finally
+        {
+            try { app?.Shutdown(); }
+            catch (Exception exception) { Logger.Error(ExceptionPolicy.Describe(exception, "IMP18.WpfProbe.Shutdown")); }
+            Logger.Shutdown();
+        }
+    }
+}

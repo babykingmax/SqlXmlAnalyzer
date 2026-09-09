@@ -1,16 +1,3 @@
-// =====================================================================================
-// Logger.cs - SqlXmlAnalyzer 高级条件日志系统 (v2)
-// 支持功能：
-//   • 编译时 DEBUG/RELEASE 控制
-//   • 运行时 --verbose / --debug 强制详细日志
-//   • --log-level 精确控制日志级别 (debug/verbose/info/warning/error/critical)
-//   • --log-file 指定自定义日志文件路径
-//   • 同时输出到控制台 + 文件
-//   • XML 节点级深度调试信息
-// =====================================================================================
-
-#nullable disable
-
 using System;
 using System.IO;
 using System.Text;
@@ -18,373 +5,120 @@ using System.Xml.Linq;
 
 namespace SqlXmlAnalyzer
 {
-    /// <summary>
-    /// 日志级别（数字越小越详细）
-    /// </summary>
-    public enum LogLevel
-    {
-        Debug = 0,
-        Verbose = 1,
-        Info = 2,
-        Warning = 3,
-        Error = 4,
-        Critical = 5,
-        None = 6
-    }
+    public enum LogLevel { Debug = 0, Verbose = 1, Info = 2, Warning = 3, Error = 4, Critical = 5, None = 6 }
 
-    /// <summary>
-    /// 高级条件日志记录器
-    /// </summary>
+    /// <summary>Shared file/stderr logger. Release builds cannot enable diagnostics below Error.</summary>
     public static class Logger
     {
-        // ==================== 状态 ====================
         public static bool IsDebugMode { get; } =
 #if DEBUG
             true;
 #else
             false;
 #endif
-
         public static bool IsReleaseMode => !IsDebugMode;
-
-        /// <summary>
-        /// 当前生效的最小日志级别
-        /// </summary>
-        public static LogLevel MinimumLogLevel { get; private set; } = LogLevel.Info;
-
-        /// <summary>
-        /// 是否处于详细模式（兼容旧逻辑）
-        /// </summary>
-        public static bool VerboseMode { get; private set; }
-
-        /// <summary>
-        /// 是否已启用文件日志
-        /// </summary>
+        public static LogLevel MinimumLogLevel { get; private set; } = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
+        public static bool VerboseMode => IsEnabled(LogLevel.Debug);
         public static bool FileLoggingEnabled { get; private set; }
+        public static string? LogFilePath { get; private set; }
+        public static string? CustomLogFilePath { get; private set; }
+        private static StreamWriter? _fileWriter;
+        private static readonly object _lock = new();
+        private static bool _initialized;
+        private static bool _sinkFailureReported;
 
-        /// <summary>
-        /// 当前日志文件完整路径
-        /// </summary>
-        public static string LogFilePath { get; private set; }
+        public static string GetDefaultLogDirectory() => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SqlXmlAnalyzer", "log");
 
-        /// <summary>
-        /// 用户指定的自定义日志路径（如果有）
-        /// </summary>
-        public static string CustomLogFilePath { get; private set; }
-
-        private static StreamWriter _fileWriter;
-        private static readonly object _lock = new object();
-        private static bool _initialized = false;
-
-        // ==================== 初始化 ====================
-        /// <summary>
-        /// 获取推荐的默认日志目录（应用程序同级 log 文件夹）
-        /// 默认行为：所有日志会输出到 exe 同目录下的 log 文件夹
-        /// </summary>
-        public static string GetDefaultLogDirectory()
-        {
-            try
-            {
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                return Path.Combine(baseDir, "log");
-            }
-            catch
-            {
-                // 极端情况下兜底到当前目录
-                return Path.Combine(Directory.GetCurrentDirectory(), "log");
-            }
-        }
-
-        /// <summary>
-        /// 初始化日志系统
-        /// </summary>
-        public static void Initialize(
-            bool forceVerbose = false,
-            LogLevel? logLevel = null,
-            string customLogFilePath = null,
-            bool enableFileLogging = true)
-        {
-            if (_initialized) return;
-
-            // 确定最终日志级别
-            if (logLevel.HasValue)
-            {
-                MinimumLogLevel = logLevel.Value;
-            }
-            else if (forceVerbose || IsDebugMode)
-            {
-                MinimumLogLevel = LogLevel.Debug;
-            }
-            else
-            {
-                MinimumLogLevel = LogLevel.Info;   // Release 默认只显示 Info 及以上
-            }
-
-            VerboseMode = MinimumLogLevel <= LogLevel.Verbose;
-            FileLoggingEnabled = enableFileLogging;
-            CustomLogFilePath = customLogFilePath;
-
-            if (FileLoggingEnabled)
-            {
-                try
-                {
-                    string finalLogPath;
-
-                    if (!string.IsNullOrWhiteSpace(customLogFilePath))
-                    {
-                        // 用户指定了自定义路径
-                        finalLogPath = customLogFilePath;
-                        string dir = Path.GetDirectoryName(finalLogPath);
-                        if (!string.IsNullOrEmpty(dir))
-                            Directory.CreateDirectory(dir);
-                    }
-                    else
-                    {
-                        // 【修改后】默认使用应用程序同级 log 目录
-                        string logDir = GetDefaultLogDirectory();
-                        Directory.CreateDirectory(logDir);
-                        CleanupOldLogs(logDir);
-
-                        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                        finalLogPath = Path.Combine(logDir, $"SqlXmlAnalyzer_{timestamp}.log");
-                    }
-
-                    LogFilePath = Path.GetFullPath(finalLogPath);
-
-                    _fileWriter = new StreamWriter(LogFilePath, false, Encoding.UTF8)
-                    {
-                        AutoFlush = false   // 我们手动控制 Flush
-                    };
-
-                    // 写入日志头
-                    WriteLogHeader();
-                    FileLoggingEnabled = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine($"[警告] 无法创建日志文件: {ex.Message}");
-                    Console.ResetColor();
-                    FileLoggingEnabled = false;
-                    LogFilePath = null;
-                }
-            }
-
-            _initialized = true;
-
-            // 记录初始化信息（如果允许）
-            if (ShouldLog(LogLevel.Debug))
-            {
-                Debug($"Logger 初始化完成 | MinimumLogLevel={MinimumLogLevel} | VerboseMode={VerboseMode}");
-                Debug($"文件日志: {(FileLoggingEnabled ? LogFilePath : "已禁用")}");
-            }
-        }
-
-        private static void WriteLogHeader()
-        {
-            if (_fileWriter == null) return;
-
-            _fileWriter.WriteLine("====================================================================");
-            _fileWriter.WriteLine("SqlXmlAnalyzer 详细日志");
-            _fileWriter.WriteLine($"启动时间        : {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
-            _fileWriter.WriteLine($"版本            : {Core.ProductInfo.Version}");
-            _fileWriter.WriteLine($"构建模式        : {(IsDebugMode ? "DEBUG" : "RELEASE")}");
-            _fileWriter.WriteLine($"日志级别        : {MinimumLogLevel}");
-            _fileWriter.WriteLine($"Verbose 模式    : {VerboseMode}");
-            if (!string.IsNullOrEmpty(CustomLogFilePath))
-                _fileWriter.WriteLine($"自定义日志路径  : {CustomLogFilePath}");
-            _fileWriter.WriteLine($"日志文件        : {LogFilePath}");
-            _fileWriter.WriteLine("====================================================================");
-            _fileWriter.WriteLine();
-            _fileWriter.Flush();
-        }
-
-        public static void Shutdown()
+        /// <summary>Returns the active file's directory, or the default before a file is available. Does not initialize logging.</summary>
+        public static string GetLogDirectory()
         {
             lock (_lock)
             {
-                if (_fileWriter != null)
-                {
-                    try
-                    {
-                        _fileWriter.WriteLine();
-                        _fileWriter.WriteLine("====================================================================");
-                        _fileWriter.WriteLine($"日志结束时间: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
-                        _fileWriter.WriteLine("====================================================================");
-                        _fileWriter.Flush();
-                        _fileWriter.Dispose();
-                    }
-                    catch { }
-                    _fileWriter = null;
-                }
+                return LogFilePath is { } path
+                    ? Path.GetDirectoryName(path)!
+                    : GetDefaultLogDirectory();
             }
         }
 
-        // ==================== 核心判断 ====================
-
-        private static bool ShouldLog(LogLevel level)
-        {
-            return level >= MinimumLogLevel;
-        }
-
-        // ==================== 写入实现 ====================
-
-        private static void Write(string levelTag, string message, ConsoleColor? color = null, bool isError = false)
+        public static void Initialize(bool forceVerbose = false, LogLevel? logLevel = null,
+            string? customLogFilePath = null, bool enableFileLogging = true)
         {
             lock (_lock)
             {
-                // 控制台输出
-                if (color.HasValue)
-                    Console.ForegroundColor = color.Value;
-
-                string line = $"[{levelTag}] {DateTime.Now:HH:mm:ss.fff} {message}";
-
-                if (isError)
-                    Console.Error.WriteLine(line);
-                else
-                    Console.WriteLine(line);
-
-                if (color.HasValue)
-                    Console.ResetColor();
-
-                // 文件输出（总是尝试写入，除非被级别过滤）
-                if (_fileWriter != null)
+                if (_initialized) return;
+                // Legacy verbose/info calls are diagnostic information and use the DEBUG tag.
+                // Retain the legacy arguments for source compatibility. They cannot suppress
+                // required errors/fatal events or enable Debug/Warning in a Release build.
+                MinimumLogLevel = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
+                CustomLogFilePath = customLogFilePath;
+                if (enableFileLogging)
                 {
                     try
                     {
-                        _fileWriter.WriteLine($"[{levelTag}] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {message}");
+                        string path = customLogFilePath ?? Path.Combine(GetDefaultLogDirectory(),
+                            $"SqlXmlAnalyzer_{DateTime.UtcNow:yyyyMMddTHHmmssfffZ}_{Environment.ProcessId}_{Guid.NewGuid():N}.log");
+                        path = Path.GetFullPath(path);
+                        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                        var stream = new FileStream(path, customLogFilePath == null ? FileMode.CreateNew : FileMode.Append,
+                            FileAccess.Write, FileShare.Read);
+                        _fileWriter = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = true };
+                        LogFilePath = path;
+                        FileLoggingEnabled = true;
                     }
-                    catch { }
-                }
-            }
-        }
-
-        // ==================== 公开日志方法 ====================
-
-        public static void Debug(string message)
-        {
-            if (!ShouldLog(LogLevel.Debug)) return;
-            Write("DEBUG", message, ConsoleColor.DarkGray);
-        }
-
-        public static void Verbose(string message)
-        {
-            if (!ShouldLog(LogLevel.Verbose)) return;
-            Write("VERBOSE", message, ConsoleColor.DarkCyan);
-        }
-
-        public static void Info(string message)
-        {
-            if (!ShouldLog(LogLevel.Info)) return;
-            Write("INFO", message, ConsoleColor.Gray);
-        }
-
-        public static void Warning(string message)
-        {
-            if (!ShouldLog(LogLevel.Warning)) return;
-            Write("WARN", "⚠️  " + message, ConsoleColor.Yellow);
-        }
-
-        public static void Error(string message)
-        {
-            if (!ShouldLog(LogLevel.Error)) return;
-            Write("ERROR", "❌ " + message, ConsoleColor.Red, isError: true);
-        }
-
-        public static void Error(string message, Exception ex)
-        {
-            if (!ShouldLog(LogLevel.Error)) return;
-
-            Write("ERROR", "❌ " + message, ConsoleColor.Red, isError: true);
-
-            if (ex == null) return;
-
-            if (ShouldLog(LogLevel.Debug))
-            {
-                Write("ERROR", $"   异常类型: {ex.GetType().FullName}", ConsoleColor.Red, isError: true);
-                Write("ERROR", $"   消息: {ex.Message}", ConsoleColor.Red, isError: true);
-                Write("ERROR", $"   堆栈:\n{ex.StackTrace}", ConsoleColor.Red, isError: true);
-
-                var inner = ex.InnerException;
-                int i = 1;
-                while (inner != null)
-                {
-                    Write("ERROR", $"   [Inner {i}] {inner.GetType().Name}: {inner.Message}", ConsoleColor.Red, isError: true);
-                    inner = inner.InnerException;
-                    i++;
-                }
-            }
-            else if (ShouldLog(LogLevel.Error))
-            {
-                Write("ERROR", $"   异常类型: {ex.GetType().Name}", ConsoleColor.Red, isError: true);
-                Write("ERROR", $"   消息: {ex.Message}", ConsoleColor.Red, isError: true);
-            }
-        }
-
-        public static void Critical(string message, Exception ex = null)
-        {
-            if (!ShouldLog(LogLevel.Critical)) return;
-
-            Write("CRITICAL", "💥 " + message, ConsoleColor.DarkRed, isError: true);
-
-            if (ex != null && ShouldLog(LogLevel.Error))
-            {
-                Write("CRITICAL", $"   异常: {ex.GetType().FullName} - {ex.Message}", ConsoleColor.DarkRed, isError: true);
-                if (ShouldLog(LogLevel.Debug) && !string.IsNullOrEmpty(ex.StackTrace))
-                    Write("CRITICAL", $"   堆栈:\n{ex.StackTrace}", ConsoleColor.DarkRed, isError: true);
-            }
-        }
-
-        /// <summary>
-        /// 专门记录异常的强力方法（即使当前日志级别较高，也会确保完整异常信息写入日志文件）
-        /// 推荐在所有 catch 块中使用
-        /// </summary>
-        public static void LogException(string context, Exception ex)
-        {
-            if (ex == null) return;
-
-            // 临时降低级别确保能写进去
-            var originalLevel = MinimumLogLevel;
-            if (MinimumLogLevel > LogLevel.Error)
-                MinimumLogLevel = LogLevel.Error;
-
-            try
-            {
-                Error($"[{context}] 发生异常", ex);
-
-                // 额外强制写入完整堆栈到文件（绕过级别限制）
-                if (_fileWriter != null)
-                {
-                    lock (_lock)
+                    catch (Exception exception)
                     {
-                        _fileWriter.WriteLine($"[FULL EXCEPTION] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
-                        _fileWriter.WriteLine($"Context   : {context}");
-                        _fileWriter.WriteLine($"Type      : {ex.GetType().FullName}");
-                        _fileWriter.WriteLine($"Message   : {ex.Message}");
-                        _fileWriter.WriteLine("StackTrace:");
-                        _fileWriter.WriteLine(ex.StackTrace ?? "(no stack trace)");
-
-                        Exception inner = ex.InnerException;
-                        int depth = 1;
-                        while (inner != null)
-                        {
-                            _fileWriter.WriteLine($"[InnerException {depth}] {inner.GetType().Name}: {inner.Message}");
-                            _fileWriter.WriteLine(inner.StackTrace);
-                            inner = inner.InnerException;
-                            depth++;
-                        }
-                        _fileWriter.WriteLine(new string('=', 100));
-                        _fileWriter.Flush();
+                        FileLoggingEnabled = false;
+                        ReportSinkFailure(exception);
                     }
                 }
-            }
-            finally
-            {
-                MinimumLogLevel = originalLevel;
+                _initialized = true;
             }
         }
 
-        // ==================== XML 调试方法 ====================
+        private static LogLevel Normalize(LogLevel level) => level is LogLevel.Info or LogLevel.Verbose ? LogLevel.Debug : level;
+        public static bool IsEnabled(LogLevel level)
+        {
+            level = Normalize(level);
+            return level != LogLevel.None && level >= MinimumLogLevel && (IsDebugMode || level >= LogLevel.Error);
+        }
+        private static bool ShouldLog(LogLevel level) => IsEnabled(level);
+
+        private static void Write(LogLevel level, string message, Exception? exception = null)
+        {
+            if (!IsEnabled(level)) return;
+            lock (_lock)
+            {
+                if (!_initialized) Initialize();
+                if (!IsEnabled(level)) return;
+                string tag = level == LogLevel.Warning ? "WARN" : level.ToString().ToUpperInvariant();
+                string line = $"[{tag}] {DateTimeOffset.Now:O} {message}";
+                if (exception != null) line += Environment.NewLine + Core.Diagnostics.ExceptionPolicy.Details(exception);
+                // Stdout remains exclusively available for CLI result documents, including JSON.
+                try { Console.Error.WriteLine(line); } catch (Exception outputError) { ReportSinkFailure(outputError); }
+                try { _fileWriter?.WriteLine(line); } catch (Exception fileError) { ReportSinkFailure(fileError); }
+            }
+        }
+
+        private static void ReportSinkFailure(Exception exception)
+        {
+            if (_sinkFailureReported) return;
+            _sinkFailureReported = true;
+            try { Console.Error.WriteLine($"[ERROR] 日志写入失败：{exception.GetType().Name}: {exception.Message}"); }
+            catch { /* An unavailable diagnostic sink must not replace the original failure. */ }
+        }
+
+        public static void Debug(string message) => Write(LogLevel.Debug, message);
+        public static void Verbose(string message) => Debug(message);
+        public static void Info(string message) => Debug(message);
+        public static void Warning(string message) => Write(LogLevel.Warning, message);
+        public static void Error(string message) => Write(LogLevel.Error, message);
+        public static void Error(string message, Exception exception) => Write(LogLevel.Error, message, exception);
+        public static void Critical(string message, Exception? exception = null) => Write(LogLevel.Critical, message, exception);
+        public static void LogException(string context, Exception exception)
+        {
+            Core.Diagnostics.ExceptionPolicy.Describe(exception, context);
+        }
 
         public static void LogXmlElement(XElement element, string context = "", int maxDepth = 2)
         {
@@ -400,7 +134,7 @@ namespace SqlXmlAnalyzer
                         Debug($"[XML]   @{attr.Name.LocalName} = \"{attr.Value}\"");
                 }
 
-                string text = element.Value?.Trim();
+                string? text = element.Value?.Trim();
                 if (!string.IsNullOrEmpty(text))
                 {
                     string display = text.Length > 180 ? text.Substring(0, 180) + "..." : text;
@@ -473,61 +207,34 @@ namespace SqlXmlAnalyzer
         {
             lock (_lock)
             {
-                try { _fileWriter?.Flush(); } catch { }
+                try { _fileWriter?.Flush(); } catch (Exception exception) { ReportSinkFailure(exception); }
             }
         }
 
-        /// <summary>
-        /// 自动清理 7 天前的历史日志文件，防止磁盘空间膨胀
-        /// </summary>
-        private static void CleanupOldLogs(string logDir, int keepDays = 7)
+        public static void Shutdown()
         {
-            try
+            lock (_lock)
             {
-                if (!Directory.Exists(logDir)) return;
-                var dirInfo = new DirectoryInfo(logDir);
-                var files = dirInfo.GetFiles("SqlXmlAnalyzer_*.log");
-                var cutoff = DateTime.Now.AddDays(-keepDays);
-                foreach (var file in files)
-                {
-                    if (file.LastWriteTime < cutoff)
-                    {
-                        try
-                        {
-                            file.Delete();
-                        }
-                        catch { } // 忽略被占用或无法删除的文件
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[警告] 清理历史日志失败: {ex.Message}");
+                try { _fileWriter?.Dispose(); } catch (Exception exception) { ReportSinkFailure(exception); }
+                _fileWriter = null;
+                FileLoggingEnabled = false;
+                LogFilePath = null;
+                CustomLogFilePath = null;
+                MinimumLogLevel = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
+                _initialized = false;
+                _sinkFailureReported = false;
             }
         }
 
-        /// <summary>
-        /// 辅助方法：把字符串转换为 LogLevel
-        /// </summary>
-        public static LogLevel ParseLogLevel(string value)
+        public static LogLevel ParseLogLevel(string? value) => value?.Trim().ToLowerInvariant() switch
         {
-            if (string.IsNullOrWhiteSpace(value)) return LogLevel.Info;
-
-            value = value.Trim().ToLowerInvariant();
-
-            return value switch
-            {
-                "debug" or "d" => LogLevel.Debug,
-                "verbose" or "v" => LogLevel.Verbose,
-                "info" or "i" => LogLevel.Info,
-                "warning" or "warn" or "w" => LogLevel.Warning,
-                "error" or "err" or "e" => LogLevel.Error,
-                "critical" or "crit" or "c" => LogLevel.Critical,
-                "none" or "off" => LogLevel.None,
-                _ => LogLevel.Info
-            };
-        }
+            "debug" or "d" => LogLevel.Debug,
+            "verbose" or "v" => LogLevel.Verbose,
+            "warning" or "warn" or "w" => LogLevel.Warning,
+            "error" or "err" or "e" => LogLevel.Error,
+            "critical" or "crit" or "fatal" or "c" => LogLevel.Critical,
+            "none" or "off" => LogLevel.None,
+            _ => LogLevel.Info
+        };
     }
 }
-
-

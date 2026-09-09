@@ -1,0 +1,4 @@
+{
+  "Command": "read SqlXmlAnalyzer.Tests/TestData/deadlock_multiple_events.xdl",
+  "ExitCode": 0
+}

@@ -1,0 +1,380 @@
+[
+  {
+    "Version": "15.0.4382.1",
+    "Case": "ltrim-varchar",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "ltrim-nvarchar",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "ltrim-char",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "ltrim-nchar",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "trim-leading-trailing",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "null-and-trailing-control",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 150,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "unicode-prefix",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "case-sensitive-ltrim",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "commit-control",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 150,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "rollback",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "nested-rollback",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "savepoint",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "try-catch-rollback",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "declaration-inside-transaction",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "existing-name-collision",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "multiple-declarations",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 150,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "arithmetic-bounded",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 150,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "arithmetic-overflow",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "duplicate-rows",
+    "Actual": "Different",
+    "Compatibility": 150,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "matching-errors-not-applicable",
+    "Actual": "Inconclusive",
+    "Compatibility": 150,
+    "Expected": "Inconclusive",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "15.0.4382.1",
+    "Case": "decimal38-binary-control",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 150,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "ltrim-varchar",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "ltrim-nvarchar",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "ltrim-char",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "ltrim-nchar",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "trim-leading-trailing",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "null-and-trailing-control",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 170,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "unicode-prefix",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "case-sensitive-ltrim",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "commit-control",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 170,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "rollback",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "nested-rollback",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "savepoint",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "try-catch-rollback",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "declaration-inside-transaction",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "existing-name-collision",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "multiple-declarations",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 170,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "arithmetic-bounded",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 170,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "arithmetic-overflow",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "duplicate-rows",
+    "Actual": "Different",
+    "Compatibility": 170,
+    "Expected": "Different",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "matching-errors-not-applicable",
+    "Actual": "Inconclusive",
+    "Compatibility": 170,
+    "Expected": "Inconclusive",
+    "Passed": true,
+    "ExitCode": 1
+  },
+  {
+    "Version": "17.0.4075.5",
+    "Case": "decimal38-binary-control",
+    "Actual": "PassedForScenarios",
+    "Compatibility": 170,
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "ExitCode": 0
+  }
+]

@@ -59,6 +59,7 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 // Attach to parent console to output text
                 AttachConsole(ATTACH_PARENT_PROCESS);
+                Console.OutputEncoding = new System.Text.UTF8Encoding(false);
                 Console.WriteLine();
                 Console.WriteLine($"[SqlXmlAnalyzer CLI] 启动分析...");
 
@@ -70,12 +71,13 @@ namespace SqlXmlAnalyzer.Core.Services
                     }
                     else
                     {
-                        RunAnalysis(inputFile!, exportFormat, outputFile);
+                        if (!RunAnalysis(inputFile!, exportFormat, outputFile)) Environment.ExitCode = 1;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[错误] 分析过程中发生异常: {ex.Message}");
+                    Console.Error.WriteLine(Core.Diagnostics.ExceptionPolicy.Describe(ex, "DesktopCli"));
+                    Environment.ExitCode = 1;
                 }
 
                 // Exit when done
@@ -85,63 +87,67 @@ namespace SqlXmlAnalyzer.Core.Services
             return false;
         }
 
-        private static void RunAnalysis(string filePath, string? exportFormat, string? outputFile)
+        internal static bool RunAnalysis(string filePath, string? exportFormat, string? outputFile,
+            Func<Rules.RuleEngine>? ruleEngineFactory = null)
         {
-            if (!File.Exists(filePath))
+            if (exportFormat == "obfuscated")
             {
-                Console.WriteLine($"[错误] 找不到输入文件: {filePath}");
-                return;
+                outputFile ??= Path.Combine(Environment.CurrentDirectory, $"RedactedPlan_{Guid.NewGuid():N}.sqlplan");
+                var export = new SqlXmlAnalyzer.Application.Services.RedactedPlanExportService().ExportFile(filePath, outputFile);
+                // Redaction must bypass raw analysis/report generation and its diagnostic logging.
+                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(export));
+                return export.IsSuccess;
             }
-
-            var doc = SafeXmlHelper.LoadSafe(filePath);
-            bool isDeadlock = doc.Root?.Name.LocalName == "deadlock";
-            XNamespace ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
-            bool isPlan = doc.Root?.Name.LocalName == "ShowPlanXML";
-
-            if (!isDeadlock && !isPlan)
+            InputRecognitionResult input = new InputRecognitionService().Load(filePath);
+            if (!input.HasUsableContent)
             {
-                Console.WriteLine($"[错误] 无法识别的文件格式，不是 deadlock 或 ShowPlanXML。");
-                return;
+                Console.Error.WriteLine($"{input.ErrorCode}: {input.ErrorMessage}");
+                return false;
             }
+            bool partial = input.Status == InputStatus.Partial;
+            if (partial) Console.Error.WriteLine(InputReadPresentation.Describe(input));
+            var doc = input.Document;
+            bool isDeadlock = input.Kind is AnalysisDocumentKind.DeadlockXml or AnalysisDocumentKind.XelDeadlockTrace;
+            XNamespace ns = doc?.Root?.Name.Namespace ?? XNamespace.None;
 
+            Console.WriteLine(Core.Privacy.OutputPrivacy.RawNotice);
             Console.WriteLine($"[解析] 文件类型识别为: {(isDeadlock ? "死锁报告" : "执行计划")}");
 
             string reportText = "";
+            bool rulesFailed = false;
             string title = isDeadlock ? "SQL Server 死锁深度诊断报告" : "SQL Server 执行计划专家诊断报告";
 
             if (isDeadlock)
             {
-                var parseResult = SqlXmlAnalyzer.DeadlockXmlParser.TryParseDeadlockXml(doc);
-                if (!parseResult.IsSuccess || parseResult.Value == null)
-                {
-                    Console.WriteLine($"[错误] 死锁 XML 解析失败: {string.Join("; ", parseResult.Errors)}");
-                    return;
-                }
-                foreach (string warning in parseResult.Warnings)
-                {
-                    Console.WriteLine($"[警告] {warning}");
-                }
-                var parsed = parseResult.Value;
-                var graph = DeadlockGraphBuilder.Build(parsed.Processes, parsed.Resources, parsed.VictimId);
-                var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
-
                 var sb = new System.Text.StringBuilder();
-                foreach (var p in patterns)
+                foreach (DeadlockInput deadlock in input.Deadlocks)
                 {
-                    sb.AppendLine($"[{p.Severity}] {p.TypeName}");
-                    sb.AppendLine($"描述: {p.Description}");
-                    sb.AppendLine($"可能原因: {p.LikelyCause}");
-                    sb.AppendLine($"推荐措施: {p.Recommendation}");
-                    sb.AppendLine();
+                    DeadlockAnalysisOutput analysis = new DeadlockAnalysisService().Analyze(deadlock.Document);
+                    sb.AppendLine($"=== {deadlock.DisplayName} ===");
+                    sb.AppendLine(analysis.Graph.CycleAnalysis.Summary);
+                    foreach (string warning in analysis.Warnings) sb.AppendLine($"[警告] {warning}");
+                    foreach (var p in analysis.Patterns)
+                    {
+                        sb.AppendLine($"[{p.Severity}] {p.TypeName}");
+                        sb.AppendLine($"描述: {p.Description}");
+                        sb.AppendLine($"可能原因: {p.LikelyCause}");
+                        sb.AppendLine($"推荐措施: {p.Recommendation}");
+                        sb.AppendLine(DeadlockDiagnosticFormatter.FormatEvidence(p));
+                        sb.AppendLine();
+                    }
                 }
                 reportText = sb.ToString();
             }
             else
             {
-                reportText = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
+                var diagnostics = ruleEngineFactory?.Invoke().AnalyzePlanDetailed(doc!, ns, capabilities: input.Capabilities)
+                    ?? PlanDiagnosticAnalyzer.AnalyzeDetailed(doc!, ns, capabilities: input.Capabilities);
+                reportText = Rules.DiagnosticTextFormatter.Format(diagnostics);
+                rulesFailed = diagnostics.HasFailures;
             }
 
-            Console.WriteLine($"[成功] 分析完成！生成了 {reportText.Split('\n').Length} 行诊断报告。");
+            if (partial) reportText = InputReadPresentation.Describe(input) + Environment.NewLine + reportText;
+            Console.WriteLine($"[{(rulesFailed ? "规则执行失败" : partial ? "部分完成" : "完成")}] 生成了 {reportText.Split('\n').Length} 行诊断报告。");
 
             if (!string.IsNullOrEmpty(exportFormat))
             {
@@ -161,23 +167,10 @@ namespace SqlXmlAnalyzer.Core.Services
                     ReportExportService.ExportToWord(outputFile, title, reportText);
                     Console.WriteLine($"[导出] 已生成 Word 报告: {outputFile}");
                 }
-                else if (exportFormat == "obfuscated")
-                {
-                    if (isPlan)
-                    {
-                        var obfuscated = PlanObfuscatorService.ObfuscatePlan(doc);
-                        obfuscated.Save(outputFile);
-                        Console.WriteLine($"[脱敏] 已生成脱敏执行计划: {outputFile}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[警告] 脱敏仅支持执行计划文件！");
-                    }
-                }
                 else
                 {
                     // Fallback to text
-                    File.WriteAllText(outputFile, reportText);
+                    File.WriteAllText(outputFile, Core.Privacy.OutputPrivacy.MarkRaw(reportText));
                     Console.WriteLine($"[导出] 已生成文本报告: {outputFile}");
                 }
             }
@@ -188,13 +181,14 @@ namespace SqlXmlAnalyzer.Core.Services
                 Console.WriteLine(reportText);
                 Console.WriteLine("==============================\n");
             }
+            return !partial && !rulesFailed;
         }
 
         private static void PrintHelp()
         {
             Console.WriteLine();
             Console.WriteLine("SqlXmlAnalyzer CLI 使用说明:");
-            Console.WriteLine("  --analyze <path>   指定要分析的 .xdl 或 .sqlplan 文件");
+            Console.WriteLine("  --analyze <path>   指定要分析的 .xml、.xdl、.xel 或 .sqlplan 文件");
             Console.WriteLine("  --export <format>  指定导出格式 (pdf, docx, obfuscated, txt)");
             Console.WriteLine("  --out <path>       指定输出文件路径");
             Console.WriteLine("  --help, -h         显示帮助信息");
@@ -205,10 +199,19 @@ namespace SqlXmlAnalyzer.Core.Services
         }
 
         // Removed ParseDeadlockDocument helper method. Using SqlXmlAnalyzer.DeadlockXmlParser.ParseDeadlockXml instead.
-        private static void RunBatchAnalysis(string dirPath, string? exportFormat, string? outputFile)
+        internal static void RunBatchAnalysis(string dirPath, string? exportFormat, string? outputFile)
         {
+            if (exportFormat == "obfuscated")
+            {
+                // Batch progress and filenames are raw metadata. Do not advertise this as a sharing route.
+                Logger.Warning("DesktopCli batch redaction is unsupported.");
+                Console.Error.WriteLine("暂不支持批量脱敏导出；请逐个文件使用 --analyze 与 --export obfuscated 检查覆盖摘要。");
+                Environment.ExitCode = 1;
+                return;
+            }
             var files = Directory.GetFiles(dirPath, "*.*", SearchOption.AllDirectories)
-                .Where(f => f.EndsWith(".sqlplan", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xdl", StringComparison.OrdinalIgnoreCase))
+                .Where(f => f.EndsWith(".sqlplan", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xdl", StringComparison.OrdinalIgnoreCase) ||
+                    f.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xel", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (files.Count == 0)
@@ -227,17 +230,18 @@ namespace SqlXmlAnalyzer.Core.Services
                 Console.WriteLine($"\n>> 分析文件: {Path.GetFileName(file)}");
                 try
                 {
-                    RunAnalysis(file, exportFormat, null); // Currently ignoring batch output file, outputting to console
-                    successCount++;
+                    if (RunAnalysis(file, exportFormat, null)) successCount++;
+                    else failCount++;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[错误] 分析文件失败: {ex.Message}");
+                    Console.Error.WriteLine(Core.Diagnostics.ExceptionPolicy.Describe(ex, "DesktopCli.BatchFile"));
                     failCount++;
                 }
             }
 
             Console.WriteLine($"\n[批处理完成] 成功: {successCount}, 失败: {failCount}");
+            if (failCount > 0) Environment.ExitCode = 1;
         }
     }
 }

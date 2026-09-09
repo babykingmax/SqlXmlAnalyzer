@@ -1,0 +1,5 @@
+{
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "warning: in the working copy of 'SqlXmlAnalyzer.CLI/Program.cs', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'SqlXmlAnalyzer.Core/Logger.cs', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs', LF will be replaced by CRLF the next time Git touches it\n"
+}

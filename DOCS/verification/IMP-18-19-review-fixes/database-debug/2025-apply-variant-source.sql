@@ -1,0 +1,1 @@
+SELECT Value FROM dbo.T WHERE N + 10 > 50;

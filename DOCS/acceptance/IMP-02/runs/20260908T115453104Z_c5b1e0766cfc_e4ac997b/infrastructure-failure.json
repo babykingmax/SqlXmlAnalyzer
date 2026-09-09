@@ -1,0 +1,5 @@
+{
+  "scriptStackTrace": "at Require-Success, E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\Run-AcceptanceMatrix.ps1: line 52\r\nat <ScriptBlock>, E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\Run-AcceptanceMatrix.ps1: line 99",
+  "exception": "System.IO.IOException: Existing suite failed. See captured stdout/stderr; acceptance checks not completed.",
+  "timestampUtc": "2026-09-08T11:55:20.3755751+00:00"
+}

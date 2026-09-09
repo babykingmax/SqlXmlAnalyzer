@@ -1,0 +1,109 @@
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Application.Models;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        int code = 0;
+        App? app = null;
+        try
+        {
+            if (args.Length != 1) throw new InvalidDataException("Usage: Probe <new-output-directory>");
+            Directory.CreateDirectory(args[0]);
+            app = new App(); app.InitializeComponent();
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            var bindingErrors = new StringWriter();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(bindingErrors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            const string sql = "-- Review example\r\nSELECT * FROM Customers\r\nWHERE Age + 10 > 50 AND LTRIM(Name) = N'admin';";
+            var engine = new SqlRefactoringEngine([new ConstantFoldingRefactorRule(), new TrimRefactorRule()],
+                new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var result = engine.Run(sql, new AnalysisReport([]), new RefactorOptions(), true);
+            if (!result.IsSuccess || result.Review == null) throw new InvalidDataException("Proposal generation failed.");
+            var window = new RewriteReviewWindow(sql, result.Review) { Width = 1200, Height = 960 };
+            window.Show();
+            var vm = (RewriteReviewViewModel)window.DataContext;
+            Capture(window, Path.Combine(args[0], "review-unselected.png"));
+            vm.Items[0].IsSelected = true;
+            if (vm.CanApply || vm.PreviewSql != result.OutputSql) throw new InvalidOperationException("Initial selection contract failed.");
+            Capture(window, Path.Combine(args[0], "review-selected.png"));
+            vm.Items[0].IsSelected = false;
+            if (vm.PreviewSql != sql) throw new InvalidOperationException("Source restoration failed.");
+            vm.Items[0].IsSelected = true;
+            string source = Path.Combine(args[0], "review-source.sql");
+            File.WriteAllText(source, sql);
+            var suite = new SqlSemanticSuite([new("bounded-null-trim-preserved",
+                "CREATE TABLE dbo.Customers(Age int CHECK(Age BETWEEN -100000 AND 100000), Name nvarchar(20)); INSERT dbo.Customers VALUES(40,N'admin'),(41,N' admin'),(100,NULL),(NULL,N'admin');")]);
+            using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            Task pending = vm.ValidateAsync(source, suite, cancellation.Token);
+            if (!pending.IsCompleted)
+            {
+                var frame = new DispatcherFrame();
+                pending.ContinueWith(_ => window.Dispatcher.BeginInvoke(() => frame.Continue = false));
+                Dispatcher.PushFrame(frame);
+            }
+            pending.GetAwaiter().GetResult();
+            if (!vm.CanAcknowledge || vm.CanApply || File.ReadAllText(source) != sql)
+                throw new InvalidOperationException("Live validation failed: " + vm.Error);
+            vm.ReviewedScenarios = true;
+            if (!vm.CanApply) throw new InvalidOperationException("Reviewed live validation did not enable apply.");
+            File.WriteAllText(Path.Combine(args[0], "validation.json"), vm.ValidationDetails);
+            Capture(window, Path.Combine(args[0], "review-validated.png"));
+            var applied = vm.Apply(cancellation.Token);
+            if (applied?.SourceWritten != true || File.ReadAllText(source) != vm.PreviewSql || vm.CanApply)
+                throw new InvalidOperationException("Actual application failed: " + vm.Error);
+            Capture(window, Path.Combine(args[0], "review-applied.png"));
+            File.WriteAllText(Path.Combine(args[0], "application.txt"), vm.ValidationDetails);
+            if (bindingErrors.ToString().Length != 0) throw new InvalidOperationException("Binding errors: " + bindingErrors);
+            window.Close();
+            Console.WriteLine("PASS: production window; source/selection restoration; live SQL Server validation; explicit scenario acknowledgement; exact file application and backup; four screenshots; zero binding errors.");
+        }
+        catch (Exception exception) { Logger.Error(ExceptionPolicy.Describe(exception, "IMP19.WpfProbe")); code = 1; }
+        finally
+        {
+            try { app?.Shutdown(); }
+            catch (Exception exception) { Logger.Error(ExceptionPolicy.Describe(exception, "IMP19.WpfProbe.Shutdown")); code = 1; }
+        }
+        return code;
+    }
+
+    private static void Capture(Window window, string path)
+    {
+        window.UpdateLayout();
+        Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+        var view = (Grid)window.Content;
+        int width = (int)Math.Ceiling(view.ActualWidth), height = (int)Math.Ceiling(view.ActualHeight);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+        var drawing = new DrawingVisual();
+        using (var context = drawing.RenderOpen())
+        {
+            context.DrawRectangle(window.Background, null, new Rect(0, 0, width, height));
+            context.DrawRectangle(new VisualBrush(view) { Stretch = Stretch.None, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top },
+                null, new Rect(0, 0, width, height));
+        }
+        bitmap.Render(drawing);
+        byte[] pixels = new byte[width * height * 4]; bitmap.CopyPixels(pixels, width * 4, 0);
+        if (pixels.Where((_, index) => index % 4 != 3).Count(value => value > 20 && value < 180) < 10000)
+            throw new InvalidOperationException("Screenshot has no usable rendered content.");
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        encoder.Save(output);
+    }
+}

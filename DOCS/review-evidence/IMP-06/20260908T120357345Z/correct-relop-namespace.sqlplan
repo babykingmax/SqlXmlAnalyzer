@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="15.0.2000.5"><BatchSequence><Batch><Statements>
+<StmtSimple StatementId="1" StatementType="SELECT" StatementText="SELECT * FROM ReviewOnlyTable;">
+<QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimatedTotalSubtreeCost="12" /></QueryPlan>
+</StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>

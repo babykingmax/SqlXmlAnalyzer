@@ -147,15 +147,15 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
 
             // Act 1: Returned rows < Low (Safe)
             vm.ReturnedRows = 100;
-            vm.TippingPointStatus.Should().Contain("安全");
+            vm.TippingPointStatus.Should().Be("假设：低于参考区间");
 
             // Act 2: Returned rows between Low and High (Boundary)
             vm.ReturnedRows = 700;
-            vm.TippingPointStatus.Should().Contain("临界区");
+            vm.TippingPointStatus.Should().Be("假设：处于参考区间");
 
             // Act 3: Returned rows > High (Degraded)
             vm.ReturnedRows = 900;
-            vm.TippingPointStatus.Should().Contain("已触发退化");
+            vm.TippingPointStatus.Should().Be("假设：高于参考区间");
         }
 
         [Fact]
@@ -174,16 +174,18 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
                              <BatchSequence><Batch><Statements><StmtSimple>
                                 <QueryPlan><RelOp PhysicalOp=""Table Scan"">
                                     <TableScan>
-                                        <Object Table=""[Orders]"" />
+                                        <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Orders]"" />
                                     </TableScan>
                                     <OutputList>
-                                        <ColumnReference Column=""Id"" />
-                                        <ColumnReference Column=""Price"" />
+                                        <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Orders]"" Column=""Id"" />
+                                        <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Orders]"" Column=""Price"" />
                                     </OutputList>
                                 </RelOp></QueryPlan>
                              </StmtSimple></Statements></Batch></BatchSequence>
                            </ShowPlanXML>";
-            var planDoc = System.Xml.Linq.XDocument.Parse(xml);
+            var planDoc = SqlXmlAnalyzer.SafeXmlHelper.ParseSafe(xml);
+            SqlXmlAnalyzer.Core.Services.IndexTargetResolver.BindSqlSuggestion(suggestion,
+                planDoc.Descendants(planDoc.Root!.Name.Namespace + "StmtSimple").Single(), planDoc.Root.Name.Namespace).Should().BeTrue();
 
             var vm = new IndexSandboxViewModel(suggestion, planDoc);
 
@@ -192,7 +194,7 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
 
             // Assert
             covered.Should().BeTrue();
-            vm.TippingPointStatus.Should().Contain("覆盖索引");
+            vm.TippingPointStatus.Should().Be("假设：候选列覆盖（待验证）");
         }
     }
 }

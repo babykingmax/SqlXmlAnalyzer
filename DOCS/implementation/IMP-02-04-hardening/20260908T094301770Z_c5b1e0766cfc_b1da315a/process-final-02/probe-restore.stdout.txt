@@ -1,0 +1,3 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\DiagnosticProbe.csproj (用时 319 毫秒)。
+  5 个项目(共 6 个)是最新的，无法还原。

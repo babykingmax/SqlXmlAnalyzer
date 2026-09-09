@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2019",
+  "CompatibilityLevel": 150,
+  "Scenarios": [
+    {
+      "Name": "arithmetic-bounded",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": "CREATE TABLE dbo.Users(Id int, Age int NULL CHECK(Age BETWEEN -100000 AND 100000)); INSERT dbo.Users VALUES(1,-100000),(2,40),(3,41),(4,100000),(5,NULL);"
+    }
+  ]
+}

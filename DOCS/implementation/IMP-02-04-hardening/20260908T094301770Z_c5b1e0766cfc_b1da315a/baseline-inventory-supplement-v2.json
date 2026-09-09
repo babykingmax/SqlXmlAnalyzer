@@ -1,0 +1,30 @@
+{
+  "reason": "Initial git ls-files used quoted non-ASCII names; four pre-existing image files were not hashed. Original source-before.json and failed validation remain unchanged.",
+  "priorEvidence": "DOCS/acceptance/IMP-02/runs/20260908T093220366Z_c5b1e0766cfc_0420c7c1/input-snapshot-before.json",
+  "entries": [
+    {
+      "path": "ssms_icons/死锁展示图.jpg",
+      "priorSha256": "25039255FEB59F7307F748E6171AD00C6C36B2A2BE473D4D16AECB09C10DABC0",
+      "currentSha256": "25039255FEB59F7307F748E6171AD00C6C36B2A2BE473D4D16AECB09C10DABC0",
+      "unchanged": true
+    },
+    {
+      "path": "ssms_icons/节点属性参考.jpg",
+      "priorSha256": "7543A79B21C5E101A8AE5AC46140057BA0ACB3E3DE58B00E3B614D24389A0061",
+      "currentSha256": "7543A79B21C5E101A8AE5AC46140057BA0ACB3E3DE58B00E3B614D24389A0061",
+      "unchanged": true
+    },
+    {
+      "path": "ssms_icons/节点属性显示信息.jpg",
+      "priorSha256": "50ABA76D4F230E41E58F161AE59B810E997912A17E3F5F74E18AB3DB197C1CB6",
+      "currentSha256": "50ABA76D4F230E41E58F161AE59B810E997912A17E3F5F74E18AB3DB197C1CB6",
+      "unchanged": true
+    },
+    {
+      "path": "ssms_icons/节点提示信息文字有重叠.jpg",
+      "priorSha256": "C0398BBBC688EFF25D5CA2E51F14F64B276100FFF7ADC0689CE5E4C413FF856B",
+      "currentSha256": "C0398BBBC688EFF25D5CA2E51F14F64B276100FFF7ADC0689CE5E4C413FF856B",
+      "unchanged": true
+    }
+  ]
+}

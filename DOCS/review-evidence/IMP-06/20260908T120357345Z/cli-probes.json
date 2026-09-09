@@ -1,0 +1,131 @@
+[
+  {
+    "Name": "correct-relop-namespace",
+    "ExitCode": 1,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\correct-relop-namespace.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\correct-relop-namespace.report.json"
+    ]
+  },
+  {
+    "Name": "wrong-relop-namespace",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\wrong-relop-namespace.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\wrong-relop-namespace.report.json"
+    ]
+  },
+  {
+    "Name": "valid-utf8",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf8.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf8.report.json"
+    ]
+  },
+  {
+    "Name": "valid-utf16-no-bom",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf16-no-bom.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf16-no-bom.report.json"
+    ]
+  },
+  {
+    "Name": "valid-utf32-no-bom",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf32-no-bom.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf32-no-bom.report.json"
+    ]
+  },
+  {
+    "Name": "invalid-utf8-byte",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\invalid-utf8-byte.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\invalid-utf8-byte.report.json"
+    ]
+  },
+  {
+    "Name": "refactor-valid-utf8",
+    "ExitCode": 0,
+    "Arguments": [
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\input.sql",
+      "--plan",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf8.sqlplan",
+      "--dry-run",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\refactor-valid-utf8.report.json"
+    ]
+  },
+  {
+    "Name": "refactor-valid-utf16-no-bom",
+    "ExitCode": 1,
+    "Arguments": [
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\input.sql",
+      "--plan",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf16-no-bom.sqlplan",
+      "--dry-run",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\refactor-valid-utf16-no-bom.report.json"
+    ]
+  },
+  {
+    "Name": "refactor-valid-utf32-no-bom",
+    "ExitCode": 1,
+    "Arguments": [
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\input.sql",
+      "--plan",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\valid-utf32-no-bom.sqlplan",
+      "--dry-run",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\review-evidence\\IMP-06\\20260908T120357345Z\\refactor-valid-utf32-no-bom.report.json"
+    ]
+  }
+]

@@ -27,6 +27,24 @@ namespace SqlXmlAnalyzer.Application.Services
                 IsSuccess = result.IsSuccess,
                 IsDryRun = isDryRun,
                 HasChanges = context?.Changed ?? false,
+                SourceWritten = result.SourceWritten,
+                Outcome = result.Outcome.ToString(),
+                SourceHash = result.Review?.SourceHash,
+                Review = result.Review == null ? null : new
+                {
+                    result.Review.SourceHash,
+                    result.Review.CanApply,
+                    result.Review.Validation,
+                    result.Review.Warnings,
+                    PreviewSql = ShowSql ? result.Review.PreviewSql : null,
+                    Proposals = result.Review.Proposals.Select(p => new
+                    {
+                        p.Id, p.SourceHash, p.BaseSqlHash, p.CandidateHash, p.RuleId, p.RuleVersion,
+                        p.Description, p.IsSelected, p.DependsOn, p.Preconditions, p.Risks, p.Evidence,
+                        p.Warnings, p.Validation,
+                        Diff = ShowSql ? p.Diff : null
+                    }).ToArray()
+                },
                 TimeElapsedMs = result.TimeElapsedMs,
                 OriginalSqlLength = context?.OriginalSql?.Length ?? 0,
                 RefactoredSqlLength = result.OutputSql?.Length ?? 0,
@@ -45,6 +63,9 @@ namespace SqlXmlAnalyzer.Application.Services
                     Timestamp = f.Timestamp
                 }).ToList() ?? new(),
                 Warnings = context?.Warnings?.ToList() ?? new(),
+                SafetySkips = context?.SafetySkips.ToList() ?? new(),
+                Diagnostic = result.Diagnostic,
+                Diagnostics = context?.Analysis.Diagnostics,
                 Errors = result.Errors?.ToList() ?? new(),
                 ParseErrors = result.ParseErrors?.Select(pe => new ParseErrorDto
                 {
@@ -77,7 +98,8 @@ namespace SqlXmlAnalyzer.Application.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
+                    Core.Diagnostics.ExceptionPolicy.Describe(ex, "JsonResultReporter");
+                    throw;
                 }
             }
             else

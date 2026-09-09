@@ -21,7 +21,10 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed record PlanGraphWarningResult(
         string WarningsText,
-        string HighestSeverity);
+        string HighestSeverity)
+    {
+        public string DiagnosticStatusText { get; init; } = string.Empty;
+    }
 
     public sealed class PlanGraphWarningService
     {
@@ -29,7 +32,8 @@ namespace SqlXmlAnalyzer.Core.Services
             XElement relOp,
             XNamespace ns,
             PlanGraphWarningContext context,
-            IEnumerable<AnalysisResult> ruleResults)
+            IEnumerable<AnalysisResult> ruleResults,
+            PlanDiagnosticReport? diagnostics = null)
         {
             ArgumentNullException.ThrowIfNull(relOp);
             ArgumentNullException.ThrowIfNull(ruleResults);
@@ -49,7 +53,10 @@ namespace SqlXmlAnalyzer.Core.Services
 
             return new PlanGraphWarningResult(
                 warningsText,
-                highestSeverity);
+                highestSeverity)
+            {
+                DiagnosticStatusText = diagnostics == null ? string.Empty : DiagnosticTextFormatter.FormatExecutionStatus(diagnostics)
+            };
         }
 
         private static void AddRelOpWarnings(
@@ -95,11 +102,8 @@ namespace SqlXmlAnalyzer.Core.Services
             XNamespace ns,
             ICollection<string> warnings)
         {
-            List<string> implicitConverts = relOp.Descendants(ns + "ScalarOperator")
-                .Where(op => op.Attribute("ScalarString")?.Value?.Contains("CONVERT_IMPLICIT") == true)
-                .Select(op => op.Attribute("ScalarString")?.Value)
-                .Where(value => !string.IsNullOrEmpty(value))
-                .Select(value => value!)
+            List<string> implicitConverts = PlanOperatorFactsService.Get(relOp, ns).ScalarExpressions
+                .Where(value => value.Contains("CONVERT_IMPLICIT", StringComparison.Ordinal))
                 .ToList();
 
             if (implicitConverts.Count > 0)
@@ -246,7 +250,9 @@ namespace SqlXmlAnalyzer.Core.Services
             string highestSeverity = "Info";
             foreach (AnalysisResult result in ruleResults)
             {
-                warnings.Add($"[{result.Severity}] {result.Title}: {result.Message}");
+                warnings.Add(result.Diagnostic is { } diagnostic
+                    ? DiagnosticTextFormatter.FormatDiagnostic(diagnostic)
+                    : $"[{result.Severity}] {result.Title}: {result.Message}");
                 if (result.Severity == "Critical")
                 {
                     highestSeverity = "Critical";

@@ -66,6 +66,7 @@ namespace SqlXmlAnalyzer
         {
             InitializeComponent();
             WireMainShellEvents();
+            WireKeyboardShortcuts();
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
@@ -392,7 +393,8 @@ namespace SqlXmlAnalyzer
                     ShellStatus.StatusTextBlock,
                     _showplanNs,
                     UpdatePlaybackGraphVisibility,
-                    _xelDeadlockUiActionService.AnalyzeXelFileAsync);
+                    _xelDeadlockUiActionService.ShowDocumentEvents,
+                    _xelDeadlockUiActionService.ClearEvents);
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
             this.Closed += (s, e) => _analysisSessions.CancelCurrent();
 

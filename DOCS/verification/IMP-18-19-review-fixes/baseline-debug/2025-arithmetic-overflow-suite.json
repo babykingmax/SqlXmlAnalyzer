@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "ObserveSql": "",
+      "SetupSql": "CREATE TABLE dbo.Users(Id int, Age int); INSERT dbo.Users VALUES(1,2147483647);",
+      "OrderedResults": false,
+      "Name": "arithmetic-overflow"
+    }
+  ],
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025"
+}

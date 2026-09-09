@@ -1,0 +1,229 @@
+{
+  "Step": "IMP-08",
+  "Date": "2026-09-08",
+  "Scope": "Immediate display corrections for missing runtime metrics, inferred deadlock steps, range-lock evidence, and uncalibrated sandbox claims.",
+  "UnitTestsAdded": 40,
+  "Red": {
+    "Total": 25,
+    "Failed": 23,
+    "Passed": 2,
+    "Trx": "tests/imp08-red.trx"
+  },
+  "Focused": {
+    "Total": 93,
+    "Failed": 0,
+    "Passed": 93,
+    "Trx": "tests/imp08-focused.trx"
+  },
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "RunId": "20260908T132838998Z_c5b1e0766cfc_a92698f8",
+      "Summary": "../../acceptance/IMP-02/runs/20260908T132838998Z_c5b1e0766cfc_a92698f8/summary.json",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "total": 1175,
+        "notExecuted": 0,
+        "passed": 1175,
+        "failed": 0
+      },
+      "Infrastructure": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "NecessaryConditionsMet": 13,
+      "NotMet": 9,
+      "ProbeExecutionFailed": 0,
+      "CurrentScope": [
+        {
+          "reviewId": "R07",
+          "status": "ProbeConditionMet",
+          "observed": {
+            "actualLockModes": "S / X; no Range mode",
+            "patterns": [
+              "[sp_BlitzLock 诊断] 细粒度锁链与资源冲突轨迹 (Lock Chain Details)"
+            ]
+          }
+        },
+        {
+          "reviewId": "R12",
+          "status": "NotMet",
+          "observed": {
+            "lowThenHigh": 100,
+            "highThenLow": 65
+          }
+        },
+        {
+          "reviewId": "R15",
+          "status": "ProbeConditionMet",
+          "observed": {
+            "estimateVsActual": [
+              {
+                "Label": "Elapsed",
+                "Value": null,
+                "Delta": null
+              },
+              {
+                "Label": "Logical reads",
+                "Value": null,
+                "Delta": null
+              }
+            ]
+          }
+        },
+        {
+          "reviewId": "R22",
+          "status": "ProbeConditionMet",
+          "observed": {
+            "initialDescription": "依赖推演已就绪；合成步骤不代表真实事件顺序。",
+            "evidenceLevel": "ViewModel only; persistent visible explanation requires WPF acceptance"
+          }
+        }
+      ],
+      "MatrixExitCode": 1,
+      "ProtectedInputDriftDuringRun": [],
+      "VerifiedCodeFiles": 460,
+      "CodeDriftAfterDocumentationUpdates": [],
+      "Diagnostics": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Comparison_UnknownFailure_WritesValidatedDumpAndRethrowsOriginal",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.DisplayLogs_RespectDebugReleasePolicyAndOmitRawInput",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Sandbox_UnknownNotificationFailure_PreservesOriginalAndClearsStaleDdl",
+          "Outcome": "Passed"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "RunId": "20260908T132939519Z_c5b1e0766cfc_d40aa08b",
+      "Summary": "../../acceptance/IMP-02/runs/20260908T132939519Z_c5b1e0766cfc_d40aa08b/summary.json",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "notExecuted": 0,
+        "total": 1175,
+        "failed": 0,
+        "passed": 1175
+      },
+      "Infrastructure": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "NecessaryConditionsMet": 13,
+      "NotMet": 9,
+      "ProbeExecutionFailed": 0,
+      "CurrentScope": [
+        {
+          "reviewId": "R07",
+          "status": "ProbeConditionMet",
+          "observed": {
+            "actualLockModes": "S / X; no Range mode",
+            "patterns": [
+              "[sp_BlitzLock 诊断] 细粒度锁链与资源冲突轨迹 (Lock Chain Details)"
+            ]
+          }
+        },
+        {
+          "reviewId": "R12",
+          "status": "NotMet",
+          "observed": {
+            "lowThenHigh": 100,
+            "highThenLow": 65
+          }
+        },
+        {
+          "reviewId": "R15",
+          "status": "ProbeConditionMet",
+          "observed": {
+            "estimateVsActual": [
+              {
+                "Label": "Elapsed",
+                "Value": null,
+                "Delta": null
+              },
+              {
+                "Label": "Logical reads",
+                "Value": null,
+                "Delta": null
+              }
+            ]
+          }
+        },
+        {
+          "reviewId": "R22",
+          "status": "ProbeConditionMet",
+          "observed": {
+            "initialDescription": "依赖推演已就绪；合成步骤不代表真实事件顺序。",
+            "evidenceLevel": "ViewModel only; persistent visible explanation requires WPF acceptance"
+          }
+        }
+      ],
+      "MatrixExitCode": 1,
+      "ProtectedInputDriftDuringRun": [],
+      "VerifiedCodeFiles": 460,
+      "CodeDriftAfterDocumentationUpdates": [],
+      "Diagnostics": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Sandbox_UnknownNotificationFailure_PreservesOriginalAndClearsStaleDdl",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.DisplayLogs_RespectDebugReleasePolicyAndOmitRawInput",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Comparison_UnknownFailure_WritesValidatedDumpAndRethrowsOriginal",
+          "Outcome": "Passed"
+        }
+      ]
+    }
+  ],
+  "Wpf": {
+    "Passed": true,
+    "ComparisonScenarios": 3,
+    "InferenceStates": 9,
+    "Sandbox": {
+      "Summary": "N/A（未提供收益预测）",
+      "Notice": "工具假设：模型尚未校准，不提供精确收益预测。规则评分和参考区间不是实测结果；是否采用索引及选择 Seek/Scan，需核对优化器生成的计划。",
+      "TippingPointStatus": "假设：低于参考区间",
+      "TippingPointDetails": "当前假设返回行数低于工具启发式区间；不能据此保证 Seek、回表次数或性能收益，请检查实际计划。"
+    },
+    "Process": {
+      "Completed": true,
+      "ExitCode": 0,
+      "ProbeSourceSha256": "4CF4CD0DB99955B9278F35A6E2CDC1CAA7DC977A83B859CDD4BAE931A421198B",
+      "ApplicationSha256": "81C35EF5AF0E51136198E23DC564839E6EA52D0CE83A32ED7E664966E0DDF832",
+      "CoreSha256": "3C828BD271C996AA3855AF5E075978AF3467D3EE87BAE1E15D1FAE006356C724",
+      "WindowShown": false
+    },
+    "Evidence": "ui/observed.json",
+    "HistoricalFailures": [
+      "ui-attempt1-process.json",
+      "ui-attempt2-process.json"
+    ]
+  },
+  "Research": {
+    "AccessDate": "2026-09-08",
+    "Method": "Direct HTTPS to Microsoft Learn after web search connection failure; existing official Showplan XSD inspected.",
+    "Sources": [
+      "https://learn.microsoft.com/en-us/sql/t-sql/statements/set-transaction-isolation-level-transact-sql",
+      "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide",
+      "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-index-design-guide",
+      "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-deadlocks-guide",
+      "https://schemas.microsoft.com/sqlserver/2004/07/showplan/sql2019/showplanxml.xsd"
+    ],
+    "ShowplanSchemaSha256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8"
+  },
+  "SqlServerExecutionPerformed": false,
+  "CoverageGenerated": false,
+  "Note": "R12 remains NotMet (order-dependent simulator outputs 100 vs 65); its UI prediction is disabled. Full graph/model/cost/matching/export work remains in later IMP steps. No matrix assertions were relaxed."
+}

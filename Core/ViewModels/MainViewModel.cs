@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         Compare
     }
 
-    public class MainViewModel : ObservableObject
+    public partial class MainViewModel : ObservableObject
     {
         private readonly TuningSessionService _tuningSessionService;
 
@@ -64,7 +64,18 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         }
 
         public XDocument? CurrentDeadlockDoc { get; set; }
-        public XDocument? CurrentPlanDoc { get; set; }
+        public DeadlockAnalysisOutput? CurrentDeadlockAnalysis { get; set; }
+        private XDocument? _currentPlanDoc;
+        public XDocument? CurrentPlanDoc
+        {
+            get => _currentPlanDoc;
+            set { _currentPlanDoc = value; CurrentRewriteReview = null; CurrentRewriteSource = ""; }
+        }
+        public Models.RewriteReview? CurrentRewriteReview { get; set; }
+        public string CurrentRewriteSource { get; set; } = "";
+        public Rules.PlanDiagnosticReport? CurrentPlanDiagnostics { get; set; }
+        public InputRecognitionResult? CurrentPlanInput { get; set; }
+        public InputRecognitionResult? CurrentDeadlockInput { get; set; }
         public string? CurrentDeadlockFilePath { get; set; }
         public string? CurrentPlanFilePath { get; set; }
 
@@ -118,6 +129,11 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             get => _planA;
             set
             {
+                if (!ReferenceEquals(_planA, value))
+                {
+                    ComparisonSelection = ComparisonSelection with { A = value?.SelectedQueryPlan };
+                    ManualScopeA = null;
+                }
                 if (SetProperty(ref _planA, value))
                 {
                     OnPropertyChanged(nameof(CompareVisible));
@@ -133,6 +149,11 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             get => _planB;
             set
             {
+                if (!ReferenceEquals(_planB, value))
+                {
+                    ComparisonSelection = ComparisonSelection with { B = value?.SelectedQueryPlan };
+                    ManualScopeB = null;
+                }
                 if (SetProperty(ref _planB, value))
                 {
                     OnPropertyChanged(nameof(CompareVisible));
@@ -144,52 +165,8 @@ namespace SqlXmlAnalyzer.Core.ViewModels
 
         public bool CompareVisible => PlanA != null && PlanB != null;
 
-        public string CostDeltaText
-        {
-            get
-            {
-                if (PlanA == null || PlanB == null) return string.Empty;
-                if (Math.Abs(PlanA.TotalCost) < 1e-9)
-                {
-                    return "基准计划 A 成本为 0，无法计算百分比变化";
-                }
-                double delta = (PlanB.TotalCost - PlanA.TotalCost) / PlanA.TotalCost;
-                if (delta < -1e-9)
-                {
-                    return $"▼ 预计成本优化: {Math.Abs(delta) * 100.0:F2}%";
-                }
-                else if (delta > 1e-9)
-                {
-                    return $"▲ 预计成本增加: {delta * 100.0:F2}%";
-                }
-                else
-                {
-                    return "● 预计两计划成本完全一致";
-                }
-            }
-        }
-
-        public string CostDeltaColor
-        {
-            get
-            {
-                if (PlanA == null || PlanB == null) return "#757575";
-                double delta = PlanB.TotalCost - PlanA.TotalCost;
-                if (delta < -1e-9)
-                {
-                    return "#2E7D32"; // 翠绿：优化成功
-                }
-                else if (delta > 1e-9)
-                {
-                    return "#D32F2F"; // 红色：成本上升
-                }
-                else
-                {
-                    return "#0066CC"; // 蓝色：持平
-                }
-            }
-        }
-
+        public string CostDeltaText => !CompareVisible ? string.Empty : "N/A（请查看逐语句可比指标）";
+        public string CostDeltaColor => "#757575";
         public ICommand CaptureCurrentPlanCommand { get; }
         public ICommand ClearHistoryCommand { get; }
         public ICommand RemoveSnapshotCommand { get; }
@@ -266,7 +243,8 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     filePath,
                     TuningHistory,
                     PlanA,
-                    PlanB);
+                    PlanB,
+                    ComparisonSelection);
                 StatusText = $"调优会话已保存至: {System.IO.Path.GetFileName(filePath)}";
             }
             catch (Exception ex)
@@ -288,8 +266,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     TuningHistory.Add(snapshot);
                 }
 
-                PlanA = result.PlanA;
-                PlanB = result.PlanB;
+                SetComparisonPlans(result.PlanA, result.PlanB, result.ComparisonSelection);
                 StatusText = $"已成功载入调优会话，包含 {TuningHistory.Count} 个计划版本";
             }
             catch (Exception ex)
@@ -301,8 +278,14 @@ namespace SqlXmlAnalyzer.Core.ViewModels
 
         public void ClearResults()
         {
+            // Drop the original byte snapshots and complete XML/XEL input records before
+            // notifying comparison/selection observers through PlanA and PlanB below.
+            CurrentPlanInput = null;
+            CurrentDeadlockInput = null;
             CurrentDeadlockDoc = null;
+            CurrentDeadlockAnalysis = null;
             CurrentPlanDoc = null;
+            CurrentPlanDiagnostics = null;
             DeadlockPatternText = "";
             PlanWarningsText = "";
             PlanStatementText = "";
@@ -312,6 +295,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             PlanB = null;
             StatusText = "已清空分析结果";
             AppTitle = "SqlXmlAnalyzer v2.0 - 智能诊断引擎";
+            Logger.Debug("MainViewModel: 已释放输入快照并清空分析结果。");
         }
 
     }

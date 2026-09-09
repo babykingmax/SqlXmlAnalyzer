@@ -1,0 +1,14 @@
+[
+  {
+    "Instance": "SqlXmlAnalyzer_IMP19_2019",
+    "Version": "15.0.4382.1",
+    "RemainingDatabases": 0,
+    "CheckedAt": "2026-09-09T17:57:50.1059785+08:00"
+  },
+  {
+    "Instance": "SqlXmlAnalyzer_IMP19_2025",
+    "Version": "17.0.4075.5",
+    "RemainingDatabases": 0,
+    "CheckedAt": "2026-09-09T17:57:50.1308837+08:00"
+  }
+]

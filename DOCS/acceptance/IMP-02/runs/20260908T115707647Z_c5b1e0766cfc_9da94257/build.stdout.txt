@@ -1,0 +1,13 @@
+  SqlXmlAnalyzer.Core -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Core\debug\SqlXmlAnalyzer.Core.dll
+  SqlXmlAnalyzer.Analysis -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Analysis\debug\SqlXmlAnalyzer.Analysis.dll
+  SqlXmlAnalyzer.Refactoring -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Refactoring\debug\SqlXmlAnalyzer.Refactoring.dll
+  SqlXmlAnalyzer.Application -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Application\debug\SqlXmlAnalyzer.Application.dll
+  SqlXmlAnalyzer.CLI -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.CLI\debug\SqlXmlAnalyzer.CLI.dll
+  SqlXmlAnalyzer -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\debug\SqlXmlAnalyzer.dll
+  SqlXmlAnalyzer.Tests -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Tests\debug\SqlXmlAnalyzer.Tests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.05

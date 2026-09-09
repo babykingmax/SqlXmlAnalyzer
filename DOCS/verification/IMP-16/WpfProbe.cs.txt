@@ -1,0 +1,87 @@
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
+
+using System.Windows.Threading;
+using MaterialDesignThemes.Wpf;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+        string repository = args[0], output = args[1];
+        var app = new SqlXmlAnalyzer.App();
+        app.InitializeComponent();
+        var bindingErrors = new StringWriter();
+        PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(bindingErrors));
+        PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+        var document = SafeXmlHelper.LoadSafe(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp15_index_targets.sqlplan"));
+        var ns = document.Root!.Name.Namespace;
+        var suggestion = PlanDiagnosticAnalyzer.ExtractMissingIndexes(document, ns).First();
+        var vm = new IndexSandboxViewModel(suggestion, document);
+        var window = new IndexSandboxWindow { DataContext = vm, ShowActivated = false, ShowInTaskbar = false,
+            WindowStartupLocation = WindowStartupLocation.Manual, Left = -20000, Top = -20000 };
+        window.Show();
+        var report = new List<object>();
+        foreach (bool dark in new[] { false, true })
+        {
+            var palette = new PaletteHelper();
+            var theme = palette.GetTheme();
+            theme.SetBaseTheme(dark ? BaseTheme.Dark : BaseTheme.Light);
+            palette.SetTheme(theme);
+            Flush(window);
+            var scroll = Descendants(window).OfType<ScrollViewer>().Single(e => e.Content is StackPanel && e.ScrollableHeight > 0);
+            string mode = dark ? "dark" : "light";
+            var texts = Descendants(scroll).OfType<TextBlock>().Where(t =>
+                BindingOperations.GetBinding(t, TextBlock.TextProperty)?.Path.Path is
+                "ImpactSummary" or "ScoreBreakdown" or "ScoreWeights" or "ScoreSource" or "ModelSummary" or "CostEvidenceSummary" or "InputAssumptionsNotice").ToArray();
+            if (texts.Length != 7 || texts.Any(t => string.IsNullOrWhiteSpace(t.Text) || t.ActualHeight <= 0 || t.ActualWidth > scroll.ActualWidth))
+                throw new InvalidOperationException("Missing or clipped evidence bindings.");
+            var scrollOffsets = new List<double>();
+            foreach (double offset in new[] { 0, scroll.ScrollableHeight / 2, scroll.ScrollableHeight })
+            {
+                scroll.ScrollToVerticalOffset(offset);
+                Flush(window);
+                if (Math.Abs(scroll.VerticalOffset - offset) > 1) throw new InvalidOperationException("Scroll position unavailable.");
+                scrollOffsets.Add(scroll.VerticalOffset);
+            }
+            report.Add(new { Theme = mode, window.ActualWidth, window.ActualHeight, scroll.ScrollableHeight, ScrollOffsets = scrollOffsets,
+                Evidence = texts.Select(t => new { Binding = BindingOperations.GetBinding(t, TextBlock.TextProperty)!.Path.Path, t.Text, t.ActualWidth, t.ActualHeight }).ToArray() });
+        }
+        vm.TotalRows = 900;
+        if (!vm.InputAssumptionsNotice.Contains("用户编辑")) throw new InvalidOperationException("Edited source missing.");
+        window.Close();
+        if (bindingErrors.ToString().Length != 0) throw new InvalidOperationException(bindingErrors.ToString());
+        File.WriteAllText(Path.Combine(output, "wpf-probe.json"), System.Text.Json.JsonSerializer.Serialize(new { Passed = true, BindingErrors = 0, ValidationScope = "Compiled window bindings, layout, themes and scrolling; bitmap capture unavailable in this session.", report },
+            new System.Text.Json.JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }));
+        Console.WriteLine("PASS: complete production sandbox; light/dark, scroll pages, seven evidence bindings, edited input source, zero binding errors.");
+        app.Shutdown();
+    }
+    private static void Flush(Window window)
+    {
+        window.UpdateLayout();
+        var frame = new DispatcherFrame();
+        var timer = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(250) };
+        timer.Tick += (_, _) => { timer.Stop(); frame.Continue = false; };
+        timer.Start();
+        Dispatcher.PushFrame(frame);
+    }
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            yield return child;
+            foreach (var descendant in Descendants(child)) yield return descendant;
+        }
+    }
+}

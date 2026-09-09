@@ -1,0 +1,72 @@
+[
+  {
+    "File": "SqlXmlAnalyzer.Tests\\Resources\\plan_critical_mismatch.sqlplan",
+    "Bytes": 735,
+    "Characters": 735,
+    "NodesIncludingAttributes": 52,
+    "Depth": 9
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\Resources\\plan_large_memory_grant.sqlplan",
+    "Bytes": 791,
+    "Characters": 791,
+    "NodesIncludingAttributes": 56,
+    "Depth": 8
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\deadlock_bookmark_lookup.xdl",
+    "Bytes": 1473,
+    "Characters": 1473,
+    "NodesIncludingAttributes": 119,
+    "Depth": 6
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl",
+    "Bytes": 1346,
+    "Characters": 1346,
+    "NodesIncludingAttributes": 127,
+    "Depth": 9
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\imp07_field_mapping.sqlplan",
+    "Bytes": 1210,
+    "Characters": 1210,
+    "NodesIncludingAttributes": 73,
+    "Depth": 9
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\plan_clean.sqlplan",
+    "Bytes": 536,
+    "Characters": 536,
+    "NodesIncludingAttributes": 42,
+    "Depth": 9
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\plan_implicit_conversion.sqlplan",
+    "Bytes": 742,
+    "Characters": 742,
+    "NodesIncludingAttributes": 52,
+    "Depth": 9
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\plan_missing_index.sqlplan",
+    "Bytes": 1192,
+    "Characters": 1192,
+    "NodesIncludingAttributes": 81,
+    "Depth": 11
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\plan_no_relop.sqlplan",
+    "Bytes": 496,
+    "Characters": 496,
+    "NodesIncludingAttributes": 34,
+    "Depth": 5
+  },
+  {
+    "File": "SqlXmlAnalyzer.Tests\\TestData\\plan_prefixed_no_relop.sqlplan",
+    "Bytes": 529,
+    "Characters": 529,
+    "NodesIncludingAttributes": 34,
+    "Depth": 5
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "executable": "pwsh",
+    "arguments": [
+      "-NoProfile",
+      "-File",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T095336975Z_c5b1e0766cfc_b33f24a6\\adapter\\Test-AcceptanceInfrastructure.ps1",
+      "-OutputPath",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T095336975Z_c5b1e0766cfc_b33f24a6\\infrastructure-tests.json"
+    ],
+    "startedUtc": "2026-09-08T09:53:37.7572879+00:00",
+    "finishedUtc": "2026-09-08T09:53:38.8443886+00:00",
+    "processId": 66260,
+    "exitCode": -1,
+    "timedOut": true,
+    "outputComplete": true,
+    "failure": "Process timed out; requested termination of the process tree.",
+    "name": "infrastructure-tests"
+  }
+]

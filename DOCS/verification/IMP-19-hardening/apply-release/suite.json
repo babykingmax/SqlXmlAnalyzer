@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "Name": "ascii-null-threshold",
+      "ObserveSql": "SELECT Id, Name, Age FROM dbo.Users;",
+      "OrderedResults": false,
+      "SetupSql": "CREATE TABLE dbo.Users(Id int, Name nvarchar(20), Age int CHECK(Age BETWEEN -100000 AND 100000)); INSERT dbo.Users VALUES(1,N'admin',40),(2,N'admin',41),(3,NULL,NULL),(4,N'other',50),(5,N' admin',100),(6,N'Admin',50);"
+    }
+  ]
+}

@@ -37,7 +37,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
             return new MermaidDiagramActionResult(
                 MermaidDiagramActionStatus.Ready,
-                _mermaidDiagramService.BuildDeadlockDiagram(document),
+                "%% " + Privacy.OutputPrivacy.RawNotice + "\n" + _mermaidDiagramService.BuildDeadlockDiagram(document),
                 string.Empty,
                 "Generated deadlock Mermaid diagram.");
         }
@@ -59,7 +59,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
             return new MermaidDiagramActionResult(
                 MermaidDiagramActionStatus.Ready,
-                _mermaidDiagramService.BuildPlanDiagram(document, showplanNamespace),
+                "%% " + Privacy.OutputPrivacy.RawNotice + "\n" + _mermaidDiagramService.BuildPlanDiagram(document, showplanNamespace),
                 string.Empty,
                 "Generated execution plan Mermaid diagram.");
         }

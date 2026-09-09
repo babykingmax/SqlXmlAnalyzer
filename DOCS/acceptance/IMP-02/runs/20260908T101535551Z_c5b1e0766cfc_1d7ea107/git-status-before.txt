@@ -1,0 +1,62 @@
+ M .gitignore
+ M AGENTS.md
+ M App.xaml.cs
+ M Core/Services/AnalysisClipboardService.cs
+ M Core/Services/BrowserLauncher.cs
+ M Core/Services/CliService.cs
+ M Core/Services/HtmlReportExportService.cs
+ M Core/Services/MermaidDiagramActionService.cs
+ M Core/Services/MissingIndexClipboardActionService.cs
+ M Core/Services/PlanAnalysisService.cs
+ M Core/Services/PlanGraphNodeClipboardService.cs
+ M Core/Services/PlanObfuscatorService.cs
+ M Core/Services/PortableReportExportService.cs
+ M Core/Services/ReportExportService.cs
+ M Core/Services/TuningSessionActionService.cs
+ M Core/Services/TuningSessionService.cs
+ M MainWindow.Services.cs
+ M Services/MainWindowShellActionService.cs
+ M Services/PlanObfuscationExportUiActionService.cs
+ M SqlXmlAnalyzer.CLI/Program.cs
+ M SqlXmlAnalyzer.Core/HtmlReportGenerator.cs
+ M SqlXmlAnalyzer.Core/Logger.cs
+ M SqlXmlAnalyzer.Core/Models/RefactorResult.cs
+ M SqlXmlAnalyzer.Core/RefactorContext.cs
+ M SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs
+ M SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
+ M SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
+ M SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs
+ M SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs
+ M SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs
+ M SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs
+ M SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs
+ M SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs
+ M Views/IndexSandboxWindow.xaml.cs
+ M Views/ShellNavigationRail.xaml
+ M src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
+ M src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
+ M src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs
+ M src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
+ M src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs
+ M src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs
+ M src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs
+ M src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs
+?? DOCS/
+?? MainWindow.KeyboardShortcuts.cs
+?? SqlXmlAnalyzer.Core/Diagnostics/
+?? SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs
+?? SqlXmlAnalyzer.Core/Privacy/
+?? SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs
+?? SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs
+?? SqlXmlAnalyzer.Tests/Diagnostics/
+?? SqlXmlAnalyzer.Tests/Privacy/
+?? SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs
+?? src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs
+?? src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs
+?? src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs
+?? src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs
+?? src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs
+?? src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs
+?? src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs
+?? src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs
+?? src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs

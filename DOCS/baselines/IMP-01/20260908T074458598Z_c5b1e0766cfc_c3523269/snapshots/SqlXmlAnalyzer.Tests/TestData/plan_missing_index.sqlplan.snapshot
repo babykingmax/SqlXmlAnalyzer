@@ -1,0 +1,30 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="SELECT * FROM Orders WHERE CustomerID = 123">
+          <QueryPlan>
+            <MissingIndexes>
+              <MissingIndexGroup Impact="89">
+                <MissingIndex Database="[TestDB]" Schema="[dbo]" Table="[Orders]">
+                  <ColumnGroup Usage="EQUALITY">
+                    <Column Name="CustomerID" ColumnId="1" />
+                  </ColumnGroup>
+                  <ColumnGroup Usage="INCLUDE">
+                    <Column Name="OrderDate" ColumnId="2" />
+                    <Column Name="Amount" ColumnId="3" />
+                  </ColumnGroup>
+                </MissingIndex>
+              </MissingIndexGroup>
+            </MissingIndexes>
+            <RelOp NodeId="0" PhysicalOp="Index Scan" LogicalOp="Index Scan">
+              <IndexScan>
+                <Object Database="[TestDB]" Schema="[dbo]" Table="[Orders]" Index="[IX_Orders]" />
+              </IndexScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

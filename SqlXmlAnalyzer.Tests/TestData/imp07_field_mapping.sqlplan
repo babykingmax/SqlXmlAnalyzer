@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="15.0.2000.5">
+  <BatchSequence><Batch><Statements>
+    <StmtSimple StatementId="1" StatementType="SELECT" StatementText="SELECT K FROM dbo.Imp07Fixture;" StatementSubTreeCost="1">
+      <QueryPlan>
+        <RelOp NodeId="0" PhysicalOp="Index Scan" LogicalOp="Index Scan" Parallel="true"
+               EstimatedExecutionMode="Row" EstimateRows="100" EstimatedRowsRead="1000"
+               EstimateCPU="0.1" EstimateIO="0.9" EstimateRebinds="0" EstimateRewinds="0"
+               EstimatedTotalSubtreeCost="1" AvgRowSize="8">
+          <OutputList><ColumnReference Column="K"/></OutputList>
+          <RunTimeInformation>
+            <RunTimeCountersPerThread Thread="1" ActualExecutionMode="Batch" ActualRows="100"
+                                     ActualRowsRead="1000" ActualExecutions="1" ActualEndOfScans="1"/>
+          </RunTimeInformation>
+          <IndexScan Ordered="true"><Object Schema="[dbo]" Table="[Imp07Fixture]" Index="[IX_K]"/></IndexScan>
+        </RelOp>
+      </QueryPlan>
+    </StmtSimple>
+  </Statements></Batch></BatchSequence>
+</ShowPlanXML>

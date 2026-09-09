@@ -1,0 +1,84 @@
+using System.IO;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Xml.Linq;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Services;
+
+internal static class IdentityUiProbe
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        string repository = args[0], output = args[1];
+        Directory.CreateDirectory(output);
+        string assemblies = Path.Combine(repository, "bin/Release/net8.0-windows");
+        AssemblyLoadContext.Default.Resolving += (_, name) =>
+            File.Exists(Path.Combine(assemblies, name.Name + ".dll"))
+                ? AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(assemblies, name.Name + ".dll")) : null;
+        var app = new Application();
+        try
+        {
+            Assembly.Load("MaterialDesignThemes.Wpf");
+            Assembly.Load("MaterialDesignColors");
+            XNamespace presentation = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+            var appXml = SafeXmlHelper.LoadSafe(Path.Combine(repository, "App.xaml"));
+            var dictionary = new XElement(appXml.Root!.Element(presentation + "Application.Resources")!.Element(presentation + "ResourceDictionary")!);
+            foreach (var declaration in appXml.Root.Attributes().Where(a => a.IsNamespaceDeclaration))
+                if (dictionary.Attribute(declaration.Name) == null) dictionary.Add(new XAttribute(declaration));
+            app.Resources = (ResourceDictionary)XamlReader.Parse(dictionary.ToString(),
+                new ParserContext { BaseUri = new Uri("pack://application:,,,/SqlXmlAnalyzer;component/") });
+            var input = new InputRecognitionService().Load(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp10_scoped_identities.sqlplan"));
+            var graph = new PlanGraphControl();
+            graph.LoadFromExecutionPlan(input.Document!, input.Document!.Root!.Name.Namespace);
+            var editor = (Nodify.NodifyEditor)graph.FindName("Editor");
+            var canvas = new Grid { Background = Brushes.White, Margin = new Thickness(12) };
+            var nodes = new[] { graph.Nodes[0], graph.Nodes[1], graph.Nodes[3] };
+            var observations = new List<object>();
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                canvas.ColumnDefinitions.Add(new ColumnDefinition());
+                var card = (FrameworkElement)editor.ItemTemplate.LoadContent();
+                card.DataContext = nodes[i];
+                card.Margin = new Thickness(12);
+                card.VerticalAlignment = VerticalAlignment.Top;
+                Grid.SetColumn(card, i);
+                canvas.Children.Add(card);
+                observations.Add(new { nodes[i].NodeId, nodes[i].SelectionKey, nodes[i].ObjectDetails });
+            }
+            canvas.Measure(new Size(1200, 160));
+            canvas.Arrange(new Rect(0, 0, 1200, 160));
+            canvas.UpdateLayout();
+            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+            var text = Descendants(canvas).OfType<TextBlock>().Where(b =>
+                b.GetBindingExpression(TextBlock.TextProperty)?.ParentBinding.Path?.Path == "ObjectDetails").Select(b => b.Text).ToArray();
+            if (!text.Any(t => t.Contains("[sales].[T]")) || !text.Any(t => t.Contains("[audit].[T]")) || nodes[0].ObjectDetails.Length != 0)
+                throw new InvalidOperationException("Production object labels did not retain scope");
+            var bitmap = new RenderTargetBitmap(1200, 160, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(canvas);
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using (var stream = File.Create(Path.Combine(output, "operator-identities.png"))) encoder.Save(stream);
+            File.WriteAllText(Path.Combine(output, "ui-observed.json"), JsonSerializer.Serialize(new
+            { Passed = true, WindowShown = false, Scope = "Production WPF graph node DataTemplate rendered on STA; not full-window automation", Nodes = observations },
+                new JsonSerializerOptions { WriteIndented = true }));
+        }
+        finally { app.Shutdown(); }
+    }
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject element)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+        {
+            var child = VisualTreeHelper.GetChild(element, i);
+            yield return child;
+            foreach (var item in Descendants(child)) yield return item;
+        }
+    }
+}

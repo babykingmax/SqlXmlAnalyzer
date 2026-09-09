@@ -1,0 +1,238 @@
+{
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "baseline": "input-snapshot-before.json",
+  "sourceAndConfiguration": [
+    {
+      "kind": "ContentChanged",
+      "path": ".gitignore",
+      "before": "0131361AE20F09E36B15760D6421EBCD18E5BC231E8F381FE57F558745E7F6B7",
+      "after": "47D488D965B19511D0B48732B2891D3710D77C5274AA83597D72A24C4199BC90"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "App.xaml.cs",
+      "before": "C8A7442681C976DFC549D02FB3647663F8A5672AF3610E2368E4FBD2235C34FF",
+      "after": "642658C9A70DBEB24E7AF14982DE270DC964A5BF7CCFE751F10A75301689BCB4"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "Core/Services/PlanAnalysisService.cs",
+      "before": "3D72C2FA1AF6787C28F47366DD9F6942577C3A0137A6926DCDC4907520ABA1F6",
+      "after": "B6A7A9F540BBB0D1AC40CBD972E2440F234B4B1E6490299F4482EEE468B9802E"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "before": "C9CE09DE417A39F1B045A53E391CEDAF87E863A8C24524134E493F9F87AAEAAA",
+      "after": "728807BBAA8E57DE93A4EEE8E54C283557DF95608DA49E11866513C6C99B4F0A"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/DiagnosticFileAccess.cs",
+      "before": null,
+      "after": "504FF541A023CACC9C77529F08990E44A597EEE1FBEC890FF34C279D7778E594"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "before": null,
+      "after": "B6089E605FEDF38E21B6A92F326A026D00FCC6B06764CE4D6B027F7BA4F9EA18"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/GlobalExceptionHandlers.cs",
+      "before": null,
+      "after": "D272A3B7562BE533CB1F128CABC7A9630BE3409A6AADEF8541C358AE5259D7E1"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+      "before": null,
+      "after": "8ACE45DA547E24F8A11A33BCDA2ECE20E0B99C402B9733192E05487DE27CE13A"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+      "before": null,
+      "after": "7301BD57F57F53FB60AD9A7D79326FF01FF3B0DB574DC3173E971C23C62FF374"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Core/Logger.cs",
+      "before": "CE73E100D384D8273681AEF3CA34C06ED614A2D622270C0F1B533B0A3C7B7221",
+      "after": "CEF550CD56CE010EB3DF96A8406E06975BBF3388862FA095A65D82E836478630"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Core/Models/RefactorResult.cs",
+      "before": "476B524912D5DFA9A0F66D2ECF288085790D973CCE956687228F5BDF7B547F75",
+      "after": "26460CA1F991CF232EE18AEDA69476722BBA7824471EC23E4FDB433307FF3FD8"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs",
+      "before": null,
+      "after": "63F9798828DA025493460690014CAF34D4BF35C66070D323B383B8A40F4F1880"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Core/RefactorContext.cs",
+      "before": "6D92FD55049BB78AE55BB9661B34CFFD27457A47D1D0F3C4128CE548F4F50F75",
+      "after": "4AAA21F9E34693C324E67E52A51B29C3485EE0B8F392FF59AB0D378695AFC304"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+      "before": "1865D77A64CF475B5112E40967960444771004B4DCEA90EC1A101EC6A37CECCD",
+      "after": "6C826DF5F8390DB5BA576714D82A1FC1D07B44DB15F9471ACF5CC9A890F2CF79"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+      "before": "9C7BC90D194B0FD3E41ED57C7788B14F8C1CD506EA812C5D758C655DB4F442E0",
+      "after": "8EC9F788D64F758415F01360D6240DD244462E8B28A69DE2EC4E196EDD51086F"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+      "before": null,
+      "after": "EA4F56CE1E6CEB425C7C4ABA9A21F0096DB80999DDA84D8D818BBA25A955D9EC"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs",
+      "before": null,
+      "after": "780659EB28C4CD6FA26861C6F6BA717DCADB25B0AA8D2D14CEEB2AFAA2EE92D8"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs",
+      "before": "A80B454B6800ED018AD32D0B64340F4E533682E2B59A434FAA55A5C2E6308B8B",
+      "after": "EDEDE05FCE09587C25F0E03BBAEB5C6826932E96EDCCB191E4C66EF884716F0E"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs",
+      "before": null,
+      "after": "17AE3BE6691C528CDB5A6D66B0F73EA31C02CA1B082116A405B5FDE54DD9925E"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "before": "DF44844D9D77C628046A5F136A5D8DA3B5568805957D21E805431924DE57E019",
+      "after": "9B67F5A3D973C13FB5820083FD61D4A7C78DD8C141E69D27C90822D2632C9CB9"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+      "before": "66E5531FC0B42C7D8CD52FF89B230CA15B78BC38BF6E2D959FDC14C6B7081B99",
+      "after": "6B82B2A29E15728DE03A751124EF9474B528B273A8FBB6F01F06C2AEC5D3B118"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs",
+      "before": null,
+      "after": "3656B6EAF10A98743609D3AE1ADFFCD5FE98C68A0798FE93FFF22ECD6E2EB738"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+      "before": "9BAC9B2C31CDC932DC71789E48A1A401E72744556163D0750857B966AC368AF4",
+      "after": "818D5B87EF25D7E862B679232081311C05A4B149ADE89221C3F42E6A3527BE93"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs",
+      "before": "330EE63F2C272EFFAEB00104CC2ACE074E0505B38A04BB2B675A6E34E5276B1E",
+      "after": "46A4B423F9B9F76CA92C5A894F4D0F283C74BFEC3DE20022D38E2BED1530BA32"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs",
+      "before": null,
+      "after": "ACC708C8E091231CB92E13A203A885898C6BCE292D333FD4126B997D880A122B"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs",
+      "before": "5ED6072AF9220B3AF274782EB53D854731D1E424DDB6494942FCC1B945B75B96",
+      "after": "A3763249EF66589EA885447C406BC853298C28B290AAEDC2A3FFAAC95E8F01F0"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs",
+      "before": "43D78D68DE6BCE001A8BFF4B93D5752673365FB35C2572E2E1844F4CAE03967A",
+      "after": "A117E0A74DA2E9925AC000992FE81E3265CF85E4D2CF199BA5F99704A6D08D4C"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs",
+      "before": "2167AC1C8980DBCB2ADD71DC2D51C4161802F5B162BC80C7473E179965861974",
+      "after": "36DA1B63B8726742977AD89677882AFC420156AE0D513F1D79561E8CDCD94D4E"
+    }
+  ],
+  "documentChanges": [
+    "DOCS/IMP-04高风险改写限制与诊断说明.md",
+    "DOCS/软件改善实施规划.md",
+    "DOCS/IMP-02审查反例验收矩阵.md",
+    "DOCS/acceptance/IMP-02/README.md"
+  ],
+  "adapterChanges": [
+    "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+    "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+    "DOCS/acceptance/IMP-02/acceptance-matrix.json"
+  ],
+  "preservedInputs": [
+    {
+      "path": "AGENTS.md",
+      "beforeSha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "afterSha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "beforeSha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "afterSha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "beforeSha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "afterSha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "unchanged": true
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "beforeSha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "afterSha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/ReviewProbe.cs.txt",
+      "beforeSha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "afterSha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/Run-ReviewProbe.ps1",
+      "beforeSha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "afterSha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/baseline.json",
+      "beforeSha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "afterSha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/probe-results.json",
+      "beforeSha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "afterSha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "unchanged": true
+    }
+  ],
+  "unexpectedChanges": [],
+  "committed": false,
+  "note": "The tracked Git diff is relative to HEAD and includes earlier IMP-03 edits in shared files. Before/after hashes here identify this step."
+}

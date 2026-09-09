@@ -1,0 +1,30 @@
+[
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/LocalDbSqlSemanticRunner.cs",
+    "SHA256": "EB7418B89CD9A56C7BC4C67D4C55BD763DBE79AFA8502773A4BD93B328B64AF1"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticSandboxPolicy.cs",
+    "SHA256": "DC766066B033301B5652F8D7244A00C8C90E94F5A6763822522512ED769D676D"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticAffectedRows.cs",
+    "SHA256": "9D08032C15937D3C97416EBE229C731D78F10CCC945ACFA5BBC57CF2F80BE314"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticObserverPolicyTests.cs",
+    "SHA256": "D3D18D255C5BE112C846287968EDEE5F6A42CE5EEA16AFFBE7A265C7D61A896D"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticAffectedRowsTests.cs",
+    "SHA256": "89BB2889A199F03B9FAB28E6BA975F4095E548A281386F98DC21E09D96B331F9"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/ReviewedSqlApplyServiceTests.cs",
+    "SHA256": "75260122D0F1449439DB5D73AB3589CFFB20B80FEEE66008CFAA164D1B01B4CD"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticCliTests.cs",
+    "SHA256": "5AF329EABAECDC3CE999A43367359CBC69507E0CE05FC4D05460C90F57BB8182"
+  }
+]

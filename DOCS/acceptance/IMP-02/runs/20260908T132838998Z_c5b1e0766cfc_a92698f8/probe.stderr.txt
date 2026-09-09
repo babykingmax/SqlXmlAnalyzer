@@ -1,0 +1,54 @@
+[DEBUG] 2026-09-08T21:29:13.8255961+08:00 PlanRedaction started.
+[DEBUG] 2026-09-08T21:29:13.8398885+08:00 PlanRedaction completed: 11 masked items.
+[DEBUG] 2026-09-08T21:29:13.8402807+08:00 PlanRedaction started.
+[WARN] 2026-09-08T21:29:13.8404000+08:00 PlanRedaction blocked: 1 unsupported items.
+[DEBUG] 2026-09-08T21:29:14.0044061+08:00 SQL 写回开始：校验源文件及候选字节。
+[ERROR] 2026-09-08T21:29:14.0076007+08:00 SQL 写回失败：SqlWriteback.CreateBackup
+System.IO.IOException: Synthetic backup failure
+   at Program.FailingBackupFiles.CreateNew(String p, String sourcePath) in C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-42465906d16a444796d640908b36e0c6\Program.cs:line 195
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.CreateOwnedFile(String sourcePath, String extension, CancellationToken token, String& ownedPath) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 149
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.WriteBack(SqlFileSnapshot snapshot, String sql, CancellationToken cancellationToken) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 61
+[DEBUG] 2026-09-08T21:29:14.0247238+08:00 InputRecognition: 开始安全读取 XML。
+[ERROR] 2026-09-08T21:29:14.0258678+08:00 INPUT_UNRELATED_XML: 无法识别此 XML；需要 SQL Server ShowPlanXML、deadlock、deadlock-list 或 XE 死锁包装。
+[DEBUG] 2026-09-08T21:29:14.0299136+08:00 InputRecognition: 已识别 2 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0300477+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0307953+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0335533+08:00 InputRecognition: 已识别 2 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0337050+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0346248+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0346714+08:00 IMP-07: 从 priority 读取死锁优先级。
+[DEBUG] 2026-09-08T21:29:14.0347043+08:00 IMP-07: 从 priority 读取死锁优先级。
+[DEBUG] 2026-09-08T21:29:14.0347356+08:00 IMP-07: 从 priority 读取死锁优先级。
+[DEBUG] 2026-09-08T21:29:14.0356431+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0356824+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0362040+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 2, 受害者: a
+[DEBUG] 2026-09-08T21:29:14.0368755+08:00 BuildWaitForEdges: 共构建 2 条等待边
+[DEBUG] 2026-09-08T21:29:14.0368989+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 2 条边
+[DEBUG] 2026-09-08T21:29:14.0376822+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 2
+[DEBUG] 2026-09-08T21:29:14.0390252+08:00 DetectCycles: 共发现 2 个原始环，去重后 2 个唐一环
+[DEBUG] 2026-09-08T21:29:14.0390589+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 2 个死锁环
+[DEBUG] 2026-09-08T21:29:14.0397948+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=2
+[DEBUG] 2026-09-08T21:29:14.0924103+08:00 IMP-08: 范围锁展示完成；观测模式数=0。
+[DEBUG] 2026-09-08T21:29:14.0937018+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 2, 环: 2
+[DEBUG] 2026-09-08T21:29:14.0986674+08:00 GenerateMermaid: Mermaid 代码生成完成，共 773 字符
+[DEBUG] 2026-09-08T21:29:14.0991590+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.0991970+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.1016112+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.1016410+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.1016707+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 4, 受害者: a
+[DEBUG] 2026-09-08T21:29:14.1016851+08:00 BuildWaitForEdges: 共构建 4 条等待边
+[DEBUG] 2026-09-08T21:29:14.1016909+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 4 条边
+[DEBUG] 2026-09-08T21:29:14.1017009+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 3
+[DEBUG] 2026-09-08T21:29:14.1017616+08:00 DetectCycles: 共发现 6 个原始环，去重后 5 个唐一环
+[DEBUG] 2026-09-08T21:29:14.1017664+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 5 个死锁环
+[DEBUG] 2026-09-08T21:29:14.1017703+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=4
+[DEBUG] 2026-09-08T21:29:14.1018071+08:00 IMP-08: 范围锁展示完成；观测模式数=0。
+[DEBUG] 2026-09-08T21:29:14.1018202+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 4, 环: 5
+[DEBUG] 2026-09-08T21:29:14.1018631+08:00 GenerateMermaid: Mermaid 代码生成完成，共 967 字符
+[DEBUG] 2026-09-08T21:29:14.1019493+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.1019723+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T21:29:14.1199867+08:00 IMP-07: 已读取当前算子的执行属性。
+[DEBUG] 2026-09-08T21:29:14.1251849+08:00 [RuleEngine] Rule 'Scan with Residual Predicate' hit in Operator scope on Node 0. Time: 0ms
+[DEBUG] 2026-09-08T21:29:14.1790550+08:00 IMP-08: 比较展示已生成；缺失运行指标不参与差值计算。
+[DEBUG] 2026-09-08T21:29:14.1799617+08:00 IMP-08: 比较展示已生成；缺失运行指标不参与差值计算。
+[DEBUG] 2026-09-08T21:29:14.2163800+08:00 IMP-08: 依赖推演已初始化；合成步骤数=0。

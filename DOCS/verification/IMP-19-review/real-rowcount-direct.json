@@ -1,0 +1,12 @@
+[
+  {
+    "Side": "Original",
+    "TotalAffected": 3,
+    "ActualLastRowCount": 2
+  },
+  {
+    "Side": "Candidate",
+    "TotalAffected": 3,
+    "ActualLastRowCount": 1
+  }
+]

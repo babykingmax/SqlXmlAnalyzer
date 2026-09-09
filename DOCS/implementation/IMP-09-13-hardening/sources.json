@@ -1,0 +1,44 @@
+{
+  "RecordedAtUtc": "2026-09-09T02:37:01.3874726Z",
+  "Retrieval": "Web search connection failed; GitHub connector unavailable; HTTPS fallback",
+  "Sources": [
+    {
+      "Url": "https://learn.microsoft.com/en-us/dotnet/api/system.xml.linq.xcontainer.descendants?view=net-8.0",
+      "Status": "HTTP 200; read via HTTPS",
+      "Snapshot": null,
+      "Note": "Page read during research; no local HTML snapshot retained."
+    },
+    {
+      "Url": "https://learn.microsoft.com/en-us/dotnet/api/system.windows.rect?view=windowsdesktop-8.0",
+      "Status": "HTTP 200; read via HTTPS",
+      "Snapshot": null,
+      "Note": "Page read during research; no local HTML snapshot retained."
+    },
+    {
+      "Url": "https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals",
+      "Status": "HTTPS connection failed",
+      "Fallback": "https://raw.githubusercontent.com/dotnet/docs/main/docs/standard/garbage-collection/fundamentals.md"
+    },
+    {
+      "Url": "https://raw.githubusercontent.com/dotnet/docs/main/docs/standard/garbage-collection/fundamentals.md",
+      "Status": "Downloaded and read",
+      "Snapshot": "gc-fundamentals.md.txt",
+      "SHA256": "A1829DCF68CC8B92FDDB3D71BDA982D6AB9AE8AD1A9E72C86EA77529C29030C4",
+      "SavedAtUtc": "2026-09-09T02:29:13.0323703Z"
+    },
+    {
+      "Url": "https://raw.githubusercontent.com/microsoft/automatic-graph-layout/master/GraphLayout/MSAGL/Core/Geometry/Curves/Curve.cs",
+      "Status": "Downloaded and read",
+      "Snapshot": "msagl-curve.cs.txt",
+      "SHA256": "31D6EB28BE2B855A987AC3663902D237B0F4B9DCDD20938A239C31E014D6A16C",
+      "SavedAtUtc": "2026-09-09T02:28:07.6298599Z",
+      "Scope": "TrimEdgeSplineWithNodeBoundaries, FindNewStart, FindNewEnd; reference only, no project dependency"
+    },
+    {
+      "Url": "https://raw.githubusercontent.com/microsoft/automatic-graph-layout/master/LICENSE",
+      "Status": "Downloaded and read",
+      "Snapshot": "msagl-LICENSE.txt",
+      "SHA256": "789BF207455E832E8CC853262AD5AA05B31837DFC43670F3E1B0407046A1E2CC"
+    }
+  ]
+}

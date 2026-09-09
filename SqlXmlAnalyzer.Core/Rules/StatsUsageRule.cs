@@ -13,61 +13,54 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var doc = relOp.Document;
+            if (doc == null) return null;
+
+            var statsList = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.Parse(doc, ns);
+            var riskyStats = statsList
+                .Where(stat => stat.Severity != "Info")
+                .ToList();
+
+            if (riskyStats.Count > 0)
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
-
-                var statsList = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.Parse(doc, ns);
-                var riskyStats = statsList
-                    .Where(stat => stat.Severity != "Info")
-                    .ToList();
-
-                if (riskyStats.Count > 0)
+                var sbStats = new StringBuilder();
+                sbStats.AppendLine("📊 优化器统计信息使用状态 (OptimizerStatsUsage):");
+                foreach (var stat in riskyStats)
                 {
-                    var sbStats = new StringBuilder();
-                    sbStats.AppendLine("📊 优化器统计信息使用状态 (OptimizerStatsUsage):");
-                    foreach (var stat in riskyStats)
+                    string warningDetails = "";
+                    if (stat.IsStale)
                     {
-                        string warningDetails = "";
-                        if (stat.IsStale)
-                        {
-                            warningDetails += $" ⚠️ 已过时 (更新账龄: {stat.AgeInDays}天)";
-                        }
-                        if (stat.ModificationCount > 1000)
-                        {
-                            warningDetails += $" ⚠️ 频繁变动 (修改次数: {stat.ModificationCount:N0})";
-                        }
-                        if (stat.IsLowSampling)
-                        {
-                            warningDetails += $" ⚠️ 低采样率 (采样率: {stat.SamplingPercent:F1}%)";
-                        }
-
-                        string statusIcon = string.IsNullOrEmpty(warningDetails) ? "✅" : "⚠️";
-                        sbStats.AppendLine($"   • {statusIcon} [{stat.Database}].[{stat.Schema}].[{stat.Table}] (统计项: {stat.Statistics}){warningDetails}");
-
-                        if (!string.IsNullOrEmpty(warningDetails))
-                        {
-                            sbStats.AppendLine($"     👉 优化建议: UPDATE STATISTICS [{stat.Database}].[{stat.Schema}].[{stat.Table}]({stat.Statistics}) WITH FULLSCAN;");
-                        }
+                        warningDetails += $" ⚠️ 已过时 (更新账龄: {stat.AgeInDays}天)";
+                    }
+                    if (stat.ModificationCount > 1000)
+                    {
+                        warningDetails += $" ⚠️ 频繁变动 (修改次数: {stat.ModificationCount:N0})";
+                    }
+                    if (stat.IsLowSampling)
+                    {
+                        warningDetails += $" ⚠️ 低采样率 (采样率: {stat.SamplingPercent:F1}%)";
                     }
 
-                    // Trim trailing newlines
-                    string messageStr = sbStats.ToString().TrimEnd('\r', '\n');
+                    string statusIcon = string.IsNullOrEmpty(warningDetails) ? "✅" : "⚠️";
+                    sbStats.AppendLine($"   • {statusIcon} [{stat.Database}].[{stat.Schema}].[{stat.Table}] (统计项: {stat.Statistics}){warningDetails}");
 
-                    return new AnalysisResult
+                    if (!string.IsNullOrEmpty(warningDetails))
                     {
-                        RuleId = this.RuleId,
-                        Severity = riskyStats.Any(stat => stat.Severity == "Critical") ? "Critical" : "Warning",
-                        Title = "统计信息使用状态",
-                        Message = messageStr,
-                        NodeId = "0"
-                    };
+                        sbStats.AppendLine($"     👉 优化建议: UPDATE STATISTICS [{stat.Database}].[{stat.Schema}].[{stat.Table}]({stat.Statistics}) WITH FULLSCAN;");
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"StatsUsageRule failed: {ex.Message}");
+
+                // Trim trailing newlines
+                string messageStr = sbStats.ToString().TrimEnd('\r', '\n');
+
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = riskyStats.Any(stat => stat.Severity == "Critical") ? "Critical" : "Warning",
+                    Title = "统计信息使用状态",
+                    Message = messageStr,
+                    NodeId = "0"
+                };
             }
 
             return null;

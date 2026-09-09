@@ -1,0 +1,54 @@
+[
+  {
+    "Target": "../SqlXmlAnalyzer.Core/Logger.cs",
+    "Exists": true
+  },
+  {
+    "Target": "../Core/Services/LogFolderActionService.cs",
+    "Exists": true
+  },
+  {
+    "Target": "../Services/MainWindowShellActionService.cs",
+    "Exists": true
+  },
+  {
+    "Target": "../App.xaml.cs",
+    "Exists": true
+  },
+  {
+    "Target": "../SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/regression-before.log",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/regression-before/regression-before.trx",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/targeted-debug-01/targeted-debug-01.trx",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/debug-build-01.log",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/full-debug/full-debug.trx",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/release-build-01.log",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/full-release/full-release.trx",
+    "Exists": true
+  },
+  {
+    "Target": "./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/summary.json",
+    "Exists": true
+  }
+]

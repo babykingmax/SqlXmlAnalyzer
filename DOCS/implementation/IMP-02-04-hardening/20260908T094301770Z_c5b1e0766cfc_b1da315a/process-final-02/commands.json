@@ -1,0 +1,238 @@
+[
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "restore",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\DiagnosticProbe.csproj",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T09:54:15.7154878+00:00",
+    "finishedUtc": "2026-09-08T09:54:17.1013576+00:00",
+    "processId": 67416,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:15.7154878+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\DiagnosticProbe.csproj",
+      "-c",
+      "Debug",
+      "--no-restore",
+      "--nologo",
+      "-p:BuildProjectReferences=false"
+    ],
+    "startedUtc": "2026-09-08T09:54:17.1540130+00:00",
+    "finishedUtc": "2026-09-08T09:54:18.9502424+00:00",
+    "processId": 56288,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:17.1540130+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\bin\\Debug\\net8.0\\DiagnosticProbe.dll",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-error",
+      "unknown-error"
+    ],
+    "startedUtc": "2026-09-08T09:54:18.9568766+00:00",
+    "finishedUtc": "2026-09-08T09:54:19.9999216+00:00",
+    "processId": 51452,
+    "exitCode": 1,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:18.9568766+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\bin\\Debug\\net8.0\\DiagnosticProbe.dll",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-writeback",
+      "unknown-writeback"
+    ],
+    "startedUtc": "2026-09-08T09:54:20.0161439+00:00",
+    "finishedUtc": "2026-09-08T09:54:20.5372590+00:00",
+    "processId": 59092,
+    "exitCode": 1,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:20.0161439+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Debug\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\risk-preserved.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "startedUtc": "2026-09-08T09:54:20.5480561+00:00",
+    "finishedUtc": "2026-09-08T09:54:20.8861093+00:00",
+    "processId": 58596,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:20.5480561+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Debug\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\candidate.sql",
+      "--format",
+      "json",
+      "--show-sql",
+      "--dry-run"
+    ],
+    "startedUtc": "2026-09-08T09:54:20.9383443+00:00",
+    "finishedUtc": "2026-09-08T09:54:21.3381544+00:00",
+    "processId": 64748,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:20.9383443+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Debug\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\applied.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "startedUtc": "2026-09-08T09:54:21.3513504+00:00",
+    "finishedUtc": "2026-09-08T09:54:21.7595830+00:00",
+    "processId": 57092,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:21.3513504+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\DiagnosticProbe.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--nologo",
+      "-p:BuildProjectReferences=false"
+    ],
+    "startedUtc": "2026-09-08T09:54:21.7757612+00:00",
+    "finishedUtc": "2026-09-08T09:54:23.1399131+00:00",
+    "processId": 50564,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:21.7757612+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\bin\\Release\\net8.0\\DiagnosticProbe.dll",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-error",
+      "unknown-error"
+    ],
+    "startedUtc": "2026-09-08T09:54:23.1434694+00:00",
+    "finishedUtc": "2026-09-08T09:54:23.6898793+00:00",
+    "processId": 42672,
+    "exitCode": 1,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:23.1434694+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-54792638215c4c9aa956b0bd7fc7b65a\\bin\\Release\\net8.0\\DiagnosticProbe.dll",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-writeback",
+      "unknown-writeback"
+    ],
+    "startedUtc": "2026-09-08T09:54:23.6934783+00:00",
+    "finishedUtc": "2026-09-08T09:54:24.0477900+00:00",
+    "processId": 2312,
+    "exitCode": 1,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:23.6934783+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Release\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\risk-preserved.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "startedUtc": "2026-09-08T09:54:24.0525743+00:00",
+    "finishedUtc": "2026-09-08T09:54:24.3368059+00:00",
+    "processId": 61712,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:24.0525743+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Release\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\candidate.sql",
+      "--format",
+      "json",
+      "--show-sql",
+      "--dry-run"
+    ],
+    "startedUtc": "2026-09-08T09:54:24.3488090+00:00",
+    "finishedUtc": "2026-09-08T09:54:24.7070167+00:00",
+    "processId": 58820,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:24.3488090+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Release\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\applied.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "startedUtc": "2026-09-08T09:54:24.7151677+00:00",
+    "finishedUtc": "2026-09-08T09:54:25.0744945+00:00",
+    "processId": 396,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:24.7151677+00:00"
+  }
+]

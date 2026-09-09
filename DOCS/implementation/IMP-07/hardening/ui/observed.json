@@ -1,0 +1,323 @@
+{
+  "Passed": true,
+  "Tables": [
+    {
+      "View": "PlanWorkspaceView",
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Header": "\u5B9E\u9645\u8F93\u51FA\u884C\uFF08\u884C\uFF09",
+          "Text": "100"
+        },
+        {
+          "Path": "ActualRowsRead",
+          "Header": "\u5B9E\u9645\u8BFB\u53D6\u884C\uFF08\u884C\uFF09",
+          "Text": "1,000"
+        },
+        {
+          "Path": "ExecutionMode",
+          "Header": "\u6267\u884C\u6A21\u5F0F (ExecMode)",
+          "Text": "Batch"
+        },
+        {
+          "Path": "ParallelDisplay",
+          "Header": "\u5E76\u884C (Parallel)",
+          "Text": "True"
+        },
+        {
+          "Path": "Ordered",
+          "Header": "\u6709\u5E8F\u626B\u63CF (Ordered)",
+          "Text": "True"
+        }
+      ]
+    },
+    {
+      "View": "PlanView",
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Header": "\u5B9E\u9645\u8F93\u51FA\u884C\uFF08\u884C\uFF09",
+          "Text": "100"
+        },
+        {
+          "Path": "ActualRowsRead",
+          "Header": "\u5B9E\u9645\u8BFB\u53D6\u884C\uFF08\u884C\uFF09",
+          "Text": "1,000"
+        },
+        {
+          "Path": "ExecutionMode",
+          "Header": "\u6267\u884C\u6A21\u5F0F (ExecMode)",
+          "Text": "Batch"
+        },
+        {
+          "Path": "ParallelDisplay",
+          "Header": "\u5E76\u884C (Parallel)",
+          "Text": "True"
+        },
+        {
+          "Path": "Ordered",
+          "Header": "\u6709\u5E8F\u626B\u63CF (Ordered)",
+          "Text": "True"
+        }
+      ]
+    }
+  ],
+  "Tooltip": [
+    {
+      "Path": "ActualRows",
+      "Text": "100"
+    },
+    {
+      "Path": "ActualRowsRead",
+      "Text": "1,000"
+    },
+    {
+      "Path": "ExecutionMode",
+      "Text": "Batch"
+    },
+    {
+      "Path": "ParallelDisplay",
+      "Text": "True"
+    },
+    {
+      "Path": "Ordered",
+      "Text": "True"
+    }
+  ],
+  "RuntimeObservations": [
+    {
+      "View": "PlanWorkspaceView",
+      "Scenario": "estimated",
+      "HasActualRows": false,
+      "OwnCost": 1,
+      "ActualRecost": 1,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "N/A"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "1.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanView",
+      "Scenario": "estimated",
+      "HasActualRows": false,
+      "OwnCost": 1,
+      "ActualRecost": 1,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "N/A"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "1.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanWorkspaceView",
+      "Scenario": "zero",
+      "HasActualRows": true,
+      "OwnCost": 1,
+      "ActualRecost": 0,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "0"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "0.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanView",
+      "Scenario": "zero",
+      "HasActualRows": true,
+      "OwnCost": 1,
+      "ActualRecost": 0,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "0"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "0.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanWorkspaceView",
+      "Scenario": "partial",
+      "HasActualRows": false,
+      "OwnCost": 1,
+      "ActualRecost": 1,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "N/A"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "1.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanView",
+      "Scenario": "partial",
+      "HasActualRows": false,
+      "OwnCost": 1,
+      "ActualRecost": 1,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "N/A"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "1.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanWorkspaceView",
+      "Scenario": "scaled",
+      "HasActualRows": true,
+      "OwnCost": 1,
+      "ActualRecost": 2.5,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "250"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "2.500000"
+        }
+      ]
+    },
+    {
+      "View": "PlanView",
+      "Scenario": "scaled",
+      "HasActualRows": true,
+      "OwnCost": 1,
+      "ActualRecost": 2.5,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "250"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "2.500000"
+        }
+      ]
+    },
+    {
+      "View": "PlanWorkspaceView",
+      "Scenario": "estimated-again",
+      "HasActualRows": false,
+      "OwnCost": 1,
+      "ActualRecost": 1,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "N/A"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "1.000000"
+        }
+      ]
+    },
+    {
+      "View": "PlanView",
+      "Scenario": "estimated-again",
+      "HasActualRows": false,
+      "OwnCost": 1,
+      "ActualRecost": 1,
+      "Values": [
+        {
+          "Path": "ActualRows",
+          "Text": "N/A"
+        },
+        {
+          "Path": "OwnCost",
+          "Text": "1.000000"
+        },
+        {
+          "Path": "ActualRecost",
+          "Text": "1.000000"
+        }
+      ]
+    }
+  ],
+  "Details": [
+    {
+      "Group": "Runtime",
+      "Name": "\u5B9E\u9645\u6267\u884C\u6A21\u5F0F",
+      "Value": "Batch"
+    },
+    {
+      "Group": "Estimates",
+      "Name": "\u4F30\u7B97\u6267\u884C\u6A21\u5F0F",
+      "Value": "Row"
+    },
+    {
+      "Group": "Runtime",
+      "Name": "\u5B9E\u9645\u8F93\u51FA\u884C\uFF08\u884C\uFF09",
+      "Value": "100"
+    },
+    {
+      "Group": "Runtime",
+      "Name": "\u5B9E\u9645\u8BFB\u53D6\u884C\uFF08\u884C\uFF09",
+      "Value": "1,000"
+    }
+  ],
+  "WindowShown": false,
+  "DatabaseExecuted": false
+}

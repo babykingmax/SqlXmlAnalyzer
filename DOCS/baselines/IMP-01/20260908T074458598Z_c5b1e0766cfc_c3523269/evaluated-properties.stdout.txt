@@ -1,0 +1,9 @@
+{
+  "Properties": {
+    "Version": "2.0.0",
+    "AssemblyVersion": "",
+    "InformationalVersion": "",
+    "TargetFramework": "net8.0-windows",
+    "Configuration": "Debug"
+  }
+}

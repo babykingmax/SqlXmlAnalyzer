@@ -1,0 +1,118 @@
+{
+  "total": 8,
+  "passed": 8,
+  "results": [
+    {
+      "configuration": "Debug",
+      "scenario": "unknown-error",
+      "passed": true,
+      "logPolicyPassed": true,
+      "verification": {
+        "Configuration": "Debug",
+        "SourceBeforeSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+        "SourceAfterSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+        "IsSuccess": false,
+        "SourceWritten": false,
+        "Diagnostic": {
+          "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\process.dmp",
+          "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\exception.json",
+          "Failure": null,
+          "DumpCreated": true,
+          "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\exception.json"
+        },
+        "DumpSignature": 1347241037,
+        "DumpStreamCount": 14,
+        "Passed": true
+      }
+    },
+    {
+      "configuration": "Debug",
+      "scenario": "risk-preserved",
+      "passed": true,
+      "outcome": "NoChanges",
+      "sourceBeforeSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+      "sourceAfterSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+      "logPolicyPassed": true,
+      "backupPaths": []
+    },
+    {
+      "configuration": "Debug",
+      "scenario": "candidate",
+      "passed": true,
+      "outcome": "CandidateGenerated",
+      "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "sourceAfterSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "logPolicyPassed": true,
+      "backupPaths": []
+    },
+    {
+      "configuration": "Debug",
+      "scenario": "applied",
+      "passed": true,
+      "outcome": "Applied",
+      "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "sourceAfterSha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E",
+      "logPolicyPassed": true,
+      "backupPaths": [
+        "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\debug\\applied.sql.SqlXmlAnalyzer-e07f2749209740db81a997c53caadf7e.bak"
+      ]
+    },
+    {
+      "configuration": "Release",
+      "scenario": "unknown-error",
+      "passed": true,
+      "logPolicyPassed": true,
+      "verification": {
+        "Configuration": "Release",
+        "SourceBeforeSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+        "SourceAfterSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+        "IsSuccess": false,
+        "SourceWritten": false,
+        "Diagnostic": {
+          "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\process.dmp",
+          "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\exception.json",
+          "Failure": null,
+          "DumpCreated": true,
+          "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\exception.json"
+        },
+        "DumpSignature": 1347241037,
+        "DumpStreamCount": 14,
+        "Passed": true
+      }
+    },
+    {
+      "configuration": "Release",
+      "scenario": "risk-preserved",
+      "passed": true,
+      "outcome": "NoChanges",
+      "sourceBeforeSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+      "sourceAfterSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+      "logPolicyPassed": true,
+      "backupPaths": []
+    },
+    {
+      "configuration": "Release",
+      "scenario": "candidate",
+      "passed": true,
+      "outcome": "CandidateGenerated",
+      "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "sourceAfterSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "logPolicyPassed": true,
+      "backupPaths": []
+    },
+    {
+      "configuration": "Release",
+      "scenario": "applied",
+      "passed": true,
+      "outcome": "Applied",
+      "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "sourceAfterSha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E",
+      "logPolicyPassed": true,
+      "backupPaths": [
+        "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final-02\\release\\applied.sql.SqlXmlAnalyzer-0ecdcec869ea4108a11672b2452f3e02.bak"
+      ]
+    }
+  ],
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false
+}

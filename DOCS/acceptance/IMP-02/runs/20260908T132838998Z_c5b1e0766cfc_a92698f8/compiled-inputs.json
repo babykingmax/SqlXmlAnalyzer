@@ -1,0 +1,12 @@
+[
+  {
+    "snapshot": "adapter/AcceptanceProbe.cs.txt",
+    "compiledPath": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP02-42465906d16a444796d640908b36e0c6\\Program.cs",
+    "sha256": "C6D7FCE406DCFF9B61B216CAD8C2346731D7AE851403CA91DECFA0FCA4D490C0"
+  },
+  {
+    "snapshot": "adapter/PlanRowBindingInspector.cs.txt",
+    "compiledPath": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP02-42465906d16a444796d640908b36e0c6\\PlanRowBindingInspector.cs",
+    "sha256": "C6D88C08DB8A95E0ACC5545B79F0BDE24E5F96B337E4924B5BAE91C5A61375B7"
+  }
+]

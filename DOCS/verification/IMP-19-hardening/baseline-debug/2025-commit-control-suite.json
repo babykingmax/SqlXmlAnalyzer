@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "Name": "commit-control",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": ""
+    }
+  ]
+}

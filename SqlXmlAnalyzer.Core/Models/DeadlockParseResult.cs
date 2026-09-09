@@ -32,5 +32,9 @@ namespace SqlXmlAnalyzer
     public sealed record ParsedDeadlockGraphData(
         List<DeadlockProcess> Processes,
         List<LockResource> Resources,
-        string VictimId);
+        string VictimId)
+    {
+        public IReadOnlySet<string> VictimIds { get; init; } = new HashSet<string>();
+        public string SourceFingerprint { get; init; } = "";
+    }
 }

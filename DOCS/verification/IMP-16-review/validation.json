@@ -1,0 +1,255 @@
+{
+  "Step": "IMP-16 review fixes and hardening",
+  "CompletedAt": "2026-09-09T13:59:33.7269578+08:00",
+  "GitHead": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "WorkingTree": "保留用户既有 IMP-01 至 IMP-16 修改，未提交、推送或重置。SourceFiles 是本轮涉及文件，ContextFiles 是沿用的依赖与异常边界。历史 IMP-16 验证文件未覆盖。",
+  "DotnetSdk": "10.0.400",
+  "BaselineTestsPerConfiguration": 1816,
+  "AddedTests": 60,
+  "AddedPredicateCases": 58,
+  "AddedScoreDumpCases": 2,
+  "Results": [
+    {
+      "Configuration": "Debug",
+      "BuildExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0,
+      "TestsPassed": 1876,
+      "Failed": 0,
+      "Skipped": 0
+    },
+    {
+      "Configuration": "Release",
+      "BuildExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0,
+      "TestsPassed": 1876,
+      "Failed": 0,
+      "Skipped": 0
+    }
+  ],
+  "Commands": [
+    "dotnet build SqlXmlAnalyzer.sln -c Debug",
+    "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Debug --no-build",
+    "dotnet build SqlXmlAnalyzer.sln -c Release",
+    "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Release --no-build"
+  ],
+  "Models": [
+    "captured-cost-exposure/2.0.0",
+    "index-evidence-score/2.0.1",
+    "sandbox-input-assumptions/2.0.0"
+  ],
+  "RuleVersions": {
+    "RULE_020_MISSING_INDEX": "2.1.1",
+    "RULE_035_SARGABLE_INDEX_RECOMMENDATION": "2.1.1"
+  },
+  "RegressionEvidence": {
+    "BeforeFix": "首批 41 项用例：29 失败、12 通过。括号/带符号值、结构化 NULL、CASE 内部条件和相关取证边界均有失败反例。",
+    "AfterFix": "新增 58 个谓词用例全部通过；既有多语句夹具的评分恢复 85/100，捕获 Impact 保持 80。",
+    "UnknownErrors": "新增评分入口故障测试 2 项，实际调用 WindowsMiniDumpWriter 并验证 minidump；去重、元数据、DUMP 写入失败及原异常传播通过。测试专用 DUMP 已清理。",
+    "Logging": "Debug DEBUG/WARN/ERROR/CRITICAL；Release ERROR/CRITICAL。forceVerbose 不绕过配置，模型日志不包含 SQL/目标标识符。",
+    "Cli": "Debug/Release 退出 0；4 个候选，规则与模型版本、范围、权重、来源完整，首项 85/100；stdout JSON 有效，日志过滤通过。",
+    "Wpf": "本轮 Release 完整生产窗口探针：浅色/深色、7 个证据绑定、滚动、用户编辑来源，评分 85/100、捕获 Impact 80、模型 2.0.1；0 绑定错误。两种配置全量套件中的 WPF 回归也通过。"
+  },
+  "NativeValidation": {
+    "ConnectionServerVersion": "17.00.4075",
+    "ShowPlanBuild": "17.0.4075.5",
+    "Configuration": "Debug",
+    "QueryCount": 8,
+    "Passed": true,
+    "Description": "专用 LocalDB 实例和合成数据库，SHOWPLAN_XML 捕获；直接常量案例使用 RECOMPILE，保留一个自动参数化 ConstExpr/Convert 不支持反例。",
+    "FixtureReplay": "Debug/Release 全量测试重放 8 个条件",
+    "CleanupVerified": true,
+    "RemainingInstances": [
+      "MSSQLLocalDB",
+      "ProjectModels"
+    ],
+    "Scope": "仅优化器捕获计划的评分，不是建索引后的性能校准"
+  },
+  "Limitations": [
+    "不穿透 Convert/ConstExpr、CASE、函数、子查询、OR/NOT 或 Seek RangeExpressions 推断直接过滤条件；不支持形状保持缺少证据。",
+    "谓词跨访问算子汇总仍只是候选启发评分，不证明单一可用索引前缀；不预测性能收益。",
+    "未执行整个工作负载或建索引后的耗时/I/O/并发基准。",
+    "本轮没有 XAML 修改；窗口布局/绑定验证不等于截图或人工视觉验收。未生成覆盖率报告。"
+  ],
+  "Research": {
+    "Retrieval": "Microsoft Learn 和官方 GitHub API，只读 HTTPS；网页检索连接失败后的回退。官方证据覆盖本轮约束。",
+    "Sources": [
+      "https://learn.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.transactsql.scriptdom.parenthesisexpression?view=sql-transactsql-161",
+      "https://learn.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.transactsql.scriptdom.unaryexpression?view=sql-transactsql-161",
+      "https://learn.microsoft.com/en-us/sql/t-sql/queries/is-null-transact-sql?view=sql-server-ver17",
+      "https://learn.microsoft.com/en-us/sql/t-sql/language-elements/case-transact-sql?view=sql-server-ver17",
+      "https://schemas.microsoft.com/sqlserver/2004/07/showplan/sql2019/showplanxml.xsd",
+      "https://github.com/microsoft/SqlScriptDOM/blob/b583737682dbb1682b97d0ac5a5261dc94279b8d/SqlScriptDom/Parser/TSql/Ast.xml"
+    ],
+    "SqlScriptDomCommit": "b583737682dbb1682b97d0ac5a5261dc94279b8d",
+    "AstXmlBlob": "e9c2d9ebe0b315350b8e2309e0d2a2d17e5cba2a",
+    "XsdValidationScope": "ScalarType fragments for the structured NULL/CASE/AND/OR/NOT tests; not every full synthetic plan"
+  },
+  "SourceFiles": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexPredicateEvidence.cs",
+      "Sha256": "FFC15783F8CDD4718E9BB827FBA6874EC239391ABA504C1C30874386551C4AFF"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoreResult.cs",
+      "Sha256": "E922B303408BB831E6D34070622F5209A652A942B1DBC620496F7347E0084E35"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MissingIndexRule.cs",
+      "Sha256": "5B6206246ADE05ED562D13C23B684C5B15519BB71360C64AE771D0300739C1C4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+      "Sha256": "3246811AECAA5678EBA074D89D928F5AE66C1A364C2621C84A6A016D79477ECE"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexPredicateHardeningTests.cs",
+      "Sha256": "BA24246D0C197B29DAE85F91A8A7C0E336DCDF0FEABA97DD0C1D544FA71C5D89"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoreModelTests.cs",
+      "Sha256": "1C848321D6D67F98BA086D59EE7142CCCB1D5AF9450A625C73724E901ADB4107"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs",
+      "Sha256": "69231D358A31022AC9FE50FBB519D056679E3C311A40C6FF113B326173AF9206"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/SimulationDiagnosticTests.cs",
+      "Sha256": "7219746E3934D2A40BC46A74343378F0FA5B0D071214A9169F8473AE555922D7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp16_review_predicates.sqlplan",
+      "Sha256": "CAD45E74E4F159BF503D843F7A2EED15FDE7494C37FD6E71878877236ECE90A4"
+    },
+    {
+      "Path": "README.md",
+      "Sha256": "F7F15000FB4F94211E1951EE27E409417CB4E4FCBAA21F6E9E6256F5703E17B0"
+    },
+    {
+      "Path": "Architecture.md",
+      "Sha256": "D09AB391A8AF3A60B2161A37137F4617397153E8D7A5CD4BA178F0C9B6971A9B"
+    },
+    {
+      "Path": "UserGuide.md",
+      "Sha256": "35DECBF6286D9EC1582E9D7FA629824134E01E523835609CD4A145BF44867E34"
+    },
+    {
+      "Path": "CHANGELOG.md",
+      "Sha256": "4CC8227BF6908624E279E9EE13687351FCCA14FB6A5945B7C4F0C95DCE989C24"
+    },
+    {
+      "Path": "DOCS/README.md",
+      "Sha256": "63D620F3C5997E254C3967E812331C95B72E3F69EA72F74DBC1775B195C1C7A5"
+    },
+    {
+      "Path": "DOCS/软件改善实施规划.md",
+      "Sha256": "35781A1471F456B8AF2ADE21C5BC5DCBA17B038FC92C64C8885184C7159126D0"
+    },
+    {
+      "Path": "DOCS/软件详细设计与问题分析.md",
+      "Sha256": "947A8AF012A419B1F94ECF57C1FD4648DF09C03929D744C065C7113A365A92E0"
+    },
+    {
+      "Path": "DOCS/IMP-16模拟顺序依赖与模型限制.md",
+      "Sha256": "98B7B4D48B808403D53B19AECE2891545F6757CD9C8D24FD0E2FA3549FBFCDCD"
+    },
+    {
+      "Path": "DOCS/IMP-16审查修复与加固说明.md",
+      "Sha256": "A61255CC9BC3DDAA916A075D119D8C0F9BE8AC5B07C975DDDA10A5918B52F3BB"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/verify-cli.ps1",
+      "Sha256": "B219E340315AFD0F9A093F8F91AF9F04D9B22EB5C0EFE117FC05C34CD9FD7640"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/verify-localdb.ps1",
+      "Sha256": "5865987EF4DB8764D9D183B1DC66B858C4622B33AB4C0C39F88CC1A304F2D026"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/verify-wpf.ps1",
+      "Sha256": "EE63C2A72988062BA40C404FBAC5F5F383B389CA49A572669DC8B4267EFFC2AF"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/WpfProbe.cs.txt",
+      "Sha256": "BBE68A381EA94F81A8D1C17F039EC33B89EAA61127DAAFEACD23A51952DB5936"
+    }
+  ],
+  "ContextFiles": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+      "Sha256": "5796FA9CC2CC114E8825CF156BFF8068D9AF56C6F129D3AB3738BAB1ED2297EA"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/IndexTargetResolver.cs",
+      "Sha256": "C1E041240D39A1EF8AA42A31FC2C74072F194B7D92EDEFC93EBE0AC1D53605CD"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "Sha256": "EDBB5538C5A99864F1203B17762ADD7007D7A2ABAA8B9872C36CDD29E260E279"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+      "Sha256": "3BDA8B6130B0B9252C0846B462705F736CB2B6EE5736D5338B8CA6BDE6D676AD"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+      "Sha256": "C9A218DBD11A9D392CFAEF19607BC8EAE56BE9A4A8FA6CAFEFD8DB61E18321F4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Logger.cs",
+      "Sha256": "9BDC93CE515AE8A4F76FAC0FC9B486213FE27DE5E52926EB7E418AF295D621C7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/Schemas/showplanxml-sql2019.xsd",
+      "Sha256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8"
+    }
+  ],
+  "EvidenceFiles": [
+    {
+      "Path": "DOCS/verification/IMP-16-review/red-tests.log",
+      "Sha256": "1872261CB5C2C768D2CBF41572C4EF996C99525B655160846B733D426B53F84D"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/build-debug.log",
+      "Sha256": "65464A7F34EFA81A3D9A0F45490E6A77BF077C131035E5429B258C8BB306A228"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/test-debug.log",
+      "Sha256": "C792EF28A4CB63AB493658484DE8BA3CE71544901129418C0A7641574FBB7BA5"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/build-release.log",
+      "Sha256": "44B76ED18A3F38F7648EF20D0DB18DDB02604E32EAF2936E19B1F427441B9AD3"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/test-release.log",
+      "Sha256": "7BFC4165679B7554CAD9F9DF0D37ECFB75603EB05B9A329CE68A759D9A3D96BF"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/localdb.log",
+      "Sha256": "49A9E7EA36E636EDAAAD30CCBB312CBEEBF03DF3AF9A8DFA8344E48413A50F4A"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/localdb-results.json",
+      "Sha256": "D166FB9DA80EF0FE1D8F0F7599635271C8948CAB389270E8B8ED1EDDFF0767FE"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/captured.sqlplan",
+      "Sha256": "CAD45E74E4F159BF503D843F7A2EED15FDE7494C37FD6E71878877236ECE90A4"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/cli-validation.json",
+      "Sha256": "585711582A93A1156C936F6446B7DECCADBB1CE728C0FD699DBF82A9AC049438"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/wpf-probe.json",
+      "Sha256": "79D9D8ED9D0435D77D422A3DF34D3F1424CD65E7987879EF71A543EF1C17CAF7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16-review/wpf.log",
+      "Sha256": "990CCB9D1F832C8848A7B8C210323C5AEBD1E195F032F1B6A19C41AE3EF4BE9D"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "Path": "SqlXmlAnalyzer.Core/Logger.cs",
+    "BeforeSha256": "34A4C4987266BA0CFBB657785DFEA484AEF2E473B035262763BD0CDF5E1AB05D",
+    "AfterSha256": "9BDC93CE515AE8A4F76FAC0FC9B486213FE27DE5E52926EB7E418AF295D621C7",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/SqlXmlAnalyzer.Core/Logger.cs.snapshot"
+  },
+  {
+    "Path": "Core/Services/LogFolderActionService.cs",
+    "BeforeSha256": "F5F44BA2FA4D22E73EFED5921817AD72D943370A36B5019D64DD8343D61F25C9",
+    "AfterSha256": "F2E1C00DE45550E3A2E2D8D663BB9021C821F4BC166C7019599A9C92121ED6FB",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/Core/Services/LogFolderActionService.cs.snapshot"
+  },
+  {
+    "Path": "Services/MainWindowShellActionService.cs",
+    "BeforeSha256": "E4F8012BF4DD6B20CA19E1BE7F24EB6690B152E2E785403B1F8B366CC37353AA",
+    "AfterSha256": "E9AD3EF1532533E484F6540659368B2137DD8FF4DA55515D55E4C4F24050B2C3",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/Services/MainWindowShellActionService.cs.snapshot"
+  },
+  {
+    "Path": "App.xaml.cs",
+    "BeforeSha256": "642658C9A70DBEB24E7AF14982DE270DC964A5BF7CCFE751F10A75301689BCB4",
+    "AfterSha256": "A85B08C89627303672013954EF90197DBE375044534A794CBDB440983CAA4DD2",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/App.xaml.cs.snapshot"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs",
+    "BeforeSha256": "43628130B91361A14BCC38746B414498C2A638BF663937F3FCCBB52B84195E23",
+    "AfterSha256": "EEAE73D62FA57463B5A088AC87A641333E4D640C70B0E7859B5B1A4E4260E17D",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs.snapshot"
+  },
+  {
+    "Path": "DOCS/IMP-04高风险改写限制与诊断说明.md",
+    "BeforeSha256": "5CF716A235004BC5B1101A6D2E73E2FD1BEE65190563D9C830E7466A531AA86E",
+    "AfterSha256": "AE9D51E30B3093821023C48C705E5D4791E6473C9B10376FD1D8F452EC7FDD47",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/DOCS/IMP-04高风险改写限制与诊断说明.md.snapshot"
+  },
+  {
+    "Path": "DOCS/IMP-05脱敏覆盖与输出入口验证.md",
+    "BeforeSha256": "CDCF4758B23965890C4F005ED8FA171DC6A8C7B0866D4BF73F7230EBE5374A91",
+    "AfterSha256": "D226DAD6F5FD5C8B138318DF0DAC7044CECEF2E2BB0513041731CA8BD4F640C4",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/DOCS/IMP-05脱敏覆盖与输出入口验证.md.snapshot"
+  },
+  {
+    "Path": "DOCS/IMP-02-04加固与实施符合性核对.md",
+    "BeforeSha256": "EDAB0F30A1723AA1A9D3A4D729B300892E6C3AB4420CF03423BE28C2315D10B9",
+    "AfterSha256": "E3F92D62C33C7F5E07FB42500F8C0CD614057D63291144F6D978AFA4FD21F863",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/DOCS/IMP-02-04加固与实施符合性核对.md.snapshot"
+  },
+  {
+    "Path": "DOCS/软件改善实施规划.md",
+    "BeforeSha256": "84E4C3E05AD6AE1B77312F5A4D18D864CAA2F7ACC0C58886996C8653B9E0DFA2",
+    "AfterSha256": "0B8ED0CF005CB8C5691986863330D446CE93D1B884038EA6441A7E69E6397CAD",
+    "Owner": "IMP-03-05 review fix: log-directory regression and boundary hardening",
+    "Snapshot": "after/DOCS/软件改善实施规划.md.snapshot"
+  },
+  {
+    "Path": "DOCS/IMP-03-05复审问题修复与加固.md",
+    "BeforeSha256": null,
+    "AfterSha256": "16B946E5C94E0F7C0F0D17E18774C13526E7514DC351C54E10C484BD0FDF5C99",
+    "Owner": "New review-fix delivery document",
+    "Snapshot": "after/DOCS/IMP-03-05复审问题修复与加固.md.snapshot"
+  }
+]

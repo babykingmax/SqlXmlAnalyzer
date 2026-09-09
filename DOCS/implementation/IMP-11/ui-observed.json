@@ -1,0 +1,47 @@
+{
+  "BindingsPassed": true,
+  "ScreenshotCreated": false,
+  "ScreenshotFailure": "RenderTargetBitmap produced zero meaningful pixels in this environment, including SoftwareOnly and DrawingVisual attempts. No screenshot accepted.",
+  "WindowShown": false,
+  "Width": 1120,
+  "Height": 1121,
+  "Scope": "Production WPF graph cards and tooltip bindings on STA; not full-window interaction",
+  "Nodes": [
+    {
+      "NodeId": "0",
+      "ObjectDetails": "",
+      "Predicate": "",
+      "ActualRows": "N/A",
+      "ActualRowsRead": "N/A",
+      "ExecutionMode": "N/A",
+      "Ordered": "N/A",
+      "ActualExecutions": "N/A",
+      "EstimatedOperatorCost": "6.0000000",
+      "EstRows": "100"
+    },
+    {
+      "NodeId": "1",
+      "ObjectDetails": "?.[Db].[dbo].[T] / Index [IX_T]",
+      "Predicate": "[T].[V]=(2)",
+      "ActualRows": "100",
+      "ActualRowsRead": "1,000",
+      "ExecutionMode": "Batch",
+      "Ordered": "True",
+      "ActualExecutions": "2",
+      "EstimatedOperatorCost": "4.0000000",
+      "EstRows": "100"
+    },
+    {
+      "NodeId": "9",
+      "ObjectDetails": "",
+      "Predicate": "",
+      "ActualRows": "N/A",
+      "ActualRowsRead": "N/A",
+      "ExecutionMode": "N/A",
+      "Ordered": "N/A",
+      "ActualExecutions": "N/A",
+      "EstimatedOperatorCost": "N/A",
+      "EstRows": "N/A"
+    }
+  ]
+}

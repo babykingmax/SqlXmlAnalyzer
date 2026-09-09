@@ -1,0 +1,25 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="SECRET_SQL" StatementSubTreeCost="1">
+          <QueryPlan>
+            <RelOp>
+              <IndexScan>
+                <Object Server="SECRET_SERVER" Database="SECRET_DATABASE" Schema="SECRET_SCHEMA" Alias="SECRET_ALIAS" Table="SECRET_TABLE" />
+                <Predicate>
+                  <ScalarOperator ScalarString="SECRET_EXPRESSION">
+                    <Const ConstValue="SECRET_LITERAL" />
+                  </ScalarOperator>
+                </Predicate>
+                <ParameterList>
+                  <ColumnReference Column="@SECRET_PARAMETER" ParameterCompiledValue="SECRET_COMPILED" ParameterRuntimeValue="SECRET_RUNTIME" />
+                </ParameterList>
+              </IndexScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

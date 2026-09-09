@@ -1,0 +1,23 @@
+{
+  "tool": "pypdf text extraction",
+  "passed": true,
+  "results": [
+    {
+      "configuration": "Debug",
+      "pdf": "process-03\\Debug\\raw.pdf",
+      "markerPresent": true,
+      "rawNoticePresent": true,
+      "sharingLimitPresent": true,
+      "pages": 1
+    },
+    {
+      "configuration": "Release",
+      "pdf": "process-03\\Release\\raw.pdf",
+      "markerPresent": true,
+      "rawNoticePresent": true,
+      "sharingLimitPresent": true,
+      "pages": 1
+    }
+  ],
+  "visualInspection": false
+}

@@ -88,17 +88,20 @@
                                             <DataGridTextColumn Header="物理操作 (PhysicalOp)" Binding="{Binding PhysicalOp}" Width="160"/>
                                             <DataGridTextColumn Header="逻辑操作 (LogicalOp)" Binding="{Binding LogicalOp}" Width="160"/>
                                             <DataGridTextColumn Header="预估开销 (OwnCost)" Binding="{Binding OwnCost, StringFormat={}{0:F6}}" Width="120"/>
-                                            <DataGridTextColumn Header="重算开销 (Recost)" Binding="{Binding ActualRecost, StringFormat={}{0:F6}}" Width="120"/>
+                                            <DataGridTextColumn Header="工具估算 (Recost)" Binding="{Binding ActualRecost, StringFormat={}{0:F6}}" Width="120"/>
                                             <DataGridTextColumn Header="预估行 (EstRows)" Binding="{Binding EstRows}" Width="100"/>
-                                            <DataGridTextColumn Header="实际行 (ActRows)" Binding="{Binding ActualRowsRead}" Width="100"/>
-                                            <DataGridTextColumn Header="执行模式 (ExecMode)" Binding="{Binding ExecutionMode}" Width="120"/>
+                                            <DataGridTextColumn Header="实际输出行（行）" Binding="{Binding ActualRows}" Width="SizeToHeader" MinWidth="140"/>
+                                            <DataGridTextColumn Header="实际读取行（行）" Binding="{Binding ActualRowsRead}" Width="SizeToHeader" MinWidth="140"/>
+                                            <DataGridTextColumn Header="执行模式 (ExecMode)" Binding="{Binding ExecutionMode}" Width="Auto" MinWidth="190"/>
+                                            <DataGridTextColumn Header="并行 (Parallel)" Binding="{Binding ParallelDisplay}" Width="SizeToHeader" MinWidth="115"/>
+                                            <DataGridTextColumn Header="有序扫描 (Ordered)" Binding="{Binding Ordered}" Width="SizeToHeader" MinWidth="140"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </TabItem>
                                 <TabItem Header="📄 XML 源码" Margin="0,0,3,0">
                                     <TextBox x:Name="PlanXmlTextBox" IsReadOnly="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}"/>
                                 </TabItem>
-                                <TabItem x:Name="SqlRefactorTab" Header="✨ T-SQL 智能重构" Margin="0,0,3,0">
+                                <TabItem x:Name="SqlRefactorTab" Header="SQL 改写提案" Margin="0,0,3,0">
                                     <Grid Background="{DynamicResource MaterialDesignPaper}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -114,10 +117,11 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                     <materialDesign:PackIcon Kind="AutoFix" Foreground="#1976D2" VerticalAlignment="Center" Width="20" Height="20" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="AST 静态规则引擎已自动扫描并重构了查询语句中的反模式（如隐式转换、表变量等）" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/>
+                                                    <TextBlock Text="查看改写前提、风险与 SQL diff；选择仅生成审核预览" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12.5"/>
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                    <Button Content="复制重构 SQL" Click="CopyRefactoredSql_Click" Margin="0,0,8,0" Padding="12,2" Style="{StaticResource MaterialDesignFlatButton}"/>
+                                                    <Button Content="审核提案" Click="ReviewProposals_Click" Margin="0,0,8,0" Padding="12,2" Style="{StaticResource MaterialDesignFlatButton}"/>
+                                                    <Button Content="复制当前预览" Click="CopyRefactoredSql_Click" Margin="0,0,8,0" Padding="12,2" Style="{StaticResource MaterialDesignFlatButton}"/>
                                                     <Button Content="隐藏原始 SQL" x:Name="BtnCompareSql" Click="CompareSql_Click" Padding="12,2" Style="{StaticResource MaterialDesignFlatButton}"/>
                                                 </StackPanel>
                                             </Grid>
@@ -158,7 +162,7 @@
                                                     <RowDefinition Height="*"/>
                                                 </Grid.RowDefinitions>
                                                 <Border Background="#E3F2FD" Padding="4,2" CornerRadius="4,4,0,0" BorderThickness="1,1,1,0" BorderBrush="#BBDEFB">
-                                                    <TextBlock Text="重构后 SQL 语句 (优化版)" FontWeight="SemiBold" Foreground="#1565C0" FontSize="11" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="审核预览（未选择时保留原文）" FontWeight="SemiBold" Foreground="#1565C0" FontSize="11" HorizontalAlignment="Center"/>
                                                 </Border>
                                                 <RichTextBox Grid.Row="1" x:Name="RefactoredSqlTextBox" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12" Padding="6" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="#BBDEFB" BorderThickness="1">
                                                     <RichTextBox.Resources>

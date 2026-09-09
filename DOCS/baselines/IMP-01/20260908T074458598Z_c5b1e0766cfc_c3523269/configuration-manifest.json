@@ -1,0 +1,107 @@
+[
+  {
+    "path": ".editorconfig",
+    "tracked": true,
+    "exists": true,
+    "bytes": 287,
+    "sha256": "34E71AD61C6D641DEDC84CEE4DDEF0646A2A7A981C3453ED60F2392AEB70D2FA"
+  },
+  {
+    "path": ".gitattributes",
+    "tracked": true,
+    "exists": true,
+    "bytes": 2518,
+    "sha256": "45A7CBB7D9942BA7FFCE0B20BC8DBE2D1196533BC6E4BD245871D77FB1EEDFDC"
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "tracked": true,
+    "exists": true,
+    "bytes": 1566,
+    "sha256": "30039FC3EE82604C5030929B29CE7319B7CF25ADD25662960FAA18BEE78C4E08"
+  },
+  {
+    "path": ".gitignore",
+    "tracked": true,
+    "exists": true,
+    "bytes": 6466,
+    "sha256": "0131361AE20F09E36B15760D6421EBCD18E5BC231E8F381FE57F558745E7F6B7"
+  },
+  {
+    "path": "Directory.Build.props",
+    "tracked": true,
+    "exists": true,
+    "bytes": 221,
+    "sha256": "EC73F922F75E20CCB4192D7D850AD2D135B50CA4F839117D013287570D3B9688"
+  },
+  {
+    "path": "Directory.Packages.props",
+    "tracked": true,
+    "exists": true,
+    "bytes": 1666,
+    "sha256": "ACB8F8AABAC7050CE1706A65A245015964808D511FA1D0651093D4721804C356"
+  },
+  {
+    "path": "RuleConfiguration.json",
+    "tracked": true,
+    "exists": true,
+    "bytes": 578,
+    "sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.CLI/SqlXmlAnalyzer.CLI.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 1175,
+    "sha256": "5A147A329590FE647EC55E252840D04BA489875685233AB037D7D18DA2F746BA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/SqlXmlAnalyzer.Core.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 382,
+    "sha256": "FCF48DAE44FB6C08BE5CA8CE407336F646D5268AA2E1154EDA153687D489ED8F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 2432,
+    "sha256": "FB447C3543EF04CFBA73AF1BC1FD0B53A2C8CA0D3BB53FC18A5EBC2DDBDA48B8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.sln",
+    "tracked": true,
+    "exists": true,
+    "bytes": 9231,
+    "sha256": "9004CEAC6F6B801B9C0D72263EE657D012811BB6ADF524CA7FDECBC215A37599"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 1413,
+    "sha256": "DF1E075D9ABC6AEAE1CE8FCFB8288E9FBDE7AF6EA885BBB3F03ED60BDE1BB19B"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalyzer.Analysis.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 340,
+    "sha256": "F6F99C72C27E3325C93610E39F64DBF4963EE74455815204F29A58BF4DB2BABE"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/SqlXmlAnalyzer.Application.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 534,
+    "sha256": "8B8265284B817F88D4E70C6373065CAE6345FAD4EBB89AB40AD9DF783B26EAD1"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/SqlXmlAnalyzer.Refactoring.csproj",
+    "tracked": true,
+    "exists": true,
+    "bytes": 450,
+    "sha256": "C8A3125D99112F18E71E3A36651047AD1E7F184AFF2278B161749886C6B5C19C"
+  }
+]

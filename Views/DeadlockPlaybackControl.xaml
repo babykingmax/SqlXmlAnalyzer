@@ -4,10 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:SqlXmlAnalyzer.ViewModels"
+             xmlns:evidence="clr-namespace:SqlXmlAnalyzer.Core.Services;assembly=SqlXmlAnalyzer.Core"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="850">
     <materialDesign:Card Padding="16,12" materialDesign:ElevationAssist.Elevation="Dp2" Background="{DynamicResource MaterialDesignPaper}">
+        <StackPanel>
+        <TextBlock x:Name="DependencyInferenceNotice" Text="{x:Static evidence:AnalysisDisplayText.DeadlockInferenceNotice}"
+                   TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignBody}" FontWeight="SemiBold" Margin="0,0,0,10"/>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/> <!-- Stepper Timeline -->
@@ -155,5 +159,6 @@
                 </materialDesign:Card>
             </Grid>
         </Grid>
+        </StackPanel>
     </materialDesign:Card>
 </UserControl>

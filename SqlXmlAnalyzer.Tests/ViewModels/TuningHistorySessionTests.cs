@@ -50,12 +50,12 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
         }
 
         [Fact]
-        public void ComparePlans_ShouldComputeCostDeltaCorrectly()
+        public void ComparePlans_TotalsAloneCannotBypassComparabilityChecks()
         {
             // Arrange
             var vm = new MainViewModel();
             var snapshotA = new PlanSnapshot { TotalCost = 0.5 };
-            var snapshotB = new PlanSnapshot { TotalCost = 0.2 }; // 60% optimization
+            var snapshotB = new PlanSnapshot { TotalCost = 0.2 };
 
             // Act
             vm.PlanA = snapshotA;
@@ -63,13 +63,13 @@ namespace SqlXmlAnalyzer.Tests.ViewModels
 
             // Assert
             vm.CompareVisible.Should().BeTrue();
-            vm.CostDeltaText.Should().Contain("▼ 预计成本优化: 60.00%");
-            vm.CostDeltaColor.Should().Be("#2E7D32"); // Green
+            vm.CostDeltaText.Should().Contain("N/A");
+            vm.CostDeltaColor.Should().Be("#757575");
 
             // Cost increase scenario
             vm.PlanB = new PlanSnapshot { TotalCost = 1.0 }; // 100% increase
-            vm.CostDeltaText.Should().Contain("▲ 预计成本增加: 100.00%");
-            vm.CostDeltaColor.Should().Be("#D32F2F"); // Red
+            vm.CostDeltaText.Should().Contain("N/A");
+            vm.CostDeltaColor.Should().Be("#757575");
         }
 
         [Fact]

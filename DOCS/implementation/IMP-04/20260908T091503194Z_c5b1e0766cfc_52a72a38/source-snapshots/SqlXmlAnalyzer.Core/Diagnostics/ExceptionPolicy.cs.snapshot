@@ -1,0 +1,20 @@
+namespace SqlXmlAnalyzer.Core.Diagnostics;
+
+public static class ExceptionPolicy
+{
+    // Expected input, storage, permissions and cancellation failures do not require a process dump.
+    public static bool IsExpected(Exception exception) => exception is
+        OperationCanceledException or IOException or UnauthorizedAccessException or
+        System.Xml.XmlException or System.Text.DecoderFallbackException or System.Text.EncoderFallbackException;
+
+    public static string Describe(Exception exception, string operation, IUnexpectedErrorReporter? reporter = null)
+    {
+        if (IsExpected(exception))
+        {
+            if (exception is OperationCanceledException) Logger.Warning($"操作取消：{operation}");
+            else Logger.Error($"操作失败：{operation}", exception);
+            return exception.Message;
+        }
+        return $"{exception.Message}；{(reporter ?? UnexpectedErrorReporter.Shared).Report(exception, operation).Summary}";
+    }
+}

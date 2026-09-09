@@ -1,0 +1,50 @@
+{
+  "TimestampUtc": "2026-09-09T01:04:30.4995014Z",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1434,
+      "Passed": 1434,
+      "Failed": 0,
+      "Trx": "debug.trx"
+    },
+    {
+      "Configuration": "Release",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1434,
+      "Passed": 1434,
+      "Failed": 0,
+      "Trx": "release.trx"
+    }
+  ],
+  "CoreAssemblySha256": "E9D42CA0FA282CEBBB58873EF89365E9ABE0DC8DE129806D2D91E000B6CFC33F",
+  "Sources": [
+    {
+      "SHA256": "D08129E65AF19E49E9F65C1C3F5F4E128AE7CF4CB90EE52B258AAF942EAD3B7B",
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticProtocol.cs"
+    },
+    {
+      "SHA256": "8E425D130B866058A425226FE5AD1F476191406D1D3B81314C1373BAE2047F5E",
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.Execution.cs"
+    },
+    {
+      "SHA256": "63D552ED64EDA72211E6877B3CAE8889F222002802A85141E7B1AC189B99F745",
+      "Path": "SqlXmlAnalyzer.Core/Rules/LegacyDiagnosticAdapter.cs"
+    },
+    {
+      "SHA256": "92DFACD953F1DE4E6991DC64534B9FCE31DC51066D6E2283D0D7318DCEB93ADD",
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticTextFormatter.cs"
+    },
+    {
+      "SHA256": "770A1A84D55B5CF19020794B9480C4A5AFF22E87ED6838B82C3343F68822F594",
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolTests.cs"
+    },
+    {
+      "SHA256": "6C94B582A63128E450AF40F0616AD6BEA20B9555FAA747032D5FB4C3D92A37E1",
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolFlowTests.cs"
+    }
+  ]
+}

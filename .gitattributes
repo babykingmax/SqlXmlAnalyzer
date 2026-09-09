@@ -3,6 +3,14 @@
 ###############################################################################
 * text=auto
 
+# Keep archived evidence and the upstream schema byte-for-byte for SHA-256 checks.
+DOCS/acceptance/** -text
+DOCS/baselines/** -text
+DOCS/implementation/** -text
+DOCS/review-evidence/** -text
+DOCS/verification/** -text
+SqlXmlAnalyzer.Tests/TestData/Schemas/*.xsd -text
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

@@ -1,0 +1,66 @@
+[
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 1,
+    "AfterCount": 1
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 2,
+    "AfterCount": 2
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 1,
+    "AfterCount": 1
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 0,
+    "AfterCount": 0
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 3,
+    "AfterCount": 3
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": false,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 2,
+    "AfterCount": 2
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/plan_no_relop.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 0,
+    "AfterCount": 0
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/plan_prefixed_no_relop.sqlplan",
+    "SourceUnchanged": true,
+    "LegacyFieldsUnchanged": true,
+    "OnlyExpectedSummaryNodeIdChange": true,
+    "BeforeCount": 0,
+    "AfterCount": 0
+  }
+]

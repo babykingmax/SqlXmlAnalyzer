@@ -1,0 +1,1 @@
+SELECT N'漢字' AS Value;

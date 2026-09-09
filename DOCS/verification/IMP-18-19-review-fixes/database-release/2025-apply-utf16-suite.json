@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "ObserveSql": "",
+      "SetupSql": "CREATE TABLE dbo.T(N real, Value nvarchar(1)); INSERT dbo.T VALUES(16777216,CAST(0x01D8 AS nvarchar(1))),(16777218,CAST(0x00D8 AS nvarchar(1)));",
+      "OrderedResults": false,
+      "Name": "utf16"
+    }
+  ],
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025"
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/debug/unknown-error/dumps/20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1/process.dmp",
+    "bytes": 540830,
+    "sha256": "4C9E2C3D091FEEF97CBEF45F14EE09AC619E5362C396B1ED49456C0978B247DD",
+    "streamCount": 14,
+    "structureValid": true
+  },
+  {
+    "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/debug/unknown-writeback/dumps/20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8/process.dmp",
+    "bytes": 519548,
+    "sha256": "9FD3746D7EE0CD37CA77B9952E593CC1D5CF4FE934F981DC2A87F0C070D29267",
+    "streamCount": 14,
+    "structureValid": true
+  },
+  {
+    "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/release/unknown-error/dumps/20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0/process.dmp",
+    "bytes": 534431,
+    "sha256": "0416D4D883695124821A87BEC40449A5001E2AF702C5A77C88A24C7D6D3FC016",
+    "streamCount": 14,
+    "structureValid": true
+  },
+  {
+    "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/release/unknown-writeback/dumps/20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8/process.dmp",
+    "bytes": 514173,
+    "sha256": "59028B3DC9A4FBADBB89D08FEE22787111EDE8F075C5B98376ED4921EA0446AE",
+    "streamCount": 14,
+    "structureValid": true
+  },
+  {
+    "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/diagnostics/20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed/process.dmp",
+    "bytes": 1362623,
+    "sha256": "6BE6FF0F3D2C4F7F509D1DDD4DB8694A1CF8FE21B82A1F09F7732176AD0EA410",
+    "streamCount": 14,
+    "structureValid": true
+  }
+]

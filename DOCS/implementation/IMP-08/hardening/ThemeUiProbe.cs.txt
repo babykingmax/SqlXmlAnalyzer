@@ -1,0 +1,200 @@
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Xml.Linq;
+using MaterialDesignThemes.Wpf;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.ViewModels;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class ThemeUiProbe
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        string repository = args[0], output = args[1];
+        Directory.CreateDirectory(output);
+        var app = new ProbeApp();
+        Assembly.Load("MaterialDesignThemes.Wpf");
+        Assembly.Load("MaterialDesignColors");
+        var appXml = SafeXmlHelper.LoadSafe(Path.Combine(repository, "App.xaml"));
+        XNamespace presentation = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+        var dictionary = new XElement(appXml.Root!.Element(presentation + "Application.Resources")!.Element(presentation + "ResourceDictionary")!);
+        foreach (var declaration in appXml.Root.Attributes().Where(a => a.IsNamespaceDeclaration))
+            if (dictionary.Attribute(declaration.Name) == null) dictionary.Add(new XAttribute(declaration));
+        app.Resources = (ResourceDictionary)XamlReader.Parse(dictionary.ToString(),
+            new ParserContext { BaseUri = new Uri("pack://application:,,,/SqlXmlAnalyzer;component/") });
+
+        _ = app.Dispatcher.InvokeAsync(async () =>
+        {
+            try
+            {
+                var inferenceVm = new DeadlockPlaybackViewModel([new DeadlockEvent { Description = "等待关系快照" }]);
+                var inference = new DeadlockPlaybackControl { DataContext = inferenceVm };
+                // Application resource invalidation reaches Window trees, not detached controls.
+                var inferenceHost = new Window { Content = inference };
+                var sandboxVm = new IndexSandboxViewModel(new MissingIndexSuggestion
+                {
+                    Table = "[Orders]", Schema = "[dbo]",
+                    KeyColumns = [new IndexColumn { Name = "[Id]", Usage = "EQUALITY" }]
+                });
+                var sandbox = new IndexSandboxWindow { DataContext = sandboxVm };
+                var content = (FrameworkElement)sandbox.Content;
+                var comparison = new PlanComparisonWorkspaceView { DataContext = new MainViewModel
+                {
+                    PlanA = new PlanSnapshot { Title = "计划 A", TotalCost = 10 },
+                    PlanB = new PlanSnapshot { Title = "计划 B", TotalCost = 8 }
+                } };
+                var comparisonHost = new Window { Content = comparison };
+                var observations = new List<object>();
+                var palette = new PaletteHelper();
+                // Keep the same controls alive while using the production theme switching API.
+                foreach (var (name, baseTheme) in new[] { ("light", BaseTheme.Light), ("dark", BaseTheme.Dark), ("light-again", BaseTheme.Light) })
+                {
+                    Theme theme = palette.GetTheme();
+                    theme.SetBaseTheme(baseTheme);
+                    palette.SetTheme(theme);
+                    await Task.Delay(400); // Allow the toolkit's brush transitions to settle on this dispatcher.
+                    Layout(inference, 900, 220);
+                    Layout(content, 1000, 620);
+                    Layout(comparison, 1100, 650);
+                    var notice = (TextBlock)inference.FindName("DependencyInferenceNotice");
+                    Require(notice.Text == AnalysisDisplayText.DeadlockInferenceNotice, "inference wording");
+                    observations.Add(Observe(notice, name, "DependencyInferenceNotice"));
+                    SaveImage(inference, Path.Combine(output, $"dependency-{name}.png"));
+
+                    foreach (string path in new[] { "CostReductionSummary", "SimulationNotice", "CostReductionDescription", "InputAssumptionsNotice", "TippingPointStatus", "TippingPointDetails" })
+                    {
+                        TextBlock text = Descendants(content).OfType<TextBlock>().Single(t =>
+                            t.GetBindingExpression(TextBlock.TextProperty)?.ParentBinding.Path?.Path == path);
+                        Require(text.GetBindingExpression(TextBlock.TextProperty)!.Status == BindingStatus.Active, path + " binding");
+                        observations.Add(Observe(text, name, path));
+                    }
+                    TextBlock comparisonNotice = (TextBlock)comparison.FindName("ComparisonEvidenceNotice");
+                    Require(comparisonNotice.Text == AnalysisDisplayText.ComparisonNotice, "comparison wording");
+                    observations.Add(Observe(comparisonNotice, name, "ComparisonEvidenceNotice"));
+                    SaveImage(comparison, Path.Combine(output, $"comparison-{name}.png"));
+                    // Verify the default-size window can scroll to each group of explanations.
+                    ScrollViewer scroller = Descendants(content).OfType<ScrollViewer>().Single(s => Grid.GetColumn(s) == 4);
+                    scroller.ScrollToVerticalOffset(180);
+                    Layout(content, 1000, 620);
+                    SaveImage(content, Path.Combine(output, $"sandbox-notice-{name}.png"));
+                    sandboxVm.ReturnedRows = double.NaN;
+                    scroller.ScrollToBottom();
+                    Layout(content, 1000, 620);
+                    TextBlock status = Descendants(content).OfType<TextBlock>().Single(t =>
+                        t.GetBindingExpression(TextBlock.TextProperty)?.ParentBinding.Path?.Path == "TippingPointStatus");
+                    Require(status.Text.Contains("N/A"), "invalid assumptions remain unknown after theme switch");
+                    observations.Add(Observe(status, name, "InvalidAssumptionsStatus"));
+                    SaveImage(content, Path.Combine(output, $"sandbox-invalid-{name}.png"));
+                    sandboxVm.ReturnedRows = 100;
+                    inferenceVm.CurrentStep = 1;
+                }
+                File.WriteAllText(Path.Combine(output, "observed.json"), JsonSerializer.Serialize(new
+                {
+                    Passed = true, Observations = observations, MinimumContrast = 4.5,
+                    Themes = new[] { "light", "dark", "light-again" },
+                    WindowShown = false, SqlServerExecutionPerformed = false,
+                    ApplicationSha256 = Hash(typeof(App).Assembly.Location),
+                    CoreSha256 = Hash(typeof(AnalysisDisplayText).Assembly.Location)
+                }, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            catch (Exception exception) { Console.Error.WriteLine(exception); Environment.ExitCode = 1; }
+            finally
+            {
+                app.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Send);
+                app.Shutdown(Environment.ExitCode);
+            }
+        });
+        Dispatcher.Run();
+    }
+
+    private static object Observe(TextBlock text, string theme, string target)
+    {
+        Require(!string.IsNullOrWhiteSpace(text.Text) && text.ActualHeight > 0, target + " rendered");
+        Color background = Backdrop(text);
+        var ink = (SolidColorBrush)text.Foreground;
+        if (target != "ComparisonEvidenceNotice")
+            Require(ink.Color == ((SolidColorBrush)Application.Current.FindResource("MaterialDesignBody")).Color,
+                $"{theme}/{target} must resolve the active application's text brush");
+        Color foreground = Composite(ink, background);
+        double a = Luminance(foreground), b = Luminance(background);
+        double ratio = (Math.Max(a, b) + 0.05) / (Math.Min(a, b) + 0.05);
+        Require(ratio >= 4.5, $"{theme}/{target} contrast {ratio:F3}");
+        return new { Theme = theme, Target = target, Text = text.Text,
+            Foreground = ink.Color.ToString(), Background = background.ToString(), Contrast = ratio };
+    }
+
+    private static Color Backdrop(DependencyObject element)
+    {
+        var layers = new List<SolidColorBrush>();
+        for (DependencyObject? current = element; current != null; current = VisualTreeHelper.GetParent(current))
+        {
+            Brush? background = current switch { TextBlock t => t.Background, Border b => b.Background, Panel p => p.Background, Control c => c.Background, _ => null };
+            if (background is not SolidColorBrush brush || brush.Color.A == 0) continue;
+            layers.Add(brush);
+            if (brush.Color.A == 255 && brush.Opacity == 1)
+            {
+                Color result = brush.Color;
+                foreach (var overlay in layers.Take(layers.Count - 1).Reverse()) result = Composite(overlay, result);
+                return result;
+            }
+        }
+        throw new InvalidOperationException("No opaque backing surface found.");
+    }
+
+    private static Color Composite(SolidColorBrush ink, Color paper)
+    {
+        double alpha = ink.Color.A / 255.0 * ink.Opacity;
+        byte Blend(byte a, byte b) => (byte)Math.Round(a * alpha + b * (1 - alpha));
+        return Color.FromRgb(Blend(ink.Color.R, paper.R), Blend(ink.Color.G, paper.G), Blend(ink.Color.B, paper.B));
+    }
+
+    private static double Luminance(Color color)
+    {
+        static double Linear(byte channel) { double value = channel / 255.0; return value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4); }
+        return 0.2126 * Linear(color.R) + 0.7152 * Linear(color.G) + 0.0722 * Linear(color.B);
+    }
+
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            DependencyObject child = VisualTreeHelper.GetChild(root, i);
+            yield return child;
+            foreach (var descendant in Descendants(child)) yield return descendant;
+        }
+    }
+
+    private static void Layout(FrameworkElement element, int width, int height)
+    {
+        element.Measure(new Size(width, height));
+        element.Arrange(new Rect(0, 0, width, height));
+        element.UpdateLayout();
+        Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    }
+
+    private static void SaveImage(FrameworkElement element, string path)
+    {
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(element.ActualWidth), (int)Math.Ceiling(element.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(element);
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(path);
+        encoder.Save(stream);
+    }
+
+    private static string Hash(string path) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path)));
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+    private sealed class ProbeApp : App { protected override void OnStartup(StartupEventArgs e) { } }
+}

@@ -56,7 +56,7 @@ namespace SqlXmlAnalyzer
 
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
-            Applied = true;
+            Applied = false;
             this.Close();
         }
 

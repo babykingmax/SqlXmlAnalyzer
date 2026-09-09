@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using SqlXmlAnalyzer.Core.Models;
 using SqlXmlAnalyzer.Core.Parsers;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.ViewModels
 {
@@ -49,9 +50,19 @@ namespace SqlXmlAnalyzer.ViewModels
         private int _playbackSpeed = 1000; // ms
 
         public List<DeadlockStepItem> PlaybackSteps { get; }
+        private readonly string _cycleSummary = "";
+        public string InferenceNotice => AnalysisDisplayText.DeadlockInferenceNotice +
+            (string.IsNullOrEmpty(_cycleSummary) ? "" : "\n" + _cycleSummary);
+
+        public DeadlockPlaybackViewModel(SqlXmlAnalyzer.Core.Parsers.DeadlockTimelineParser.ParsedDeadlock timeline)
+            : this(timeline.Events)
+        {
+            _cycleSummary = timeline.CycleSummary;
+        }
 
         public DeadlockPlaybackViewModel(List<DeadlockEvent> events)
         {
+            ArgumentNullException.ThrowIfNull(events);
             _events = events;
             _currentStep = 0;
 
@@ -80,7 +91,7 @@ namespace SqlXmlAnalyzer.ViewModels
                 {
                     StepIndex = i + 1,
                     DisplayName = name,
-                    ToolTip = $"步骤 {i + 1}: {ev.Description}",
+                    ToolTip = $"依赖推演步骤 {i + 1}: {ev.Description}",
                     IsVictim = ev.IsVictim,
                     IsGrant = ev.Type == "Grant",
                     IsRequest = ev.Type == "Request"
@@ -88,6 +99,7 @@ namespace SqlXmlAnalyzer.ViewModels
             }
 
             UpdateState();
+            Logger.Debug($"IMP-08: 依赖推演已初始化；合成步骤数={events.Count}。");
         }
 
         public int TotalSteps => _events.Count;
@@ -126,7 +138,7 @@ namespace SqlXmlAnalyzer.ViewModels
             }
         }
 
-        public string PlayButtonText => IsPlaying ? "⏸ 暂停" : "▶️ 播放";
+        public string PlayButtonText => IsPlaying ? "⏸ 暂停" : "▶️ 自动推演";
 
         public bool FocusCriticalPath
         {
@@ -157,9 +169,9 @@ namespace SqlXmlAnalyzer.ViewModels
         {
             get
             {
-                if (_currentStep == 0) return "准备就绪。点击播放开始回放死锁形成过程。";
+                if (_currentStep == 0) return "依赖推演已就绪；合成步骤不代表真实事件顺序。";
                 var ev = _events[_currentStep - 1];
-                return $"步骤 {_currentStep}/{TotalSteps}: {ev.Description}";
+                return $"依赖推演步骤 {_currentStep}/{TotalSteps}: {ev.Description}";
             }
         }
 

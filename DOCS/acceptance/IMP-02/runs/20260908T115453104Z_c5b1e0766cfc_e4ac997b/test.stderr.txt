@@ -1,0 +1,4 @@
+[xUnit.net 00:00:06.78]     SqlXmlAnalyzer.Tests.EngineeringGovernanceTests.CiWorkflow_RunsDependencyVulnerabilityScan [FAIL]
+[xUnit.net 00:00:06.78]     SqlXmlAnalyzer.Tests.EngineeringGovernanceTests.DirectoryPackages_PinsKnownVulnerableTransitiveDependenciesToSafeVersions [FAIL]
+[xUnit.net 00:00:06.78]     SqlXmlAnalyzer.Tests.EngineeringGovernanceTests.GitIgnore_ExcludesLocalGeneratedReviewReports [FAIL]
+[xUnit.net 00:00:06.79]     SqlXmlAnalyzer.Tests.EngineeringGovernanceTests.CiWorkflow_FailsWhenTestsProduceArtifacts [FAIL]

@@ -1,0 +1,19 @@
+using System.Xml.Linq;
+using System.IO;
+using SqlXmlAnalyzer.Core.Privacy;
+
+namespace SqlXmlAnalyzer.Core.Services;
+
+public static class PlanObfuscatorService
+{
+    public static PlanRedactionResult RedactPlan(XDocument originalPlan, CancellationToken cancellationToken = default)
+        => new PlanRedactionService().Redact(originalPlan, cancellationToken);
+
+    // Compatibility entry point. Never return partially sanitized XML on a blocked result.
+    public static XDocument ObfuscatePlan(XDocument originalPlan)
+    {
+        var result = RedactPlan(originalPlan);
+        if (!result.CanExport) throw new InvalidDataException(result.Summary);
+        return SafeXmlHelper.ParseSafe(result.Xml!);
+    }
+}

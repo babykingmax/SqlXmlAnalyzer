@@ -1,0 +1,13 @@
+  SqlXmlAnalyzer.Core -> E:\SqlXmlAnalyzer\SqlXmlAnalyzer.Core\bin\Debug\net8.0\SqlXmlAnalyzer.Core.dll
+  SqlXmlAnalyzer.Analysis -> E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Analysis\bin\Debug\net8.0\SqlXmlAnalyzer.Analysis.dll
+  SqlXmlAnalyzer.Refactoring -> E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Refactoring\bin\Debug\net8.0\SqlXmlAnalyzer.Refactoring.dll
+  SqlXmlAnalyzer.Application -> E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\bin\Debug\net8.0\SqlXmlAnalyzer.Application.dll
+  SqlXmlAnalyzer.CLI -> E:\SqlXmlAnalyzer\SqlXmlAnalyzer.CLI\bin\Debug\net8.0\SqlXmlAnalyzer.CLI.dll
+  SqlXmlAnalyzer -> E:\SqlXmlAnalyzer\bin\Debug\net8.0-windows\SqlXmlAnalyzer.dll
+  SqlXmlAnalyzer.Tests -> E:\SqlXmlAnalyzer\SqlXmlAnalyzer.Tests\bin\Debug\net8.0-windows\SqlXmlAnalyzer.Tests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.77

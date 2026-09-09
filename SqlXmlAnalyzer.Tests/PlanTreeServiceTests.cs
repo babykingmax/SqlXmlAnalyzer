@@ -64,7 +64,7 @@ namespace SqlXmlAnalyzer.Tests
             root!.Header.Should().Be("Hash Match (Cost: 7.25)");
             root.Source.Should().BeSameAs(rootRelOp);
             root.Children.Should().ContainSingle();
-            root.Children[0].Header.Should().Be("Table Scan (Cost: 4.0)");
+            root.Children[0].Header.Should().Be("Table Scan (Cost: 4)");
         }
 
         [Fact]

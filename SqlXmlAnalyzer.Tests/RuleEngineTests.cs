@@ -85,7 +85,8 @@ namespace SqlXmlAnalyzer.Tests
             Assert.NotNull(result);
             Assert.Equal("RULE_004_ESTIMATE_MISMATCH", result.RuleId);
             Assert.Equal("Critical", result.Severity);
-            Assert.Contains("偏差 > 100倍", result.Title);
+            Assert.Equal("基数估计偏差", result.Title);
+            Assert.Contains("偏差指标 200 倍", result.Message);
         }
 
         [Fact]
@@ -171,7 +172,7 @@ namespace SqlXmlAnalyzer.Tests
             var rule = new UdfAndTableVariableRule();
             var xml = $@"<RelOp xmlns=""{ns}"" NodeId=""7"" PhysicalOp=""Table Valued Function"" EstimateRows=""1"">
                             <RunTimeInformation>
-                                <RunTimeCountersPerThread ActualRows=""500"" />
+                                <RunTimeCountersPerThread ActualRows=""500"" ActualExecutions=""1"" />
                             </RunTimeInformation>
                          </RelOp>";
             var element = XElement.Parse(xml);

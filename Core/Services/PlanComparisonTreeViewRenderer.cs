@@ -13,19 +13,23 @@ namespace SqlXmlAnalyzer.Core.Services
 
             var stackPanel = new StackPanel
             {
-                Orientation = Orientation.Horizontal,
+                Orientation = Orientation.Vertical,
                 Margin = new Thickness(0, 2, 0, 2)
             };
 
             var operatorText = new TextBlock
             {
                 Text = node.OperatorText,
-                FontWeight = FontWeights.SemiBold
+                FontWeight = FontWeights.SemiBold,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 480
             };
             var costText = new TextBlock
             {
                 Text = node.CostText,
-                Foreground = GetCostBrush(node.CostTrend)
+                Foreground = GetCostBrush(node.CostTrend),
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 480
             };
 
             var border = new Border
@@ -47,6 +51,8 @@ namespace SqlXmlAnalyzer.Core.Services
                     Text = " | " + string.Join(", ", node.RuntimeDeltaTexts),
                     Foreground = node.IsPlanB ? Brushes.Purple : Brushes.Teal,
                     FontWeight = FontWeights.Medium,
+                    TextWrapping = TextWrapping.Wrap,
+                    MaxWidth = 480,
                     Margin = new Thickness(4, 0, 0, 0)
                 };
                 stackPanel.Children.Add(runtimeText);
@@ -58,6 +64,8 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 Header = border,
                 Tag = node.Source,
+                ToolTip = string.IsNullOrEmpty(node.EvidenceText) ? null : new TextBlock
+                    { Text = node.EvidenceText, TextWrapping = TextWrapping.Wrap, MaxWidth = 650 },
                 IsExpanded = true
             };
 

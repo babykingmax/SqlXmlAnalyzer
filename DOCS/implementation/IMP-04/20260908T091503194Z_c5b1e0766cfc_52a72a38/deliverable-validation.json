@@ -1,0 +1,166 @@
+{
+  "step": "IMP-04",
+  "timestampUtc": "2026-09-08T09:37:36.2354393Z",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "debugRun": "20260908T093220366Z_c5b1e0766cfc_0420c7c1",
+  "historyAndFinalArtifactChecks": [
+    {
+      "manifest": "DOCS/baselines/IMP-01/20260908T074458598Z_c5b1e0766cfc_c3523269/artifact-manifest.json",
+      "entries": 75,
+      "failures": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T080801184Z_c5b1e0766cfc_6a19a7b0/artifact-manifest.json",
+      "entries": 47,
+      "failures": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T083501166Z_c5b1e0766cfc_71955017/artifact-manifest.json",
+      "entries": 63,
+      "failures": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T090642185Z_c5b1e0766cfc_c45e1ec8/artifact-manifest.json",
+      "entries": 63,
+      "failures": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-03/20260908T085018432Z_c5b1e0766cfc_65e9ddb4/artifact-manifest.json",
+      "entries": 56,
+      "failures": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T093220366Z_c5b1e0766cfc_0420c7c1/artifact-manifest.json",
+      "entries": 63,
+      "failures": [],
+      "passed": true
+    }
+  ],
+  "retainedInputs": [
+    {
+      "path": "AGENTS.md",
+      "beforeSha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "afterSha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "beforeSha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "afterSha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "beforeSha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "afterSha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "unchanged": true
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "beforeSha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "afterSha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/ReviewProbe.cs.txt",
+      "beforeSha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "afterSha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/Run-ReviewProbe.ps1",
+      "beforeSha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "afterSha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/baseline.json",
+      "beforeSha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "afterSha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/probe-results.json",
+      "beforeSha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "afterSha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "unchanged": true
+    }
+  ],
+  "unexpectedChanges": [],
+  "sourceDriftSinceDebug": [],
+  "sourceDriftSinceRelease": [],
+  "ownedSourceAndConfigurationFiles": 28,
+  "debug": {
+    "passed": 886,
+    "notExecuted": 0,
+    "total": 886,
+    "failed": 0
+  },
+  "release": {
+    "configuration": "Release",
+    "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+    "total": 886,
+    "passed": 886,
+    "failed": 0,
+    "notExecuted": 0,
+    "inputDrift": [],
+    "buildExitCode": 0,
+    "testExitCode": 0
+  },
+  "infrastructureTests": {
+    "total": 32,
+    "passed": 32,
+    "failed": 0
+  },
+  "processValidation": {
+    "total": 8,
+    "passed": 8,
+    "encoding": [
+      {
+        "configuration": "debug",
+        "oldStructuralCheckPassed": true,
+        "oldChineseTextCorrupted": true,
+        "finalChineseTextPreserved": true
+      },
+      {
+        "configuration": "release",
+        "oldStructuralCheckPassed": true,
+        "oldChineseTextCorrupted": true,
+        "finalChineseTextPreserved": true
+      }
+    ]
+  },
+  "dumps": [
+    {
+      "configuration": "Debug",
+      "path": "process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\process.dmp",
+      "bytes": 479690,
+      "sha256": "E5D4B34B5B9272C46380DD5AA5C289015EB83BD8699E08E6E9C0FB1F30BC1E90",
+      "metadata": "process-final-02\\debug\\unknown-error\\dumps\\20260908T093331748Z_56552_e468a0eb495240acac506d908d588869\\exception.json",
+      "signature": 1347241037,
+      "streams": 14
+    },
+    {
+      "configuration": "Release",
+      "path": "process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\process.dmp",
+      "bytes": 471811,
+      "sha256": "5A31630899F4F8884AC31E28A3DD7F8F3E625528B753C179FFCE5E1FACD7F054",
+      "metadata": "process-final-02\\release\\unknown-error\\dumps\\20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987\\exception.json",
+      "signature": 1347241037,
+      "streams": 14
+    }
+  ],
+  "probeConditionsMet": 4,
+  "remainingNotMet": 18,
+  "diffCheckExitCode": 0,
+  "issuesAutomaticallyClosed": 0,
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "coverageGenerated": false,
+  "passed": true
+}

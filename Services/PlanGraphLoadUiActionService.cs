@@ -40,7 +40,7 @@ namespace SqlXmlAnalyzer.Services
                 return EmptyResult();
             }
 
-            List<XElement> relOps = document.Descendants(ns + "RelOp").ToList();
+            List<XElement> relOps = Core.Services.PlanIdentityAdapter.GetOperatorSources(document, ns);
             if (relOps.Count == 0)
             {
                 return EmptyResult();
@@ -108,7 +108,8 @@ namespace SqlXmlAnalyzer.Services
                 _missingIndexAssociationService.MatchSuggestions(
                     allNodes
                         .Select(node => new Core.Services.PlanGraphMissingIndexNodeInfo(
-                            node.TableName))
+                            node.TableName) { ObjectIdentity = node.ObjectReferences.Count == 1 ? node.ObjectReferences[0].Identity : null,
+                                QueryPlan = node.Identity?.QueryPlan })
                         .ToList(),
                     missingIndexes);
 

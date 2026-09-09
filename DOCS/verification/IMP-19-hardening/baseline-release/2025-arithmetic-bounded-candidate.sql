@@ -1,0 +1,1 @@
+SELECT Id FROM dbo.Users WHERE Age > 40;

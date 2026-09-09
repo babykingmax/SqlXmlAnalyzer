@@ -1,0 +1,16 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence><Batch><Statements><StmtSimple StatementId="1">
+    <QueryPlan><RelOp NodeId="0" PhysicalOp="Parallelism" LogicalOp="Gather Streams" Parallel="true" EstimateRows="400">
+      <RunTimeInformation>
+        <RunTimeCountersPerThread Thread="1" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="2" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="3" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="4" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="5" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="6" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="7" ActualRows="50" ActualExecutions="1" />
+        <RunTimeCountersPerThread Thread="8" ActualRows="50" ActualExecutions="1" />
+      </RunTimeInformation>
+    </RelOp></QueryPlan>
+  </StmtSimple></Statements></Batch></BatchSequence>
+</ShowPlanXML>

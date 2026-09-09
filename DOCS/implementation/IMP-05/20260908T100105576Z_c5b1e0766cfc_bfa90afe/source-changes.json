@@ -1,0 +1,206 @@
+[
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/AnalysisClipboardService.cs",
+    "before": "CA5A31EDEE5296845EC47409C2E6C413845A16BAD47FD138D3311F61D66D7B14",
+    "after": "451A6C109D69FF2D429AF713B948FF81E3912815AEBC20FD332A9A272C874630"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/BrowserLauncher.cs",
+    "before": "6BA185733AB0DE40E80E110D4BEF6D5248C0A574B121DC6D30FECBE703CB89F9",
+    "after": "72325DD41908291AFB3593303D02691D66A3ADDE79B985A949B4D7C2D2D1F07A"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/CliService.cs",
+    "before": "F7EC2BA011B939FA30CA47C5D400BB53E5B56165A336C6FB0AC9566BBED3042A",
+    "after": "9CEA131B7013AAD3BC7410E83A5747302E07F801A20CFA81051685BD06D0BCAB"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/HtmlReportExportService.cs",
+    "before": "B4AB84A54C58588E730C3BF8AA4F98AD92E771DB63C111BAC7EE81AD65231BDA",
+    "after": "7BB16BA7878C0A100244FC5BD6DCEDF2E9CC41A417C0B774CDEBCB25834C7C00"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/MermaidDiagramActionService.cs",
+    "before": "D01BBB9BE7DC0CCF497EF70D10A73E654B728F460FCB81DACB5C5BD959BC34E9",
+    "after": "F4001391A5092EFE098D0CEB57004A728E4AAD94F3D4DD8CBE3E0640A2B38B1A"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/MissingIndexClipboardActionService.cs",
+    "before": "FFFF757499DFFCF4D6685B44829250F8F58227B5FA10395E815C952D8530E942",
+    "after": "F8D34857E19FB16E19F3F1F1E003A97E9B1B2171052EC59624540DD0C37D0334"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/PlanGraphNodeClipboardService.cs",
+    "before": "5622C9A902BD56E9AD1782D3FB6CAFC351B10CDC09C7B203ADAF644940A255A5",
+    "after": "F4E384D8A3F3B6F49C049F1D4FC005E0CE93C8CCB593FF0B5A7149CBA77A000A"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/PlanObfuscatorService.cs",
+    "before": "04BF1BFF81138E892CFED88CEBB8227EC5B30DB10424B26AAD0B28A591B36DF0",
+    "after": "1C1C01D0B39795A019F4469F423D865C87F62FF620AE6AA8E92DD64DAFFC8D0B"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/PortableReportExportService.cs",
+    "before": "BB41EE73F6A59B3DB4582677FC8FF853750A00FC3F19C6117DE0172705848532",
+    "after": "119FA56D9F40D3AF965D848FAB07C19CC4514A4F41DA6D15C23E246EC9FCFDF7"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/ReportExportService.cs",
+    "before": "92B0B589B2CD0D29E317508B35F9AF5FC6CA9A5D21186B9F08B6E9104CE5F217",
+    "after": "4F2F86E64B48290FF2099AC3F7764E03067B1D748DA7710E9C328E18E6DAC017"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/TuningSessionActionService.cs",
+    "before": "742C42D82E30D3C9AE6FB64C0E6DD03ED3626011E0282C21B57CCC1D8D4A6BDB",
+    "after": "1E70143F02D682E7E99EC07B55C58A4A67C167477B90D97942BBDEA52FC7DA86"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Core/Services/TuningSessionService.cs",
+    "before": "67DE81D82BCBE7D9DC32851B3C913C2C22CFF00613383F2AFE02F805E0E9D3DD",
+    "after": "D370DDD8C6E24D4197E211518FAEBD56B05D70252DB1A41CEB2ACD20A21C9201"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Services/MainWindowShellActionService.cs",
+    "before": "1EEDA2D80B66377A1C2D4BC03EBAAE8B573EDC009A774A223900AE11FD56D809",
+    "after": "E4F8012BF4DD6B20CA19E1BE7F24EB6690B152E2E785403B1F8B366CC37353AA"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Services/PlanObfuscationExportUiActionService.cs",
+    "before": "1B5381778EECF65C55368EA6D41895A2E7FE88BB096E753EC8E66B9E5CB7DF7B",
+    "after": "877611F7D4FD723B418FDB55ADD700C8035D7364E3B0C6A7436456E8BD03F1AD"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.CLI/Program.cs",
+    "before": "8A4CEC9C3B6F2457DE22E9B25F08A17D63958697FF3830593F89215AF77B8ADE",
+    "after": "4EC82DE0BA01F9EE5BF7F958D870DA631EB93875E6F8DD02DC9269B9567A4CDC"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Core/HtmlReportGenerator.cs",
+    "before": "7E150B1F3F12A8D8256D00132FD92059227C282D836B66AC0AE3A1091250EC36",
+    "after": "8CE08BC4152A086374EF7EA24EDD12EE6586B75BCAE0410CB5715FFD427E9B6A"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs",
+    "before": null,
+    "after": "ED8E806A2328DFDDCE8539D803F00F41351777846C0980A75B0F0648B14BD853"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs",
+    "before": null,
+    "after": "AFA865344C432507A8C4CE0A0836F3C3EFE7968AFAD274610540706A6B83A8DA"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs",
+    "before": null,
+    "after": "1C2A62836722C47184BB27CB173ED2A5AC0D6C4B6FAB178B1B77916AF89BDEA7"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs",
+    "before": null,
+    "after": "A84F81FD26ACDD0ECAEF55ACB7E0F0253E3B2B8202797B6B688EE3962E23A4C2"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs",
+    "before": "F5B49DB4745A2726AA359DC0AA5385755609EDC7295B529882950D996EC302CF",
+    "after": "9D68F9A6192D6B1B413C7A7178F93CF657B89FF69D65B5CBDF07D8F645DEE127"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs",
+    "before": "9EB72CB171FDF9B8FCF5824E292A4BA5439E623585C2A4F0101392283F62AF2E",
+    "after": "0E014BFC93B04AFDC0AE50E740FC8FC1A41D6A49521646FB623AC8A4CD49280B"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs",
+    "before": "0093C8F74C809FA548101F1C2CCC676A243CD21464C1C9A7A4E0EA353A8AB151",
+    "after": "C444B6E0B96DCE7F99379E71110B8CE3B5872DD8CAE4BEE5DAFB341D2CB24A36"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs",
+    "before": "E681BD707E0078984679EAF75E05CFDA88434207F864B0EDD3D8A2543AAD902E",
+    "after": "0803AFD9C591E74B9224669CFF046CE82066BC2CC4AC0597C0C6FEEE8761BC24"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs",
+    "before": "5DB1D31C63C02F1983923AB6EBFE5D69275F71C12D2B3995FE93559ED3EB4A9E",
+    "after": "25DA1736825CFD6D7A11B8A479802A928B169E13C90F71FCDB3284FFAC3DF12F"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs",
+    "before": null,
+    "after": "26B6D0A8E48E0E43E2D4363A5E9518CCB7ACBFA17D1C6E8A0FD11DB890F217C6"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs",
+    "before": null,
+    "after": "4D635F80B73CCC2380CB460887876869B963C6C8C2E30165BEE8C510B15183FA"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs",
+    "before": null,
+    "after": "B3A8690ED4FFD68BD827A9DED88EEE8767CAB8CA32D9CA4C08EA7A39F995C4D8"
+  },
+  {
+    "kind": "Added",
+    "path": "SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs",
+    "before": null,
+    "after": "7BA1682F1A8EDE3CA02594AC585864F09C20CAEC61DBA9276979C2C75E059124"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs",
+    "before": "F011814883661999F21D9EA8592C6A2798A4B83795841CEA14782B4353B818CC",
+    "after": "71D49CB1EE14C8A53BF28D486C00A2D7A6FD0A012FA1504A1AFB69B4C6C83821"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+    "before": "6B82B2A29E15728DE03A751124EF9474B528B273A8FBB6F01F06C2AEC5D3B118",
+    "after": "648BF21F78D3A28B97E937B3386CEC4D12420E304368D44AC9FCF7725AE0F90F"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+    "before": "818D5B87EF25D7E862B679232081311C05A4B149ADE89221C3F42E6A3527BE93",
+    "after": "7E8A614E08C45B04050C314ED9E32E149E3222901051E6972FF2E2D3C877375F"
+  },
+  {
+    "kind": "Added",
+    "path": "src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs",
+    "before": null,
+    "after": "F718BA0B141CF9012C155D63522BE35D774AD598EFE6F12631FC8E007F855AD6"
+  },
+  {
+    "kind": "ContentChanged",
+    "path": "Views/IndexSandboxWindow.xaml.cs",
+    "before": "EE7A8D634831A48241D2C1B69F7016EA304FE9136DEA2B61DB1E3A1848CA240A",
+    "after": "A7E500DF6FE67DEDDD394D90AF7D0080B5DF894799F472A221680253253F274E"
+  }
+]

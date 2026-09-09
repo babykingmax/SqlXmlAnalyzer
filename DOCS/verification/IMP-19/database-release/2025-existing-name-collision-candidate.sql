@@ -1,0 +1,1 @@
+CREATE TABLE #t(Id int); CREATE TABLE #t(Id int); INSERT #t VALUES(1); SELECT Id FROM #t; DROP TABLE #t;

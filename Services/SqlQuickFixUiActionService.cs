@@ -37,7 +37,7 @@ namespace SqlXmlAnalyzer.Services
             var textBlock = new TextBlock
             {
                 Text = "\uD83D\uDCA1",
-                ToolTip = "标量子查询可优化为 JOIN，点击一键修复并对比效果",
+                ToolTip = "查看标量子查询改写提案、前提与风险（尚未应用）",
                 Cursor = Cursors.Hand,
                 Margin = new Thickness(2, 0, 2, 0),
                 VerticalAlignment = VerticalAlignment.Center
@@ -70,22 +70,16 @@ namespace SqlXmlAnalyzer.Services
                 return;
             }
 
-            var dialog = new QuickFixWindow(currentSql, quickFix.RewrittenSql, subquery)
+            if (quickFix.Review == null) return;
+            try
             {
-                Owner = _owner
-            };
-
-            dialog.ShowDialog();
-            if (!dialog.Applied)
-            {
-                return;
+                new Views.RewriteReviewWindow(currentSql, quickFix.Review) { Owner = _owner }.ShowDialog();
             }
-
-            _appliedHandler(
-                new SqlQuickFixAppliedResult(
-                    quickFix.RewrittenSql,
-                    quickFix.StatementPreview));
-            MessageBox.Show("已应用所选标量子查询的 JOIN 重写。", "修复成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            catch (Exception exception)
+            {
+                string detail = Core.Diagnostics.ExceptionPolicy.Describe(exception, "SqlQuickFix.Review");
+                MessageBox.Show(detail, "提案审核失败", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

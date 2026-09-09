@@ -21,7 +21,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
           <QueryPlan>
             <RelOp NodeId=""1"" PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"" EstimateRows=""100"">
               <IndexScan>
-                <Object Schema=""[dbo]"" Table=""[Users]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Users]"" />
               </IndexScan>
               <OutputList>
                 <ColumnReference Table=""[Users]"" Column=""Email"" />
@@ -85,7 +85,8 @@ namespace SqlXmlAnalyzer.Tests.Rules
 
             // Assert
             result.Should().NotBeNull();
-            result!.NodeId.Should().Be("0");
+            result!.NodeId.Should().BeEmpty();
+            result.ResultScope.Should().Be(RuleScope.Plan);
             result.Title.Should().Be("智能索引与 T-SQL 关联汇总");
             result.Message.Should().Contain("全局智能索引推荐");
             result.Message.Should().Contain("无法自动改写的非 SARGable 表达式");
@@ -104,7 +105,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
           <QueryPlan>
             <RelOp NodeId=""1"" PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"">
               <IndexScan>
-                <Object Schema=""[dbo]"" Table=""[Users]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Users]"" />
               </IndexScan>
             </RelOp>
           </QueryPlan>
@@ -123,7 +124,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
           <QueryPlan>
             <RelOp NodeId=""1"" PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"">
               <IndexScan>
-                <Object Schema=""[dbo]"" Table=""[Products]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Products]"" />
               </IndexScan>
             </RelOp>
           </QueryPlan>
@@ -170,7 +171,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
           <QueryPlan>
             <RelOp NodeId=""1"" PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"">
               <IndexScan>
-                <Object Schema=""[dbo]"" Table=""[Users]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Users]"" />
               </IndexScan>
             </RelOp>
           </QueryPlan>
@@ -179,7 +180,7 @@ namespace SqlXmlAnalyzer.Tests.Rules
           <QueryPlan>
             <RelOp NodeId=""2"" PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"">
               <IndexScan>
-                <Object Schema=""[dbo]"" Table=""[Products]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[Products]"" />
               </IndexScan>
             </RelOp>
           </QueryPlan>

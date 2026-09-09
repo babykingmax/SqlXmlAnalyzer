@@ -1,0 +1,51 @@
+[
+  {
+    "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-deadlocks-guide?view=sql-server-ver17",
+    "Use": "SQL Server deadlock resource identity, indexname, owner and waiter structure",
+    "RetrievedUtc": "2026-09-09T02:01:41.6523575Z",
+    "Status": 200,
+    "ContentSha256": "C661A2742D7E3B215B046071354013AE553B57CF8A8DBD646A805A380EE3D4FB"
+  },
+  {
+    "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide?view=sql-server-ver17",
+    "Use": "Known key-range lock modes",
+    "RetrievedUtc": "2026-09-09T02:01:44.0917175Z",
+    "Status": 200,
+    "ContentSha256": "D078ECB9514190D53659526A56D053479A7DE58617CDBF86D1C80D4D187574A2"
+  },
+  {
+    "Url": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1.contains?view=net-8.0",
+    "Use": "Constant-time membership lookup",
+    "RetrievedUtc": "2026-09-09T02:01:48.8922705Z",
+    "Status": 200,
+    "ContentSha256": "C794FA1085699D8B06796B7C5B2830008CF64099BD8AB8680D0E1AD05E1BCB16"
+  },
+  {
+    "Url": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/HashSet.cs",
+    "Use": "Mature .NET hash-set implementation",
+    "RetrievedUtc": "2026-09-09T02:01:50.2262284Z",
+    "Status": 200,
+    "ContentSha256": "035DE656B4B478F2C4D444B0C3A384B5B4A57A0DD5EC1453877489E9DB11E72B"
+  },
+  {
+    "Url": "https://raw.githubusercontent.com/BrentOzarULTD/SQL-Server-First-Responder-Kit/main/sp_BlitzLock.sql",
+    "Use": "Read owner/waiter mode and index identity from explicit XML attributes",
+    "RetrievedUtc": "2026-09-09T02:01:51.4426494Z",
+    "Status": 200,
+    "ContentSha256": "FE0BBEED5B7D4119D0B484E31502D60B93C9E6FB08B2EF672CD38793C6EF9E49"
+  },
+  {
+    "Url": "https://raw.githubusercontent.com/dotnet/wpf/v8.0.0/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/Media/MediaContext.cs",
+    "Use": "WPF rendering without active display devices",
+    "RetrievedUtc": "2026-09-09T02:10:14.9838937Z",
+    "Status": 200,
+    "ContentSha256": "8F5FA2C2EC4F486FDBB05B20672CAD96D51A3A93856BB5CCE5DAB9856B65C1FD"
+  },
+  {
+    "Url": "https://raw.githubusercontent.com/dotnet/wpf/v8.0.0/src/Microsoft.DotNet.Wpf/src/PresentationCore/MS/internal/CoreAppContextSwitches.cs",
+    "Use": "WPF rendering without active display devices",
+    "RetrievedUtc": "2026-09-09T02:10:17.7024673Z",
+    "Status": 200,
+    "ContentSha256": "FB52296E2F41E0FA8AA999B66F8FB3C2202B41FD2D02522C37716113840B9EAA"
+  }
+]

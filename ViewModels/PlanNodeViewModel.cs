@@ -58,6 +58,12 @@ namespace SqlXmlAnalyzer
         public double IoPercent { get; set; }
 
         public string NodeId { get; set; } = "?";
+        public Core.Models.PlanOperatorKey? Identity { get; set; }
+        public Core.Models.PlanOperatorFacts? Facts { get; set; }
+        public Core.Rules.PlanDiagnosticReport? Diagnostics { get; set; }
+        public Core.Models.PlanLocation? SourceLocation { get; set; }
+        public System.Collections.Generic.IReadOnlyList<Core.Models.SqlObjectReference> ObjectReferences { get; set; } = System.Array.Empty<Core.Models.SqlObjectReference>();
+        public string SelectionKey => Identity?.ToString() ?? NodeId;
         public string PhysicalOp { get; set; } = "Unknown";
         public string LogicalOp { get; set; } = "";
         public double Cost { get; set; }
@@ -66,7 +72,9 @@ namespace SqlXmlAnalyzer
         public int CostPercent { get; set; }
         public string EstRows { get; set; } = "0";
         public double EstRowsNum { get; set; }
-        public string ActualRows { get; set; } = "";
+        public string ActualRows { get; set; } = "N/A";
+        // True only when every runtime counter for this operator has valid output rows, including zero.
+        public bool HasActualRows { get; set; }
         public double ActualRowsNum { get; set; }
         public string ObjectDetails { get; set; } = "";
 
@@ -77,8 +85,10 @@ namespace SqlXmlAnalyzer
         public Brush? IconBrush { get; set; }
 
         public string OperatorType { get; set; } = "Other";
-        public bool IsParallel { get; set; }
+        public bool? IsParallel { get; set; }
+        public string ParallelDisplay => IsParallel?.ToString() ?? "N/A";
         public string Warnings { get; set; } = "";
+        public string DiagnosticStatusText { get; set; } = "";
         private static readonly Core.Services.PlanGraphCostVisualService CostVisualService = new();
         private static readonly Core.Services.PlanGraphNodeDisplayService NodeDisplayService = new();
         private static readonly Core.Services.PlanGraphOperatorVisualService OperatorVisualService = new();
@@ -110,8 +120,8 @@ namespace SqlXmlAnalyzer
         public XElement? RawElement { get; set; }
 
         public double ActualRecost { get; set; }
-        public string ExecutionMode { get; set; } = "Row";
-        public string ActualRowsRead { get; set; } = "";
+        public string ExecutionMode { get; set; } = "N/A";
+        public string ActualRowsRead { get; set; } = "N/A";
         public string EstimatedRowsToBeRead { get; set; } = "";
         public string EstimatedIOCost { get; set; } = "";
         public string EstimatedCPUCost { get; set; } = "";
@@ -124,7 +134,7 @@ namespace SqlXmlAnalyzer
         public string EstimatedDataSize { get; set; } = "";
         public string ActualRebinds { get; set; } = "0";
         public string ActualRewinds { get; set; } = "0";
-        public string Ordered { get; set; } = "False";
+        public string Ordered { get; set; } = "N/A";
         public string DatabaseName { get; set; } = "";
         public string TableName { get; set; } = "";
         public string IndexName { get; set; } = "";
@@ -202,19 +212,19 @@ namespace SqlXmlAnalyzer
                 {
                     DiagramViewMode.CostPercent => ColorMode switch
                     {
-                        PlanColorMode.TotalCost => $"Cost: {CostPercent}%",
-                        PlanColorMode.CpuCost => $"CPU: {CpuPercent:F1}%",
-                        PlanColorMode.IoCost => $"I/O: {IoPercent:F1}%",
+                        PlanColorMode.TotalCost => Facts != null && !Facts.OwnCost.IsAvailable ? "Cost: N/A" : $"Cost: {CostPercent}%",
+                        PlanColorMode.CpuCost => Facts != null && !Facts.EstimatedCpuCost.IsAvailable ? "CPU: N/A" : $"CPU: {CpuPercent:F1}%",
+                        PlanColorMode.IoCost => Facts != null && !Facts.EstimatedIoCost.IsAvailable ? "I/O: N/A" : $"I/O: {IoPercent:F1}%",
                         _ => $"Cost: {CostPercent}%"
                     },
                     DiagramViewMode.CpuIo => $"C: {EstimatedCPUCost}\nI: {EstimatedIOCost}",
-                    DiagramViewMode.Rows => $"R: {(ActualRowsNum > 0 ? ActualRows : EstRows)}",
+                    DiagramViewMode.Rows => HasActualRows ? $"R: {ActualRows}" : $"Est R: {EstRows}",
                     _ => $"{CostPercent}%"
                 };
             }
         }
 
-        public string ActualRowsDisplay => string.IsNullOrEmpty(ActualRows) ? "N/A" : ActualRows;
+        public string ActualRowsDisplay => HasActualRows && !string.IsNullOrEmpty(ActualRows) ? ActualRows : "N/A";
 
         public Brush DynamicBackgroundBrush
         {
@@ -269,8 +279,10 @@ namespace SqlXmlAnalyzer
         {
             get
             {
+                if (!HasComparableRows) return Brushes.DimGray;
+
                 Core.Services.PlanGraphRowSkewResult result =
-                    RowSkewService.Analyze(ActualRowsNum, EstRowsNum);
+                    RowSkewService.Analyze(ComparableRows, EstRowsNum);
 
                 return result.BrushKey switch
                 {
@@ -283,12 +295,16 @@ namespace SqlXmlAnalyzer
         }
 
         public string SkewWarning =>
-            RowSkewService.Analyze(ActualRowsNum, EstRowsNum).Warning;
+            HasComparableRows ? RowSkewService.Analyze(ComparableRows, EstRowsNum).Warning : string.Empty;
+
+        private bool HasComparableRows => Facts == null ? HasActualRows : Facts.EstimatedRows.IsAvailable && Facts.RowsPerExecution.IsAvailable;
+        private double ComparableRows => Facts == null ? ActualRowsNum : (double)(Facts.RowsPerExecution.Value ?? 0);
 
         public string HasObjectDetails => NodeDisplayService.GetTextVisibility(ObjectDetails);
-        public string IsParallelVisible => NodeDisplayService.GetBooleanVisibility(IsParallel);
+        public string IsParallelVisible => NodeDisplayService.GetBooleanVisibility(IsParallel == true);
         public string HasWarningVisible => NodeDisplayService.GetTextVisibility(Warnings);
-        public string HasExtraInfo => NodeDisplayService.GetExtraInfoVisibility(IsParallel, Warnings);
+        public string HasDiagnosticStatusVisible => NodeDisplayService.GetTextVisibility(DiagnosticStatusText);
+        public string HasExtraInfo => NodeDisplayService.GetExtraInfoVisibility(IsParallel == true, Warnings);
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core.Services;
 using SqlXmlAnalyzer.Core.ViewModels;
@@ -18,7 +18,7 @@ namespace SqlXmlAnalyzer.Tests
             path.Should().Be("C:\\Temp\\session.pesession");
             dialogService.LastSaveRequest.Should().NotBeNull();
             dialogService.LastSaveRequest!.Filter.Should().Be("SqlXmlAnalyzer tuning session (*.pesession)|*.pesession");
-            dialogService.LastSaveRequest.Title.Should().Be("Save current tuning session");
+            dialogService.LastSaveRequest.Title.Should().Be("Save current tuning session（未脱敏，仅供本地诊断）");
             dialogService.LastSaveRequest.DefaultExtension.Should().Be(".pesession");
             dialogService.LastSaveRequest.FileName.Should().Be("Tuning_Session.pesession");
         }

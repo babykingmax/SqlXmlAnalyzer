@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "step": "IMP-02",
+  "runId": "20260908T080801184Z_c5b1e0766cfc_6a19a7b0",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "runDirectory": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T080801184Z_c5b1e0766cfc_6a19a7b0",
+  "matrixCases": 22,
+  "probeConditionsMet": 0,
+  "notMet": 22,
+  "probeConditionsAllMet": false,
+  "issuesClosed": 0,
+  "existingSuite": {
+    "failed": 0,
+    "notExecuted": 0,
+    "passed": 807,
+    "total": 807
+  },
+  "cliInvalidInputExitCode": 0,
+  "protectedInputDrift": [],
+  "fixtureAndCandidateEntries": 28,
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "coverageGenerated": false,
+  "note": "Exit 1 means corrected-behavior conditions are not met; this is separate from the passing existing suite. Full issue closure requires additional matrix scenarios."
+}

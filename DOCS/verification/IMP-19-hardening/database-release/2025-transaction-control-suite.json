@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "Name": "transaction-control",
+      "ObserveSql": "SELECT @@TRANCOUNT, XACT_STATE(), @@OPTIONS;",
+      "OrderedResults": false,
+      "SetupSql": "CREATE TABLE dbo.T(Id int); INSERT dbo.T VALUES(1),(2),(3);"
+    }
+  ]
+}

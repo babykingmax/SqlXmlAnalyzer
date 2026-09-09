@@ -1,0 +1,165 @@
+// IMP-02 diagnostic adapter, derived from the preserved review probe.
+// Synthetic inputs; no SQL Server execution. All outputs go to a new run directory.
+using System.IO;
+using System.Text.Json;
+using System.Xml.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Parsers;
+using SqlXmlAnalyzer.Core.Refactoring;
+using SqlXmlAnalyzer.Core.Rules;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.Simulation;
+using SqlXmlAnalyzer.Core.ViewModels;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
+
+class Program
+{
+    static readonly XNamespace Ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
+    static readonly List<object> Results = new();
+    static string OutputRoot = "";
+    static int PlanNumber, DeadlockNumber;
+    static string SaveInput(string name, string value)
+    {
+        File.WriteAllText(Path.Combine(OutputRoot, "fixtures", name), value);
+        return value;
+    }
+    static void Record(string id, object observed) => Results.Add(new { id, observed });
+    static object DescribeRefactor(RefactorResult result) => new
+    {
+        result.IsSuccess,
+        result.OutputSql,
+        result.Errors,
+        parseErrorCount = result.ParseErrors?.Count ?? 0,
+        ruleFailures = result.Context.RefactorFailures.Select(f => new { f.RuleId, f.ExceptionName }).ToArray(),
+        changeCount = result.Context.RefactorChanges.Count,
+        warnings = result.Context.Warnings,
+        safetySkips = result.Context.SafetySkips,
+        outcome = result.Outcome.ToString()
+    };
+    static XDocument Plan(string body)
+    {
+        var doc = SafeXmlHelper.ParseSafe($"<ShowPlanXML xmlns='{Ns}'><BatchSequence><Batch><Statements>{body}</Statements></Batch></BatchSequence></ShowPlanXML>");
+        SaveInput($"plan-{++PlanNumber:D2}.sqlplan", doc.ToString());
+        return doc;
+    }
+    static string Stmt(string text, double cost, string ops) => $"<StmtSimple StatementText='{text}' StatementSubTreeCost='{cost}'><QueryPlan>{ops}</QueryPlan></StmtSimple>";
+    static string Scan(double cost, string table) => $"<RelOp NodeId='0' PhysicalOp='Table Scan' LogicalOp='Table Scan' EstimateRows='16000' EstimatedTotalSubtreeCost='{cost}'><TableScan><Object Table='{table}' /></TableScan></RelOp>";
+    static string Deadlock(string extra = "", string isolation = "read committed", bool overlapping = false)
+    {
+        var edges = overlapping ? new[] { ("a", "b"), ("b", "a"), ("a", "c"), ("c", "b") } : new[] { ("a", "b"), ("b", "a") };
+        string processes = string.Join("", new[] { "a", "b", "c" }.Select((p,i) => $"<process id='{p}' spid='{50+i}' isolationlevel='{isolation}' {extra}><inputbuf>select 1</inputbuf></process>"));
+        string resources = string.Join("", edges.Select((e,i) => $"<keylock id='r{i}' objectname='T{i}'><owner-list><owner id='{e.Item2}' mode='X'/></owner-list><waiter-list><waiter id='{e.Item1}' mode='S' requestType='wait'/></waiter-list></keylock>"));
+        return SaveInput($"deadlock-{++DeadlockNumber:D2}.xdl", $"<deadlock><victim-list><victimProcess id='a'/></victim-list><process-list>{processes}</process-list><resource-list>{resources}</resource-list></deadlock>");
+    }
+    [STAThread]
+    static void Main(string[] args)
+    {
+        if (args.Length != 2) throw new ArgumentException("Expected repository path and output directory.");
+        string repository = Path.GetFullPath(args[0]);
+        OutputRoot = Path.GetFullPath(args[1]);
+        Directory.CreateDirectory(Path.Combine(OutputRoot, "fixtures"));
+        SaveInput("not-a-plan.sqlplan", "<notAPlan/>");
+        var masked = PlanObfuscatorService.ObfuscatePlan(Plan(Stmt("secret sql", 1, "<RelOp><IndexScan><Object Server='SECRET_SERVER' Alias='SECRET_ALIAS' Table='SECRET_TABLE'/><Predicate><ScalarOperator ScalarString='secret'><Const ConstValue='SECRET_LITERAL'/></ScalarOperator></Predicate></IndexScan></RelOp>")));
+        Record("R01", new { literalRetained = masked.ToString().Contains("SECRET_LITERAL"), serverRetained = masked.ToString().Contains("SECRET_SERVER"), aliasRetained = masked.ToString().Contains("SECRET_ALIAS"), tableMasked = !masked.ToString().Contains("SECRET_TABLE") });
+        var engine = new SqlRefactoringEngine(new SqlXmlAnalyzer.Core.Abstractions.ISqlRefactorRule[] { new TrimRefactorRule() }, new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+        var report = new AnalysisReport(new List<IAnalysisIssue>());
+        var rewrite = engine.Run(SaveInput("trim-original.sql", "SELECT * FROM dbo.Users WHERE LTRIM(UserName) = 'admin';"), report, new RefactorOptions(), false);
+        Record("R02", DescribeRefactor(rewrite));
+        var files = new FailingBackupFiles();
+        var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), new BackupProbeRewrite(), files,
+            new SilentReporter(), NullLogger<ApplicationOrchestrator>.Instance, new SqlWritebackService(files));
+        var result = orchestrator.Execute("source.sql");
+        Record("R03", new { result.IsSuccess, files.SourceWritten, files.BackupAttempted, result.Warnings,
+            failureStage = result.Writeback?.Stage.ToString(), result.ErrorMessage });
+        Record("R04", new { unrelatedXmlIssues = new SqlXmlAnalysisEngine().Analyze("<notAPlan/>").Issues.Count });
+        var wrapper = SafeXmlHelper.ParseSafe("<deadlock-list>" + Deadlock() + "</deadlock-list>");
+        SaveInput("deadlock-wrapper.xml", wrapper.ToString());
+        Record("R05", new { openKind = new DocumentOpenService().ClassifyXml(wrapper).ToString(), parserAccepts = DeadlockXmlParser.TryParseDeadlockXml(wrapper).IsSuccess });
+        var priority = DeadlockXmlParser.TryParseDeadlockXml(SafeXmlHelper.ParseSafe(Deadlock("priority='7'")));
+        Record("R06", new { xmlPriority = 7, parsedPriority = priority.Value!.Processes[0].DeadlockPriority });
+        var deadlock = new DeadlockAnalysisService().Analyze(SafeXmlHelper.ParseSafe(Deadlock(isolation: "repeatable read (3)")));
+        Record("R07", new { actualLockModes = "S / X; no Range mode", patterns = deadlock.Patterns.Select(p=>p.TypeName).ToArray() });
+        var overlap = new DeadlockAnalysisService().Analyze(SafeXmlHelper.ParseSafe(Deadlock(overlapping: true)));
+        Record("R08", new { expectedCycleNodes = new[] {"a","b","c"}, graphContainsC = overlap.Graph.Cycles.Any(c=>c.ProcessIds.Contains("c")), timelineContainsC = overlap.Timeline.Processes["c"].IsInCycle });
+        var counters = string.Join("", Enumerable.Range(1,16).Select(i=>$"<RunTimeCountersPerThread Thread='{i}' ActualRows='1000' ActualExecutions='1'/>"));
+        var parallelPlan = Plan(Stmt("select 1",1,$"<RelOp NodeId='0' PhysicalOp='Index Scan' Parallel='true' EstimateRows='16000'><RunTimeInformation>{counters}</RunTimeInformation></RelOp>"));
+        var op = parallelPlan.Descendants(Ns+"RelOp").First();
+        Record("R09", new { rowMismatch = new RowEstimateMismatchRule().Analyze(op,Ns)?.Message, cardinalityError = new CardinalityErrorRule().Analyze(op,Ns)?.Message });
+        var seekPlan = Plan(Stmt("select 1",1,"<RelOp NodeId='0' PhysicalOp='Index Seek' LogicalOp='Index Seek' Parallel='true' EstimatedExecutionMode='Batch' EstimateRows='100'><RunTimeInformation><RunTimeCountersPerThread Thread='1' ActualExecutionMode='Batch' ActualRows='100' ActualRowsRead='1000' ActualExecutions='1'/></RunTimeInformation><IndexScan Ordered='true'><Object Table='T'/><SeekPredicates><SeekPredicateNew><SeekKeys><Prefix><RangeExpressions><ScalarOperator ScalarString='[T].[K]=(1)'/></RangeExpressions></Prefix></SeekKeys></SeekPredicateNew></SeekPredicates><Predicate><ScalarOperator ScalarString='[T].[V]=(2)'/></Predicate></IndexScan></RelOp>"));
+        var seek = seekPlan.Descendants(Ns+"RelOp").First();
+        Record("R10", new { extractedResidual = PlanDiagnosticAnalyzer.ExtractResidualPredicate(seek,Ns), ruleHit = new ResidualPredOpRule().Analyze(seek,Ns)?.Message, uiResidual = new PlanGraphRelOpDetailsService().Parse(seek,Ns,"Index Seek").Predicates });
+        var node = new PlanGraphNodeBuilderService().Build(seek,Ns,new PlanGraphNodeWarningSettings(1.2,100));
+        Record("R11", new { node.ExecutionMode, node.IsParallel, node.Ordered, node.ActualRows, node.ActualRowsRead });
+        var index = new MissingIndexSuggestion { Table="T" }; index.KeyColumns.Add(new IndexColumn {Name="K",Usage="EQUALITY"});
+        string low = Stmt("select T",10,Scan(10,"T")), high = Stmt("select T",100,Scan(100,"T"));
+        Record("R12", new { lowThenHigh = CostImpactSimulator.Simulate(Plan(low+high),index,Ns).ReductionPercent, highThenLow = CostImpactSimulator.Simulate(Plan(high+low),index,Ns).ReductionPercent });
+        Record("R13", new { input = "[Order.Detail]", escaped = IndexDdlCompiler.EscapeName("[Order.Detail]") });
+        var s1=new MissingIndexSuggestion {Schema="sales",Table="T"}; var s2=new MissingIndexSuggestion {Schema="audit",Table="T"};
+        Record("R14", new { nodeSchemas = new[]{"sales","audit"}, matched = new PlanGraphMissingIndexAssociationService().MatchSuggestions(new[]{new PlanGraphMissingIndexNodeInfo("T"),new PlanGraphMissingIndexNodeInfo("T")},new[]{s1,s2}).Select(s=>s?.Schema).ToArray() });
+        var actual=Plan(Stmt("select 1",1,"<RelOp PhysicalOp='Index Seek'><RunTimeInformation><RunTimeCountersPerThread ActualElapsedms='100' ActualLogicalReads='200'/></RunTimeInformation></RelOp>"));
+        var estimate=Plan(Stmt("select 1",1,"<RelOp PhysicalOp='Index Seek'/>"));
+        var comparison=new PlanComparisonController().BuildComparison(new PlanSnapshot {Document=actual}, new PlanSnapshot {Document=estimate}, Ns);
+        Record("R15",new { estimateVsActual = comparison.PlanB!.RuntimeDeltas });
+        var multiA=Plan(Stmt("select 1",1,Scan(1,"A"))+Stmt("select 2",2,Scan(2,"B")));
+        var multiB=Plan(Stmt("select 1",1,Scan(1,"A"))+Stmt("select 2",999,Scan(999,"B")));
+        var multiComparison=new PlanComparisonController().BuildComparison(new PlanSnapshot {Document=multiA},new PlanSnapshot {Document=multiB},Ns);
+        Record("R16",new { statement2CostA=2,statement2CostB=999,comparedCostA=multiComparison.PlanA!.Cost,comparedCostB=multiComparison.PlanB!.Cost });
+        var parent=Plan(Stmt("select 1",1,"<RelOp PhysicalOp='Nested Loops'><NestedLoops><RelOp PhysicalOp='Index Seek'><IndexScan><Object Table='ChildTable'/><Predicate><ScalarOperator ScalarString='ChildFilter'/></Predicate></IndexScan></RelOp></NestedLoops></RelOp>"));
+        var details=new PlanGraphRelOpDetailsService().Parse(parent.Descendants(Ns+"RelOp").First(),Ns,"Nested Loops");
+        Record("R17",new { parentTable=details.TableName,parentPredicates=details.Predicates });
+        Record("R18", new { simpleTwoProcessCycleCount = deadlock.Graph.Cycles.Count, expectedUniqueCycleCount = 1 });
+        var tableEngine = new SqlRefactoringEngine(new SqlXmlAnalyzer.Core.Abstractions.ISqlRefactorRule[] { new TableVariableRefactorRule() }, new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+        var tableRewrite = tableEngine.Run(SaveInput("table-rollback-original.sql", "DECLARE @T TABLE (id int); BEGIN TRANSACTION; INSERT INTO @T VALUES (1); ROLLBACK TRANSACTION; SELECT COUNT(*) FROM @T;"), report, new RefactorOptions(), false);
+        Record("R19", DescribeRefactor(tableRewrite));
+        var colliding = tableEngine.Run(SaveInput("table-collision-original.sql", "CREATE TABLE #T (id int); DECLARE @T TABLE (id int); SELECT * FROM @T;"), report, new RefactorOptions(), false);
+        Record("R20", DescribeRefactor(colliding));
+        var rowBindings = new[] { "Views/PlanWorkspaceView.xaml", "Views/PlanView.xaml" }.Select(path =>
+        {
+            var view = SafeXmlHelper.LoadSafe(Path.Combine(repository, path));
+            return PlanRowBindingInspector.Inspect(view, path);
+        }).ToArray();
+        Record("R21", new { rowBindings });
+        var playback = new SqlXmlAnalyzer.ViewModels.DeadlockPlaybackViewModel(new List<DeadlockEvent>());
+        Record("R22", new { initialDescription = playback.CurrentStepDescription, evidenceLevel = "ViewModel only; persistent visible explanation requires WPF acceptance" });
+        Directory.CreateDirectory(Path.Combine(OutputRoot, "candidates"));
+        File.WriteAllText(Path.Combine(OutputRoot, "candidates/R02.sql"), rewrite.OutputSql);
+        File.WriteAllText(Path.Combine(OutputRoot, "candidates/R19.sql"), tableRewrite.OutputSql);
+        File.WriteAllText(Path.Combine(OutputRoot, "candidates/R20.sql"), colliding.OutputSql);
+        string json = JsonSerializer.Serialize(Results,new JsonSerializerOptions {WriteIndented=true});
+        File.WriteAllText(Path.Combine(OutputRoot,"observed.json"), json);
+        Console.WriteLine(json);
+    }
+    sealed class BackupProbeRewrite : IRefactoringEngine
+    {
+        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
+            => new(sql + "\n-- synthetic writeback candidate", true, Array.Empty<string>(), new RefactorContext(sql));
+    }
+    sealed class FailingBackupFiles : IFileHandler, ISqlWritebackFileSystem
+    {
+        public bool SourceWritten {get;private set;} public bool BackupAttempted {get;private set;}
+        public bool Exists(string p)=>Path.GetFileName(p) == "source.sql";
+        public string ReadAllText(string p)=>"SELECT * FROM dbo.Users WHERE LTRIM(UserName) = 'admin';";
+        public void WriteAllText(string p,string s) {if(p.EndsWith(".bak")){BackupAttempted=true;throw new IOException("Synthetic backup failure");} SourceWritten=true;}
+        public byte[] ReadAllBytes(string p)=>System.Text.Encoding.UTF8.GetBytes(ReadAllText(p));
+        public Stream CreateNew(string p,string sourcePath)
+        {
+            if(p.EndsWith(".bak")){BackupAttempted=true;throw new IOException("Synthetic backup failure");}
+            throw new InvalidOperationException("Temporary write must not follow backup failure.");
+        }
+        public void FlushToDisk(Stream stream)=>stream.Flush();
+        public void Replace(string temporaryPath,string sourcePath)=>SourceWritten=true;
+        public void Delete(string p){}
+    }
+    sealed class SilentReporter : IResultReporter
+    {
+        public void Report(RefactorResult r){} public void Report(RefactorResult r,bool d,string? p=null){}
+    }
+}

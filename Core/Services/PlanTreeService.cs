@@ -84,10 +84,9 @@ namespace SqlXmlAnalyzer.Core.Services
         {
             string physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "Unknown";
             string logicalOp = relOp.Attribute("LogicalOp")?.Value ?? "";
-            string estRows = relOp.Attribute("EstimateRows")?.Value
-                ?? relOp.Attribute("EstimatedRows")?.Value
-                ?? "0";
-            double cost = ParseDouble(relOp.Attribute("EstimatedTotalSubtreeCost")?.Value);
+            var facts = PlanOperatorFactsService.Get(relOp, ns);
+            string estRows = facts.EstimatedRows.Display();
+            double cost = facts.SubtreeCost.Value ?? 0;
 
             return new PlanVisualNode
             {
@@ -109,7 +108,7 @@ namespace SqlXmlAnalyzer.Core.Services
             XNamespace ns)
         {
             string physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "Unknown";
-            string cost = relOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
+            string cost = PlanOperatorFactsService.Get(relOp, ns).SubtreeCost.Display();
 
             return new PlanOperatorTreeNode
             {
@@ -119,17 +118,6 @@ namespace SqlXmlAnalyzer.Core.Services
                     .Select(child => BuildOperatorNode(child, ns))
                     .ToList()
             };
-        }
-
-        private static double ParseDouble(string? value)
-        {
-            return double.TryParse(
-                value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture,
-                out double result)
-                ? result
-                : 0;
         }
 
         private static Brush GetCostBrush(double cost)

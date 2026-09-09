@@ -72,11 +72,11 @@ namespace SqlXmlAnalyzer.Tests
             result.Predicate.Should().Be("[Orders].[Status]='Open'");
             result.OutputList.Should().Be("OrderId");
             result.OperatorType.Should().Be("Seek");
-            result.IsParallel.Should().BeFalse();
+            result.IsParallel.Should().BeNull();
         }
 
         [Fact]
-        public void Build_WhenOptionalValuesAreMissing_UsesExistingDefaults()
+        public void Build_WhenOptionalValuesAreMissing_ShowsUnknownMetrics()
         {
             XElement relOp = new(Ns + "RelOp",
                 new XAttribute("PhysicalOp", "Parallelism"));
@@ -87,19 +87,19 @@ namespace SqlXmlAnalyzer.Tests
             result.NodeId.Should().Be("?");
             result.PhysicalOp.Should().Be("Parallelism");
             result.LogicalOp.Should().Be("Unknown");
-            result.ExecutionMode.Should().Be("Row");
-            result.EstRows.Should().Be("0");
-            result.EstimatedRowsToBeRead.Should().Be("0");
+            result.ExecutionMode.Should().Be("N/A");
+            result.EstRows.Should().Be("N/A");
+            result.EstimatedRowsToBeRead.Should().Be("N/A");
             result.EstimatedCPUCostNum.Should().Be(0);
             result.EstimatedIOCostNum.Should().Be(0);
-            result.EstimatedExecutions.Should().Be("1.0");
-            result.ActualExecutions.Should().BeEmpty();
-            result.ActualRows.Should().BeEmpty();
-            result.ActualRowsRead.Should().BeEmpty();
-            result.ActualDataSize.Should().BeEmpty();
+            result.EstimatedExecutions.Should().Be("N/A");
+            result.ActualExecutions.Should().Be("N/A");
+            result.ActualRows.Should().Be("N/A");
+            result.ActualRowsRead.Should().Be("N/A");
+            result.ActualDataSize.Should().Be("N/A");
             result.NodeSeverity.Should().Be("Info");
             result.OperatorType.Should().Be("Parallelism");
-            result.IsParallel.Should().BeTrue();
+            result.IsParallel.Should().BeNull();
         }
 
         [Fact]

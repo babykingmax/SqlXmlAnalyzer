@@ -1,0 +1,1 @@
+SELECT CAST('a' COLLATE Latin1_General_100_CI_AS AS sql_variant) AS Value;

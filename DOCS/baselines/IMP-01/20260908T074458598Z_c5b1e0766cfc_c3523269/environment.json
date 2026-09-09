@@ -1,0 +1,12 @@
+{
+  "repository": "E:\\SqlXmlAnalyzer",
+  "operatingSystem": "Microsoft Windows 10.0.26200",
+  "processArchitecture": "X64",
+  "powershell": "7.6.5",
+  "timezoneId": "Taipei Standard Time",
+  "captureUtc": "2026-09-08T07:44:58.5987833+00:00",
+  "captureLocal": "2026-09-08T15:44:58.5987833+08:00",
+  "sdk": "10.0.400",
+  "globalJsonPresent": false,
+  "configuration": "Debug"
+}

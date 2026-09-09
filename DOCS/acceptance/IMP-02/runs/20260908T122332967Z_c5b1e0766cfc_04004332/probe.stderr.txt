@@ -1,0 +1,6 @@
+[ERROR] 2026-09-08T20:24:01.3368943+08:00 SQL 写回失败：SqlWriteback.CreateBackup
+System.IO.IOException: Synthetic backup failure
+   at Program.FailingBackupFiles.CreateNew(String p, String sourcePath) in C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-38f02849384a47259978ff48c1486f81\Program.cs:line 195
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.CreateOwnedFile(String sourcePath, String extension, CancellationToken token, String& ownedPath) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 149
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.WriteBack(SqlFileSnapshot snapshot, String sql, CancellationToken cancellationToken) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 61
+[ERROR] 2026-09-08T20:24:01.3583562+08:00 INPUT_UNRELATED_XML: 无法识别此 XML；需要 SQL Server ShowPlanXML、deadlock、deadlock-list 或 XE 死锁包装。

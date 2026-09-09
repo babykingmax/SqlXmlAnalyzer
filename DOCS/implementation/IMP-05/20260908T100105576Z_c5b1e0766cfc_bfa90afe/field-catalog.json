@@ -1,0 +1,1213 @@
+{
+  "policy": "IMP05-1.0-SQL2022-1.571",
+  "fields": [
+    {
+      "name": "ANSI_NULLS",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ANSI_PADDING",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ANSI_WARNINGS",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ARITHABORT",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ActualCPUms",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualElapsedms",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualEndOfScans",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualExecutionMode",
+      "kind": "Enum"
+    },
+    {
+      "name": "ActualExecutions",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualJoinType",
+      "kind": "Enum"
+    },
+    {
+      "name": "ActualLobLogicalReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualLobPageServerReadAheads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualLobPageServerReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualLobPhysicalReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualLobReadAheads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualLocallyAggregatedRows",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualLogicalReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPageServerPushedPageIDs",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPageServerPushedReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPageServerReadAheads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPageServerReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPageServerRowsRead",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPageServerRowsReturned",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualPhysicalReads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualReadAheads",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualRebinds",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualRewinds",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualRows",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualRowsRead",
+      "kind": "Number"
+    },
+    {
+      "name": "ActualScans",
+      "kind": "Number"
+    },
+    {
+      "name": "AdaptiveThresholdRows",
+      "kind": "Number"
+    },
+    {
+      "name": "AggType",
+      "kind": "Text"
+    },
+    {
+      "name": "Alias",
+      "kind": "Text"
+    },
+    {
+      "name": "Ascending",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Assembly",
+      "kind": "Text"
+    },
+    {
+      "name": "AvgRowSize",
+      "kind": "Number"
+    },
+    {
+      "name": "BatchModeOnRowStoreUsed",
+      "kind": "Boolean"
+    },
+    {
+      "name": "BatchSqlHandle",
+      "kind": "Text"
+    },
+    {
+      "name": "Batches",
+      "kind": "Number"
+    },
+    {
+      "name": "BitmapCreator",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Branches",
+      "kind": "Number"
+    },
+    {
+      "name": "BrickId",
+      "kind": "Number"
+    },
+    {
+      "name": "Build",
+      "kind": "Text"
+    },
+    {
+      "name": "CONCAT_NULL_YIELDS_NULL",
+      "kind": "Boolean"
+    },
+    {
+      "name": "CachedPlanSize",
+      "kind": "Number"
+    },
+    {
+      "name": "CardinalityEstimationModelVersion",
+      "kind": "Text"
+    },
+    {
+      "name": "Class",
+      "kind": "Text"
+    },
+    {
+      "name": "CloneAccessScope",
+      "kind": "Enum"
+    },
+    {
+      "name": "CloseTime",
+      "kind": "Number"
+    },
+    {
+      "name": "ClusteredMode",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Column",
+      "kind": "Text"
+    },
+    {
+      "name": "ColumnId",
+      "kind": "Number"
+    },
+    {
+      "name": "CompareOp",
+      "kind": "Enum"
+    },
+    {
+      "name": "CompileCPU",
+      "kind": "Number"
+    },
+    {
+      "name": "CompileMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "CompileTime",
+      "kind": "Number"
+    },
+    {
+      "name": "ComputeSequence",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ComputedColumn",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ConstValue",
+      "kind": "Text"
+    },
+    {
+      "name": "ContainsInlineScalarTsqlUdfs",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ContainsInterleavedExecutionCandidates",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ContainsLedgerTables",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ConvertIssue",
+      "kind": "Enum"
+    },
+    {
+      "name": "CpuTime",
+      "kind": "Number"
+    },
+    {
+      "name": "CursorActualType",
+      "kind": "Enum"
+    },
+    {
+      "name": "CursorConcurrency",
+      "kind": "Enum"
+    },
+    {
+      "name": "CursorName",
+      "kind": "Text"
+    },
+    {
+      "name": "CursorRequestedType",
+      "kind": "Enum"
+    },
+    {
+      "name": "DMLRequestSort",
+      "kind": "Boolean"
+    },
+    {
+      "name": "DOPFeedbackAdjusted",
+      "kind": "Enum"
+    },
+    {
+      "name": "DataType",
+      "kind": "Text"
+    },
+    {
+      "name": "Database",
+      "kind": "Text"
+    },
+    {
+      "name": "DatabaseContextSettingsId",
+      "kind": "Number"
+    },
+    {
+      "name": "DegreeOfParallelism",
+      "kind": "Number"
+    },
+    {
+      "name": "DesiredMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "Detail",
+      "kind": "Boolean"
+    },
+    {
+      "name": "DiskWrittenInBytes",
+      "kind": "Number"
+    },
+    {
+      "name": "DispatcherPlanHandle",
+      "kind": "Text"
+    },
+    {
+      "name": "Distinct",
+      "kind": "Boolean"
+    },
+    {
+      "name": "DistributionType",
+      "kind": "Text"
+    },
+    {
+      "name": "Dop",
+      "kind": "Number"
+    },
+    {
+      "name": "DynamicSeek",
+      "kind": "Boolean"
+    },
+    {
+      "name": "EdcShowplanXml",
+      "kind": "Text"
+    },
+    {
+      "name": "EffectiveDegreeOfParallelism",
+      "kind": "Number"
+    },
+    {
+      "name": "ElapsedTime",
+      "kind": "Number"
+    },
+    {
+      "name": "End",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimateCPU",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimateIO",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimateRebinds",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimateRewinds",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimateRows",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimateRowsWithoutRowGoal",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimatedAvailableDegreeOfParallelism",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimatedAvailableMemoryGrant",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimatedExecutionMode",
+      "kind": "Enum"
+    },
+    {
+      "name": "EstimatedJoinType",
+      "kind": "Enum"
+    },
+    {
+      "name": "EstimatedPagesCached",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimatedRowsRead",
+      "kind": "Number"
+    },
+    {
+      "name": "EstimatedTotalSubtreeCost",
+      "kind": "Number"
+    },
+    {
+      "name": "ExclusiveProfileTimeActive",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Expression",
+      "kind": "Text"
+    },
+    {
+      "name": "Filtered",
+      "kind": "Boolean"
+    },
+    {
+      "name": "FirstActiveTime",
+      "kind": "Number"
+    },
+    {
+      "name": "FirstRowTime",
+      "kind": "Number"
+    },
+    {
+      "name": "ForceScan",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ForceSeek",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ForceSeekColumnCount",
+      "kind": "Number"
+    },
+    {
+      "name": "ForcedIndex",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ForeignKeyReferencesCount",
+      "kind": "Number"
+    },
+    {
+      "name": "ForwardOnly",
+      "kind": "Boolean"
+    },
+    {
+      "name": "FragmentElimination",
+      "kind": "Text"
+    },
+    {
+      "name": "FullUpdateForOnlineIndexBuild",
+      "kind": "Boolean"
+    },
+    {
+      "name": "FunctionName",
+      "kind": "Text"
+    },
+    {
+      "name": "GrantWaitTime",
+      "kind": "Number"
+    },
+    {
+      "name": "GrantWarningKind",
+      "kind": "Enum"
+    },
+    {
+      "name": "GrantedMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "GrantedMemoryKb",
+      "kind": "Number"
+    },
+    {
+      "name": "GraphSequenceIdentifier",
+      "kind": "Number"
+    },
+    {
+      "name": "GraphWorkTableIdentifier",
+      "kind": "Number"
+    },
+    {
+      "name": "GraphWorkTableType",
+      "kind": "Number"
+    },
+    {
+      "name": "GroupExecuted",
+      "kind": "Boolean"
+    },
+    {
+      "name": "HighBoundary",
+      "kind": "Number"
+    },
+    {
+      "name": "HighestLevel",
+      "kind": "Number"
+    },
+    {
+      "name": "HintType",
+      "kind": "Text"
+    },
+    {
+      "name": "HpcDeviceToHostBytes",
+      "kind": "Number"
+    },
+    {
+      "name": "HpcHostToDeviceBytes",
+      "kind": "Number"
+    },
+    {
+      "name": "HpcKernelElapsedUs",
+      "kind": "Number"
+    },
+    {
+      "name": "HpcRowCount",
+      "kind": "Number"
+    },
+    {
+      "name": "HyperScaleOptimizedQueryProcessing",
+      "kind": "Text"
+    },
+    {
+      "name": "HyperScaleOptimizedQueryProcessingUnusedReason",
+      "kind": "Text"
+    },
+    {
+      "name": "Impact",
+      "kind": "Number"
+    },
+    {
+      "name": "Implicit",
+      "kind": "Boolean"
+    },
+    {
+      "name": "InRow",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Index",
+      "kind": "Text"
+    },
+    {
+      "name": "IndexKind",
+      "kind": "Enum"
+    },
+    {
+      "name": "Input",
+      "kind": "Number"
+    },
+    {
+      "name": "InputMemoryGrant",
+      "kind": "Number"
+    },
+    {
+      "name": "IsAdaptive",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsClrFunction",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsCompileTime",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsDistributed",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsExternal",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsExternallyComputed",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsFull",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsGraphDBTransitiveClosure",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsHashDistributed",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsInterleavedExecuted",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsMemoryGrantFeedbackAdjusted",
+      "kind": "Enum"
+    },
+    {
+      "name": "IsNativelyCompiled",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsNoOp",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsPercent",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsReplicated",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsRoundRobin",
+      "kind": "Boolean"
+    },
+    {
+      "name": "IsScalar",
+      "kind": "Boolean"
+    },
+    {
+      "name": "JoinType",
+      "kind": "Text"
+    },
+    {
+      "name": "LastActiveTime",
+      "kind": "Number"
+    },
+    {
+      "name": "LastRequestedMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "LastRowTime",
+      "kind": "Number"
+    },
+    {
+      "name": "LastUpdate",
+      "kind": "Text"
+    },
+    {
+      "name": "Length",
+      "kind": "Number"
+    },
+    {
+      "name": "Level",
+      "kind": "Number"
+    },
+    {
+      "name": "LocalParallelism",
+      "kind": "Boolean"
+    },
+    {
+      "name": "LogicalOp",
+      "kind": "Enum"
+    },
+    {
+      "name": "Lookup",
+      "kind": "Boolean"
+    },
+    {
+      "name": "LowBoundary",
+      "kind": "Number"
+    },
+    {
+      "name": "ManyToMany",
+      "kind": "Boolean"
+    },
+    {
+      "name": "MaterializeOperation",
+      "kind": "Text"
+    },
+    {
+      "name": "MaxCompileMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "MaxQueryMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "MaxUsedMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "MemoryGrant",
+      "kind": "Number"
+    },
+    {
+      "name": "MemoryInBytes",
+      "kind": "Number"
+    },
+    {
+      "name": "Method",
+      "kind": "Text"
+    },
+    {
+      "name": "ModificationCount",
+      "kind": "Number"
+    },
+    {
+      "name": "MoveType",
+      "kind": "Text"
+    },
+    {
+      "name": "NUMERIC_ROUNDABORT",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Name",
+      "kind": "Text"
+    },
+    {
+      "name": "NoExpandHint",
+      "kind": "Boolean"
+    },
+    {
+      "name": "NoJoinPredicate",
+      "kind": "Boolean"
+    },
+    {
+      "name": "NoMatchingIndexCount",
+      "kind": "Number"
+    },
+    {
+      "name": "NodeCount",
+      "kind": "Number"
+    },
+    {
+      "name": "NodeId",
+      "kind": "Number"
+    },
+    {
+      "name": "NonParallelPlanReason",
+      "kind": "Text"
+    },
+    {
+      "name": "NumRows",
+      "kind": "Number"
+    },
+    {
+      "name": "OnlineInbuildIndex",
+      "kind": "Number"
+    },
+    {
+      "name": "OnlineIndexBuildMappingIndex",
+      "kind": "Number"
+    },
+    {
+      "name": "OpenTime",
+      "kind": "Number"
+    },
+    {
+      "name": "Operation",
+      "kind": "Enum"
+    },
+    {
+      "name": "OperationType",
+      "kind": "Enum"
+    },
+    {
+      "name": "Optimized",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Ordered",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Output",
+      "kind": "Number"
+    },
+    {
+      "name": "OutputMemoryGrant",
+      "kind": "Number"
+    },
+    {
+      "name": "PDWAccumulativeCost",
+      "kind": "Number"
+    },
+    {
+      "name": "Parallel",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ParameterCompiledValue",
+      "kind": "Text"
+    },
+    {
+      "name": "ParameterDataType",
+      "kind": "Text"
+    },
+    {
+      "name": "ParameterRuntimeValue",
+      "kind": "Text"
+    },
+    {
+      "name": "ParameterizedPlanHandle",
+      "kind": "Text"
+    },
+    {
+      "name": "ParameterizedText",
+      "kind": "Text"
+    },
+    {
+      "name": "ParentObjectId",
+      "kind": "Number"
+    },
+    {
+      "name": "PartialMatchingIndexCount",
+      "kind": "Number"
+    },
+    {
+      "name": "PartitionCount",
+      "kind": "Number"
+    },
+    {
+      "name": "Partitioned",
+      "kind": "Boolean"
+    },
+    {
+      "name": "PartitioningType",
+      "kind": "Enum"
+    },
+    {
+      "name": "PhysicalOp",
+      "kind": "Enum"
+    },
+    {
+      "name": "PlanGuideDB",
+      "kind": "Text"
+    },
+    {
+      "name": "PlanGuideName",
+      "kind": "Text"
+    },
+    {
+      "name": "Precision",
+      "kind": "Number"
+    },
+    {
+      "name": "PrimaryNodeId",
+      "kind": "Number"
+    },
+    {
+      "name": "ProcName",
+      "kind": "Text"
+    },
+    {
+      "name": "QUOTED_IDENTIFIER",
+      "kind": "Boolean"
+    },
+    {
+      "name": "QueryCompilationReplay",
+      "kind": "Number"
+    },
+    {
+      "name": "QueryHash",
+      "kind": "Text"
+    },
+    {
+      "name": "QueryPlanHash",
+      "kind": "Text"
+    },
+    {
+      "name": "QueryStoreStatementHintId",
+      "kind": "Number"
+    },
+    {
+      "name": "QueryStoreStatementHintSource",
+      "kind": "Text"
+    },
+    {
+      "name": "QueryStoreStatementHintText",
+      "kind": "Text"
+    },
+    {
+      "name": "QueryVariantID",
+      "kind": "Number"
+    },
+    {
+      "name": "ReadsFromTempDb",
+      "kind": "Number"
+    },
+    {
+      "name": "RemoteDataAccess",
+      "kind": "Boolean"
+    },
+    {
+      "name": "RemoteDestination",
+      "kind": "Text"
+    },
+    {
+      "name": "RemoteObject",
+      "kind": "Text"
+    },
+    {
+      "name": "RemoteQuery",
+      "kind": "Text"
+    },
+    {
+      "name": "RemoteSource",
+      "kind": "Text"
+    },
+    {
+      "name": "Remoting",
+      "kind": "Boolean"
+    },
+    {
+      "name": "RequestedMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "RequiredMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "ReservedThreads",
+      "kind": "Number"
+    },
+    {
+      "name": "RetrievedFromCache",
+      "kind": "Text"
+    },
+    {
+      "name": "Root",
+      "kind": "Boolean"
+    },
+    {
+      "name": "RowCount",
+      "kind": "Boolean"
+    },
+    {
+      "name": "RowRequalifications",
+      "kind": "Number"
+    },
+    {
+      "name": "Rows",
+      "kind": "Number"
+    },
+    {
+      "name": "SBSFileUrl",
+      "kind": "Text"
+    },
+    {
+      "name": "SamplingPercent",
+      "kind": "Number"
+    },
+    {
+      "name": "Scalable",
+      "kind": "Boolean"
+    },
+    {
+      "name": "ScalarString",
+      "kind": "Text"
+    },
+    {
+      "name": "Scale",
+      "kind": "Number"
+    },
+    {
+      "name": "ScanDirection",
+      "kind": "Enum"
+    },
+    {
+      "name": "ScanType",
+      "kind": "Enum"
+    },
+    {
+      "name": "SchedulerId",
+      "kind": "Number"
+    },
+    {
+      "name": "Schema",
+      "kind": "Text"
+    },
+    {
+      "name": "Scope",
+      "kind": "Enum"
+    },
+    {
+      "name": "Script",
+      "kind": "Text"
+    },
+    {
+      "name": "SecurityPolicyApplied",
+      "kind": "Boolean"
+    },
+    {
+      "name": "SegmentReads",
+      "kind": "Number"
+    },
+    {
+      "name": "SegmentSkips",
+      "kind": "Number"
+    },
+    {
+      "name": "SerialDesiredMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "SerialRequiredMemory",
+      "kind": "Number"
+    },
+    {
+      "name": "Server",
+      "kind": "Text"
+    },
+    {
+      "name": "SetPredicateType",
+      "kind": "Enum"
+    },
+    {
+      "name": "ShuffleColumn",
+      "kind": "Text"
+    },
+    {
+      "name": "ShuffleType",
+      "kind": "Text"
+    },
+    {
+      "name": "SpatialGuess",
+      "kind": "Boolean"
+    },
+    {
+      "name": "SpillLevel",
+      "kind": "Number"
+    },
+    {
+      "name": "SpilledThreadCount",
+      "kind": "Number"
+    },
+    {
+      "name": "Stack",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Start",
+      "kind": "Number"
+    },
+    {
+      "name": "StartupExpression",
+      "kind": "Boolean"
+    },
+    {
+      "name": "StatementCompId",
+      "kind": "Number"
+    },
+    {
+      "name": "StatementEstRows",
+      "kind": "Number"
+    },
+    {
+      "name": "StatementId",
+      "kind": "Number"
+    },
+    {
+      "name": "StatementOptmEarlyAbortReason",
+      "kind": "Enum"
+    },
+    {
+      "name": "StatementOptmLevel",
+      "kind": "Text"
+    },
+    {
+      "name": "StatementParameterizationType",
+      "kind": "Number"
+    },
+    {
+      "name": "StatementSqlHandle",
+      "kind": "Text"
+    },
+    {
+      "name": "StatementSubTreeCost",
+      "kind": "Number"
+    },
+    {
+      "name": "StatementText",
+      "kind": "Text"
+    },
+    {
+      "name": "StatementType",
+      "kind": "Text"
+    },
+    {
+      "name": "Statistics",
+      "kind": "Text"
+    },
+    {
+      "name": "StatsCollectionId",
+      "kind": "Number"
+    },
+    {
+      "name": "Storage",
+      "kind": "Enum"
+    },
+    {
+      "name": "Style",
+      "kind": "Number"
+    },
+    {
+      "name": "Table",
+      "kind": "Text"
+    },
+    {
+      "name": "TableCardinality",
+      "kind": "Number"
+    },
+    {
+      "name": "TableReferenceId",
+      "kind": "Number"
+    },
+    {
+      "name": "TaskAddr",
+      "kind": "Number"
+    },
+    {
+      "name": "TemplatePlanGuideDB",
+      "kind": "Text"
+    },
+    {
+      "name": "TemplatePlanGuideName",
+      "kind": "Text"
+    },
+    {
+      "name": "Thread",
+      "kind": "Number"
+    },
+    {
+      "name": "TopLocation",
+      "kind": "Text"
+    },
+    {
+      "name": "Type",
+      "kind": "Enum"
+    },
+    {
+      "name": "UDXName",
+      "kind": "Text"
+    },
+    {
+      "name": "UdfCpuTime",
+      "kind": "Number"
+    },
+    {
+      "name": "UdfElapsedTime",
+      "kind": "Number"
+    },
+    {
+      "name": "UnmatchedIndexes",
+      "kind": "Boolean"
+    },
+    {
+      "name": "Usage",
+      "kind": "Enum"
+    },
+    {
+      "name": "UsePlan",
+      "kind": "Boolean"
+    },
+    {
+      "name": "UsedMemoryGrant",
+      "kind": "Number"
+    },
+    {
+      "name": "UsedMemoryKb",
+      "kind": "Number"
+    },
+    {
+      "name": "UsedThreads",
+      "kind": "Number"
+    },
+    {
+      "name": "Value",
+      "kind": "Text"
+    },
+    {
+      "name": "Version",
+      "kind": "Text"
+    },
+    {
+      "name": "WaitCount",
+      "kind": "Number"
+    },
+    {
+      "name": "WaitTime",
+      "kind": "Number"
+    },
+    {
+      "name": "WaitTimeMs",
+      "kind": "Number"
+    },
+    {
+      "name": "WaitType",
+      "kind": "Text"
+    },
+    {
+      "name": "WithOrderedPrefetch",
+      "kind": "Boolean"
+    },
+    {
+      "name": "WithTies",
+      "kind": "Boolean"
+    },
+    {
+      "name": "WithUnorderedPrefetch",
+      "kind": "Boolean"
+    },
+    {
+      "name": "WritesToTempDb",
+      "kind": "Number"
+    }
+  ]
+}

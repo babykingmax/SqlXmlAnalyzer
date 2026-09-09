@@ -1,0 +1,1 @@
+SELECT DISTINCT Id FROM dbo.InputText;

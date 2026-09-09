@@ -1,0 +1,135 @@
+{
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "comparisonBase": "DOCS\\acceptance\\IMP-02\\runs\\20260908T083501166Z_c5b1e0766cfc_71955017",
+  "implementation": [
+    {
+      "kind": "ContentChanged",
+      "path": "App.xaml.cs",
+      "before": "29B092C9AE611A68C43DBF1366C695BDD11443A1568BA436593E4CEE8A27BDB9",
+      "after": "C8A7442681C976DFC549D02FB3647663F8A5672AF3610E2368E4FBD2235C34FF"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "Core/Services/PlanAnalysisService.cs",
+      "before": "B2A6B3711217FD6A7AB1CAABA34E754DAB09AA8FD81548C5F0A20CC5A0249113",
+      "after": "3D72C2FA1AF6787C28F47366DD9F6942577C3A0137A6926DCDC4907520ABA1F6"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "before": "1581C016044317A2555555BC72F03FF23FCA4F743BC446398DCD491CF21334A2",
+      "after": "C9CE09DE417A39F1B045A53E391CEDAF87E863A8C24524134E493F9F87AAEAAA"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+      "before": "9BCBEA42B139C5460515DF872FFF04B77E85EFD6AB65EFEF61BA80897D9D81A5",
+      "after": "1865D77A64CF475B5112E40967960444771004B4DCEA90EC1A101EC6A37CECCD"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+      "before": "69A9A84DB339C7F80C3BBFB680CA927D0246D266E265C488F26CCC3CF4E3EA11",
+      "after": "9C7BC90D194B0FD3E41ED57C7788B14F8C1CD506EA812C5D758C655DB4F442E0"
+    },
+    {
+      "kind": "Added",
+      "path": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+      "before": null,
+      "after": "D0BBE90EDB0356D5F89E8375BE304AC99647080D0038DDBC0392F14BB0237C99"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "before": "00F2A4ACB5DE1BDB694E6CA83C8CB981FC4E051C1E6C4C67ECCF620B5B1BEF42",
+      "after": "DF44844D9D77C628046A5F136A5D8DA3B5568805957D21E805431924DE57E019"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs",
+      "before": "7BC6F48460BCA5B2FCAD5D993DD868DE666083DB4218183968998665185F183B",
+      "after": "55EFFBC9E0231C903CECF4D7CF1CA691F24E405DEF8BED660BABBC5B62F6296D"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs",
+      "before": null,
+      "after": "A533CD51CB98553A4F7D8B99CD6E4B0359D4EB4BA142984E00324DEEEF9490C2"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs",
+      "before": null,
+      "after": "A75238F528E25BE81E5929DF41955EEA00B988A65F751DE1C8A766F161E4C043"
+    },
+    {
+      "kind": "ContentChanged",
+      "path": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+      "before": "D903B4F86D4E9A1A033C5F882C198B0AAFD6928E72A4ED4902605C653ADC132F",
+      "after": "9BAC9B2C31CDC932DC71789E48A1A401E72744556163D0750857B966AC368AF4"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs",
+      "before": null,
+      "after": "D326A090CE1C7B5C5695E260C5B58C59C276586ECEB60D7B7586E71C7A60E7DF"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs",
+      "before": null,
+      "after": "F6DCFD0F657F87C1CF53662E3E5A5153CC0D5253F3565527CAFD2223E31F011F"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs",
+      "before": null,
+      "after": "D6757DE1C9A9227E1298EEBFE94F78BBAD61E55339E27AE2B2F77AE665D9140A"
+    },
+    {
+      "kind": "Added",
+      "path": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+      "before": null,
+      "after": "114664AD54A574242658791837AF3491D8E09D699937BBE4CA38AA35437310EC"
+    }
+  ],
+  "preservedPreexistingChanges": [
+    {
+      "path": "AGENTS.md",
+      "sha256Before": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "sha256After": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "sha256Before": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "sha256After": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "unchanged": true
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "sha256Before": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "sha256After": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "sha256Before": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "sha256After": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "unchanged": true
+    }
+  ],
+  "currentAdapterChanges": [
+    "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+    "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+    "DOCS/acceptance/IMP-02/acceptance-matrix.json"
+  ],
+  "documentChanges": [
+    "DOCS/IMP-03安全写回与恢复说明.md",
+    "DOCS/软件改善实施规划.md",
+    "DOCS/IMP-02审查反例验收矩阵.md",
+    "DOCS/acceptance/IMP-02/README.md"
+  ],
+  "unexpectedChanges": [],
+  "committed": false
+}

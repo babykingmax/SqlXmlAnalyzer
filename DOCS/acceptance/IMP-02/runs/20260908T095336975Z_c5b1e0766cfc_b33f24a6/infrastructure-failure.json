@@ -1,0 +1,5 @@
+{
+  "exception": "System.IO.IOException: infrastructure-tests did not complete: Process timed out; requested termination of the process tree.",
+  "timestampUtc": "2026-09-08T09:53:38.9429057+00:00",
+  "scriptStackTrace": "at Run-Command, E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\Run-AcceptanceMatrix.ps1: line 41\r\nat <ScriptBlock>, E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\Run-AcceptanceMatrix.ps1: line 93"
+}

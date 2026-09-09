@@ -1,0 +1,64 @@
+{
+  "Step": "IMP-06",
+  "DateUtc": "2026-09-08T11:58:46.5524587Z",
+  "Head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "AddedTestCases": 46,
+  "Results": [
+    {
+      "Configuration": "Debug",
+      "RunId": "20260908T115707647Z_c5b1e0766cfc_9da94257",
+      "TestTotal": 1011,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "InfrastructureTests": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "ProbeConditionsMet": 7,
+      "RemainingNotMet": 15,
+      "InputDriftCount": 0,
+      "InvalidCliExitCode": 1,
+      "CliDiagnosticTags": [
+        "DEBUG",
+        "ERROR"
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "RunId": "20260908T115743976Z_c5b1e0766cfc_2ce6d6ae",
+      "TestTotal": 1011,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "InfrastructureTests": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "ProbeConditionsMet": 7,
+      "RemainingNotMet": 15,
+      "InputDriftCount": 0,
+      "InvalidCliExitCode": 1,
+      "CliDiagnosticTags": [
+        "ERROR"
+      ]
+    }
+  ],
+  "BuildEnvironment": {
+    "Reason": "Default WPF resource in obj/Debug was locked by Google Drive. System-temp outputs failed four pre-existing repository-location tests; final isolated bin outputs preserve repository ancestry.",
+    "ArtifactsPath": "E:\\SqlXmlAnalyzer\\bin\\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747",
+    "UseArtifactsOutput": "true"
+  },
+  "Images": [
+    "FinalDebug/xml-event-selector.png",
+    "FinalRelease/xml-event-selector.png"
+  ],
+  "Limitations": [
+    "Minimum recognition only; full capability/Partial/resource budgets remain IMP-09/20.",
+    "Offscreen WPF selector rendering, not full desktop UI acceptance."
+  ]
+}

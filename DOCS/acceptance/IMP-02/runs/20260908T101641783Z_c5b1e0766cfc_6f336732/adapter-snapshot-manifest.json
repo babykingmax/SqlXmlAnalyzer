@@ -1,0 +1,26 @@
+[
+  {
+    "path": "adapter/AcceptanceProbe.cs.txt",
+    "sha256": "5979910287D55D8ECD53FADC338C06D42713C933717B140B0B71ED5752E0266F"
+  },
+  {
+    "path": "adapter/PlanRowBindingInspector.cs.txt",
+    "sha256": "C6D88C08DB8A95E0ACC5545B79F0BDE24E5F96B337E4924B5BAE91C5A61375B7"
+  },
+  {
+    "path": "adapter/AcceptanceInfrastructure.psm1",
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "path": "adapter/Test-AcceptanceInfrastructure.ps1",
+    "sha256": "4D9D1ECCBF57E19FEC8FB43803C86BE37E39F61CFD201F5BECE012E1A798F45A"
+  },
+  {
+    "path": "adapter/acceptance-matrix.json",
+    "sha256": "CC5A09C04BDB8886279B7E954F49FA8E322D2DA1D01C8233061A2E7D4029BFA4"
+  },
+  {
+    "path": "adapter/Run-AcceptanceMatrix.ps1",
+    "sha256": "73C14676CC54DFDADFB362D88B0C72F6F4E25BE8D578C6872A5FF6CA969782B7"
+  }
+]

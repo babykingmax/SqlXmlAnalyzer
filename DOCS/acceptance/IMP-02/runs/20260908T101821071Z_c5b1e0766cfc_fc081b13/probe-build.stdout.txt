@@ -1,0 +1,15 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-4d08ced744d24cb498e8009c329311ba\AcceptanceProbe.csproj (用时 339 毫秒)。
+  5 个项目(共 6 个)是最新的，无法还原。
+  SqlXmlAnalyzer.Core -> E:\SqlXmlAnalyzer\SqlXmlAnalyzer.Core\bin\Release\net8.0\SqlXmlAnalyzer.Core.dll
+  SqlXmlAnalyzer.Refactoring -> E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Refactoring\bin\Release\net8.0\SqlXmlAnalyzer.Refactoring.dll
+  SqlXmlAnalyzer.Analysis -> E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Analysis\bin\Release\net8.0\SqlXmlAnalyzer.Analysis.dll
+  SqlXmlAnalyzer.Application -> E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\bin\Release\net8.0\SqlXmlAnalyzer.Application.dll
+  SqlXmlAnalyzer -> E:\SqlXmlAnalyzer\bin\Release\net8.0-windows\SqlXmlAnalyzer.dll
+  AcceptanceProbe -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-4d08ced744d24cb498e8009c329311ba\bin\Release\net8.0-windows\AcceptanceProbe.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.46

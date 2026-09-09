@@ -1,0 +1,177 @@
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using MaterialDesignThemes.Wpf;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        int exitCode = 0;
+        App? app = null;
+        IUnexpectedErrorReporter? reporter = null;
+        try
+        {
+            Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+            if (args.Length is < 2 or > 4 || (args.Length == 4 && args[3] != "--verify-unexpected"))
+                throw new InvalidDataException("Usage: Probe <repository> <output> [diagnostics] [--verify-unexpected]");
+            string repository = Path.GetFullPath(args[0]), output = Path.GetFullPath(args[1]);
+            // Diagnostics are independent of the screenshot directory: a locked output must still be reportable.
+            string diagnostics = args.Length >= 3 ? Path.GetFullPath(args[2])
+                : Path.Combine(Path.GetTempPath(), "SqlXmlAnalyzer-IMP17-diagnostics-" + Guid.NewGuid().ToString("N"));
+            Logger.Initialize(customLogFilePath: Path.Combine(diagnostics, "probe.log"));
+            reporter = new UnexpectedErrorReporter(new WindowsMiniDumpWriter(), Path.Combine(diagnostics, "dumps"));
+            Logger.Debug("IMP-17 WPF probe started.");
+            if (args.Length == 4)
+                throw new InvalidOperationException("Synthetic IMP-17 probe failure for diagnostic verification.");
+            Directory.CreateDirectory(output);
+            app = new App(); app.InitializeComponent();
+            Run(repository, output);
+        }
+        catch (Exception exception)
+        {
+            exitCode = ReportFailure(exception, "IMP17.WpfProbe", reporter);
+        }
+        finally
+        {
+            try { app?.Shutdown(); }
+            catch (Exception cleanupError)
+            {
+                int cleanupExitCode = ReportFailure(cleanupError, "IMP17.WpfProbe.Shutdown", reporter);
+                if (exitCode == 0) exitCode = cleanupExitCode;
+            }
+        }
+        try
+        {
+            if (exitCode == 0)
+                Console.WriteLine("PASS: production A/B workspace, both themes, second statement 2->999, runtime -25 ms, manual selection/reset and zero binding errors.");
+        }
+        catch (Exception outputError) { exitCode = ReportFailure(outputError, "IMP17.WpfProbe.Console", reporter); }
+        finally { Logger.Shutdown(); }
+        return exitCode;
+    }
+
+    private static int ReportFailure(Exception exception, string operation, IUnexpectedErrorReporter? reporter)
+    {
+        bool expected = ExceptionPolicy.IsExpected(exception);
+        string detail = ExceptionPolicy.Describe(exception, operation, reporter);
+        // The shared logger already handles unavailable file/stderr sinks and flushes DUMP diagnostics.
+        Logger.Error($"FAIL: {operation}; category={(expected ? "Expected" : "Unexpected")}; {detail}");
+        Logger.Flush();
+        return expected ? 2 : 3;
+    }
+
+    private static void Run(string repository, string output)
+    {
+        RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+        var errors = new StringWriter();
+        PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(errors));
+        PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+        var vm = new MainViewModel();
+        var view = new PlanComparisonWorkspaceView { DataContext = vm, Width = 1440, Height = 900 };
+        var type = typeof(App).Assembly.GetType("SqlXmlAnalyzer.Services.PlanComparisonUiActionService")!;
+        var service = Activator.CreateInstance(type, new object?[] { new PlanComparisonController(), new PlanComparisonTreeService(),
+            new PlanComparisonTreeViewRenderer(), vm, new TabControl(), view.PlanATree, view.PlanBTree,
+            (System.Xml.Linq.XNamespace)"http://schemas.microsoft.com/sqlserver/2004/07/showplan", null })!;
+        vm.PropertyChanged += (PropertyChangedEventHandler)Delegate.CreateDelegate(typeof(PropertyChangedEventHandler), service, "HandleViewModelPropertyChanged");
+        var sessions = new TuningSessionService();
+        var reader = new InputRecognitionService();
+        var inputA = reader.Load(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp17_comparison_a.sqlplan"));
+        var inputB = reader.Load(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp17_comparison_b.sqlplan"));
+        if (!inputA.IsSuccess || !inputB.IsSuccess) throw new InvalidDataException("WPF probe fixture could not be read.");
+        var a = sessions.CaptureSnapshot(inputA.Document!, "A.sqlplan", 1);
+        var b = sessions.CaptureSnapshot(inputB.Document!, "B.sqlplan", 2);
+        vm.TuningHistory.Add(a); vm.TuningHistory.Add(b); vm.PlanA = a; vm.PlanB = b;
+        var records = new List<object>();
+        foreach (bool dark in new[] { false, true })
+        {
+            var palette = new PaletteHelper(); var theme = palette.GetTheme();
+            theme.SetBaseTheme(dark ? BaseTheme.Dark : BaseTheme.Light); palette.SetTheme(theme);
+            Flush(view);
+            var summary = (TextBlock)view.FindName("ComparisonMatchSummary");
+            if (string.IsNullOrWhiteSpace(summary.Text) || summary.ActualHeight <= 0 || summary.ActualWidth > 1120)
+                throw new InvalidOperationException("Comparison summary is missing or clipped.");
+            var second = vm.Comparison!.Statements.Single(s => s.A?.Statement.Key.StatementOrdinal == 2);
+            if (second.RootsB.Single().CostDelta != 997 || second.RootsB.Single().RuntimeDeltas.Single(d => d.Label == "Elapsed").Delta != -25)
+                throw new InvalidOperationException("Second statement change is missing.");
+            var firstA = (ComboBox)view.FindName("ComparisonScopeA"); var firstB = (ComboBox)view.FindName("ComparisonScopeB");
+            if (firstA.Items.Count != 3 || firstB.Items.Count != 3 || firstA.ActualWidth < 80 || firstB.ActualWidth < 80)
+                throw new InvalidOperationException("Manual selection unavailable.");
+            string name = dark ? "dark" : "light";
+            var bitmap = new RenderTargetBitmap(1440, 900, 96, 96, PixelFormats.Pbgra32);
+            var drawing = new DrawingVisual();
+            using (var context = drawing.RenderOpen())
+            {
+                context.DrawRectangle(dark ? Brushes.Black : Brushes.White, null, new Rect(0, 0, 1440, 900));
+                context.DrawRectangle(new VisualBrush(view), null, new Rect(0, 0, 1440, 900));
+            }
+            bitmap.Render(drawing);
+            byte[] pixels = new byte[1440 * 900 * 4]; bitmap.CopyPixels(pixels, 1440 * 4, 0);
+            int colored = pixels.Where((value, index) => index % 4 != 3 && value > 20 && value < 235).Count();
+            bool screenshot = colored > 10000;
+            if (!screenshot) throw new InvalidOperationException("Screenshot has no usable rendered content.");
+            var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using (var stream = new FileStream(Path.Combine(output, "comparison-" + name + ".png"),
+                FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                encoder.Save(stream);
+            records.Add(new { Theme = name, Summary = summary.Text, Statements = vm.Comparison.Statements.Count,
+                Delta = second.RootsB.Single().CostDelta, ScreenshotCreated = screenshot, ColoredChannels = colored,
+                ScopeWidthA = firstA.ActualWidth, ScopeWidthB = firstB.ActualWidth });
+        }
+        vm.ManualScopeA = vm.ComparisonScopesA[1]; vm.ManualScopeB = vm.ComparisonScopesB[1];
+        vm.ApplyComparisonSelectionCommand.Execute(null); Flush(view);
+        if (vm.Comparison!.Statements.Count != 1 || view.PlanATree.Items.Count != 1) throw new InvalidOperationException("Manual pair failed.");
+        vm.ManualScopeA = null; vm.ManualScopeB = null;
+        type.GetMethod("RefreshCompareTrees", Type.EmptyTypes)!.Invoke(service, null);
+        if (vm.ManualScopeA?.Key != vm.ComparisonSelection.A || vm.ManualScopeB?.Key != vm.ComparisonSelection.B)
+            throw new InvalidOperationException("Saved scope was not restored to the selectors.");
+        vm.ResetComparisonSelectionCommand.Execute(null); Flush(view);
+        if (vm.Comparison!.Statements.Count < 3) throw new InvalidOperationException("All statement reset failed.");
+        vm.SetComparisonPlans(a, a);
+        vm.ManualScopeA = vm.ComparisonScopesA[0]; vm.ManualScopeB = vm.ComparisonScopesB[1];
+        vm.ApplyComparisonSelectionCommand.Execute(null); Flush(view);
+        var selected = vm.Comparison!.Statements.Single();
+        if (selected.A?.Statement.Key.StatementOrdinal != 1 || selected.B?.Statement.Key.StatementOrdinal != 2)
+            throw new InvalidOperationException("Same-snapshot selection was overwritten.");
+        string sessionPath = Path.Combine(output, "comparison-session-" + Guid.NewGuid().ToString("N") + ".pesession");
+        sessions.Save(sessionPath, new[] { a }, a, a, vm.ComparisonSelection);
+        var restored = sessions.Load(sessionPath);
+        vm.SetComparisonPlans(restored.PlanA, restored.PlanB, restored.ComparisonSelection); Flush(view);
+        selected = vm.Comparison!.Statements.Single();
+        if (selected.A?.Statement.Key.StatementOrdinal != 1 || selected.B?.Statement.Key.StatementOrdinal != 2
+            || vm.ManualScopeA?.Key != vm.ComparisonSelection.A || vm.ManualScopeB?.Key != vm.ComparisonSelection.B
+            || a.OriginalSourceHash == null || selected.QueryA?.Capture.SourceHash != a.OriginalSourceHash
+            || selected.QueryA.Capture.XmlContentHash != restored.PlanA!.XmlContentHash)
+            throw new InvalidOperationException("Session selection or original fingerprint was not restored.");
+        if (errors.ToString().Length > 0) throw new InvalidOperationException(errors.ToString());
+        using var resultStream = new FileStream(Path.Combine(output, "wpf-probe.json"), FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        System.Text.Json.JsonSerializer.Serialize(resultStream, new { Passed = true, BindingErrors = 0,
+            ManualSelectionAndReset = true, SameSnapshotSelection = true, ManualSessionRoundtrip = true, OriginalHashRestored = true,
+            records }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+    }
+    private static void Flush(FrameworkElement element)
+    {
+        element.Measure(new Size(1440, 900)); element.Arrange(new Rect(0, 0, 1440, 900)); element.UpdateLayout();
+        Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle); element.UpdateLayout();
+        // Let the production TreeView expansion animations finish before capturing geometry.
+        var frame = new DispatcherFrame();
+        var timer = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(400) };
+        timer.Tick += (_, _) => { timer.Stop(); frame.Continue = false; };
+        timer.Start(); Dispatcher.PushFrame(frame);
+        element.Measure(new Size(1440, 900)); element.Arrange(new Rect(0, 0, 1440, 900)); element.UpdateLayout();
+    }
+}

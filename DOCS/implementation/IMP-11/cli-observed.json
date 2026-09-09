@@ -1,0 +1,16 @@
+{
+  "ReadExit": 0,
+  "ScanExit": 0,
+  "ReadCommand": "dotnet SqlXmlAnalyzer.CLI.dll read imp11_operator_facts.sqlplan",
+  "ScanCommand": "dotnet SqlXmlAnalyzer.CLI.dll --path imp11_operator_facts.sqlplan --format json",
+  "Passed": true,
+  "OutputRows": 100,
+  "RowsRead": 1000,
+  "ThreadExecutions": 2,
+  "LogicalExecutions": 1,
+  "RowsPerExecution": 100,
+  "Predicate": [
+    "[T].[V]=(2)"
+  ],
+  "ReadAndScanAgree": true
+}

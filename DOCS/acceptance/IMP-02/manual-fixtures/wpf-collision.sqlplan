@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic WPF test input, not captured from SQL Server; not XSD validated. -->
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence><Batch><Statements>
+    <StmtSimple StatementId="1" StatementType="SELECT" StatementText="CREATE TABLE #T (id int); DECLARE @T TABLE (id int); SELECT * FROM @T;" StatementSubTreeCost="1">
+      <QueryPlan><RelOp NodeId="0" PhysicalOp="Constant Scan" LogicalOp="Constant Scan" EstimateRows="1" EstimatedTotalSubtreeCost="1"><ConstantScan /></RelOp></QueryPlan>
+    </StmtSimple>
+  </Statements></Batch></BatchSequence>
+</ShowPlanXML>

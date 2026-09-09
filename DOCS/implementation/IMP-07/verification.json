@@ -1,0 +1,117 @@
+{
+  "Step": "IMP-07",
+  "Date": "2026-09-08",
+  "Scope": "Field mappings and current graph/table/details bindings; full export and evidence model remain in later IMP steps.",
+  "UnitTestsAdded": 62,
+  "FocusedTestsPassed": 77,
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "RunId": "20260908T125119934Z_c5b1e0766cfc_2d768643",
+      "Summary": "../../acceptance/IMP-02/runs/20260908T125119934Z_c5b1e0766cfc_2d768643/summary.json",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "notExecuted": 0,
+        "failed": 0,
+        "passed": 1106,
+        "total": 1106
+      },
+      "Infrastructure": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "NecessaryConditionsMet": 10,
+      "NotMet": 12,
+      "ProbeExecutionFailed": 0,
+      "CurrentScope": [
+        {
+          "reviewId": "R06",
+          "status": "ProbeConditionMet"
+        },
+        {
+          "reviewId": "R11",
+          "status": "ProbeConditionMet"
+        },
+        {
+          "reviewId": "R21",
+          "status": "ProbeConditionMet"
+        }
+      ],
+      "Diagnostics": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.UnknownMappingFailure_GeneratesValidatedDumpAndPreservesOriginalException",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.MappingLogs_RespectBuildConfigurationAndDoNotContainInputValues",
+          "Outcome": "Passed"
+        }
+      ],
+      "VerifiedCodeFiles": 454,
+      "CodeDrift": []
+    },
+    {
+      "Configuration": "Release",
+      "RunId": "20260908T125213729Z_c5b1e0766cfc_0243fdb7",
+      "Summary": "../../acceptance/IMP-02/runs/20260908T125213729Z_c5b1e0766cfc_0243fdb7/summary.json",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "notExecuted": 0,
+        "passed": 1106,
+        "total": 1106,
+        "failed": 0
+      },
+      "Infrastructure": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "NecessaryConditionsMet": 10,
+      "NotMet": 12,
+      "ProbeExecutionFailed": 0,
+      "CurrentScope": [
+        {
+          "reviewId": "R06",
+          "status": "ProbeConditionMet"
+        },
+        {
+          "reviewId": "R11",
+          "status": "ProbeConditionMet"
+        },
+        {
+          "reviewId": "R21",
+          "status": "ProbeConditionMet"
+        }
+      ],
+      "Diagnostics": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.UnknownMappingFailure_GeneratesValidatedDumpAndPreservesOriginalException",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.MappingLogs_RespectBuildConfigurationAndDoNotContainInputValues",
+          "Outcome": "Passed"
+        }
+      ],
+      "VerifiedCodeFiles": 454,
+      "CodeDrift": []
+    }
+  ],
+  "Wpf": {
+    "Completed": true,
+    "ExitCode": 0,
+    "ProbeSourceSha256": "20389D113C90D9D0ECC2AA83E4CA219B3B0C9AC1E82CCACFC585A1A9343B00AA",
+    "ApplicationSha256": "41E669C6B22F0E18FC1D9928698A0BE56A8E100BCDA8317B9878C010915A6AA4",
+    "CoreSha256": "B2137907061C2F29456576DF94DDAEFD3F750DDEA7E5C3C531B8D0A5EC171B00",
+    "WindowShown": false
+  },
+  "WpfObservation": "ui/observed.json",
+  "XsdSha256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8",
+  "DatabaseExecuted": false,
+  "CoverageGenerated": false,
+  "DiffCheck": "Passed excluding pre-existing whitespace in user-owned AGENTS.md",
+  "Note": "Matrix exit 1 reflects 12 remaining future-step conditions; zero probe execution failures. No issue is automatically closed."
+}

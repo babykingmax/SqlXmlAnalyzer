@@ -1,0 +1,77 @@
+{
+  "TimestampUtc": "2026-09-09T02:33:45.7125093Z",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1579,
+      "Passed": 1579,
+      "Failed": 0,
+      "Trx": "debug-20260909T023305934Z.trx",
+      "TestAssemblySha256": "6D18290BE7CA10AA68D94CBD757DCED099BF715ADC625DE16656222CDFA599C7"
+    },
+    {
+      "Configuration": "Release",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1579,
+      "Passed": 1579,
+      "Failed": 0,
+      "Trx": "release-20260909T023305934Z.trx",
+      "TestAssemblySha256": "D5C952A9E99B99FD1085575B0B6105575E2FDC55B6427EA1C047567B72CD8A00"
+    }
+  ],
+  "Cli": [
+    {
+      "Fixture": "empty-statements",
+      "ReadExit": 0,
+      "ScanExit": 0,
+      "Capabilities": "PlanStatements, PreservedSource"
+    },
+    {
+      "Fixture": "opaque-extension",
+      "ReadExit": 0,
+      "ScanExit": 0,
+      "Capabilities": "PlanStatements, PreservedSource"
+    }
+  ],
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanCapabilityService.cs",
+      "SHA256": "517B033AC35AB9FDEBB36669C8691B62BC1985A12787AEBCC1904F24C78B6DFE"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "SHA256": "8C5C312F23287FE92679619A00F8B8256AEC477CDEBA964205C0793EF3709206"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticProtocol.cs",
+      "SHA256": "6EF7310C8647C75102FDA2C03C40804F74AE009C42CF16C70AD93B73233AB447"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphGeometryService.cs",
+      "SHA256": "DE7B9838EB816F3A2FB58B4042B3644EE199F5971C7837CFE1E39F7C639F7503"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "SHA256": "0E2091AF2228FCFCAB6313EA8AAD384D6A8DE06FDCECAFD01F20538B594B8F06"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanCapabilityConsistencyTests.cs",
+      "SHA256": "E9B6087212782F34E0D3BA47C66403E02C1F9330902F67FC382DDEBFC354D238"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockParallelGeometryTests.cs",
+      "SHA256": "DE081E0C2EE6D5C44F6A9D4B883CC785558FC38F7DBF5A6F98E8C569F1E4F60C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisInputLifetimeTests.cs",
+      "SHA256": "40BC90BDAC9FF26078D0F883C32DEB3DFACB547AD792C23946EBC5193D8C74A1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedHardeningViewTests.cs",
+      "SHA256": "AB0C38E14813E22C0E5CD994BE077146326D0E6D37FB5743E82E715F3F8D0216"
+    }
+  ]
+}

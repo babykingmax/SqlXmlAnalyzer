@@ -1,0 +1,27 @@
+{
+  "Passed": true,
+  "BindingErrors": 0,
+  "ManualSelectionAndReset": true,
+  "records": [
+    {
+      "Theme": "light",
+      "Summary": "语句/计划配对 3；A 未匹配 0；B 未匹配 0；待确认 1。按语句查看差值，未汇总不可比成本。",
+      "Statements": 3,
+      "Delta": 997,
+      "ScreenshotCreated": true,
+      "ColoredChannels": 192419,
+      "ScopeWidthA": 461,
+      "ScopeWidthB": 461
+    },
+    {
+      "Theme": "dark",
+      "Summary": "语句/计划配对 3；A 未匹配 0；B 未匹配 0；待确认 1。按语句查看差值，未汇总不可比成本。",
+      "Statements": 3,
+      "Delta": 997,
+      "ScreenshotCreated": true,
+      "ColoredChannels": 209936,
+      "ScopeWidthA": 461,
+      "ScopeWidthB": 461
+    }
+  ]
+}

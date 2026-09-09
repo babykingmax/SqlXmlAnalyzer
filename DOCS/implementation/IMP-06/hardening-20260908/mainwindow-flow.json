@@ -1,0 +1,17 @@
+{
+  "Passed": true,
+  "Flow": "Real MainWindow, dependency injection, document analysis, event selection and refresh; no callback substituted.",
+  "SourcePath": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl",
+  "InitialPath": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl",
+  "SelectedSecondEventPath": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl",
+  "RefreshedPath": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl",
+  "EventCount": 2,
+  "RefreshedSelectedIndex": 0,
+  "ProcessSequence": [
+    "p1",
+    "p3",
+    "p1"
+  ],
+  "WindowShown": false,
+  "DatabaseExecuted": false
+}

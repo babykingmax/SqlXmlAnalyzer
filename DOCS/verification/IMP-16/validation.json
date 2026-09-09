@@ -1,0 +1,256 @@
+{
+  "Step": "IMP-16",
+  "CompletedAt": "2026-09-09T12:25:36.6920601+08:00",
+  "GitHead": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "WorkingTree": "包含用户既有 IMP-01 至 IMP-15 修改；未提交或重置。哈希描述本次验收时文件内容。",
+  "DotnetSdk": "10.0.400",
+  "BaselineTestsPerConfiguration": 1766,
+  "AddedTests": 50,
+  "Results": [
+    {
+      "Configuration": "Debug",
+      "BuildExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0,
+      "TestsPassed": 1816,
+      "Failed": 0,
+      "Skipped": 0
+    },
+    {
+      "Configuration": "Release",
+      "BuildExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0,
+      "TestsPassed": 1816,
+      "Failed": 0,
+      "Skipped": 0
+    }
+  ],
+  "Models": [
+    "captured-cost-exposure/2.0.0",
+    "index-evidence-score/2.0.0",
+    "sandbox-input-assumptions/2.0.0"
+  ],
+  "RuleVersions": {
+    "RULE_020_MISSING_INDEX": "2.1.0",
+    "RULE_035_SARGABLE_INDEX_RECOMMENDATION": "2.1.0"
+  },
+  "RegressionEvidence": {
+    "BeforeFix": "两个反例均失败：语句重排 100/65；访问重排改变 100/20/2 与 200/40/4 默认值。",
+    "AfterFix": "全量自身成本 110；单候选相关成本 6；两候选并集 66；重排后的成本与按输入身份对应的评分/排序保持不变。",
+    "UnknownErrors": "SimulationDiagnosticTests 在 Debug/Release 实际写入并验证 minidump；捕获失败、去重和不返回部分结果通过。测试结束清理 DUMP。",
+    "Logging": "Debug DEBUG/WARN/ERROR/CRITICAL；Release ERROR/CRITICAL；forceVerbose 不绕过编译策略。",
+    "Cli": "Debug/Release 退出 0；四个已绑定候选，版本、范围、权重、来源和限制完整；stdout 为 JSON。",
+    "Wpf": "Debug/Release 编译后窗口的两种主题、七个证据绑定、滚动及用户输入来源通过；无绑定错误。"
+  },
+  "Limitations": [
+    "收益模型未校准；不预测性能提升或保证访问算子。",
+    "未运行索引部署后的工作负载性能基准。",
+    "离屏位图输出全透明，未保留空白图；布局/绑定检查不等于人工视觉验收。",
+    "未生成覆盖率报告。"
+  ],
+  "SourceFiles": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Simulation/CostImpactSimulator.cs",
+      "Sha256": "AC98E287BF4CC690F08193CB953D9278760D7393BF8C2E5ACA3B736B9EED384C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Simulation/CostImpactResult.cs",
+      "Sha256": "45A8E8994BC2E0F7F9E3214B44D8BB90220C7E516CD8CD2984ECD5B5664A55D1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Simulation/SandboxInputSnapshot.cs",
+      "Sha256": "11C3E01547086104059BA9A8D7E8B9A1771D9226C750FC04BC3D7C1B430D47D8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+      "Sha256": "5796FA9CC2CC114E8825CF156BFF8068D9AF56C6F129D3AB3738BAB1ED2297EA"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoreResult.cs",
+      "Sha256": "8B0FAF885391636394465F791F10D22FE6A9BF3D3C2CFB849092489D2C260A75"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexPredicateEvidence.cs",
+      "Sha256": "D416F2AAC2D553867B47299B1B15B0F707117AFCDD444ABCE570BF3462D38D76"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/MissingIndexSuggestion.cs",
+      "Sha256": "4E82428776F77F3876ECD59DFBB78ECA05A2096DE0327E6BA811950D33AA4243"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/PlanOperatorFacts.cs",
+      "Sha256": "885DAF347C3B3C9F075B51CA3EBD8038E86D1AC11389164A1529E984BB18E865"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanOperatorFactsService.cs",
+      "Sha256": "CB5376E39A26DF3F0CD24FFA519DCE11D3CFC291C480AECC58BCB0F1836766CB"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/IndexTargetResolver.cs",
+      "Sha256": "C1E041240D39A1EF8AA42A31FC2C74072F194B7D92EDEFC93EBE0AC1D53605CD"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+      "Sha256": "FD3F306A3F095C938922B344C8C5E73BDB91F0AF96C8ACB17A66D31BAD9D29AC"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/MissingIndexSuggester.cs",
+      "Sha256": "0C8A1B4F2507F290A40C3DE8F75CB3302BC5E5D5AB5813C94B46A4A22C2BA039"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MissingIndexRule.cs",
+      "Sha256": "795466C136321E8150ED62F242C9D17F9D7720620718941C08B802F627FA102D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+      "Sha256": "10C175B3A6560FDB7AB7E612A68F23B9187638DF3C18AEE063444003D05301EB"
+    },
+    {
+      "Path": "Core/Services/MissingIndexDeploymentScriptService.cs",
+      "Sha256": "4B71EEA5F7F8AE52F917FA436A79E4327546FB201EAEA242CA6755835F6D673E"
+    },
+    {
+      "Path": "ViewModels/IndexSandboxViewModel.cs",
+      "Sha256": "6DB0FC028328A89909D7DCBF081338D2078EE6A5200463CFC59F1F515D0E6367"
+    },
+    {
+      "Path": "Views/IndexSandboxWindow.xaml",
+      "Sha256": "037EA231FD40EC9867949994F7433985D48C546233624DB1E7938088C9FD1E22"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Simulation/SimulationOrderRegressionTests.cs",
+      "Sha256": "CDC6E6D36726B7F12287192C4A04D7EF4F0BFF750557B7128C43BD8EE89824EA"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactModelTests.cs",
+      "Sha256": "75FE21E703EB67699CBAEDD0EB6394969FB2A03B02F338AC3BA4769F30B7C6FF"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactSimulatorTests.cs",
+      "Sha256": "7835D77832D0CB1599F8E3A358B7220C7D186BC781F2F3377537156CF9DE918F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoreModelTests.cs",
+      "Sha256": "3BF5625F2B7A67BFA2C515C183094D681EB8D64F02934E274B9AF97306425232"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs",
+      "Sha256": "F68A1BC19C2E2DCDDDF114BD938DF8042F3E9DA21B49AC222D020B2A9B23D5EC"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/SimulationDiagnosticTests.cs",
+      "Sha256": "F983D847660E9183BE7514B8576BC6D8B797C762B31B1A44D4981CCE2FE7B49F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisDisplayThemeTests.cs",
+      "Sha256": "CCDF429FAE5E62B4617A558A33B70A0A2D1E076A58BFBA0343A26A213D066D3F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanDiagnosticAnalyzerTests.cs",
+      "Sha256": "B3CC76E635F78C294C0E44F0646494A798B9DA157D3260413962FC5430902580"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MissingIndexDeploymentScriptServiceTests.cs",
+      "Sha256": "AD446608E4B49483F5CC8CFAB0FECBAE8AAC8017A57F8960DF20F358FC8B65C5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_index_targets.sqlplan",
+      "Sha256": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_review_actual.sqlplan",
+      "Sha256": "2130CC78A67B66C44C6E215F597FA8DFE7B6B2EE8FF309CAED0C5427F60B66B5"
+    },
+    {
+      "Path": "Directory.Packages.props",
+      "Sha256": "ACB8F8AABAC7050CE1706A65A245015964808D511FA1D0651093D4721804C356"
+    },
+    {
+      "Path": "README.md",
+      "Sha256": "40A47EDC6A20EEC8BCD5DF753C3E4477C501B91F866E519F25DC34999688E2A5"
+    },
+    {
+      "Path": "UserGuide.md",
+      "Sha256": "7453259D37F78959745060B543D0F6D7821556C0E05E08B5F70BF28FB95F9EFC"
+    },
+    {
+      "Path": "Architecture.md",
+      "Sha256": "3DD848824021B8DB886E6E5E1208BFE131018B36A4C9FEA4C9468D51795CEF1E"
+    },
+    {
+      "Path": "CHANGELOG.md",
+      "Sha256": "1D4E6781FD6448BD2D41203C517BEF7BCF493E88E28F5172A9542244C550307B"
+    },
+    {
+      "Path": "DOCS/README.md",
+      "Sha256": "A43FBEFC99B07642C1946C4FAC1EEDD85F9D943F628E941D2B2B60EFF1CFDFF9"
+    },
+    {
+      "Path": "DOCS/软件改善实施规划.md",
+      "Sha256": "0E3CBB17F94A6936045432F17D2A4764D5A431DD65729F9F8601E08C393B808A"
+    },
+    {
+      "Path": "DOCS/软件详细设计与问题分析.md",
+      "Sha256": "EE2211523C1003D3035818D48B03A844D2C5CF7A61026ADC8B7951FA9D10E06E"
+    },
+    {
+      "Path": "DOCS/IMP-16模拟顺序依赖与模型限制.md",
+      "Sha256": "1061B8126046A7345F50A9A8428D8E1B9056FF9724C2D9C3EEC53532EFD54FB4"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/verify-cli.ps1",
+      "Sha256": "F97962756881F1670ECA87D0BD30ABE93A8AE6D5C97EF9015C7B03300B7D8BA6"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/verify-wpf.ps1",
+      "Sha256": "9962B352630B9488B8FFCF683DF6937B3857C0C076FCB54FB4EFA7AB77DBBBDA"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/WpfProbe.cs.txt",
+      "Sha256": "B7ED77B1E97793A530F6B80134B4E309F8FED32B4FB590AE8C38092ADA3E8B80"
+    }
+  ],
+  "EvidenceFiles": [
+    {
+      "Path": "DOCS/verification/IMP-16/build-debug.log",
+      "Sha256": "726A1CDB4C873DCFD477031CA2226BC58CAA26D24051E9ACE7286466AF79F610"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/build-release.log",
+      "Sha256": "1451D3D7CBA1FD53FA922C121C0BC20803A283D9712200037589F2F8C4DFDDCA"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/test-debug.log",
+      "Sha256": "38215B0E36B44451AA6B448906743A72E7E3C7C7941691B0C39735CBD5EF8CF9"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/test-release.log",
+      "Sha256": "95BD91E942A19A381EA29158BDD9A919202245A5D162CE8AA4FAAA56787BF643"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/red-tests.log",
+      "Sha256": "5BCDFCD3FD3B0C73B159E48DF76974D3408FFC540B3D9A194A4D6B667C0CD795"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/cli.log",
+      "Sha256": "7786F2FB6609B2EA91F0C8B19867619C869D404397D8C77B8DB557C084D06C21"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/cli-validation.json",
+      "Sha256": "71C0D4C8646F1BD1C09B0396DCC033D427524970150988F1B63CA71F5DABD46F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/wpf-debug.log",
+      "Sha256": "E2251FC4FFB3C491ABCF4D5D14A0AAE3FCAF5FA0709463277D7E991CBE600B8B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/wpf-release.log",
+      "Sha256": "990CCB9D1F832C8848A7B8C210323C5AEBD1E195F032F1B6A19C41AE3EF4BE9D"
+    },
+    {
+      "Path": "DOCS/verification/IMP-16/wpf-probe.json",
+      "Sha256": "AEC1ABC4FE8B942CFE017A96100C4BAEC2C6D39B884C3C132C342C9226BEDF66"
+    }
+  ]
+}

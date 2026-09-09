@@ -1,0 +1,159 @@
+"""One-time local evidence finalization; never overwrite an existing finalized run."""
+import datetime
+import hashlib
+import json
+import re
+import struct
+import subprocess
+import sys
+from pathlib import Path
+from urllib.parse import unquote
+
+sys.stdout.reconfigure(encoding="utf-8")
+root = Path(sys.argv[1]).resolve()
+run = Path(sys.argv[2]).resolve()
+attempt = "-v2"
+if run.parent != root / "DOCS/implementation/IMP-05":
+    raise SystemExit("Unexpected evidence root")
+if (run / "artifact-manifest.json").exists() or (run / "deliverable-validation.json").exists():
+    raise SystemExit("Existing final evidence cannot be overwritten")
+
+def read(path):
+    return json.loads(path.read_text(encoding="utf-8-sig"))
+
+def sha(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest().upper()
+
+def save(name, value):
+    path = run / name
+    with path.open("x", encoding="utf-8") as stream:
+        json.dump(value, stream, ensure_ascii=False, indent=2)
+
+changes = read(run / "source-changes.json")
+allowed = set("""Core/Services/AnalysisClipboardService.cs
+Core/Services/BrowserLauncher.cs
+Core/Services/CliService.cs
+Core/Services/HtmlReportExportService.cs
+Core/Services/MermaidDiagramActionService.cs
+Core/Services/MissingIndexClipboardActionService.cs
+Core/Services/PlanGraphNodeClipboardService.cs
+Core/Services/PlanObfuscatorService.cs
+Core/Services/PortableReportExportService.cs
+Core/Services/ReportExportService.cs
+Core/Services/TuningSessionActionService.cs
+Core/Services/TuningSessionService.cs
+Services/MainWindowShellActionService.cs
+Services/PlanObfuscationExportUiActionService.cs
+SqlXmlAnalyzer.CLI/Program.cs
+SqlXmlAnalyzer.Core/HtmlReportGenerator.cs
+SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs
+SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs
+SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs
+SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs
+SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs
+SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs
+SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs
+SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs
+SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs
+SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs
+SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs
+SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs
+SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs
+SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs
+src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs
+src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
+src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs
+Views/IndexSandboxWindow.xaml.cs""".splitlines())
+unexpected = [change for change in changes if change["path"] not in allowed]
+after = read(run / "input-after.json")
+source_drift = [entry["path"] for entry in after["inputs"] if entry["exists"] and sha(root / entry["path"]) != entry["sha256"].upper()]
+prior_root = root / "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a"
+prior = read(prior_root / "deliverable-validation-v2.json")
+retained = [dict(path=entry["path"], sha256=entry["sha256"], unchanged=sha(root / entry["path"]) == entry["sha256"]) for entry in prior["retainedInputs"]]
+save("change-ownership" + attempt + ".json", dict(step="IMP-05", changes=[dict(**item, owner="IMP-05 implementation/tests") for item in changes], retainedInputs=retained, unexpectedChanges=unexpected))
+
+docs = ["DOCS/IMP-05脱敏覆盖与输出入口验证.md", "DOCS/软件改善实施规划.md", "DOCS/IMP-02审查反例验收矩阵.md",
+        "DOCS/软件详细设计与问题分析.md", "DOCS/UI改进和功能改善文档.md", "DOCS/代码Review报告.md", "DOCS/检索来源与验证记录.md",
+        "DOCS/acceptance/IMP-02/README.md", "DOCS/acceptance/IMP-02/WPF验收操作脚本.md"]
+adapters = ["DOCS/acceptance/IMP-02/" + name for name in ["AcceptanceProbe.cs.txt", "AcceptanceInfrastructure.psm1", "Run-AcceptanceMatrix.ps1", "Test-AcceptanceInfrastructure.ps1", "acceptance-matrix.json", "cross-scenarios.json"]]
+adapters += ["DOCS/implementation/IMP-05/" + name for name in ["PrivacyVerification.cs.txt", "Run-PrivacyVerification.ps1", "Inspect-PdfOutputs.py.txt", "Finalize-Delivery.py.txt"]]
+snapshots = []
+for path in sorted({item["path"] for item in changes} | set(docs + adapters)):
+    target = run / ("snapshots" + attempt) / (path + ".snapshot")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("xb") as stream:
+        stream.write((root / path).read_bytes())
+    snapshots.append(dict(source=path, snapshot=target.relative_to(run).as_posix(), sha256=sha(target)))
+save("snapshot-manifest" + attempt + ".json", snapshots)
+
+current_ids = ["20260908T101535551Z_c5b1e0766cfc_1d7ea107", "20260908T101641783Z_c5b1e0766cfc_6f336732", "20260908T101821071Z_c5b1e0766cfc_fc081b13"]
+manifest_paths = [root / item["manifest"] for item in prior["artifactChecks"]] + [prior_root / "artifact-manifest-v2.json"]
+manifest_paths += [root / "DOCS/acceptance/IMP-02/runs" / run_id / "artifact-manifest.json" for run_id in current_ids]
+artifact_checks = []
+for path in manifest_paths:
+    entries = read(path)
+    if isinstance(entries, dict):
+        entries = entries["entries"]
+    failed = []
+    for entry in entries:
+        target = path.parent / entry["path"]
+        if not target.is_file() or sha(target) != entry["sha256"].upper():
+            failed.append(entry["path"])
+    artifact_checks.append(dict(manifest=path.relative_to(root).as_posix(), entries=len(entries), failures=failed))
+
+summaries = {mode: read(root / "DOCS/acceptance/IMP-02/runs" / run_id / "summary.json") for mode, run_id in zip(["Debug", "Release"], current_ids[1:])}
+process = read(run / "process-03/verification-results.json")
+application = {mode: read(run / "process-03" / mode / "process-results.json") for mode in ["Debug", "Release"]}
+dump_checks = []
+for mode in ["Debug", "Release"]:
+    report = read(run / "process-03" / mode / "unknown-error.json")["Diagnostic"]
+    path = Path(report["DumpPath"])
+    with path.open("rb") as stream:
+        header = stream.read(32)
+        signature, version, count, directory = struct.unpack_from("<IIII", header)
+        length = path.stat().st_size
+        valid = signature == 0x504D444D and version & 0xFFFF == 0xA793 and count > 0 and directory >= 32 and directory + count * 12 <= length
+        if valid:
+            stream.seek(directory)
+            for _ in range(count):
+                _, size, offset = struct.unpack("<III", stream.read(12))
+                valid = valid and offset + size <= length
+    dump_checks.append(dict(configuration=mode, path=path.relative_to(run).as_posix(), bytes=length, sha256=sha(path), validHeaderAndStreams=valid, sidecarPresent=Path(report["MetadataPath"]).is_file()))
+
+link_checks = []
+planned = {(run / "artifact-manifest.json").resolve(), (run / "deliverable-validation.json").resolve()}
+for name in docs:
+    path = root / name
+    for match in re.finditer(r"\[[^\]\n]+\]\(([^)\n]+)\)", path.read_text(encoding="utf-8-sig")):
+        href = match[1].strip().strip("<>")
+        if href.startswith(("http:", "https:", "#", "mailto:", "app:", "plugin:")):
+            continue
+        href = unquote(href.split("#", 1)[0])
+        href = re.sub(r":\d+$", "", href)
+        destination = Path(href) if re.match(r"^[A-Za-z]:[/\\]", href) else path.parent / href
+        destination = destination.resolve()
+        link_checks.append(dict(document=name, target=match[1], exists=destination.exists() or destination in planned))
+
+check = subprocess.run(["git", "-c", "core.safecrlf=false", "diff", "--check", "--"] + [item["path"] for item in changes], cwd=root, capture_output=True)
+(run / "diff-check.stdout.txt").write_bytes(check.stdout)
+(run / "diff-check.stderr.txt").write_bytes(check.stderr)
+pdf = read(run / "pdf-inspection-repro.json")
+validation = dict(step="IMP-05", checkedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(), head=after["head"],
+    sourceChanged=len(changes), unexpectedChanges=unexpected, sourceDriftAfterTests=source_drift, retainedInputs=retained,
+    snapshotEntries=len(snapshots), artifactChecks=artifact_checks, buildAndTest=summaries,
+    processVerification=dict(completed=process["completed"], total=process["total"], passed=process["passed"], failed=process["failed"], fatalError=process["fatalError"]),
+    applicationChecks={mode: {key:value[key] for key in ["total", "passed", "failed", "sourceUnchanged"]} for mode, value in application.items()},
+    dumpChecks=dump_checks, pdfInspectionPassed=pdf["passed"], diffCheckExitCode=check.returncode,
+    documentationLinks=dict(total=len(link_checks), failed=[item for item in link_checks if not item["exists"]]),
+    sqlServerExecuted=False, wpfVisualTestPerformed=False, ssmsCompatibilityTestPerformed=False, coverageGenerated=False)
+validation["passed"] = not unexpected and not source_drift and all(item["unchanged"] for item in retained) and all(not item["failures"] for item in artifact_checks) and all(value["existingSuite"]["passed"] == 944 and value["existingSuite"]["failed"] == 0 and value["infrastructureTests"]["passed"] == 42 and value["probeConditionsMet"] == 5 and value["probeExecutionFailed"] == 0 and not value["protectedInputDrift"] for value in summaries.values()) and process["completed"] and process["passed"] == 17 and all(value["passed"] == 11 and value["failed"] == 0 for value in application.values()) and all(item["validHeaderAndStreams"] and item["sidecarPresent"] for item in dump_checks) and pdf["passed"] and check.returncode == 0 and not validation["documentationLinks"]["failed"]
+save("deliverable-validation.json", validation)
+# Scoped only to this explicitly created evidence directory, including ignored binary DUMPs.
+entries = [dict(path=path.relative_to(run).as_posix(), bytes=path.stat().st_size, sha256=sha(path)) for path in sorted(run.rglob("*")) if path.is_file() and path.name != "artifact-manifest.json"]
+save("artifact-manifest.json", entries)
+print(json.dumps(dict(passed=validation["passed"], sourceChanged=len(changes), snapshots=len(snapshots), artifacts=len(entries), historicalManifests=len(artifact_checks), links=validation["documentationLinks"], unexpectedChanges=unexpected, sourceDrift=source_drift), ensure_ascii=False, indent=2))
+raise SystemExit(0 if validation["passed"] else 1)

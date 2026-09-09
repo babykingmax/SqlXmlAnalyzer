@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.6" Build="15.0.2000.5">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="SELECT * FROM Table1" StatementId="1" StatementCompId="1" StatementType="SELECT">
+          <QueryPlan>
+            <MemoryGrantInfo GrantedMemory="20000" MaxUsedMemory="1000" UsedMemory="1000" />
+            <SpillToTempDb SpillLevel="1" />
+            <RelOp NodeId="0" PhysicalOp="Sort" LogicalOp="Sort" EstimateRows="1000">
+              <MemoryGrantInfo GrantedMemory="20000" MaxUsedMemory="1000" UsedMemory="1000" />
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

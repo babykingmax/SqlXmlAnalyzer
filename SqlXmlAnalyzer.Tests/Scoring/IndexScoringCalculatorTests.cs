@@ -20,7 +20,7 @@ namespace SqlXmlAnalyzer.Tests.Scoring
         }
 
         [Fact]
-        public void CalculateScore_HighCoverageAndSeekability_ShouldReturnHighScore()
+        public void CalculateScore_DefinitionOnly_DoesNotInventCoveragePoints()
         {
             var suggestion = new MissingIndexSuggestion
             {
@@ -38,7 +38,9 @@ namespace SqlXmlAnalyzer.Tests.Scoring
 
             IndexScoringCalculator.CalculateScore(suggestion, null!, null!);
 
-            suggestion.Score.Should().BeGreaterThan(75);
+            suggestion.Score.Should().Be(75);
+            suggestion.ScoreAssessment!.CoveragePoints.Should().Be(0);
+            suggestion.ScoreAssessment.KnownOutputCoverage.Should().BeNull();
         }
 
         [Fact]
@@ -69,12 +71,12 @@ namespace SqlXmlAnalyzer.Tests.Scoring
           <QueryPlan>
             <RelOp PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"">
               <OutputList>
-                <ColumnReference Column=""Col1"" />
-                <ColumnReference Column=""Col2"" />
-                <ColumnReference Column=""Col3"" />
+                <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col1"" />
+                <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col2"" />
+                <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col3"" />
               </OutputList>
               <IndexScan>
-                <Object Table=""[MyTable]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" />
                 <Predicate>
                   <ScalarOperator ScalarString=""[MyTable].[Col1] = [@val1] AND [MyTable].[Col2] &gt;= [@val2]"" />
                 </Predicate>
@@ -83,8 +85,8 @@ namespace SqlXmlAnalyzer.Tests.Scoring
             <RelOp PhysicalOp=""Sort"" LogicalOp=""Sort"">
               <Sort>
                 <OrderBy>
-                  <OrderByColumn>
-                    <ColumnReference Column=""Col3"" />
+                  <OrderByColumn Ascending=""true"">
+                    <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col3"" />
                   </OrderByColumn>
                 </OrderBy>
               </Sort>
@@ -98,6 +100,10 @@ namespace SqlXmlAnalyzer.Tests.Scoring
 
             var planDoc = XDocument.Parse(xml);
             XNamespace ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
+            // Quoted parameter spellings in ScalarString need evidence from this QueryPlan.
+            planDoc.Descendants(ns + "QueryPlan").Single().Add(new XElement(ns + "ParameterList",
+                new XElement(ns + "ColumnReference", new XAttribute("Column", "@val1"), new XAttribute("ParameterDataType", "int")),
+                new XElement(ns + "ColumnReference", new XAttribute("Column", "@val2"), new XAttribute("ParameterDataType", "int"))));
 
             var suggestion = new MissingIndexSuggestion
             {
@@ -111,6 +117,7 @@ namespace SqlXmlAnalyzer.Tests.Scoring
                 IncludeColumns = new List<IndexColumn>()
             };
 
+            SqlXmlAnalyzer.Core.Services.IndexTargetResolver.BindSqlSuggestion(suggestion, planDoc.Descendants(ns + "StmtSimple").Single(), ns).Should().BeTrue();
             IndexScoringCalculator.CalculateScore(suggestion, planDoc, ns);
 
             // seq = 30 (Col1)
@@ -134,12 +141,12 @@ namespace SqlXmlAnalyzer.Tests.Scoring
           <QueryPlan>
             <RelOp PhysicalOp=""Index Scan"" LogicalOp=""Index Scan"">
               <OutputList>
-                <ColumnReference Column=""Col1"" />
-                <ColumnReference Column=""Col2"" />
-                <ColumnReference Column=""Col3"" />
+                <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col1"" />
+                <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col2"" />
+                <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col3"" />
               </OutputList>
               <IndexScan>
-                <Object Table=""[MyTable]"" />
+                <Object Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" />
                 <Predicate>
                   <ScalarOperator ScalarString=""[MyTable].[Col1] = [@val1] AND [MyTable].[Col2] = [@val2]"" />
                 </Predicate>
@@ -148,8 +155,8 @@ namespace SqlXmlAnalyzer.Tests.Scoring
             <RelOp PhysicalOp=""Sort"" LogicalOp=""Sort"">
               <Sort>
                 <OrderBy>
-                  <OrderByColumn>
-                    <ColumnReference Column=""Col3"" />
+                  <OrderByColumn Ascending=""true"">
+                    <ColumnReference Database=""[TestDb]"" Schema=""[dbo]"" Table=""[MyTable]"" Column=""Col3"" />
                   </OrderByColumn>
                 </OrderBy>
               </Sort>
@@ -163,6 +170,10 @@ namespace SqlXmlAnalyzer.Tests.Scoring
 
             var planDoc = XDocument.Parse(xml);
             XNamespace ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
+            // Quoted parameter spellings in ScalarString need evidence from this QueryPlan.
+            planDoc.Descendants(ns + "QueryPlan").Single().Add(new XElement(ns + "ParameterList",
+                new XElement(ns + "ColumnReference", new XAttribute("Column", "@val1"), new XAttribute("ParameterDataType", "int")),
+                new XElement(ns + "ColumnReference", new XAttribute("Column", "@val2"), new XAttribute("ParameterDataType", "int"))));
 
             var suggestion = new MissingIndexSuggestion
             {
@@ -176,14 +187,15 @@ namespace SqlXmlAnalyzer.Tests.Scoring
                 IncludeColumns = new List<IndexColumn>()
             };
 
+            SqlXmlAnalyzer.Core.Services.IndexTargetResolver.BindSqlSuggestion(suggestion, planDoc.Descendants(ns + "StmtSimple").Single(), ns).Should().BeTrue();
             IndexScoringCalculator.CalculateScore(suggestion, planDoc, ns);
 
             // seq = 60 (Col1 + Col2)
             // sineq = 0 (no range predicate)
-            // sorder = 15 (Col3 is sort column, follows equality cols Col1,Col2 and is not blocked)
+            // sorder = 15 (the Sort columns identify the target independently of its child Object)
             // scover = 40 (OutputList Col1,Col2,Col3 fully covered)
             // penalty = 0
-            // Total = 60 + 0 + 15 + 40 - 0 = 115 -> normalized to 100
+            // Total = 60 + 0 + 15 + 40 - 0 = 115, capped at 100
             suggestion.Score.Should().Be(100);
         }
     }

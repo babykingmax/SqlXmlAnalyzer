@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -24,7 +25,8 @@ namespace SqlXmlAnalyzer.Services
         private readonly TextBlock _statusTextBlock;
         private readonly XNamespace _showplanNamespace;
         private readonly Action _updatePlaybackGraphVisibility;
-        private readonly Func<string, Task> _analyzeXelFileAsync;
+        private readonly Action<InputRecognitionResult, string> _showDeadlockEvents;
+        private readonly Action _clearDeadlockEvents;
 
         public DocumentAnalysisUiActionService(
             Core.Services.AnalysisSessionCoordinator analysisSessions,
@@ -41,7 +43,8 @@ namespace SqlXmlAnalyzer.Services
             TextBlock statusTextBlock,
             XNamespace showplanNamespace,
             Action updatePlaybackGraphVisibility,
-            Func<string, Task> analyzeXelFileAsync)
+            Action<InputRecognitionResult, string> showDeadlockEvents,
+            Action clearDeadlockEvents)
         {
             _analysisSessions = analysisSessions
                 ?? throw new ArgumentNullException(nameof(analysisSessions));
@@ -71,20 +74,14 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(showplanNamespace));
             _updatePlaybackGraphVisibility = updatePlaybackGraphVisibility
                 ?? throw new ArgumentNullException(nameof(updatePlaybackGraphVisibility));
-            _analyzeXelFileAsync = analyzeXelFileAsync
-                ?? throw new ArgumentNullException(nameof(analyzeXelFileAsync));
+            _showDeadlockEvents = showDeadlockEvents ?? throw new ArgumentNullException(nameof(showDeadlockEvents));
+            _clearDeadlockEvents = clearDeadlockEvents ?? throw new ArgumentNullException(nameof(clearDeadlockEvents));
         }
 
         public async Task AnalyzeFileAsync(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath) || !System.IO.File.Exists(filePath))
-            {
-                Logger.Error($"Attempted to analyze a missing file: {filePath}");
-                MessageBox.Show("The specified file does not exist or the path is invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
             Core.Services.AnalysisSession session = _analysisSessions.Begin();
+            _clearDeadlockEvents();
             try
             {
                 _statusTextBlock.Text = $"Loading and identifying file: {System.IO.Path.GetFileName(filePath)}...";
@@ -95,17 +92,36 @@ namespace SqlXmlAnalyzer.Services
                     return;
                 }
 
-                if (!openResult.IsSuccess)
+                if (openResult.Status == InputStatus.Cancelled)
+                {
+                    _statusTextBlock.Text = "读取已取消";
+                    return;
+                }
+                if (!openResult.HasUsableContent)
                 {
                     Logger.Error($"Document open failed: {filePath}. {openResult.ErrorMessage}");
-                    MessageBox.Show("The document could not be opened.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"{openResult.ErrorCode}: {openResult.ErrorMessage}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     _statusTextBlock.Text = "File load failed";
                     return;
                 }
 
-                if (openResult.Kind == Core.Services.AnalysisDocumentKind.XelDeadlockTrace)
+                if (openResult.Status == InputStatus.Partial)
                 {
-                    await _analyzeXelFileAsync(filePath);
+                    MessageBox.Show(InputReadPresentation.Describe(openResult.Input!), "部分读取", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+                if (openResult.Kind is AnalysisDocumentKind.DeadlockXml or AnalysisDocumentKind.XelDeadlockTrace)
+                {
+                    _viewModel.CurrentDeadlockInput = openResult.Input;
+                    _viewModel.CurrentDeadlockFilePath = filePath;
+                    if (openResult.Deadlocks.Count > 1 || openResult.Status == InputStatus.Partial ||
+                        openResult.Kind == AnalysisDocumentKind.XelDeadlockTrace)
+                    {
+                        _statusTextBlock.Text = $"{openResult.Status}：已读取 {openResult.Deadlocks.Count} 个死锁事件。";
+                        _showDeadlockEvents(openResult.Input!, filePath);
+                        return;
+                    }
+                    await AnalyzeDeadlockDocumentAsync(openResult.Deadlocks[0].Document, filePath, session.RequestId, session.Token);
                     return;
                 }
 
@@ -121,14 +137,9 @@ namespace SqlXmlAnalyzer.Services
                     return;
                 }
 
-                if (openResult.Kind == Core.Services.AnalysisDocumentKind.DeadlockXml)
+                if (openResult.Kind == Core.Services.AnalysisDocumentKind.ExecutionPlanXml)
                 {
-                    Logger.Info($"File identified as a deadlock report: {filePath}");
-                    _viewModel.CurrentDeadlockFilePath = filePath;
-                    await AnalyzeDeadlockDocumentAsync(doc, filePath, session.RequestId, session.Token);
-                }
-                else if (openResult.Kind == Core.Services.AnalysisDocumentKind.ExecutionPlanXml)
-                {
+                    _viewModel.CurrentPlanInput = openResult.Input;
                     Logger.Info($"File identified as a SQL Server execution plan: {filePath}");
                     _viewModel.CurrentPlanFilePath = filePath;
                     await AnalyzeExecutionPlanDocumentAsync(doc, filePath, session.RequestId, session.Token);
@@ -157,28 +168,34 @@ namespace SqlXmlAnalyzer.Services
             }
         }
 
-        public async Task AnalyzeDeadlockXmlAsync(string xml, string displayName)
+        public async Task AnalyzeDeadlockXmlAsync(string xml, string sourceFilePath, string displayName)
         {
             Core.Services.AnalysisSession session = _analysisSessions.Begin();
             try
             {
                 _statusTextBlock.Text = $"Analyzing: {displayName}...";
-                XDocument doc = await Task.Run(
-                    () =>
-                    {
-                        session.Token.ThrowIfCancellationRequested();
-                        XDocument parsed = SafeXmlHelper.ParseSafe(xml);
-                        session.Token.ThrowIfCancellationRequested();
-                        return parsed;
-                    },
+                InputRecognitionResult input = await Task.Run(
+                    () => new InputRecognitionService().Parse(xml, session.Token),
                     session.Token);
                 if (!_analysisSessions.IsCurrent(session.RequestId))
                 {
                     return;
                 }
 
-                _viewModel.CurrentDeadlockFilePath = displayName;
-                await AnalyzeDeadlockDocumentAsync(doc, displayName, session.RequestId, session.Token);
+                if (!input.IsSuccess || input.Kind != AnalysisDocumentKind.DeadlockXml)
+                {
+                    MessageBox.Show($"{input.ErrorCode ?? "INPUT_EXPECTED_DEADLOCK"}: {input.ErrorMessage ?? "需要死锁 XML 文档。"}",
+                        "输入无法分析", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _statusTextBlock.Text = "Deadlock input rejected";
+                    return;
+                }
+                if (input.Deadlocks.Count > 1)
+                {
+                    _showDeadlockEvents(input, sourceFilePath);
+                    return;
+                }
+                _viewModel.CurrentDeadlockFilePath = sourceFilePath;
+                await AnalyzeDeadlockDocumentAsync(input.Deadlocks[0].Document, sourceFilePath, session.RequestId, session.Token);
             }
             catch (OperationCanceledException)
             {

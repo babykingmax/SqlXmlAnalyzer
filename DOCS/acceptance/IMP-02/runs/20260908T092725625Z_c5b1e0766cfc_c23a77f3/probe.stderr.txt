@@ -1,0 +1,19 @@
+[DEBUG] 2026-09-08T17:27:47.2894541+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 2, 受害者: a
+[DEBUG] 2026-09-08T17:27:47.2950336+08:00 BuildWaitForEdges: 共构建 2 条等待边
+[DEBUG] 2026-09-08T17:27:47.2951032+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 2 条边
+[DEBUG] 2026-09-08T17:27:47.2958314+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 2
+[DEBUG] 2026-09-08T17:27:47.2973121+08:00 DetectCycles: 共发现 2 个原始环，去重后 2 个唐一环
+[DEBUG] 2026-09-08T17:27:47.2976851+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 2 个死锁环
+[DEBUG] 2026-09-08T17:27:47.2985004+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=2
+[DEBUG] 2026-09-08T17:27:47.3013980+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 2, 环: 2
+[DEBUG] 2026-09-08T17:27:47.3080028+08:00 GenerateMermaid: Mermaid 代码生成完成，共 737 字符
+[DEBUG] 2026-09-08T17:27:47.3112523+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 4, 受害者: a
+[DEBUG] 2026-09-08T17:27:47.3113028+08:00 BuildWaitForEdges: 共构建 4 条等待边
+[DEBUG] 2026-09-08T17:27:47.3113114+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 4 条边
+[DEBUG] 2026-09-08T17:27:47.3113220+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 3
+[DEBUG] 2026-09-08T17:27:47.3114264+08:00 DetectCycles: 共发现 6 个原始环，去重后 5 个唐一环
+[DEBUG] 2026-09-08T17:27:47.3114426+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 5 个死锁环
+[DEBUG] 2026-09-08T17:27:47.3114477+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=4
+[DEBUG] 2026-09-08T17:27:47.3114866+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 4, 环: 5
+[DEBUG] 2026-09-08T17:27:47.3115428+08:00 GenerateMermaid: Mermaid 代码生成完成，共 931 字符
+[DEBUG] 2026-09-08T17:27:47.3243552+08:00 [RuleEngine] Rule 'Scan with Residual Predicate' hit in Operator scope on Node 0. Time: 0ms

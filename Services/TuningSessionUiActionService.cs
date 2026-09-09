@@ -82,8 +82,8 @@ namespace SqlXmlAnalyzer.Services
                     _viewModel.PlanA,
                     _viewModel.PlanB);
 
-            _viewModel.PlanA = result.PlanA;
-            _viewModel.PlanB = result.PlanB;
+            var selection = _viewModel.ComparisonSelection;
+            _viewModel.SetComparisonPlans(result.PlanA, result.PlanB, new(selection.B, selection.A));
         }
     }
 }

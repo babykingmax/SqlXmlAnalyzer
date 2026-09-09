@@ -1,0 +1,1 @@
+SELECT Id FROM dbo.InputText WHERE Value=N'漢';

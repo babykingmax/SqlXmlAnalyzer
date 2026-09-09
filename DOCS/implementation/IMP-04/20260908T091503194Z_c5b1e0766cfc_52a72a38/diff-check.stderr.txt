@@ -1,0 +1,17 @@
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'App.xaml.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Core/Services/PlanAnalysisService.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.CLI/Program.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.Core/Logger.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.Core/Models/RefactorResult.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.Core/RefactorContext.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs', LF will be replaced by CRLF the next time Git touches it

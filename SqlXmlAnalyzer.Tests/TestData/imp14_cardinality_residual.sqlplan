@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic regression fixture; not captured from SQL Server. Repeated NodeId across statements. -->
+<sp:ShowPlanXML xmlns:sp="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.571" Build="16.0.1000.6">
+  <sp:BatchSequence><sp:Batch><sp:Statements>
+    <sp:StmtSimple StatementId="1" StatementText="SELECT V FROM T WHERE K=1 AND V=2">
+      <sp:QueryPlan><sp:RelOp NodeId="0" PhysicalOp="Index Seek" LogicalOp="Index Seek" EstimateRows="100">
+        <sp:IndexScan>
+          <sp:Object Database="[demo]" Schema="[dbo]" Table="[T]" Index="[IX_T]"/>
+          <sp:SeekPredicates><sp:ScalarOperator ScalarString="[T].[K]=(1)"/></sp:SeekPredicates>
+          <sp:Predicate><sp:ScalarOperator ScalarString="[T].[V]=(2)"/><sp:ScalarOperator ScalarString="[T].[A]=(3)"/></sp:Predicate>
+        </sp:IndexScan>
+        <sp:RunTimeInformation><sp:RunTimeCountersPerThread Thread="0" ActualRows="10000" ActualRowsRead="100000" ActualExecutions="1"/></sp:RunTimeInformation>
+      </sp:RelOp></sp:QueryPlan>
+    </sp:StmtSimple>
+    <sp:StmtSimple StatementId="2" StatementText="SELECT V FROM U WHERE V=2">
+      <sp:QueryPlan><sp:RelOp NodeId="0" PhysicalOp="Index Scan" LogicalOp="Index Scan" EstimateRows="100">
+        <sp:IndexScan>
+          <sp:Object Database="[demo]" Schema="[dbo]" Table="[U]" Index="[IX_U]"/>
+          <sp:Predicate><sp:ScalarOperator ScalarString="[U].[V]=(2)"/><sp:ScalarOperator ScalarString="[U].[A]=(3)"/></sp:Predicate>
+        </sp:IndexScan>
+        <sp:RunTimeInformation><sp:RunTimeCountersPerThread Thread="0" ActualRows="10000" ActualRowsRead="100000" ActualExecutions="1"/></sp:RunTimeInformation>
+      </sp:RelOp></sp:QueryPlan>
+    </sp:StmtSimple>
+  </sp:Statements></sp:Batch></sp:BatchSequence>
+</sp:ShowPlanXML>

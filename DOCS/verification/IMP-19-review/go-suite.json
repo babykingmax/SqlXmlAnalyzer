@@ -1,0 +1,13 @@
+{
+  "CompatibilityLevel": 170,
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "Name": "go-repeat",
+      "SetupSql": "CREATE TABLE dbo.T(Id int);",
+      "OrderedResults": false,
+      "ObserveSql": "SELECT Id FROM dbo.T;"
+    }
+  ],
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025"
+}

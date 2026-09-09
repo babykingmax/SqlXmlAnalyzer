@@ -1,0 +1,49 @@
+{
+  "Status": "Partial",
+  "Kind": "DeadlockXml",
+  "IsSuccess": false,
+  "HasUsableContent": true,
+  "ErrorCode": "INPUT_PARTIAL",
+  "ErrorMessage": "\u90E8\u5206\u8BFB\u53D6\uFF1A\u6709\u6548\u4E8B\u4EF6 1\uFF1B\u672A\u5904\u7406 1 \u6761\u8BB0\u5F55\uFF0C\u4F4D\u7F6E\u4E0E\u539F\u56E0\u89C1 Diagnostics\u3002",
+  "Envelope": {
+    "DocumentId": "591D78F37637DC1297B8156DD4B28F67BF7A0D11B1B8D4479ABB819B025967DF",
+    "SourceHash": "591D78F37637DC1297B8156DD4B28F67BF7A0D11B1B8D4479ABB819B025967DF",
+    "SourceName": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-09-hardening\\empty-event-then-valid.xdl",
+    "DetectedKind": 1,
+    "CapturedAt": null,
+    "EngineBuild": null,
+    "SchemaVersion": null,
+    "SourceBytes": 318
+  },
+  "Capabilities": "DeadlockGraph, PreservedSource",
+  "Diagnostics": [
+    {
+      "Code": "INPUT_DEADLOCK_STRUCTURE",
+      "Message": "\u672A\u5904\u7406\u8BB0\u5F55 1\uFF1A\u6B7B\u9501\u5305\u88C5\u4E3A\u7A7A\u3002",
+      "Location": {
+        "XmlPath": "/events[1]/event[1]/data[1]/value[1]/deadlock-list[1]",
+        "Line": 1,
+        "Column": 75,
+        "EventIndex": 1,
+        "ByteOffset": null,
+        "ByteLength": null
+      }
+    }
+  ],
+  "Events": [
+    {
+      "Index": 2,
+      "PayloadIndex": 1,
+      "Timestamp": null,
+      "CapturedAt": null,
+      "Location": {
+        "XmlPath": "/events[1]/event[2]/data[1]/value[1]/deadlock[1]",
+        "Line": 1,
+        "Column": 179,
+        "EventIndex": 2,
+        "ByteOffset": null,
+        "ByteLength": null
+      }
+    }
+  ]
+}

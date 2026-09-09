@@ -140,6 +140,9 @@
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
                                                                 </Grid.RowDefinitions>
                                                                 
                                                                 <TextBlock Text="Executions (Act/Est):" Grid.Row="0" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
@@ -149,18 +152,24 @@
                                                                     <TextBlock Text="{Binding EstimatedExecutions}" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
                                                                 </StackPanel>
 
-                                                                <TextBlock Text="Rows (Act/Est):" Grid.Row="1" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
+                                                                <TextBlock Text="输出行（实际/估算）:" Grid.Row="1" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
                                                                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0,3">
                                                                     <TextBlock Text="{Binding ActualRows}" FontSize="12" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold"/>
                                                                     <TextBlock Text=" / " FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
                                                                     <TextBlock Text="{Binding EstRows}" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
                                                                 </StackPanel>
 
-                                                                <TextBlock Text="Data Size (Est):" Grid.Row="2" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding EstimatedDataSize}" Grid.Row="2" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
+                                                                <TextBlock Text="实际读取行（行）:" Grid.Row="2" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
+                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding ActualRowsRead}" Grid.Row="2" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
 
                                                                 <TextBlock Text="Execution Mode:" Grid.Row="3" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
                                                                 <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding ExecutionMode}" Grid.Row="3" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
+                                                                <TextBlock Text="Data Size (Est):" Grid.Row="4" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
+                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Text="{Binding EstimatedDataSize}" Grid.Row="4" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
+                                                                <TextBlock Text="并行 (Parallel):" Grid.Row="5" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
+                                                                <TextBlock Text="{Binding ParallelDisplay}" Grid.Row="5" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
+                                                                <TextBlock Text="有序扫描 (Ordered):" Grid.Row="6" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
+                                                                <TextBlock Text="{Binding Ordered}" Grid.Row="6" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
                                                             </Grid>
 
                                                             <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,12"/>
@@ -227,6 +236,12 @@
                                                                 <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
                                                                 <TextBlock Text="Residual Predicate" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
                                                                 <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding Predicate}" FontSize="12" Foreground="{DynamicResource AccentHoverBrush}" TextWrapping="Wrap" MaxHeight="80"  />
+                                                            </StackPanel>
+
+                                                            <StackPanel Visibility="{Binding HasDiagnosticStatusVisible}" Margin="0,8,0,0">
+                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
+                                                                <TextBlock Text="诊断运行状态" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
+                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding DiagnosticStatusText}" FontSize="12" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
                                                             </StackPanel>
 
                                                             <!-- 警告信息 -->

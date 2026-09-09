@@ -1,0 +1,2955 @@
+{
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "inputs": [
+    {
+      "path": ".editorconfig",
+      "exists": true,
+      "sha256": "34E71AD61C6D641DEDC84CEE4DDEF0646A2A7A981C3453ED60F2392AEB70D2FA"
+    },
+    {
+      "path": ".gitattributes",
+      "exists": true,
+      "sha256": "45A7CBB7D9942BA7FFCE0B20BC8DBE2D1196533BC6E4BD245871D77FB1EEDFDC"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "exists": true,
+      "sha256": "30039FC3EE82604C5030929B29CE7319B7CF25ADD25662960FAA18BEE78C4E08"
+    },
+    {
+      "path": ".gitignore",
+      "exists": true,
+      "sha256": "47D488D965B19511D0B48732B2891D3710D77C5274AA83597D72A24C4199BC90"
+    },
+    {
+      "path": "AGENTS.md",
+      "exists": true,
+      "sha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA"
+    },
+    {
+      "path": "App.xaml",
+      "exists": true,
+      "sha256": "E91626CBD97F7EFBBD8BE99ADB4769B4F1E84B2739B47FF260733AA9F9FAF8ED"
+    },
+    {
+      "path": "App.xaml.cs",
+      "exists": true,
+      "sha256": "AC2CF6A35BB64E18EDBF681F786199B7243F259B932BB6FF5DB9BD2EDC9CA116"
+    },
+    {
+      "path": "Architecture.md",
+      "exists": true,
+      "sha256": "CC69159C5DA4D0286960D21B010FB5FAC5EE66914B1BC2751B956CF9061AE687"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "exists": true,
+      "sha256": "3D19E9F6608C041F59CCCE54AEDF11835952CD0D27B34F0A8E7BCB753201A512"
+    },
+    {
+      "path": "CODE_REVIEW_AND_FUNCTIONAL_ANALYSIS_2026-06-24.md",
+      "exists": true,
+      "sha256": "19576A17D76B6B1FFA09058B1E5A7C291DFC5DAAC227AB98D55222249E815ED7"
+    },
+    {
+      "path": "CODE_REVIEW_REMEDIATION_PLAN_2026-06-24.md",
+      "exists": true,
+      "sha256": "94ECBB0C32A1C4C611DAE69FAE9E9DCDD88E963CDAC7B30D4491B4A1416739B7"
+    },
+    {
+      "path": "Converters/BoolToVisibilityConverter.cs",
+      "exists": true,
+      "sha256": "4B1001EECE2AD86817910CDE6799748BAD9388A0985DF45E6F34D406D02089EF"
+    },
+    {
+      "path": "Converters/ConnectionThicknessConverter.cs",
+      "exists": true,
+      "sha256": "51D8992A97A0893F0942E844ED040FE090C5379D3FB0AB045CAF18DA0B8E1A76"
+    },
+    {
+      "path": "Converters/ScoreToColorConverter.cs",
+      "exists": true,
+      "sha256": "85D289187D75A1328A1B80F52D56DF3C055370FE68DE986AC0C7A2BB02C5E8AE"
+    },
+    {
+      "path": "Converters/StepToVisibilityConverter.cs",
+      "exists": true,
+      "sha256": "3B937376F406E7D5F6751DC35AC61EEEFF959982AF139278C9D67BD2BDEF4692"
+    },
+    {
+      "path": "Core/Mvvm/ObservableObject.cs",
+      "exists": true,
+      "sha256": "AC22209C0ED37836BD4CE6BAEF6D45B300345AAD04CE507F51F4C9F86838869A"
+    },
+    {
+      "path": "Core/Mvvm/RelayCommand.cs",
+      "exists": true,
+      "sha256": "23F62F9B245A918A811BDB6551DC47442622139D84E07F33F1885773F6DC96E0"
+    },
+    {
+      "path": "Core/Services/AnalysisClipboardService.cs",
+      "exists": true,
+      "sha256": "451A6C109D69FF2D429AF713B948FF81E3912815AEBC20FD332A9A272C874630"
+    },
+    {
+      "path": "Core/Services/AnalysisReportController.cs",
+      "exists": true,
+      "sha256": "6ABA16202DCBC05FC3981D157E51D564C66E55BEDB628408A2242DC3FBBFB5E9"
+    },
+    {
+      "path": "Core/Services/AnalysisSessionCoordinator.cs",
+      "exists": true,
+      "sha256": "9A18DB5A37B3388F5DA83CC8CF901F8791BDE5D709411AD77A031C38C19BBB87"
+    },
+    {
+      "path": "Core/Services/BrowserLauncher.cs",
+      "exists": true,
+      "sha256": "72325DD41908291AFB3593303D02691D66A3ADDE79B985A949B4D7C2D2D1F07A"
+    },
+    {
+      "path": "Core/Services/CliService.cs",
+      "exists": true,
+      "sha256": "7AA9C45F33BF99244124A09FA64C01C522A9F9604F14E43B8E34F97C6741085C"
+    },
+    {
+      "path": "Core/Services/DeadlockCanvasInteractionService.cs",
+      "exists": true,
+      "sha256": "E44107C71A4B4835284BE06753A2849739732F004B70A17C15E48B7C99E0FD80"
+    },
+    {
+      "path": "Core/Services/DeadlockDocumentController.cs",
+      "exists": true,
+      "sha256": "E99473DFFA2EAED6E7717AB732E42D5E63AE79BDA20D56F95B3C1F55DC556ABE"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphEdgeRegistryService.cs",
+      "exists": true,
+      "sha256": "6078F87B41009A7B6B0CD5814B36EDB78FC6504313C161478A949607DD9043B9"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphEdgeService.cs",
+      "exists": true,
+      "sha256": "F1D438A6119B9579766FD161AE55FB366C36AD083895E307F84391F2C50988DC"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphGeometryService.cs",
+      "exists": true,
+      "sha256": "78F7A04E52044AD630A7BD0D096C1F7CB0698A875382AA095164E90A0DF8C886"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphLayoutService.cs",
+      "exists": true,
+      "sha256": "45B2E88D552F9DCDDF37489FF22F9E9F4A8BF62D9678E0DB6E1C112F6F04A826"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphPlacementService.cs",
+      "exists": true,
+      "sha256": "260148C9092F41CDB1E699B39A37F58460FC596CA4FD83C73B25757BBB99648E"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphSelectionService.cs",
+      "exists": true,
+      "sha256": "2B6D2C8BA6EB2DC3127A2E5B0C539CB5E75C530279F44EA197EF9059B177E9C3"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphViewportService.cs",
+      "exists": true,
+      "sha256": "855CCB7EDFB2E2FE8D0F6DEED880EB15609FB6CFF781DCAC4FE2994A81F1F9D5"
+    },
+    {
+      "path": "Core/Services/DeadlockGraphVisualStateService.cs",
+      "exists": true,
+      "sha256": "BF777625CC0C7FC0772EC924475AAE6D4C8457F26DCA6F912BCDD135EFD1F50C"
+    },
+    {
+      "path": "Core/Services/DeadlockNodeDragService.cs",
+      "exists": true,
+      "sha256": "4CEAA49B8A4C071F5880B85211482D46DF09F095DA2B45CC96E57118DECB049B"
+    },
+    {
+      "path": "Core/Services/DeadlockPlaybackStateService.cs",
+      "exists": true,
+      "sha256": "3432F0305A0C8BD1B6443CC73D1C69170EB87EB83254D08F532C1DA4B26C50B5"
+    },
+    {
+      "path": "Core/Services/DeadlockSelectionDetailService.cs",
+      "exists": true,
+      "sha256": "EC70B63B4589A40B5A2BE094D5647DEBB5607D5471BE7829272BB47F0E5D14DF"
+    },
+    {
+      "path": "Core/Services/DeadlockStepBadgeService.cs",
+      "exists": true,
+      "sha256": "43FA6599074862B6791AFAF01FB576A9488D0CBD30FA5EA690C8E15BB483D02E"
+    },
+    {
+      "path": "Core/Services/DocumentRefreshActionService.cs",
+      "exists": true,
+      "sha256": "A0E9EDA7F92238B7E363D3EE9A1AD2EAEC3E67F8933E604B596266BC0E561CBC"
+    },
+    {
+      "path": "Core/Services/FileAssociationRegistrationService.cs",
+      "exists": true,
+      "sha256": "1D4B7ABD869A5050D97C4E434923F3F4E84C7B3FA9C62CF961F5785E337B9C03"
+    },
+    {
+      "path": "Core/Services/FileDialogService.cs",
+      "exists": true,
+      "sha256": "C5B6C072BD1BE44A7FC4492D3036DDC71093D587FEDCDE8A3D2665520F9A43D7"
+    },
+    {
+      "path": "Core/Services/HtmlReportActionService.cs",
+      "exists": true,
+      "sha256": "0B6297AFF4EB929545B39AC70488EB2A1A8416B0E0DE1CD79C51A50BB34D8CAB"
+    },
+    {
+      "path": "Core/Services/HtmlReportExportService.cs",
+      "exists": true,
+      "sha256": "7BB16BA7878C0A100244FC5BD6DCEDF2E9CC41A417C0B774CDEBCB25834C7C00"
+    },
+    {
+      "path": "Core/Services/LogFolderActionService.cs",
+      "exists": true,
+      "sha256": "F2E1C00DE45550E3A2E2D8D663BB9021C821F4BC166C7019599A9C92121ED6FB"
+    },
+    {
+      "path": "Core/Services/MermaidDiagramActionService.cs",
+      "exists": true,
+      "sha256": "F4001391A5092EFE098D0CEB57004A728E4AAD94F3D4DD8CBE3E0640A2B38B1A"
+    },
+    {
+      "path": "Core/Services/MermaidDiagramService.cs",
+      "exists": true,
+      "sha256": "0294D2D3B9C52FAC491C9D76675512AC4FC6C3504BD204B4F41EC20C4961E4C7"
+    },
+    {
+      "path": "Core/Services/MissingIndexClipboardActionService.cs",
+      "exists": true,
+      "sha256": "F8D34857E19FB16E19F3F1F1E003A97E9B1B2171052EC59624540DD0C37D0334"
+    },
+    {
+      "path": "Core/Services/MissingIndexDeploymentScriptService.cs",
+      "exists": true,
+      "sha256": "84DB2DDF63DB31659D3F558CB767F3F679B387930627259E8C3C4CE8E57105F2"
+    },
+    {
+      "path": "Core/Services/PdfWordReportService.cs",
+      "exists": true,
+      "sha256": "E3D23634D21B9F591969F1256896423319CC1EEEF806B7377B98C657E1C0C861"
+    },
+    {
+      "path": "Core/Services/PlanAnalysisService.cs",
+      "exists": true,
+      "sha256": "B6A7A9F540BBB0D1AC40CBD972E2440F234B4B1E6490299F4482EEE468B9802E"
+    },
+    {
+      "path": "Core/Services/PlanComparisonController.cs",
+      "exists": true,
+      "sha256": "6927F81192D88DFAE74B39462BABC05F02556AD22DB1B904BE351D39742467B4"
+    },
+    {
+      "path": "Core/Services/PlanComparisonTreeService.cs",
+      "exists": true,
+      "sha256": "9B67408DB9DD32027C2ECD900D7CCF9FCC4FD2651DFE1F447AB5EC43A2C3C5A6"
+    },
+    {
+      "path": "Core/Services/PlanComparisonTreeViewRenderer.cs",
+      "exists": true,
+      "sha256": "A5494D9AE5E2F670B9030F6D8160226704310C35F484302C66637ED41B00F84B"
+    },
+    {
+      "path": "Core/Services/PlanDocumentController.cs",
+      "exists": true,
+      "sha256": "A4DC3848C890F65EC07A52A52CEACB869FDAAB65EAC09E3A00ACE69A492EDDE3"
+    },
+    {
+      "path": "Core/Services/PlanGraphCollapseLogService.cs",
+      "exists": true,
+      "sha256": "4E251526D3624A35C4AADF702F570783FBD9F3FA89AB2B8FF2A2A4735DC7E37C"
+    },
+    {
+      "path": "Core/Services/PlanGraphCollapseStateService.cs",
+      "exists": true,
+      "sha256": "8EB786EF978557B81055E14208E251A0B55DA10CCEE776D090FB1DE584429698"
+    },
+    {
+      "path": "Core/Services/PlanGraphConnectionBuilderService.cs",
+      "exists": true,
+      "sha256": "580481BC03DC569F509837F4B510F5150DD3602F424D5F952330049E5C5935E2"
+    },
+    {
+      "path": "Core/Services/PlanGraphConnectionDisplayService.cs",
+      "exists": true,
+      "sha256": "C714C91138158374472B166FCBBBB78F011DA7948863A4D3D6064A73DF2E5274"
+    },
+    {
+      "path": "Core/Services/PlanGraphConnectionGeometryService.cs",
+      "exists": true,
+      "sha256": "8AF883E3B64ABE36ECD801D60C6B095F3EC0B1C32DFBE6043E2134A56ECB4108"
+    },
+    {
+      "path": "Core/Services/PlanGraphConnectionHighlightService.cs",
+      "exists": true,
+      "sha256": "6F7D9738465EE58C6B6FE98A81090B56DAA9374A76AB2042D2B8179466468982"
+    },
+    {
+      "path": "Core/Services/PlanGraphCostCalculationService.cs",
+      "exists": true,
+      "sha256": "18D5B66311330D7B32F2141A87CF4362D03692889BD679980839B3973CCB62A4"
+    },
+    {
+      "path": "Core/Services/PlanGraphCostVisualService.cs",
+      "exists": true,
+      "sha256": "EB4FC355A2CF3DF94E10317633E93981003579CEACA942676B704C8123180B53"
+    },
+    {
+      "path": "Core/Services/PlanGraphLayoutRefreshService.cs",
+      "exists": true,
+      "sha256": "8B99532C2C1B018E4BA540BE1933AE9019ED1B863EAC03C39D87FFFD726652C8"
+    },
+    {
+      "path": "Core/Services/PlanGraphLayoutService.cs",
+      "exists": true,
+      "sha256": "C2950338CCA8C8567476860C7CF5CC299FCE10BF7EE1A046625D281381A4FF15"
+    },
+    {
+      "path": "Core/Services/PlanGraphMetricService.cs",
+      "exists": true,
+      "sha256": "EC92F0105CFF64DA29D8632A1B9686B0542D8A92420F62E1C49173F27FC9200B"
+    },
+    {
+      "path": "Core/Services/PlanGraphMissingIndexAssociationService.cs",
+      "exists": true,
+      "sha256": "9866D8257F20E3D720BD2561328EB5E252062100F2CE396F1CC4B5C4B853921B"
+    },
+    {
+      "path": "Core/Services/PlanGraphNodeBuilderService.cs",
+      "exists": true,
+      "sha256": "B2A4222B8D27F583C0F7A9897092ABC2DCAF7907B6570BF6F001396191F034D5"
+    },
+    {
+      "path": "Core/Services/PlanGraphNodeClipboardService.cs",
+      "exists": true,
+      "sha256": "F4E384D8A3F3B6F49C049F1D4FC005E0CE93C8CCB593FF0B5A7149CBA77A000A"
+    },
+    {
+      "path": "Core/Services/PlanGraphNodeDisplayService.cs",
+      "exists": true,
+      "sha256": "E8F23C737949B94F319F4C807938CFAA00B7046C2850BB0E19AD2A6A48F03B9C"
+    },
+    {
+      "path": "Core/Services/PlanGraphOperatorTypeService.cs",
+      "exists": true,
+      "sha256": "B295C8193FED3D844F53D5BAA3B784462A162594796D1D3912FF7AE0F7206B93"
+    },
+    {
+      "path": "Core/Services/PlanGraphOperatorVisualService.cs",
+      "exists": true,
+      "sha256": "169A657551E8936D4248B5B6B504CF363C8440CDD04422B682C0E2BD9C753177"
+    },
+    {
+      "path": "Core/Services/PlanGraphPanInteractionService.cs",
+      "exists": true,
+      "sha256": "2DC3EC17175D4D2D62DDE893435A36D1DD6D7CF81AC9FF5D68CCED0BA880C0D7"
+    },
+    {
+      "path": "Core/Services/PlanGraphRelOpDetailsService.cs",
+      "exists": true,
+      "sha256": "8DA08545C2A74DBCC29911C21D4697B6FED0ABE78B50D0CA75E699047F297316"
+    },
+    {
+      "path": "Core/Services/PlanGraphRowSkewService.cs",
+      "exists": true,
+      "sha256": "535CFDB7F51B070772A266500AC804B39CC769A5310DF3FC045CAFB4672DAE82"
+    },
+    {
+      "path": "Core/Services/PlanGraphRuntimeCountersService.cs",
+      "exists": true,
+      "sha256": "73478485D734CB9BDAEA970D25AD417C43719619755EB1C05B7F4ED476A19000"
+    },
+    {
+      "path": "Core/Services/PlanGraphSmartCollapseService.cs",
+      "exists": true,
+      "sha256": "923F71B94DBBED003D6C34A22AE0383023165823D489C6F71074B9CC14EB8B4F"
+    },
+    {
+      "path": "Core/Services/PlanGraphVisibilityService.cs",
+      "exists": true,
+      "sha256": "32A92ABDB8CACC20622FFDC83800BE41FE9E147216A8F52AA55FDEC33E356484"
+    },
+    {
+      "path": "Core/Services/PlanGraphVisibilityStateService.cs",
+      "exists": true,
+      "sha256": "151CC6BF5C1907685FB1AE6A7E0238BE2BD8A4D2D922E89206AB31A98870CA67"
+    },
+    {
+      "path": "Core/Services/PlanGraphWarningService.cs",
+      "exists": true,
+      "sha256": "53271672DB11FF276D94270C671117BE64C94D9A4EACF231D0E7F53C27809BB0"
+    },
+    {
+      "path": "Core/Services/PlanIconManager.cs",
+      "exists": true,
+      "sha256": "2B8CB5A3F9C1B9B8AC76CB64526459AE0B18D5C1DCAA874D475353B7733710E2"
+    },
+    {
+      "path": "Core/Services/PlanObfuscatorService.cs",
+      "exists": true,
+      "sha256": "1C1C01D0B39795A019F4469F423D865C87F62FF620AE6AA8E92DD64DAFFC8D0B"
+    },
+    {
+      "path": "Core/Services/PlanOperatorTreeViewRenderer.cs",
+      "exists": true,
+      "sha256": "BA895E89484EE8B63232B5484F1BF35E6CB69F21C34418219671FB74326625DD"
+    },
+    {
+      "path": "Core/Services/PlanPropertyService.cs",
+      "exists": true,
+      "sha256": "851A78A11F119AA9629B37FACCE0FEAF1DF0A8D53BD7ACD607AD54CDAA01C43C"
+    },
+    {
+      "path": "Core/Services/PlanSelectionActionService.cs",
+      "exists": true,
+      "sha256": "32F3BA14B55A9D500E58AF877080A6274B565BE262DE61D7A4C4A905D2CADA97"
+    },
+    {
+      "path": "Core/Services/PlanTreeService.cs",
+      "exists": true,
+      "sha256": "BCBED9C16134DC33FB5405064BB757549D8A26179944310A7B9AF735DD9A4009"
+    },
+    {
+      "path": "Core/Services/PortableReportActionService.cs",
+      "exists": true,
+      "sha256": "C022A22FD2E7DC9B5EBC1594100E5391D21942BF602C81B24732195073BB38FE"
+    },
+    {
+      "path": "Core/Services/PortableReportExportService.cs",
+      "exists": true,
+      "sha256": "119FA56D9F40D3AF965D848FAB07C19CC4514A4F41DA6D15C23E246EC9FCFDF7"
+    },
+    {
+      "path": "Core/Services/ReportExportService.cs",
+      "exists": true,
+      "sha256": "4F2F86E64B48290FF2099AC3F7764E03067B1D748DA7710E9C328E18E6DAC017"
+    },
+    {
+      "path": "Core/Services/SqlDiffDocumentRenderer.cs",
+      "exists": true,
+      "sha256": "2D70ED4CDBBCB62BB8CEFCEE045479D485DCFDD07A88716FA0C31A78C3D509A3"
+    },
+    {
+      "path": "Core/Services/SqlDiffService.cs",
+      "exists": true,
+      "sha256": "B88165F97C1ECBB31B2BFBAE4D4011395179C6D3BF13E33962FB4BB2CF66481D"
+    },
+    {
+      "path": "Core/Services/SqlQuickFixService.cs",
+      "exists": true,
+      "sha256": "7A7F4D6AD93EE75A70D188215FED5558A0BA2D55956854B4615473EADA0404FA"
+    },
+    {
+      "path": "Core/Services/TuningSessionActionService.cs",
+      "exists": true,
+      "sha256": "1E70143F02D682E7E99EC07B55C58A4A67C167477B90D97942BBDEA52FC7DA86"
+    },
+    {
+      "path": "Core/Services/TuningSessionService.cs",
+      "exists": true,
+      "sha256": "D370DDD8C6E24D4197E211518FAEBD56B05D70252DB1A41CEB2ACD20A21C9201"
+    },
+    {
+      "path": "Core/Services/WorkspacePanelLayoutService.cs",
+      "exists": true,
+      "sha256": "90B5225E81D62E23B0F2487C936BAC0AAE7921DB534C1F7373B8637F9D1646D8"
+    },
+    {
+      "path": "Core/ViewModels/DeadlockTabViewModel.cs",
+      "exists": true,
+      "sha256": "ADB3DD60ED87522A8D3C0651C6A9CAAE27550E45B1B8665EED6FFF604304E3FB"
+    },
+    {
+      "path": "Core/ViewModels/DocumentTabViewModel.cs",
+      "exists": true,
+      "sha256": "0B55B97190FBF8382436E1346767FE508EAEE33552512542AD0008B746755DE5"
+    },
+    {
+      "path": "Core/ViewModels/MainViewModel.cs",
+      "exists": true,
+      "sha256": "6FB843E993A27118016FB9BE78D24B6A3ADDA7C3922C7EA9A401307F16F61900"
+    },
+    {
+      "path": "Core/ViewModels/PlanSnapshot.cs",
+      "exists": true,
+      "sha256": "B7901D1A83D825932EC8F6143406DB197C9F94469E2B2A07EB00E6B6478FD8AB"
+    },
+    {
+      "path": "Core/ViewModels/PlanTabViewModel.cs",
+      "exists": true,
+      "sha256": "492CDC8CE28D04E837461FEA5757ABA1B969051DC14EC0BCA61B355E13A4D5C8"
+    },
+    {
+      "path": "Directory.Build.props",
+      "exists": true,
+      "sha256": "EC73F922F75E20CCB4192D7D850AD2D135B50CA4F839117D013287570D3B9688"
+    },
+    {
+      "path": "Directory.Packages.props",
+      "exists": true,
+      "sha256": "ACB8F8AABAC7050CE1706A65A245015964808D511FA1D0651093D4721804C356"
+    },
+    {
+      "path": "DOCS/review-evidence/baseline.json",
+      "exists": true,
+      "sha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930"
+    },
+    {
+      "path": "DOCS/review-evidence/probe-results.json",
+      "exists": true,
+      "sha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88"
+    },
+    {
+      "path": "DOCS/review-evidence/ReviewProbe.cs.txt",
+      "exists": true,
+      "sha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955"
+    },
+    {
+      "path": "DOCS/review-evidence/Run-ReviewProbe.ps1",
+      "exists": true,
+      "sha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2"
+    },
+    {
+      "path": "ExecutionPlanVisualizer.cs",
+      "exists": true,
+      "sha256": "5A901CAC3B9E026FEEDE29B5F93089C5B0B1230824EAA0BB199032CA5C71156A"
+    },
+    {
+      "path": "LICENSE",
+      "exists": true,
+      "sha256": "E524EA20E9660E5AC233B003F3160FA608FEE374119651E89D4969F387326F34"
+    },
+    {
+      "path": "MainWindow.DeadlockGraphEvents.cs",
+      "exists": true,
+      "sha256": "E900A3C6C9145801753E1D1CBC00DD60E43B2493ED99123E9A12CC92FE954F7E"
+    },
+    {
+      "path": "MainWindow.Documents.cs",
+      "exists": true,
+      "sha256": "4CC4D233291E1BAC292D927B631D0452AE65E6DA140FA0B501D6B8BAE6015422"
+    },
+    {
+      "path": "MainWindow.Fields.cs",
+      "exists": true,
+      "sha256": "29BF2EE3240D288FADBB91984F42B8B269008D7BDD4DBF0225A19F86AE1BE2C2"
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "exists": true,
+      "sha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345"
+    },
+    {
+      "path": "MainWindow.MissingIndexEvents.cs",
+      "exists": true,
+      "sha256": "F1FA9688C4F54BEF0161ED9417D8E8D87E34ED8BF0C5A96B7B21DE35BA7EE673"
+    },
+    {
+      "path": "MainWindow.ReportEvents.cs",
+      "exists": true,
+      "sha256": "B0C84A28E01A7FEE7C72FFBC6E19F5673B0084B4416E9ABE5809AE98C5C92A20"
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "exists": true,
+      "sha256": "59C8553B34FF4D6E5266A64B23FCA86CDDF9F005244FF06F2EC09F7CCD757F4B"
+    },
+    {
+      "path": "MainWindow.ShellEvents.cs",
+      "exists": true,
+      "sha256": "D7CDCDB4CA773566338AFF78EFDBF47C85FF3D924405FBC67AE1A5ED378DB2E9"
+    },
+    {
+      "path": "MainWindow.ShellWiring.cs",
+      "exists": true,
+      "sha256": "602FE62F868CEA949D6085F30CC48884A540E16B0EB48E7CB432FCBDA47B04BA"
+    },
+    {
+      "path": "MainWindow.TuningEvents.cs",
+      "exists": true,
+      "sha256": "25A8641773E2C46CC84DA1295956C6D5EA51BEEF212F9DC53C44A4D4102AF4F5"
+    },
+    {
+      "path": "MainWindow.WorkspaceEvents.cs",
+      "exists": true,
+      "sha256": "F8125CB7227E33586EFA64EC44756777475561F25CECB49462953723A4BB2A6B"
+    },
+    {
+      "path": "MainWindow.Workspaces.cs",
+      "exists": true,
+      "sha256": "D1E74A46A99296670DD6CB763E75FC4A173F61BB8FEA7CA6CDBC986904956A4B"
+    },
+    {
+      "path": "MainWindow.xaml",
+      "exists": true,
+      "sha256": "4AC5064F615E865FD5BDD2D731DFE7D3E491240D01B23C298CD8E0AB5F50FA38"
+    },
+    {
+      "path": "MainWindow.xaml.cs",
+      "exists": true,
+      "sha256": "8482339E164ED9AE8AF22762BB3D386C2B434E3176A98AADCC2802B807C8ED9E"
+    },
+    {
+      "path": "PHASE0_REMEDIATION_SUMMARY_2026-06-26.md",
+      "exists": true,
+      "sha256": "3C466F677C3928EE57D166DC48541A3CEE5D54B037F33BED4373E5CA5B8E697A"
+    },
+    {
+      "path": "PhysicalOpToIconMapper.cs",
+      "exists": true,
+      "sha256": "B1F7EEF9EDAA8A26DC901A10A033C0231D4639BEBC9DC2E6180A38D9C1696785"
+    },
+    {
+      "path": "PlanGraphControl.xaml",
+      "exists": true,
+      "sha256": "274D72D6D52CA33C62F67A417F6C101A40866323EA1E791E979F348DC7E83C18"
+    },
+    {
+      "path": "PlanGraphControl.xaml.cs",
+      "exists": true,
+      "sha256": "63D9878ADCEBA5AC9DC968F20DF47322DE95360D933C1DB705221287785D6EDD"
+    },
+    {
+      "path": "Properties/AssemblyInfo.cs",
+      "exists": true,
+      "sha256": "90D0B92E10D011E05CF3D684B973ECEB8C9C224719FA74C687A8204C6B479363"
+    },
+    {
+      "path": "publish.bat",
+      "exists": true,
+      "sha256": "924A0E2373CDEB48026F35277582388FFECF44BD151FFFECC26EC98B992BCB5B"
+    },
+    {
+      "path": "publish.ps1",
+      "exists": true,
+      "sha256": "5C2370D37B31FA875C6EB546784352ED9479A0708175BD72C58C43D154B2244C"
+    },
+    {
+      "path": "README.md",
+      "exists": true,
+      "sha256": "3D9CE90BF9E5050B93F19CE394969E4C4349B37B91FFC7181FDA935162F2808B"
+    },
+    {
+      "path": "RuleConfiguration.json",
+      "exists": true,
+      "sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+    },
+    {
+      "path": "Services/AnalysisResultsUiActionService.cs",
+      "exists": true,
+      "sha256": "BDF0BE3FEA946624475EF89754508E7E88292C63D0032497A72C8D8F9A4934EA"
+    },
+    {
+      "path": "Services/DeadlockAnalysisUiActionService.cs",
+      "exists": true,
+      "sha256": "D3056DB47BF141E4E0F28EF0E95B6D24A77540C88B74F0FA5A29C1173A32F27A"
+    },
+    {
+      "path": "Services/DeadlockCanvasInteractionBinder.cs",
+      "exists": true,
+      "sha256": "B3BF54CD56A313402185FA27F59D892FD085E3C4EA22DB23325B3C14868C4528"
+    },
+    {
+      "path": "Services/DeadlockGraphEdgeElementFactory.cs",
+      "exists": true,
+      "sha256": "0AC210996D6A2171A47C20CD88F709A25AD1E5B2EBC78767D245211F91797B78"
+    },
+    {
+      "path": "Services/DeadlockGraphElementUiActionService.cs",
+      "exists": true,
+      "sha256": "33FAAFBD14614C313A2570300B64653F27028233C2DC401500726D9A14814A7C"
+    },
+    {
+      "path": "Services/DeadlockGraphNodeElementFactory.cs",
+      "exists": true,
+      "sha256": "FAFCD96EBF10D91429B42DE4A7C3520439D85AF48304B3BB5F3CA992D174C880"
+    },
+    {
+      "path": "Services/DeadlockGraphPlaybackVisualService.cs",
+      "exists": true,
+      "sha256": "F60D92965950A315B3CA42CCA2ED452BC19B6A1A22E889C8D0D249C54DC33762"
+    },
+    {
+      "path": "Services/DeadlockGraphRenderUiActionService.cs",
+      "exists": true,
+      "sha256": "CC57F5D14D352F511115FBF052D632FC4C2638D0EE7449262BEC387D07490519"
+    },
+    {
+      "path": "Services/DeadlockGraphUiState.cs",
+      "exists": true,
+      "sha256": "C7ABA6395F79DEA30328F1E8918560FC078F6797037964F2A95A1DACC7AD1E7D"
+    },
+    {
+      "path": "Services/DeadlockNodeInteractionBinder.cs",
+      "exists": true,
+      "sha256": "EDC24FC62716AFB1A564D6D229369958D4B49E8A68642CDCDC011AEFE5BE320D"
+    },
+    {
+      "path": "Services/DeadlockPlaybackUiActionService.cs",
+      "exists": true,
+      "sha256": "92E2800BA19BDB4499614D0E4F78842B5777E29D8C4887EF7DB9C191C9EB188C"
+    },
+    {
+      "path": "Services/DeadlockSelectionUiActionService.cs",
+      "exists": true,
+      "sha256": "9650DE5461F7897AABD956F4BED811CD9B863588AED427F70FF793AE2AE950AF"
+    },
+    {
+      "path": "Services/DeadlockViewportUiActionService.cs",
+      "exists": true,
+      "sha256": "B7E8088A8DB7E0552F68E290F29DBBEF28C19646637ADD6767409DFE844D704A"
+    },
+    {
+      "path": "Services/DocumentAnalysisUiActionService.cs",
+      "exists": true,
+      "sha256": "BCF46F826DC89715DA2B2F8D3783B0BDD80818EBCDF1B0F1768CF5213553F27B"
+    },
+    {
+      "path": "Services/DocumentRefreshUiActionService.cs",
+      "exists": true,
+      "sha256": "D4BCB436A9818186F9A1A0853C486476ABBA09A2F38232237ADA45BA797FFCCD"
+    },
+    {
+      "path": "Services/FileOpenUiActionService.cs",
+      "exists": true,
+      "sha256": "36B97A599DA7C378DB21C084FCD2133EF1687A93346BDC32FDCFAF5333DAD5AC"
+    },
+    {
+      "path": "Services/MainWindowShellActionService.cs",
+      "exists": true,
+      "sha256": "E9AD3EF1532533E484F6540659368B2137DD8FF4DA55515D55E4C4F24050B2C3"
+    },
+    {
+      "path": "Services/MermaidDiagramUiActionService.cs",
+      "exists": true,
+      "sha256": "67639B21FE5343A056A78326A9DB5825D209DFAAC5133FF0742286E4B0E348F8"
+    },
+    {
+      "path": "Services/MissingIndexClipboardUiActionService.cs",
+      "exists": true,
+      "sha256": "B865C596C892481D6F14978EFEBCB131BFDC533470C01464EBD6D2C34A180B9D"
+    },
+    {
+      "path": "Services/PlanAnalysisUiActionService.cs",
+      "exists": true,
+      "sha256": "30BDD9FB0BA8DF693D10DBDC0B4833456667B0907A17373E15809F8A936D253C"
+    },
+    {
+      "path": "Services/PlanComparisonUiActionService.cs",
+      "exists": true,
+      "sha256": "90A7640F30C60E69DF8956DA4F98382C27ACC6A0D2FC524A24879778E9979360"
+    },
+    {
+      "path": "Services/PlanGraphCollapseUiActionService.cs",
+      "exists": true,
+      "sha256": "C1456D20E0B490EEF5F9DBB0999DB482F83D848A7960364405E80B336F351604"
+    },
+    {
+      "path": "Services/PlanGraphConnectionUiActionService.cs",
+      "exists": true,
+      "sha256": "2CCC2EEFFC7F4C761E935AA2B47ECEED195343E8153F0F8B94CAC3E4B6A23DCB"
+    },
+    {
+      "path": "Services/PlanGraphCostUiActionService.cs",
+      "exists": true,
+      "sha256": "FA9053EA5AAE1A652AED341516642FD3B65E97CDA862CA2A175019DBA73996AD"
+    },
+    {
+      "path": "Services/PlanGraphLayoutUiActionService.cs",
+      "exists": true,
+      "sha256": "4941374D9695637402FB06101DEED74E8B817EA9DEE20BDA365DADB42282FADD"
+    },
+    {
+      "path": "Services/PlanGraphLoadUiActionService.cs",
+      "exists": true,
+      "sha256": "D4E0CC73B079BEA802C5E47CA89B7F884504DB14E56F3BA4E615FC9FC4C619DE"
+    },
+    {
+      "path": "Services/PlanGraphModeUiActionService.cs",
+      "exists": true,
+      "sha256": "5798AA94D884650DF753F210217CF34AABB37D70285A12A1DBFDE24A5342EBD1"
+    },
+    {
+      "path": "Services/PlanGraphNodeClipboardUiActionService.cs",
+      "exists": true,
+      "sha256": "8F95F61FC269DD686176BC1E1D6A41DD0333F3518CB21CE8F61DBADD924AA9FD"
+    },
+    {
+      "path": "Services/PlanGraphNodeUiActionService.cs",
+      "exists": true,
+      "sha256": "E2205AD86554FED80DA8DEC3617A045CAC055F8BE2D0E1A6FFA36E836A412CFC"
+    },
+    {
+      "path": "Services/PlanGraphPanUiActionService.cs",
+      "exists": true,
+      "sha256": "866679EBFCEC6E9B36C74BC97A78A9523BA7BD2877E19B110CD7AED24C662042"
+    },
+    {
+      "path": "Services/PlanGraphViewportUiActionService.cs",
+      "exists": true,
+      "sha256": "77753E7298E8B8804596C50D16405CAF1CB24F0A9EB167C270E69E549022F6FC"
+    },
+    {
+      "path": "Services/PlanObfuscationExportUiActionService.cs",
+      "exists": true,
+      "sha256": "877611F7D4FD723B418FDB55ADD700C8035D7364E3B0C6A7436456E8BD03F1AD"
+    },
+    {
+      "path": "Services/PlanSelectionUiActionService.cs",
+      "exists": true,
+      "sha256": "9C2084872BC7140BDC6B4239B745E1A28A937B5EC1CB450FF07AA9CA9A63344E"
+    },
+    {
+      "path": "Services/PlanStatisticsUiActionService.cs",
+      "exists": true,
+      "sha256": "E8ABC3554AEC5DC104F60B9679D563C9335747771296070C2DD9B4AD6EB8EDA2"
+    },
+    {
+      "path": "Services/ReportExportUiActionService.cs",
+      "exists": true,
+      "sha256": "08609DE067809C8B97B2B993B2C81713AD1B3A9CBD2A5465DDABE56B88517665"
+    },
+    {
+      "path": "Services/SqlDiffScrollSyncService.cs",
+      "exists": true,
+      "sha256": "02F0E149734A0CDA0ABE1C3782B35164A98919358DF59A7E4459E9CC0491F8CE"
+    },
+    {
+      "path": "Services/SqlDiffUiActionService.cs",
+      "exists": true,
+      "sha256": "2C6962F4114890CCA5B83B934A424DBA211C6E1779AB68E723647D0EF81CB8F5"
+    },
+    {
+      "path": "Services/SqlQuickFixUiActionService.cs",
+      "exists": true,
+      "sha256": "767BEC9080C06440CB69E8B3C0D4E8F9A510C3F90C12377B04E5C5117011CC3D"
+    },
+    {
+      "path": "Services/TuningSessionUiActionService.cs",
+      "exists": true,
+      "sha256": "9681545E535E92EA495BF45C7BDFADBAE47EDF6964D6052899F0D4AD0FE58680"
+    },
+    {
+      "path": "Services/WindowChromeInterop.cs",
+      "exists": true,
+      "sha256": "C32118C5F44A4482189B14870C05DDAB2F0E309A03180E7FE294C2EB3657BC8D"
+    },
+    {
+      "path": "Services/WorkspacePanelUiActionService.cs",
+      "exists": true,
+      "sha256": "40FFFA051789ED4E8E10D8EFBB40C9A41A73E40CB31515E96F5CC81FF672030E"
+    },
+    {
+      "path": "Services/XelDeadlockUiActionService.cs",
+      "exists": true,
+      "sha256": "32AB3D5B6E13AD15C409BA09B7E1EF249A0878AEE676DABE32B3CE811EE3D036"
+    },
+    {
+      "path": "SqlXmlAnalyzer_Phased_Implementation_Plan_2026-06-26.txt",
+      "exists": true,
+      "sha256": "C44034FBC01AD4869708D1E7324DA3EC4C5D381DDC9FE43BDBCE848622AA8DF1"
+    },
+    {
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "exists": true,
+      "sha256": "E0E7DEDC74790AC6ED0C6B78D8C468E15FC98334C075C2F84FD27CD11739120C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.CLI/SqlXmlAnalyzer.CLI.csproj",
+      "exists": true,
+      "sha256": "5A147A329590FE647EC55E252840D04BA489875685233AB037D7D18DA2F746BA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisEngine.cs",
+      "exists": true,
+      "sha256": "6C76875EBB8F6DBF60E22B72E956AA7D5339A6AEE79D9B7C4A32D0DA5490D677"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisIssue.cs",
+      "exists": true,
+      "sha256": "88273186FE7E265FA488670269836D2A30F69BB970482B6DFA4E399C4CCA1A2C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Abstractions/IRefactoringEngine.cs",
+      "exists": true,
+      "sha256": "EBA24FAD9CD8080EF414FA0725B31B4FCBBFAEDA3A96B8AAC0AAC25A36A15732"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Abstractions/IRuleFilter.cs",
+      "exists": true,
+      "sha256": "35DC8F410750BD8D1737EA90EF578C88A266368DEA42AABBE2DBE13DF29EF1FF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Abstractions/ISqlRefactorRule.cs",
+      "exists": true,
+      "sha256": "A34B3F6DAD0D409EAB40E9BB1307DCD5BAFDBF9D6DA0C27BB0E772208E4C26B2"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Abstractions/IssueSeverity.cs",
+      "exists": true,
+      "sha256": "FBE19500994D14F3F03D31463D0FF3E0466C5480B4B5E2A6ED971C8747351361"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/AnalysisReport.cs",
+      "exists": true,
+      "sha256": "E991E83040408A4FBDF08E3319C3BB93C08669DB08DE7507977B0BF7A57385AC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/AssemblyInfo.cs",
+      "exists": true,
+      "sha256": "ED2EBF5C67396BE77A87AA5D0F90FE6098F5F24D6D2AE8345FE3CBD4072D4BD5"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Configuration/RuleConfigurationLoader.cs",
+      "exists": true,
+      "sha256": "AFEC652F54CA9EBE333CA90B53E4A463447E66626C508629A2DAA88364AD77CC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/DeadlockAnalysisService.cs",
+      "exists": true,
+      "sha256": "E8EB0A4B7F52C075BF27AEEB6BA364B8F99252EA17300A2C01843DAB65A060A3"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/DeadlockGraph.cs",
+      "exists": true,
+      "sha256": "4EE25F146CD9B481830ADFA2E3378119AB0FD4A2AD2F9E65F433F4D3802F4AD9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/DeadlockXmlParser.cs",
+      "exists": true,
+      "sha256": "91418C1F293555D193C36ABE95125FEA4A2B5017640B2E0D638B42E411DA453D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/DiagnosticFileAccess.cs",
+      "exists": true,
+      "sha256": "504FF541A023CACC9C77529F08990E44A597EEE1FBEC890FF34C279D7778E594"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "exists": true,
+      "sha256": "AC7AEA7BE8E626ADC1476AA423F306176308FB0D4B5F67A0C0860C725137905C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/GlobalExceptionHandlers.cs",
+      "exists": true,
+      "sha256": "D272A3B7562BE533CB1F128CABC7A9630BE3409A6AADEF8541C358AE5259D7E1"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/MinidumpValidator.cs",
+      "exists": true,
+      "sha256": "4614C552DCF6B15F4057F15EBD2F7C2C3F6A553E87026636B2BE026B9CBA1DDA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+      "exists": true,
+      "sha256": "3BDA8B6130B0B9252C0846B462705F736CB2B6EE5736D5338B8CA6BDE6D676AD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+      "exists": true,
+      "sha256": "C9A218DBD11A9D392CFAEF19607BC8EAE56BE9A4A8FA6CAFEFD8DB61E18321F4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/HtmlReportGenerator.cs",
+      "exists": true,
+      "sha256": "8CE08BC4152A086374EF7EA24EDD12EE6586B75BCAE0410CB5715FFD427E9B6A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Logger.cs",
+      "exists": true,
+      "sha256": "9BDC93CE515AE8A4F76FAC0FC9B486213FE27DE5E52926EB7E418AF295D621C7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/DeadlockEvent.cs",
+      "exists": true,
+      "sha256": "FA680F988093C61E2925D7AFF8FB6AB42A15A724D1D8A0772EFED7BB5EE117F4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/DeadlockParseResult.cs",
+      "exists": true,
+      "sha256": "B69BD9DECB187F4A7DBDC338FF0EE2F2B24284270CCA725BD8BC7DDFC605E083"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/HistogramStep.cs",
+      "exists": true,
+      "sha256": "0D5E3F1B00407E15A3429F79C0AA10D8FD4442B8276C5C420B8BAB9C33D31D24"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/IndexColumn.cs",
+      "exists": true,
+      "sha256": "FD86D92FCBB4821C91197CC645D07887B365D64CB27CDAFEBD043B7AED5E172C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/MissingIndexSuggestion.cs",
+      "exists": true,
+      "sha256": "B1FB6B40E8CC83D576EACF2AE572F8CA7E91D90E2D66BE96E13AA0A2AD711574"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/RefactorOptions.cs",
+      "exists": true,
+      "sha256": "096A4A18E1B7A58496178F4D3D0938D1395A658F727F59AE96056D77679903F9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/RefactorResult.cs",
+      "exists": true,
+      "sha256": "26460CA1F991CF232EE18AEDA69476722BBA7824471EC23E4FDB433307FF3FD8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs",
+      "exists": true,
+      "sha256": "63F9798828DA025493460690014CAF34D4BF35C66070D323B383B8A40F4F1880"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Models/StatisticsInfo.cs",
+      "exists": true,
+      "sha256": "A848F778A60AF6995FD7C547946032603E5973C494C8D55538E75264C44D7DD6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/NumericParser.cs",
+      "exists": true,
+      "sha256": "0C75285C5B3127BA127BC2D82435AC6DB45B408CC1AA4F09F709D05C228FD051"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Parsers/DeadlockTimelineParser.cs",
+      "exists": true,
+      "sha256": "58E2143179D2AEF52BB5EBDCBFA35A7FEDA6EBA64E9AF8152CE02A562FE6FF4B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Parsers/SafeXmlHelper.cs",
+      "exists": true,
+      "sha256": "9C242BD88C63034B37A9EE7BC3E566420D6FEACDB63B3F98017CBA40B15806DA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Parsers/StatisticsHistogramParser.cs",
+      "exists": true,
+      "sha256": "594C7D974A1BACA84EB6E7B3EF08A748DB8A4A9308B1A87695E82914B294CC67"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Parsers/StatisticsUsageParser.cs",
+      "exists": true,
+      "sha256": "1B15799984309F8A51BEF119808AE271D76C653804847012FC53CB05F79B6BF5"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+      "exists": true,
+      "sha256": "3F2B8F15795EC3E2D2B80544880227598DD778A389F365B2C01FF6517F0FAE51"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs",
+      "exists": true,
+      "sha256": "ED8E806A2328DFDDCE8539D803F00F41351777846C0980A75B0F0648B14BD853"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs",
+      "exists": true,
+      "sha256": "AFA865344C432507A8C4CE0A0836F3C3EFE7968AFAD274610540706A6B83A8DA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs",
+      "exists": true,
+      "sha256": "1C2A62836722C47184BB27CB173ED2A5AC0D6C4B6FAB178B1B77916AF89BDEA7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs",
+      "exists": true,
+      "sha256": "A84F81FD26ACDD0ECAEF55ACB7E0F0253E3B2B8202797B6B688EE3962E23A4C2"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/ProductInfo.cs",
+      "exists": true,
+      "sha256": "AF8606FC4C7412B322F9DEC8BC87A3F6C101F5A8892ACFAA53254D3B22495F4E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/RefactorContext.cs",
+      "exists": true,
+      "sha256": "4AAA21F9E34693C324E67E52A51B29C3485EE0B8F392FF59AB0D378695AFC304"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/BooleanExpressionReplacementVisitor.cs",
+      "exists": true,
+      "sha256": "196753638B37714CD2036765AFB831E4C7CB71A9519037BC311888EF2F914E0C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+      "exists": true,
+      "sha256": "73F4D06BA62A0EA4BA1868676B8AAC3D34C97CB2EBAC5F2CCC9FB889737514DE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlOptions.cs",
+      "exists": true,
+      "sha256": "703A8C7381E55AD78C6746DC03B5EFC9B7D912DFB44C39718DCE89DB54B7DFDF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/ISqlRefactorRule.cs",
+      "exists": true,
+      "sha256": "4EC4A2192DAF4C49F2A1C86C362771CF4328CDF29DD6FE0141610CDE3B9C24E2"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/MissingIndexSuggester.cs",
+      "exists": true,
+      "sha256": "EFFCDD5C502045F786FE8CD086DBD5A6949E9A2E35368F6CADB7FCB49239DA59"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/NonSargableDetector.cs",
+      "exists": true,
+      "sha256": "0B9401A518790E63E258341ED559CE2D7ED2CA282282B67530F2E2A4453E4B61"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/RuleRegistry.cs",
+      "exists": true,
+      "sha256": "57210D887E47878A925AAA71D65A1E3D48A61E381B092703C9736A2296F57217"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/Rules/SargableRefactorRule.cs",
+      "exists": true,
+      "sha256": "B9210F2A5C8D520F249EC6AE84BBECA19D50981B9BB067D2FF12C0DAAC2304E8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/SqlRefactorEngine.cs",
+      "exists": true,
+      "sha256": "5AA7B028295E9100FA081E582CB16A34220099F5EEF1AF9B3816B2658CE2B50D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/Visitors/SargableVisitor.cs",
+      "exists": true,
+      "sha256": "46AF7BF54E4929365AB16FA6A06CB0E1F6C47AABF5A9D0D3B1D1EDE0ACE1919E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/AnalysisResult.cs",
+      "exists": true,
+      "sha256": "6468AD0ABB765FD38691B448603F241480AE2CDB89994416C4F734255254527F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/AntiPatternRule.cs",
+      "exists": true,
+      "sha256": "46BAC805C5E8D5D595354A3F93E21E5BCBC7202C880126259C67D88753BDC17C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/CacheAndRecompileRule.cs",
+      "exists": true,
+      "sha256": "A5F4DFCBF3C9D72BEDDE2C84340F2E050D57DD2F4B24004055007EB9949AE561"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/CardinalityErrorRule.cs",
+      "exists": true,
+      "sha256": "5104016BD9AE1ECA48C3074A68F1B647BEB55648A88B939E5BDC6C9ABE183196"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/HighCostOperatorRule.cs",
+      "exists": true,
+      "sha256": "185D4C6D049D397228A36284F1348763F31E87B443F10DF47B9495512E8F1C10"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ImplicitConversionDocRule.cs",
+      "exists": true,
+      "sha256": "AB46CC9CE88D04B5C8195B2A779FD2A0E72838436A9F1658DFBE60415D48EACB"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ImplicitConversionRule.cs",
+      "exists": true,
+      "sha256": "3A924A8232F6DB1F71DA49B8737180F8E6BE82E4163194DEAAC19655BD81CB7E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/IPlanAnalyzerRule.cs",
+      "exists": true,
+      "sha256": "B5E18BEE3E0CE7E491BF7501F84F95F854B5D42CCBC54DF1F957A15AF267B0F3"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/KeyLookupOpRule.cs",
+      "exists": true,
+      "sha256": "3131344A6A5EE76B2CFA5F288BAB8D7A4EB9475B488D936DBC5AE6004B4C92A9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/KeyLookupRule.cs",
+      "exists": true,
+      "sha256": "BBF99360DBC597794B22B9A5941D1D3DE9CEED140B9885025D0C1E21493C017D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/LargeMemoryGrantRule.cs",
+      "exists": true,
+      "sha256": "FCAB8A958077A6E950611EBEB8358E458261F657641393FCD33C8A0E60109D22"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/LocalVariablesRule.cs",
+      "exists": true,
+      "sha256": "EF4FFD1A326AAB0E5255016EC9E0B1AE419E24C46750B8DA9CAA427944912DEC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/MemoryGrantDocRule.cs",
+      "exists": true,
+      "sha256": "770D6F475EA6C69125B0C107C7EE80A53076786444ECD9EA7C68054DEE9FFCFE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/MemorySpillRule.cs",
+      "exists": true,
+      "sha256": "9023C51C485AB275F1B69C5E0B403E3B8D2370BD6F5CF2A65B0DB5B90B7BEF20"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/MissingIndexRule.cs",
+      "exists": true,
+      "sha256": "AD101419048E8A8DEC3F0067AF80680764784DC8AB914851675A9E40F6967FCF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/MultipleScalarSubqueriesRule.cs",
+      "exists": true,
+      "sha256": "61AEDD605D1704C15E4584AEDAE2127BAB9B1DF443E1FE13DBCA647D3CD3B24D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/NestedLoopsHighExecRule.cs",
+      "exists": true,
+      "sha256": "A6EC5ED92DAD51ED697CA6F3530F148C0927EE1F329758724C95103BCFEB8CBC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/NestedLoopsRunningTotalRule.cs",
+      "exists": true,
+      "sha256": "96B7640ACD9F3AFDE8842E9AA780770DE6D76E4A7374C76894049B7EEA6D62DF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/OptimizerAbortRule.cs",
+      "exists": true,
+      "sha256": "9C33C9CCC23A2BA963B797F13522FD102913F7857117B856A1C0EED7387CB63F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ParallelSkewRule.cs",
+      "exists": true,
+      "sha256": "E5946C98F8CC0C8815D4AE6B70E12DA6A54C814CDB32DECC4B2B93E76DADBC56"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ParameterSniffingDocRule.cs",
+      "exists": true,
+      "sha256": "645F96D4B81573E1D3C5649E87E19EA36E58D53B689A926A4143AF9DF8098AAD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ParameterSniffingRule.cs",
+      "exists": true,
+      "sha256": "40A26CDA34D83A06B7176E3405717417E906B3CE2EFF70915218580657234642"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/QueryRewriteRule.cs",
+      "exists": true,
+      "sha256": "56DFA961B1C51192C90FF4EF7B64A0412207A6B48CF3A7619BB216C634161275"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ResidualPredicateRule.cs",
+      "exists": true,
+      "sha256": "ED60C8B031EE53C85F4727DF1F6AF66FF0B0E5B7202DCFD3D8B938CE2ECC3121"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ResidualPredOpRule.cs",
+      "exists": true,
+      "sha256": "132F8E241EF48CA235001F2BB8DAFE54A66325FA4532B09F65D05DC42C2474A8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ResourceSemaphoreRule.cs",
+      "exists": true,
+      "sha256": "EEA0038900D4FBE9B3CD8BCA1F5AAD6841AD6E6BEF9F98EFC9A09AB9A4EDE7E7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/RowEstimateMismatchRule.cs",
+      "exists": true,
+      "sha256": "4E9052E032A01AEC22C8F812B5977DA9C5DDE374E150F0C16CB54BC0502FBD46"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.cs",
+      "exists": true,
+      "sha256": "9D32A436695254CB0FDCDD025F6526DD50A590AD92598520C6CCED3B31133DFD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/RuleMetadata.cs",
+      "exists": true,
+      "sha256": "5E27382500D8EBEEA4B6B55509F5DD3B86CBD2A072B85E47C09FF31A1E10B639"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+      "exists": true,
+      "sha256": "5F8AB7051199DDB1FEA5F520BDA3D77CC6B1F54A773A09688A0999C03088241C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/SerialPlanReasonRule.cs",
+      "exists": true,
+      "sha256": "0EDDFE8CA39BCAB7F3D83B66E6AB5DB8882C450B007B608E7485201FCA2DDEEA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/SpillDetectionRule.cs",
+      "exists": true,
+      "sha256": "4A60EDD6356B687BC76341CCECA8563865063B3A092B1CC1AA132C46D7955641"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/StatsUsageRule.cs",
+      "exists": true,
+      "sha256": "6995617C307DE84C22EF1319573766EC02D8E348A63FAFB0FA9E6D99360CFB4C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/TableScanRule.cs",
+      "exists": true,
+      "sha256": "2A4719E0B4D487B119F252A4DA7F08A1F74232FF9F9693EDD6405ED622AC17C5"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ThreadSkewRule.cs",
+      "exists": true,
+      "sha256": "BDA666909AADD435160BE7585163279629CD44B19F77CE6240BEB5E0EF508BB5"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/UdfAndTableVariableRule.cs",
+      "exists": true,
+      "sha256": "7264EAA69298C0F9A2101A0BC9CDE9334D1C46B0DA570D5B00E1F69BD85B0848"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/WaitStatsRule.cs",
+      "exists": true,
+      "sha256": "18319511F2E5C0D563AD03AC7761EF78564728AAE6F4002217BEE14BD2D5B216"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/ZeroRowActualsRule.cs",
+      "exists": true,
+      "sha256": "1A60C45EE5FDECE59587C927EA2FB63558B11F92C417A5EF2DF4F217093F1A43"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+      "exists": true,
+      "sha256": "3E940332E98065050C4DC983BFAB8958AE7A131B6E8794BDC3E7712ED6525B96"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Services/DocumentOpenService.cs",
+      "exists": true,
+      "sha256": "65EB316955F043AF3DCD8152C4D2176D4EAE1A67669846CCD485171B749DA283"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "exists": true,
+      "sha256": "BA3F3DEE916C3140431E019D2CB62B249C310EF180B0BD925A788600CD5F273E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Services/PlanExecutionFactsService.cs",
+      "exists": true,
+      "sha256": "05FF33D7AFFD93C056E8357F8EF1091F5B3064E179693CCF923A2AB3DC134916"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Simulation/CostImpactResult.cs",
+      "exists": true,
+      "sha256": "839D8557076CA1A8FF24B0EF28355925A0F11698CC7262BC0057336E29BD1DD7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Simulation/CostImpactSimulator.cs",
+      "exists": true,
+      "sha256": "70A507BFF0B347A6B47E94645A5745111F0AA647488385F19E4587828089B8AD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/SqlXmlAnalyzer.Core.csproj",
+      "exists": true,
+      "sha256": "FCF48DAE44FB6C08BE5CA8CE407336F646D5268AA2E1154EDA153687D489ED8F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/TemporaryFileManager.cs",
+      "exists": true,
+      "sha256": "B20257E75E608418D9F611AB7E954E3D22322F3C4F024DE07C94446E87F42D27"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/XelReader.cs",
+      "exists": true,
+      "sha256": "88EB171A26082D70FF06F3BF0A93E7DD69E226F32C3B32403F1EE8071B2C47C4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.csproj",
+      "exists": true,
+      "sha256": "FB447C3543EF04CFBA73AF1BC1FD0B53A2C8CA0D3BB53FC18A5EBC2DDBDA48B8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.sln",
+      "exists": true,
+      "sha256": "9004CEAC6F6B801B9C0D72263EE657D012811BB6ADF524CA7FDECBC215A37599"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs",
+      "exists": true,
+      "sha256": "9D68F9A6192D6B1B413C7A7178F93CF657B89FF69D65B5CBDF07D8F645DEE127"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/AnalysisReportControllerTests.cs",
+      "exists": true,
+      "sha256": "6FD7DB55F98D01F08943AAA224F02F52F3272BBA38CE5D3CCA55D78D4A582E5F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/AnalysisSessionCoordinatorTests.cs",
+      "exists": true,
+      "sha256": "22631491E4522AA8F7E399BA62FA46B7C3D84DFEB29D4E9DE39879DE1E135850"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+      "exists": true,
+      "sha256": "3F8D2BD71F0FD71F1443DBE8A24C6C00F85C075FCCD10F2F93AB86338AE6336D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+      "exists": true,
+      "sha256": "8EC9F788D64F758415F01360D6240DD244462E8B28A69DE2EC4E196EDD51086F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/CliScanFileCollectionTests.cs",
+      "exists": true,
+      "sha256": "715783CD3528D0D1FFD6076A28283933155DC004F36EFFC4B62C4DB564FAC418"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/ConsoleResultReporterTests.cs",
+      "exists": true,
+      "sha256": "0328FB8F3E59730CCB6D33E565899D428FEAE647193C0998BF50E02DDF877174"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/JsonResultReporterTests.cs",
+      "exists": true,
+      "sha256": "D97F47E708E4513CF2A08981CD4CC061C222427542D42D29DA26D99E3653B4AB"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+      "exists": true,
+      "sha256": "EA4F56CE1E6CEB425C7C4ABA9A21F0096DB80999DDA84D8D818BBA25A955D9EC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+      "exists": true,
+      "sha256": "D04569686625697A0666AFFF9D2F5BC38D75CF1AF1DDD376D6FDA0275231762A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockAnalysisServiceTests.cs",
+      "exists": true,
+      "sha256": "A924985D0B5A0B9FE4BFCFB3CEE5212D64D0EAC3F0DD9BADE7FC13824EBAD613"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockCanvasInteractionServiceTests.cs",
+      "exists": true,
+      "sha256": "34856AAF3060F551505DE599FA407B14DB99D6F304B4A15777BCAB3FD40D1F30"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockEventSelectionTests.cs",
+      "exists": true,
+      "sha256": "36C6032C3EA0AA75526A9ED81918F85B7031EC1D438D6A68BF768C4EC55D8592"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphEdgeRegistryServiceTests.cs",
+      "exists": true,
+      "sha256": "6E883F69BC8D27322D52ADA2B918C1AE489A229547BF6F4B4D52FB075F9D9528"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphEdgeServiceTests.cs",
+      "exists": true,
+      "sha256": "88C37ED8C9AB9101B2E08C0216A6ADB49B09C7611597EE1B76140EABF99D9AAF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphGeometryServiceTests.cs",
+      "exists": true,
+      "sha256": "C7623ADAC7A7C2EAFC90848D7DE591CD562AF3B306178CA7C16095C8E3FEFC24"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphLayoutServiceTests.cs",
+      "exists": true,
+      "sha256": "62E4550A93F26039B1D8102A84E682A93F9F82EF3A04D0E7211D48AB4855E125"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphPlacementServiceTests.cs",
+      "exists": true,
+      "sha256": "D09DE11481AC9879B0DE68996D928B5F96F72EFB93689EA5FA3D894C232360BD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphSelectionServiceTests.cs",
+      "exists": true,
+      "sha256": "1D67B56EE9AE0E66EEE618655E659D65B9AE9D1515FBB64797FEDCB0EB72D279"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphTests.cs",
+      "exists": true,
+      "sha256": "F813B9E8D8D9FD4A8F6712CD0F6F74F4D53CB28E71737C3CD547731DA7EF3727"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphViewportServiceTests.cs",
+      "exists": true,
+      "sha256": "01F63A8DF9A8AE87986DF3C1F8CD3B8AF46DD24C7AC10296F6DBE9C34C12F321"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockGraphVisualStateServiceTests.cs",
+      "exists": true,
+      "sha256": "2F52F07F78B697C520A26C51668D43386B7857D1D822D59E599FB543DEA14B52"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockNodeDragServiceTests.cs",
+      "exists": true,
+      "sha256": "762AAF415DD8EB9C67E2EF82E0B20DB29C2C38CE1735DCA25FB2342138D06A27"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockParseContractTests.cs",
+      "exists": true,
+      "sha256": "888986B361089C11AC3F5345A9A16D504E2DA9893CBFBE402A2B73A397A42FDF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockPatternAnalyzerTests.cs",
+      "exists": true,
+      "sha256": "60F12885EDD6F9B5319DC1C8C551B9AF67101985B5BAD9EB6A52070BA691BD92"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockPlaybackStateServiceTests.cs",
+      "exists": true,
+      "sha256": "AC48C380654F2D5F562C232B65EB30979CA0F2524C6D698F210818E738BCB626"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockPlaybackViewModelTests.cs",
+      "exists": true,
+      "sha256": "306E9EA1383A0DAF4E3E75436A9274CE001D13EA0CC4181B864FC9DD182ACFA3"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockSelectionDetailServiceTests.cs",
+      "exists": true,
+      "sha256": "89F26EF7CC96440A373487B8DF9E81C0CD2C40AED96C247E8A10510B0F0512B6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockStepBadgeServiceTests.cs",
+      "exists": true,
+      "sha256": "2AD1B036CCF157C803C72864CD42CBE65BC85C0E5F4B0014F3943212B0EDA8FB"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockTimelineParserTests.cs",
+      "exists": true,
+      "sha256": "263226B534D6FADBBBC1AC4D01BDA74AEE05942480A97224D2FFD96DD6794018"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs",
+      "exists": true,
+      "sha256": "FA9D5F5CE65EBB8D85C8656BF713388E63A4F2943E85047EC3C3AE32D662CC9A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/InputFieldMappingDiagnosticTests.cs",
+      "exists": true,
+      "sha256": "614172003B6F0352B99DD3CFF2A7A995B667A555B59783508E9A3B9522ED8BFE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DocumentControllerTests.cs",
+      "exists": true,
+      "sha256": "F69ABB708D6DC8C68451AF7898EDC2D435BE4DD91EB62ADCF8E30837BA9CF3FC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DocumentOpenServiceTests.cs",
+      "exists": true,
+      "sha256": "FD0EEF07806DE342283DF8729E609E085E1781DFCC88161D85659E833089E801"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DocumentRefreshActionServiceTests.cs",
+      "exists": true,
+      "sha256": "0ED0AF6F8E4F5938225363422F64CF01A8F4BD7D4C3EB6AF4AB599C8F8809905"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DocumentTabTests.cs",
+      "exists": true,
+      "sha256": "7B0504192ACAD39FB173CF64B27C6839D412CC6D844A6E89470038ACAFC88DC7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/EmbeddedResourceHelper.cs",
+      "exists": true,
+      "sha256": "6B21A2A8999FB390C4E9BE0566F1B6FEE1F34CB8CA44792CDCD8E988364D3262"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/EngineeringGovernanceTests.cs",
+      "exists": true,
+      "sha256": "E81F0C5BF681DA7F4CBFE42136833172E3615373B040C9EF2E1BBBB2B095F9BA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/FileAssociationRegistrationServiceTests.cs",
+      "exists": true,
+      "sha256": "592911267A47E1EA09195458D2AA601A86BCAFBE9CCE4424899CE7ED8C052FDF"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/HtmlReportActionServiceTests.cs",
+      "exists": true,
+      "sha256": "50014E1696699FF657801230D61CA326FDCCF9A76494612069F2E28DD27FC052"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs",
+      "exists": true,
+      "sha256": "0E014BFC93B04AFDC0AE50E740FC8FC1A41D6A49521646FB623AC8A4CD49280B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/HtmlReportGeneratorTests.cs",
+      "exists": true,
+      "sha256": "29FE0F979C68B2CCFB2A8C7AB21844B503394D6A2F3C2161C2D9600D24FBC69B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/InputFieldMappingTests.cs",
+      "exists": true,
+      "sha256": "62C460C11C7DD2914B87765CD19A94D2FFBFD7F6DDBB5A7F9C6133D2690EB3D4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/InputRecognitionHardeningTests.cs",
+      "exists": true,
+      "sha256": "67751B4F89BA7D8C3356A23AC95189D99DC98E7F99A222FF263F2D6F30FFB5D1"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/InputRecognitionTests.cs",
+      "exists": true,
+      "sha256": "33134379EC2C880B568568EEC158D23F9881C00C15AF9374669FAE0BE7D6B8BE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs",
+      "exists": true,
+      "sha256": "EEAE73D62FA57463B5A088AC87A641333E4D640C70B0E7859B5B1A4E4260E17D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/MermaidDiagramActionServiceTests.cs",
+      "exists": true,
+      "sha256": "C6CFAEEB99F23FE4C3957E7E0C2021E9DE4CF2338599634D94E2F50C75AF9F81"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/MermaidDiagramServiceTests.cs",
+      "exists": true,
+      "sha256": "0CB88A47D5FA4FA23F19935D843F9BD0120E5BB312BDCE6DA0395B178BA629F6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs",
+      "exists": true,
+      "sha256": "C444B6E0B96DCE7F99379E71110B8CE3B5872DD8CAE4BEE5DAFB341D2CB24A36"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/MissingIndexDeploymentScriptServiceTests.cs",
+      "exists": true,
+      "sha256": "EE7D9D978FD4CF20E1749822825AC3050942C19421A014953C45791392C10739"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Models/MissingIndexSuggestionTests.cs",
+      "exists": true,
+      "sha256": "74DCE8FF751A2CBF434C59A162755E3BB08548FF4E982CDD5A35FC12772B0A3E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanComparisonControllerTests.cs",
+      "exists": true,
+      "sha256": "FDF06A235F234DFCF9D32A6C0100914904AB01342CF652F59F7AAE28A35B29FE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanComparisonTreeServiceTests.cs",
+      "exists": true,
+      "sha256": "7DD1B7AABD7F08A78C67818F36BEF7338C531A193400FB01EAEA914F92B7F776"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanComparisonTreeViewRendererTests.cs",
+      "exists": true,
+      "sha256": "0CC37FBD8898700BAD15BDFC0E48CDDAB6B06C8B6E0659D80661F3E0B185494C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanDiagnosticAnalyzerTests.cs",
+      "exists": true,
+      "sha256": "565FE513C56A4C9BC9CC17684ADB2BD812775E79BD5A4A6EE77AFE94290510CE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanFieldBindingTests.cs",
+      "exists": true,
+      "sha256": "211BD375F01909F235CA3C09439B40C7688A905926DD43F16C4B9733DBB71644"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseLogServiceTests.cs",
+      "exists": true,
+      "sha256": "9852037C349C10B3B50236BF697FA5AA32FD2BA73A9A67080A3D382EFF62D709"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseStateServiceTests.cs",
+      "exists": true,
+      "sha256": "0FA00793DEDFC0AC17FB837CD0DA59A2817630173C169C9C3766FCF1819947FE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "007577F3B2366A37AD10BF73EA17CE29CEC0D5B02548499A1B6D6ABDC417066F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionBuilderServiceTests.cs",
+      "exists": true,
+      "sha256": "880AEB065FF5FCBACB873778DC7F40D041E85EE0F896184713A8766B55D81A0C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionDisplayServiceTests.cs",
+      "exists": true,
+      "sha256": "F6ECC85341AF28AEECDEE915BC23AF3D4930D30865F7490CC6873EFD8397B4BC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionGeometryServiceTests.cs",
+      "exists": true,
+      "sha256": "1986E5DBEEF87365FCDE13C1B69E811DB845BBFC1F10B38CF7020518FFD0A82F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionHighlightServiceTests.cs",
+      "exists": true,
+      "sha256": "C186ABA19264691BBA36B68CF7F927899C944D20564C13B14923028830F02E98"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "D955B50E0B88087D3A4A4A05765C5F6E0F19A891F06E35093D8340D1702914C4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphCostCalculationServiceTests.cs",
+      "exists": true,
+      "sha256": "830DB649C663B92354F7D9E31ADCEAA9901BF738B62C7848A756505FD15B420B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphCostUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "3141A9B8BF3705E4F9550ECFE129BFD7BF262930B5B075CAE25B824FA9C47E57"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphCostVisualServiceTests.cs",
+      "exists": true,
+      "sha256": "9BAF0E909AF44CD90652B181CAC16067424806DCE1FE216A4A4986FA30557AF4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutRefreshServiceTests.cs",
+      "exists": true,
+      "sha256": "C4B46A6E76E1587D1BBEC7117CB549EC1550850DEF77F0BF3410C3945C172504"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutServiceTests.cs",
+      "exists": true,
+      "sha256": "AD2E99C2C85A3116F795C9FC317715D388B15613E59AE016BBA436A92929D97B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "D1135B32CC7E2773AAFB1E831E24881F6E94E761FD865E0C96629D79AC4ABCA6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphLoadUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "68E9DB2D0580B0E9B090AF985CC89C7D75ED9B46E4078F199F87C95833142D2A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphMetricServiceTests.cs",
+      "exists": true,
+      "sha256": "97C16C88744F417F79563AB47EBA7D6387F5D006CF6383A2CED4D13B50D4580E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphMissingIndexAssociationServiceTests.cs",
+      "exists": true,
+      "sha256": "719EA51E4A03F53EB18E2A4B2228DE1B13FE1A14D9E2484945DB9701DE8FAA4F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphModeUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "AA00490F7B6C75427B259EECADEB0A2AD5DDC4EE7381C420867E325003AA5C23"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeBuilderServiceTests.cs",
+      "exists": true,
+      "sha256": "4E62C8D73C485708AB9D8E14583E382199DD6C1952BB1AFE9F42D4753DAE6F01"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeClipboardServiceTests.cs",
+      "exists": true,
+      "sha256": "A85EE15FD62CB78DDEBD35E32556D681FFA777E7B91349A4AEDF374FC761BD6A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeClipboardUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "ECE382A7D50E96FDF738BD135E928D3185A9D8D613C6FFABB80DB31A13B2F2D9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeDisplayServiceTests.cs",
+      "exists": true,
+      "sha256": "B4E8D5B5496EBA2DD6A45D21100E343E72A9D806601749239B0E887CBA23D12B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "9FCF63AD275C5EC2E2B2661147259F7B952E004F7E19B9E85C9FDF67694D0A6E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphOperatorTypeServiceTests.cs",
+      "exists": true,
+      "sha256": "9CF7D7CED8DF523F21C06401E6795DD2839C83200226E3DB4B068352252513E5"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphOperatorVisualServiceTests.cs",
+      "exists": true,
+      "sha256": "22B5480C3EE90EBE3FD5DD7BD95C227136D7C47303FE060A6CEEE41E03AEF825"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphPanInteractionServiceTests.cs",
+      "exists": true,
+      "sha256": "F821CBC622D7793B39D15F129FDB0EB6BA7F2BB8F4859C16D917D22A78D272D6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphPanUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "6F651D55A8FEE092EA848652811AF0BD72AD46B3D0FFECB2A30578C2E51FB482"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphRelOpDetailsServiceTests.cs",
+      "exists": true,
+      "sha256": "12EB3113ADE17B978F223CCE5294118ACFBF12CF54581FAA083FD6B2A5789109"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphRowSkewServiceTests.cs",
+      "exists": true,
+      "sha256": "FA7A6A58F5B6DFFDF696E538956D1B25EC7EAE1317D73D318E373089C8EF08C9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphRuntimeCountersServiceTests.cs",
+      "exists": true,
+      "sha256": "FF78025F99A8B99098B357B4FFCEB62FB5CECD5A9665DF6C03FB1CC0D93FA7DC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphSmartCollapseServiceTests.cs",
+      "exists": true,
+      "sha256": "8082C74B21AB2B883230C8E7063E3386EEEFA0F94E512CE4B756E2B4431C7AFA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphViewportUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "1B55E4A80A8DD4EA7193AA501736377B71C0B11A753C6AE34D25B3A66DED565D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphVisibilityServiceTests.cs",
+      "exists": true,
+      "sha256": "44D3DB98FA17DFA946ED99DE8E7933BC097072B5847141D7C9DCB9A37C8CC5BA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphVisibilityStateServiceTests.cs",
+      "exists": true,
+      "sha256": "0B0ADCE0D59B16F8FE8F7DDD31328F6FDED2EF43A7D96D62FCC9884490E1CACD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanGraphWarningServiceTests.cs",
+      "exists": true,
+      "sha256": "74970679E4453893F38F9BAE1C8C2916D25072D939F678A1C0E09162850165A7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanIconManagerTests.cs",
+      "exists": true,
+      "sha256": "58F0D8086E8BF82EB18E9C6EC847AA1BE341635560E5E93426935AB64E992DA2"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs",
+      "exists": true,
+      "sha256": "0803AFD9C591E74B9224669CFF046CE82066BC2CC4AC0597C0C6FEEE8761BC24"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanOperatorTreeViewRendererTests.cs",
+      "exists": true,
+      "sha256": "C61CB0BB5F51B574C3C18C7F7E7AB0BB5BCDFCDDD6D81B86439A413098031771"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanPropertyServiceTests.cs",
+      "exists": true,
+      "sha256": "0BC6F2DC3C9FE3531A846FE641E375F2F0329AE00EF1155DD13C2230CC107B37"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanSelectionActionServiceTests.cs",
+      "exists": true,
+      "sha256": "07179343FE5DB1A8E83A4438012399048D4F63E2D058FD3ED97456BD00FAEAC6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PlanTreeServiceTests.cs",
+      "exists": true,
+      "sha256": "9D05CBA9ADCE73DBE4FC836606C0F54832CFDC2E912D36FFCF88781252BBF782"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PortableReportActionServiceTests.cs",
+      "exists": true,
+      "sha256": "D9AF43C3AEE8AB03C12D965A7CB05D4811DD1B3DFB29C7B9CF6B37674569199F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs",
+      "exists": true,
+      "sha256": "25DA1736825CFD6D7A11B8A479802A928B169E13C90F71FCDB3284FFAC3DF12F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs",
+      "exists": true,
+      "sha256": "26B6D0A8E48E0E43E2D4363A5E9518CCB7ACBFA17D1C6E8A0FD11DB890F217C6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs",
+      "exists": true,
+      "sha256": "4D635F80B73CCC2380CB460887876869B963C6C8C2E30165BEE8C510B15183FA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs",
+      "exists": true,
+      "sha256": "B3A8690ED4FFD68BD827A9DED88EEE8767CAB8CA32D9CA4C08EA7A39F995C4D8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs",
+      "exists": true,
+      "sha256": "7BA1682F1A8EDE3CA02594AC585864F09C20CAEC61DBA9276979C2C75E059124"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/MissingIndexSuggesterTests.cs",
+      "exists": true,
+      "sha256": "124BFFA8FF924486B5B2474E45CC9AD3B2B1FF7AD14B8EC4B2ECE7C20B355D03"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/NonSargableDetectorTests.cs",
+      "exists": true,
+      "sha256": "26BABC8B97D381251249082FCD6324C4EDD4FC4A728DD76B2967C220521AE4E8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/ScalarSubqueryQuickFixTests.cs",
+      "exists": true,
+      "sha256": "CAC088035B9A002607BEC75A69A0AA48F6A5992CB5318EA79B22EC2D9D897D44"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactorEngineTests.cs",
+      "exists": true,
+      "sha256": "5F4DF5959C088D61C99868EFEA0A158A7EDB56954C469A18B9E8CDA1194FF3C0"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs",
+      "exists": true,
+      "sha256": "EDEDE05FCE09587C25F0E03BBAEB5C6826932E96EDCCB191E4C66EF884716F0E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs",
+      "exists": true,
+      "sha256": "36691F788B76BB2144631348EF8041A51EAA7EB1002FAC8DDC01536F88A1AD7E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+      "exists": true,
+      "sha256": "25E6E2E94AD8E5245A4F62DB38049B1F3AE8DD249A610697D7F25C1422AAA740"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+      "exists": true,
+      "sha256": "2F040FAB3FB13E27C00F8CFF925A2A5D41EC6ACBD0AE85A90812197669D12131"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/RuleConfigurationLoaderTests.cs",
+      "exists": true,
+      "sha256": "296C6A11101456ECFE68AF5D7052AB003A6AD5D16D48315D1A19105EBD5E3154"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/RuleEngineTests.cs",
+      "exists": true,
+      "sha256": "A7C53B2714EB6AF9B6B61BC3E38FDBB5481634F1786F62C4CF3B5A9F716D474B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/RuleMetadataAndScopeTests.cs",
+      "exists": true,
+      "sha256": "3CFBB965CEC4347233D0A3C02D18ECC28C1B992991B967C2F4AA5A538237A5D6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Rules/LargeMemoryGrantRuleTests.cs",
+      "exists": true,
+      "sha256": "6E03F8D2E3D1110AE1B97BD07266BD05BBFB6DFE4D4B0F6A9AE5FDE5AFBE71FC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Rules/ParameterSensitivityRuleTests.cs",
+      "exists": true,
+      "sha256": "6F615D97929FED7989E6400D585DA804E15EEB3594AD2E1741B0E71CE6E05F44"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Rules/RowEstimateMismatchRuleTests.cs",
+      "exists": true,
+      "sha256": "349B4F0700867C9B8C626C937507978C3E988FD304813BA3B7CCA898F5DC7E8E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Rules/SargableIndexRecommendationRuleTests.cs",
+      "exists": true,
+      "sha256": "406EA9A631EFCB1E5543C156E78350CFC429C0D1E535B7EB637E6E60C1C361CD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs",
+      "exists": true,
+      "sha256": "05F850C522F10D0FD8AD98C69B276DBAE588CEDE9ED8BADB54D86D7D2298CC90"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactSimulatorTests.cs",
+      "exists": true,
+      "sha256": "ADF8C3CD30CF84DB4BEA8EAC943D85ABCD75C3E1A51E44718AB740FB90BBEBE1"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/SqlDiffDocumentRendererTests.cs",
+      "exists": true,
+      "sha256": "6590CBE5E1BB0D5EDC2BD3E564874F4670A542B3604C678DCBAA0A9D3EFAB8A9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/SqlDiffServiceTests.cs",
+      "exists": true,
+      "sha256": "1FD2211FC2F40F72DB655977F4B5F71B799B8CDBCFFAF6E99FE5166B284A45CC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/SqlQuickFixServiceTests.cs",
+      "exists": true,
+      "sha256": "73351D9331413233C8EDE3F74C5121955BA5A16EE8B3ADE9A6C609D1C8E303EB"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+      "exists": true,
+      "sha256": "495409E798C2580BDD8993877D5783D8536E04313638B91786DF7722ED7C724B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/StatisticsHistogramParserTests.cs",
+      "exists": true,
+      "sha256": "1AEDC0B39839445C2839ED4DA64025AD16C079D3DB0EA6D2D6398328D9F4BBC7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/StatisticsUsageParserTests.cs",
+      "exists": true,
+      "sha256": "0CC139EE333487F48BF7D4B3B0727C0E31AAB06C7B6EA19E7F82E95DD9F3ABAE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TemporaryFileManagerTests.cs",
+      "exists": true,
+      "sha256": "FAB254C5FC3BBC638C29F210745E031DB899D81119BBC2223BB0B0A27CB6DFBD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/deadlock_bookmark_lookup.xdl",
+      "exists": true,
+      "sha256": "163E0AE3497239125857A6E74202D64C0D21DD65F674DAE7AD2BD8EEA351745E"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/deadlock_multiple_events.xdl",
+      "exists": true,
+      "sha256": "54682A9AB8A40B2C379B9F8ABB9E938B60C84E3ED08DBA553068687402C1554A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan",
+      "exists": true,
+      "sha256": "B8A7B77BEBA0762AEA7E916D2EB302BC3E7E709E588AC18859ACC146E439934F"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+      "exists": true,
+      "sha256": "314B6DB4C78A85C18924651998276660D6312DAA73652DED5F1A94ED62D8F660"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+      "exists": true,
+      "sha256": "A8833BEB79D709A83136B46D285BEDE354F3D5400787BA1853725F8345CB6E9C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+      "exists": true,
+      "sha256": "6C26E57836F7FC6A57632A358F808EDDFCCDFCE358CDA51292E67D74A88BE465"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/plan_no_relop.sqlplan",
+      "exists": true,
+      "sha256": "3BE3532D3A6009A02C6231C0C8673C95596FA5B9BE4E6507296F2E23179FF4D1"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/plan_prefixed_no_relop.sqlplan",
+      "exists": true,
+      "sha256": "5B031657765E063C6E7FA80AE7DCFD2B84BEA320400357FD491CD9AC89CD2502"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/Schemas/README.md",
+      "exists": true,
+      "sha256": "B3396683ED82095C20A3C052806C0E462FC25768A4860365E8038D3D9D9D7E18"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/Schemas/showplanxml-sql2019.xsd",
+      "exists": true,
+      "sha256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs",
+      "exists": true,
+      "sha256": "71D49CB1EE14C8A53BF28D486C00A2D7A6FD0A012FA1504A1AFB69B4C6C83821"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TuningSessionServiceTests.cs",
+      "exists": true,
+      "sha256": "7CBFB513D2508CEB18D5536016B151CE1B7C86C14DF3345A1D33B3ADE2228E6B"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TuningSessionUiActionServiceTests.cs",
+      "exists": true,
+      "sha256": "7DFA80B74BBEF831ACA336FBD0B37FE9C662425F57D4F7094378762FA03B4052"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/UnitTest1.cs",
+      "exists": true,
+      "sha256": "A8D6C2039666EAA54B6AE33D1614E990AC04DD6E79415B536BA05B8BCD8FD1B6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Utilities/EmbeddedResourceHelper.cs",
+      "exists": true,
+      "sha256": "BEA271F88C39990DA2AA82BB02C8FD4EC2EB75706883551975060448D9594CAC"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/ViewModels/IndexSandboxViewModelTests.cs",
+      "exists": true,
+      "sha256": "85B90B4D03FE9FB01B3D780EF7A3D6D0A95C363C04ABE6CD5FDE290AC653760D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/ViewModels/TuningHistorySessionTests.cs",
+      "exists": true,
+      "sha256": "FD7DD8AEE6AF58861D56EE09F78F323381ED2170D5365E98C6D9CFE10F3E31C4"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/WorkspacePanelLayoutServiceTests.cs",
+      "exists": true,
+      "sha256": "F7875A371A241C822E0C9CDF749C1B57514EA99D4C5978FECD1F65CB7F7E03CA"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Analysis/SqlPlanAnalysisIssue.cs",
+      "exists": true,
+      "sha256": "9097D54DB53782C22F90CEF41DB32A7078641D9D308992B96A35B3E5F835CFBC"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalysisEngine.cs",
+      "exists": true,
+      "sha256": "7C52EE569F51F587CD40A0264025C8452EAE58896566B1C0F3CF685F45588F24"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalyzer.Analysis.csproj",
+      "exists": true,
+      "sha256": "F6F99C72C27E3325C93610E39F64DBF4963EE74455815204F29A58BF4DB2BABE"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "exists": true,
+      "sha256": "1954D261EC3EB5B9CA6A76BDB4D6525FE50DC47ECE4852D73724B884E6CCD2D1"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs",
+      "exists": true,
+      "sha256": "55EFFBC9E0231C903CECF4D7CF1CA691F24E405DEF8BED660BABBC5B62F6296D"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+      "exists": true,
+      "sha256": "648BF21F78D3A28B97E937B3386CEC4D12420E304368D44AC9FCF7725AE0F90F"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs",
+      "exists": true,
+      "sha256": "A533CD51CB98553A4F7D8B99CD6E4B0359D4EB4BA142984E00324DEEEF9490C2"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs",
+      "exists": true,
+      "sha256": "FA5332DDA2FEEE6C7D36658473A9C277698CC09D49C0E8666AD5EFF7B6096FF6"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs",
+      "exists": true,
+      "sha256": "6092DAA9683C2297ED1A0C67E5E21FBC156435095B144990EC824031C1A742C3"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+      "exists": true,
+      "sha256": "7E8A614E08C45B04050C314ED9E32E149E3222901051E6972FF2E2D3C877375F"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/IFileHandler.cs",
+      "exists": true,
+      "sha256": "C840AC7A05379A731D043E6D75D49AE41487AC3B33C08DB8A5E75AC728F5B742"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/IResultReporter.cs",
+      "exists": true,
+      "sha256": "5EAA037FC4D1FFBBEA0AFA23D5A94CB049006BA75F63821624B2205149276FF8"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs",
+      "exists": true,
+      "sha256": "D326A090CE1C7B5C5695E260C5B58C59C276586ECEB60D7B7586E71C7A60E7DF"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs",
+      "exists": true,
+      "sha256": "46A4B423F9B9F76CA92C5A894F4D0F283C74BFEC3DE20022D38E2BED1530BA32"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/PhysicalFileHandler.cs",
+      "exists": true,
+      "sha256": "9D85EF256BDA6790C6080A0881DAC71E8FE2135DE638AE4F32D8A9AE42CF7F90"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs",
+      "exists": true,
+      "sha256": "F6DCFD0F657F87C1CF53662E3E5A5153CC0D5253F3565527CAFD2223E31F011F"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs",
+      "exists": true,
+      "sha256": "F718BA0B141CF9012C155D63522BE35D774AD598EFE6F12631FC8E007F855AD6"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs",
+      "exists": true,
+      "sha256": "ACC708C8E091231CB92E13A203A885898C6BCE292D333FD4126B997D880A122B"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs",
+      "exists": true,
+      "sha256": "D6757DE1C9A9227E1298EEBFE94F78BBAD61E55339E27AE2B2F77AE665D9140A"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+      "exists": true,
+      "sha256": "744D586B0249350F56EF974B5C8899D5CB70348BC0A42808627561C87A2C65A2"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/SqlXmlAnalyzer.Application.csproj",
+      "exists": true,
+      "sha256": "8B8265284B817F88D4E70C6373065CAE6345FAD4EBB89AB40AD9DF783B26EAD1"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/DefaultRuleFilter.cs",
+      "exists": true,
+      "sha256": "ADE8421B3DF4C1FD0453ECDEB692849F3FF312FBEDF0B782AF3DF956891F930B"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ConstantFoldingRefactorRule.cs",
+      "exists": true,
+      "sha256": "38EAE3A8F26EF4F08ECA0A9F062630FA0E256D210C6AB556D8CB14ED7160986C"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ExistsToJoinRule.cs",
+      "exists": true,
+      "sha256": "86EDE9A74CDF490E09F9ED278FE662CE1D6CB454497B80B9B0C82DE4231F55C5"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ImplicitConversionRefactorRule.cs",
+      "exists": true,
+      "sha256": "A148353298FB4E1FA75E3927AFC09F056E3E0D05041B6FEEF3BECFC3E1AE1985"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/IsNullComparisonRefactorRule.cs",
+      "exists": true,
+      "sha256": "8AA9545035C7A3D62038330563A9778B3C66CBFA20397C028932FEC93457BCC4"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/LeftOrSubstringRefactorRule.cs",
+      "exists": true,
+      "sha256": "42BC5A7022A44921A11C25626292A38434EAAE57E20C6EDC8E5220794AEAA83A"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ScalarSubqueryToJoinRule.cs",
+      "exists": true,
+      "sha256": "DFDCD281A1A80933206E9189E8EE75349C88AE3892D97F7E80464FD48FA91265"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/SubqueryToJoinRule.cs",
+      "exists": true,
+      "sha256": "7E2240E28787DD0EFBF0F98E01A5BC91A13D2C343A4591BCE89B9EC1D2934964"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs",
+      "exists": true,
+      "sha256": "A3763249EF66589EA885447C406BC853298C28B290AAEDC2A3FFAAC95E8F01F0"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableVisitor.cs",
+      "exists": true,
+      "sha256": "724EE263A4E8AB2372223F0D0752F3AB2E7C087098792C5623D263050AB0DCB2"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs",
+      "exists": true,
+      "sha256": "A117E0A74DA2E9925AC000992FE81E3265CF85E4D2CF199BA5F99704A6D08D4C"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/SqlNodeCloner.cs",
+      "exists": true,
+      "sha256": "3449BB5C248E6DB3D8821ED383FA33A8B4E396B86E5C458B0C85D781E356FDD4"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs",
+      "exists": true,
+      "sha256": "4C66D33A6AB1E377F6755D8796584A2DEEDA5CA85F302BB9107AAF858EE2B7E5"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/SqlXmlAnalyzer.Refactoring.csproj",
+      "exists": true,
+      "sha256": "C8A3125D99112F18E71E3A36651047AD1E7F184AFF2278B161749886C6B5C19C"
+    },
+    {
+      "path": "ssms_icons/0_START_HERE.md",
+      "exists": true,
+      "sha256": "A00C403EF158F90586BB11D1F8479AC5CB81D33FA4A29C58F79F5E3D68966E6F"
+    },
+    {
+      "path": "ssms_icons/节点属性参考.jpg",
+      "exists": true,
+      "sha256": "7543A79B21C5E101A8AE5AC46140057BA0ACB3E3DE58B00E3B614D24389A0061"
+    },
+    {
+      "path": "ssms_icons/节点属性显示信息.jpg",
+      "exists": true,
+      "sha256": "50ABA76D4F230E41E58F161AE59B810E997912A17E3F5F74E18AB3DB197C1CB6"
+    },
+    {
+      "path": "ssms_icons/节点提示信息文字有重叠.jpg",
+      "exists": true,
+      "sha256": "C0398BBBC688EFF25D5CA2E51F14F64B276100FFF7ADC0689CE5E4C413FF856B"
+    },
+    {
+      "path": "ssms_icons/死锁展示图.jpg",
+      "exists": true,
+      "sha256": "25039255FEB59F7307F748E6171AD00C6C36B2A2BE473D4D16AECB09C10DABC0"
+    },
+    {
+      "path": "ssms_icons/CODE_REVIEW_REPORT.md",
+      "exists": true,
+      "sha256": "DAC096D6AA8EE6CF3F49D40B2AB0A29BEE8E760DCDF45F42C3199229B81E8AFB"
+    },
+    {
+      "path": "ssms_icons/CODING_STANDARDS.md",
+      "exists": true,
+      "sha256": "64698C1261178FF0BFDD6DFF2EF6175F300971EBFE425DE162BE7CDFFD230DAE"
+    },
+    {
+      "path": "ssms_icons/GEMINI.md",
+      "exists": true,
+      "sha256": "9F649D166593754B516B0FEA3D9145CF06B4BFEAE7DBDBBDF6E52D185AA2245B"
+    },
+    {
+      "path": "ssms_icons/icon-adaptive-join.png",
+      "exists": true,
+      "sha256": "6A518D0BB4F660E645BABC501A539EC960DB67AE315D42E563413B6510BDFDBF"
+    },
+    {
+      "path": "ssms_icons/icon-aggregate.png",
+      "exists": true,
+      "sha256": "94BD7CB1DF2212396D0E137ADDD015FA4A3FF4B8676158D4B682733918297781"
+    },
+    {
+      "path": "ssms_icons/icon-arithmetic-expression.png",
+      "exists": true,
+      "sha256": "A3058736F93400AA53BA2439F7935325B6A8EE160395B0F1B68F1E89CCBD6509"
+    },
+    {
+      "path": "ssms_icons/icon-assert.png",
+      "exists": true,
+      "sha256": "346BBEEB8B5F1D79517E3533C760F30A459068610FAF254E9CD52D7137821004"
+    },
+    {
+      "path": "ssms_icons/icon-assign.png",
+      "exists": true,
+      "sha256": "9A8CFBDE97FB82311DBE467701773F400938807FC3764A49BD673B5C71ABB8F1"
+    },
+    {
+      "path": "ssms_icons/icon-batch-hash-table-build.png",
+      "exists": true,
+      "sha256": "89962912D05A1A33D8F7B988AC7B7D3C8CCA828318BE08AF3F1C9F0013FF2DA7"
+    },
+    {
+      "path": "ssms_icons/icon-bitmap.png",
+      "exists": true,
+      "sha256": "220AAC68F90F535D580E18907EFD3E07706365BDE2447B4B5F7673FAA173BE44"
+    },
+    {
+      "path": "ssms_icons/icon-broadcast.png",
+      "exists": true,
+      "sha256": "5BEF492911D1D8158C8C21BB7E993B13FFAD08D58E76ED6166182BD1BCA73ECE"
+    },
+    {
+      "path": "ssms_icons/icon-clustered-index-delete.png",
+      "exists": true,
+      "sha256": "934DAAAEDD024F67E30D7989C7CD5D3DD505B00BE347D4314E42864196177F92"
+    },
+    {
+      "path": "ssms_icons/icon-clustered-index-insert.png",
+      "exists": true,
+      "sha256": "9486FB22833F11C62092DD8E9FA34F80A5166D53DD08EE50BB97185FDB8479E5"
+    },
+    {
+      "path": "ssms_icons/icon-clustered-index-merge.png",
+      "exists": true,
+      "sha256": "DCA8641ECF91A36EC78704F54A79B4F815A53B4485304A2CC91F430C16FF58BD"
+    },
+    {
+      "path": "ssms_icons/icon-clustered-index-scan.png",
+      "exists": true,
+      "sha256": "44A8B524470B5ABF7105F8DB57094FFAC61043ADDA79C5BBF3B6B2E824EDE4C6"
+    },
+    {
+      "path": "ssms_icons/icon-clustered-index-seek.png",
+      "exists": true,
+      "sha256": "54EEF0F4A189B83FF4B59F2A8966F87B25E15C481B6C9818AD11F89194D4AA3C"
+    },
+    {
+      "path": "ssms_icons/icon-clustered-index-update.png",
+      "exists": true,
+      "sha256": "BB785ECFBB601E652C35837EAB1F4FA256094AFFE6F6B7BE8026E22FE27A92E0"
+    },
+    {
+      "path": "ssms_icons/icon-collapse.png",
+      "exists": true,
+      "sha256": "09EE8BAC69A5716094AE443049D0B0EBAC61F9C67EC0981320DB2BC3F93CD233"
+    },
+    {
+      "path": "ssms_icons/icon-columnstore-index-delete.png",
+      "exists": true,
+      "sha256": "4B5719D9C06262ED1AD872D61ACCC88E42424AAEFB9AB021597E68E8F01FEF2A"
+    },
+    {
+      "path": "ssms_icons/icon-columnstore-index-insert.png",
+      "exists": true,
+      "sha256": "AB044FB97F61482C53EA7678AB1BC937C28983CA19676474EFE57D1179E955B7"
+    },
+    {
+      "path": "ssms_icons/icon-columnstore-index-merge.png",
+      "exists": true,
+      "sha256": "293EC32092CD2A42783F57E19381357E42ED44C4DD83091BA3490F8FBEC0A4D9"
+    },
+    {
+      "path": "ssms_icons/icon-columnstore-index-scan.png",
+      "exists": true,
+      "sha256": "DFD4D5D459A5E3BA13894C3C35DD6FA218F0F5A5F02D7EE954B2300DFF0BE1A1"
+    },
+    {
+      "path": "ssms_icons/icon-columnstore-index-update.png",
+      "exists": true,
+      "sha256": "1081E37BD4D2EDB3571A114940155F5859D9AE0BD299716103FCC7B26671465D"
+    },
+    {
+      "path": "ssms_icons/icon-compute-scalar.png",
+      "exists": true,
+      "sha256": "59BCAB72C4969F4A392ABC82BC3797C16A5B6B19D00B55A096EA4CA6D8EEBCBE"
+    },
+    {
+      "path": "ssms_icons/icon-concatenation.png",
+      "exists": true,
+      "sha256": "470FDF0C91CB8749B040A8D65C5E503A88849B40AB7B38F8D21FCDAD1C20F749"
+    },
+    {
+      "path": "ssms_icons/icon-conditional.png",
+      "exists": true,
+      "sha256": "1471C0DDF2CEDA17D11CF437589BA4959742A00814148449B2A19E714EFFDB6A"
+    },
+    {
+      "path": "ssms_icons/icon-constant-scan.png",
+      "exists": true,
+      "sha256": "2535186EF8D0FD9BD40E35CDEC8FA76A93F80E47EBBDF9268720E7A2740AC816"
+    },
+    {
+      "path": "ssms_icons/icon-convert.png",
+      "exists": true,
+      "sha256": "CA03592903CB1DB28A9C56096A8A6A7694C2AB96FBA812CF636451BFAFDC4C42"
+    },
+    {
+      "path": "ssms_icons/icon-cursor-catch-all.png",
+      "exists": true,
+      "sha256": "4512A641824EB9F7148B9851C92D437AA539EA2BF237AFCF9BC54E56646A722E"
+    },
+    {
+      "path": "ssms_icons/icon-declare.png",
+      "exists": true,
+      "sha256": "30A9B5800A0E3CE6F7C6866C14D2F41E296BB37F1587FAC287B01B8F8AC95004"
+    },
+    {
+      "path": "ssms_icons/icon-delete.png",
+      "exists": true,
+      "sha256": "65F37E4CDE7CCB375BCF171A013AC69E90351546E41ED817D59C87E2D3CCDBCB"
+    },
+    {
+      "path": "ssms_icons/icon-deleted-scan.png",
+      "exists": true,
+      "sha256": "24EB9BB6D22EAF4F994BE0A51C95845172A3D9DF58A81B63994B6635EF7D5FFB"
+    },
+    {
+      "path": "ssms_icons/icon-dynamic.png",
+      "exists": true,
+      "sha256": "874E073A9DDED52DECAA2C64428D7129460445A1821895880019A40E751B8327"
+    },
+    {
+      "path": "ssms_icons/icon-fetch-query.png",
+      "exists": true,
+      "sha256": "5F3711953CD71C0BB6E9C7FE58305461094E69F562E8C19A34DCF6A879FB7CE1"
+    },
+    {
+      "path": "ssms_icons/icon-filter.png",
+      "exists": true,
+      "sha256": "75549A55BC2F0FA87CAA3B85669CE0F90CF888B34C8755278A263B57FBA9A37B"
+    },
+    {
+      "path": "ssms_icons/icon-hash-match.png",
+      "exists": true,
+      "sha256": "26919DC352E16ECDF8D81815A3C3981BB552458975537649E11ABD39115FA9E1"
+    },
+    {
+      "path": "ssms_icons/icon-insert.png",
+      "exists": true,
+      "sha256": "509CA1D9C35F2D10BAFFFA262AC4BC67EE8CCC491C37DC2CD9281A65D1DF8204"
+    },
+    {
+      "path": "ssms_icons/icon-inserted-scan.png",
+      "exists": true,
+      "sha256": "E3E11F428FC29ABB7C9A17BCCA454CDCF4AE9D3E41DFA6F81C1ADCCADF21196B"
+    },
+    {
+      "path": "ssms_icons/icon-intrinsic.png",
+      "exists": true,
+      "sha256": "7A0B0A1F1B8D53870C7D9C4639EB62FE373BBDBE2E18BD018431C37C227704CB"
+    },
+    {
+      "path": "ssms_icons/icon-iterator-catch-all.png",
+      "exists": true,
+      "sha256": "41B418327B8661B96C4D837C10A1162302AB1807D6C59CDDB3E231B2C0BD6AA1"
+    },
+    {
+      "path": "ssms_icons/icon-join.png",
+      "exists": true,
+      "sha256": "FE3152EAC46596BB07B87247F1F328E9B2937AE5991993C430561CD3E9DC31E9"
+    },
+    {
+      "path": "ssms_icons/icon-key-lookup.png",
+      "exists": true,
+      "sha256": "7A3B1611A5F479D16F1B03207A56E83629A487909BA45BE8916ACA9B35A07C05"
+    },
+    {
+      "path": "ssms_icons/icon-keyset.png",
+      "exists": true,
+      "sha256": "0B4025C0AFA9284C161D2CC404C8C577AC7F387DF7A3FD735A814C0DE77B86E8"
+    },
+    {
+      "path": "ssms_icons/icon-language-construct-catch-all.png",
+      "exists": true,
+      "sha256": "4A65976BD94B1680A15C16DE041960DF3F55CD3117738FA298ABDE1ECF0AF061"
+    },
+    {
+      "path": "ssms_icons/icon-log-row-scan.png",
+      "exists": true,
+      "sha256": "6A142267E8C7269AA544976618934A0E9D1588A70A840DA27A2DB069C3AE59EF"
+    },
+    {
+      "path": "ssms_icons/icon-merge-interval.png",
+      "exists": true,
+      "sha256": "5428047C2B0A8072E427F0BEB6F3730E98E8E594A41C8B1CE39EBA470E49F422"
+    },
+    {
+      "path": "ssms_icons/icon-merge-join.png",
+      "exists": true,
+      "sha256": "7B0C8640C77C03DABC71C4D348F24D0414A7F86B33E8A50E5E367C9931D44C24"
+    },
+    {
+      "path": "ssms_icons/icon-nested-loops.png",
+      "exists": true,
+      "sha256": "D2714513050B0AEA10ED24A54F3554CC28A10791C2C43A9BACCFBAF32F487DD1"
+    },
+    {
+      "path": "ssms_icons/icon-nonclustered-index-delete.png",
+      "exists": true,
+      "sha256": "55B5DC2196A748921E8F6D71CEB568546BE506AB5B0CD9BA5FD12ACDE64F2C2D"
+    },
+    {
+      "path": "ssms_icons/icon-nonclustered-index-insert.png",
+      "exists": true,
+      "sha256": "BE1F5DA16B0D4E378AA75071919410BD76BD52770E345EEA47CB8C5353CD2D05"
+    },
+    {
+      "path": "ssms_icons/icon-nonclustered-index-scan.png",
+      "exists": true,
+      "sha256": "639F4C5636EFAA7626D726B87A0FA009CECD42FA85ECCCE529C43B5C30B1870A"
+    },
+    {
+      "path": "ssms_icons/icon-nonclustered-index-seek.png",
+      "exists": true,
+      "sha256": "D003FEC075F693AC4EC8997C2443AA1001B5F7D006406F8DF30B9A3A0D5A31AC"
+    },
+    {
+      "path": "ssms_icons/icon-nonclustered-index-spool.png",
+      "exists": true,
+      "sha256": "3111794DE1956022E6CC9AB209310B6737CAA0D0A7846E14FCCE6FA5A292A3C4"
+    },
+    {
+      "path": "ssms_icons/icon-nonclustered-index-update.png",
+      "exists": true,
+      "sha256": "E6985B2EA7B224BF2BE756C425B6139323D9C8B863C0D0F2BBB03721B4115ADC"
+    },
+    {
+      "path": "ssms_icons/icon-parallelism-distribute-streams.png",
+      "exists": true,
+      "sha256": "13B173F7A3B13A68D546CAC4B42CA9BFDA07DF51E1DB127E853E48443ADFD5CF"
+    },
+    {
+      "path": "ssms_icons/icon-parallelism-repartition-streams.png",
+      "exists": true,
+      "sha256": "C091A7482F039266E241756B4A60AE398C283D726C8394409ACF7A26A39C6E5E"
+    },
+    {
+      "path": "ssms_icons/icon-parallelism.png",
+      "exists": true,
+      "sha256": "B121B2BF3A402E7C5E33DF4F8AF41F06CA21149B2787B371C29F7B24ABF31F2E"
+    },
+    {
+      "path": "ssms_icons/icon-parameter-table-scan.png",
+      "exists": true,
+      "sha256": "B6D2E99353A84C8B80BC7BFAECE17DA20B2FF1DD15ADB1BF3D2D8C749BC57423"
+    },
+    {
+      "path": "ssms_icons/icon-population-query.png",
+      "exists": true,
+      "sha256": "5E22018FDECE58DF20344DB4816C2EC97C95BF1F79126ED71379904F08F443C5"
+    },
+    {
+      "path": "ssms_icons/icon-put.png",
+      "exists": true,
+      "sha256": "A82415E97F860DB2513A0A04B2C5B8F4D246BECD0CBBDC4A14AF330A85BD79BF"
+    },
+    {
+      "path": "ssms_icons/icon-referential-integrity.png",
+      "exists": true,
+      "sha256": "74329059DDC380C81CE8D10F58E88A27F2BFB1941FE5BF3C8F7850EE7BC8D047"
+    },
+    {
+      "path": "ssms_icons/icon-refresh-query.png",
+      "exists": true,
+      "sha256": "9F10D5D00D82969D23A77A868944A28CD89277DF19427035E43A536EE7C16C6D"
+    },
+    {
+      "path": "ssms_icons/icon-remote-count-spool.png",
+      "exists": true,
+      "sha256": "E118B06A022C681B1C6CFD95B9903D02B5075F52C63FD34EF9F363B7A771C4C1"
+    },
+    {
+      "path": "ssms_icons/icon-remote-delete.png",
+      "exists": true,
+      "sha256": "D881099508896D27028510B4CFEE98150D9F8DB487373D07EA428E85FF877D89"
+    },
+    {
+      "path": "ssms_icons/icon-remote-index-scan.png",
+      "exists": true,
+      "sha256": "4492451BC4CA9B19AF1EB55CCA534FE9BDDED0C3C0937131B706821BEDA9CC35"
+    },
+    {
+      "path": "ssms_icons/icon-remote-index-seek.png",
+      "exists": true,
+      "sha256": "66CA685A9721DA39113D44304005FDE49FECAC5A039D2B0B6DC0DB1E6BF458D6"
+    },
+    {
+      "path": "ssms_icons/icon-remote-insert.png",
+      "exists": true,
+      "sha256": "901E8379954D6EAE9CE42B1827A9965DE29D9482A527C14F3A5136AF4B57B5E8"
+    },
+    {
+      "path": "ssms_icons/icon-remote-query.png",
+      "exists": true,
+      "sha256": "EB2247CD2D67472D227A03F995003D96BF3CF6A94F60BCC552B1C3BE0918CD5D"
+    },
+    {
+      "path": "ssms_icons/icon-remote-scan.png",
+      "exists": true,
+      "sha256": "5167EF20DB89844B0ECB6E85E577AAF98B056D26E7006ED07628B98CCCC45510"
+    },
+    {
+      "path": "ssms_icons/icon-remote-update.png",
+      "exists": true,
+      "sha256": "AC312E3A034C1A1C86535462242CB480E28557FBA2CF0E4199ECA50C04E01CBB"
+    },
+    {
+      "path": "ssms_icons/icon-result.png",
+      "exists": true,
+      "sha256": "9A5BC7AFE3DD7437FC475468371B5CCCBD6DD3D8F634FFCEBC82F04ACEBFC7EA"
+    },
+    {
+      "path": "ssms_icons/icon-row-id-nonclustered-locate.png",
+      "exists": true,
+      "sha256": "1998B9DE407323821875F548A4E17172D55CCF4DACC41008F08994F13C63754C"
+    },
+    {
+      "path": "ssms_icons/icon-segment.png",
+      "exists": true,
+      "sha256": "059E6369B1EDC2B9DF2541DF15AD5BCE03E667F6E1449C9D23E499B4448E3A62"
+    },
+    {
+      "path": "ssms_icons/icon-sequence-project.png",
+      "exists": true,
+      "sha256": "26B2EDA2CE006F927A63F47830D6087240446F10F1FBB7749E6A948EB6C81994"
+    },
+    {
+      "path": "ssms_icons/icon-sequence.png",
+      "exists": true,
+      "sha256": "B155B480DE3FD8E5A507A2D492C3FEEBDD0213F6052215523D3BF1EE4AE6D499"
+    },
+    {
+      "path": "ssms_icons/icon-snapshot.png",
+      "exists": true,
+      "sha256": "788DBC0699BA88C9BB93E0E0A733E944AB91661F09D6186F8D2B41CC4EBA4A84"
+    },
+    {
+      "path": "ssms_icons/icon-sort.png",
+      "exists": true,
+      "sha256": "2A5AE5FD5D6100B88488685FB839C9ACD3CF10111E084AA6ABD47D230EE29421"
+    },
+    {
+      "path": "ssms_icons/icon-split.png",
+      "exists": true,
+      "sha256": "BA82921DC820901190531A3A9C31448FC4E43CB9683579888357232CEFAA3CE8"
+    },
+    {
+      "path": "ssms_icons/icon-spool.png",
+      "exists": true,
+      "sha256": "97ABEDE7DE8A7A687D031F91C78E1D770173C376B945B993D975359FBE870AAC"
+    },
+    {
+      "path": "ssms_icons/icon-stream-aggregate.png",
+      "exists": true,
+      "sha256": "BBF7095CDF119D3A2F12856EF30392FF3DB232879CC2C44B2DB79581C916E936"
+    },
+    {
+      "path": "ssms_icons/icon-switch.png",
+      "exists": true,
+      "sha256": "790D64B043AB0AF8E5E43E286F2C3720CAC947408EEA3125352D4F0A19D2C8E7"
+    },
+    {
+      "path": "ssms_icons/icon-table-delete.png",
+      "exists": true,
+      "sha256": "778CA139824CD36E254EA3AE2E6F8B13223FB9A314226E5F877B9C4005789E0A"
+    },
+    {
+      "path": "ssms_icons/icon-table-insert.png",
+      "exists": true,
+      "sha256": "CE2AA651994EBD4ED5198BBD62A3776435571B2190CE3972F6FD4CBE16740247"
+    },
+    {
+      "path": "ssms_icons/icon-table-merge.png",
+      "exists": true,
+      "sha256": "26EC502DAA3E9A9C2FA04FDC50AA2BF9B332D77B747DEF3C04A02FA103A99F4B"
+    },
+    {
+      "path": "ssms_icons/icon-table-scan.png",
+      "exists": true,
+      "sha256": "AB73043D0F7BA387DBFC436D331E6265F18BE19F1E2F596C4F319296EEA28A10"
+    },
+    {
+      "path": "ssms_icons/icon-table-spool.png",
+      "exists": true,
+      "sha256": "B9F0732143087D55F4F2F3285042FCF3DE9C7C5929C99AC3E4333318BB469778"
+    },
+    {
+      "path": "ssms_icons/icon-table-update.png",
+      "exists": true,
+      "sha256": "5DF4E97E41200E2C994A15108C4BD0F4D47F564E93E27AD93046843F42C73DA1"
+    },
+    {
+      "path": "ssms_icons/icon-table-valued-function.png",
+      "exists": true,
+      "sha256": "5E9BD63A598CF05BA43C4C209DCAE46CD10D40757FDA24A674CC6A7496B96D3C"
+    },
+    {
+      "path": "ssms_icons/icon-top.png",
+      "exists": true,
+      "sha256": "3806439F9F50CFF5ABE77515CCA1F2DE3D3554ED43C2179FFCE0636263246B2F"
+    },
+    {
+      "path": "ssms_icons/icon-udx-extended-operator.png",
+      "exists": true,
+      "sha256": "DB8ED495DD14CC5F7997F04BEFD12FC83657AA59B952DC5FC19174F7C4B6B890"
+    },
+    {
+      "path": "ssms_icons/icon-union.png",
+      "exists": true,
+      "sha256": "0E40FCA6C5B0A07C806C31360DCA0149329FB837B236A3D9EC3F42A7A49E9EF4"
+    },
+    {
+      "path": "ssms_icons/icon-update.png",
+      "exists": true,
+      "sha256": "797A88911B52D131FCC71D5AF6F7580AC78ECA8AEC72F304027E94D05F820379"
+    },
+    {
+      "path": "ssms_icons/IMPROVEMENT_GUIDE.md",
+      "exists": true,
+      "sha256": "A787B4FA47B1753D3AA9C9C80B2C06E1B348563BE3873079FBE1EAE4E3526CC4"
+    },
+    {
+      "path": "ssms_icons/QQ20260601-144520.jpg",
+      "exists": true,
+      "sha256": "3FE7E178C6B49A320C347400DB9E655B872825D478757C55CC715DE6483FC420"
+    },
+    {
+      "path": "ssms_icons/QUICK_REFERENCE.md",
+      "exists": true,
+      "sha256": "10F33604BC842CACECC28C02AEE8C893FE9A9232D3D8DB355F4BC6704D5AB22C"
+    },
+    {
+      "path": "ssms_icons/README_REVIEW.md",
+      "exists": true,
+      "sha256": "5D81F5DC9470682C3C21CDE25FE70F9EE2853F836A84161CAF870000758E1831"
+    },
+    {
+      "path": "ssms_icons/REVIEW_SUMMARY.md",
+      "exists": true,
+      "sha256": "8A0324DFF71E6AFB4149C698312EF5ADF19F06E779CDE9E6B996EF01C21FD373"
+    },
+    {
+      "path": "StatisticsHistogramControl.xaml",
+      "exists": true,
+      "sha256": "02D80FAACFDE0DF22B94528F1C236F3234BD1B30BC606170D382998F29A6DF75"
+    },
+    {
+      "path": "StatisticsHistogramControl.xaml.cs",
+      "exists": true,
+      "sha256": "11C8F5141B759DF3F0CD586BBE6CA85BA895FA9FAFFB3A2B5D9B0DB40AD838D9"
+    },
+    {
+      "path": "ThemeColors.xaml",
+      "exists": true,
+      "sha256": "31BE83535A51742E9A5E63DDE4A29CE6AE48AF44D1C8336AD013AC5817675781"
+    },
+    {
+      "path": "UserGuide.md",
+      "exists": true,
+      "sha256": "9C58370A6BCB8E128F7079EED6C2DC5916527F442F02B0702955080A2AC5E893"
+    },
+    {
+      "path": "ViewModels/ConnectionViewModel.cs",
+      "exists": true,
+      "sha256": "A3A82153C64EFE901C3D8F379E4B38FF37F5A858545749A9CA1EBC5008EFE058"
+    },
+    {
+      "path": "ViewModels/DeadlockPlaybackViewModel.cs",
+      "exists": true,
+      "sha256": "6F3E0C1B68F880C6C4AB823A254088C55B323A28B39732F70A5043F0D8B9355E"
+    },
+    {
+      "path": "ViewModels/IndexSandboxViewModel.cs",
+      "exists": true,
+      "sha256": "F824DB8C1D7402CD79452C2B3DE90CCDD880F957C50097A5CD046C2123970194"
+    },
+    {
+      "path": "ViewModels/PlanNodeViewModel.cs",
+      "exists": true,
+      "sha256": "D7C2E5DA3209FB775E3768AA9BE86DEC656450070667E2AA47F99C72D140F571"
+    },
+    {
+      "path": "Views/DeadlockPlaybackControl.xaml",
+      "exists": true,
+      "sha256": "20BD49219D8EBFA124034093C6E034E053682DB2B9AE19B93105249D378C3E14"
+    },
+    {
+      "path": "Views/DeadlockPlaybackControl.xaml.cs",
+      "exists": true,
+      "sha256": "CAFED842F66AA745D10AF7E4A44C7BF69049DB43CF5FEE1E26ACA569CC2FC3D8"
+    },
+    {
+      "path": "Views/DeadlockView.xaml",
+      "exists": true,
+      "sha256": "C68B20CF6EB8A2D83E50C1E8A3AB78041995E8ED937703B6045EA5648AF5CFE9"
+    },
+    {
+      "path": "Views/DeadlockView.xaml.cs",
+      "exists": true,
+      "sha256": "C3A219E85E5FFC89F1B0037C40713FC0937A4166F003D7F320ED457675FA4C8A"
+    },
+    {
+      "path": "Views/DeadlockWorkspaceView.xaml",
+      "exists": true,
+      "sha256": "54DD9B042278D455B6576FBE0A825444F32D92BF1243CD9214290667E9418777"
+    },
+    {
+      "path": "Views/DeadlockWorkspaceView.xaml.cs",
+      "exists": true,
+      "sha256": "4716953DA2F281D1AB96BB09FA9F57DC4F97F57A4FEA9C9A4B232F2E19DE80E5"
+    },
+    {
+      "path": "Views/IndexSandboxWindow.xaml",
+      "exists": true,
+      "sha256": "BA137D7AE8B76825EB32CA21B8FFC4D4F516FAB0BF2539137C136F36DF2D5534"
+    },
+    {
+      "path": "Views/IndexSandboxWindow.xaml.cs",
+      "exists": true,
+      "sha256": "A7E500DF6FE67DEDDD394D90AF7D0080B5DF894799F472A221680253253F274E"
+    },
+    {
+      "path": "Views/MainShellView.xaml",
+      "exists": true,
+      "sha256": "D275CDADC549718920D16595A9DB39BE2A6270F9CAA794B1A9464200007F215F"
+    },
+    {
+      "path": "Views/MainShellView.xaml.cs",
+      "exists": true,
+      "sha256": "E358DF1D1331B5756F718AC1E11B47A9966B05E3D0B72CADF9631EDDD91B8303"
+    },
+    {
+      "path": "Views/MainWindowResources.xaml",
+      "exists": true,
+      "sha256": "6BDD7A048DED1FF249F92091D0A8D2878AA290E4B6DA30F5A4B0327274731BB0"
+    },
+    {
+      "path": "Views/MainWorkspaceView.xaml",
+      "exists": true,
+      "sha256": "777523FAE8FA9BA23F656E89DF05F20D5554F86B654758BD982528A08E81632D"
+    },
+    {
+      "path": "Views/MainWorkspaceView.xaml.cs",
+      "exists": true,
+      "sha256": "734129BAD26076AEADA1854F0E11E1FE9DC5E4A7E81AA71938426EB482E50DE2"
+    },
+    {
+      "path": "Views/PlanComparisonWorkspaceView.xaml",
+      "exists": true,
+      "sha256": "EC42A6D0EFEABCFBB154CB92A7E1D7C85E49C29777DAC9CE0096774B7003A47C"
+    },
+    {
+      "path": "Views/PlanComparisonWorkspaceView.xaml.cs",
+      "exists": true,
+      "sha256": "DB198CE29B2C60CDC12B7063C95B5334363D3D1E195F0C73F68B79606AC96631"
+    },
+    {
+      "path": "Views/PlanView.xaml",
+      "exists": true,
+      "sha256": "2AB2C5698A59E222293BA2B84E57D0F3BE2E6019ECC09A27B20A37678DBEC7A2"
+    },
+    {
+      "path": "Views/PlanView.xaml.cs",
+      "exists": true,
+      "sha256": "44B000855F086F88444252FBD4E5AB6035014441683EE1D9791D6053271443BB"
+    },
+    {
+      "path": "Views/PlanWorkspaceView.xaml",
+      "exists": true,
+      "sha256": "064D359A4EAD1B760C060230C9EC2961FB8D2FB116D93B29E3FF4901C88E0EA1"
+    },
+    {
+      "path": "Views/PlanWorkspaceView.xaml.cs",
+      "exists": true,
+      "sha256": "91269CFE45FE2784338EDA44948CF8DED229B1F7F8C65D95BCFAC47BBD664CDE"
+    },
+    {
+      "path": "Views/QuickFixWindow.xaml",
+      "exists": true,
+      "sha256": "FB34FB7B57D164FEB9EAEACF08D71DC16C8E82F9BB303688E7C46BA493F185B3"
+    },
+    {
+      "path": "Views/QuickFixWindow.xaml.cs",
+      "exists": true,
+      "sha256": "E7804C0E656795B49D45BCA53F8F74F377D2EE84EB1292E45050F8AE3B25EAC5"
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "exists": true,
+      "sha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A"
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml.cs",
+      "exists": true,
+      "sha256": "E4DDDD5357F78FE9A8E154384460F8A9800ACC1BBEE50CEAC8215F578B511C18"
+    },
+    {
+      "path": "Views/ShellStatusBar.xaml",
+      "exists": true,
+      "sha256": "2A280105B7717EF73DEC47C71F06B9FB1F7C43EA036D39E2B67AC5694BDB0EEE"
+    },
+    {
+      "path": "Views/ShellStatusBar.xaml.cs",
+      "exists": true,
+      "sha256": "C2916743A6148D55D121F0F0B92CE0FA2DEABBE1DBF3C4D35E7437F229A52947"
+    },
+    {
+      "path": "Views/ShellTitleBar.xaml",
+      "exists": true,
+      "sha256": "6C111467DAC0BF06AC75AA486587441FB802A9D5DAFB73FDCE4E4444336B4A60"
+    },
+    {
+      "path": "Views/ShellTitleBar.xaml.cs",
+      "exists": true,
+      "sha256": "F8CAE881A6919939FC939DE01A01EF7BB52583A3C47CB6D21D49FB6DC49A4592"
+    }
+  ]
+}

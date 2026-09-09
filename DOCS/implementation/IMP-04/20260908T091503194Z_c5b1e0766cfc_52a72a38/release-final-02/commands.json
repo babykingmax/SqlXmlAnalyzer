@@ -1,0 +1,36 @@
+[
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "SqlXmlAnalyzer.sln",
+      "--configuration",
+      "Release",
+      "--no-incremental",
+      "--no-restore",
+      "--nologo"
+    ],
+    "startUtc": "2026-09-08T09:32:54.8465394Z",
+    "endUtc": "2026-09-08T09:32:59.6905737Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "test",
+      "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+      "--configuration",
+      "Release",
+      "--no-build",
+      "--no-restore",
+      "--nologo",
+      "--logger",
+      "trx;LogFileName=full-release.trx",
+      "--results-directory",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\release-final-02"
+    ],
+    "startUtc": "2026-09-08T09:32:59.6962439Z",
+    "endUtc": "2026-09-08T09:33:06.7193597Z",
+    "exitCode": 0
+  }
+]

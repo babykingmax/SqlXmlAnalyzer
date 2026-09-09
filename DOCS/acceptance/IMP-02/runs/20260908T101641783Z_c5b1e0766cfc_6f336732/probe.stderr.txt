@@ -1,0 +1,29 @@
+[DEBUG] 2026-09-08T18:17:06.3129908+08:00 PlanRedaction started.
+[DEBUG] 2026-09-08T18:17:06.3279992+08:00 PlanRedaction completed: 11 masked items.
+[DEBUG] 2026-09-08T18:17:06.3283734+08:00 PlanRedaction started.
+[WARN] 2026-09-08T18:17:06.3284887+08:00 PlanRedaction blocked: 1 unsupported items.
+[DEBUG] 2026-09-08T18:17:06.4342759+08:00 SQL 写回开始：校验源文件及候选字节。
+[ERROR] 2026-09-08T18:17:06.4374080+08:00 SQL 写回失败：SqlWriteback.CreateBackup
+System.IO.IOException: Synthetic backup failure
+   at Program.FailingBackupFiles.CreateNew(String p, String sourcePath) in C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-92056a3bdb73481e99a3ac2c2763ca78\Program.cs:line 185
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.CreateOwnedFile(String sourcePath, String extension, CancellationToken token, String& ownedPath) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 149
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.WriteBack(SqlFileSnapshot snapshot, String sql, CancellationToken cancellationToken) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 61
+[DEBUG] 2026-09-08T18:17:06.4826654+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 2, 受害者: a
+[DEBUG] 2026-09-08T18:17:06.4833581+08:00 BuildWaitForEdges: 共构建 2 条等待边
+[DEBUG] 2026-09-08T18:17:06.4833803+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 2 条边
+[DEBUG] 2026-09-08T18:17:06.4840280+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 2
+[DEBUG] 2026-09-08T18:17:06.4854952+08:00 DetectCycles: 共发现 2 个原始环，去重后 2 个唐一环
+[DEBUG] 2026-09-08T18:17:06.4855434+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 2 个死锁环
+[DEBUG] 2026-09-08T18:17:06.4864615+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=2
+[DEBUG] 2026-09-08T18:17:06.5422554+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 2, 环: 2
+[DEBUG] 2026-09-08T18:17:06.5474485+08:00 GenerateMermaid: Mermaid 代码生成完成，共 737 字符
+[DEBUG] 2026-09-08T18:17:06.5506044+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 4, 受害者: a
+[DEBUG] 2026-09-08T18:17:06.5506483+08:00 BuildWaitForEdges: 共构建 4 条等待边
+[DEBUG] 2026-09-08T18:17:06.5506599+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 4 条边
+[DEBUG] 2026-09-08T18:17:06.5506706+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 3
+[DEBUG] 2026-09-08T18:17:06.5507605+08:00 DetectCycles: 共发现 6 个原始环，去重后 5 个唐一环
+[DEBUG] 2026-09-08T18:17:06.5507732+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 5 个死锁环
+[DEBUG] 2026-09-08T18:17:06.5507787+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=4
+[DEBUG] 2026-09-08T18:17:06.5508360+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 4, 环: 5
+[DEBUG] 2026-09-08T18:17:06.5509081+08:00 GenerateMermaid: Mermaid 代码生成完成，共 931 字符
+[DEBUG] 2026-09-08T18:17:06.5637326+08:00 [RuleEngine] Rule 'Scan with Residual Predicate' hit in Operator scope on Node 0. Time: 0ms

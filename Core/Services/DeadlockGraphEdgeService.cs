@@ -8,7 +8,13 @@ namespace SqlXmlAnalyzer.Core.Services
         string FromId,
         string ToId,
         string Label,
-        bool IsWaitEdge);
+        bool IsWaitEdge)
+    {
+        public string EvidenceId { get; init; } = "";
+        public bool IsInCycle { get; init; }
+        public double ParallelOffset { get; init; }
+        public DeadlockPlaybackEdgeKey Key => new(FromId, ToId, EvidenceId);
+    }
 
     public sealed class DeadlockGraphEdgeService
     {
@@ -21,6 +27,18 @@ namespace SqlXmlAnalyzer.Core.Services
 
             foreach (DeadlockGraphResourceNode resource in resources)
             {
+                if (resource.Links != null)
+                {
+                    foreach (var link in resource.Links)
+                    {
+                        string process = $"proc_id_{link.ProcessId}";
+                        string mode = string.IsNullOrEmpty(link.Mode) ? link.RequestType : link.Mode;
+                        edges.Add(new DeadlockGraphEdge(link.IsWaiter ? process : resource.Id,
+                            link.IsWaiter ? resource.Id : process, FormatLabel(link.IsWaiter ? "Req" : "Own", mode), link.IsWaiter)
+                        { EvidenceId = link.LinkId, IsInCycle = resource.CycleLinkIds.Contains(link.LinkId) });
+                    }
+                    continue;
+                }
                 LockResource? rawResource = resource.RawResources.FirstOrDefault();
                 if (rawResource == null)
                 {
@@ -50,6 +68,13 @@ namespace SqlXmlAnalyzer.Core.Services
                 }
             }
 
+            foreach (var group in edges.Select((edge, index) => (edge, index)).GroupBy(item => (item.edge.FromId, item.edge.ToId)))
+            {
+                var parallel = group.OrderBy(item => item.edge.EvidenceId, StringComparer.Ordinal).ToArray();
+                double spacing = 32.0 / Math.Max(1, parallel.Length - 1);
+                for (int i = 0; i < parallel.Length; i++)
+                    edges[parallel[i].index] = parallel[i].edge with { ParallelOffset = (i - (parallel.Length - 1) / 2.0) * spacing };
+            }
             return edges;
         }
 

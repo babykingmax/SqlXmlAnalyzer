@@ -356,7 +356,7 @@ namespace SqlXmlAnalyzer
 
         private void UpdateConnectionHighlights()
         {
-            ConnectionUiActionService.UpdateHighlights(_selectedNode?.NodeId, Connections);
+            ConnectionUiActionService.UpdateHighlights(_selectedNode?.SelectionKey, Connections);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

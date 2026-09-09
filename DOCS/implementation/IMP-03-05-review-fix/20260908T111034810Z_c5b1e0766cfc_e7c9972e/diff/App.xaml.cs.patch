@@ -1,0 +1,13 @@
+diff --git "a/E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03-05-review-fix\\20260908T111034810Z_c5b1e0766cfc_e7c9972e\\before\\App.xaml.cs.snapshot" b/App.xaml.cs
+index 7767309..addd443 100644
+--- "a/E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03-05-review-fix\\20260908T111034810Z_c5b1e0766cfc_e7c9972e\\before\\App.xaml.cs.snapshot"
++++ b/App.xaml.cs
+@@ -182,7 +182,7 @@ namespace SqlXmlAnalyzer
+         private void ShowFriendlyError(string title, Exception ex, string? diagnostic = null)
+         {
+             // 这里可以弹出友好提示，同时错误已经记录到日志
+-            string logLocation = Logger.LogFilePath ?? "应用程序目录下的 log 文件夹";
++            string logLocation = Logger.LogFilePath ?? Logger.GetLogDirectory();
+             MessageBox.Show(
+                 $"{title}\n\n日志文件：\n{logLocation}\n\n错误摘要：{diagnostic ?? ex.Message}",
+                 "SqlXmlAnalyzer 错误",

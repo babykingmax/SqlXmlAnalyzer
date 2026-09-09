@@ -1,0 +1,478 @@
+# IMP-02：审查反例验收矩阵
+
+**IMP-05 更新（2026-09-08）：** [IMP-05 脱敏覆盖与输出入口验证](./IMP-05脱敏覆盖与输出入口验证.md)已交付。支持范围内 XML 脱敏、未知字段阻断、原始输出隐私提示及新文件保护已实施；两配置各 944 测试、42 工具回归通过，进程验证 17/17。R01/R02/R03/R19/R20 最小条件通过，其余 17 NotMet；未进行实际 WPF、SSMS 或 SQL Server 验收，整个评审问题未自动关闭。 适配器现为 v2.4，R01 成功载荷与失败阻断分开判定，空输出不能通过。
+
+日期：2026-09-08（Asia/Taipei）。前置基线：[IMP-01](./IMP-01基线冻结与模块边界.md)，HEAD `c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15` 加已登记的未提交改动。
+
+**联合加固更新（2026-09-08）：** Debug/Release 全量构建均 0 警告/错误，各 905 项测试通过；验收工具 38/38、应用进程 10/10 通过。写回未知异常保留提交状态，DUMP 失败保留异常记录，日志级别按编译模式固定；适配器升级 v2.3。逐项符合性、证据和剩余边界见[联合加固核对](./IMP-02-04加固与实施符合性核对.md)。历史结果保留如下。
+
+**IMP-02 状态：已完成验收矩阵与验证准备，M0 已完成。** IMP-02 初交付独立探针为 22 项 NotMet，原有 807 项测试通过；SQL Server 与实际 WPF 验收未执行，0 个评审问题关闭。
+
+**后续实施更新（IMP-03）：** 上述是 IMP-02 初始交付的历史结果。[安全写回实施](./IMP-03安全写回与恢复说明.md)后，适配器 v2.1 中 R03 为 `ProbeConditionMet`，其余 21 项为 `NotMet`；全量测试 852 通过，工具回归 32 通过。没有自动关闭整个评审问题，GUI 审核应用仍待后续步骤。历史附件未覆盖。
+
+**历史实施更新（IMP-04 初交付）：** [默认高风险改写限制与诊断](./IMP-04高风险改写限制与诊断说明.md)后，适配器 v2.2 中 R02/R03/R19/R20 为 `ProbeConditionMet`，其余 18 项 `NotMet`；Debug/Release 各 886 测试通过。机器矩阵已登记 `DefaultUnsafeRewriteBlocked`，以下“既有测试与缺口”保留初始审查语境，当前实现与剩余边界见最新实施说明。
+
+本步骤交付 **22 个主验收用例、12 组交叉场景、独立探针运行器、固定输入/指纹、SQL 环境准备与 WPF 操作脚本**。它们用于检验修正后的业务行为；本步骤不修改应用实现，不关闭 R01–R22，也不把尚未满足的断言加入默认 xUnit 套件后长期保持失败。
+
+## 1. 验收状态与执行约定
+
+- `SpecificationReady`：触发条件、业务预期、层级、负责人角色和实施归属已确定。
+- `NotMet`：当前探针结果不满足已定义的必要条件；这是待修复问题，不是探针基础设施成功的同义词。
+- `ProbeConditionMet`：仅这个最小探针满足必要条件；SQL Server、WPF 或扩展场景未通过时不能关闭问题。
+- `ProbeExecutionFailed`（适配器 v2 新增）：被测重构返回失败或记录解析/规则错误；v2.4 亦包含脱敏支持夹具未生成 Ready 有效 XML；独立计数，失败回退或空输出不表示条件通过。
+- `PendingEnvironment / PendingImplementation`：所需环境、接口或真实采集夹具尚未具备，保留前置条件。
+- 基础设施失败单独保存日志并停止判断，不能转成 NotMet、Passed 或“未发现问题”。
+
+完整业务预期位于下列用例及[机器可读矩阵](./acceptance/IMP-02/acceptance-matrix.json)。探针中的字符串、绑定及数值检查只是当前 API 的适配，不是长期领域合同。例如 R14 无完整对象输入、R16 无语句选择入口；修复这些接口时必须同时更新探针，不能为了旧探针通过而继续丢失上下文。
+
+## 2. 覆盖总览
+
+| 用例 | 严重度 | 负责角色 | 验证层级 | 修复归属 |
+| --- | --- | --- | --- | --- |
+| AC-R01-01 | P1 | Core / 报告开发；测试 | 单元 + 报告集成 + WPF | IMP-05、IMP-22 |
+| AC-R02-01 | P1 | Refactoring 开发；DBA；WPF | 单元 + SQL Server + GUI/CLI | IMP-04、IMP-18、IMP-19、IMP-21 |
+| AC-R03-01 | P1 | Application 开发；测试 | 单元 + 文件集成 + GUI/CLI | IMP-03、IMP-19、IMP-21 |
+| AC-R04-01 | P1 | Core / CLI 开发；测试 | 服务 + CLI 进程 + WPF | IMP-06、IMP-09、IMP-29 |
+| AC-R05-01 | P2 | Core / WPF 开发；测试 | 单元 + 文件集成 + WPF | IMP-06、IMP-09、IMP-20 |
+| AC-R06-01 | P2 | Core 开发；测试 | 单元 + WPF/报告 | IMP-07、IMP-13、IMP-20 |
+| AC-R07-01 | P2 | Core 开发；DBA | 单元 + DBA 证据核对 + WPF | IMP-08、IMP-13、IMP-20 |
+| AC-R08-01 | P2 | Core 开发；测试 | 单元/性质检查 + WPF | IMP-13、IMP-20 |
+| AC-R09-01 | P2 | Core 开发；DBA | 单元/性质检查 + 真实计划核对 | IMP-11、IMP-14、IMP-20、IMP-22 |
+| AC-R10-01 | P2 | Core 开发；测试 | 单元 + 跨视图核对 | IMP-11、IMP-14、IMP-20 |
+| AC-R11-01 | P2 | Core / WPF 开发；测试 | 单元 + WPF/报告 | IMP-07、IMP-11、IMP-20、IMP-22 |
+| AC-R12-01 | P2 | Core 开发；测试；DBA | 单元/性质检查 + WPF | IMP-08、IMP-16、IMP-21 |
+| AC-R13-01 | P2 | Core 开发；DBA | 单元 + ScriptDom + SQL Server | IMP-15、IMP-21 |
+| AC-R14-01 | P2 | Core 开发；测试 | 模型契约 + 单元 + WPF | IMP-10、IMP-15、IMP-21 |
+| AC-R15-01 | P2 | 比较服务 / WPF 开发；测试 | 单元 + WPF/报告 | IMP-08、IMP-17、IMP-21 |
+| AC-R16-01 | P2 | Core / 比较服务 / WPF；测试 | 模型契约 + 服务 + WPF | IMP-10、IMP-17、IMP-20、IMP-21 |
+| AC-R17-01 | P2 | Core 开发；测试 | 单元 + WPF | IMP-11、IMP-20 |
+| AC-R18-01 | P2 | Core 开发；测试 | 单元/性质检查 + WPF | IMP-13、IMP-20 |
+| AC-R19-01 | P1 | Refactoring 开发；DBA；WPF | 单元 + SQL Server + WPF | IMP-04、IMP-18、IMP-19、IMP-21 |
+| AC-R20-01 | P2 | Refactoring 开发；测试；DBA | 单元 + SQL Server | IMP-04、IMP-18、IMP-19、IMP-21 |
+| AC-R21-01 | P2 | WPF 开发；测试 | XAML 静态绑定 + WPF + 报告 | IMP-07、IMP-11、IMP-20、IMP-22 |
+| AC-R22-01 | P2 | WPF / Core 开发；测试；DBA | ViewModel + WPF 全流程 | IMP-08、IMP-13、IMP-20 |
+
+负责人使用职责角色表示，尚未指定具体个人。既有测试路径可在项目 `SqlXmlAnalyzer.Tests/` 中查找；标为“建议新增”的测试尚未实现，不计入已有测试数。
+
+## 3. 主验收用例
+
+### AC-R01-01
+
+**问题 / 层级：** R01，P1；单元 + 报告集成 + WPF。**负责：** Core / 报告开发；测试。**修复步骤：** IMP-05、IMP-22。
+
+**固定输入：** `plan-01.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** ConstValue、Server、Alias 放入唯一敏感标记后导出脱敏副本。
+
+**正确结果：** 敏感标记全部移除；原 XML 字节/结构保持；无法处理的自由文本和未知节点明确列为未覆盖，不能宣称完整脱敏。
+
+**扩展组合：** 最小探针检查 3 类遗漏；扩展至参数、注释、文本、嵌套、重复标识符，以及全部复制/HTML/PDF/Word/JSON 入口。
+
+**既有测试与缺口：** `PlanObfuscatorServiceTests.ObfuscatePlan_ShouldObfuscateSensitiveFields`。现有测试覆盖部分属性并允许 dbo 保留，没有覆盖本反例。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R01 已关闭。
+
+### AC-R02-01
+
+**问题 / 层级：** R02，P1；单元 + SQL Server + GUI/CLI。**负责：** Refactoring 开发；DBA；WPF。**修复步骤：** IMP-04、IMP-18、IMP-19、IMP-21。
+
+**固定输入：** `trim-original.sql`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 无列数据约束，谓词 LTRIM(UserName)='admin'，数据含前导空格。
+
+**正确结果：** 默认不移除无法证明等价的 LTRIM/TRIM；候选未选中，前提/警告穿透 GUI/CLI；支持的候选须验证结果与副作用。
+
+**扩展组合：** 前导空格、NULL、纯空格、varchar/nvarchar/char/nchar、嵌套 LTRIM/RTRIM；有约束与无约束分开，不能从常量反推列内容。
+
+**既有测试与缺口：** `Refactoring/SqlRefactoringEngineTests.Run_WithLTrimRTrim_ShouldOptimizeAndWarn`。现有 ShouldOptimizeAndWarn 与 Run_WithTrim_ShouldOptimizeAndWarn 接受危险默认；在 IMP-04 修复同批次调整。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R02 已关闭。
+
+### AC-R03-01
+
+**问题 / 层级：** R03，P1；单元 + 文件集成 + GUI/CLI。**负责：** Application 开发；测试。**修复步骤：** IMP-03、IMP-19、IMP-21。
+
+**固定输入：** `AcceptanceProbe.cs.txt::FailingBackupFiles`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 备份写入抛 IOException，非 dry-run。
+
+**正确结果：** 返回失败且原文件不写入；备份是写回前置；外部修改、替换失败或取消也不能破坏原字节。
+
+**扩展组合：** 磁盘满/拒绝访问/目标占用、备份同名、源 hash 漂移、临时写失败、替换失败、取消；fake 与真实临时目录故障分层。
+
+**既有测试与缺口：** `Application/ApplicationOrchestratorTests.Execute_WhenSuccessfulAndNotDryRun_ShouldWriteBackToFile`。现有测试覆盖正常写回、dry-run 和一般异常，没有证明备份失败后的原文件保护。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R03 已关闭。
+
+### AC-R04-01
+
+**问题 / 层级：** R04，P1；服务 + CLI 进程 + WPF。**负责：** Core / CLI 开发；测试。**修复步骤：** IMP-06、IMP-09、IMP-29。
+
+**固定输入：** `not-a-plan.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 将 <notAPlan/> 作为执行计划交给分析适配器和真实 CLI。
+
+**正确结果：** 明确无效/不支持，CLI 非零退出，不得 Passed/零问题健康；GUI、scan 与 refactor 辅助计划入口一致。
+
+**扩展组合：** 死锁误投、错误 namespace、格式损坏、前缀 namespace、合法无 RelOp 语句分别验证；后两项需可靠的真实采集夹具。
+
+**既有测试与缺口：** `Application/CliProgramTests；DocumentOpenServiceTests.OpenAsync_WhenFileIsUnknownXml_ReturnsUnknownKind`。GUI Unknown 测试不能证明 CLI 拒绝；本运行器增加真实 CLI 观察。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R04 已关闭。
+
+### AC-R05-01
+
+**问题 / 层级：** R05，P2；单元 + 文件集成 + WPF。**负责：** Core / WPF 开发；测试。**修复步骤：** IMP-06、IMP-09、IMP-20。
+
+**固定输入：** `deadlock-wrapper.xml`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** deadlock-list 包装结构已能被内部死锁解析器解析，入口分类却 Unknown。
+
+**正确结果：** 所有支持包装形式分类为死锁并可选择每个事件；保留事件归属，不静默只取首个。
+
+**扩展组合：** 裸 deadlock、deadlock-list、XE event/data/value、多事件、XML namespace、无效混合记录；Partial 范围可见。
+
+**既有测试与缺口：** `DocumentOpenServiceTests；DeadlockParseContractTests`。现有普通死锁打开测试不是包装/多事件验收。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R05 已关闭。
+
+### AC-R06-01
+
+**问题 / 层级：** R06，P2；单元 + WPF/报告。**负责：** Core 开发；测试。**修复步骤：** IMP-07、IMP-13、IMP-20。
+
+**固定输入：** `deadlock-02.xdl`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 进程标准 priority='7'。
+
+**正确结果：** 读取 7，并明确标准字段与兼容别名优先顺序；缺失与真实 0 分开。
+
+**扩展组合：** 负数、0、缺失、格式非法、priority 与别名同时存在；UI/报告数值一致。
+
+**既有测试与缺口：** `DeadlockParseContractTests`。需要增加标准属性反例，不以 taskpriority 等字段替代。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R06 已关闭。
+
+### AC-R07-01
+
+**问题 / 层级：** R07，P2；单元 + DBA 证据核对 + WPF。**负责：** Core 开发；DBA。**修复步骤：** IMP-08、IMP-13、IMP-20。
+
+**固定输入：** `deadlock-03.xdl`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** REPEATABLE READ，资源只有 S/X，没有 Range 模式。
+
+**正确结果：** 不确认为 SERIALIZABLE 范围锁死锁；范围锁结论有实际模式证据，其他原因作为假设。
+
+**扩展组合：** SERIALIZABLE 但无 Range、实际 RangeS-S/RangeS-U 等对照，RCSI 及未提供隔离级别。
+
+**既有测试与缺口：** `DeadlockPatternAnalyzerTests`。本探针按诊断文字识别最低限度错误；证据模型迁移后应断言结构化类型和证据。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R07 已关闭。
+
+### AC-R08-01
+
+**问题 / 层级：** R08，P2；单元/性质检查 + WPF。**负责：** Core 开发；测试。**修复步骤：** IMP-13、IMP-20。
+
+**固定输入：** `deadlock-04.xdl`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 边 a→b、b→a、a→c、c→b 构成重叠环。
+
+**正确结果：** a/b/c 全部为循环成员；主图和推演一致，进程/资源输入重排不改变成员集合。
+
+**扩展组合：** 非环尾节点、多 SCC、重复资源边、自环、资源规模上限与环展示截断。
+
+**既有测试与缺口：** `DeadlockTimelineParserTests.Parse_ShouldGenerateCorrectTimelineAndCycles`。现有简单环测试不足；当前探针只核对 c，扩展断言必须比较完整集合。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R08 已关闭。
+
+### AC-R09-01
+
+**问题 / 层级：** R09，P2；单元/性质检查 + 真实计划核对。**负责：** Core 开发；DBA。**修复步骤：** IMP-11、IMP-14、IMP-20、IMP-22。
+
+**固定输入：** `plan-02.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 估算 16000，16 worker 各实际 1000、执行 1 次。
+
+**正确结果：** 总输出 16000 与估算匹配，不因 worker 次数相加产生 16 倍误报；RULE030 与 RULE004 使用明确且一致口径。
+
+**扩展组合：** 串行、重复执行、协调线程、零执行、worker 缺值、线程顺序交换；不能统一改用 Max 代替语义聚合。
+
+**既有测试与缺口：** `Rules/RowEstimateMismatchRuleTests；RuleMetadataAndScopeTests`。需要完整线程夹具；真实并行/循环计划仍待采集，最小 XML 不是 SQL Server 实际计划证明。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R09 已关闭。
+
+### AC-R10-01
+
+**问题 / 层级：** R10，P2；单元 + 跨视图核对。**负责：** Core 开发；测试。**修复步骤：** IMP-11、IMP-14、IMP-20。
+
+**固定输入：** `plan-03.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** IndexScan/Predicate 中含 [T].[V]=(2)，读取 1000、输出 100。
+
+**正确结果：** 提取本算子残差谓词；RULE034 输出相应证据并与详情一致；不能读取子算子谓词充数。
+
+**扩展组合：** 直接/载荷 Predicate、仅 SeekPredicate、无运行数据、子节点谓词、多个 ScalarOperator。
+
+**既有测试与缺口：** `PlanGraphRelOpDetailsServiceTests.Parse_ReturnsPredicateAndSeekPredicateScalars`。当前 UI 能读到并不意味着规则能读到；要同时断言规则与提取器。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R10 已关闭。
+
+### AC-R11-01
+
+**问题 / 层级：** R11，P2；单元 + WPF/报告。**负责：** Core / WPF 开发；测试。**修复步骤：** IMP-07、IMP-11、IMP-20、IMP-22。
+
+**固定输入：** `plan-03.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** ActualExecutionMode=Batch，Parallel=true，IndexScan Ordered=true。
+
+**正确结果：** 模型与视图为 Batch/true/true；输出 100、读取 1000 分开；缺失属性为未知或注明推导。
+
+**扩展组合：** true/false 与 1/0、Row、属性缺失、实际/估算执行模式分歧、排序与非排序算子。
+
+**既有测试与缺口：** `PlanGraphNodeBuilderServiceTests`。现有成本类测试不能代替属性映射反例。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R11 已关闭。
+
+### AC-R12-01
+
+**问题 / 层级：** R12，P2；单元/性质检查 + WPF。**负责：** Core 开发；测试；DBA。**修复步骤：** IMP-08、IMP-16、IMP-21。
+
+**固定输入：** `plan-04.sqlplan；plan-05.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 两个同表语句成本 10/100，仅交换输入顺序。
+
+**正确结果：** 模拟结果和排序在容差内一致；不固定期望为当前某个百分比；自身/子树成本不重复，假设可见。
+
+**扩展组合：** 单语句、零成本、多候选叠加、遍历顺序、重复子树；模型单位与范围记录。
+
+**既有测试与缺口：** `Simulation/CostImpactSimulatorTests`。本项断言顺序不变性，不能将当前 65 或 100 作为正确常量。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R12 已关闭。
+
+### AC-R13-01
+
+**问题 / 层级：** R13，P2；单元 + ScriptDom + SQL Server。**负责：** Core 开发；DBA。**修复步骤：** IMP-15、IMP-21。
+
+**固定输入：** `specification: single identifier [Order.Detail]`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 单个分隔标识符内部含点号。
+
+**正确结果：** EscapeName 保持 [Order.Detail] 为一个名称；多段对象用独立 API 组装，生成 DDL 操作正确对象。
+
+**扩展组合：** 右方括号转义、空格、Unicode、已引用名称、多段 schema/table、同名索引。
+
+**既有测试与缺口：** `Refactoring/MissingIndexSuggesterTests；建议新增 IndexDdlCompilerTests`。现有建议提取测试不证明 DDL 引用规则；实际执行环境待准备。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R13 已关闭。
+
+### AC-R14-01
+
+**问题 / 层级：** R14，P2；模型契约 + 单元 + WPF。**负责：** Core 开发；测试。**修复步骤：** IMP-10、IMP-15、IMP-21。
+
+**固定输入：** `specification: sales.T 与 audit.T`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 两个同名 T 的节点与两个不同 schema 的缺失索引建议。
+
+**正确结果：** 依据完整对象和语句身份分别关联；未知 DB/schema 时不猜测第一条，不按表名静默合并。
+
+**扩展组合：** 不同数据库、alias、大小写/排序规则未知、重复 NodeId 与未匹配项。
+
+**既有测试与缺口：** `PlanGraphMissingIndexAssociationServiceTests`。旧探针节点只提供 TableName，缺 schema；当前误配可观察，完整验收必须在 IMP-10 后升级适配器。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R14 已关闭。
+
+### AC-R15-01
+
+**问题 / 层级：** R15，P2；单元 + WPF/报告。**负责：** 比较服务 / WPF 开发；测试。**修复步骤：** IMP-08、IMP-17、IMP-21。
+
+**固定输入：** `plan-06.sqlplan；plan-07.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** A 有 elapsed=100、reads=200，B 未采集运行指标。
+
+**正确结果：** B 显示未知，Elapsed/Logical reads 不产生数值差或改善率；不能把缺失变为 0。
+
+**扩展组合：** 两边缺失、真实 0、基准 0、单位或采集条件不同、仅部分指标已采集。
+
+**既有测试与缺口：** `PlanComparisonControllerTests`。当前模型用 double 的默认 0；升级可空/能力状态后需升级探针适配。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R15 已关闭。
+
+### AC-R16-01
+
+**问题 / 层级：** R16，P2；模型契约 + 服务 + WPF。**负责：** Core / 比较服务 / WPF；测试。**修复步骤：** IMP-10、IMP-17、IMP-20、IMP-21。
+
+**固定输入：** `plan-08.sqlplan；plan-09.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 首条语句不变，第二条成本由 2 变 999。
+
+**正确结果：** 能选中/匹配第二条并显示其变化，未匹配项可见；不能只返回首条相同成本。
+
+**扩展组合：** 语句增删、重排、重复 SQL/NodeId、QueryPlan 复合身份、人工指定匹配。
+
+**既有测试与缺口：** `PlanComparisonControllerTests`。旧 BuildComparison 无语句选择参数；本轮记录探针未能定位变化，完整正确值须新接口后断言。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R16 已关闭。
+
+### AC-R17-01
+
+**问题 / 层级：** R17，P2；单元 + WPF。**负责：** Core 开发；测试。**修复步骤：** IMP-11、IMP-20。
+
+**固定输入：** `plan-10.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 父 NestedLoops 只有子 Index Seek 带 ChildTable/ChildFilter。
+
+**正确结果：** 父节点本地详情不归入 ChildTable/ChildFilter；子树汇总独立标识。
+
+**扩展组合：** 父子均有属性、多个子 RelOp、深层节点、并行分支。
+
+**既有测试与缺口：** `PlanGraphRelOpDetailsServiceTests`。现有单算子谓词测试不覆盖作用域越界。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R17 已关闭。
+
+### AC-R18-01
+
+**问题 / 层级：** R18，P2；单元/性质检查 + WPF。**负责：** Core 开发；测试。**修复步骤：** IMP-13、IMP-20。
+
+**固定输入：** `deadlock-03.xdl`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 两个进程互相等待同一组资源，按不同起点枚举。
+
+**正确结果：** 同一逻辑环只计 1 次，旋转/闭合重复节点不增加数量；不同资源边仍可区分。
+
+**扩展组合：** 反向但不同依赖、重复边、3 节点环、重排、截断预算。
+
+**既有测试与缺口：** `DeadlockGraphTests`。不能简单排序所有节点后丢掉资源身份；本探针仅覆盖二节点基本环。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R18 已关闭。
+
+### AC-R19-01
+
+**问题 / 层级：** R19，P1；单元 + SQL Server + WPF。**负责：** Refactoring 开发；DBA；WPF。**修复步骤：** IMP-04、IMP-18、IMP-19、IMP-21。
+
+**固定输入：** `table-rollback-original.sql`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 表变量在 BEGIN TRAN 前声明，插入后回滚再计数。
+
+**正确结果：** 无事务等价证明时默认不转临时表；候选与风险可见；实际 SQL Server 验证结果和副作用。
+
+**扩展组合：** COMMIT/ROLLBACK、SAVE TRAN、TRY/CATCH、嵌套事务、过程/函数、声明位置、会话选项。
+
+**既有测试与缺口：** `Refactoring/SqlRefactoringEngineTests.Run_WithTableVariable_ShouldConvertTableVariableToTempTable`。现有测试接受转换；本轮只检查默认保留这一缓解条件，数据库等价性仍待验证。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R19 已关闭。
+
+### AC-R20-01
+
+**问题 / 层级：** R20，P2；单元 + SQL Server。**负责：** Refactoring 开发；测试；DBA。**修复步骤：** IMP-04、IMP-18、IMP-19、IMP-21。
+
+**固定输入：** `table-collision-original.sql`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 原 SQL 已创建 #T，又声明 @T。
+
+**正确结果：** 保留 @T 或为工具对象分配不冲突名称；不重复创建 #T，不删除原有 #T；作用域正确。
+
+**扩展组合：** 多个声明、大小写、嵌套过程、动态 SQL 未知作用域、异常清理。
+
+**既有测试与缺口：** `Refactoring/SqlRefactoringEngineTests.Run_WithTableVariableInStoredProcedure_ShouldConvertButNotAppendDropTableAtBatchEnd`。最小探针数 CREATE/DROP #T 只作必要条件，不构成完整符号/作用域证明。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R20 已关闭。
+
+### AC-R21-01
+
+**问题 / 层级：** R21，P2；XAML 静态绑定 + WPF + 报告。**负责：** WPF 开发；测试。**修复步骤：** IMP-07、IMP-11、IMP-20、IMP-22。
+
+**固定输入：** `plan-03.sqlplan`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 实际输出=100、实际读取=1000，打开两种计划视图的全局属性表。
+
+**正确结果：** 实际输出列绑定 ActualRows；另列读取行且单位明确；图/表/详情/导出一致，缺失 N/A。
+
+**扩展组合：** 估算计划、实际输出 0、读取与输出相等、超大数字和区域格式。
+
+**既有测试与缺口：** `Views/PlanWorkspaceView.xaml；Views/PlanView.xaml`。本轮对两个 XAML 读取真实绑定，不以文本检查替代可见 UI 数值验收。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R21 已关闭。
+
+### AC-R22-01
+
+**问题 / 层级：** R22，P2；ViewModel + WPF 全流程。**负责：** WPF / Core 开发；测试；DBA。**修复步骤：** IMP-08、IMP-13、IMP-20。
+
+**固定输入：** `deadlock-03.xdl；deadlock-04.xdl`。文件名若无目录，位于本次运行的 `fixtures/`；代码型 fake 位于本验收适配器；specification 表示直接构造的模型/标识符输入。
+
+**触发条件：** 死锁仅有依赖快照，步骤由算法生成。
+
+**正确结果：** 始终标为依赖推演并说明不代表真实时间顺序；开始、播放、暂停、选环后说明持续可见。
+
+**扩展组合：** 初态/首步/末步/重置、换事件、空事件、报告导出；存在外部时序证据时另行区分。
+
+**既有测试与缺口：** `DeadlockPlaybackViewModelTests.Constructor_ShouldInitializeCorrectly`。现有构造测试要求误导文案；在 IMP-08 同批次调整。新探针只观察初态，不证明固定说明可见。
+
+**实施验收：** 当前为 SpecificationReady；对应修复提交须增加/调整业务断言，保存结果与必要的运行证据。单个探针满足条件不等于 R22 已关闭。
+
+## 4. 交叉场景矩阵
+
+| 场景 | 关联 | 输入 / 触发 | 正确结果 | 负责 / 归属 | 当前前置条件 |
+| --- | --- | --- | --- | --- | --- |
+| SC-01 串行 / 并行 / 重复执行 | R09/R11/R21 | 串行 100 行×1；16 worker×1000；单算子 100 行×10；带协调线程与缺失计数的独立夹具。 | 按指标合同分别断言；并行总行等于16000；循环次数不能当线程数；线程重排不改变结果。 | Core + DBA；IMP-11/14 | 合成输入可用；真实串行/并行/循环计划待采集 |
+| SC-02 语句与对象身份 | R14/R16/R17 | 两语句复用 NodeId；sales.T / audit.T；不同 DB、alias；父子各有谓词。 | 选中第二条时 SQL/规则/详情/比较同时切换；未知 schema 不猜测。 | Core + WPF；IMP-10/15/17/20 | 当前 API 缺完整身份，完整断言需适配器迁移 |
+| SC-03 死锁图性质 | R08/R18/R22 | 重叠环、两个 SCC、非环尾节点、资源顺序与进程顺序置换。 | 比较完整成员集合及资源边身份；环数不因起点改变；推演不宣称历史。 | Core + 测试；IMP-13/20 | 最小反例已准备；完整性质测试随修复加入 |
+| SC-04 SQL 语义与作用域 | R02/R19/R20 | 字符类型/NULL/前导空格；事务提交、回滚、SAVEPOINT、TRY/CATCH；同名临时表。 | 逐项比对结果集、错误码、受影响行数、事务状态、对象副作用；未知前提默认不改。 | Refactoring + DBA；IMP-04/18/19 | SQL Server 未连接；脚本仅语法检查 |
+| SC-05 失败写回矩阵 | R03 | fake 备份失败；独立临时目录中的占用、拒绝访问、临时写失败、替换失败、外部 hash 改变。 | 按故障发生阶段核对原字节、备份、残留临时文件和返回状态；不能用破坏共享目录权限模拟。 | Application + 测试；IMP-03/19 | fake 可重复；新写回接口的故障挂点待实现 |
+| SC-06 导出与隐私矩阵 | R01/R21 | 唯一标记分布在 SQL、常量、参数、标识符、注释和文本；图/表/HTML/PDF/Word/JSON/复制。 | 逐出口核对事实数量和单位、标记残留、未知字段摘要、源输入不变。 | 报告 + 测试；IMP-05/22 | 单服务反例可运行；完整出口自动化与窗口验收待实现 |
+| SC-07 连续打开与取消 | UI-08 | A 用 TaskCompletionSource 等待，启动 B 完成后再释放 A；取消当前请求；失败后再打开 C。 | 仅当前请求提交；取消不显示成功；不要依靠随机延时让竞态偶然出现。 | WPF + 测试；IMP-09/26 | 现有协调器测试已运行；真实窗口和可控 UI 调度挂点待补 |
+| SC-08 输入类型与有效性 | R04/R05 | 无关 XML、错 namespace、损坏 XML、多事件；前缀 ShowPlan、合法无 RelOp 语句。 | 按内容/能力识别，非法输入非成功；合法特殊结构不误拒；partial 可追溯。 | Core + CLI；IMP-06/09 | 反例可运行；正向特殊结构需真实采集或可信 XSD 验证 |
+| SC-09 比较能力与缺失值 | R15/R16 | 双方实测/一侧估算/双方估算；真实零、单位不一致、采集环境改变。 | 仅双方可比指标算差；缺失 N/A、基准0不算百分比；未匹配语句显式展示。 | 比较 + WPF；IMP-17/21 | 最小缺失值反例可运行；完整比较模型待迁移 |
+| SC-10 XEL / 大图 / 取消 | UI-11/UI-15 | 多事件原始 XEL；100/1000/5000 节点，连续切换事件与取消。 | 记录输入hash、硬件、冷/热状态、时长/峰值内存；聚合回到原事件，超限有说明。 | Core + WPF + 测试；IMP-23/26 | 无可靠真实 XEL；未进行性能实测，不声称达到预算 |
+| SC-11 主题 / DPI / 键盘 | UI-13/UI-14 | 1280×720、1366×768、1920×1080；125/150/200%；深浅主题。 | 打开→定位→证据→比较→导出可键盘完成；窄窗口关键操作可达；记录实际DIP。 | WPF + 测试；IMP-25 | 操作脚本已准备；实际窗口验证未执行 |
+| SC-12 配置与规则状态 | UI-12/D05 | 旧配置、缺文件、坏JSON、未知ID、启用/严重度变更、规则跳过/异常。 | 旧配置兼容；Hit/NoHit/Skipped/Failed分开；同次分析用同一配置快照。 | Core + 测试；IMP-12/24/28 | 保留现有测试；结构化规则状态验收依赖后续合同 |
+
+SC-07 已有 `AnalysisSessionCoordinatorTests.Begin_CancelsPreviousSessionAndMakesNewSessionCurrent`、`OlderCompletion_CannotCommitAfterNewSessionStarts`、`CancelCurrent_InvalidatesCurrentSession`。它们提供协调器层的保护；实际 UI 提交路径和状态文案仍需验收。新增竞态测试应使用可控完成信号，避免沿用延时作为唯一同步依据。
+
+## 5. 输入来源与环境前置
+
+### 5.1 来源等级
+
+| 等级 | 本次材料 | 可证明范围 |
+| --- | --- | --- |
+| 最小合成输入 | 验收适配器导出的 XML / SQL；全部为人工测试值 | 精确触发某条真实代码路径；未通过完整 ShowPlan XSD 验证，不等于真实执行计划 |
+| 现有仓库夹具 | 5 个 sqlplan、1 个 xdl；记录原路径和 hash | 可重复的仓库测试输入；采集来源、隐私审查和实际服务器版本未核实 |
+| 真实采集且可追溯 | 本轮没有取得 | 需按采集模板补齐服务器版本、兼容级别、时间、来源、采集命令、能力与 hash，再进入真实计划验收 |
+
+XML 自带 Build / Version 属性不能单独证明它来自该版本服务器。所有生成与既有夹具的来源、字节数、SHA-256、SQL Server 版本可用性和脱敏状态记录在运行目录的 `fixture-manifest.json`；未取得的信息保持 null / unverified。
+
+实际运行当前引擎生成的 R02/R19/R20 候选 SQL 另存 `candidates/`。这些文件不能冒充已经执行的 SQL 语义证据。原[审查附件](./review-evidence/probe-results.json)与 IMP-01 基线保持不变。
+
+### 5.2 仍未具备的条件
+
+| 条件 | 用于哪些场景 | 准备完成的材料 / 后续动作 |
+| --- | --- | --- |
+| 可丢弃的 SQL Server 测试实例及创建隔离库权限 | R02/R13/R19/R20、SC-04 | [SQL 准备与执行说明](./acceptance/IMP-02/SQL与真实夹具验证说明.md)及 6 个脚本；连接/执行尚未进行 |
+| 真实串行、并行、循环、多语句实际计划 | R04/R09/R16、SC-01/08 | 采集脚本已准备；必须检查实际形态，MAXDOP 不保证并行 |
+| 原始死锁 XML / XEL 及事件读取权限 | R05/R06/R08/R18/R22、SC-10 | 双会话制造测试死锁的脚本已准备；由 DBA 在隔离实例启用/读取适当 XE，保留原事件 |
+| WPF 实际窗口与指定 DPI/主题测试会话 | R21/R22、SC-06/07/11 | [固定输入操作脚本](./acceptance/IMP-02/WPF验收操作脚本.md)已准备；未进行实时窗口验证 |
+| 完整对象/语句身份、可空指标及故障注入边界 | R03/R14/R15/R16 等 | 对应 IMP-03/10/11/17 实现时升级适配器，保留旧观察供对照 |
+
+这些是后续产品验收的前置条件，不妨碍本步骤完成验收矩阵与验证准备；不把“材料已准备”记为“数据库/界面已验收”。
+
+## 6. 迁移为正式回归测试的规则
+
+1. 修复前用独立运行器观察 NotMet，固定该输入与正确预期。
+2. 在对应修复提交中加入生产测试项目的行为测试，并修改实现，使新增断言和既有测试一起通过。
+3. R02/R19/R22 的既有测试显式接受了旧行为；随安全默认或文案修复调整名称和业务断言，不通过删除测试、放宽断言或长期 Skip 掩盖问题。
+4. 优先断言源文件字节、结果集合、类型/作用域、缺失能力和对象身份。文字输出测试只用于文案本身；规则重构后用结构化证据替代匹配一段诊断文本。
+5. 数据库、WPF、配置兼容等必要层级全部完成后，才能把评审问题改为已关闭。运行结果附上实现版本、适配器版本、输入 hash 和证据路径。
+
+## 7. 本轮验证记录
+
+有效运行编号为 `20260908T080801184Z_c5b1e0766cfc_6a19a7b0`：完整非增量构建 0 警告、0 错误，xUnit 807 通过、0 失败、0 未执行；独立探针 22 项 NotMet，保护输入无漂移。6 个 SQL 准备脚本通过语法解析，未执行数据库。[交付完整性记录](./acceptance/IMP-02/deliverable-validation.json)保存材料及证据指纹核验。
+
+具体运行编号、原始观察、22 项判定、完整构建/测试日志、TRX、输入指纹及工具失败记录见[验收工具与运行索引](./acceptance/IMP-02/README.md)。
+
+本次仅新增 DOCS 中的验收工具/材料并更新规划状态，不改变默认测试发现规则、不新增长期失败或 Skip 的 xUnit 测试。脚本与最小探针可用于后续重跑；还原、构建或探针失败时产生独立基础设施记录，不能作为产品断言结果。
+
+## 8. IMP-02 交付门槛
+
+- 每个 R 编号均有唯一主用例，具备触发条件、正确结果、输入、层级、角色、扩展场景、现有测试缺口及后续实施归属。
+- 既有审查最小反例可重跑；R21/R22 增加真实 XAML 绑定和 ViewModel 初态观察。
+- 合成输入、来源未核实的仓库输入与尚待真实采集的材料分别标记；有输入 hash，无伪造服务器采集来源。
+- SQL 语义环境、清理与真实计划/死锁采集脚本完成准备；WPF 操作与证据记录流程明确。
+- 完整构建和原有测试有本轮证据；已知未满足项与基础设施失败分别登记。IMP-03 及后续修复仍未开始。

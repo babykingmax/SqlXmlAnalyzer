@@ -1,0 +1,174 @@
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Diagnostics;
+
+namespace SqlXmlAnalyzer.Tests.Diagnostics;
+
+public sealed class DiagnosticLoggingTests : IDisposable
+{
+    private readonly string _directory = Path.Combine(Path.GetTempPath(), $"SqlXmlAnalyzer-Imp04Tests-{Guid.NewGuid():N}");
+    public DiagnosticLoggingTests() => Directory.CreateDirectory(_directory);
+
+    [Fact]
+    public void Logger_EnforcesBuildPolicyForFileAndStderrWithoutPollutingStdout()
+    {
+        Logger.Shutdown();
+        string path = Path.Combine(_directory, "mode.log");
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var oldOut = Console.Out;
+        var oldError = Console.Error;
+        try
+        {
+            Console.SetOut(stdout);
+            Console.SetError(stderr);
+            Logger.Initialize(forceVerbose: true, logLevel: SqlXmlAnalyzer.LogLevel.Debug, customLogFilePath: path);
+            Logger.Debug("debug-marker");
+            Logger.Info("legacy-info-marker");
+            Logger.Warning("warning-marker");
+            Logger.Error("error-marker");
+            Logger.Critical("fatal-marker");
+            Logger.Flush();
+        }
+        finally { Console.SetOut(oldOut); Console.SetError(oldError); Logger.Shutdown(); }
+        stdout.ToString().Should().BeEmpty();
+        foreach (string text in new[] { stderr.ToString(), File.ReadAllText(path) })
+        {
+            text.Should().Contain("[ERROR]").And.Contain("error-marker").And.Contain("[CRITICAL]").And.Contain("fatal-marker");
+#if DEBUG
+            text.Should().Contain("[DEBUG]").And.Contain("debug-marker").And.Contain("legacy-info-marker").And.Contain("[WARN]");
+#else
+            text.Should().NotContain("debug-marker").And.NotContain("legacy-info-marker").And.NotContain("warning-marker");
+            text.Should().NotContain("[DEBUG]").And.NotContain("[INFO]").And.NotContain("[WARN]");
+#endif
+        }
+    }
+
+    [Fact]
+    public void Provider_UsesSameFilePolicyForLayeredLogs()
+    {
+        Logger.Shutdown();
+        string path = Path.Combine(_directory, "provider.log");
+        Logger.Initialize(customLogFilePath: path);
+        using var factory = LoggerFactory.Create(builder => builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace).AddProvider(new ApplicationLoggerProvider()));
+        var logger = factory.CreateLogger("Imp04Test");
+        logger.LogDebug("layer-debug");
+        logger.LogWarning("layer-warning");
+        logger.LogError("layer-error");
+        logger.LogCritical("layer-critical");
+        Logger.Flush();
+        using var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+        string text = reader.ReadToEnd();
+        text.Should().Contain("layer-error").And.Contain("layer-critical");
+#if DEBUG
+        text.Should().Contain("layer-debug").And.Contain("layer-warning");
+#else
+        text.Should().NotContain("layer-debug").And.NotContain("layer-warning");
+#endif
+    }
+
+    [Fact]
+    public void Logger_WhenFileSinkCannotBeCreated_ReportsErrorWithoutThrowing()
+    {
+        Logger.Shutdown();
+        string blocker = Path.Combine(_directory, "not-a-directory");
+        File.WriteAllText(blocker, "keep");
+        var output = new StringWriter();
+        var oldError = Console.Error;
+        try
+        {
+            Console.SetError(output);
+            Logger.Initialize(customLogFilePath: Path.Combine(blocker, "log.txt"));
+            Logger.Error("original-operation-error");
+        }
+        finally { Console.SetError(oldError); }
+        output.ToString().Should().Contain("日志写入失败").And.Contain("original-operation-error");
+        File.ReadAllText(blocker).Should().Be("keep");
+    }
+
+    [Fact]
+    public void Reporter_CreatesSidecarAndDeduplicatesSameExceptionAcrossBoundaries()
+    {
+        var writer = new TestDumpWriter();
+        var reporter = new UnexpectedErrorReporter(writer, _directory);
+        var exception = new InvalidOperationException("synthetic unknown failure");
+        var first = reporter.Report(exception, "RuleBoundary");
+        var second = reporter.Report(exception, "OrchestratorBoundary");
+        first.DumpCreated.Should().BeTrue();
+        second.Should().BeSameAs(first);
+        writer.Calls.Should().Be(1);
+        using var json = JsonDocument.Parse(File.ReadAllText(first.MetadataPath!));
+        json.RootElement.GetProperty("Exception").GetString().Should().Contain("synthetic unknown failure");
+        var other = reporter.Report(new InvalidOperationException("different failure"), "NextOperation");
+        other.DumpPath.Should().NotBe(first.DumpPath);
+        File.Exists(first.DumpPath).Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Reporter_WhenCaptureFailsOrHeaderIsInvalid_DoesNotClaimDumpWasCreated(bool invalidHeader)
+    {
+        var writer = new TestDumpWriter { InvalidHeader = invalidHeader, Failure = invalidHeader ? null : new IOException("disk full") };
+        var reporter = new UnexpectedErrorReporter(writer, _directory);
+        var result = reporter.Report(new InvalidOperationException("original failure"), "Synthetic");
+        result.DumpCreated.Should().BeFalse();
+        result.DumpPath.Should().BeNull();
+        result.Summary.Should().Contain("DUMP 生成失败");
+        result.Failure.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public void NativeWriter_OnWindows_CreatesReadableMinidumpHeaderAndPrivateIncidentDirectory()
+    {
+        var reporter = new UnexpectedErrorReporter(new WindowsMiniDumpWriter(), _directory);
+        var result = reporter.Report(new InvalidOperationException("synthetic native dump verification"), "UnitNativeDump");
+        result.DumpCreated.Should().BeTrue(result.Failure);
+        using var reader = new BinaryReader(File.OpenRead(result.DumpPath!));
+        reader.ReadUInt32().Should().Be(0x504D444D); // MDMP
+        reader.ReadUInt32();
+        reader.ReadUInt32().Should().BeGreaterThan(0); // Stream count
+        if (OperatingSystem.IsWindows())
+        {
+            var access = new DirectoryInfo(Path.GetDirectoryName(result.DumpPath!)!).GetAccessControl();
+            access.AreAccessRulesProtected.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public void ExceptionPolicy_DoesNotDumpExpectedFailures()
+    {
+        ExceptionPolicy.IsExpected(new OperationCanceledException()).Should().BeTrue();
+        ExceptionPolicy.IsExpected(new IOException()).Should().BeTrue();
+        ExceptionPolicy.IsExpected(new UnauthorizedAccessException()).Should().BeTrue();
+        ExceptionPolicy.IsExpected(new InvalidOperationException()).Should().BeFalse();
+    }
+
+    private sealed class TestDumpWriter : ICrashDumpWriter
+    {
+        public int Calls { get; private set; }
+        public Exception? Failure { get; init; }
+        public bool InvalidHeader { get; init; }
+        public void Write(string path)
+        {
+            Calls++;
+            if (Failure != null) throw Failure;
+            byte[] bytes = new byte[32];
+            if (!InvalidHeader) Encoding.ASCII.GetBytes("MDMP").CopyTo(bytes, 0);
+            File.WriteAllBytes(path, bytes);
+        }
+    }
+
+    public void Dispose()
+    {
+        Logger.Shutdown();
+        string path = Path.GetFullPath(_directory);
+        string prefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer-Imp04Tests-");
+        if (!path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Unexpected cleanup path");
+        Directory.Delete(path, recursive: true);
+    }
+}

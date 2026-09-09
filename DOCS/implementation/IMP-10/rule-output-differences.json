@@ -1,0 +1,78 @@
+{
+  "MeasuredAt": "2026-09-08T23:30:53.1524392+08:00",
+  "BeforeAssemblyHash": "2F009715B7AEF821D7D7D881FA05A2A6A426603E31F7770796538B6875B5D17A",
+  "AfterAssemblyHash": "4676BAFA1CC28C22E01F917EB2480B678C2BF9BEED8273903641D30583558CFE",
+  "ComparedFields": [
+    "RuleId",
+    "Severity",
+    "Title",
+    "Message",
+    "NodeId"
+  ],
+  "Fixtures": [
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+      "SourceHash": "25E6E2E94AD8E5245A4F62DB38049B1F3AE8DD249A610697D7F25C1422AAA740",
+      "BeforeCount": 1,
+      "AfterCount": 1,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+      "SourceHash": "2F040FAB3FB13E27C00F8CFF925A2A5D41EC6ACBD0AE85A90812197669D12131",
+      "BeforeCount": 2,
+      "AfterCount": 2,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan",
+      "SourceHash": "B8A7B77BEBA0762AEA7E916D2EB302BC3E7E709E588AC18859ACC146E439934F",
+      "BeforeCount": 1,
+      "AfterCount": 1,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+      "SourceHash": "314B6DB4C78A85C18924651998276660D6312DAA73652DED5F1A94ED62D8F660",
+      "BeforeCount": 0,
+      "AfterCount": 0,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+      "SourceHash": "A8833BEB79D709A83136B46D285BEDE354F3D5400787BA1853725F8345CB6E9C",
+      "BeforeCount": 3,
+      "AfterCount": 3,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+      "SourceHash": "6C26E57836F7FC6A57632A358F808EDDFCCDFCE358CDA51292E67D74A88BE465",
+      "BeforeCount": 2,
+      "AfterCount": 2,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_no_relop.sqlplan",
+      "SourceHash": "3BE3532D3A6009A02C6231C0C8673C95596FA5B9BE4E6507296F2E23179FF4D1",
+      "BeforeCount": 0,
+      "AfterCount": 0,
+      "LegacyFieldsUnchanged": true
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_prefixed_no_relop.sqlplan",
+      "SourceHash": "5B031657765E063C6E7FA80AE7DCFD2B84BEA320400357FD491CD9AC89CD2502",
+      "BeforeCount": 0,
+      "AfterCount": 0,
+      "LegacyFieldsUnchanged": true
+    }
+  ],
+  "Scope": "Eight existing fixtures with the same repository rule configuration and ScriptDom dependency loaded; new location/object metadata is additive.",
+  "IntentionalChanges": [
+    "Text/JSON outputs retain source scope.",
+    "Table-only and case-insensitive missing-index associations no longer guess.",
+    "Multi-query comparison requires explicit selection.",
+    "All statement SQL and query-plan visualizations are retained; multi-statement automatic rewrite is withheld.",
+    "Nested statement and extension ownership follow source hierarchy."
+  ]
+}

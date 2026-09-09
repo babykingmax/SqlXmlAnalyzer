@@ -1,0 +1,1 @@
+UPDATE dbo.T SET Id=Id WHERE Id IN (2,3); UPDATE dbo.T SET Id=Id WHERE Id=1;

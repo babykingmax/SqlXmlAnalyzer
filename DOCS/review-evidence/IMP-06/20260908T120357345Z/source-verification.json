@@ -1,0 +1,22 @@
+{
+  "DateUtc": "2026-09-08T12:09:23.8996061Z",
+  "Manifest": "DOCS/acceptance/IMP-02/runs/20260908T115743976Z_c5b1e0766cfc_2ce6d6ae/protected-inputs.json",
+  "SourcesVerified": 449,
+  "Changed": [
+    null
+  ],
+  "ProductCodeChangedByReview": false,
+  "Build": "Reused verified delivery artifacts; product not rebuilt during review",
+  "Debug": {
+    "Skipped": 0,
+    "Failed": 0,
+    "Passed": 1011,
+    "Total": 1011
+  },
+  "Release": {
+    "Skipped": 0,
+    "Failed": 0,
+    "Passed": 1011,
+    "Total": 1011
+  }
+}

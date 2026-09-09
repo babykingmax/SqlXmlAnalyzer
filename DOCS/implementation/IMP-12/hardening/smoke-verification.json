@@ -1,0 +1,33 @@
+{
+  "TimestampUtc": "2026-09-09T01:22:09.6573472Z",
+  "CliAssemblySha256": "6B44857FC05778973E99493E78E688210EF9F560F3388319B147F2451744A100",
+  "Cases": [
+    {
+      "Name": "serial-clean",
+      "ExitCode": 0,
+      "Status": "Passed",
+      "Hit": 0,
+      "NoHit": 31,
+      "Skipped": 3,
+      "Failed": 0,
+      "HasMissingEvidence": false,
+      "Capabilities": "PlanStatements, PlanOperators, RuntimeCounters, PreservedSource",
+      "ResultRuleIds": []
+    },
+    {
+      "Name": "parallel-branch",
+      "ExitCode": 0,
+      "Status": "Passed",
+      "Hit": 1,
+      "NoHit": 32,
+      "Skipped": 1,
+      "Failed": 0,
+      "HasMissingEvidence": false,
+      "Capabilities": "PlanStatements, PlanOperators, RuntimeCounters, PreservedSource",
+      "ResultRuleIds": [
+        "RULE_010_INEFFECTIVE_PARALLELISM"
+      ]
+    }
+  ],
+  "JUnitFailures": "0"
+}

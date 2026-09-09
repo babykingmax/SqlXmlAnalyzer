@@ -29,7 +29,7 @@ namespace SqlXmlAnalyzer.Tests
         [Fact]
         public async Task OpenAsync_WhenFileIsDeadlockXml_ReturnsDeadlockKind()
         {
-            string path = WriteFile("deadlock.xdl", "<deadlock><victim-list /></deadlock>");
+            string path = WriteFile("deadlock.xdl", "<deadlock><process-list><process id='p1'/></process-list><resource-list><keylock/></resource-list></deadlock>");
 
             DocumentOpenResult result = await _service.OpenAsync(path);
 
@@ -45,7 +45,7 @@ namespace SqlXmlAnalyzer.Tests
                 "plan.sqlplan",
                 """
                 <ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
-                  <BatchSequence />
+                  <BatchSequence><Batch><Statements><StmtSimple StatementType="CREATE TABLE" /></Statements></Batch></BatchSequence>
                 </ShowPlanXML>
                 """);
 
@@ -63,7 +63,9 @@ namespace SqlXmlAnalyzer.Tests
 
             DocumentOpenResult result = await _service.OpenAsync(path);
 
-            result.IsSuccess.Should().BeTrue();
+            result.IsSuccess.Should().BeFalse();
+            result.Status.Should().Be(InputStatus.Unrecognized);
+            result.ErrorCode.Should().Be("INPUT_UNRELATED_XML");
             result.Kind.Should().Be(AnalysisDocumentKind.Unknown);
             result.Document.Should().NotBeNull();
         }
@@ -77,23 +79,26 @@ namespace SqlXmlAnalyzer.Tests
 
             result.IsSuccess.Should().BeFalse();
             result.Kind.Should().Be(AnalysisDocumentKind.Unknown);
-            result.ErrorMessage.Should().Contain("does not exist");
+            result.ErrorCode.Should().Be("INPUT_READ_ERROR");
+            result.ErrorMessage.Should().Contain("无法读取输入文件");
         }
 
         [Fact]
-        public async Task OpenAsync_WhenPathIsXel_ReturnsTraceKindWithoutLoadingXml()
+        public async Task OpenAsync_WhenPathIsInvalidXel_ReturnsInvalidInsteadOfRoutingSuccess()
         {
             string path = WriteFile("deadlocks.xel", "not xml");
 
             DocumentOpenResult result = await _service.OpenAsync(path);
 
-            result.IsSuccess.Should().BeTrue();
+            result.IsSuccess.Should().BeFalse();
+            result.Status.Should().Be(InputStatus.Invalid);
+            result.ErrorCode.Should().Be("INPUT_INVALID_XEL");
             result.Kind.Should().Be(AnalysisDocumentKind.XelDeadlockTrace);
             result.Document.Should().BeNull();
         }
 
         [Fact]
-        public void ClassifyXml_WhenShowPlanNamespaceContainsShowplan_ReturnsExecutionPlanKind()
+        public void ClassifyXml_WhenNamespaceOnlyContainsShowplan_RejectsUnsupportedNamespace()
         {
             var document = XDocument.Parse(
                 """
@@ -104,7 +109,7 @@ namespace SqlXmlAnalyzer.Tests
 
             AnalysisDocumentKind kind = _service.ClassifyXml(document);
 
-            kind.Should().Be(AnalysisDocumentKind.ExecutionPlanXml);
+            kind.Should().Be(AnalysisDocumentKind.Unknown);
         }
 
         [Theory]
@@ -147,15 +152,14 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void BuildDropAction_WhenPathIsUnsupported_ReturnsUserMessage()
+        public void BuildDropAction_WhenExtensionIsUnknown_DefersToContentRecognition()
         {
             DocumentDropActionResult result = _service.BuildDropAction("notes.txt");
 
-            result.Status.Should().Be(DocumentDropActionStatus.Unsupported);
+            result.Status.Should().Be(DocumentDropActionStatus.Ready);
             result.Kind.Should().Be(AnalysisDocumentKind.Unknown);
             result.FilePath.Should().Be("notes.txt");
-            result.UserMessage.Should().Be(
-                "Unsupported file type. Choose a deadlock XML/XDL/XEL file or an execution plan .sqlplan file.");
+            result.UserMessage.Should().BeNull();
         }
 
         [Theory]

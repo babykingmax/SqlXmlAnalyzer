@@ -50,8 +50,8 @@ namespace SqlXmlAnalyzer.Services
             {
                 connection.IsHighlighted = _highlightService.ShouldHighlight(
                     selectedNodeId,
-                    connection.Source?.NodeId,
-                    connection.Target?.NodeId);
+                    connection.Source?.SelectionKey,
+                    connection.Target?.SelectionKey);
             }
         }
     }

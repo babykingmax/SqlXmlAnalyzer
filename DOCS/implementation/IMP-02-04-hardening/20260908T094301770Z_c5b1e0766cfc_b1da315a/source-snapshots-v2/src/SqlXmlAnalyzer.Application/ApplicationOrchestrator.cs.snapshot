@@ -1,0 +1,185 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
+using SqlXmlAnalyzer.Application.Models;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Diagnostics;
+
+namespace SqlXmlAnalyzer.Application
+{
+    public class ApplicationOrchestrator
+    {
+        private readonly IAnalysisEngine _analysisEngine;
+        private readonly IRefactoringEngine _refactoringEngine;
+        private readonly IFileHandler _fileHandler;
+        private readonly IResultReporter _reporter;
+        private readonly ILogger<ApplicationOrchestrator> _logger;
+        private readonly ISqlWritebackService _writebackService;
+        private readonly IUnexpectedErrorReporter _unexpectedErrors;
+
+        public ApplicationOrchestrator(
+            IAnalysisEngine analysisEngine,
+            IRefactoringEngine refactoringEngine,
+            IFileHandler fileHandler,
+            IResultReporter reporter,
+            ILogger<ApplicationOrchestrator> logger,
+            ISqlWritebackService? writebackService = null,
+            IUnexpectedErrorReporter? unexpectedErrors = null)
+        {
+            _analysisEngine = analysisEngine;
+            _refactoringEngine = refactoringEngine;
+            _fileHandler = fileHandler;
+            _reporter = reporter;
+            _logger = logger;
+            _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
+            _writebackService = writebackService ?? new SqlWritebackService(new PhysicalSqlWritebackFileSystem(), unexpectedErrors: _unexpectedErrors);
+        }
+
+        public OrchestratorResult Execute(
+            string sqlPath,
+            string? planPath = null,
+            bool isDryRun = false,
+            RefactorOptions? options = null,
+            string? outputPath = null,
+            System.Threading.CancellationToken cancellationToken = default)
+        {
+            var warnings = new List<string>();
+            SqlWritebackResult? writeback = null;
+            _logger.LogInformation("OrchestrationStarted: SQL file: {SqlPath}, Execution Plan: {PlanPath}, DryRun: {DryRun}", sqlPath, planPath, isDryRun);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                if (!_fileHandler.Exists(sqlPath))
+                {
+                    throw new FileNotFoundException($"SQL file not found: {sqlPath}", sqlPath);
+                }
+
+                SqlFileSnapshot? snapshot = isDryRun ? null : _writebackService.ReadSnapshot(sqlPath, cancellationToken);
+                var sql = snapshot?.Text ?? _fileHandler.ReadAllText(sqlPath);
+                var report = new AnalysisReport(ImmutableList<IAnalysisIssue>.Empty);
+
+                if (planPath != null)
+                {
+                    if (_fileHandler.Exists(planPath))
+                    {
+                        var xmlContent = _fileHandler.ReadAllText(planPath);
+                        report = _analysisEngine.Analyze(xmlContent);
+
+                        foreach (var issue in report.Issues)
+                        {
+                            if (issue.IssueType == "PARSE_ERROR")
+                            {
+                                throw new System.Xml.XmlException($"XML Execution Plan parsing failed for '{planPath}'. Details: {issue.Description}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var warningMsg = $"XML plan file not found: {planPath}. Proceeding with empty analysis report.";
+                        warnings.Add(warningMsg);
+                        _logger.LogWarning(warningMsg);
+                    }
+                }
+
+                var opt = options ?? new RefactorOptions();
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = _refactoringEngine.Run(sql, report, opt, isDryRun);
+                warnings.AddRange(result.Context.Warnings);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (result.IsSuccess && (result.Errors.Count > 0 || result.ParseErrors?.Count > 0 ||
+                    result.Context.RefactorFailures.Count > 0))
+                {
+                    var errors = new List<string>(result.Errors) { "重构记录了执行错误，禁止写回 SQL。" };
+                    result = result with { IsSuccess = false, Errors = errors };
+                }
+
+                if (result.IsSuccess && !isDryRun)
+                {
+                    writeback = _writebackService.WriteBack(snapshot!, result.OutputSql, cancellationToken);
+                    warnings.AddRange(writeback.Warnings);
+                    if (!writeback.IsSuccess)
+                    {
+                        _logger.LogError("SqlWritebackFailed: Stage={Stage}, Detail={Detail}", writeback.Stage, writeback.ErrorMessage);
+                        return new OrchestratorResult(null, false, writeback.ErrorMessage,
+                            writeback.ErrorException, warnings) { Writeback = writeback };
+                    }
+                    result = result with { SourceWritten = writeback.SourceWritten };
+                    if (writeback.SourceWritten)
+                        warnings.Add($"SQL 已写回。备份：{writeback.BackupPath}；原始 SHA-256：{writeback.SourceSha256}。恢复前先另存当前文件，再校验备份并复制恢复。");
+                }
+
+                if (result.Context != null)
+                {
+                    foreach (var warning in warnings)
+                    {
+                        result.Context.Warn(warning);
+                    }
+                }
+
+                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                _reporter.Report(result, isDryRun, outputPath);
+                _logger.LogInformation("OrchestrationCompleted: Success={IsSuccess}", result.IsSuccess);
+                return new OrchestratorResult(result, result.IsSuccess, null, null, warnings) { Writeback = writeback };
+            }
+            catch (Exception ex) when (writeback?.SourceWritten == true)
+            {
+                string detail = ExceptionPolicy.Describe(ex, "ReportAfterWriteback", _unexpectedErrors);
+                string message = $"SQL 已写回，但后续报告失败：{detail}。备份：{writeback.BackupPath}；请勿将此状态当作未写入。";
+                return new OrchestratorResult(null, false, message, ex, warnings) { Writeback = writeback };
+            }
+            catch (OperationCanceledException ex)
+            {
+                return new OrchestratorResult(null, false, "操作已取消，未执行 SQL 写回。", ex, warnings);
+            }
+            catch (System.Text.DecoderFallbackException ex)
+            {
+                return new OrchestratorResult(null, false,
+                    "SQL 文件编码无法安全解码，未写回。请使用 UTF-8 或带 BOM 的 UTF-16/UTF-32 副本后重试。", ex, warnings);
+            }
+            catch (FileNotFoundException ex)
+            {
+                var isSqlFile = string.Equals(ex.FileName ?? "", sqlPath, StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("SQL file not found");
+                var fileDescription = isSqlFile ? "SQL file" : "File";
+                var errMsg = $"[ERROR] {fileDescription} not found: '{ex.FileName ?? sqlPath}'.\nSuggestion: Please check if the file path is correct and ensure the file exists at the specified location.";
+                _logger.LogError(ex, errMsg);
+                _logger.LogInformation("OrchestrationCompleted: Success=False");
+                return new OrchestratorResult(null, false, errMsg, ex, warnings);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                var errMsg = $"[ERROR] Access denied to file.\nDetails: {ex.Message}\nSuggestion: Please check file/folder permissions and ensure the current user has read/write permissions.";
+                _logger.LogError(ex, errMsg);
+                _logger.LogInformation("OrchestrationCompleted: Success=False");
+                return new OrchestratorResult(null, false, errMsg, ex, warnings);
+            }
+            catch (IOException ex)
+            {
+                var errMsg = $"[ERROR] IO Exception while reading or writing files.\nDetails: {ex.Message}\nSuggestion: The file might be locked by another process or there is insufficient disk space.";
+                _logger.LogError(ex, errMsg);
+                _logger.LogInformation("OrchestrationCompleted: Success=False");
+                return new OrchestratorResult(null, false, errMsg, ex, warnings);
+            }
+            catch (System.Xml.XmlException ex)
+            {
+                var errMsg = $"[ERROR] Invalid XML execution plan.\nDetails: {ex.Message}\nSuggestion: Please verify the execution plan file is a valid XML document (.sqlplan / .xdl) exported from SQL Server or another compatible database tool.";
+                _logger.LogError(ex, errMsg);
+                _logger.LogInformation("OrchestrationCompleted: Success=False");
+                return new OrchestratorResult(null, false, errMsg, ex, warnings);
+            }
+            catch (Exception ex)
+            {
+                var errMsg = $"[ERROR] Orchestration pipeline crashed: {ExceptionPolicy.Describe(ex, "ApplicationOrchestrator", _unexpectedErrors)}";
+                _logger.LogCritical(ex, errMsg);
+                _logger.LogInformation("OrchestrationCompleted: Success=False");
+                return new OrchestratorResult(null, false, errMsg, ex, warnings) { Writeback = writeback };
+            }
+        }
+    }
+}

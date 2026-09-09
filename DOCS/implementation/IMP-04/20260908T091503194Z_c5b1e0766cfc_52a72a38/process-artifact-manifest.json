@@ -1,0 +1,405 @@
+{
+  "note": "Supplement for known process outputs under debug/release directories excluded by Git ignore patterns. Original evidence manifest is preserved.",
+  "entries": [
+    {
+      "path": "process-final-02/debug/applied.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/debug/applied.runtime.log",
+      "sha256": "32CB430227D02C001767199A9FA33956F621E57671E7B1AB69853691AEC0A582"
+    },
+    {
+      "path": "process-final-02/debug/applied.sql",
+      "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+    },
+    {
+      "path": "process-final-02/debug/applied.sql.SqlXmlAnalyzer-e07f2749209740db81a997c53caadf7e.bak",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/debug/applied.stderr.txt",
+      "sha256": "32CB430227D02C001767199A9FA33956F621E57671E7B1AB69853691AEC0A582"
+    },
+    {
+      "path": "process-final-02/debug/applied.stdout.txt",
+      "sha256": "B49770EF18D55E82C86E3F7B439EE149DBD0623C3D82BA60530A6A29B3B58132"
+    },
+    {
+      "path": "process-final-02/debug/candidate.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/debug/candidate.runtime.log",
+      "sha256": "8DF62F6238249DAE559FC0FBC2CC6C3C2A0DF764DC248C9EEEE7A9DFF203EAC0"
+    },
+    {
+      "path": "process-final-02/debug/candidate.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/debug/candidate.stderr.txt",
+      "sha256": "8DF62F6238249DAE559FC0FBC2CC6C3C2A0DF764DC248C9EEEE7A9DFF203EAC0"
+    },
+    {
+      "path": "process-final-02/debug/candidate.stdout.txt",
+      "sha256": "C779F37524BDB59DA97AFB3E2EC78F3AAE2F88DB8056BB04B8D1497B1848754B"
+    },
+    {
+      "path": "process-final-02/debug/probe-build.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/debug/probe-build.stdout.txt",
+      "sha256": "4DE10723DA5118DECEEE13D30D14FE874BFB0ED75CD39886BCF448DE8531FD46"
+    },
+    {
+      "path": "process-final-02/debug/risk-preserved.original.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final-02/debug/risk-preserved.runtime.log",
+      "sha256": "7F84981E07CD0B4A92F2A43A6DB5ABD3A352C1B20E6B07BA325AC1FDFB69669C"
+    },
+    {
+      "path": "process-final-02/debug/risk-preserved.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final-02/debug/risk-preserved.stderr.txt",
+      "sha256": "7F84981E07CD0B4A92F2A43A6DB5ABD3A352C1B20E6B07BA325AC1FDFB69669C"
+    },
+    {
+      "path": "process-final-02/debug/risk-preserved.stdout.txt",
+      "sha256": "4FF3A7EE1212E43AC0AC33F45D57DD03ED92FC75DAA7CA9FAAC76ADD74BC2C12"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error.stderr.txt",
+      "sha256": "DD49FD2B312AA2FEDB98328AF4C977C29FE3AEC75A9F6BBBB99E6B51BF749E07"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error.stdout.txt",
+      "sha256": "D5B41CB3C8751F911251B41F6D05C1541FD22FCBB862949FDC16FC278EBED164"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error/dumps/20260908T093331748Z_56552_e468a0eb495240acac506d908d588869/exception.json",
+      "sha256": "8BB3F67E152A0F7DC659E3124CB3E96A29C073FE433EBB685C0E2ED735B2E136"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error/dumps/20260908T093331748Z_56552_e468a0eb495240acac506d908d588869/process.dmp",
+      "sha256": "E5D4B34B5B9272C46380DD5AA5C289015EB83BD8699E08E6E9C0FB1F30BC1E90"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error/runtime.log",
+      "sha256": "DD49FD2B312AA2FEDB98328AF4C977C29FE3AEC75A9F6BBBB99E6B51BF749E07"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error/source.sql",
+      "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+    },
+    {
+      "path": "process-final-02/debug/unknown-error/verification.json",
+      "sha256": "1A84A403E22DD651F25609F22DF15F59C739B28AA6E48BD559FF188685999253"
+    },
+    {
+      "path": "process-final-02/release/applied.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/release/applied.runtime.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/applied.sql",
+      "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+    },
+    {
+      "path": "process-final-02/release/applied.sql.SqlXmlAnalyzer-0ecdcec869ea4108a11672b2452f3e02.bak",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/release/applied.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/applied.stdout.txt",
+      "sha256": "3016614A062E3A802C4AD959ED141A5A00E828763F52129E16714B49CDD0E92E"
+    },
+    {
+      "path": "process-final-02/release/candidate.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/release/candidate.runtime.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/candidate.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final-02/release/candidate.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/candidate.stdout.txt",
+      "sha256": "566F10D9875DBAC429C8168C18F6CFFFA068C84A3A96961DE5313327D64AD05C"
+    },
+    {
+      "path": "process-final-02/release/probe-build.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/probe-build.stdout.txt",
+      "sha256": "05789EAFB053907B12C9314608EE654E50BF7A17C644643FF1A502C2075D1200"
+    },
+    {
+      "path": "process-final-02/release/risk-preserved.original.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final-02/release/risk-preserved.runtime.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/risk-preserved.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final-02/release/risk-preserved.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final-02/release/risk-preserved.stdout.txt",
+      "sha256": "ECB9D7BCF0CA7E375F33DF9D5B8B5FD7FCB036059247B8A054A660A529BFE83D"
+    },
+    {
+      "path": "process-final-02/release/unknown-error.stderr.txt",
+      "sha256": "FB7554D21375F56D53CE48015C016BA14B22364AB582A85A8580D86836B38610"
+    },
+    {
+      "path": "process-final-02/release/unknown-error.stdout.txt",
+      "sha256": "9A70CF10B94E7ABC392A8670E67B75DE781883A2DF16C15314E7CBA70DFF835E"
+    },
+    {
+      "path": "process-final-02/release/unknown-error/dumps/20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987/exception.json",
+      "sha256": "8EB2E1ECDCD575B693D5FD2C958584CB8B8774CA6BF80367C6769DDD81564BE5"
+    },
+    {
+      "path": "process-final-02/release/unknown-error/dumps/20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987/process.dmp",
+      "sha256": "5A31630899F4F8884AC31E28A3DD7F8F3E625528B753C179FFCE5E1FACD7F054"
+    },
+    {
+      "path": "process-final-02/release/unknown-error/runtime.log",
+      "sha256": "FB7554D21375F56D53CE48015C016BA14B22364AB582A85A8580D86836B38610"
+    },
+    {
+      "path": "process-final-02/release/unknown-error/source.sql",
+      "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+    },
+    {
+      "path": "process-final-02/release/unknown-error/verification.json",
+      "sha256": "0802AAFFAC41B4BA879FC080EB455C8018FBC2DC24753EDA42779FC1909B1455"
+    },
+    {
+      "path": "process-final/debug/applied.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/debug/applied.runtime.log",
+      "sha256": "FBE16FB2E590BD3B3E7888BD76A662292681B8BF00EC05E1A169258C0DA45EDD"
+    },
+    {
+      "path": "process-final/debug/applied.sql",
+      "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+    },
+    {
+      "path": "process-final/debug/applied.sql.SqlXmlAnalyzer-1d0a709c99f14d309017aee8a47704bd.bak",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/debug/applied.stderr.txt",
+      "sha256": "FBE16FB2E590BD3B3E7888BD76A662292681B8BF00EC05E1A169258C0DA45EDD"
+    },
+    {
+      "path": "process-final/debug/applied.stdout.txt",
+      "sha256": "356908A4FD33B95277AB132719FDCA057BA590383B5FDE5644911E0551EB5615"
+    },
+    {
+      "path": "process-final/debug/candidate.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/debug/candidate.runtime.log",
+      "sha256": "AC86327BBBADD8AA4AD109DF64EB4ACD68F8CB875535C042606155EFA8E55D20"
+    },
+    {
+      "path": "process-final/debug/candidate.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/debug/candidate.stderr.txt",
+      "sha256": "AC86327BBBADD8AA4AD109DF64EB4ACD68F8CB875535C042606155EFA8E55D20"
+    },
+    {
+      "path": "process-final/debug/candidate.stdout.txt",
+      "sha256": "12A3F09CD81F261E4A00E97CD65BAF8D09B73534FB051189D906ECCF401C5DB5"
+    },
+    {
+      "path": "process-final/debug/probe-build.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/debug/probe-build.stdout.txt",
+      "sha256": "768783F2E6DEC70569AE5C1EEA0BCDA7887A01B2FCF9C99E50ADEBE8E7821938"
+    },
+    {
+      "path": "process-final/debug/risk-preserved.original.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final/debug/risk-preserved.runtime.log",
+      "sha256": "29D874097756BEA583474592376FEAFDD7AC022BEB5A60A48F0C982701705570"
+    },
+    {
+      "path": "process-final/debug/risk-preserved.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final/debug/risk-preserved.stderr.txt",
+      "sha256": "29D874097756BEA583474592376FEAFDD7AC022BEB5A60A48F0C982701705570"
+    },
+    {
+      "path": "process-final/debug/risk-preserved.stdout.txt",
+      "sha256": "C50F828A59E5F8A07194D995D8D6622BE563677DD92C4CA67DFE9FC2AC85E8B1"
+    },
+    {
+      "path": "process-final/debug/unknown-error.stderr.txt",
+      "sha256": "E58CFABDA80AE3184CFCA2E7DC86046D6DAC70DE6EF7863BF8AAC991861C7353"
+    },
+    {
+      "path": "process-final/debug/unknown-error.stdout.txt",
+      "sha256": "5FED1F2DA082612B6E9D66FFF0EA8651AE339B14D00C57FD8A57020357E801AE"
+    },
+    {
+      "path": "process-final/debug/unknown-error/dumps/20260908T093050556Z_62732_76cddba75e404313983ddca46c2a0059/exception.json",
+      "sha256": "286719D9999F03987BB981FFB3B0E3F565EA748A29888E7611B8C5AB3C5E5F8C"
+    },
+    {
+      "path": "process-final/debug/unknown-error/dumps/20260908T093050556Z_62732_76cddba75e404313983ddca46c2a0059/process.dmp",
+      "sha256": "7C638CB0DCDEDC7EF0476193C9A054021C2327A5E77F5ADC9A59861529419D51"
+    },
+    {
+      "path": "process-final/debug/unknown-error/runtime.log",
+      "sha256": "5B7BC363DEAD1E656FC9105DC7177C96D1621EA283E839210059A9795060D0F0"
+    },
+    {
+      "path": "process-final/debug/unknown-error/source.sql",
+      "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+    },
+    {
+      "path": "process-final/debug/unknown-error/verification.json",
+      "sha256": "3ED70AAA859474161872A1785030243A4B05A50104855EE798398CEA9160A216"
+    },
+    {
+      "path": "process-final/release/applied.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/release/applied.runtime.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/applied.sql",
+      "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+    },
+    {
+      "path": "process-final/release/applied.sql.SqlXmlAnalyzer-8e742a8d44d245a98b930a04dcb425ad.bak",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/release/applied.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/applied.stdout.txt",
+      "sha256": "23A20C1636352AE095620582E1B773BE84A77C434A8BBF406A39D7DD303CCEDC"
+    },
+    {
+      "path": "process-final/release/candidate.original.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/release/candidate.runtime.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/candidate.sql",
+      "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+    },
+    {
+      "path": "process-final/release/candidate.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/candidate.stdout.txt",
+      "sha256": "4297707062595F2BED9AF7A3FCAEE0E24D8DF1434FCC77F6514218F8CA201A05"
+    },
+    {
+      "path": "process-final/release/probe-build.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/probe-build.stdout.txt",
+      "sha256": "3C3A5626D2CB38AAE6528C2FAD855F3A4B21FBCC918D9CA0695DA53227C7952E"
+    },
+    {
+      "path": "process-final/release/risk-preserved.original.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final/release/risk-preserved.runtime.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/risk-preserved.sql",
+      "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+    },
+    {
+      "path": "process-final/release/risk-preserved.stderr.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "process-final/release/risk-preserved.stdout.txt",
+      "sha256": "C35EE44354BC45B2A28D6D29A87CC8B5AC174BC5A19E69398DA7CABDD4587D22"
+    },
+    {
+      "path": "process-final/release/unknown-error.stderr.txt",
+      "sha256": "042E9034FC80CC118CC934BA23A3630E4EABC60DF64800FF463527BA42ED2FA5"
+    },
+    {
+      "path": "process-final/release/unknown-error.stdout.txt",
+      "sha256": "3C36EE3A0FB76D353BFB15C8AB6B52330E27C705BFAF871704E8ED386063B142"
+    },
+    {
+      "path": "process-final/release/unknown-error/dumps/20260908T093053504Z_62848_2c95900905a64d67a55c23fbe3a2d8b0/exception.json",
+      "sha256": "6F8A37FDDCA2AFCA24B848A301BB6A9C97AA4F250F754C613A8AB1FCD0B776A8"
+    },
+    {
+      "path": "process-final/release/unknown-error/dumps/20260908T093053504Z_62848_2c95900905a64d67a55c23fbe3a2d8b0/process.dmp",
+      "sha256": "B0522B93045CAE529BEDF97E825D657CB2C1188726161EA2321B103C1B22A5BC"
+    },
+    {
+      "path": "process-final/release/unknown-error/runtime.log",
+      "sha256": "05B49800FC18F9A1FB52CF45936FDF398AD5ABC7207CE45EE5BE1729EAD413C2"
+    },
+    {
+      "path": "process-final/release/unknown-error/source.sql",
+      "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+    },
+    {
+      "path": "process-final/release/unknown-error/verification.json",
+      "sha256": "F9F555E8B5191027D8765CEFB1A4FFB4E68A523ED7EF5E3FEA39F86F4883290A"
+    }
+  ]
+}

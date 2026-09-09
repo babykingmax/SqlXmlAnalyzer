@@ -1,0 +1,6 @@
+{
+  "File": "valid-utf32-no-bom.sqlplan",
+  "StrictXmlLoad": true,
+  "FullShowPlanXsdValidation": true,
+  "Declaration": "<?xml version=\"1.0\" encoding=\"utf-32\"?>"
+}

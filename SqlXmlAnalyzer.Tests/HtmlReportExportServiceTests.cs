@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core.Models;
 using SqlXmlAnalyzer.Core.Services;
@@ -41,7 +41,7 @@ namespace SqlXmlAnalyzer.Tests
             writer.CallCount.Should().Be(1);
             writer.Report.Should().BeSameAs(report);
             writer.OutputPath.Should().Be(@"C:\Reports\plan.html");
-            dialogService.LastSaveRequest!.Title.Should().Be("Save ExecutionPlan analysis report");
+            dialogService.LastSaveRequest!.Title.Should().Be("Save ExecutionPlan analysis report（未脱敏，仅供本地诊断）");
             dialogService.LastSaveRequest.FileName.Should().Be("ExecutionPlanReport_sample.html");
         }
 

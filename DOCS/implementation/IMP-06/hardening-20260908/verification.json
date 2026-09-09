@@ -1,0 +1,69 @@
+{
+  "Step": "IMP-06 review fixes",
+  "DateUtc": "2026-09-08T12:33:16.0688177Z",
+  "ReviewFindingsFixed": 4,
+  "AddedTests": 33,
+  "ArtifactsPath": "E:\\SqlXmlAnalyzer\\bin\\imp06-hardening-20260908",
+  "Results": [
+    {
+      "Configuration": "Debug",
+      "RunId": "20260908T122224064Z_c5b1e0766cfc_b8ced8e6",
+      "Tests": {
+        "total": 1044,
+        "failed": 0,
+        "notExecuted": 0,
+        "passed": 1044
+      },
+      "InfrastructureTests": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "ProbeConditionsMet": 7,
+      "NotMet": 15,
+      "ProbeExecutionFailed": 0,
+      "ProtectedInputDrift": [],
+      "CliDiagnosticTags": [
+        "DEBUG",
+        "ERROR"
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "RunId": "20260908T122332967Z_c5b1e0766cfc_04004332",
+      "Tests": {
+        "notExecuted": 0,
+        "failed": 0,
+        "total": 1044,
+        "passed": 1044
+      },
+      "InfrastructureTests": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "ProbeConditionsMet": 7,
+      "NotMet": 15,
+      "ProbeExecutionFailed": 0,
+      "ProtectedInputDrift": [],
+      "CliDiagnosticTags": [
+        "ERROR"
+      ]
+    }
+  ],
+  "SourceFilesCompared": 450,
+  "SourceDrift": [],
+  "CliSubprocessCases": 9,
+  "CliSubprocessCasesMet": 9,
+  "MainWindowFlowPassed": true,
+  "MainWindowProcess": {
+    "Completed": true,
+    "ExitCode": 0
+  },
+  "MainWindowShown": false,
+  "DatabaseExecuted": false
+}

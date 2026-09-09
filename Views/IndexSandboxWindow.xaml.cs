@@ -25,7 +25,7 @@ namespace SqlXmlAnalyzer.Views
             if (DataContext is ViewModels.IndexSandboxViewModel vm)
             {
                 Clipboard.SetText(vm.CreateIndexStatement);
-                MessageBox.Show("脚本已复制到剪贴板！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("脚本已复制到剪贴板！\n" + Core.Privacy.OutputPrivacy.RawNotice, "成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.Close();
             }
         }

@@ -22,7 +22,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly TabControl _mainTabControl;
         private readonly Action<DeadlockGraph> _drawGraph;
         private readonly EventHandler _playbackStepChangedHandler;
-        private readonly Dictionary<(string, string), Border> _stepBadges;
+        private readonly Dictionary<Core.Services.DeadlockPlaybackEdgeKey, Border> _stepBadges;
 
         public DeadlockAnalysisUiActionService(
             Core.ViewModels.MainViewModel viewModel,
@@ -34,7 +34,7 @@ namespace SqlXmlAnalyzer.Services
             TabControl mainTabControl,
             Action<DeadlockGraph> drawGraph,
             EventHandler playbackStepChangedHandler,
-            Dictionary<(string, string), Border> stepBadges)
+            Dictionary<Core.Services.DeadlockPlaybackEdgeKey, Border> stepBadges)
         {
             _viewModel = viewModel
                 ?? throw new ArgumentNullException(nameof(viewModel));
@@ -64,12 +64,13 @@ namespace SqlXmlAnalyzer.Services
 
             Core.DeadlockAnalysisOutput analysis = documentResult.Analysis;
             _viewModel.CurrentDeadlockDoc = documentResult.Document;
+            _viewModel.CurrentDeadlockAnalysis = analysis;
             _viewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Deadlock);
             _processesList.ItemsSource = analysis.Processes;
             _resourcesList.ItemsSource = analysis.Resources;
             _patternsList.ItemsSource = analysis.Patterns;
 
-            var playbackViewModel = new DeadlockPlaybackViewModel(analysis.Timeline.Events);
+            var playbackViewModel = new DeadlockPlaybackViewModel(analysis.Timeline);
             playbackViewModel.StepChanged += _playbackStepChangedHandler;
             _playbackControl.DataContext = playbackViewModel;
 

@@ -37,7 +37,10 @@ namespace SqlXmlAnalyzer.Core.Rules
         RuleCategory Category,
         RuleScope Scope,
         string DefaultSeverity,
-        string Description);
+        string Description)
+    {
+        public string Version { get; init; } = "1.0.0";
+    }
 
     public static class RuleMetadataCatalog
     {
@@ -87,7 +90,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 ["RULE_032_MEMORY_SPILL"] = new(RuleCategory.Memory, RuleScope.Operator, "Warning"),
                 ["RULE_033_THREAD_SKEW"] = new(RuleCategory.Parallelism, RuleScope.Operator, "Warning"),
                 ["RULE_034_RESIDUAL_PRED_OP"] = new(RuleCategory.ResidualPredicate, RuleScope.Operator, "Warning"),
-                ["RULE_035_SARGABLE_INDEX_RECOMMENDATION"] = new(RuleCategory.MissingIndex, RuleScope.Operator, "Warning"),
+                ["RULE_035_SARGABLE_INDEX_RECOMMENDATION"] = new(RuleCategory.MissingIndex, RuleScope.Statement, "Warning"),
                 ["RULE_036_WAIT_STATS"] = new(RuleCategory.WaitStats, RuleScope.Plan, "Warning"),
                 ["RULE_037_RESOURCE_SEMAPHORE"] = new(RuleCategory.ResourceSemaphore, RuleScope.Plan, "Critical")
             };

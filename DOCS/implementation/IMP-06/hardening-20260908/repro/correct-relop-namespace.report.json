@@ -1,0 +1,37 @@
+﻿[
+  {
+    "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+    "FilePath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\correct-relop-namespace.sqlplan",
+    "FileName": "correct-relop-namespace.sqlplan",
+    "Status": "Failed",
+    "InputStatus": "Success",
+    "InputKind": "ExecutionPlanXml",
+    "InputErrorCode": null,
+    "FailureMessage": "执行计划总开销 (12.0000) 超过设定阈值 (1.0000); 检测到未被允许的扫描算子 (Table Scan / Index Scan)",
+    "MaxSubtreeCost": 12,
+    "ContainsScans": true,
+    "ScannedOperators": [
+      {
+        "NodeId": "0",
+        "PhysicalOp": "Table Scan",
+        "TableName": "(未知表)"
+      }
+    ],
+    "Issues": [
+      {
+        "RuleId": "RULE_022_HIGH_COST_OP",
+        "Severity": "Warning",
+        "Title": "高开销硬件算子 Top 5",
+        "Message": "⏱️ 算子 Node 0 (Table Scan): 独占单体硬件开销预估高达 12.0000 (占该算子子树开销的 100.0%)。建议在此算子做重点定位。",
+        "NodeId": "0",
+        "Metadata": {
+          "RuleId": "RULE_022_HIGH_COST_OP",
+          "Category": 3,
+          "Scope": 0,
+          "DefaultSeverity": "Warning",
+          "Description": "Detects the top 5 operators with high individual resource costs."
+        }
+      }
+    ]
+  }
+]

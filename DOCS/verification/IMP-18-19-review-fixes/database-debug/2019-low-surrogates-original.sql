@@ -1,0 +1,1 @@
+SELECT CAST(0x00DC AS nvarchar(1)) AS Value;

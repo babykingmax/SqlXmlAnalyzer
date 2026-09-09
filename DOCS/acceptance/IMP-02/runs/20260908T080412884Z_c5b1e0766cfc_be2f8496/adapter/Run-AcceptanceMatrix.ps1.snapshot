@@ -1,0 +1,168 @@
+#requires -Version 7.0
+[CmdletBinding()]
+param([string]$RepositoryPath = (Join-Path $PSScriptRoot '../../..'))
+
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+$repository = (Resolve-Path -LiteralPath $RepositoryPath).Path
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+$commandRecords = [System.Collections.Generic.List[object]]::new()
+$artifacts = [System.Collections.Generic.List[string]]::new()
+# Git inventory first; no recursive directory enumeration.
+$tracked = @(git -C $repository -c core.quotepath=false ls-files)
+if ($LASTEXITCODE -ne 0) { throw 'Cannot obtain Git inventory.' }
+$head = (git -C $repository rev-parse HEAD).Trim()
+$runId = '{0}_{1}_{2}' -f [DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssfffZ'), $head.Substring(0,12), [guid]::NewGuid().ToString('N').Substring(0,8)
+$runDirectory = Join-Path $PSScriptRoot "runs/$runId"
+if (Test-Path -LiteralPath $runDirectory) { throw 'Existing run will not be overwritten.' }
+[void][IO.Directory]::CreateDirectory($runDirectory)
+
+function Save-Text([string]$Name, [string]$Value) {
+    $path = Join-Path $runDirectory $Name
+    [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($path))
+    [IO.File]::WriteAllText($path, $Value, $utf8)
+    if (-not $artifacts.Contains($Name)) { $artifacts.Add($Name) }
+}
+function Save-Json([string]$Name, [object]$Value) {
+    Save-Text $Name (ConvertTo-Json -InputObject $Value -Depth 20)
+}
+function Run-Command([string]$Name, [string]$Executable, [string[]]$ArgumentList) {
+    $info = [Diagnostics.ProcessStartInfo]::new()
+    $info.FileName=$Executable; $info.WorkingDirectory=$repository; $info.UseShellExecute=$false
+    $info.CreateNoWindow=$true; $info.RedirectStandardOutput=$true; $info.RedirectStandardError=$true
+    $info.StandardOutputEncoding=$utf8; $info.StandardErrorEncoding=$utf8
+    foreach ($argument in $ArgumentList) { $info.ArgumentList.Add($argument) }
+    $process = [Diagnostics.Process]::new(); $process.StartInfo=$info
+    $started=[DateTimeOffset]::UtcNow
+    try {
+        [void]$process.Start()
+        $stdoutTask=$process.StandardOutput.ReadToEndAsync(); $stderrTask=$process.StandardError.ReadToEndAsync()
+        $process.WaitForExit()
+        $stdout=$stdoutTask.GetAwaiter().GetResult(); $stderr=$stderrTask.GetAwaiter().GetResult()
+        Save-Text "$Name.stdout.txt" $stdout; Save-Text "$Name.stderr.txt" $stderr
+        $record=[pscustomobject]@{ name=$Name; executable=$Executable; arguments=$ArgumentList; startedUtc=$started.ToString('o'); finishedUtc=[DateTimeOffset]::UtcNow.ToString('o'); exitCode=$process.ExitCode }
+        $commandRecords.Add($record)
+        Write-Host "$Name : exit $($process.ExitCode)"
+        return [pscustomobject]@{ exitCode=$process.ExitCode; stdout=$stdout; stderr=$stderr }
+    } finally { $process.Dispose() }
+}
+function Require-Success([object]$Result, [string]$Stage) {
+    if ($Result.exitCode -ne 0) { throw "$Stage failed. See captured stdout/stderr; acceptance checks not completed." }
+}
+
+try {
+    $matrix=Get-Content (Join-Path $PSScriptRoot 'acceptance-matrix.json') -Raw | ConvertFrom-Json
+    $expectedIds=@(1..22 | ForEach-Object { 'R{0:D2}' -f $_ })
+    if (@(Compare-Object $expectedIds @($matrix.cases.reviewId)).Count -ne 0 -or $matrix.cases.Count -ne 22) { throw 'Matrix must contain R01-R22 exactly once.' }
+    foreach ($name in @('AcceptanceProbe.cs.txt','acceptance-matrix.json','Run-AcceptanceMatrix.ps1')) {
+        Save-Text "adapter/$name.snapshot" ([IO.File]::ReadAllText((Join-Path $PSScriptRoot $name)))
+    }
+    $protected=@($tracked | Where-Object { $_ -notmatch '(?i)(^|/)(\.git|bin|obj|\.vs|publish[^/]*|backups|\.tmp\.[^/]*)(/|$)' -and $_ -notlike 'DOCS/*' })
+    $untrackedSource=@(git -C $repository -c core.quotepath=false ls-files --others --exclude-standard | Where-Object { $_ -match '\.(cs|xaml|csproj)$' -and $_ -notlike 'DOCS/*' -and $_ -notmatch '(?i)(^|/)(bin|obj|\.vs|publish[^/]*|backups|\.tmp\.[^/]*)(/|$)' })
+    $protected=@($protected + $untrackedSource + @('DOCS/review-evidence/ReviewProbe.cs.txt','DOCS/review-evidence/Run-ReviewProbe.ps1','DOCS/review-evidence/baseline.json','DOCS/review-evidence/probe-results.json') | Sort-Object -Unique)
+    $inputHashes=@($protected | ForEach-Object { [pscustomobject]@{ path=$_; sha256=(Get-FileHash -LiteralPath (Join-Path $repository $_) -Algorithm SHA256).Hash } })
+    Save-Json 'protected-inputs.json' $inputHashes
+    Save-Text 'git-status-before.txt' ((git -C $repository status --short) -join "`n")
+    $sdk=Run-Command 'sdk' 'dotnet' @('--info'); Require-Success $sdk 'SDK metadata'
+    $restore=Run-Command 'restore' 'dotnet' @('restore','SqlXmlAnalyzer.sln','--nologo'); Require-Success $restore 'Restore'
+    $build=Run-Command 'build' 'dotnet' @('build','SqlXmlAnalyzer.sln','--no-restore','--no-incremental','--nologo'); Require-Success $build 'Build'
+    $test=Run-Command 'test' 'dotnet' @('test','SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj','--no-build','--no-restore','--nologo','--logger','trx;LogFileName=existing-suite.trx','--results-directory',(Join-Path $runDirectory 'test-output')); Require-Success $test 'Existing suite'
+    $artifacts.Add('test-output/existing-suite.trx')
+
+    $temporaryDirectory=Join-Path ([IO.Path]::GetTempPath()) ('SqlXmlAnalyzer-IMP02-'+[guid]::NewGuid().ToString('N'))
+    [void][IO.Directory]::CreateDirectory($temporaryDirectory)
+    [IO.File]::Copy((Join-Path $PSScriptRoot 'AcceptanceProbe.cs.txt'),(Join-Path $temporaryDirectory 'Program.cs'),$false)
+    $reference=[Security.SecurityElement]::Escape((Join-Path $repository 'SqlXmlAnalyzer.csproj'))
+    $project=@"
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="$reference" /><PackageReference Include="System.Text.Json" Version="10.0.9" /></ItemGroup>
+</Project>
+"@
+    $projectPath=Join-Path $temporaryDirectory 'AcceptanceProbe.csproj'
+    [IO.File]::WriteAllText($projectPath,$project,$utf8)
+    Save-Text 'adapter/AcceptanceProbe.csproj.snapshot' $project
+    $probe=Run-Command 'probe' 'dotnet' @('run','--project',$projectPath,'--nologo','--',$repository,$runDirectory); Require-Success $probe 'Probe adapter'
+    $artifacts.Add('observed.json')
+    $observations=@(Get-Content (Join-Path $runDirectory 'observed.json') -Raw | ConvertFrom-Json)
+    if ($observations.Count -ne 22 -or @(Compare-Object $expectedIds @($observations.id)).Count -ne 0) { throw 'Unexpected probe result shape.' }
+    $cli=Run-Command 'cli-invalid-input' 'dotnet' @('run','--project','SqlXmlAnalyzer.CLI','--no-build','--no-restore','--','--path',(Join-Path $runDirectory 'fixtures/not-a-plan.sqlplan'),'--format','json')
+
+    $checks=@(foreach ($case in $matrix.cases) {
+        $o=($observations | Where-Object id -EQ $case.reviewId).observed
+        $met=$false
+        switch ($case.reviewId) {
+            'R01' { $met=(-not $o.literalRetained -and -not $o.serverRetained -and -not $o.aliasRetained -and $o.tableMasked) }
+            'R02' { $met=($o.OutputSql -match '\bLTRIM\s*\(') }
+            'R03' { $met=(-not $o.IsSuccess -and -not $o.SourceWritten -and $o.BackupAttempted) }
+            'R04' { $met=($o.unrelatedXmlIssues -gt 0 -and $cli.exitCode -ne 0) }
+            'R05' { $met=($o.openKind -eq 'DeadlockXml' -and $o.parserAccepts) }
+            'R06' { $met=($o.parsedPriority -eq '7') }
+            'R07' { $met=(@($o.patterns | Where-Object { $_ -match 'SERIALIZABLE|范围锁死锁|Range Lock Deadlock' }).Count -eq 0) }
+            'R08' { $met=($o.graphContainsC -and $o.timelineContainsC) }
+            'R09' { $met=($null -eq $o.rowMismatch -and $null -eq $o.cardinalityError) }
+            'R10' { $met=($o.extractedResidual -eq '[T].[V]=(2)' -and -not [string]::IsNullOrWhiteSpace($o.ruleHit) -and $o.uiResidual -contains '[T].[V]=(2)') }
+            'R11' { $met=($o.ExecutionMode -eq 'Batch' -and $o.IsParallel -and $o.Ordered -eq 'True' -and $o.ActualRows -eq '100' -and ($o.ActualRowsRead -replace ',','') -eq '1000') }
+            'R12' { $met=([Math]::Abs([double]$o.lowThenHigh-[double]$o.highThenLow) -lt 0.000001) }
+            'R13' { $met=($o.escaped -ceq '[Order.Detail]') }
+            'R14' { $met=($o.matched.Count -eq 2 -and $o.matched[0] -eq 'sales' -and $o.matched[1] -eq 'audit') }
+            'R15' { $met=($o.estimateVsActual.Count -eq 2 -and @($o.estimateVsActual | Where-Object { $null -ne $_.Delta -or $null -ne $_.Value }).Count -eq 0) }
+            'R16' { $met=($o.comparedCostA -eq 2 -and $o.comparedCostB -eq 999) }
+            'R17' { $met=($o.parentTable -ne 'ChildTable' -and $o.parentPredicates -notcontains 'ChildFilter') }
+            'R18' { $met=($o.simpleTwoProcessCycleCount -eq 1) }
+            'R19' { $met=($o.OutputSql -match 'DECLARE\s+@T\s+TABLE' -and $o.OutputSql -notmatch 'CREATE\s+TABLE\s+#T\b') }
+            'R20' { $met=([regex]::Matches($o.OutputSql,'(?i)CREATE\s+TABLE\s+#T\b').Count -eq 1 -and $o.OutputSql -notmatch '(?i)DROP\s+TABLE\s+#T\b') }
+            'R21' { $met=($o.rowBindings.Count -eq 2 -and @($o.rowBindings | Where-Object { $_.count -ne 1 -or $_.bindings[0] -ne '{Binding ActualRows}' }).Count -eq 0) }
+            'R22' { $met=($o.initialDescription -notmatch '回放死锁形成过程' -and $o.initialDescription -match '推演') }
+            default { throw "No check for $($case.reviewId)" }
+        }
+        [pscustomobject]@{
+            caseId=$case.caseId; reviewId=$case.reviewId; priority=$case.priority
+            status=$(if ($met) { 'ProbeConditionMet' } else { 'NotMet' })
+            expected=$case.expected; observed=$o
+            adapterRequiresMigration=($case.reviewId -in @('R14','R15','R16'))
+            limitations=$case.gap; issueClosed=$false
+        }
+    })
+    Save-Json 'acceptance-results.json' $checks
+    $fixtureManifest=@(
+        foreach ($kind in @('fixtures','candidates')) {
+            foreach ($file in @(Get-ChildItem -LiteralPath (Join-Path $runDirectory $kind) -File)) {
+                $relative="$kind/$($file.Name)"; $artifacts.Add($relative)
+                [pscustomobject]@{ path=$relative; sha256=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash; bytes=$file.Length; origin='Synthetic review probe / current engine output'; sqlServerVersion=$null; xsdValidated=$false; privacy='Synthetic test values only; not real production data'; sqlServerExecuted=$false }
+            }
+        }
+        foreach ($path in @($tracked | Where-Object { $_ -match '^SqlXmlAnalyzer.Tests/(TestData|Resources)/.*\.(sqlplan|xdl|xel)$' })) {
+            [pscustomobject]@{ path=$path; sha256=(Get-FileHash -LiteralPath (Join-Path $repository $path) -Algorithm SHA256).Hash; bytes=(Get-Item -LiteralPath (Join-Path $repository $path)).Length; origin='Existing repository fixture; acquisition provenance unverified'; sqlServerVersion=$null; xsdValidated=$false; privacy='Requires provenance/privacy review before external sharing'; sqlServerExecuted=$false }
+        }
+    )
+    Save-Json 'fixture-manifest.json' $fixtureManifest
+    $drift=@($inputHashes | Where-Object { (Get-FileHash -LiteralPath (Join-Path $repository $_.path) -Algorithm SHA256).Hash -ne $_.sha256 } | ForEach-Object path)
+    Save-Json 'protected-input-drift.json' $drift
+    if ($drift.Count -ne 0) { throw 'Protected source or historical evidence changed.' }
+    [xml]$trx=Get-Content (Join-Path $runDirectory 'test-output/existing-suite.trx') -Raw
+    $counters=$trx.SelectSingleNode('//*[local-name()="Counters"]')
+    $summary=[ordered]@{
+        schemaVersion=1; step='IMP-02'; runId=$runId; head=$head; runDirectory=$runDirectory
+        matrixCases=$checks.Count; probeConditionsMet=@($checks | Where-Object status -EQ 'ProbeConditionMet').Count; notMet=@($checks | Where-Object status -EQ 'NotMet').Count
+        probeConditionsAllMet=(@($checks | Where-Object status -EQ 'NotMet').Count -eq 0)
+        issuesClosed=0; existingSuite=@{ total=[int]$counters.GetAttribute('total'); passed=[int]$counters.GetAttribute('passed'); failed=[int]$counters.GetAttribute('failed'); notExecuted=[int]$counters.GetAttribute('notExecuted') }
+        cliInvalidInputExitCode=$cli.exitCode; protectedInputDrift=$drift; fixtureAndCandidateEntries=$fixtureManifest.Count
+        sqlServerExecutionPerformed=$false; wpfVisualTestPerformed=$false; coverageGenerated=$false
+        note='Exit 1 means corrected-behavior conditions are not met; this is separate from the passing existing suite. Full issue closure requires additional matrix scenarios.'
+    }
+    Save-Json 'summary.json' $summary
+    Save-Json 'commands.json' $commandRecords.ToArray()
+    $artifactManifest=@($artifacts | Sort-Object -Unique | ForEach-Object { [pscustomobject]@{ path=$_; sha256=(Get-FileHash -LiteralPath (Join-Path $runDirectory $_) -Algorithm SHA256).Hash } })
+    Save-Json 'artifact-manifest.json' $artifactManifest
+    Write-Host "Acceptance evidence: $runDirectory"
+    $summary | ConvertTo-Json -Depth 10
+    if (-not $summary.probeConditionsAllMet) { exit 1 }
+    exit 0
+}
+catch {
+    Save-Text 'infrastructure-error.txt' $_.ToString()
+    Save-Json 'commands.json' $commandRecords.ToArray()
+    Write-Error -ErrorAction Continue "Acceptance infrastructure failed: $($_.Exception.Message). Evidence: $runDirectory"
+    exit 2
+}

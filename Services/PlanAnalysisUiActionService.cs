@@ -69,6 +69,9 @@ namespace SqlXmlAnalyzer.Services
             Core.Services.PlanAnalysisOutput analysis = documentResult.Analysis;
 
             _viewModel.CurrentPlanDoc = document;
+            _viewModel.CurrentRewriteReview = analysis.RewriteReview;
+            _viewModel.CurrentRewriteSource = analysis.QueryText;
+            _viewModel.CurrentPlanDiagnostics = analysis.Diagnostics;
             _viewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.ExecutionPlan);
             _viewModel.MissingIndexes.Clear();
             foreach (MissingIndexSuggestion missingIndex in analysis.MissingIndexes)

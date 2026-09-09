@@ -1,0 +1,175 @@
+{
+  "timestampUtc": "2026-09-08T09:13:00.1237722Z",
+  "step": "IMP-03",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "finalAcceptanceRun": "20260908T090642185Z_c5b1e0766cfc_c45e1ec8",
+  "historyAndFinalArtifactChecks": [
+    {
+      "manifest": "DOCS\\baselines\\IMP-01\\20260908T074458598Z_c5b1e0766cfc_c3523269\\artifact-manifest.json",
+      "entries": 75,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS\\acceptance\\IMP-02\\runs\\20260908T080801184Z_c5b1e0766cfc_6a19a7b0\\artifact-manifest.json",
+      "entries": 47,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS\\acceptance\\IMP-02\\runs\\20260908T083501166Z_c5b1e0766cfc_71955017\\artifact-manifest.json",
+      "entries": 63,
+      "errors": [],
+      "passed": true
+    },
+    {
+      "manifest": "DOCS\\acceptance\\IMP-02\\runs\\20260908T090642185Z_c5b1e0766cfc_c45e1ec8\\artifact-manifest.json",
+      "entries": 63,
+      "errors": [],
+      "passed": true
+    }
+  ],
+  "retainedInputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256Before": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "sha256After": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "sha256Before": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "sha256After": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "unchanged": true
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "sha256Before": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "sha256After": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "sha256Before": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "sha256After": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/ReviewProbe.cs.txt",
+      "sha256Before": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "sha256After": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/Run-ReviewProbe.ps1",
+      "sha256Before": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "sha256After": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/baseline.json",
+      "sha256Before": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "sha256After": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/probe-results.json",
+      "sha256Before": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "sha256After": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "unchanged": true
+    }
+  ],
+  "protectedInputDriftSinceFinalRun": [],
+  "unexpectedChangesSinceImp02": [],
+  "ownedSourceFiles": 15,
+  "snapshottedSourcesAdapterAndDocuments": 22,
+  "build": {
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "log": "DOCS\\acceptance\\IMP-02\\runs\\20260908T090642185Z_c5b1e0766cfc_c45e1ec8\\build.stdout.txt"
+  },
+  "testSuite": {
+    "total": 852,
+    "passed": 852,
+    "failed": 0,
+    "notExecuted": 0
+  },
+  "infrastructureTests": {
+    "total": 32,
+    "passed": 32,
+    "failed": 0
+  },
+  "cliSmoke": {
+    "total": 3,
+    "passed": 3
+  },
+  "r03": {
+    "caseId": "AC-R03-01",
+    "reviewId": "R03",
+    "priority": "P1",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "返回失败且原文件不写入；备份是写回前置；外部修改、替换失败或取消也不能破坏原字节。",
+    "observed": {
+      "IsSuccess": false,
+      "SourceWritten": false,
+      "BackupAttempted": true,
+      "Warnings": [],
+      "failureStage": "CreateBackup",
+      "ErrorMessage": "SQL 写回失败（CreateBackup），未覆盖当前源文件：Synthetic backup failure 未生成可验证备份。"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-03 已增加独立写回服务、文件故障测试与 CLI 失败验证；真实 GUI 应用入口的操作闭环仍归 IMP-19/21。最小探针通过不自动关闭整个 R03。",
+    "issueClosed": false
+  },
+  "remainingNotMet": 21,
+  "issuesAutomaticallyClosed": 0,
+  "developmentAttempts": [
+    {
+      "attempt": "writeback-tests-01",
+      "category": "Current implementation development, not historical baseline failure",
+      "logExists": true,
+      "trxExists": false,
+      "passed": null,
+      "failed": null
+    },
+    {
+      "attempt": "writeback-tests-02",
+      "category": "Current implementation development, not historical baseline failure",
+      "logExists": true,
+      "trxExists": true,
+      "passed": 64,
+      "failed": 1
+    },
+    {
+      "attempt": "writeback-tests-03",
+      "category": "Current implementation development, not historical baseline failure",
+      "logExists": true,
+      "trxExists": true,
+      "passed": 38,
+      "failed": 27
+    },
+    {
+      "attempt": "writeback-tests-04",
+      "category": "Current implementation development, not historical baseline failure",
+      "logExists": true,
+      "trxExists": true,
+      "passed": 64,
+      "failed": 1
+    },
+    {
+      "attempt": "writeback-tests-05",
+      "category": "Current implementation development, not historical baseline failure",
+      "logExists": true,
+      "trxExists": true,
+      "passed": 65,
+      "failed": 0
+    }
+  ],
+  "diffCheckExitCode": 0,
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "coverageGenerated": false,
+  "passed": true
+}

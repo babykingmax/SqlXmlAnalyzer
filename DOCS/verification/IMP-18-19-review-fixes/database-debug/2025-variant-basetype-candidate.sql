@@ -1,0 +1,1 @@
+SELECT CAST(CAST(N'a' AS nvarchar(1)) AS sql_variant) AS Value;

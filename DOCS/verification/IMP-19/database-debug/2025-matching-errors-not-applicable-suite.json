@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "Name": "matching-errors-not-applicable",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": ""
+    }
+  ],
+  "CompatibilityLevel": 170,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025"
+}

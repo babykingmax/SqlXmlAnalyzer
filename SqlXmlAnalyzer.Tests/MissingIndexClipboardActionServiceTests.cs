@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core.Models;
 using SqlXmlAnalyzer.Core.Services;
@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MissingIndexClipboardActionStatus.Ready);
             result.Text.Should().Be("CREATE INDEX IX_Test ON dbo.Orders(Id);");
-            result.SuccessMessage.Should().Be("CREATE INDEX DDL copied to clipboard.");
+            result.SuccessMessage.Should().Be("CREATE INDEX DDL copied to clipboard.\n" + SqlXmlAnalyzer.Core.Privacy.OutputPrivacy.RawNotice);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MissingIndexClipboardActionStatus.Ready);
             result.Text.Should().Be("DROP INDEX IX_Test ON dbo.Orders;");
-            result.SuccessMessage.Should().Be("DROP INDEX rollback DDL copied to clipboard.");
+            result.SuccessMessage.Should().Be("DROP INDEX rollback DDL copied to clipboard.\n" + SqlXmlAnalyzer.Core.Privacy.OutputPrivacy.RawNotice);
         }
 
         [Fact]
@@ -55,9 +55,9 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(MissingIndexClipboardActionStatus.Ready);
             result.Text.Should().Contain("SQL Server Missing Index Deployment Bundle");
-            result.Text.Should().Contain("CREATE NONCLUSTERED INDEX [IX_Orders_CustomerId]");
-            result.Text.Should().Contain("DROP INDEX [IX_Orders_CustomerId] ON [sales].[Orders];");
-            result.SuccessMessage.Should().Be("Deployment bundle copied to clipboard.");
+            result.Text.Should().MatchRegex(@"CREATE NONCLUSTERED INDEX \[IX_Orders_[0-9A-F]{64}\]");
+            result.Text.Should().MatchRegex(@"DROP INDEX \[IX_Orders_[0-9A-F]{64}\] ON \[sales\].\[Orders\];");
+            result.SuccessMessage.Should().Be("Deployment bundle copied to clipboard.\n" + SqlXmlAnalyzer.Core.Privacy.OutputPrivacy.RawNotice);
         }
 
         [Fact]

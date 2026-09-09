@@ -20,10 +20,7 @@ namespace SqlXmlAnalyzer.Core.Services
             }
 
             var parsed = parseResult.Value;
-            var graph = DeadlockGraphBuilder.Build(
-                parsed.Processes,
-                parsed.Resources,
-                parsed.VictimId);
+            var graph = DeadlockGraphBuilder.Build(parsed);
 
             return BuildDeadlockDiagram(graph, includeLegend);
         }

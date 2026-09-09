@@ -1,0 +1,24 @@
+"""python Inspect-PdfOutputs.py.txt NEW_PROCESS_DIRECTORY NEW_RESULT_JSON (requires pypdf)."""
+import json
+import re
+import sys
+from pathlib import Path
+from pypdf import PdfReader
+
+folder, output = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
+if output.exists():
+    raise SystemExit("Use a new evidence filename.")
+results = []
+for mode in ("Debug", "Release"):
+    path = folder / mode / "raw.pdf"
+    document = PdfReader(path)
+    text = "\n".join(page.extract_text() or "" for page in document.pages)
+    compact = re.sub(r"\s+", "", text)
+    results.append(dict(configuration=mode, path=str(path), pages=len(document.pages),
+        markerPresent="SECRET_IMP05_PROCESS_7238" in text,
+        rawNoticePresent="未脱敏：此输出可能包含SQL、参数、对象名称、文件路径或图像中的敏感信息" in compact,
+        sharingLimitPresent="不能作为脱敏材料共享。" in compact))
+passed = all(r["markerPresent"] and r["rawNoticePresent"] and r["sharingLimitPresent"] for r in results)
+with output.open("x", encoding="utf-8") as stream:
+    json.dump(dict(tool="pypdf text extraction", passed=passed, results=results, visualInspection=False), stream, ensure_ascii=False, indent=2)
+raise SystemExit(0 if passed else 1)

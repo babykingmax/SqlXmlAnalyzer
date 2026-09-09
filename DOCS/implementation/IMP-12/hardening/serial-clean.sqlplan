@@ -1,0 +1,8 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence><Batch><Statements><StmtSimple StatementId="1" StatementText="SELECT 1">
+    <QueryPlan><RelOp NodeId="0" PhysicalOp="Constant Scan" LogicalOp="Constant Scan" Parallel="false" EstimateRows="1">
+      <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="1" ActualRowsRead="1" ActualExecutions="1" /></RunTimeInformation>
+      <ConstantScan />
+    </RelOp></QueryPlan>
+  </StmtSimple></Statements></Batch></BatchSequence>
+</ShowPlanXML>

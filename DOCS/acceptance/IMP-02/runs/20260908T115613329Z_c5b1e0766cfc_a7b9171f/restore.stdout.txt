@@ -1,0 +1,8 @@
+  正在确定要还原的项目…
+  已还原 E:\SqlXmlAnalyzer\SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj (用时 399 毫秒)。
+  已还原 E:\SqlXmlAnalyzer\SqlXmlAnalyzer.CLI\SqlXmlAnalyzer.CLI.csproj (用时 399 毫秒)。
+  已还原 E:\SqlXmlAnalyzer\SqlXmlAnalyzer.csproj (用时 399 毫秒)。
+  已还原 E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Analysis\SqlXmlAnalyzer.Analysis.csproj (用时 399 毫秒)。
+  已还原 E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\SqlXmlAnalyzer.Application.csproj (用时 399 毫秒)。
+  已还原 E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Refactoring\SqlXmlAnalyzer.Refactoring.csproj (用时 399 毫秒)。
+  已还原 E:\SqlXmlAnalyzer\SqlXmlAnalyzer.Tests\SqlXmlAnalyzer.Tests.csproj (用时 400 毫秒)。

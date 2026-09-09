@@ -1,0 +1,13 @@
+{
+  "CompatibilityLevel": 170,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "ObserveSql": "",
+      "SetupSql": "CREATE TABLE dbo.T(Id int); INSERT dbo.T VALUES(1),(2),(3);",
+      "OrderedResults": false,
+      "Name": "mixed-batch-control"
+    }
+  ]
+}

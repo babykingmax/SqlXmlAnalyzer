@@ -1,0 +1,13 @@
+{
+  "executable": "dotnet",
+  "arguments": [
+    "--info"
+  ],
+  "startedUtc": "2026-09-08T12:23:38.4459206+00:00",
+  "finishedUtc": "2026-09-08T12:23:38.7453032+00:00",
+  "processId": 38296,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

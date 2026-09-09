@@ -1,0 +1,1 @@
+SELECT NCHAR(65533) AS Value;

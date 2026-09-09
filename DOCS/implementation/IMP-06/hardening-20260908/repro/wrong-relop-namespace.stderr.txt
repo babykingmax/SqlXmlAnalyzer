@@ -1,0 +1,1 @@
+[ERROR] 2026-09-08T20:26:29.5628750+08:00 INPUT_PLAN_STRUCTURE: 执行计划结构或命名空间无效；需要有效的 BatchSequence / Batch / Statements 语句结构。

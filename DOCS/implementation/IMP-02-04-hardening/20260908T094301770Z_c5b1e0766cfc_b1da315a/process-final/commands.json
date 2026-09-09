@@ -1,0 +1,38 @@
+[
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "restore",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-d6c4b0a3b84a463db68bfd421009f355\\DiagnosticProbe.csproj",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T09:53:59.7559978+00:00",
+    "finishedUtc": "2026-09-08T09:54:00.9856017+00:00",
+    "processId": 67776,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:53:59.7559978+00:00"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-d6c4b0a3b84a463db68bfd421009f355\\DiagnosticProbe.csproj",
+      "-c",
+      "Debug",
+      "--no-restore",
+      "--nologo",
+      "-p:BuildProjectReferences=false"
+    ],
+    "startedUtc": "2026-09-08T09:54:01.0279165+00:00",
+    "finishedUtc": "2026-09-08T09:54:02.0317109+00:00",
+    "processId": 64772,
+    "exitCode": 1,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "startUtc": "2026-09-08T09:54:01.0279165+00:00"
+  }
+]

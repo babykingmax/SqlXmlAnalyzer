@@ -1,0 +1,8 @@
+{
+  "TimestampUtc": "2026-09-08T09:53:26.0242033Z",
+  "ProcessId": 62056,
+  "Operation": "Acceptance.PowerShellHost",
+  "Exception": "System.Management.Automation.RuntimeException: The property \u0027reviewId\u0027 cannot be found on this object. Verify that the property exists.\r\n   at System.Management.Automation.ExceptionHandlingOps.CheckActionPreference(FunctionContext funcContext, Exception exception)\r\n   at System.Management.Automation.Interpreter.ActionCallInstruction\u00602.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)",
+  "RequestedDumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\host-fault-adapter\\runs\\20260908T095325626Z_c5b1e0766cfc_3cb6e8a2\\diagnostics\\20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed\\process.dmp",
+  "DumpKind": "Windows minidump with thread information; managed exception stack is in this sidecar"
+}

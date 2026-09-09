@@ -1,0 +1,232 @@
+[
+  {
+    "Path": "after\\App.xaml.cs.snapshot",
+    "Sha256": "A85B08C89627303672013954EF90197DBE375044534A794CBDB440983CAA4DD2",
+    "Bytes": 10167
+  },
+  {
+    "Path": "after\\Core\\Services\\LogFolderActionService.cs.snapshot",
+    "Sha256": "F2E1C00DE45550E3A2E2D8D663BB9021C821F4BC166C7019599A9C92121ED6FB",
+    "Bytes": 4107
+  },
+  {
+    "Path": "after\\DOCS\\软件改善实施规划.md.snapshot",
+    "Sha256": "0B8ED0CF005CB8C5691986863330D446CE93D1B884038EA6441A7E69E6397CAD",
+    "Bytes": 44805
+  },
+  {
+    "Path": "after\\DOCS\\IMP-02-04加固与实施符合性核对.md.snapshot",
+    "Sha256": "E3F92D62C33C7F5E07FB42500F8C0CD614057D63291144F6D978AFA4FD21F863",
+    "Bytes": 15733
+  },
+  {
+    "Path": "after\\DOCS\\IMP-03-05复审问题修复与加固.md.snapshot",
+    "Sha256": "16B946E5C94E0F7C0F0D17E18774C13526E7514DC351C54E10C484BD0FDF5C99",
+    "Bytes": 6313
+  },
+  {
+    "Path": "after\\DOCS\\IMP-04高风险改写限制与诊断说明.md.snapshot",
+    "Sha256": "AE9D51E30B3093821023C48C705E5D4791E6473C9B10376FD1D8F452EC7FDD47",
+    "Bytes": 15538
+  },
+  {
+    "Path": "after\\DOCS\\IMP-05脱敏覆盖与输出入口验证.md.snapshot",
+    "Sha256": "D226DAD6F5FD5C8B138318DF0DAC7044CECEF2E2BB0513041731CA8BD4F640C4",
+    "Bytes": 19419
+  },
+  {
+    "Path": "after\\Services\\MainWindowShellActionService.cs.snapshot",
+    "Sha256": "E9AD3EF1532533E484F6540659368B2137DD8FF4DA55515D55E4C4F24050B2C3",
+    "Bytes": 9049
+  },
+  {
+    "Path": "after\\SqlXmlAnalyzer.Core\\Logger.cs.snapshot",
+    "Sha256": "9BDC93CE515AE8A4F76FAC0FC9B486213FE27DE5E52926EB7E418AF295D621C7",
+    "Bytes": 10926
+  },
+  {
+    "Path": "after\\SqlXmlAnalyzer.Tests\\LogFolderActionServiceTests.cs.snapshot",
+    "Sha256": "EEAE73D62FA57463B5A088AC87A641333E4D640C70B0E7859B5B1A4E4260E17D",
+    "Bytes": 13728
+  },
+  {
+    "Path": "baseline.json",
+    "Sha256": "A532F50ACD2BB448A5DB698D7516D26C7A389C9FE80C4F06B7D14F82D7FC595A",
+    "Bytes": 3892
+  },
+  {
+    "Path": "before-files.json",
+    "Sha256": "5B7E53289196975F0FF8F6666768A2354B65FDF283E868CCA222D0365030B7F2",
+    "Bytes": 2020
+  },
+  {
+    "Path": "before\\App.xaml.cs.snapshot",
+    "Sha256": "642658C9A70DBEB24E7AF14982DE270DC964A5BF7CCFE751F10A75301689BCB4",
+    "Bytes": 10184
+  },
+  {
+    "Path": "before\\Core\\Services\\LogFolderActionService.cs.snapshot",
+    "Sha256": "F5F44BA2FA4D22E73EFED5921817AD72D943370A36B5019D64DD8343D61F25C9",
+    "Bytes": 1420
+  },
+  {
+    "Path": "before\\DOCS\\软件改善实施规划.md.snapshot",
+    "Sha256": "84E4C3E05AD6AE1B77312F5A4D18D864CAA2F7ACC0C58886996C8653B9E0DFA2",
+    "Bytes": 44404
+  },
+  {
+    "Path": "before\\DOCS\\IMP-02-04加固与实施符合性核对.md.snapshot",
+    "Sha256": "EDAB0F30A1723AA1A9D3A4D729B300892E6C3AB4420CF03423BE28C2315D10B9",
+    "Bytes": 15396
+  },
+  {
+    "Path": "before\\DOCS\\IMP-04高风险改写限制与诊断说明.md.snapshot",
+    "Sha256": "5CF716A235004BC5B1101A6D2E73E2FD1BEE65190563D9C830E7466A531AA86E",
+    "Bytes": 15184
+  },
+  {
+    "Path": "before\\DOCS\\IMP-05脱敏覆盖与输出入口验证.md.snapshot",
+    "Sha256": "CDCF4758B23965890C4F005ED8FA171DC6A8C7B0866D4BF73F7230EBE5374A91",
+    "Bytes": 19119
+  },
+  {
+    "Path": "before\\Services\\MainWindowShellActionService.cs.snapshot",
+    "Sha256": "E4F8012BF4DD6B20CA19E1BE7F24EB6690B152E2E785403B1F8B366CC37353AA",
+    "Bytes": 9254
+  },
+  {
+    "Path": "before\\SqlXmlAnalyzer.Core\\Logger.cs.snapshot",
+    "Sha256": "34A4C4987266BA0CFBB657785DFEA484AEF2E473B035262763BD0CDF5E1AB05D",
+    "Bytes": 10519
+  },
+  {
+    "Path": "before\\SqlXmlAnalyzer.Tests\\LogFolderActionServiceTests.cs.snapshot",
+    "Sha256": "43628130B91361A14BCC38746B414498C2A638BF663937F3FCCBB52B84195E23",
+    "Bytes": 1535
+  },
+  {
+    "Path": "change-ownership.json",
+    "Sha256": "8128F1F320F161E8BBB1BBD5063ED86048118985A5622165E56C13330363CEF8",
+    "Bytes": 3956
+  },
+  {
+    "Path": "debug-01-summary.json",
+    "Sha256": "022C4734768C0183BB8E456B8E228905BE3C84A35EC0D46F37D286CBC28C7C6B",
+    "Bytes": 83
+  },
+  {
+    "Path": "debug-build-01.log",
+    "Sha256": "8B92C20A88DE66728297FBED2D607FE3F1F075DE3C6FE5F133D39B92F90FF757",
+    "Bytes": 957
+  },
+  {
+    "Path": "diff\\App.xaml.cs.patch",
+    "Sha256": "26D83162A30F76C2A01F4B47D7F0BB3EEF09630ACB8A1AEEE363B4C06615F115",
+    "Bytes": 951
+  },
+  {
+    "Path": "diff\\Core\\Services\\LogFolderActionService.cs.patch",
+    "Sha256": "0B69B0E2F0F533651C9090886FDEB281B8F5DACBD4C5DA0068AAF6CF0AB71D46",
+    "Bytes": 5556
+  },
+  {
+    "Path": "diff\\Services\\MainWindowShellActionService.cs.patch",
+    "Sha256": "CA77BF8B024C64130AE90134368B9DE6F7753EDD718751584C676C18A81EAE00",
+    "Bytes": 1850
+  },
+  {
+    "Path": "diff\\SqlXmlAnalyzer.Core\\Logger.cs.patch",
+    "Sha256": "EEEB85B43247DC74DB201A7BB5D94B736ED2BAD3CF321A7BA11F5F9BB3A72B89",
+    "Bytes": 1263
+  },
+  {
+    "Path": "diff\\SqlXmlAnalyzer.Tests\\LogFolderActionServiceTests.cs.patch",
+    "Sha256": "90A6A643C9BEA50D20602D0FE89721D13AC22B4C0C82C8FAECDA46043C15A01D",
+    "Bytes": 14506
+  },
+  {
+    "Path": "document-link-validation.json",
+    "Sha256": "039146850598DD38367F9437280248E33C0E625F5945DEEFEA35935E31BC9DEB",
+    "Bytes": 1683
+  },
+  {
+    "Path": "full-debug-command.json",
+    "Sha256": "01B612028FB701FF737D98FF5AF6BC25EDEA7435844ADAF518AC90AF98058D33",
+    "Bytes": 163
+  },
+  {
+    "Path": "full-debug.log",
+    "Sha256": "FE38119C6D3593C9975E7A8E02C8D79C4D63529276D19CF341995AC48DC8E989",
+    "Bytes": 464
+  },
+  {
+    "Path": "full-debug\\full-debug.trx",
+    "Sha256": "581AE2928382A3CFE8680FDBE3A11FC6E39DDE5AF635BE95D6E358C3F87C689C",
+    "Bytes": 1488332
+  },
+  {
+    "Path": "full-release.log",
+    "Sha256": "84DD2FFD864506124DE3012B523C1EFBD5B00EB1404F5CE243FD0062F2B7DDD3",
+    "Bytes": 470
+  },
+  {
+    "Path": "full-release\\full-release.trx",
+    "Sha256": "F7ED3231542EC39F0D55BE5FC3CE9FC7BA059888D8EE96B5F2EEC0D1FEA8110C",
+    "Bytes": 1432354
+  },
+  {
+    "Path": "protected-file-verification.json",
+    "Sha256": "C7A1442F4CF7B8917AC8E907D56CCB38D0DFC0E13B2103F4011EC0B8FA3CBA88",
+    "Bytes": 2097
+  },
+  {
+    "Path": "protected-files.json",
+    "Sha256": "E06E9E298E107554B2047C94714F35B16F7481D3120F09CECCF37A9EB434780D",
+    "Bytes": 1129
+  },
+  {
+    "Path": "regression-before-command.json",
+    "Sha256": "20080A5214BA4C6457B971A6FD86D857A20C86467C6B249095956BDDDCBB3971",
+    "Bytes": 166
+  },
+  {
+    "Path": "regression-before.log",
+    "Sha256": "0AAAD3ABC5C4A24E588C77747A1910557CD2713C46EB0B94D7F957E6E7463A52",
+    "Bytes": 3319
+  },
+  {
+    "Path": "regression-before\\regression-before.trx",
+    "Sha256": "7F8BBE1FB6A5106791F2CF121BC06A8160AEEBCC19EE93C1FD6E87436840F9FB",
+    "Bytes": 12091
+  },
+  {
+    "Path": "release-01-summary.json",
+    "Sha256": "D02E9911FE913869896CCD95E893C61FAFE32F4BF020E513CB7E4C595A41F4C9",
+    "Bytes": 81
+  },
+  {
+    "Path": "release-build-01.log",
+    "Sha256": "D2E00608F53B530B97661058FD926D5299AC26505D9FEBB6366704913A65DD0A",
+    "Bytes": 971
+  },
+  {
+    "Path": "summary.json",
+    "Sha256": "7E8A644FA44DCE91F947DB7E6768FC5F91485C78FDDF85CDADD860A0E8C77D9D",
+    "Bytes": 1817
+  },
+  {
+    "Path": "targeted-debug-01.log",
+    "Sha256": "01ED89B544EA4D4EFD1CEAD0963E54A12A1D60113D2F0A437A8376EBB00C58E2",
+    "Bytes": 481
+  },
+  {
+    "Path": "targeted-debug-01\\targeted-debug-01.trx",
+    "Sha256": "B6CF5386C65E8EC0AEB085B5F6815F320AE444697F7C68A3338CE53AED509CE8",
+    "Bytes": 42268
+  },
+  {
+    "Path": "Verify-LogFolderFix.ps1",
+    "Sha256": "59A20CAD30683470011A231716FEDB5B351FD9AF95DED17456E671C95ED273A5",
+    "Bytes": 2920
+  }
+]

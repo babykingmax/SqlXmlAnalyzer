@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SqlXmlAnalyzer"><HintPath>$(ApplicationOutput)\SqlXmlAnalyzer.dll</HintPath></Reference>
+    <Reference Include="SqlXmlAnalyzer.Core"><HintPath>$(ApplicationOutput)\SqlXmlAnalyzer.Core.dll</HintPath></Reference>
+    <Reference Include="SqlXmlAnalyzer.Application"><HintPath>$(ApplicationOutput)\SqlXmlAnalyzer.Application.dll</HintPath></Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection"><HintPath>$(ApplicationOutput)\Microsoft.Extensions.DependencyInjection.dll</HintPath></Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions"><HintPath>$(ApplicationOutput)\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath></Reference>
+    <Reference Include="System.Text.Json"><HintPath>$(ApplicationOutput)\System.Text.Json.dll</HintPath></Reference>
+    <Reference Include="System.Text.Encodings.Web"><HintPath>$(ApplicationOutput)\System.Text.Encodings.Web.dll</HintPath></Reference>
+    <Reference Include="System.IO.Pipelines"><HintPath>$(ApplicationOutput)\System.IO.Pipelines.dll</HintPath></Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource"><HintPath>$(ApplicationOutput)\System.Diagnostics.DiagnosticSource.dll</HintPath></Reference>
+  <Reference Include="Nodify"><HintPath>$(ApplicationOutput)\Nodify.dll</HintPath></Reference></ItemGroup>
+  <ItemGroup>
+    <Reference Include="MaterialDesignThemes.Wpf"><HintPath>$(ApplicationOutput)/MaterialDesignThemes.Wpf.dll</HintPath></Reference>
+    <Reference Include="MaterialDesignColors"><HintPath>$(ApplicationOutput)/MaterialDesignColors.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>
+

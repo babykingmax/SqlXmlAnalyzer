@@ -1,0 +1,53 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.571" Build="16.0.1000.6">
+  <BatchSequence><Batch><Statements>
+    <StmtSimple StatementId="1" StatementText="SELECT [V] FROM [db.one].[sales].[Order.Detail] WHERE [K]=1 AND [R]]ange]&gt;2">
+      <QueryPlan>
+        <MissingIndexes><MissingIndexGroup Impact="80"><MissingIndex Database="[db.one]" Schema="[sales]" Table="[Order.Detail]">
+          <ColumnGroup Usage="INEQUALITY"><Column Name="[R]]ange]"/></ColumnGroup>
+          <ColumnGroup Usage="INCLUDE"><Column Name="[V]"/></ColumnGroup>
+          <ColumnGroup Usage="EQUALITY"><Column Name="[K]"/></ColumnGroup>
+        </MissingIndex></MissingIndexGroup></MissingIndexes>
+        <RelOp NodeId="0" PhysicalOp="Index Scan" EstimateRows="100" TableCardinality="10000" AvgRowSize="32">
+          <OutputList><ColumnReference Database="[db.one]" Schema="[sales]" Table="[Order.Detail]" Column="V"/></OutputList>
+          <IndexScan><Object Database="[db.one]" Schema="[sales]" Table="[Order.Detail]"/>
+            <Predicate><ScalarOperator ScalarString="[K] = (1) AND [R]]ange] &gt; (2)"/></Predicate>
+          </IndexScan>
+        </RelOp>
+      </QueryPlan>
+    </StmtSimple>
+    <StmtSimple StatementId="1" StatementText="SELECT [AuditOnly] FROM [db.one].[audit].[Order.Detail] WHERE [A]=1">
+      <QueryPlan>
+        <MissingIndexes><MissingIndexGroup Impact="70"><MissingIndex Database="[db.one]" Schema="[audit]" Table="[Order.Detail]">
+          <ColumnGroup Usage="EQUALITY"><Column Name="[A]"/></ColumnGroup>
+          <ColumnGroup Usage="INCLUDE"><Column Name="[AuditOnly]"/></ColumnGroup>
+        </MissingIndex></MissingIndexGroup></MissingIndexes>
+        <RelOp NodeId="0" PhysicalOp="Table Scan" EstimateRows="500" TableCardinality="90000" AvgRowSize="512">
+          <OutputList><ColumnReference Database="[db.one]" Schema="[audit]" Table="[Order.Detail]" Column="AuditOnly"/></OutputList>
+          <TableScan><Object Database="[db.one]" Schema="[audit]" Table="[Order.Detail]"/></TableScan>
+        </RelOp>
+      </QueryPlan>
+    </StmtSimple>
+    <StmtSimple StatementId="1" StatementText="SELECT [OtherDbOnly] FROM [db.two].[sales].[Order.Detail] WHERE [B]=1">
+      <QueryPlan>
+        <MissingIndexes><MissingIndexGroup Impact="60"><MissingIndex Database="[db.two]" Schema="[sales]" Table="[Order.Detail]">
+          <ColumnGroup Usage="EQUALITY"><Column Name="[B]"/></ColumnGroup>
+        </MissingIndex></MissingIndexGroup></MissingIndexes>
+        <RelOp NodeId="0" PhysicalOp="Table Scan" EstimateRows="800" TableCardinality="20000" AvgRowSize="64">
+          <OutputList><ColumnReference Database="[db.two]" Schema="[sales]" Table="[Order.Detail]" Column="OtherDbOnly"/></OutputList>
+          <TableScan><Object Database="[db.two]" Schema="[sales]" Table="[Order.Detail]"/></TableScan>
+        </RelOp>
+      </QueryPlan>
+    </StmtSimple>
+    <StmtSimple StatementId="1" StatementText="SELECT [OtherStatementOnly] FROM [db.one].[sales].[Order.Detail] WHERE [C]=1">
+      <QueryPlan>
+        <MissingIndexes><MissingIndexGroup Impact="50"><MissingIndex Database="[db.one]" Schema="[sales]" Table="[Order.Detail]">
+          <ColumnGroup Usage="EQUALITY"><Column Name="[C]"/></ColumnGroup>
+        </MissingIndex></MissingIndexGroup></MissingIndexes>
+        <RelOp NodeId="0" PhysicalOp="Table Scan" EstimateRows="900" TableCardinality="70000" AvgRowSize="96">
+          <OutputList><ColumnReference Database="[db.one]" Schema="[sales]" Table="[Order.Detail]" Column="OtherStatementOnly"/></OutputList>
+          <TableScan><Object Database="[db.one]" Schema="[sales]" Table="[Order.Detail]"/></TableScan>
+        </RelOp>
+      </QueryPlan>
+    </StmtSimple>
+  </Statements></Batch></BatchSequence>
+</ShowPlanXML>

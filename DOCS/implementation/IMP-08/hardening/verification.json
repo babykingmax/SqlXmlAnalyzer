@@ -1,0 +1,107 @@
+{
+  "Step": "IMP-08 review hardening",
+  "Date": "2026-09-08",
+  "ProductionFilesChanged": [
+    "Views/DeadlockPlaybackControl.xaml",
+    "Views/IndexSandboxWindow.xaml"
+  ],
+  "NewTests": 8,
+  "Red": {
+    "Total": 8,
+    "Passed": 1,
+    "Failed": 7,
+    "Skipped": 0,
+    "Diagnostics": []
+  },
+  "Focused": {
+    "Total": 11,
+    "Passed": 11,
+    "Failed": 0,
+    "Skipped": 0,
+    "Diagnostics": [
+      {
+        "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Comparison_UnknownFailure_WritesValidatedDumpAndRethrowsOriginal",
+        "Outcome": "Passed"
+      },
+      {
+        "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.DisplayLogs_RespectDebugReleasePolicyAndOmitRawInput",
+        "Outcome": "Passed"
+      },
+      {
+        "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Sandbox_UnknownNotificationFailure_PreservesOriginalAndClearsStaleDdl",
+        "Outcome": "Passed"
+      }
+    ]
+  },
+  "Configurations": [
+    {
+      "Configuration": "debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 1183,
+        "Passed": 1183,
+        "Failed": 0,
+        "Skipped": 0,
+        "Diagnostics": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Comparison_UnknownFailure_WritesValidatedDumpAndRethrowsOriginal",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Sandbox_UnknownNotificationFailure_PreservesOriginalAndClearsStaleDdl",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.DisplayLogs_RespectDebugReleasePolicyAndOmitRawInput",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "ApplicationSha256": "105AF08056AD987060F7D6EAD97C2FCF205AE1E84526FB55AB0CAD74184E28F0",
+      "TestAssemblySha256": "F8B2CFAAB6FE065449C6E9A18D5F869B0C41EB913D52B8C9E80CB0639F2A71EA"
+    },
+    {
+      "Configuration": "release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 1183,
+        "Passed": 1183,
+        "Failed": 0,
+        "Skipped": 0,
+        "Diagnostics": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Comparison_UnknownFailure_WritesValidatedDumpAndRethrowsOriginal",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.Sandbox_UnknownNotificationFailure_PreservesOriginalAndClearsStaleDdl",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.MisleadingDisplayDiagnosticTests.DisplayLogs_RespectDebugReleasePolicyAndOmitRawInput",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "ApplicationSha256": "10223913AFD1457706226338389C7AF96CB90ED468A33530D6473042891C34C2",
+      "TestAssemblySha256": "06B68AF9ABB0B62A8A16CACA6077E075CDD737FA40C2D11D429395B69122F90C"
+    }
+  ],
+  "Wpf": {
+    "Completed": true,
+    "ExitCode": 0,
+    "ProbeSourceSha256": "42F49DB84DB5B78B6E839A07382541510E8FC37D8CE7729A3E50E20616111A95",
+    "ApplicationSha256": "10223913AFD1457706226338389C7AF96CB90ED468A33530D6473042891C34C2",
+    "CoreSha256": "3C828BD271C996AA3855AF5E075978AF3467D3EE87BAE1E15D1FAE006356C724",
+    "WindowShown": false
+  },
+  "ThemeObservations": 27,
+  "LowestMeasuredContrast": 6.550289219223621,
+  "VerifiedSourceFiles": 461,
+  "SourceHashes": "source-hashes.json",
+  "FullAcceptanceMatrixRerun": false,
+  "CoverageGenerated": false,
+  "SqlServerExecutionPerformed": false
+}

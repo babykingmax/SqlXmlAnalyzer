@@ -1,0 +1,267 @@
+[
+  {
+    "source": "Core/Services/AnalysisClipboardService.cs",
+    "snapshot": "snapshots/Core/Services/AnalysisClipboardService.cs.snapshot",
+    "sha256": "451A6C109D69FF2D429AF713B948FF81E3912815AEBC20FD332A9A272C874630"
+  },
+  {
+    "source": "Core/Services/BrowserLauncher.cs",
+    "snapshot": "snapshots/Core/Services/BrowserLauncher.cs.snapshot",
+    "sha256": "72325DD41908291AFB3593303D02691D66A3ADDE79B985A949B4D7C2D2D1F07A"
+  },
+  {
+    "source": "Core/Services/CliService.cs",
+    "snapshot": "snapshots/Core/Services/CliService.cs.snapshot",
+    "sha256": "9CEA131B7013AAD3BC7410E83A5747302E07F801A20CFA81051685BD06D0BCAB"
+  },
+  {
+    "source": "Core/Services/HtmlReportExportService.cs",
+    "snapshot": "snapshots/Core/Services/HtmlReportExportService.cs.snapshot",
+    "sha256": "7BB16BA7878C0A100244FC5BD6DCEDF2E9CC41A417C0B774CDEBCB25834C7C00"
+  },
+  {
+    "source": "Core/Services/MermaidDiagramActionService.cs",
+    "snapshot": "snapshots/Core/Services/MermaidDiagramActionService.cs.snapshot",
+    "sha256": "F4001391A5092EFE098D0CEB57004A728E4AAD94F3D4DD8CBE3E0640A2B38B1A"
+  },
+  {
+    "source": "Core/Services/MissingIndexClipboardActionService.cs",
+    "snapshot": "snapshots/Core/Services/MissingIndexClipboardActionService.cs.snapshot",
+    "sha256": "F8D34857E19FB16E19F3F1F1E003A97E9B1B2171052EC59624540DD0C37D0334"
+  },
+  {
+    "source": "Core/Services/PlanGraphNodeClipboardService.cs",
+    "snapshot": "snapshots/Core/Services/PlanGraphNodeClipboardService.cs.snapshot",
+    "sha256": "F4E384D8A3F3B6F49C049F1D4FC005E0CE93C8CCB593FF0B5A7149CBA77A000A"
+  },
+  {
+    "source": "Core/Services/PlanObfuscatorService.cs",
+    "snapshot": "snapshots/Core/Services/PlanObfuscatorService.cs.snapshot",
+    "sha256": "1C1C01D0B39795A019F4469F423D865C87F62FF620AE6AA8E92DD64DAFFC8D0B"
+  },
+  {
+    "source": "Core/Services/PortableReportExportService.cs",
+    "snapshot": "snapshots/Core/Services/PortableReportExportService.cs.snapshot",
+    "sha256": "119FA56D9F40D3AF965D848FAB07C19CC4514A4F41DA6D15C23E246EC9FCFDF7"
+  },
+  {
+    "source": "Core/Services/ReportExportService.cs",
+    "snapshot": "snapshots/Core/Services/ReportExportService.cs.snapshot",
+    "sha256": "4F2F86E64B48290FF2099AC3F7764E03067B1D748DA7710E9C328E18E6DAC017"
+  },
+  {
+    "source": "Core/Services/TuningSessionActionService.cs",
+    "snapshot": "snapshots/Core/Services/TuningSessionActionService.cs.snapshot",
+    "sha256": "1E70143F02D682E7E99EC07B55C58A4A67C167477B90D97942BBDEA52FC7DA86"
+  },
+  {
+    "source": "Core/Services/TuningSessionService.cs",
+    "snapshot": "snapshots/Core/Services/TuningSessionService.cs.snapshot",
+    "sha256": "D370DDD8C6E24D4197E211518FAEBD56B05D70252DB1A41CEB2ACD20A21C9201"
+  },
+  {
+    "source": "DOCS/IMP-02审查反例验收矩阵.md",
+    "snapshot": "snapshots/DOCS/IMP-02审查反例验收矩阵.md.snapshot",
+    "sha256": "61FCD625151E4073A0453881A8F467AB644F10FF4D58A45851157E25074D46CE"
+  },
+  {
+    "source": "DOCS/IMP-05脱敏覆盖与输出入口验证.md",
+    "snapshot": "snapshots/DOCS/IMP-05脱敏覆盖与输出入口验证.md.snapshot",
+    "sha256": "CDCF4758B23965890C4F005ED8FA171DC6A8C7B0866D4BF73F7230EBE5374A91"
+  },
+  {
+    "source": "DOCS/UI改进和功能改善文档.md",
+    "snapshot": "snapshots/DOCS/UI改进和功能改善文档.md.snapshot",
+    "sha256": "FDCB62C27FDE1984C58C2BE7BCF33EFAAB5873FF8A14A4B4E460161899FA6DDE"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1.snapshot",
+    "sha256": "2DA9192CB145AD425DA31CDD7FD0B224A3BFB57D5D4CFDEAB74656D9F20C207D"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt.snapshot",
+    "sha256": "5979910287D55D8ECD53FADC338C06D42713C933717B140B0B71ED5752E0266F"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/README.md",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/README.md.snapshot",
+    "sha256": "6D0CA79B52A1C9F5EAB5821332F4149C135473E5B1E5D5BB9AF9C0EACF2D2498"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1.snapshot",
+    "sha256": "73C14676CC54DFDADFB362D88B0C72F6F4E25BE8D578C6872A5FF6CA969782B7"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1.snapshot",
+    "sha256": "4D9D1ECCBF57E19FEC8FB43803C86BE37E39F61CFD201F5BECE012E1A798F45A"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/WPF验收操作脚本.md",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/WPF验收操作脚本.md.snapshot",
+    "sha256": "E88B6B8DF5D3B370D160ACE9448443B9832FB0689E267B518E47839F4A4EDBA9"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/acceptance-matrix.json",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/acceptance-matrix.json.snapshot",
+    "sha256": "CC5A09C04BDB8886279B7E954F49FA8E322D2DA1D01C8233061A2E7D4029BFA4"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/cross-scenarios.json",
+    "snapshot": "snapshots/DOCS/acceptance/IMP-02/cross-scenarios.json.snapshot",
+    "sha256": "5557E6A3D8AE261E6D6B0BB278A88ADC5AF182163F9A70718F43DE6BCAE0B9E9"
+  },
+  {
+    "source": "DOCS/implementation/IMP-05/Finalize-Delivery.py.txt",
+    "snapshot": "snapshots/DOCS/implementation/IMP-05/Finalize-Delivery.py.txt.snapshot",
+    "sha256": "2020876C507107B140635B5C431E7BF651191F466CEC3C0E6A96E5A06527AE27"
+  },
+  {
+    "source": "DOCS/implementation/IMP-05/Inspect-PdfOutputs.py.txt",
+    "snapshot": "snapshots/DOCS/implementation/IMP-05/Inspect-PdfOutputs.py.txt.snapshot",
+    "sha256": "66B434A93A9E3895A6FAEADCE3CCC487B02F3C5F18C2240EB5A3226E926F3E63"
+  },
+  {
+    "source": "DOCS/implementation/IMP-05/PrivacyVerification.cs.txt",
+    "snapshot": "snapshots/DOCS/implementation/IMP-05/PrivacyVerification.cs.txt.snapshot",
+    "sha256": "904045024295263B0061BCBC2FB40DE437B7FA16076831A14A35BBA79F71D367"
+  },
+  {
+    "source": "DOCS/implementation/IMP-05/Run-PrivacyVerification.ps1",
+    "snapshot": "snapshots/DOCS/implementation/IMP-05/Run-PrivacyVerification.ps1.snapshot",
+    "sha256": "5F0895C3A560A420E876E6A554847D1388DF7EE1EFD534161BA85AD14EB088A6"
+  },
+  {
+    "source": "DOCS/代码Review报告.md",
+    "snapshot": "snapshots/DOCS/代码Review报告.md.snapshot",
+    "sha256": "2F4FF27F694585FED1F70A813D3ACF88909C0327B0713E81922AC9590FC5BFCC"
+  },
+  {
+    "source": "DOCS/检索来源与验证记录.md",
+    "snapshot": "snapshots/DOCS/检索来源与验证记录.md.snapshot",
+    "sha256": "9A02B51F0144FA2B8396C32C0BBA7B3B52E6AC21E49F6B2F605F7A4C9BA5906B"
+  },
+  {
+    "source": "DOCS/软件改善实施规划.md",
+    "snapshot": "snapshots/DOCS/软件改善实施规划.md.snapshot",
+    "sha256": "84E4C3E05AD6AE1B77312F5A4D18D864CAA2F7ACC0C58886996C8653B9E0DFA2"
+  },
+  {
+    "source": "DOCS/软件详细设计与问题分析.md",
+    "snapshot": "snapshots/DOCS/软件详细设计与问题分析.md.snapshot",
+    "sha256": "FC51C5A8BD968C0ACE5BCC7FC981CDA87A31E17E3BF75753DC239920A2A6ECBA"
+  },
+  {
+    "source": "Services/MainWindowShellActionService.cs",
+    "snapshot": "snapshots/Services/MainWindowShellActionService.cs.snapshot",
+    "sha256": "E4F8012BF4DD6B20CA19E1BE7F24EB6690B152E2E785403B1F8B366CC37353AA"
+  },
+  {
+    "source": "Services/PlanObfuscationExportUiActionService.cs",
+    "snapshot": "snapshots/Services/PlanObfuscationExportUiActionService.cs.snapshot",
+    "sha256": "877611F7D4FD723B418FDB55ADD700C8035D7364E3B0C6A7436456E8BD03F1AD"
+  },
+  {
+    "source": "SqlXmlAnalyzer.CLI/Program.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.CLI/Program.cs.snapshot",
+    "sha256": "4EC82DE0BA01F9EE5BF7F958D870DA631EB93875E6F8DD02DC9269B9567A4CDC"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/HtmlReportGenerator.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Core/HtmlReportGenerator.cs.snapshot",
+    "sha256": "8CE08BC4152A086374EF7EA24EDD12EE6586B75BCAE0410CB5715FFD427E9B6A"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs.snapshot",
+    "sha256": "ED8E806A2328DFDDCE8539D803F00F41351777846C0980A75B0F0648B14BD853"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs.snapshot",
+    "sha256": "AFA865344C432507A8C4CE0A0836F3C3EFE7968AFAD274610540706A6B83A8DA"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs.snapshot",
+    "sha256": "1C2A62836722C47184BB27CB173ED2A5AC0D6C4B6FAB178B1B77916AF89BDEA7"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs.snapshot",
+    "sha256": "A84F81FD26ACDD0ECAEF55ACB7E0F0253E3B2B8202797B6B688EE3962E23A4C2"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs.snapshot",
+    "sha256": "9D68F9A6192D6B1B413C7A7178F93CF657B89FF69D65B5CBDF07D8F645DEE127"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs.snapshot",
+    "sha256": "0E014BFC93B04AFDC0AE50E740FC8FC1A41D6A49521646FB623AC8A4CD49280B"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs.snapshot",
+    "sha256": "C444B6E0B96DCE7F99379E71110B8CE3B5872DD8CAE4BEE5DAFB341D2CB24A36"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs.snapshot",
+    "sha256": "0803AFD9C591E74B9224669CFF046CE82066BC2CC4AC0597C0C6FEEE8761BC24"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs.snapshot",
+    "sha256": "25DA1736825CFD6D7A11B8A479802A928B169E13C90F71FCDB3284FFAC3DF12F"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs.snapshot",
+    "sha256": "26B6D0A8E48E0E43E2D4363A5E9518CCB7ACBFA17D1C6E8A0FD11DB890F217C6"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs.snapshot",
+    "sha256": "4D635F80B73CCC2380CB460887876869B963C6C8C2E30165BEE8C510B15183FA"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs.snapshot",
+    "sha256": "B3A8690ED4FFD68BD827A9DED88EEE8767CAB8CA32D9CA4C08EA7A39F995C4D8"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs.snapshot",
+    "sha256": "7BA1682F1A8EDE3CA02594AC585864F09C20CAEC61DBA9276979C2C75E059124"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs",
+    "snapshot": "snapshots/SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs.snapshot",
+    "sha256": "71D49CB1EE14C8A53BF28D486C00A2D7A6FD0A012FA1504A1AFB69B4C6C83821"
+  },
+  {
+    "source": "Views/IndexSandboxWindow.xaml.cs",
+    "snapshot": "snapshots/Views/IndexSandboxWindow.xaml.cs.snapshot",
+    "sha256": "A7E500DF6FE67DEDDD394D90AF7D0080B5DF894799F472A221680253253F274E"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+    "snapshot": "snapshots/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs.snapshot",
+    "sha256": "648BF21F78D3A28B97E937B3386CEC4D12420E304368D44AC9FCF7725AE0F90F"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+    "snapshot": "snapshots/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs.snapshot",
+    "sha256": "7E8A614E08C45B04050C314ED9E32E149E3222901051E6972FF2E2D3C877375F"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs",
+    "snapshot": "snapshots/src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs.snapshot",
+    "sha256": "F718BA0B141CF9012C155D63522BE35D774AD598EFE6F12631FC8E007F855AD6"
+  }
+]

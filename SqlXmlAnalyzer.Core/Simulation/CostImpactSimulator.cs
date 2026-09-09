@@ -1,122 +1,94 @@
-using System;
-using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using System.Xml.Linq;
+using SqlXmlAnalyzer.Core.Diagnostics;
 using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Refactoring;
+using SqlXmlAnalyzer.Core.Services;
 
-namespace SqlXmlAnalyzer.Core.Simulation
+namespace SqlXmlAnalyzer.Core.Simulation;
+
+/// <summary>Describes captured cost exposure, not a new execution plan or saved time.</summary>
+public static class CostImpactSimulator
 {
-    public static class CostImpactSimulator
+    public static CostImpactResult Simulate(XDocument? originalPlan, MissingIndexSuggestion proposedIndex, XNamespace ns,
+        IUnexpectedErrorReporter? unexpectedErrors = null, CancellationToken cancellationToken = default) =>
+        SimulateCandidates(originalPlan, new[] { proposedIndex }, ns, unexpectedErrors, cancellationToken);
+
+    public static CostImpactResult SimulateCandidates(XDocument? originalPlan, IEnumerable<MissingIndexSuggestion> candidates,
+        XNamespace ns, IUnexpectedErrorReporter? unexpectedErrors = null, CancellationToken cancellationToken = default)
     {
-        private const double ConvertToSeekReductionRatio = 0.6;
-        private const double EliminateLookupReductionRatio = 0.4;
-        private const double EliminateSortReductionRatio = 0.3;
-        private const double FilterPushdownReductionRatio = 0.2;
-
-        public static CostImpactResult Simulate(XDocument? originalPlan, MissingIndexSuggestion proposedIndex, XNamespace ns)
+        try
         {
-            if (originalPlan == null || proposedIndex == null || !proposedIndex.KeyColumns.Any())
-                return new CostImpactResult(0, "无足够数据评估成本影响。");
-
-            var statements = originalPlan.Descendants(ns + "StmtSimple");
-            double totalReduction = 0.0;
-            double totalOriginalCost = 0.0;
-            int affectedOpsCount = 0;
-
-            foreach (var stmt in statements)
+            cancellationToken.ThrowIfCancellationRequested();
+            ArgumentNullException.ThrowIfNull(candidates);
+            ArgumentNullException.ThrowIfNull(ns);
+            var inputs = candidates.Select(candidate => { cancellationToken.ThrowIfCancellationRequested(); return candidate; }).ToArray();
+            var model = PlanIdentityAdapter.GetDocument(originalPlan, cancellationToken);
+            if (model == null || model.Operators.Count == 0)
             {
-                var stmtCostAttr = stmt.Attribute("StatementSubTreeCost");
-                if (stmtCostAttr != null && NumericParser.TryParseInvariantDouble(stmtCostAttr.Value, out double stmtCost))
+                Logger.Warning("IMP-16: SIMULATION_INPUT_MISSING；未取得可评估的捕获算子。");
+                return new(null, 0, 0, Array.Empty<SimulationCandidateResult>(), MissingCost(), MissingCost(),
+                    "SIMULATION_INPUT_MISSING", "无足够数据评估成本影响；收益预测为 N/A。");
+            }
+            // Phase 1 freezes the full scope and own-cost denominator. Never add
+            // statement totals or parent subtree totals on top of operator own costs.
+            var operators = model.Operators.ToArray();
+            var total = SumCosts(operators);
+            var union = new HashSet<PlanOperatorKey>();
+            var results = new List<SimulationCandidateResult>();
+            bool unresolved = false;
+            // Phase 2 uses that same denominator for every candidate, with overlap deduplicated.
+            foreach (var input in inputs)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (input == null) throw new InvalidDataException("SIMULATION_CANDIDATE_INVALID: 索引候选不能为空。");
+                var target = IndexDdlCompiler.ResolveTarget(input);
+                string[] ReadColumns(List<IndexColumn>? columns) => columns?.Select(column =>
                 {
-                    totalOriginalCost += stmtCost;
-                }
-
-                var relOps = stmt.Descendants(ns + "RelOp");
-                foreach (var op in relOps)
-                {
-                    var tableElement = op.Descendants(ns + "Object").FirstOrDefault();
-                    if (tableElement != null)
-                    {
-                        var tableAttr = tableElement.Attribute("Table");
-                        if (tableAttr != null && tableAttr.Value.Equals(proposedIndex.Table, StringComparison.OrdinalIgnoreCase))
-                        {
-                            double operatorCost = 0.0;
-                            var costAttr = op.Attribute("EstimatedTotalSubtreeCost");
-                            if (costAttr != null && NumericParser.TryParseInvariantDouble(costAttr.Value, out operatorCost))
-                            {
-                                // Prevent divide by zero if totalOriginalCost is missing or 0
-                                double operatorCostRatio = totalOriginalCost > 0 ? operatorCost / totalOriginalCost : 0;
-                                double reductionRatio = GetReductionRatio(op, proposedIndex, ns);
-                                if (reductionRatio > 0)
-                                {
-                                    totalReduction += operatorCostRatio * reductionRatio;
-                                    affectedOpsCount++;
-                                }
-                            }
-                        }
-                    }
-                }
+                    if (column == null) throw new InvalidDataException("SIMULATION_COLUMN_INVALID: 列定义无效。");
+                    string name = IndexDdlCompiler.DecodeName(column.Name);
+                    IndexDdlCompiler.QuoteIdentifier(name);
+                    return name;
+                }).ToArray() ?? throw new InvalidDataException("SIMULATION_COLUMNS_MISSING: 列定义缺失。");
+                var keys = ReadColumns(input.KeyColumns);
+                var includes = ReadColumns(input.IncludeColumns);
+                string identity = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { target, keys, includes }))));
+                var matches = keys.Length == 0 ? Array.Empty<PlanOperator>() : IndexTargetResolver.FindOperators(input, originalPlan, ns)
+                    .Select(source => model.FindOperator(source)!).DistinctBy(op => op.Key).ToArray();
+                bool bound = matches.Length > 0;
+                unresolved |= !bound;
+                foreach (var op in matches) union.Add(op.Key);
+                results.Add(new(identity, target, input.Location, Array.AsReadOnly(keys), Array.AsReadOnly(includes), bound ? SumCosts(matches) : MissingCost(),
+                    Array.AsReadOnly(matches.Select(op => op.Key).ToArray()), bound ? "RELATED_ACCESS_OPERATORS" : "SIMULATION_TARGET_UNRESOLVED"));
             }
-
-            int reductionPercent = (int)Math.Round(totalReduction * 100);
-            reductionPercent = Math.Min(100, Math.Max(0, reductionPercent));
-
-            string description;
-            if (reductionPercent > 0)
-            {
-                description = $"新索引可优化 {affectedOpsCount} 个操作符，预计将扫描转换为更高效的查找操作或消除回表。";
-            }
-            else
-            {
-                description = "当前索引定义对计划中现有操作符的影响较小，或表名不匹配。";
-            }
-
-            return new CostImpactResult(reductionPercent, description);
+            cancellationToken.ThrowIfCancellationRequested();
+            var related = unresolved || inputs.Length == 0 ? MissingCost() : SumCosts(operators.Where(op => union.Contains(op.Key)));
+            string status = unresolved || inputs.Length == 0 ? "SIMULATION_TARGET_UNRESOLVED"
+                : !total.IsAvailable || !related.IsAvailable ? "SIMULATION_COSTS_INCOMPLETE" : "CAPTURED_COST_EXPOSURE";
+            if (status != "CAPTURED_COST_EXPOSURE") Logger.Warning("IMP-16: 模拟输入证据不完整；不生成数值收益预测。");
+            Logger.Debug($"IMP-16: 成本范围已汇总；算子 {operators.Length}，候选 {results.Count}，关联并集 {union.Count}。");
+            return new(model.Envelope.DocumentId, model.QueryPlans.Count, operators.Length,
+                Array.AsReadOnly(results.OrderBy(r => r.CandidateId, StringComparer.Ordinal).ThenBy(r => r.Location?.DisplayScope, StringComparer.Ordinal).ToArray()),
+                total, related, status, $"已核对 {results.Count} 个候选，关联 {union.Count} 个目标访问算子；只描述原计划成本，不预测索引收益。");
         }
-
-        private static double GetReductionRatio(XElement op, MissingIndexSuggestion index, XNamespace ns)
+        catch (Exception exception)
         {
-            var physicalOp = op.Attribute("PhysicalOp")?.Value;
-            var logicalOp = op.Attribute("LogicalOp")?.Value;
-
-            if (physicalOp == "Table Scan" || physicalOp == "Clustered Index Scan" || physicalOp == "Index Scan")
-            {
-                if (CanConvertToSeek(op, index, ns))
-                    return ConvertToSeekReductionRatio;
-            }
-            else if (logicalOp == "RID Lookup" || physicalOp == "Index Seek" && logicalOp == "Key Lookup") // Sometimes Key Lookup has PhysicalOp Index Seek and LogicalOp Key Lookup
-            {
-                if (IsCoveringIndex(op, index, ns))
-                    return EliminateLookupReductionRatio;
-            }
-            else if (physicalOp == "Sort")
-            {
-                if (CanEliminateSort(op, index, ns))
-                    return EliminateSortReductionRatio;
-            }
-
-            return 0;
+            ExceptionPolicy.Describe(exception, "CostImpactSimulator.SimulateCandidates", unexpectedErrors);
+            throw;
         }
+    }
 
-        private static bool CanConvertToSeek(XElement scanOp, MissingIndexSuggestion index, XNamespace ns)
-        {
-            // Simplified check: If it's a scan on the target table, and our index has keys,
-            // we assume it can be converted to a seek if the plan originally missed an index here.
-            // For a robust simulator, we would check the SeekPredicates or Predicates to match column names.
-            return index.KeyColumns.Any();
-        }
+    private static PlanMetric<double> MissingCost() => new(null, PlanMetricState.Missing, "optimizer-cost", "Captured RelOp own cost",
+        PlanMetricKind.Estimated, PlanMetricAggregation.SumOperators);
 
-        private static bool IsCoveringIndex(XElement lookupOp, MissingIndexSuggestion index, XNamespace ns)
-        {
-            // For a lookup, we check if the columns being fetched are included in our index (either as keys or includes).
-            // Simplified logic: Assume it covers if includes are present.
-            return index.IncludeColumns.Any();
-        }
-
-        private static bool CanEliminateSort(XElement sortOp, MissingIndexSuggestion index, XNamespace ns)
-        {
-            // If it's a sort on the target table (rarely directly tied to table object, but just in case)
-            // assume it can eliminate sort if the first key column matches the sort order.
-            return index.KeyColumns.Count > 0;
-        }
+    private static PlanMetric<double> SumCosts(IEnumerable<PlanOperator> operators)
+    {
+        var costs = operators.Select(op => op.Facts?.OwnCost).ToArray();
+        if (costs.Any(c => c?.IsAvailable != true)) return MissingCost() with { State = PlanMetricState.Incomplete };
+        double value = costs.Select(c => c!.Value!.Value).OrderBy(v => v).Sum();
+        return double.IsFinite(value) ? MissingCost() with { Value = value, State = PlanMetricState.Available }
+            : MissingCost() with { State = PlanMetricState.Invalid };
     }
 }

@@ -1,0 +1,99 @@
+// Data-only XAML inspection. The caller loads XML through SafeXmlHelper; no XAML is executed.
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+
+public sealed class AcceptanceRowColumn
+{
+    public string Header { get; set; } = "";
+    public string BindingPath { get; set; } = "";
+}
+
+public sealed class AcceptanceRowBindings
+{
+    public string Path { get; set; } = "";
+    public AcceptanceRowColumn[] OutputColumns { get; set; } = Array.Empty<AcceptanceRowColumn>();
+    public AcceptanceRowColumn[] ReadColumns { get; set; } = Array.Empty<AcceptanceRowColumn>();
+}
+
+public static class PlanRowBindingInspector
+{
+    public static AcceptanceRowBindings Inspect(XDocument view, string path)
+    {
+        var columns = view.Descendants().Where(e => e.Name.LocalName == "DataGridTextColumn").ToArray();
+        return new AcceptanceRowBindings
+        {
+            Path = path,
+            OutputColumns = columns.Where(e => IsMetric(e, false)).Select(Describe).ToArray(),
+            ReadColumns = columns.Where(e => IsMetric(e, true)).Select(Describe).ToArray()
+        };
+    }
+
+    private static bool IsMetric(XElement column, bool reads)
+    {
+        var name = (string?)column.Attribute(XName.Get("Name", "http://schemas.microsoft.com/winfx/2006/xaml"));
+        if (name == (reads ? "ActualRowsReadColumn" : "ActualRowsColumn")) return true;
+        var header = (string?)column.Attribute("Header") ?? "";
+        // Token boundaries keep ActRowsRead out of the output-row selection.
+        var english = reads ? @"\b(?:ActRowsRead|ActualRowsRead)\b" : @"\b(?:ActRows|ActualRows)\b";
+        var chinese = reads ? @"^实际读取行(?:数)?(?:\s|[（(]|$)" : @"^实际(?:输出)?行(?:数)?(?:\s|[（(]|$)";
+        return Regex.IsMatch(header, english) || Regex.IsMatch(header, chinese);
+    }
+
+    private static AcceptanceRowColumn Describe(XElement column) => new AcceptanceRowColumn
+    {
+        Header = (string?)column.Attribute("Header") ?? "",
+        BindingPath = ReadBindingPath(column)
+    };
+
+    private static string ReadBindingPath(XElement column)
+    {
+        var attribute = (string?)column.Attribute("Binding");
+        var property = column.Elements().SingleOrDefault(e => e.Name.LocalName == "DataGridTextColumn.Binding");
+        if (attribute != null && property != null) return "";
+        if (attribute == null)
+        {
+            var binding = property?.Elements().SingleOrDefault();
+            return binding?.Name.LocalName == "Binding" ? (string?)binding.Attribute("Path") ?? "" : "";
+        }
+        var match = Regex.Match(attribute.Trim(), @"^\{Binding\s+([\s\S]*)\}$");
+        if (!match.Success) return "";
+        var parts = SplitArguments(match.Groups[1].Value);
+        if (parts == null) return "";
+        string? path = null;
+        for (int i = 0; i < parts.Count; i++)
+        {
+            var part = parts[i].Trim();
+            string? candidate = null;
+            if (part.StartsWith("Path=", StringComparison.Ordinal)) candidate = part.Substring(5).Trim();
+            else if (Regex.IsMatch(part, @"^Path\s+=")) candidate = part.Substring(part.IndexOf('=') + 1).Trim();
+            else if (i == 0 && !part.Contains('=')) candidate = part;
+            if (candidate == null) continue;
+            if (path != null) return ""; // Ambiguous declarations are not accepted.
+            path = candidate.Trim('\'', '"');
+        }
+        return path ?? "";
+    }
+
+    private static List<string>? SplitArguments(string text)
+    {
+        var parts = new List<string>();
+        int start = 0, depth = 0;
+        char quote = '\0';
+        for (int i = 0; i < text.Length; i++)
+        {
+            char c = text[i];
+            if (quote != '\0') { if (c == quote) quote = '\0'; continue; }
+            if (c == '\'' || c == '"') { quote = c; continue; }
+            if (c == '{') depth++;
+            else if (c == '}') { if (--depth < 0) return null; }
+            else if (c == ',' && depth == 0) { parts.Add(text.Substring(start, i - start)); start = i + 1; }
+        }
+        if (depth != 0 || quote != '\0') return null;
+        parts.Add(text.Substring(start));
+        return parts;
+    }
+}

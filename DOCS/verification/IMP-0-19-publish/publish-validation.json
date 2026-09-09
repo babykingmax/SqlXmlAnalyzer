@@ -1,0 +1,2809 @@
+{
+  "Description": "IMP-0 到 IMP-19 提交前，从 Git 暂存文件导出独立目录后执行全量构建与测试。",
+  "VerifiedAt": "2026-09-09T18:07:42.4538293+08:00",
+  "BaseCommit": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "Branch": "codex/imp-0-19-enhancements",
+  "ExportMethod": "git -c core.longpaths=true checkout-index --all --prefix=<independent-directory>/",
+  "EvidenceBytePreservation": {
+    "Files": 4698,
+    "Mismatches": 0
+  },
+  "Checks": [
+    {
+      "Configuration": "Debug",
+      "BuildCommand": "dotnet build SqlXmlAnalyzer.sln -c Debug --nologo",
+      "BuildExitCode": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLogSHA256": "E8B4EA1A8D002191B228DB224F75619C9934DE7AB4FC9C27667328EC71DC5C50",
+      "TestCommand": "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Debug --no-build --no-restore --nologo",
+      "TestExitCode": 0,
+      "Counters": {
+        "total": 2229,
+        "executed": 2229,
+        "passed": 2229,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "inconclusive": 0,
+        "passedButRunAborted": 0,
+        "notRunnable": 0,
+        "notExecuted": 0,
+        "disconnected": 0,
+        "warning": 0,
+        "completed": 0,
+        "inProgress": 0,
+        "pending": 0
+      },
+      "RawTrxSHA256": "A27F362D4AEF259D97B1A91222311CD2A8D94A2FD546B589F8B7A5346AA20F4E"
+    },
+    {
+      "Configuration": "Release",
+      "BuildCommand": "dotnet build SqlXmlAnalyzer.sln -c Release --nologo",
+      "BuildExitCode": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLogSHA256": "1725E3236ACE29735CA4A3EE6DF2D33E7ED963A572558B483655960A5FD5461C",
+      "TestCommand": "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Release --no-build --no-restore --nologo",
+      "TestExitCode": 0,
+      "Counters": {
+        "total": 2229,
+        "executed": 2229,
+        "passed": 2229,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "inconclusive": 0,
+        "passedButRunAborted": 0,
+        "notRunnable": 0,
+        "notExecuted": 0,
+        "disconnected": 0,
+        "warning": 0,
+        "completed": 0,
+        "inProgress": 0,
+        "pending": 0
+      },
+      "RawTrxSHA256": "D99D515A6F210AB27021B5920319E03A281BE58771A04717133DD75BA87293EA"
+    }
+  ],
+  "SourceFiles": [
+    {
+      "Path": ".editorconfig",
+      "GitBlob": "808e3efcf101b54ba2eda8f86405a84aca94f8b4"
+    },
+    {
+      "Path": ".gitattributes",
+      "GitBlob": "da7fd0b88afebf2af4b6e3a6be59768fb893c7bc"
+    },
+    {
+      "Path": ".github/workflows/ci.yml",
+      "GitBlob": "f8ad9663fcc138db0561e10cdefc9945008062bb"
+    },
+    {
+      "Path": ".gitignore",
+      "GitBlob": "55b7609c2fdaf0c79a97be32abcb40d55286e1e1"
+    },
+    {
+      "Path": "App.xaml",
+      "GitBlob": "ed725e9a0ea43b9f42293b3ebe72b550a19b004c"
+    },
+    {
+      "Path": "App.xaml.cs",
+      "GitBlob": "f4b21f5562f562bc92477203e362f415287a178a"
+    },
+    {
+      "Path": "Converters/BoolToVisibilityConverter.cs",
+      "GitBlob": "8d9d1bef2420df727f26261cfe91d8de5d1c2be3"
+    },
+    {
+      "Path": "Converters/ConnectionThicknessConverter.cs",
+      "GitBlob": "919486233aa5093f0eb096f6611a794c3bad91fb"
+    },
+    {
+      "Path": "Converters/ScoreToColorConverter.cs",
+      "GitBlob": "76d3ddff284427e17f2509cc3c9bf68c512b9b7d"
+    },
+    {
+      "Path": "Converters/StepToVisibilityConverter.cs",
+      "GitBlob": "f0d08872fb5e3a5b0496c9471db86bba5932a82a"
+    },
+    {
+      "Path": "Core/Mvvm/ObservableObject.cs",
+      "GitBlob": "2ff8f0f54e26a3cc028f4c32695b61dd8843f215"
+    },
+    {
+      "Path": "Core/Mvvm/RelayCommand.cs",
+      "GitBlob": "dde9a36322a070b21bb0c0aa5fb9fcbb428688ce"
+    },
+    {
+      "Path": "Core/Services/AnalysisClipboardService.cs",
+      "GitBlob": "4ab20c8aa92042ef1cb1940bec79105aad1ac0d5"
+    },
+    {
+      "Path": "Core/Services/AnalysisReportController.cs",
+      "GitBlob": "cc5487e8a8171bcaff2396d9195262da9a7779d6"
+    },
+    {
+      "Path": "Core/Services/AnalysisSessionCoordinator.cs",
+      "GitBlob": "21b8a65edb44703dedd6a25ab561bac372d8490e"
+    },
+    {
+      "Path": "Core/Services/BrowserLauncher.cs",
+      "GitBlob": "ab3c3131f8fa4f3a0af64a23dffdae189c29cf5b"
+    },
+    {
+      "Path": "Core/Services/CliService.cs",
+      "GitBlob": "6f640650b933887ae3c39464feba3fd8efb6e150"
+    },
+    {
+      "Path": "Core/Services/DeadlockCanvasInteractionService.cs",
+      "GitBlob": "703244c5c8952ac116758c3b7244dbda89f0e328"
+    },
+    {
+      "Path": "Core/Services/DeadlockDocumentController.cs",
+      "GitBlob": "578082e3ffa8aad8207f17e6c360e3610093372a"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphEdgeRegistryService.cs",
+      "GitBlob": "5af1b0cb940d510431262323530debe195397c45"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphEdgeService.cs",
+      "GitBlob": "78e1b7afefede3031bbca39d49216a415cd1bbed"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphGeometryService.cs",
+      "GitBlob": "73cf3e554835bd0e420806fe603b38dd27e9953b"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphLayoutService.cs",
+      "GitBlob": "beb4cb5a78054a792a50ac5bd9afb531f2484133"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphPlacementService.cs",
+      "GitBlob": "2fbe7302fe6fc479cc7a6d9568f3ded926ad8ce3"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphSelectionService.cs",
+      "GitBlob": "c5a9d518269bca6551fc52822b4e338978338c77"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphViewportService.cs",
+      "GitBlob": "09bdcf34307a37c7ebe657a7bfd421b7273d6a61"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphVisualStateService.cs",
+      "GitBlob": "032912813f2287a46ce97377c1f10f5be444aa33"
+    },
+    {
+      "Path": "Core/Services/DeadlockNodeDragService.cs",
+      "GitBlob": "5b88d0afd610d06472419cf72b87fdba59ec0ea0"
+    },
+    {
+      "Path": "Core/Services/DeadlockPlaybackStateService.cs",
+      "GitBlob": "560d7c2a65ce9502efe758718eaf41472926e46e"
+    },
+    {
+      "Path": "Core/Services/DeadlockSelectionDetailService.cs",
+      "GitBlob": "ad338d3a0f04e268e366948223b866ae6f910629"
+    },
+    {
+      "Path": "Core/Services/DeadlockStepBadgeService.cs",
+      "GitBlob": "4861c57261ff3d556cd8b743599c985cf4555ea5"
+    },
+    {
+      "Path": "Core/Services/DocumentRefreshActionService.cs",
+      "GitBlob": "3ef8d14a8ed819c95398a1237e45540d42998f3d"
+    },
+    {
+      "Path": "Core/Services/FileAssociationRegistrationService.cs",
+      "GitBlob": "e13cd6e4148c918ce14e4b63d7538a5b01d5ff1b"
+    },
+    {
+      "Path": "Core/Services/FileDialogService.cs",
+      "GitBlob": "cfefcfe95d1aef0512e1f859e8e021fa631c57e3"
+    },
+    {
+      "Path": "Core/Services/HtmlReportActionService.cs",
+      "GitBlob": "39f2ec0e314bf245c5b8728266085581c01bcd23"
+    },
+    {
+      "Path": "Core/Services/HtmlReportExportService.cs",
+      "GitBlob": "fb97b9b954a2e45b680b8ea653a1cb8a9b404aa6"
+    },
+    {
+      "Path": "Core/Services/LogFolderActionService.cs",
+      "GitBlob": "d67ec26b121e9dbf1f1fac48aa47128c2b83b421"
+    },
+    {
+      "Path": "Core/Services/MermaidDiagramActionService.cs",
+      "GitBlob": "fa39dc3c37770b4efe4d7fdfe52f0a665cbd0767"
+    },
+    {
+      "Path": "Core/Services/MermaidDiagramService.cs",
+      "GitBlob": "b940ed96831c1eaa9eed5228beac116165e84be3"
+    },
+    {
+      "Path": "Core/Services/MissingIndexClipboardActionService.cs",
+      "GitBlob": "0c156019e8506360ea071efb741de3a6d9c52c3f"
+    },
+    {
+      "Path": "Core/Services/MissingIndexDeploymentScriptService.cs",
+      "GitBlob": "fb083851e5947fb909ffa5312226dcc4bae72474"
+    },
+    {
+      "Path": "Core/Services/PdfWordReportService.cs",
+      "GitBlob": "c034871e6b9cf46a9b15e05c9127bc300cff1120"
+    },
+    {
+      "Path": "Core/Services/PlanAnalysisService.cs",
+      "GitBlob": "e544d9ce7aaf41bbb51bed3d6c58ed6a63172722"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonController.cs",
+      "GitBlob": "14650458ec204353160bf8920548b67ce8b52b8e"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonRuntimeMetricsService.cs",
+      "GitBlob": "e0157fbb99ce2fee75413b2de1cd6977c6484960"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonTreeService.cs",
+      "GitBlob": "3207a6e08a165cd12fcd5c0afe95184bf14df34d"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonTreeViewRenderer.cs",
+      "GitBlob": "519759215abf4e6e77d32c48a92da02e7410c30e"
+    },
+    {
+      "Path": "Core/Services/PlanDocumentController.cs",
+      "GitBlob": "9206e7bca9227ba12844cd382271810043f602df"
+    },
+    {
+      "Path": "Core/Services/PlanGraphCollapseLogService.cs",
+      "GitBlob": "c3c8ab689669b26b9c80c022d7b83acbfd8c7a71"
+    },
+    {
+      "Path": "Core/Services/PlanGraphCollapseStateService.cs",
+      "GitBlob": "c1bf8838a18e3789196ab2d35b9bd76f4b6ed812"
+    },
+    {
+      "Path": "Core/Services/PlanGraphConnectionBuilderService.cs",
+      "GitBlob": "ed25284584c06dd75d9b89d5bcf50d87686d37fc"
+    },
+    {
+      "Path": "Core/Services/PlanGraphConnectionDisplayService.cs",
+      "GitBlob": "00ccda81c76078c52122215f945dee3c9cd82851"
+    },
+    {
+      "Path": "Core/Services/PlanGraphConnectionGeometryService.cs",
+      "GitBlob": "1b3067386e41b9da2ed7d8a94293776fa1dca8c1"
+    },
+    {
+      "Path": "Core/Services/PlanGraphConnectionHighlightService.cs",
+      "GitBlob": "a43789c8372b7f559c5a4df3af901cfed1707e1c"
+    },
+    {
+      "Path": "Core/Services/PlanGraphCostCalculationService.cs",
+      "GitBlob": "135b0d77b9d880980917c00c07ac69edfac7b988"
+    },
+    {
+      "Path": "Core/Services/PlanGraphCostVisualService.cs",
+      "GitBlob": "2233eb318e1c690286a16f0b80db3b3d7afa0263"
+    },
+    {
+      "Path": "Core/Services/PlanGraphLayoutRefreshService.cs",
+      "GitBlob": "4b95c231ad2f68535749fd2ae1a4c4969cffa815"
+    },
+    {
+      "Path": "Core/Services/PlanGraphLayoutService.cs",
+      "GitBlob": "30a4c32cd31cd0d96ac55a8fb2040b2dacf4173c"
+    },
+    {
+      "Path": "Core/Services/PlanGraphMetricService.cs",
+      "GitBlob": "19a896be094ed3a2a08d3937cca95fc4e3d77e6d"
+    },
+    {
+      "Path": "Core/Services/PlanGraphMissingIndexAssociationService.cs",
+      "GitBlob": "e23ec0813dd2742b5086ea882c18f8f9e88be6d0"
+    },
+    {
+      "Path": "Core/Services/PlanGraphNodeBuilderService.cs",
+      "GitBlob": "9b7750cca0b51f48657e430bf1904662b868367d"
+    },
+    {
+      "Path": "Core/Services/PlanGraphNodeClipboardService.cs",
+      "GitBlob": "644afe4f3dc62b644f962c092c2fd3ba7d8da43c"
+    },
+    {
+      "Path": "Core/Services/PlanGraphNodeDisplayService.cs",
+      "GitBlob": "e1206a0d3ab24bd18a988606c5d6c961add90279"
+    },
+    {
+      "Path": "Core/Services/PlanGraphOperatorTypeService.cs",
+      "GitBlob": "4aa36d0e8c8a5ed24dda67e8c12fe0b76b58378f"
+    },
+    {
+      "Path": "Core/Services/PlanGraphOperatorVisualService.cs",
+      "GitBlob": "c62ee98077649778192a08dd70ce36fcb29cfd00"
+    },
+    {
+      "Path": "Core/Services/PlanGraphPanInteractionService.cs",
+      "GitBlob": "cbe80a75ea13449c0d0e7129cda101cdbd833860"
+    },
+    {
+      "Path": "Core/Services/PlanGraphRelOpDetailsService.cs",
+      "GitBlob": "cb088338df19a6df821f886f754cc2757049fbee"
+    },
+    {
+      "Path": "Core/Services/PlanGraphRowSkewService.cs",
+      "GitBlob": "7e4576092fe7e8665cb4e1e35347fce76a1991f8"
+    },
+    {
+      "Path": "Core/Services/PlanGraphRuntimeCountersService.cs",
+      "GitBlob": "be516e5884408ffa663d703108913ce5f3dd238a"
+    },
+    {
+      "Path": "Core/Services/PlanGraphSmartCollapseService.cs",
+      "GitBlob": "6314488e28c1113345c161cb80d13112287bbca3"
+    },
+    {
+      "Path": "Core/Services/PlanGraphVisibilityService.cs",
+      "GitBlob": "c6a6f6ed0dda2f4e86a2ce095bbb8d8f284fc9ee"
+    },
+    {
+      "Path": "Core/Services/PlanGraphVisibilityStateService.cs",
+      "GitBlob": "5d31a932554880fc58a9cc61c12e06c3640799ed"
+    },
+    {
+      "Path": "Core/Services/PlanGraphWarningService.cs",
+      "GitBlob": "3dd8fe9ddc809f088cd1882d30760ac81422ca07"
+    },
+    {
+      "Path": "Core/Services/PlanIconManager.cs",
+      "GitBlob": "bd72e830314c9899448d56c34637332ac183349f"
+    },
+    {
+      "Path": "Core/Services/PlanObfuscatorService.cs",
+      "GitBlob": "ec4a466d7e01ec3dc1a53b58b259ddf6706ad876"
+    },
+    {
+      "Path": "Core/Services/PlanOperatorTreeViewRenderer.cs",
+      "GitBlob": "60a8d38534b2b5fcbf12668602baf044384c0421"
+    },
+    {
+      "Path": "Core/Services/PlanPropertyService.cs",
+      "GitBlob": "c02208cfdbd631a0437ccc4c8f04ae8dedc058f4"
+    },
+    {
+      "Path": "Core/Services/PlanSelectionActionService.cs",
+      "GitBlob": "d8c9a5608ab29fab7fbec3c6d72ccac11dfa9a28"
+    },
+    {
+      "Path": "Core/Services/PlanTreeService.cs",
+      "GitBlob": "9e42d3a2d2291e6e9eb3cbc488886cbe3a2b9c07"
+    },
+    {
+      "Path": "Core/Services/PortableReportActionService.cs",
+      "GitBlob": "a0208b091eb9f0151d491281fb6c399d3a3bc17f"
+    },
+    {
+      "Path": "Core/Services/PortableReportExportService.cs",
+      "GitBlob": "02cbf90722a6e3cc321bb7b7b03715f327b25ed5"
+    },
+    {
+      "Path": "Core/Services/ReportExportService.cs",
+      "GitBlob": "3a5637f80b91e95234c61efbfd37eb626122e8e2"
+    },
+    {
+      "Path": "Core/Services/SqlDiffDocumentRenderer.cs",
+      "GitBlob": "f22b940671616c4d53f4ff69e28a4acb5272b3df"
+    },
+    {
+      "Path": "Core/Services/SqlDiffService.cs",
+      "GitBlob": "7e9df98b54189f8b2c7eee63846de6cad3c3f20a"
+    },
+    {
+      "Path": "Core/Services/SqlQuickFixService.cs",
+      "GitBlob": "306e5bfb3865822e71e513ef338aacdb817c6eb2"
+    },
+    {
+      "Path": "Core/Services/TuningSessionActionService.cs",
+      "GitBlob": "93ef3c2350fc9465e551aa8ae5c1ced828a8cb23"
+    },
+    {
+      "Path": "Core/Services/TuningSessionService.cs",
+      "GitBlob": "5d7dc89de0bb95b8fdfaadae945518a732524ac8"
+    },
+    {
+      "Path": "Core/Services/WorkspacePanelLayoutService.cs",
+      "GitBlob": "a3f552e720ca1c0be9764abca3f508b01aef6028"
+    },
+    {
+      "Path": "Core/ViewModels/DeadlockTabViewModel.cs",
+      "GitBlob": "d501540df4d6ba30422a50b8efc37313e147f6a3"
+    },
+    {
+      "Path": "Core/ViewModels/DocumentTabViewModel.cs",
+      "GitBlob": "2f790463e3454a25156b8f7e36d5584c2a8c3dde"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.Comparison.cs",
+      "GitBlob": "930c41d47d85cd492d4eb7654b5d362c6b273109"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "GitBlob": "3088fbe917eca3addc7ad0cd96704e234b561f9f"
+    },
+    {
+      "Path": "Core/ViewModels/PlanSnapshot.cs",
+      "GitBlob": "0f865a448d010066dc0dc04c13f60854f384b7e2"
+    },
+    {
+      "Path": "Core/ViewModels/PlanTabViewModel.cs",
+      "GitBlob": "b194bf123ebe4a93569e3d30be346c817e71fbb4"
+    },
+    {
+      "Path": "Directory.Build.props",
+      "GitBlob": "1580ff62f1144bef3810dbaf60ec38d7d041fed2"
+    },
+    {
+      "Path": "Directory.Packages.props",
+      "GitBlob": "99125d90c43a657aa15ebfbd19ac19260915ac1a"
+    },
+    {
+      "Path": "ExecutionPlanVisualizer.cs",
+      "GitBlob": "6f07a51fe4806d73a6aee7fac6b7c4a14e40c09c"
+    },
+    {
+      "Path": "LICENSE",
+      "GitBlob": "5c40dcdd009d71a32ac609c7a0afe84b20990045"
+    },
+    {
+      "Path": "MainWindow.DeadlockGraphEvents.cs",
+      "GitBlob": "a8e34889789d12e175d39a33b226ab6ef2697712"
+    },
+    {
+      "Path": "MainWindow.Documents.cs",
+      "GitBlob": "98c27c18382c9eda50869a74b5385881f8541af1"
+    },
+    {
+      "Path": "MainWindow.Fields.cs",
+      "GitBlob": "de95b2e1aa7afbe2b2c3b0dfa5fa9b2bb8b6df57"
+    },
+    {
+      "Path": "MainWindow.KeyboardShortcuts.cs",
+      "GitBlob": "2d7006a536b3aa3d550c522586854c3e228124c9"
+    },
+    {
+      "Path": "MainWindow.MissingIndexEvents.cs",
+      "GitBlob": "b2fe7034f4cb32d3b65a6ebfdda4d5548778cdfd"
+    },
+    {
+      "Path": "MainWindow.ReportEvents.cs",
+      "GitBlob": "dbfd2a15d2806d1f037fd402d1b3f631a84d8ae8"
+    },
+    {
+      "Path": "MainWindow.Services.cs",
+      "GitBlob": "75d9fbd42ccaa1b8de315209bb84c576eddf32e4"
+    },
+    {
+      "Path": "MainWindow.ShellEvents.cs",
+      "GitBlob": "2fec4288694fe8c7931d3a7c2b553a49e2eca754"
+    },
+    {
+      "Path": "MainWindow.ShellWiring.cs",
+      "GitBlob": "7554bbcbb7962141ec3529692cce486a6317e8ca"
+    },
+    {
+      "Path": "MainWindow.TuningEvents.cs",
+      "GitBlob": "7c92b59f403a80d311554f5ed306d7e5809d6e90"
+    },
+    {
+      "Path": "MainWindow.WorkspaceEvents.cs",
+      "GitBlob": "e885980f8fc62b22897cb95d19a4a5e1be97e7f0"
+    },
+    {
+      "Path": "MainWindow.Workspaces.cs",
+      "GitBlob": "9ea18bf042c413fbb7f8839b8abf76fc6945851c"
+    },
+    {
+      "Path": "MainWindow.xaml",
+      "GitBlob": "8d3332a9e2c01c2c4ced088ef2843b9752f50416"
+    },
+    {
+      "Path": "MainWindow.xaml.cs",
+      "GitBlob": "4decb9d86097d8c7eebef1eec66e65eaa88c7003"
+    },
+    {
+      "Path": "PhysicalOpToIconMapper.cs",
+      "GitBlob": "10da6a6c6e25221569cd7e246f3848a5ba2815e3"
+    },
+    {
+      "Path": "PlanGraphControl.xaml",
+      "GitBlob": "3aee574fe8fa33e0f02cd70c86992f3cd5911f2b"
+    },
+    {
+      "Path": "PlanGraphControl.xaml.cs",
+      "GitBlob": "a8f15490f65335e973354265c343869dbea5f880"
+    },
+    {
+      "Path": "Properties/AssemblyInfo.cs",
+      "GitBlob": "eb0e17967af22aef1c1139213f834e60b871723f"
+    },
+    {
+      "Path": "publish.bat",
+      "GitBlob": "c6fc7423fea5886125cf166e643af1453cf68c41"
+    },
+    {
+      "Path": "publish.ps1",
+      "GitBlob": "8d73a88387c8dfc541775725944107fccb5991b0"
+    },
+    {
+      "Path": "RuleConfiguration.json",
+      "GitBlob": "972fbf9fc8fced44f5e48672fe18aeae52395dba"
+    },
+    {
+      "Path": "Services/AnalysisResultsUiActionService.cs",
+      "GitBlob": "9742cacb53e66eec965d82c74463da311876c7b6"
+    },
+    {
+      "Path": "Services/DeadlockAnalysisUiActionService.cs",
+      "GitBlob": "3eb0507291fca1f00bad4aba30f8b229eeb0a2ea"
+    },
+    {
+      "Path": "Services/DeadlockCanvasInteractionBinder.cs",
+      "GitBlob": "7b0a86cc05eeedda84b02abd7a4cec3b8253aacb"
+    },
+    {
+      "Path": "Services/DeadlockGraphEdgeElementFactory.cs",
+      "GitBlob": "d901535eeaf66efa3576351de1859ac504f3d1ca"
+    },
+    {
+      "Path": "Services/DeadlockGraphElementUiActionService.cs",
+      "GitBlob": "4f8a3fdf8d34bc17f0abd0f26d1f0303b92cec41"
+    },
+    {
+      "Path": "Services/DeadlockGraphNodeElementFactory.cs",
+      "GitBlob": "4975c39fcb8a88995596df8ebab49e806b4fbaaa"
+    },
+    {
+      "Path": "Services/DeadlockGraphPlaybackVisualService.cs",
+      "GitBlob": "6aeca24953d71d3ebc4a5907f496d8f1f6d8beb3"
+    },
+    {
+      "Path": "Services/DeadlockGraphRenderUiActionService.cs",
+      "GitBlob": "2bee6bdfe4d4f4ef2f5549e71dcf29cae8915cc7"
+    },
+    {
+      "Path": "Services/DeadlockGraphUiState.cs",
+      "GitBlob": "dc96d7515349d8c10cb82e1075ea4026991b4ee5"
+    },
+    {
+      "Path": "Services/DeadlockNodeInteractionBinder.cs",
+      "GitBlob": "af30166640d44a8d61bceae331474d675696f36f"
+    },
+    {
+      "Path": "Services/DeadlockPlaybackUiActionService.cs",
+      "GitBlob": "d8abdf78bb3e0c2206db7cfa7254bbcf10aa3220"
+    },
+    {
+      "Path": "Services/DeadlockSelectionUiActionService.cs",
+      "GitBlob": "c3b44bb60e35ef00d1d20a8cb27795fe5a89afd7"
+    },
+    {
+      "Path": "Services/DeadlockViewportUiActionService.cs",
+      "GitBlob": "86aa3d244f46fc5028b9d82711eb93c1e97ada94"
+    },
+    {
+      "Path": "Services/DocumentAnalysisUiActionService.cs",
+      "GitBlob": "e6d75ca597e93a7fa866a36fbb77952c37d38b0e"
+    },
+    {
+      "Path": "Services/DocumentRefreshUiActionService.cs",
+      "GitBlob": "48de25222ddd6167a11fa0caccbd76fad63ffd81"
+    },
+    {
+      "Path": "Services/FileOpenUiActionService.cs",
+      "GitBlob": "813b6cc2503be36e3feaa49ab232bad0495b6126"
+    },
+    {
+      "Path": "Services/MainWindowShellActionService.cs",
+      "GitBlob": "4daa8ccd74c2b5b0272249436926fdcb60046bf2"
+    },
+    {
+      "Path": "Services/MermaidDiagramUiActionService.cs",
+      "GitBlob": "cfd0a24be3575a68364defac0448582a792f1357"
+    },
+    {
+      "Path": "Services/MissingIndexClipboardUiActionService.cs",
+      "GitBlob": "a657f13e31844ecd20633c28a77c54ae6e7da570"
+    },
+    {
+      "Path": "Services/PlanAnalysisUiActionService.cs",
+      "GitBlob": "55f7db4eac563e0b8b917a7065119a2408bc193e"
+    },
+    {
+      "Path": "Services/PlanComparisonUiActionService.cs",
+      "GitBlob": "418d25bb000944dae59a728f612b9ec947cafcb7"
+    },
+    {
+      "Path": "Services/PlanGraphCollapseUiActionService.cs",
+      "GitBlob": "74e8ec7e9afb7806f19106b5c42ac8f74ab7f029"
+    },
+    {
+      "Path": "Services/PlanGraphConnectionUiActionService.cs",
+      "GitBlob": "9b7a13b36f1110f782287bf1586e5684f6da7fc8"
+    },
+    {
+      "Path": "Services/PlanGraphCostUiActionService.cs",
+      "GitBlob": "e7e971fc2a3f12db984aed5271b2d5e49a41773f"
+    },
+    {
+      "Path": "Services/PlanGraphLayoutUiActionService.cs",
+      "GitBlob": "41ed74cc39e06e7c3f6d3f7a84d500f6138e65cd"
+    },
+    {
+      "Path": "Services/PlanGraphLoadUiActionService.cs",
+      "GitBlob": "7c0246ca3c8bbd7f969a2ba6c9000a75fd19c931"
+    },
+    {
+      "Path": "Services/PlanGraphModeUiActionService.cs",
+      "GitBlob": "3ba976744cb2d6d1a80b775ba09e258ab7303bce"
+    },
+    {
+      "Path": "Services/PlanGraphNodeClipboardUiActionService.cs",
+      "GitBlob": "494d531d939114f7d7537dc486fafe65920bc33f"
+    },
+    {
+      "Path": "Services/PlanGraphNodeUiActionService.cs",
+      "GitBlob": "9f9bb89c116c5bc9de57210307d6f336f8277e21"
+    },
+    {
+      "Path": "Services/PlanGraphPanUiActionService.cs",
+      "GitBlob": "97435223394df51d40d448f93399920ce0b7bced"
+    },
+    {
+      "Path": "Services/PlanGraphViewportUiActionService.cs",
+      "GitBlob": "080d254ec3db021637a09fb53d04f72328580608"
+    },
+    {
+      "Path": "Services/PlanObfuscationExportUiActionService.cs",
+      "GitBlob": "866811cb3bda3addd72692ee500de7f76a773be0"
+    },
+    {
+      "Path": "Services/PlanSelectionUiActionService.cs",
+      "GitBlob": "58fa923f73760584635bc0352013191d80b9a5c7"
+    },
+    {
+      "Path": "Services/PlanStatisticsUiActionService.cs",
+      "GitBlob": "95b763188666a4eff29a1ecbc01188631908923f"
+    },
+    {
+      "Path": "Services/ReportExportUiActionService.cs",
+      "GitBlob": "6b04578a370e38cb110522917891369693a2e900"
+    },
+    {
+      "Path": "Services/SqlDiffScrollSyncService.cs",
+      "GitBlob": "e4dc8ec1a1ae68ac076e97c3efcf5498f6928f46"
+    },
+    {
+      "Path": "Services/SqlDiffUiActionService.cs",
+      "GitBlob": "80709f9fa3169e7c4834d1f3db81a1665fa57fce"
+    },
+    {
+      "Path": "Services/SqlQuickFixUiActionService.cs",
+      "GitBlob": "b143e52adfb5d2652d2c001c40a073680effcaa1"
+    },
+    {
+      "Path": "Services/TuningSessionUiActionService.cs",
+      "GitBlob": "0a9590939b84fc62660f949040038cb23e03e88e"
+    },
+    {
+      "Path": "Services/WindowChromeInterop.cs",
+      "GitBlob": "b3632c7e463dd4bcbea2e84dcc2252377f81781a"
+    },
+    {
+      "Path": "Services/WorkspacePanelUiActionService.cs",
+      "GitBlob": "d0519b5b6d12b50863128a05dfa600b2c1cad26e"
+    },
+    {
+      "Path": "Services/XelDeadlockUiActionService.cs",
+      "GitBlob": "1a4801ee143c44d14c2aaf3d7ab248f66fbf7627"
+    },
+    {
+      "Path": "SqlXmlAnalyzer_Phased_Implementation_Plan_2026-06-26.txt",
+      "GitBlob": "2ac5b6fd21de4daeff16a260b360091d73fc5444"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "GitBlob": "aa0d40a22a096658d9945213bd91c9e5e2a3bb95"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/SqlSemanticCommand.cs",
+      "GitBlob": "569042e0f50a3393f7d7005cc9ab576affcd99bf"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/SqlXmlAnalyzer.CLI.csproj",
+      "GitBlob": "3c347216cb518822782032568930f262a204776d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisEngine.cs",
+      "GitBlob": "e5a387fd269611ff446f77ffe912b41cbef7254f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisIssue.cs",
+      "GitBlob": "3cadba93a2827cd417df7b5363f2f3a2a0b02336"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/IRefactoringEngine.cs",
+      "GitBlob": "b68d0bd24a113f7c8abcadefe50ab74d34eb9c9c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/IRuleFilter.cs",
+      "GitBlob": "796aaa97399bff8b06e9decea0b57af3dc899861"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/ISqlRefactorRule.cs",
+      "GitBlob": "05be43fbcef48e46766f15104a659417840f7a3c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/IssueSeverity.cs",
+      "GitBlob": "7956eb57fcbdbc8499a0a43bcab2ccdd792f8919"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/AnalysisReport.cs",
+      "GitBlob": "eda73dec6fbb294f467559b2c3239f5a164bcc43"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/AssemblyInfo.cs",
+      "GitBlob": "ac8d42067606fe07ec886d4671548e848a9f5b7f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonEvidence.cs",
+      "GitBlob": "29ca2c303a4b20d8f1a902e37655ca5bfaec3a4d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonObjectEvidence.cs",
+      "GitBlob": "496480ac77386d30bdc4da21c2325343d686c709"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonPredicateEvidence.cs",
+      "GitBlob": "f31ad689178ade593c9f5f318469d176d52e512f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonSortEvidence.cs",
+      "GitBlob": "428b2a98840da98255eafda02bd661a29b02226e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Configuration/RuleConfigurationLoader.cs",
+      "GitBlob": "68ccb030dc2147713b44e5f78111065a3ad1b14a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockAnalysisService.cs",
+      "GitBlob": "cb0d0e41ab0ec70dd55a02fe8574e99bbb62b815"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockCycleAnalysis.cs",
+      "GitBlob": "2e840ccd4303ba1a9a3b5415a4b41094c4f7bd18"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockDiagnostics.cs",
+      "GitBlob": "3e17deeeb39c267271b05d045ad6885aeead5902"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockGraph.cs",
+      "GitBlob": "74ce239c54d0b848b116cb401e1d81cf1d4ffe91"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockXmlParser.cs",
+      "GitBlob": "6018dc62c0cc37e3b3978281275c2ffd78b5cb1f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/DiagnosticFileAccess.cs",
+      "GitBlob": "f78c049d099d5aa36be9e9af56d375ad6fa62489"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "GitBlob": "5357c2f3209ae79b4fc44633ed9969fd05692880"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/GlobalExceptionHandlers.cs",
+      "GitBlob": "da6e5364f42fadebe1a1d2123948b91997038798"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/MinidumpValidator.cs",
+      "GitBlob": "7682e0ebb526cb7beba14b4c7997a500c2d08b83"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+      "GitBlob": "b288a1d43c91b46e4999bbbcfea9bd5abb28a641"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+      "GitBlob": "c51bc073d270ae09b659a05a17d6b63cf4b1b917"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/HtmlReportGenerator.cs",
+      "GitBlob": "7c9a96ce42e873e32c1b913614a9328e1412ceab"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Logger.cs",
+      "GitBlob": "f2463bd9a909ab572b54256cf945adb305b95fbe"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/DeadlockEvent.cs",
+      "GitBlob": "dabfe4449fa7b884a86001c9260d2ad29f7b9fdd"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/DeadlockParseResult.cs",
+      "GitBlob": "db3b82a2526a109d2f4d5edf0e2222b84adf6664"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/HistogramStep.cs",
+      "GitBlob": "a8fda15dacd8477c7d170c9f7b6460697215f200"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/IndexColumn.cs",
+      "GitBlob": "04d91cb156828cd1bfe318254281b826d2f18ec4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/MissingIndexSuggestion.cs",
+      "GitBlob": "c91faf1614dfe62540645c865b1954989b35e02f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/PlanDocument.cs",
+      "GitBlob": "ab25c1094a300134c000b872930b7940eccb2882"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/PlanOperatorFacts.cs",
+      "GitBlob": "2b144c916a26c63c95c7bf867a72797909e2dbf9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/RefactorOptions.cs",
+      "GitBlob": "ee1d76d87dac05f9b476433b5de0d73e88d1336e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/RefactorResult.cs",
+      "GitBlob": "8707a581895cbeb11bef5d596492198b820583e8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs",
+      "GitBlob": "0a5b98899da6d01d40859c58c3215d9292b42ab8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/RewriteProposal.cs",
+      "GitBlob": "e1b66e9df46cc854f2e608a259da9211d9fb72ec"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/StatisticsInfo.cs",
+      "GitBlob": "1f593657952ad30a6d493ff070a65e4c09eacc98"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/NumericParser.cs",
+      "GitBlob": "f44d5eed6c278af133ad6bb1c59a85a15cb104f2"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Parsers/DeadlockTimelineParser.cs",
+      "GitBlob": "69e9ce9f219d2acb2027d03c12246a212b18a838"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Parsers/SafeXmlHelper.cs",
+      "GitBlob": "08ddb122d904037b4332ea1f756cdfe73092630b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Parsers/StatisticsHistogramParser.cs",
+      "GitBlob": "31230c211bb5d3ffd13c2e7f0d9c91dccac2e743"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Parsers/StatisticsUsageParser.cs",
+      "GitBlob": "74de24b12b6c8c14102b34d69631cf4078cd0f96"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+      "GitBlob": "0ecca9ffbb07fc8de585d1bd8eddabf570948381"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs",
+      "GitBlob": "03d6f83f09d8399ad60f137189fcd0eb2ee4fc72"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs",
+      "GitBlob": "5d3144032a54a2d73004d075e723feda7aa83e6d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs",
+      "GitBlob": "c41922c0fd92e8c9a2f7ace26bafd0c1bf25e38f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs",
+      "GitBlob": "14a64c20eb7991d5365b96e6b43425d0b185fc0a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/ProductInfo.cs",
+      "GitBlob": "245e0ede21da5a3bbab547a14d2995e610aecc7d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/RefactorContext.cs",
+      "GitBlob": "c0c073615f9a206480e4c91be24bace4837a7217"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/BooleanExpressionReplacementVisitor.cs",
+      "GitBlob": "0febfd1971192fbe641a4dfd45288a81e2c2f008"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+      "GitBlob": "ee4e8efbebccbbc2ccecc35b3b0a243fabf25870"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlOptions.cs",
+      "GitBlob": "7a8b5874e151d9d2f5fb1cd67b765a9ced9d4c99"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/ISqlRefactorRule.cs",
+      "GitBlob": "4598a212596d8fb85c8b75e8401700d81085441f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/MissingIndexSuggester.cs",
+      "GitBlob": "041841070796e252f54de94e1f6a55ab4c7e8bd1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/NonSargableDetector.cs",
+      "GitBlob": "6ae8c2ccf51197ba0aa4c90c416af1b44bb15bb5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/RuleRegistry.cs",
+      "GitBlob": "b6678c39c14c34f6239b107eac52815e1149a573"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/Rules/SargableRefactorRule.cs",
+      "GitBlob": "d0643104d19e199d17b27de77bd529a94f232e08"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/SqlRefactorEngine.cs",
+      "GitBlob": "25c37c28471997f7ece5f8ecd14e1e13d5a0ad40"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/Visitors/SargableVisitor.cs",
+      "GitBlob": "8091fe550119530a997f67620fbd71124fa5963d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/AnalysisResult.cs",
+      "GitBlob": "fd0a27aef8dfe310a82ff02323696679409178f5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/AntiPatternRule.cs",
+      "GitBlob": "41b71be8a83bae88d27b4d25bc5df1017e508089"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/CacheAndRecompileRule.cs",
+      "GitBlob": "9a567a3c2b530b59a29716e9a3dd23e9cbd841e9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/CardinalityErrorRule.cs",
+      "GitBlob": "cde5471bea4fa21a8e9914fc94af1c1f1283bb91"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticProtocol.cs",
+      "GitBlob": "9ea796a2c453b877f1d7f59b64ef441998e7dd2f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticTextFormatter.cs",
+      "GitBlob": "59877df025deda766fc99bbd6b5aa1356e8b3c7d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/HighCostOperatorRule.cs",
+      "GitBlob": "c77e9928594e06b8152a856d99ffff0044b5bf42"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ImplicitConversionDocRule.cs",
+      "GitBlob": "7d9a872dec60efa673d29105d3429a51e85e3d6a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ImplicitConversionRule.cs",
+      "GitBlob": "b43b96b85fd829d130bb9de0bd5e9666833ef6e9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/IPlanAnalyzerRule.cs",
+      "GitBlob": "486c8a249d2e06eb238bfcdae552af6018f859f4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/KeyLookupOpRule.cs",
+      "GitBlob": "4e6a617fd0f9d9ff0897a52e952025e0a1f5745a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/KeyLookupRule.cs",
+      "GitBlob": "6b08d8c8697e6809a6901e150e96fe254cacc9d6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/LargeMemoryGrantRule.cs",
+      "GitBlob": "bb9f657cfd577d84e8369ea5928910500da95c28"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/LegacyDiagnosticAdapter.cs",
+      "GitBlob": "f6d4a0b13f7427dcd3fac062942e333fbae169d8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/LocalVariablesRule.cs",
+      "GitBlob": "27f1176e2ded1449c5c3a43926df42fb79af8c53"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MemoryGrantDocRule.cs",
+      "GitBlob": "44976f069ff927575d056b7cf87c4772a7dca270"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MemorySpillRule.cs",
+      "GitBlob": "3c322c4bd01bed513722ceceac545d0bb560883c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MissingIndexRule.cs",
+      "GitBlob": "8e9e8fb656502317b49d1a7e228a3dad097e6b3f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MultipleScalarSubqueriesRule.cs",
+      "GitBlob": "7260c684c326585067479605356f174d1dff8831"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/NestedLoopsHighExecRule.cs",
+      "GitBlob": "fc9eefa0689159a52ea1e58a8ff87c984b62ebc1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/NestedLoopsRunningTotalRule.cs",
+      "GitBlob": "5ae7d752cf6623a95ab97ead82a7806d83f5895b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/OptimizerAbortRule.cs",
+      "GitBlob": "96d16df31a965ef3f38cbedd077c4491e97bc082"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ParallelSkewRule.cs",
+      "GitBlob": "f9b9049474028378ffbd00180aa589937c2adab7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ParameterSniffingDocRule.cs",
+      "GitBlob": "9379659c92da3490bbeb21c805011c1792f8232f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ParameterSniffingRule.cs",
+      "GitBlob": "177183fc5fb25d3903cc4afa05cbc4912bc4057f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/PredicateFunctionEvidence.cs",
+      "GitBlob": "6fd61767b719a848f6559502853ae65fb6ca6b72"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/QueryRewriteRule.cs",
+      "GitBlob": "4280b7638185388737df9c86a28d75f0316bb13a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ResidualPredicateRule.cs",
+      "GitBlob": "039ed324315be28a31aef9f424e1f33a959d1c41"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ResidualPredOpRule.cs",
+      "GitBlob": "fc8d8409a3f11bfc6e56ee4003ab40d4aeeef518"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ResourceSemaphoreRule.cs",
+      "GitBlob": "afaaa6e829a5e59ac625bff376c3d5d7748deedc"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RowCountRuleEvaluator.cs",
+      "GitBlob": "fb98cab9ae41d20180a13607ad7a039b9512fbb5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RowEstimateMismatchRule.cs",
+      "GitBlob": "a1d7daffa453a4079a293cdddc7647988b242f9d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.cs",
+      "GitBlob": "8cc9b7de6a4dc5ce4a724d55693fbf9c15a4dc27"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.Execution.cs",
+      "GitBlob": "fe43f897d33498b2cadb15400ee577e5c788e276"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleMetadata.cs",
+      "GitBlob": "a6fb62d429fabf23abb7f17a1bcddcb4a2f474d4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+      "GitBlob": "5fc19f4a6f5722db0120c261603ba3c45e53162c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SerialPlanReasonRule.cs",
+      "GitBlob": "0f49fbe50d5079625369591edc2474940cbee1a2"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SpillDetectionRule.cs",
+      "GitBlob": "071fd1e9c88c199d30f9a6e847767c7ba93c453e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/StatsUsageRule.cs",
+      "GitBlob": "47ebb65da1b5059cd78f5db975a6899dfd662d16"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/TableScanRule.cs",
+      "GitBlob": "a5e4c2a1b8507fe1500016b8b0788a8eb439b577"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ThreadSkewRule.cs",
+      "GitBlob": "97112f114d710b7d4e401b905bfcc5346d2d93b5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/UdfAndTableVariableRule.cs",
+      "GitBlob": "c59d9a04246fca4ded64369f35f228645984a9d8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/WaitStatsRule.cs",
+      "GitBlob": "0d976a3604ab756cacb712ddc3daffa52291accd"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ZeroRowActualsRule.cs",
+      "GitBlob": "d66c047bcbb5c89a0ed959fb47a296692ffa8716"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexPredicateEvidence.cs",
+      "GitBlob": "78a1ce973492f24d58243bb6b0b25f415750ed7e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoreResult.cs",
+      "GitBlob": "24144c9660d58a62738247c5f2a3b218c1b11ac8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+      "GitBlob": "1b0887ca5276ded13ff4ff18e3107e5febbe3e76"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/AnalysisDisplayText.cs",
+      "GitBlob": "24765a6557d9f46a50ce17bc419a162bcf899267"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/DocumentOpenService.cs",
+      "GitBlob": "4b4a5e2cdd7b9eda4a2bdcd67df2093380a5e90b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/DocumentReadContract.cs",
+      "GitBlob": "7c8bf8d2be3f1af88acea7f6d2d45d96b0406204"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/IndexTargetResolver.cs",
+      "GitBlob": "8e38c2398a76c23b52e791db438a3fe7bdbe2fce"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputReadPresentation.cs",
+      "GitBlob": "f63948f224c5264f72989d92e40acfb0f1436ba3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "GitBlob": "58915ab0d0e020341100bc86dea0bd6c4e73fd00"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanCapabilityService.cs",
+      "GitBlob": "9f8d8fab025c73d9becd5669f034c1879abfb816"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanDocumentBuilder.cs",
+      "GitBlob": "d778a0c84f89cf9fdbb2f1660075822eeca6158b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanExecutionFactsService.cs",
+      "GitBlob": "01a2b419d8df0148ea604d057c84cae3ffc95f35"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanIdentityAdapter.cs",
+      "GitBlob": "a04e539fd7551a2bcc1852a0aa4e70aa12554c4b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanOperatorFactsService.cs",
+      "GitBlob": "61a9a0b74307416ea4caa7b64ab4aa8577c07b58"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Simulation/CostImpactResult.cs",
+      "GitBlob": "f37fea0a1468b3c7b22234122eeafd544a780636"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Simulation/CostImpactSimulator.cs",
+      "GitBlob": "bcf6392a7a530d3fd81f14354dd3cacc1c2d25f1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Simulation/SandboxInputSnapshot.cs",
+      "GitBlob": "595c2657cc5a8b823f3078d379db70d19480692a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/SqlXmlAnalyzer.Core.csproj",
+      "GitBlob": "6ab35ddbcc035baf3410d3a7bca26b0c960375ef"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/TemporaryFileManager.cs",
+      "GitBlob": "a1bdcf38e48c54923fbaa998eb0a61e248b2d561"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/XelReader.cs",
+      "GitBlob": "b1a200331e7f3bea6772dfb89f890a1f07d7d719"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.csproj",
+      "GitBlob": "37fd0605d78a5a4137499b57fbc852b3cd9c7785"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.sln",
+      "GitBlob": "e5e1b574ae1be16ce391e405374e98644e03e04d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs",
+      "GitBlob": "62509bc90dc5680f0c23ca9202ea90d1c48f9d59"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisDisplayThemeTests.cs",
+      "GitBlob": "3c9cd52a8dd77802a950d7049395560426368b4c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisInputLifetimeTests.cs",
+      "GitBlob": "4acd3d872dff72fc10a9c26b95df76976a6f69c6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisReportControllerTests.cs",
+      "GitBlob": "333d82a6a5aef69acaf1009b9e4933d1aa15ac89"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/AnalysisSessionCoordinatorTests.cs",
+      "GitBlob": "ee5485e46f5a3e3ff364a6eb6b58028f49356d18"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+      "GitBlob": "6dd0b8e69ce322b6194fcde2464da7615218025f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+      "GitBlob": "4e5de63d951a6081d4d395c61bf8c225833da090"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/CliScanFileCollectionTests.cs",
+      "GitBlob": "4d1f07e909a5338fe4ca7730fbb553dbd988f6e7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/ConsoleResultReporterTests.cs",
+      "GitBlob": "1a6d11dacc73f99fbb171c1ce8723810883c8c33"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/JsonResultReporterTests.cs",
+      "GitBlob": "2634a63db1269cc9f2a9905ef535c120f7888975"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+      "GitBlob": "fca0f3c242541f91b2488146d8355f781fcc4745"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/ReviewedSqlApplyServiceTests.cs",
+      "GitBlob": "93b53bb6e249de28e2c78a968b67660abf4eb209"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/RewriteProposalCliTests.cs",
+      "GitBlob": "6e463c224d83db4330108fd91410c5adaf51a8ab"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlBoundedFileReaderTests.cs",
+      "GitBlob": "0eb783168f67105c83485909921a452bed4043b5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticAffectedRowsTests.cs",
+      "GitBlob": "ce6c76a0650a607f2a34e1364a675ebdf4ff2c87"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticCliTests.cs",
+      "GitBlob": "3a073e5b1d89c13ef2f6036787766eff8d1470c3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticDatabaseLifetimeTests.cs",
+      "GitBlob": "284c4edf1380553e79f1f03d188f1398e001dd50"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticObserverPolicyTests.cs",
+      "GitBlob": "5abd4772e5502535a27b2ef0cfa8a5429d0651fb"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticValidationTests.cs",
+      "GitBlob": "2cf1ba852ccb7836a850b81a0423fee9e338159f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticValueFidelityTests.cs",
+      "GitBlob": "c2b01556df361e5cede3f8e86c923c77bcfd31a5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+      "GitBlob": "7e8ebe27b9b434c2e1776deaa3f666a3308fe09c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockAnalysisServiceTests.cs",
+      "GitBlob": "d1a0eec3da369efb6c1b9a7fc6cf82eeacf07563"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockCanvasInteractionServiceTests.cs",
+      "GitBlob": "aba3ff5134665073d19ddaf6ca9f1200583505ba"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockEventSelectionTests.cs",
+      "GitBlob": "5f84dfb782b51f5e0ee260fc2b36441485e7799f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphEdgeRegistryServiceTests.cs",
+      "GitBlob": "0f77fc06749ddcf69d0d905e44f60cf9b8eb23ac"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphEdgeServiceTests.cs",
+      "GitBlob": "1d395b20f4badba55048250d605c8d9421f7c3b4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphGeometryServiceTests.cs",
+      "GitBlob": "e72ecd839b5fd975b8b9b9a3e216182a314d6ceb"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphLayoutServiceTests.cs",
+      "GitBlob": "3ca56ef67a9c79772fb9ed3da1893b275dafa211"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphPlacementServiceTests.cs",
+      "GitBlob": "52f83bb3128a6b686d3703a35c39b27a4b5f41be"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphSelectionServiceTests.cs",
+      "GitBlob": "390e65750d50a5fec3dbd7d95b031098dff95309"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphTests.cs",
+      "GitBlob": "e6b44151f2591c569de5b313a7d773ff80629b9a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphViewportServiceTests.cs",
+      "GitBlob": "a4a7130be3553ca72831acd90ca8076de9434aa2"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockGraphVisualStateServiceTests.cs",
+      "GitBlob": "b8d2a04337fc4bba03e188ff39eeb2c806b78486"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockNodeDragServiceTests.cs",
+      "GitBlob": "019d64b452b5560bda122e2752ca277b6822c182"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockParallelGeometryTests.cs",
+      "GitBlob": "a745e421f83d2bc805d9fbb8d63c6a5bda3d4859"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockParseContractTests.cs",
+      "GitBlob": "44267e8cdea002fd8ce23a23502bd91f43939777"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockPatternAnalyzerTests.cs",
+      "GitBlob": "1084ac396fb82148e162e9e1f2e8b141fb887fb5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockPlaybackStateServiceTests.cs",
+      "GitBlob": "edcbeca56d0e2a4d8297a9a3cf8724eeeb02d51c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockPlaybackViewModelTests.cs",
+      "GitBlob": "605c16c8715b23b96622cdf8d16f4532a4617349"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockSelectionDetailServiceTests.cs",
+      "GitBlob": "51b3d5b5d8801fce0b1e1396bcf74d3ff21883bb"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockStepBadgeServiceTests.cs",
+      "GitBlob": "a0eedda364d50ec076281c4a134fd39932ce6f24"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockTimelineParserTests.cs",
+      "GitBlob": "da0fd71321c9b346b7cab8116f7957a78214ce53"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedGraphTests.cs",
+      "GitBlob": "1348166ae890ab7b495235d583c07b69b7dd2fd5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedHardeningTests.cs",
+      "GitBlob": "31cc6bce4797f251e16934f9d8a3aba921342a9d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedHardeningViewTests.cs",
+      "GitBlob": "6220657032ccbd65e788c6a8f49e3f31b499940d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedViewTests.cs",
+      "GitBlob": "bc434167233a7a311b651f2eda4fc1793ee0ed56"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolFlowTests.cs",
+      "GitBlob": "e9b3c95e2744bf56fbee12cd06f0991764b9fdcc"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolHardeningFlowTests.cs",
+      "GitBlob": "7f1db195d7a82d9500edd816de0bd1a279661df9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolStatusViewTests.cs",
+      "GitBlob": "9f1e50f5d0c773a7c10f44002d6f9f4718978e5a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/CardinalityResidualDiagnosticTests.cs",
+      "GitBlob": "220dca5492541c845bdf3192e61e92ce59dab7da"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/DeadlockUnifiedDiagnosticTests.cs",
+      "GitBlob": "61e7aab70a63af06fb096d70fc775b1eda68fc33"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs",
+      "GitBlob": "48aea3dcc35021257c697f051aeb0faa4e31f0c9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/IndexDdlDiagnosticTests.cs",
+      "GitBlob": "d704a86a0e9ce77cf5a12fa9d52ed2b24db54932"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/InputFieldMappingDiagnosticTests.cs",
+      "GitBlob": "13fec8d33863ab642b3835bd989a80ce47cc4f68"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/MisleadingDisplayDiagnosticTests.cs",
+      "GitBlob": "60c91754b9260c85a444e777b95830ee7b5abdfd"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/PlanComparisonDiagnosticTests.cs",
+      "GitBlob": "6e3144ae89b6302a8178deb9401c3e5569f5ba63"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/PlanOperatorFactsDiagnosticTests.cs",
+      "GitBlob": "62102011755a834dde1eafb4e36d3f9e905e2e08"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/RewriteProposalDiagnosticTests.cs",
+      "GitBlob": "f7d0b8c6aa9eef062e0c53210d61beb1e1a45f9a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/SimulationDiagnosticTests.cs",
+      "GitBlob": "6a5f6d0ca4c82515fd343014cd61b59c32a4817e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/SqlSemanticDiagnosticTests.cs",
+      "GitBlob": "31a3cc02c11817f514c0881b033e36f22ea83322"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentControllerTests.cs",
+      "GitBlob": "8b44c2ead356c48e33b7091813960358c6fe5f78"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentOpenServiceTests.cs",
+      "GitBlob": "ce077dbfec460937c82334c559a19159ca59c752"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentReadContractTests.cs",
+      "GitBlob": "4f89df532514233e6cc85a732d6ea29c4395767c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentReadHardeningTests.cs",
+      "GitBlob": "ee098f129054d464feaad5d401c2b12b5e816f7c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentRefreshActionServiceTests.cs",
+      "GitBlob": "c319dfd15a720ff5157afa2e10dec027c4af6473"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentTabTests.cs",
+      "GitBlob": "7eecdf5443e3c3ebb43c96427de8f2751633a76e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/EmbeddedResourceHelper.cs",
+      "GitBlob": "5b6073927cafd9861861925fe4ac80ba31a79703"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/EngineeringGovernanceTests.cs",
+      "GitBlob": "54b837c81d7483bf0df80a9ce9f541e52b431c6a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/FileAssociationRegistrationServiceTests.cs",
+      "GitBlob": "7f542b3570bbf5779302f692ce704a3b0c3bdcfd"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/HtmlReportActionServiceTests.cs",
+      "GitBlob": "49d401d2477b6a1f989c14079574725d1f607c28"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs",
+      "GitBlob": "a5e0985028ae68f06e8f080b96da0dd54d9eda8c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/HtmlReportGeneratorTests.cs",
+      "GitBlob": "b1291bb469417fd783dc0720b52f14fc276dc8a7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/IndexEvidenceHardeningTests.cs",
+      "GitBlob": "b6cc3212f9f9a0916b923a31724408f85302f916"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/IndexTargetIdentityTests.cs",
+      "GitBlob": "2dcb4a1477b1f51be0c60f0f09a85a44bfb45ec4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/InputFieldMappingTests.cs",
+      "GitBlob": "0292e508a0b99ae0e777ed5d3d19ce5479ab269a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/InputRecognitionHardeningTests.cs",
+      "GitBlob": "febfc38bda208ebaf0a8905b7b725fe60612dbbf"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/InputRecognitionTests.cs",
+      "GitBlob": "4b87ae5aa059c4e2c6bf1344b6a6ed415d35807a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs",
+      "GitBlob": "ce00445c9af32a40b37029448a31950c5a4b0ded"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MermaidDiagramActionServiceTests.cs",
+      "GitBlob": "ec1dc6b662025675fba974032bcf19ac4c745315"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MermaidDiagramServiceTests.cs",
+      "GitBlob": "c3472aa8bb14f63498b6e6ab8dbce2aba29ee8a4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MisleadingDisplayStateTests.cs",
+      "GitBlob": "50089fafef68616930aa97722bd37e27a52c56b4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MisleadingDisplayTests.cs",
+      "GitBlob": "043f8f191ac108cfc2762d9d096f77ff502c46f5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs",
+      "GitBlob": "b043a6f58563930db3a58da10c7d4edb3e6546c0"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MissingIndexDeploymentScriptServiceTests.cs",
+      "GitBlob": "b717d0c76c851f467cbf0b41b973dcdd1e3d4ec7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Models/MissingIndexSuggestionTests.cs",
+      "GitBlob": "d0a3cef4229ade911ac937511f3d9a9f2e5af8b3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanCapabilityConsistencyTests.cs",
+      "GitBlob": "dae5331bae8422ff5424706007de1147d4c331da"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonControllerTests.cs",
+      "GitBlob": "cbf5c56c1c779d8acbc0013f67b007e512563ea8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonEvidenceHardeningTests.cs",
+      "GitBlob": "4c3a700214e8c9fe2393074a2318492668278d57"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonMultiStatementTests.cs",
+      "GitBlob": "a123b0ec1fc7eae0c1058bdf8246e524fd6855c5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonPredicateIdentityTests.cs",
+      "GitBlob": "9555d0a06d98a2221d3ba889f7f9ad062977c987"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonSelectionIsolationTests.cs",
+      "GitBlob": "0ab967a9404209c78d533b8656bbe4b84381a1c4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonSourceHashTests.cs",
+      "GitBlob": "e6fa2886deb7484ea0db0ebb897d448a790a19b9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonTreeServiceTests.cs",
+      "GitBlob": "104a3f87148f38340eb2c485c283130688e97743"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonTreeViewRendererTests.cs",
+      "GitBlob": "3059a00c36361a632ce3289960d85d5d3b001481"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonWorkspaceTests.cs",
+      "GitBlob": "b630fa1d3db77153dfd93f46fd312bc053a2d3d6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanDiagnosticAnalyzerTests.cs",
+      "GitBlob": "8c2ada99184162c26385412165730870001801ca"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanFieldBindingTests.cs",
+      "GitBlob": "68c89d015b275174a3db855b3da0d8d1fe53441d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseLogServiceTests.cs",
+      "GitBlob": "10e2e0333a179d6f609b58159090c96873720525"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseStateServiceTests.cs",
+      "GitBlob": "0240ce03999c252589175576153f62931ea4e8c8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseUiActionServiceTests.cs",
+      "GitBlob": "daa68dcebe77c4b5851da13a4e4ffbe0c4b08841"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionBuilderServiceTests.cs",
+      "GitBlob": "278c8b39dec127ec6f0cfd82d2877dda47386135"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionDisplayServiceTests.cs",
+      "GitBlob": "fdd1a9aa1457409cd51889eeabf4ad309f835a97"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionGeometryServiceTests.cs",
+      "GitBlob": "4d65147c20cb7182e85fdd5c93e87cfc59678de8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionHighlightServiceTests.cs",
+      "GitBlob": "efd19140f6c0a58cbb1a374d80d4de3b9fc6868c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionUiActionServiceTests.cs",
+      "GitBlob": "f3c5850edf46d2c10fd326e39f50cd48164597ed"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphCostCalculationServiceTests.cs",
+      "GitBlob": "b409cb7052b3e8069b3420df0f214a724d01113b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphCostUiActionServiceTests.cs",
+      "GitBlob": "ab2fac6d769bf81c57b881bc3999018e961e09ea"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphCostVisualServiceTests.cs",
+      "GitBlob": "2ee3feadd1a1579040c8e4210a231d743463513a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutRefreshServiceTests.cs",
+      "GitBlob": "66b73c72492bdf8190861d44b49b75331418f9e4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutServiceTests.cs",
+      "GitBlob": "31612c5a1facd8c04fd6053281f63cc1ffb102ba"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutUiActionServiceTests.cs",
+      "GitBlob": "cb42a4750f55247c70ef1c16ca676e4cfe32e17d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphLoadUiActionServiceTests.cs",
+      "GitBlob": "ea625a6e24aed09778f95c2dbcbed6e792ffbbf2"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphMetricServiceTests.cs",
+      "GitBlob": "9fa3410d2e7e8ce03211a513c583948b7880493d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphMissingIndexAssociationServiceTests.cs",
+      "GitBlob": "69529386b85dc49dc9299e4887b6b0b45deb1a3a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphModeUiActionServiceTests.cs",
+      "GitBlob": "0aa7d5c41e934a3e31a2095cd3633e8b618dd382"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphNodeBuilderServiceTests.cs",
+      "GitBlob": "d465b268d1fdd2c606687b21fac61620a1ae3ed3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphNodeClipboardServiceTests.cs",
+      "GitBlob": "69a2a387bd6f6a8a17622435a25aa02f64c023a6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphNodeClipboardUiActionServiceTests.cs",
+      "GitBlob": "33125e9a6ebca3173bf748fcb994cb637eeac720"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphNodeDisplayServiceTests.cs",
+      "GitBlob": "e7fa7b9e49db76b12a548b9fc68e1a4b3ee3bdcc"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphNodeUiActionServiceTests.cs",
+      "GitBlob": "c77e77b6f409155aade47b73f91bb6c12b71acfa"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphOperatorTypeServiceTests.cs",
+      "GitBlob": "73ee08222d4a7134218680ce2e9805e70103437d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphOperatorVisualServiceTests.cs",
+      "GitBlob": "9ff2bfa1e94dba9196271f4adc38e14c3dd5f9b5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphPanInteractionServiceTests.cs",
+      "GitBlob": "a93e7ce74d0bd6a89edb6b7909ec65b679a093ff"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphPanUiActionServiceTests.cs",
+      "GitBlob": "141d26f88f36374e33d4dda747613ad2bc1192c5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphRelOpDetailsServiceTests.cs",
+      "GitBlob": "d5b905e5ee649fdb6dc731e89bc67fc1eada2d16"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphRowSkewServiceTests.cs",
+      "GitBlob": "e8ebab705d94659a49e8263fc3926d1d51935e2c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphRuntimeCountersServiceTests.cs",
+      "GitBlob": "122a455f92a8786ecd61ed1b867076d27b2a789c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphSmartCollapseServiceTests.cs",
+      "GitBlob": "378c14c186488a2cbbff9a7fdda9a70ce3de7f1f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphViewportUiActionServiceTests.cs",
+      "GitBlob": "fd42c3f2e61ee6cf2aa70b13718435250a500938"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphVisibilityServiceTests.cs",
+      "GitBlob": "6955242e10591dd38d5781671a780e2039e7a118"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphVisibilityStateServiceTests.cs",
+      "GitBlob": "58feff569d2774efba381de2cbf6cd704e01ba5c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanGraphWarningServiceTests.cs",
+      "GitBlob": "0f18208490b4e7b3a43216c460794da27f50ab0b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIconManagerTests.cs",
+      "GitBlob": "5f6010f2559d9c5b882445bff32d135e1af9b48c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityErrorContractTests.cs",
+      "GitBlob": "a9a410b233925217dac8414b5aef040882f76558"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityFlowTests.cs",
+      "GitBlob": "e912496a1c62b9fd8c13e823e842cdbfca5c103f"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityHardeningTests.cs",
+      "GitBlob": "9f11273539f6aa4c000f9ebc6a39286d19293335"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityModelTests.cs",
+      "GitBlob": "927b3241033fdac2d543449ab72ab57ef2b5897e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs",
+      "GitBlob": "24b19ae937818de42ccdfd46abaa1266984924ca"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanOperatorFactsHardeningTests.cs",
+      "GitBlob": "ae6e4078f5fc48cca9364a6ddfc00e97d29ea2ce"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanOperatorFactsServiceTests.cs",
+      "GitBlob": "c2d9dfe404d293946a833333a67086c6c71e3f34"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanOperatorTreeViewRendererTests.cs",
+      "GitBlob": "2a07a2c1a9d3548ae82a403ab90cf21858b0e1b1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanPropertyServiceTests.cs",
+      "GitBlob": "52350253491a56f3fa645da16c062e2921155c2b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanRuntimeObservationFlowTests.cs",
+      "GitBlob": "7380b8f58adac65e0319ec028ede631fe5524b9d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanSelectionActionServiceTests.cs",
+      "GitBlob": "ea6be82807d8b0427f483f01226d84f26cf25c5c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanTreeServiceTests.cs",
+      "GitBlob": "9432a15647e3b62dd643dcbd083fadc32cab2ceb"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PortableReportActionServiceTests.cs",
+      "GitBlob": "a84977210d690961598509a29e6e4c1d4a725791"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs",
+      "GitBlob": "da77d2da47b4e02759c9221d52af28195bc1e2d2"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs",
+      "GitBlob": "b3682c22e0e0700ba0ab6cdd9f5e9abe7a0f08c8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs",
+      "GitBlob": "2fe75419b52515a2066f558abf9a29c4632b1db0"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs",
+      "GitBlob": "8846b826039cfc26b03d1c58c796fc3b0dcd84f3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs",
+      "GitBlob": "0e2ce9c7efb8d3133436d0b08b4caa3a2358c6db"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/IndexDdlIdentityTests.cs",
+      "GitBlob": "4b570238ca5cc4827cbf1589ba48016d0d4c49ac"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/MissingIndexSuggesterTests.cs",
+      "GitBlob": "73f257c15b71bd3e071ca38d9e4be81c044f9f96"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/NonSargableDetectorTests.cs",
+      "GitBlob": "d9655e9ad0a744c2bef760a83e0c8546a17dc664"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/RewriteProposalHardeningTests.cs",
+      "GitBlob": "73809b178cf74bcb1ebecbddf012543beb4b4c29"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/RewriteProposalTests.cs",
+      "GitBlob": "f0a28ba431c251248df097fd2bb97bd40237d68c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/ScalarSubqueryQuickFixTests.cs",
+      "GitBlob": "eef33ca51daa62b1483a868b8d2f84234af37386"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactorEngineTests.cs",
+      "GitBlob": "b404c25114b62557730e655e9c028068aded190e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs",
+      "GitBlob": "889bfa522444165a915dde2d51611daf27556101"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs",
+      "GitBlob": "576f35448e578dc7d17e3bfd1d3de2adf91162eb"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+      "GitBlob": "c848a3839371ecdb342790cbb6a3c862997e9b8e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+      "GitBlob": "0b5681fedf305ee5a4737bf6d878075054725ceb"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RewriteReviewValidationTests.cs",
+      "GitBlob": "5bcbc26c3e7b6bd065c6d23bbd3428de25d2a56d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RewriteReviewViewTests.cs",
+      "GitBlob": "8dd19c5cf006a2ec57ea2c3dfcf5c63e814fb607"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RuleConfigurationLoaderTests.cs",
+      "GitBlob": "cdeef841bcc533495d1bda0a0f0bad18b1d198a4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RuleEngineTests.cs",
+      "GitBlob": "95f5edbeee282d50a8f02a23b5517c172416d637"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RuleMetadataAndScopeTests.cs",
+      "GitBlob": "60be52d8dbaa1dd04c6fb454dbf5517b5321789d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/CardinalityResidualRuleTests.cs",
+      "GitBlob": "d5752c42fe66cd3d0a62729beb8e62b1a21f6bd8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DetachedNodeIdentityTests.cs",
+      "GitBlob": "b539dd5c76b8a7fbc5d54e54b1ac75003e1043c4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolHardeningTests.cs",
+      "GitBlob": "b46a17832f1f4ceb4730d955c778f93bc71c46e1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolTests.cs",
+      "GitBlob": "6a37aa8ca61cb430b7ab57485dc01d37cd68cd29"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/LargeMemoryGrantRuleTests.cs",
+      "GitBlob": "329eef8d7627e1bbf49a26ffeec46d76821b4d5d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/ParameterSensitivityRuleTests.cs",
+      "GitBlob": "b3a69e60c9d3a501c443c86b948a76eb2e7e34fa"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/RowEstimateMismatchRuleTests.cs",
+      "GitBlob": "1e9f59bf38e5b5a14ad4891348a8f1a0a43c473c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/SargableIndexRecommendationRuleTests.cs",
+      "GitBlob": "3f205f61bcfbaf2bbe09051f64a082c62273d5f6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexPredicateHardeningTests.cs",
+      "GitBlob": "27d9b850355c40ef2de3eaed981fc70b5b4ddeb4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoreModelTests.cs",
+      "GitBlob": "0a883af0007baf2790accc694172878582b97b83"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs",
+      "GitBlob": "9aaa17e47da5d8c4436e82f9fe9bbe748b279393"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactModelTests.cs",
+      "GitBlob": "4404b4b4a939233e3e1329ea861e220ef5bce139"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactSimulatorTests.cs",
+      "GitBlob": "a8d73112961036290c60f1003b925ebcfceae28d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Simulation/SimulationOrderRegressionTests.cs",
+      "GitBlob": "d8cd58c0fd52e8b5378b598f30c92d3fb4e843e1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/SqlDiffDocumentRendererTests.cs",
+      "GitBlob": "8d7359cf9e061bbde174fda47eaeffefd192aa19"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/SqlDiffServiceTests.cs",
+      "GitBlob": "29375965f2f2923f795509a6186251bcde0ca225"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/SqlQuickFixServiceTests.cs",
+      "GitBlob": "876d7a7ab6c1bd24e8be9249fa882ca435b9f294"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+      "GitBlob": "a2ce48b9921742567db6d38771fc73b87e94701b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/StatisticsHistogramParserTests.cs",
+      "GitBlob": "56115c4aef27a58ae1954aac7c667e1f2062549e"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/StatisticsUsageParserTests.cs",
+      "GitBlob": "931bc085533a1324d5d95161f2aa4239914ec73a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TemporaryFileManagerTests.cs",
+      "GitBlob": "043243c4f841c830a76e8e9ae745a79984666dba"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/deadlock_bookmark_lookup.xdl",
+      "GitBlob": "d6c3bffa9b2f1e399e2333774b9a3b120fac68ee"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/deadlock_multiple_events.xdl",
+      "GitBlob": "5e34eaec9709f48b15a475e485301250eb794127"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan",
+      "GitBlob": "d6aff987f11b8078f031efb1008015f702279ce1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp10_scoped_identities.sqlplan",
+      "GitBlob": "c8cf12884a1eca3775a14958a82237090d24829d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp11_operator_facts.sqlplan",
+      "GitBlob": "8c4816f468c9e35c27036ce708580506c9a48913"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp13_overlapping_deadlock.xdl",
+      "GitBlob": "17fe08ffb5823578eeac9b0eefd1922180e1efa4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp14_cardinality_residual.sqlplan",
+      "GitBlob": "1596fb988e92f06dd19dffb6b96de895bf190497"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_index_targets.sqlplan",
+      "GitBlob": "aa838164aadb71cef3e36b9a39e371e664f5419a"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_review_actual.sqlplan",
+      "GitBlob": "928f37de8b0ab980469542fece6616b916697c2d"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp16_review_predicates.sqlplan",
+      "GitBlob": "0b08626cadee5718f374778e3b481ccded73db17"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp17_comparison_a.sqlplan",
+      "GitBlob": "5612b607a43f262efb86402dfd1e9f72e7002260"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp17_comparison_b.sqlplan",
+      "GitBlob": "5f6128616225d279e00521088185afb69d87a05c"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+      "GitBlob": "2f6a5b8fb5e9dd1120d1badaa5acbe010c3394ec"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+      "GitBlob": "f2af4fcaafbf8ff53d53af6cb734b49995e07924"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+      "GitBlob": "da6e8eff2efbc84e3d5efb270dcd15abb0d04610"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_no_relop.sqlplan",
+      "GitBlob": "850de23113370ddbbdf673e1f8fb6aae66cac893"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_prefixed_no_relop.sqlplan",
+      "GitBlob": "6f607798519b8005c6c9a10add195e8f4a436617"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/Schemas/showplanxml-sql2019.xsd",
+      "GitBlob": "09ac9df969901bf8770dbe1d9abb0d892e89a150"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs",
+      "GitBlob": "48482b6360ec66da9eb379adda664139f1487648"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TuningSessionServiceTests.cs",
+      "GitBlob": "f9ca4c95563ce008a14cb75c553b28800cb17a51"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TuningSessionUiActionServiceTests.cs",
+      "GitBlob": "2ea57a9bfa6021a2369a324d4e71f9d7ac4607be"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/UnitTest1.cs",
+      "GitBlob": "1366c29155ef9df2b97ebd1058a5633e05afd7df"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Utilities/EmbeddedResourceHelper.cs",
+      "GitBlob": "2f1304ee58c7b7c45af9ae09c4a572698da8acb4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/ViewModels/IndexSandboxViewModelTests.cs",
+      "GitBlob": "dbdab6a00612514dfd1a29f1652f38446e3b7e4b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/ViewModels/TuningHistorySessionTests.cs",
+      "GitBlob": "54ab61f661a0c69dae34092ff72a18e6f95cf429"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/WorkspacePanelLayoutServiceTests.cs",
+      "GitBlob": "cb8c696600a0220fcc733fb60fbc8eb1dbc4610b"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/XelDocumentReadTests.cs",
+      "GitBlob": "d1886983614a4f56180b6eccf4d830a8b5dd68dd"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Analysis/SqlPlanAnalysisIssue.cs",
+      "GitBlob": "82b4624c58751b5c9cdc6ea94c6314395ac4d774"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalysisEngine.cs",
+      "GitBlob": "6b3d86a1d1ab2b3e00e837932e24999272ae430f"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalyzer.Analysis.csproj",
+      "GitBlob": "2c81f230a037771340a8fd2771624d4225387d44"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "GitBlob": "4e849bdffb799362caeb70513d384dad416df395"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs",
+      "GitBlob": "68793651703523355f1d6fb03cadfb9d78b9b628"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+      "GitBlob": "a1e68456713e3438d2355089ea48aab220f1b4e8"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs",
+      "GitBlob": "8b3f73cd091311ab682d99bcb7c8de4cdf8f093f"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Models/SqlSemanticValidation.cs",
+      "GitBlob": "66fda0e68dedf230c28e12edd5e564ee896d8de2"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs",
+      "GitBlob": "ad0b701f0d721a40d406a2534a721aba8d920796"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs",
+      "GitBlob": "6c3ea9a2a834d8f3b3662029f7a9b5d1dab84e65"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+      "GitBlob": "ace656c42dd124ba5b52a7f1e2d4edf1dd4d9d57"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/IFileHandler.cs",
+      "GitBlob": "21c266bb1289529c9390199a5cdf65e3bd7b223c"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/IResultReporter.cs",
+      "GitBlob": "406e74c1d1e5a6b922581f3c94f1de83eedbf5cf"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs",
+      "GitBlob": "798a9aa4f8801893a095967eb06d7dfa2fc1efd8"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs",
+      "GitBlob": "53a6116e818125e521e2e9956bdfa42a1ed8466d"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/LocalDbSqlSemanticRunner.cs",
+      "GitBlob": "038a2aa92aead910cfee254e75e6c1427e5565e3"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/PhysicalFileHandler.cs",
+      "GitBlob": "fcd64473068ba53aa5d698f35379511242c87092"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs",
+      "GitBlob": "516cfaeeacd5a3f99ce3e02b5126de5864ed464f"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs",
+      "GitBlob": "6ac018944ed974d05919cae67d23b1d29ec92c47"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs",
+      "GitBlob": "b308fd7f713c2611503afc9e6268c87dd2339196"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/ReviewedSqlApplyService.cs",
+      "GitBlob": "ab5fedf85fa4208fbe8553f784a6abc2fef496c2"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/RewriteReviewFormatter.cs",
+      "GitBlob": "4451e90b5232ef7e85637590060fbd1518cf5183"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlBoundedFileReader.cs",
+      "GitBlob": "5f6f685d98c1cfc54000d154185f876015847a8c"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs",
+      "GitBlob": "72a07cf7e4edbdfa0f4603dad500c74ebaaa5186"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticAffectedRows.cs",
+      "GitBlob": "baf71dc61652b44df7348b41a96aa505862a3496"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticComparison.cs",
+      "GitBlob": "62067d537ff6cf02885c99541ad112ed255ab3f3"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticDatabaseLifetime.cs",
+      "GitBlob": "15df3c0019f2bf8f305257bcb2e3f2cee3713518"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticSandboxPolicy.cs",
+      "GitBlob": "a657abfb42112189b766270cfd113e6da968fc38"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticValueReader.cs",
+      "GitBlob": "9772181e57624e2a13c28f0857ef2c1b63a5d23f"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+      "GitBlob": "728305e2864ff4e41f946dca175f95928ad1a8eb"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/SqlXmlAnalyzer.Application.csproj",
+      "GitBlob": "45a6929ec0b85ada69ca2cfb2f7224004c0dc67d"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/DefaultRuleFilter.cs",
+      "GitBlob": "b95886eba89e26ae75260dc1eceed81af71f330b"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/RewriteProposalService.cs",
+      "GitBlob": "de7ef4af99043c9022732b13831f96ff88dba03e"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/ConstantFoldingRefactorRule.cs",
+      "GitBlob": "6c6bdd2a7102596b06e0ffc6af9bce68c399a662"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/ExistsToJoinRule.cs",
+      "GitBlob": "afc712448300d53fb795ea0cb6e07d32126c1965"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/ImplicitConversionRefactorRule.cs",
+      "GitBlob": "cb9ecdfba2523298c15aa1f8841e23234cb02f79"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/IsNullComparisonRefactorRule.cs",
+      "GitBlob": "33d2c418baf242033ce4fd2715959edf759d637d"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/LeftOrSubstringRefactorRule.cs",
+      "GitBlob": "4b0c38ab9c052fa3a3a39df884f49dda37e29d34"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/ScalarSubqueryToJoinRule.cs",
+      "GitBlob": "a431a512740ff18d533775ef3f431d0f4a3d18bc"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/SubqueryToJoinRule.cs",
+      "GitBlob": "437822c70309cfc8657007f2a6a33ddc7e78a632"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs",
+      "GitBlob": "e2c9532b024e74920dbf75c94f395c515bb1bbbd"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableVisitor.cs",
+      "GitBlob": "3f975fa8aa8bbed57bd1666baad27192f7f2d976"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs",
+      "GitBlob": "cc048bdfb0fb5c357bbbf149e64aec5694bf16e0"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/SqlNodeCloner.cs",
+      "GitBlob": "445efb4033736459b3a7dc3beeb785c639ad71d5"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs",
+      "GitBlob": "a8adb4f3a49ff541342d0e08f67cf0f573f75581"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/SqlRewriteScope.cs",
+      "GitBlob": "db6badc9100fe0bcac1c319afe736ce875aa0868"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Refactoring/SqlXmlAnalyzer.Refactoring.csproj",
+      "GitBlob": "ca10ccfe0c5649dca744cc433d8cb34e55f1e537"
+    },
+    {
+      "Path": "ssms_icons/节点属性参考.jpg",
+      "GitBlob": "3df2ab866c38609ccb9c37214c496a817000a2a0"
+    },
+    {
+      "Path": "ssms_icons/节点属性显示信息.jpg",
+      "GitBlob": "7f13bb8aed2d5f16f1dd74b11588f605fc04a38c"
+    },
+    {
+      "Path": "ssms_icons/节点提示信息文字有重叠.jpg",
+      "GitBlob": "7db57a960ac4555b66c202dd35b5a3caaf150ace"
+    },
+    {
+      "Path": "ssms_icons/死锁展示图.jpg",
+      "GitBlob": "53d6fe879ab722181cd172d34a62d5ab57d6701c"
+    },
+    {
+      "Path": "ssms_icons/icon-adaptive-join.png",
+      "GitBlob": "a61cabca36982737dcf2b589b684d41a4a54da9c"
+    },
+    {
+      "Path": "ssms_icons/icon-aggregate.png",
+      "GitBlob": "64d4ea3552da93b9b0bd7b7c26fc3fc1e7ea316f"
+    },
+    {
+      "Path": "ssms_icons/icon-arithmetic-expression.png",
+      "GitBlob": "233f83402f4a474764cc3ccfee1e02a28581a09b"
+    },
+    {
+      "Path": "ssms_icons/icon-assert.png",
+      "GitBlob": "06381fe727a598a0147ca2147f0078307ce4b0cb"
+    },
+    {
+      "Path": "ssms_icons/icon-assign.png",
+      "GitBlob": "8118f9faa4530ce707a7deeae48438aead1a8d4f"
+    },
+    {
+      "Path": "ssms_icons/icon-batch-hash-table-build.png",
+      "GitBlob": "025a9f50c3689a3aa95a4ddada2776cac932a4b1"
+    },
+    {
+      "Path": "ssms_icons/icon-bitmap.png",
+      "GitBlob": "a53624b47bfce90cc6dd151f747c3efddc6cbae8"
+    },
+    {
+      "Path": "ssms_icons/icon-broadcast.png",
+      "GitBlob": "3751b926f9d68c85c09fb4e075bbc45c1abe4b5a"
+    },
+    {
+      "Path": "ssms_icons/icon-clustered-index-delete.png",
+      "GitBlob": "fcacd68b4388ca6f9622ace0a5b7cc309465fcb7"
+    },
+    {
+      "Path": "ssms_icons/icon-clustered-index-insert.png",
+      "GitBlob": "35b60ee57b5d822ac5dab14db12d11688ef40145"
+    },
+    {
+      "Path": "ssms_icons/icon-clustered-index-merge.png",
+      "GitBlob": "b21017be1e050c238196790d413a7b1d9f68d4ef"
+    },
+    {
+      "Path": "ssms_icons/icon-clustered-index-scan.png",
+      "GitBlob": "0e71d0da928dde5959c741d309e48c0e3064925f"
+    },
+    {
+      "Path": "ssms_icons/icon-clustered-index-seek.png",
+      "GitBlob": "74c27e93520195bace405327e31176667a0eb621"
+    },
+    {
+      "Path": "ssms_icons/icon-clustered-index-update.png",
+      "GitBlob": "22611b52c5c4a5b3c24b5805a0a058098bc0980f"
+    },
+    {
+      "Path": "ssms_icons/icon-collapse.png",
+      "GitBlob": "59bcb9dfdae0327bebc99a630faf38f72514599e"
+    },
+    {
+      "Path": "ssms_icons/icon-columnstore-index-delete.png",
+      "GitBlob": "ae8751bbbdd3bfced8ecf1f06a8e3eca2cdbbc63"
+    },
+    {
+      "Path": "ssms_icons/icon-columnstore-index-insert.png",
+      "GitBlob": "fb732cfdb914dc6d7060c2ea1ff022d8dacf3208"
+    },
+    {
+      "Path": "ssms_icons/icon-columnstore-index-merge.png",
+      "GitBlob": "3eac52d5cdfd110c3712edb0ae78d83ffb3582e1"
+    },
+    {
+      "Path": "ssms_icons/icon-columnstore-index-scan.png",
+      "GitBlob": "86d508698c3451e8fef54193c1dd0dfcc779b50d"
+    },
+    {
+      "Path": "ssms_icons/icon-columnstore-index-update.png",
+      "GitBlob": "33ba06197c930e3d83fc8e3e51dbb2711549c2e3"
+    },
+    {
+      "Path": "ssms_icons/icon-compute-scalar.png",
+      "GitBlob": "542c0c47f430ab6285885f026821b6a34dc47cba"
+    },
+    {
+      "Path": "ssms_icons/icon-concatenation.png",
+      "GitBlob": "f955131f75edb64a278ae848ba150522a3f1ffde"
+    },
+    {
+      "Path": "ssms_icons/icon-conditional.png",
+      "GitBlob": "939508aa60e90ed0bfa6aec78570432af2fecd2a"
+    },
+    {
+      "Path": "ssms_icons/icon-constant-scan.png",
+      "GitBlob": "a8eff50fac4d62151ee1f9a15fe3c205a7ecb7c0"
+    },
+    {
+      "Path": "ssms_icons/icon-convert.png",
+      "GitBlob": "2f247a5131f491677be3e14e61c081b8c66a4644"
+    },
+    {
+      "Path": "ssms_icons/icon-cursor-catch-all.png",
+      "GitBlob": "1c6021caa4a93151188c250b34c48a2da46f2692"
+    },
+    {
+      "Path": "ssms_icons/icon-declare.png",
+      "GitBlob": "32a58f2e415636a7b198097fc396d8a34e676c49"
+    },
+    {
+      "Path": "ssms_icons/icon-delete.png",
+      "GitBlob": "e92f1af650ded275adfc74c9684c1fd1347402f9"
+    },
+    {
+      "Path": "ssms_icons/icon-deleted-scan.png",
+      "GitBlob": "5d0c24edd7c31924df397d843d3e466c97ccaf0c"
+    },
+    {
+      "Path": "ssms_icons/icon-dynamic.png",
+      "GitBlob": "6170a387c65054cf363cd3642c592cc4d2545cff"
+    },
+    {
+      "Path": "ssms_icons/icon-fetch-query.png",
+      "GitBlob": "3a1ff0fbab8294c962d235abb8281dfd41fc2316"
+    },
+    {
+      "Path": "ssms_icons/icon-filter.png",
+      "GitBlob": "ca260a0c8d91eed876d9364b14d92dc69993fb7a"
+    },
+    {
+      "Path": "ssms_icons/icon-hash-match.png",
+      "GitBlob": "f755ed583078c6c5bec4231367514b991c46c2f3"
+    },
+    {
+      "Path": "ssms_icons/icon-insert.png",
+      "GitBlob": "e367b871d3dfbfba7b54d45947d78b47f17e3e78"
+    },
+    {
+      "Path": "ssms_icons/icon-inserted-scan.png",
+      "GitBlob": "59a7c6422ac23afa648b2749b71f5928a31439c3"
+    },
+    {
+      "Path": "ssms_icons/icon-intrinsic.png",
+      "GitBlob": "6f1136d12f6493b01e851b9f7f495269d6dce251"
+    },
+    {
+      "Path": "ssms_icons/icon-iterator-catch-all.png",
+      "GitBlob": "1db358cfbcfce6598cac1fcc03766cd98bc52f45"
+    },
+    {
+      "Path": "ssms_icons/icon-join.png",
+      "GitBlob": "debe35248189e8cfc198c87aec5ae5be9d52e03b"
+    },
+    {
+      "Path": "ssms_icons/icon-key-lookup.png",
+      "GitBlob": "87be5d39df644c4eaf53130288d8a74e1e444a39"
+    },
+    {
+      "Path": "ssms_icons/icon-keyset.png",
+      "GitBlob": "9a2801f490575e178178fe3cdc286804077dc7e9"
+    },
+    {
+      "Path": "ssms_icons/icon-language-construct-catch-all.png",
+      "GitBlob": "572d43f8be0374bb3c0560f8942a55d6f78220c4"
+    },
+    {
+      "Path": "ssms_icons/icon-log-row-scan.png",
+      "GitBlob": "9e4c01b9157bfd59b9137691dabba95e4b1b21a0"
+    },
+    {
+      "Path": "ssms_icons/icon-merge-interval.png",
+      "GitBlob": "5ee6448f0750a22a68f7ceeded7e0a18a0c86685"
+    },
+    {
+      "Path": "ssms_icons/icon-merge-join.png",
+      "GitBlob": "2253a3cad1b0f9c7236bab3ce28d149458677e2b"
+    },
+    {
+      "Path": "ssms_icons/icon-nested-loops.png",
+      "GitBlob": "b14369a6ad4ce00f44de0dea076f7ca4775b1171"
+    },
+    {
+      "Path": "ssms_icons/icon-nonclustered-index-delete.png",
+      "GitBlob": "9543b67c42769cae0bad2ac5d5ddc805400ebff2"
+    },
+    {
+      "Path": "ssms_icons/icon-nonclustered-index-insert.png",
+      "GitBlob": "93ba759060a34297b43f4709fbfbf892440276a3"
+    },
+    {
+      "Path": "ssms_icons/icon-nonclustered-index-scan.png",
+      "GitBlob": "9507d04077b403b13c8e6f4db4e6221b2892851d"
+    },
+    {
+      "Path": "ssms_icons/icon-nonclustered-index-seek.png",
+      "GitBlob": "190843d50e7d46f6ca73027b1441bebdb84663d8"
+    },
+    {
+      "Path": "ssms_icons/icon-nonclustered-index-spool.png",
+      "GitBlob": "4c63b772309f5b985fa70abafe3409b8b19cc676"
+    },
+    {
+      "Path": "ssms_icons/icon-nonclustered-index-update.png",
+      "GitBlob": "4dec67b1b75182ee0806b5c54c5f214c7dbc42e9"
+    },
+    {
+      "Path": "ssms_icons/icon-parallelism-distribute-streams.png",
+      "GitBlob": "d46f083b09ef75fbc11f09100b73dff2b301518f"
+    },
+    {
+      "Path": "ssms_icons/icon-parallelism-repartition-streams.png",
+      "GitBlob": "7a9de21b95dfaf498b428e9837db02baa6ec3512"
+    },
+    {
+      "Path": "ssms_icons/icon-parallelism.png",
+      "GitBlob": "e2d4b674780ef5e4c2f0e06e7cdbe4e2e9198cd9"
+    },
+    {
+      "Path": "ssms_icons/icon-parameter-table-scan.png",
+      "GitBlob": "07601eb9e81fdebbf6e81989d5a3d8d5be636942"
+    },
+    {
+      "Path": "ssms_icons/icon-population-query.png",
+      "GitBlob": "d2b5345bdeeacbd86cd788c5e3d49b6c12944db6"
+    },
+    {
+      "Path": "ssms_icons/icon-put.png",
+      "GitBlob": "85e6b8eb8327db0eacac09b95c7a8210be6b1e75"
+    },
+    {
+      "Path": "ssms_icons/icon-referential-integrity.png",
+      "GitBlob": "3b18154d139b9442be077a1188c2698848a554d8"
+    },
+    {
+      "Path": "ssms_icons/icon-refresh-query.png",
+      "GitBlob": "5de9ba427b95b6afdbcb95b8a544e0d3ad049e44"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-count-spool.png",
+      "GitBlob": "694c44d7f3868b3665b8eaad2e3c2ddbcbbd9cc8"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-delete.png",
+      "GitBlob": "0051e4d3c4954efee5c1a8745ee63bb5e6ee5a42"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-index-scan.png",
+      "GitBlob": "4c26708771a0abb32e7317e1ac0999bf1a7e91e3"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-index-seek.png",
+      "GitBlob": "5a62ee3f52fab323e1eb8b39d248fd249de57209"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-insert.png",
+      "GitBlob": "adb41cbf94f0f7f45eef440a015a4e93620a449e"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-query.png",
+      "GitBlob": "05c1348b1439ac64695649eaa3ca1a27727cbd8a"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-scan.png",
+      "GitBlob": "221c0162505180df066be5743097edaf631c3ae0"
+    },
+    {
+      "Path": "ssms_icons/icon-remote-update.png",
+      "GitBlob": "782651ea6d8f9421a280c9c1c4dcef003ae5ea7e"
+    },
+    {
+      "Path": "ssms_icons/icon-result.png",
+      "GitBlob": "2b9698850ab9612a7ebf5034da1e830dbe912380"
+    },
+    {
+      "Path": "ssms_icons/icon-row-id-nonclustered-locate.png",
+      "GitBlob": "1a6217cfa5397da8899a8fd65f7b8f711443b4f4"
+    },
+    {
+      "Path": "ssms_icons/icon-segment.png",
+      "GitBlob": "b1bd0ec021dfc8e48aaea8a2a509385e1d289386"
+    },
+    {
+      "Path": "ssms_icons/icon-sequence-project.png",
+      "GitBlob": "2cd186c9cc580c9f31cefd25cbffa2d877543c4f"
+    },
+    {
+      "Path": "ssms_icons/icon-sequence.png",
+      "GitBlob": "b49a39c4cbd2291af4659218e2db6a2e00249741"
+    },
+    {
+      "Path": "ssms_icons/icon-snapshot.png",
+      "GitBlob": "602a76eee0af01507b89650a087e82cbc70d5b55"
+    },
+    {
+      "Path": "ssms_icons/icon-sort.png",
+      "GitBlob": "aedfe052cd210ed56c80799aa3c84262d90e784b"
+    },
+    {
+      "Path": "ssms_icons/icon-split.png",
+      "GitBlob": "ec2e38e2a8da0977987f5757a04c3789798a1abb"
+    },
+    {
+      "Path": "ssms_icons/icon-spool.png",
+      "GitBlob": "990a5e9a12130b3f00417030e073aa321d9b4ac2"
+    },
+    {
+      "Path": "ssms_icons/icon-stream-aggregate.png",
+      "GitBlob": "367bafa5be649a11b3532102ac4ae5c122487a46"
+    },
+    {
+      "Path": "ssms_icons/icon-switch.png",
+      "GitBlob": "527b3347f500c35c2286789847e5a0e47c237528"
+    },
+    {
+      "Path": "ssms_icons/icon-table-delete.png",
+      "GitBlob": "32a7c072cdc9cf68a74fcaefa82d3c0a86dbc042"
+    },
+    {
+      "Path": "ssms_icons/icon-table-insert.png",
+      "GitBlob": "d45fd8d3dbef46024997f5add9ab81e1c37106b7"
+    },
+    {
+      "Path": "ssms_icons/icon-table-merge.png",
+      "GitBlob": "d4888dded1e15efb6b9f1af16f51fdf058be6047"
+    },
+    {
+      "Path": "ssms_icons/icon-table-scan.png",
+      "GitBlob": "4f097a7ca14ddc12947af83b3f378e80e0e41b52"
+    },
+    {
+      "Path": "ssms_icons/icon-table-spool.png",
+      "GitBlob": "6bc0f5002cf34ba0a04a1b77b205d312eb0df9e4"
+    },
+    {
+      "Path": "ssms_icons/icon-table-update.png",
+      "GitBlob": "6306323f14c8956487a9fbb060134c2d7cc3ac04"
+    },
+    {
+      "Path": "ssms_icons/icon-table-valued-function.png",
+      "GitBlob": "13c946a79992fdc6251df9d44004ed104f5f67c1"
+    },
+    {
+      "Path": "ssms_icons/icon-top.png",
+      "GitBlob": "d0c0d0478db73d9bdb25b23765582e6f4e7cc0a6"
+    },
+    {
+      "Path": "ssms_icons/icon-udx-extended-operator.png",
+      "GitBlob": "c9f1fd57f46a54f9efe00e813f46b3c56dd4534f"
+    },
+    {
+      "Path": "ssms_icons/icon-union.png",
+      "GitBlob": "6b3c10a29cc5299bcad0f8cc0d9c646358581a8b"
+    },
+    {
+      "Path": "ssms_icons/icon-update.png",
+      "GitBlob": "7c5bdcb558d8c61b7acc7d1941d8e7eeaa2c98c1"
+    },
+    {
+      "Path": "ssms_icons/QQ20260601-144520.jpg",
+      "GitBlob": "f3f6ea6844a413a9d89786331e5e8588689dd4c0"
+    },
+    {
+      "Path": "StatisticsHistogramControl.xaml",
+      "GitBlob": "1b83c26935592f833e2707bc45945942d3ceddb1"
+    },
+    {
+      "Path": "StatisticsHistogramControl.xaml.cs",
+      "GitBlob": "b60cc70068240340c5b7444b9e0ff557e6780007"
+    },
+    {
+      "Path": "ThemeColors.xaml",
+      "GitBlob": "880e44e82e4218a5fec545cae8237e2fb04b7e95"
+    },
+    {
+      "Path": "ViewModels/ConnectionViewModel.cs",
+      "GitBlob": "653320f5945937c0f9245f6c7b51a7edcca91720"
+    },
+    {
+      "Path": "ViewModels/DeadlockPlaybackViewModel.cs",
+      "GitBlob": "b3921dbe1b7d42272be32081ba20f502925167e8"
+    },
+    {
+      "Path": "ViewModels/IndexSandboxViewModel.cs",
+      "GitBlob": "b8535ad6845158d15e01a5c3572d1d6db509b2c4"
+    },
+    {
+      "Path": "ViewModels/PlanNodeViewModel.cs",
+      "GitBlob": "4c231fcd1cbb8ef78cfc70a06dd81dedb3ef89ff"
+    },
+    {
+      "Path": "ViewModels/RewriteReviewViewModel.cs",
+      "GitBlob": "747996220b6d658390c32590567bb80978122d72"
+    },
+    {
+      "Path": "Views/DeadlockPlaybackControl.xaml",
+      "GitBlob": "670e236ac77972c9917dd613ab0fe5dbc8556b44"
+    },
+    {
+      "Path": "Views/DeadlockPlaybackControl.xaml.cs",
+      "GitBlob": "1c668b44ffd1d546af772117ee69bcf2df4c1f1f"
+    },
+    {
+      "Path": "Views/DeadlockView.xaml",
+      "GitBlob": "6256591e740f5628f8aaa94fbf0f7a155cf06da7"
+    },
+    {
+      "Path": "Views/DeadlockView.xaml.cs",
+      "GitBlob": "7f0d1a8ed319bc770ead7e6cfb1fa8726e113471"
+    },
+    {
+      "Path": "Views/DeadlockWorkspaceView.xaml",
+      "GitBlob": "b24ec52ad29b99d6c1b1047dd79b0a3fadfaf0c6"
+    },
+    {
+      "Path": "Views/DeadlockWorkspaceView.xaml.cs",
+      "GitBlob": "f5561196c3f2127a127d7f95b071c9f498a73fe8"
+    },
+    {
+      "Path": "Views/IndexSandboxWindow.xaml",
+      "GitBlob": "965b0d97478d2eb75705f8960cea1a0885115699"
+    },
+    {
+      "Path": "Views/IndexSandboxWindow.xaml.cs",
+      "GitBlob": "8240f7039eaa5fc60fdf1a524cf32e4ed1e87d87"
+    },
+    {
+      "Path": "Views/MainShellView.xaml",
+      "GitBlob": "ff566fe8162314db2aa2c91c0b23bcb6415b54ad"
+    },
+    {
+      "Path": "Views/MainShellView.xaml.cs",
+      "GitBlob": "7f945f96d0b95ebc016d2417226f030aff2aeff9"
+    },
+    {
+      "Path": "Views/MainWindowResources.xaml",
+      "GitBlob": "575d2d361ea065b7025e2ace5bf22857ea9f9116"
+    },
+    {
+      "Path": "Views/MainWorkspaceView.xaml",
+      "GitBlob": "06b7aecb741ce60d5c73920d14c772553ee9803c"
+    },
+    {
+      "Path": "Views/MainWorkspaceView.xaml.cs",
+      "GitBlob": "8f91aa12c4ee74da2311b7d92b7b8b5830812702"
+    },
+    {
+      "Path": "Views/PlanComparisonWorkspaceView.xaml",
+      "GitBlob": "6ed8f123a1e782f943fa15dd172d6dbfd0bc9f65"
+    },
+    {
+      "Path": "Views/PlanComparisonWorkspaceView.xaml.cs",
+      "GitBlob": "b82fc3f8ac95d2f9698f635f38472fd61f6acfe9"
+    },
+    {
+      "Path": "Views/PlanView.xaml",
+      "GitBlob": "f3acfc09c4ce2ab54532e33f505a8eaa43a8bdf9"
+    },
+    {
+      "Path": "Views/PlanView.xaml.cs",
+      "GitBlob": "b676ab9a11a17fea53fe9d6a5859e58a6512f3da"
+    },
+    {
+      "Path": "Views/PlanWorkspaceView.xaml",
+      "GitBlob": "add2e2ddd79b57a1c8b26dc4aa54cfe509e91df9"
+    },
+    {
+      "Path": "Views/PlanWorkspaceView.xaml.cs",
+      "GitBlob": "c4fa4455f23179634007636eb0397ca6aba210e5"
+    },
+    {
+      "Path": "Views/QuickFixWindow.xaml",
+      "GitBlob": "9e4f8e29c301bad163631439b8aea62790e405f1"
+    },
+    {
+      "Path": "Views/QuickFixWindow.xaml.cs",
+      "GitBlob": "351672d4e50c424ec7b323fbde47f7b16b599feb"
+    },
+    {
+      "Path": "Views/RewriteReviewWindow.xaml",
+      "GitBlob": "8135938e2f323f093ee9b6437716360920b0f164"
+    },
+    {
+      "Path": "Views/RewriteReviewWindow.xaml.cs",
+      "GitBlob": "8cc4aef1691665b796c61c5fc8d9f809a0345663"
+    },
+    {
+      "Path": "Views/ShellNavigationRail.xaml",
+      "GitBlob": "0344a39cb302286ae4a310c42593840a41a52c7c"
+    },
+    {
+      "Path": "Views/ShellNavigationRail.xaml.cs",
+      "GitBlob": "8af78ea50e380332deed80a21aad6d0e649f262a"
+    },
+    {
+      "Path": "Views/ShellStatusBar.xaml",
+      "GitBlob": "c7442de082e1ec5b286dcd2a97188ba2e51be86d"
+    },
+    {
+      "Path": "Views/ShellStatusBar.xaml.cs",
+      "GitBlob": "deee655e74dcabef75f2dccf00cd322a2f6b9203"
+    },
+    {
+      "Path": "Views/ShellTitleBar.xaml",
+      "GitBlob": "9c5e36e07f72e37b9ba1053de2ea946419380619"
+    },
+    {
+      "Path": "Views/ShellTitleBar.xaml.cs",
+      "GitBlob": "ae28bb347201f8fc41e30aa0a06967c7086034e1"
+    }
+  ]
+}

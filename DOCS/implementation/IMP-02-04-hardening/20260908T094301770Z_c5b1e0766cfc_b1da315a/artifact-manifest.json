@@ -1,0 +1,862 @@
+[
+  {
+    "path": "change-ownership.json",
+    "bytes": 5978,
+    "sha256": "B809D58BA204FFB8CE168AD58304375B4911EB7E2B855633C3C9F71842F609B3"
+  },
+  {
+    "path": "deliverable-validation.json",
+    "bytes": 20422,
+    "sha256": "B1BAB7B68C445EE7EE85420CACD5AB730C38194A0C756F803B786A9742C6D37D"
+  },
+  {
+    "path": "DiagnosticProbe.cs.txt",
+    "bytes": 5513,
+    "sha256": "D861E72A1407299038C1E854BAAE4ABCE5A882AB655C9E3AD7526017F4D9B69F"
+  },
+  {
+    "path": "documents-before/acceptance-README.md.snapshot",
+    "bytes": 9787,
+    "sha256": "F7A614F6BE92938E0772F96113882B9948C29ACE7CD2B281EC61C3BAAFF96F80"
+  },
+  {
+    "path": "documents-before/IMP-02审查反例验收矩阵.md.snapshot",
+    "bytes": 39241,
+    "sha256": "C0CDB906CA698776326B341C811D03A579AA4DB0F61C150FD63F24F583F9DABF"
+  },
+  {
+    "path": "documents-before/IMP-03安全写回与恢复说明.md.snapshot",
+    "bytes": 13919,
+    "sha256": "8012075B89DEEAA4E221D736B240764364933568BA85F6DEF8B5EAF12DC83933"
+  },
+  {
+    "path": "documents-before/IMP-04高风险改写限制与诊断说明.md.snapshot",
+    "bytes": 14411,
+    "sha256": "09B819698BDA4A74D656F9F223D721B935F86FAFCC1DAA41824D93E3A7291BAB"
+  },
+  {
+    "path": "documents-before/软件改善实施规划.md.snapshot",
+    "bytes": 42209,
+    "sha256": "3069C65EDB76427A7EAADC957ACA4CD968E1D95F982347AC5C0CAC4790C2C6F9"
+  },
+  {
+    "path": "dump-validation.json",
+    "bytes": 1950,
+    "sha256": "1AE35818C8ACD7228D55C00550D04DA4D6AB7C9E4302DE4A2AAC0C6301123BB6"
+  },
+  {
+    "path": "full-debug-01.log",
+    "bytes": 1910,
+    "sha256": "AAE280377FDD5E9D228EA666966BCDE0A357C30FA40E5F868C9F6DA98FFCECD1"
+  },
+  {
+    "path": "full-debug-final.log",
+    "bytes": 1910,
+    "sha256": "F16E8355FAA19007220E4E1AC9E03A360B109C7DB5AC55A38469092BF316BA95"
+  },
+  {
+    "path": "full-release-01.log",
+    "bytes": 1344,
+    "sha256": "B15CDCB4AEEE05230DB9E1E30375BCCD3A107C4B6D49088F72A617C875D5D0C5"
+  },
+  {
+    "path": "full-release-final.log",
+    "bytes": 1344,
+    "sha256": "8362C9D5544EED7FAF4B4102A490E5C0F31E9FF5EFD584AD812BFDBFD135F5EF"
+  },
+  {
+    "path": "host-fault-adapter/acceptance-matrix.json",
+    "bytes": 14,
+    "sha256": "703F32D882C2B7BBE675A75DD98CB84CF755651F2A6FEE9C2A9C79B17EA6CC43"
+  },
+  {
+    "path": "host-fault-adapter/AcceptanceInfrastructure.psm1",
+    "bytes": 11388,
+    "sha256": "B73ABAD547CF98EBC117946101C2F6C138548C595483B7AB87B943450C8D456E"
+  },
+  {
+    "path": "host-fault-adapter/AcceptanceProbe.cs.txt",
+    "bytes": 15316,
+    "sha256": "2265D57A878D21195FE91C62E2E6F521A944B13583D4580720832DA9A9B46620"
+  },
+  {
+    "path": "host-fault-adapter/fault-description.txt",
+    "bytes": 165,
+    "sha256": "01ACA26FBAB9B08E8B0C1F9B069A5E59B4A5A8198DB6898FB64028C7DA2B5B19"
+  },
+  {
+    "path": "host-fault-adapter/PlanRowBindingInspector.cs.txt",
+    "bytes": 4269,
+    "sha256": "C6D88C08DB8A95E0ACC5545B79F0BDE24E5F96B337E4924B5BAE91C5A61375B7"
+  },
+  {
+    "path": "host-fault-adapter/Run-AcceptanceMatrix.ps1",
+    "bytes": 18717,
+    "sha256": "8DF132C50118AF67E49421CDBF372D30AFA6934DC6E5C839CCB145FADDC18241"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter/acceptance-matrix.json",
+    "bytes": 14,
+    "sha256": "703F32D882C2B7BBE675A75DD98CB84CF755651F2A6FEE9C2A9C79B17EA6CC43"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter/AcceptanceInfrastructure.psm1",
+    "bytes": 11388,
+    "sha256": "B73ABAD547CF98EBC117946101C2F6C138548C595483B7AB87B943450C8D456E"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter/AcceptanceProbe.cs.txt",
+    "bytes": 15316,
+    "sha256": "2265D57A878D21195FE91C62E2E6F521A944B13583D4580720832DA9A9B46620"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter/PlanRowBindingInspector.cs.txt",
+    "bytes": 4269,
+    "sha256": "C6D88C08DB8A95E0ACC5545B79F0BDE24E5F96B337E4924B5BAE91C5A61375B7"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter/Run-AcceptanceMatrix.ps1",
+    "bytes": 18717,
+    "sha256": "8DF132C50118AF67E49421CDBF372D30AFA6934DC6E5C839CCB145FADDC18241"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter/Test-AcceptanceInfrastructure.ps1",
+    "bytes": 17343,
+    "sha256": "F1CA81F287D9913203B802D8B95D2C28B59352005D71BD80543CAD1B0FAE3AC2"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/adapter-snapshot-manifest.json",
+    "bytes": 871,
+    "sha256": "2817F8DB2F53015CDCE12AD58BEF33CC27F776B42B2D4F6244D0DBBE4E06AE71"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/commands.json",
+    "bytes": 2,
+    "sha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/diagnostics/20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed/exception.json",
+    "bytes": 1135,
+    "sha256": "61D7C0C243C33261A4CDFA5812996B854C97B5C477A0A0BDE01E0EEC97CDE1BF"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/diagnostics/20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed/process.dmp",
+    "bytes": 1362623,
+    "sha256": "6BE6FF0F3D2C4F7F509D1DDD4DB8694A1CF8FE21B82A1F09F7732176AD0EA410"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/host-diagnostic.json",
+    "bytes": 1174,
+    "sha256": "41C6D93CC186892A5CA773C80F38BD665871B33A539AD04938BB176E30A7E236"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/host-diagnostics.log",
+    "bytes": 1240,
+    "sha256": "CCC694DD026B85F2375F8ABB512FF318485193CE3B10E91AA642673E2C7F84EB"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/infrastructure-error.txt",
+    "bytes": 429,
+    "sha256": "CD6354D4CE7CBD93D4F4A93A1AA2F237798C1EA1AA17F9CEA839B85665C4FD73"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/infrastructure-failure.json",
+    "bytes": 871,
+    "sha256": "27009E6C4F491C7D18E124DCDD8608788349D0F0BB420559BD2AE38206305150"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/runtime.log",
+    "bytes": 166,
+    "sha256": "C08C44DFF579A46B34A7832B5C327E0AEAF133CA224CEB66F56556446BD01E84"
+  },
+  {
+    "path": "host-fault-adapter/Test-AcceptanceInfrastructure.ps1",
+    "bytes": 17343,
+    "sha256": "F1CA81F287D9913203B802D8B95D2C28B59352005D71BD80543CAD1B0FAE3AC2"
+  },
+  {
+    "path": "host-fault-exit.json",
+    "bytes": 49,
+    "sha256": "80EB5EDAF8C81CE0900E39934C5401EB15517C2E842782E5101CC23C3D1AEFAF"
+  },
+  {
+    "path": "host-fault.log",
+    "bytes": 1720,
+    "sha256": "B538D40AAD56EEB2F49BE74B510E034E63E5AA65AEE200BB391C30DDAF323479"
+  },
+  {
+    "path": "infrastructure-01.json",
+    "bytes": 5199,
+    "sha256": "95D09E72ADB13E1004B9C7153866FF5DBA114DC6FF08BA63F82806A2015303A4"
+  },
+  {
+    "path": "infrastructure-01.log",
+    "bytes": 5566,
+    "sha256": "D7E526B9DE68AA2EE0811E59CC0D120D0591A4FB4C20C17223482DE03583C4DC"
+  },
+  {
+    "path": "process-final/commands.json",
+    "bytes": 1159,
+    "sha256": "4BD0D7AA3273963EC370398ECCA68831D3041776BB0F081C83E76E44AE7C7FC0"
+  },
+  {
+    "path": "process-final/debug/probe-build.command.json",
+    "bytes": 528,
+    "sha256": "E46BF5BC12E66A17F1901F960202D76699CD41530ED975CB46CC92EFECCE9D01"
+  },
+  {
+    "path": "process-final/debug/probe-build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final/debug/probe-build.stdout.txt",
+    "bytes": 1565,
+    "sha256": "2FFDF28167128F6761B1CB5B9EED9AA297DAEAB452F9AE15B69CD3887CDDA0D9"
+  },
+  {
+    "path": "process-final/DiagnosticProbe.cs.txt.snapshot",
+    "bytes": 5481,
+    "sha256": "E9296B75AC5B02B3FA0CE91A41B44E975643630311E820BD58EF52CB313D01DD"
+  },
+  {
+    "path": "process-final/DiagnosticProbe.csproj.snapshot",
+    "bytes": 325,
+    "sha256": "508A935EF7511072AA847F64366982B17F2E63BDDCCF19D732FC4491F5F3934F"
+  },
+  {
+    "path": "process-final/probe-restore.command.json",
+    "bytes": 444,
+    "sha256": "CF2823BD25B0AA0F220C02AFB10EE84882C30F8252344BC44C00950F30BE7160"
+  },
+  {
+    "path": "process-final/probe-restore.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final/probe-restore.stdout.txt",
+    "bytes": 253,
+    "sha256": "B39AB85C187CADA498FB76F06469843CCB54FBF91734CD3BDA0B6FA623F1561A"
+  },
+  {
+    "path": "process-final/Run-ProcessValidation.ps1.snapshot",
+    "bytes": 7700,
+    "sha256": "804510907FF8F33007B239D066EBCB9325CDAFE73C5683346D5571FE61ABA1B2"
+  },
+  {
+    "path": "process-final-02/commands.json",
+    "bytes": 8673,
+    "sha256": "EF5776AF6AEEC94788237AD9FEDAC56D87C369D9CAE0BA670884685612A25B74"
+  },
+  {
+    "path": "process-final-02/debug/applied.command.json",
+    "bytes": 580,
+    "sha256": "78B3D4224C0DE86E6E84F53F92875EACDA56FC706C75F3923F7BAA38D2F4C630"
+  },
+  {
+    "path": "process-final-02/debug/applied.original.sql",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/debug/applied.runtime.log",
+    "bytes": 1094,
+    "sha256": "59AA3EF959FEA067E7A6233EBB355D3297D1E42E8634C5571E8059F69A6C8B92"
+  },
+  {
+    "path": "process-final-02/debug/applied.sql",
+    "bytes": 44,
+    "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+  },
+  {
+    "path": "process-final-02/debug/applied.sql.SqlXmlAnalyzer-e9ce81dd87db41c5813de9f4daaa8644.bak",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/debug/applied.stderr.txt",
+    "bytes": 1094,
+    "sha256": "59AA3EF959FEA067E7A6233EBB355D3297D1E42E8634C5571E8059F69A6C8B92"
+  },
+  {
+    "path": "process-final-02/debug/applied.stdout.txt",
+    "bytes": 1074,
+    "sha256": "4E4DEDA78C88234DF286B7BE4EBF4ADA37EEE036044559DE5A99A7851E7C7F90"
+  },
+  {
+    "path": "process-final-02/debug/candidate.command.json",
+    "bytes": 600,
+    "sha256": "F3201941FA396C497DBFFA9BA6A511785097202EC477DA28423CB85B3052061C"
+  },
+  {
+    "path": "process-final-02/debug/candidate.original.sql",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/debug/candidate.runtime.log",
+    "bytes": 848,
+    "sha256": "2FA89305AE663FABEAFE28DAF9D2ADBAFCD467982D21625A0176A82AACFB572A"
+  },
+  {
+    "path": "process-final-02/debug/candidate.sql",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/debug/candidate.stderr.txt",
+    "bytes": 848,
+    "sha256": "2FA89305AE663FABEAFE28DAF9D2ADBAFCD467982D21625A0176A82AACFB572A"
+  },
+  {
+    "path": "process-final-02/debug/candidate.stdout.txt",
+    "bytes": 702,
+    "sha256": "89F5110CBC91478F60F93450C618D628489CB94133D5E41C36A94A2CBE96E431"
+  },
+  {
+    "path": "process-final-02/debug/probe-build.command.json",
+    "bytes": 528,
+    "sha256": "C82FA3C9E80F1B7D104F8CB4E9359FB8B3148BC00BC818811FA2EBDA4EEE40B9"
+  },
+  {
+    "path": "process-final-02/debug/probe-build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/debug/probe-build.stdout.txt",
+    "bytes": 244,
+    "sha256": "A529C56AFC140F641CF004443097A014F722441B8F662B420BCBE4208493AD4B"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.command.json",
+    "bytes": 587,
+    "sha256": "56D434A82CC7BD505D093F17A0129D8CF9FC7E9C1F9A8208A0F910ADE1DAF654"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.original.sql",
+    "bytes": 60,
+    "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.runtime.log",
+    "bytes": 1161,
+    "sha256": "D40B850B1FC6A00119F2925DEF7F9A603D63CB244116B0CD10C3F4B92F4FE269"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.sql",
+    "bytes": 60,
+    "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.stderr.txt",
+    "bytes": 1161,
+    "sha256": "D40B850B1FC6A00119F2925DEF7F9A603D63CB244116B0CD10C3F4B92F4FE269"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.stdout.txt",
+    "bytes": 1906,
+    "sha256": "BEB123BFF464C3B2889C31CC5F11A0478EA4C36C777DB7E578BD374221EA520E"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/dumps/20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1/exception.json",
+    "bytes": 1012,
+    "sha256": "B6063E57710AA30254BD1BC5178137A235D8E73C01925F8BDCEC00EBF1FDEB06"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/dumps/20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1/process.dmp",
+    "bytes": 540830,
+    "sha256": "4C9E2C3D091FEEF97CBEF45F14EE09AC619E5362C396B1ED49456C0978B247DD"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/runtime.log",
+    "bytes": 2804,
+    "sha256": "6FF62B91F482C448160EF6902E198121FEEA55A2F8E0B7283273D70B7DB1C25D"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/source.sql",
+    "bytes": 9,
+    "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/verification.json",
+    "bytes": 1452,
+    "sha256": "1CC88815569C7F744C6B5B048B58E79F52BAE25B14071ED4BFD5D1937E2D7B80"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error.command.json",
+    "bytes": 603,
+    "sha256": "8761113DFBED50533E1E38268289FF91D45C2F8210E814E1CD7B80CFADA33276"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error.stderr.txt",
+    "bytes": 2804,
+    "sha256": "6FF62B91F482C448160EF6902E198121FEEA55A2F8E0B7283273D70B7DB1C25D"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error.stdout.txt",
+    "bytes": 3305,
+    "sha256": "5B75B4FAEF125E12E8BE4905DF394BC0C4FAAE9AD573BD76B04FE562867CEB1B"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback/dumps/20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8/exception.json",
+    "bytes": 1018,
+    "sha256": "E7F945AFF54DF043A128169AB72F98C179946FE5CA0788873793DA8309B347CC"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback/dumps/20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8/process.dmp",
+    "bytes": 519548,
+    "sha256": "9FD3746D7EE0CD37CA77B9952E593CC1D5CF4FE934F981DC2A87F0C070D29267"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback/runtime.log",
+    "bytes": 2959,
+    "sha256": "524470C261F2068487D94F02ACC8A077095CA3AA23F347D43A30ADE02487467E"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback/source.sql",
+    "bytes": 9,
+    "sha256": "8E7003D62F9D8CBD28DA2F243BB0D215BFD4622C716BE09BE89A8764D9F4C7CB"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback/source.sql.SqlXmlAnalyzer-5839dee7ebae4f6f84ecbf4aa9a74d9e.bak",
+    "bytes": 9,
+    "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback/verification.json",
+    "bytes": 1885,
+    "sha256": "7194AD5DF123286242318B52EC199DF14A1F47135C52BAA5829A23872FD32DE7"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback.command.json",
+    "bytes": 611,
+    "sha256": "6F240BB557B87C9A7C11F7F446E5DB7A0C6B25F6D9B64AFD525F4E647E24456E"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback.stderr.txt",
+    "bytes": 2959,
+    "sha256": "524470C261F2068487D94F02ACC8A077095CA3AA23F347D43A30ADE02487467E"
+  },
+  {
+    "path": "process-final-02/debug/unknown-writeback.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/DiagnosticProbe.csproj.snapshot",
+    "bytes": 325,
+    "sha256": "508A935EF7511072AA847F64366982B17F2E63BDDCCF19D732FC4491F5F3934F"
+  },
+  {
+    "path": "process-final-02/probe-restore.command.json",
+    "bytes": 444,
+    "sha256": "E3D7ACD08AED1BD0CC1F6C6D2C297FADBB03BAEDFA73188F56EA7C7A606990E7"
+  },
+  {
+    "path": "process-final-02/probe-restore.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/probe-restore.stdout.txt",
+    "bytes": 253,
+    "sha256": "A627F2B5FF2B3618A1B3B5A6F04CDC7C74E9027AFB1B1798E4C3E05D52901168"
+  },
+  {
+    "path": "process-final-02/release/applied.command.json",
+    "bytes": 582,
+    "sha256": "FEC3A95F1AA9FFE86BEF48CEB4BABF0CB561F7544FA09F3B0FF9E7EB412E23A4"
+  },
+  {
+    "path": "process-final-02/release/applied.original.sql",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/release/applied.runtime.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/applied.sql",
+    "bytes": 44,
+    "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+  },
+  {
+    "path": "process-final-02/release/applied.sql.SqlXmlAnalyzer-5164dc45d8bc496a962dd9386899fbc7.bak",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/release/applied.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/applied.stdout.txt",
+    "bytes": 1076,
+    "sha256": "919A43738061D43DF92019E936B7D1B6DF8920F739B30EB1B05B8D639E3411F3"
+  },
+  {
+    "path": "process-final-02/release/candidate.command.json",
+    "bytes": 604,
+    "sha256": "241CCC13DDC4D0CFD8B33D5B092FA44DD61A61D989F29322B94CC522534DDD9B"
+  },
+  {
+    "path": "process-final-02/release/candidate.original.sql",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/release/candidate.runtime.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/candidate.sql",
+    "bytes": 40,
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/release/candidate.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/candidate.stdout.txt",
+    "bytes": 702,
+    "sha256": "EE8266F5248BE9399B2DCCF5CF8683118B47DD7C3BCA7C6BF5A98FED5C2AB0EE"
+  },
+  {
+    "path": "process-final-02/release/probe-build.command.json",
+    "bytes": 530,
+    "sha256": "7D4D1444E5E6993CC2DA4BAC67E0CD767A1D8C5410A427A41F49513D93CFC613"
+  },
+  {
+    "path": "process-final-02/release/probe-build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/probe-build.stdout.txt",
+    "bytes": 246,
+    "sha256": "0E8DA9998AEA17F42AB144453E88B2F32DCADE95E2035E20B45B458B7B49BA85"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.command.json",
+    "bytes": 591,
+    "sha256": "A7577857FC5E0E58766B1E33FE59BCABDC23D8149745BE7C8B5B2802F285B3A9"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.original.sql",
+    "bytes": 60,
+    "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.runtime.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.sql",
+    "bytes": 60,
+    "sha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.stdout.txt",
+    "bytes": 1906,
+    "sha256": "92F06667B6940AC9B4FCCEF77EF1512F4B05F7D295893F02310AE57F6AE8610C"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/dumps/20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0/exception.json",
+    "bytes": 1013,
+    "sha256": "EF6E9CCFF1ADE12281017E6B22E306AE21A3F25A886F43B774E5BF840E598547"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/dumps/20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0/process.dmp",
+    "bytes": 534431,
+    "sha256": "0416D4D883695124821A87BEC40449A5001E2AF702C5A77C88A24C7D6D3FC016"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/runtime.log",
+    "bytes": 2103,
+    "sha256": "D3744C87E6A94B9A532517A139596BCA68A0834F9B532AF3E56F2FB0D8F7538D"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/source.sql",
+    "bytes": 9,
+    "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/verification.json",
+    "bytes": 1462,
+    "sha256": "4525A51CFF9B56ACD46103357D9B79B5DA2D04B961DFAB4DB21758C73FF17193"
+  },
+  {
+    "path": "process-final-02/release/unknown-error.command.json",
+    "bytes": 607,
+    "sha256": "D67AEFEDF21261B75D8BD94C38260B0ACD1F3B398400435D6E5E3C317C63D5AE"
+  },
+  {
+    "path": "process-final-02/release/unknown-error.stderr.txt",
+    "bytes": 2103,
+    "sha256": "D3744C87E6A94B9A532517A139596BCA68A0834F9B532AF3E56F2FB0D8F7538D"
+  },
+  {
+    "path": "process-final-02/release/unknown-error.stdout.txt",
+    "bytes": 3318,
+    "sha256": "07FB6F4A76D6C4BD6BF87C3E4778D06985BAF2A2489E0203176B2B72537610D8"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback/dumps/20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8/exception.json",
+    "bytes": 1018,
+    "sha256": "1E9E9EDFFE761AE379491C7F793DC71E909F694FABF62D5B7A61AC9340E36002"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback/dumps/20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8/process.dmp",
+    "bytes": 514173,
+    "sha256": "59028B3DC9A4FBADBB89D08FEE22787111EDE8F075C5B98376ED4921EA0446AE"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback/runtime.log",
+    "bytes": 2348,
+    "sha256": "33A3DDEF3B6DE044EABDCEBD2023915FFD83E390481F0AE075385D02F5AA9375"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback/source.sql",
+    "bytes": 9,
+    "sha256": "8E7003D62F9D8CBD28DA2F243BB0D215BFD4622C716BE09BE89A8764D9F4C7CB"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback/source.sql.SqlXmlAnalyzer-88353ae9284a4297ab21e94d9f31caf5.bak",
+    "bytes": 9,
+    "sha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback/verification.json",
+    "bytes": 1893,
+    "sha256": "E8558D18DFBB28C78EBFC9F53C0CA49B272F0CFA4B7C4BFD8D0D4D050E0EA0D1"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback.command.json",
+    "bytes": 614,
+    "sha256": "C5A001E00FDAC9BC2AF953F2EB7F29D75DD6B73C7B6D1A341B71659C9BB5377E"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback.stderr.txt",
+    "bytes": 2348,
+    "sha256": "33A3DDEF3B6DE044EABDCEBD2023915FFD83E390481F0AE075385D02F5AA9375"
+  },
+  {
+    "path": "process-final-02/release/unknown-writeback.stdout.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/summary.json",
+    "bytes": 10648,
+    "sha256": "F002EF3F7571D71A8FD374A6E24B7550E8E43AEE98DB7E7FBDF8D2842E1822DF"
+  },
+  {
+    "path": "process-validation-02.log",
+    "bytes": 10648,
+    "sha256": "F002EF3F7571D71A8FD374A6E24B7550E8E43AEE98DB7E7FBDF8D2842E1822DF"
+  },
+  {
+    "path": "process-validation.log",
+    "bytes": 344,
+    "sha256": "6ED7662164A4D33F8B7FBECA4A215D7CB96745D4E7EFB67844E518FC5A8A165D"
+  },
+  {
+    "path": "Run-ProcessValidation.ps1",
+    "bytes": 7700,
+    "sha256": "8CA605181F9465941D8A5A6C237198F2EB7E76C776AA0FAA63509F71023F76DF"
+  },
+  {
+    "path": "runner-timeout.log",
+    "bytes": 508,
+    "sha256": "42BC085E7173494EEF689C309B780789B7C690E7FB5B255C703A9FD4EF1EB144"
+  },
+  {
+    "path": "scoped-diff-check.json",
+    "bytes": 600,
+    "sha256": "8E7AECA6B4CA93FBEA5139EE863B7D4945AE4DA7AA43F4ABCE7ED7571FAF7185"
+  },
+  {
+    "path": "sdk.txt",
+    "bytes": 2183,
+    "sha256": "4C830CDFBDA16AE4B2DB4423B960E483F922F997D8043DD8137B39525E7A5AD0"
+  },
+  {
+    "path": "source-before.json",
+    "bytes": 90200,
+    "sha256": "729D6E69196CF9C4B5331E14BB8F4E2A98B73CCD77F8155E1F107C0D49540972"
+  },
+  {
+    "path": "source-final.json",
+    "bytes": 67856,
+    "sha256": "9E067BFA786791E2E15EDDAD1386079FB2DFCA63833AE3847EF71729A42ACF19"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1.snapshot",
+    "bytes": 11388,
+    "sha256": "B73ABAD547CF98EBC117946101C2F6C138548C595483B7AB87B943450C8D456E"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt.snapshot",
+    "bytes": 15316,
+    "sha256": "2265D57A878D21195FE91C62E2E6F521A944B13583D4580720832DA9A9B46620"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/README.md.snapshot",
+    "bytes": 10555,
+    "sha256": "41664EF91217631F7FAA09261249C3130A2419CDA849B512E1C88F0EE4A3683F"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1.snapshot",
+    "bytes": 18717,
+    "sha256": "8DF132C50118AF67E49421CDBF372D30AFA6934DC6E5C839CCB145FADDC18241"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1.snapshot",
+    "bytes": 17343,
+    "sha256": "F1CA81F287D9913203B802D8B95D2C28B59352005D71BD80543CAD1B0FAE3AC2"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-02-04加固与实施符合性核对.md.snapshot",
+    "bytes": 14885,
+    "sha256": "3F56DEC626A5EDAB81FEE2ACB167A843FD6CF7EC60275895702AD44459390D31"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-02审查反例验收矩阵.md.snapshot",
+    "bytes": 40165,
+    "sha256": "A2D2A6481409558C7E6DE049D7F7CC3209033B9A349E86C0E4E80DC79CD3DECF"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-03安全写回与恢复说明.md.snapshot",
+    "bytes": 14474,
+    "sha256": "7480F53E626B44094D75BCE8F45B09D945EEBB995C92A84AA1342F6A286C1936"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-04高风险改写限制与诊断说明.md.snapshot",
+    "bytes": 15184,
+    "sha256": "5CF716A235004BC5B1101A6D2E73E2FD1BEE65190563D9C830E7466A531AA86E"
+  },
+  {
+    "path": "source-snapshots/DOCS/软件改善实施规划.md.snapshot",
+    "bytes": 43469,
+    "sha256": "2262D2F0748269F609B6C1E36E4B9AFF88FC57A739F3DDF6A429CCA199CBED0E"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.CLI/Program.cs.snapshot",
+    "bytes": 40782,
+    "sha256": "8A4CEC9C3B6F2457DE22E9B25F08A17D63958697FF3830593F89215AF77B8ADE"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs.snapshot",
+    "bytes": 2001,
+    "sha256": "AC7AEA7BE8E626ADC1476AA423F306176308FB0D4B5F67A0C0860C725137905C"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/MinidumpValidator.cs.snapshot",
+    "bytes": 1247,
+    "sha256": "4614C552DCF6B15F4057F15EBD2F7C2C3F6A553E87026636B2BE026B9CBA1DDA"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs.snapshot",
+    "bytes": 4632,
+    "sha256": "3BDA8B6130B0B9252C0846B462705F736CB2B6EE5736D5338B8CA6BDE6D676AD"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs.snapshot",
+    "bytes": 3977,
+    "sha256": "C9A218DBD11A9D392CFAEF19607BC8EAE56BE9A4A8FA6CAFEFD8DB61E18321F4"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Logger.cs.snapshot",
+    "bytes": 10519,
+    "sha256": "34A4C4987266BA0CFBB657785DFEA484AEF2E473B035262763BD0CDF5E1AB05D"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs.snapshot",
+    "bytes": 29768,
+    "sha256": "D04569686625697A0666AFFF9D2F5BC38D75CF1AF1DDD376D6FDA0275231762A"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs.snapshot",
+    "bytes": 12677,
+    "sha256": "FA9D5F5CE65EBB8D85C8656BF713388E63A4F2943E85047EC3C3AE32D662CC9A"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs.snapshot",
+    "bytes": 10554,
+    "sha256": "36691F788B76BB2144631348EF8041A51EAA7EB1002FAC8DDC01536F88A1AD7E"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs.snapshot",
+    "bytes": 10094,
+    "sha256": "1ED6D25F4480545314DEB1317C0A9C308230D74DC8AFF3D14EA8CE99EC948D2B"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs.snapshot",
+    "bytes": 812,
+    "sha256": "FA5332DDA2FEEE6C7D36658473A9C277698CC09D49C0E8666AD5EFF7B6096FF6"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs.snapshot",
+    "bytes": 2534,
+    "sha256": "6092DAA9683C2297ED1A0C67E5E21FBC156435095B144990EC824031C1A742C3"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs.snapshot",
+    "bytes": 9412,
+    "sha256": "744D586B0249350F56EF974B5C8899D5CB70348BC0A42808627561C87A2C65A2"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs.snapshot",
+    "bytes": 7106,
+    "sha256": "4C66D33A6AB1E377F6755D8796584A2DEEDA5CA85F302BB9107AAF858EE2B7E5"
+  },
+  {
+    "path": "source-snapshots.json",
+    "bytes": 6211,
+    "sha256": "3FEFDD3EB57447D2F66C6B3F1E7A71BFF8261329EDE6A79911796F6E30474E22"
+  },
+  {
+    "path": "status-before.txt",
+    "bytes": 1937,
+    "sha256": "61F010D0A3EE92917EA02334C2A2081738C196E05CA85E098321C8A97D7D9620"
+  },
+  {
+    "path": "targeted-01/targeted-01.trx",
+    "bytes": 159667,
+    "sha256": "9861C6EAEB762F12A8A41B81E6DEC4BA0B7CAC486BA9DEB5A58E8440C5E9B3FE"
+  },
+  {
+    "path": "targeted-01.log",
+    "bytes": 1252,
+    "sha256": "F08FE485D68CAAE96CBAB294C2F567D5CFA3656E3E6D11E8EF194644589C8915"
+  },
+  {
+    "path": "Verify-Deliverable.py",
+    "bytes": 8914,
+    "sha256": "A6EBE4BE83BE32336826AECAF4E1B889F3220B19FD18C53051DFD6B9D1774701"
+  },
+  {
+    "path": "working-tree-before.patch",
+    "bytes": 112877,
+    "sha256": "A139C88F0D2DBC7E2C2E66A7DB0F1FCBE1B245D4B083B9D6F3A82030758986C8"
+  },
+  {
+    "path": "host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/artifact-manifest.json",
+    "bytes": 2173,
+    "sha256": "3D952BE6EA30256835E40928660CEF2F1C578CA5EF54E8FDC4BA312E9002D6B6"
+  }
+]

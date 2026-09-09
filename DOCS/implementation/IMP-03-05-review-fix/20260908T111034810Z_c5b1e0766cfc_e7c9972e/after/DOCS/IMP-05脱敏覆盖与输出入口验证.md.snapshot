@@ -1,0 +1,147 @@
+# IMP-05：脱敏覆盖与输出入口验证
+
+实施日期：2026-09-08（Asia/Taipei）。仓库：`E:/SqlXmlAnalyzer`。HEAD：`c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15`，加已登记的未提交改动。本次未提交 Git commit。
+
+**共享诊断复审更新（2026-09-08）：** 日志目录入口回归已修复并加固；Debug/Release 全量回归各 965 项通过，包含本步骤既有脱敏测试。见[复审修复与加固](./IMP-03-05复审问题修复与加固.md)。脱敏策略和下文原批次证据保持不变。
+
+**本步骤范围已完成，R01 / D08 已缓解，整个 R01 与 UI-07 仍待扩展验收。** 已修补支持范围内的 XML 脱敏遗漏，统一 GUI 与两套 CLI 的单文件脱敏出口，并标记或限制普通报告、复制等输出入口。统一报告脱敏预览、实际 WPF 操作、SSMS 兼容与未来 schema 验证不在本次已通过项目中。
+
+Debug / Release 全量构建各 **0 警告、0 错误**，各 **944 测试通过、0 失败、0 跳过**。相比上次联合加固 905 项，新增 39 项隐私相关测试；没有生成覆盖率报告。验收工具各 42/42，独立进程外层检查 17/17，其包含的应用检查两配置各 11/11。不能把这些互相包含的数量相加声称独立测试数。
+
+## 1. 要求与实现对应
+
+| IMP-05 要求 | 实现与验证 | 状态 |
+| --- | --- | --- |
+| 敏感信息清单包含 SQL、常量、参数、身份字段及文本节点 | Core 中字段目录和分类策略；全部 66 个已知自由字符串属性逐一植入标记；文本、CDATA、注释、处理指令另测 | 已实施 |
+| 副本处理、稳定映射、未知类别可见 | 克隆 XDocument；同一类别/规范化标识符在单次调用内稳定映射；结果包含处理数量与未覆盖数量 | 已实施 |
+| 未解释内容不能宣称完成脱敏 | 未知节点、属性、命名空间、非法结构值返回 Blocked，无 XML 载荷，不进入保存对话框和文件写入 | 已实施 |
+| 唯一标记验证所有输出与复制入口 | 支持的脱敏 XML 无标记；原始输出明确保留标记并显示未脱敏提示；明确请求脱敏报告时阻断 | 已实施，入口范围见第 4 节 |
+| 单元测试、异常处理、未知错误 DUMP、分配置日志 | 单元故障注入、真实 Windows 进程 DUMP、日志级别核对及独立 PDF 文本检查 | 已实施 |
+| 源文档与历史证据保留 | 对象/源文件原字节核对；新目标独占发布；历史附件及已有用户改动 SHA-256 校验 | 已实施 |
+
+完整规划见[软件改善实施规划](./软件改善实施规划.md)，历史需求见[详细设计](./软件详细设计与问题分析.md)、[UI 改进文档](./UI改进和功能改善文档.md)及[代码 Review 报告](./代码Review报告.md)。
+
+## 2. 模块与数据流
+
+1. `PlanRedactionService` 是不依赖 WPF 的 Core 服务，接收经 `SafeXmlHelper` 读取的 XDocument，生成副本、检查字段并脱敏。
+2. `PlanRedactionResult` 返回 `Ready / Blocked / Failed / Cancelled`、策略版本、固定类别计数和诊断记录。构造函数不公开，集合只读；仅 `Ready` 含可导出的 XML 字符串。失败时不暴露部分处理结果。
+3. 原 `PlanObfuscatorService` 保留适配入口，调用 Core 服务。兼容方法 `ObfuscatePlan` 对不支持的输入抛出明确异常，不能返回仍含未知字段的副本。
+4. `RedactedPlanExportService` 为 Application 文件边界。GUI、旧桌面 CLI `--export obfuscated`、独立 CLI `redact` 共用此服务。脱敏 CLI 路径在生成原始分析报告之前分支，避免原文进入分析日志。
+5. `OutputPrivacy` 统一原始输出提示与脱敏范围说明。HTML/PDF/Word 的报告服务支持 `RequireRedacted` 请求，但目前对此明确返回 `Blocked`，不会退化为导出原文。
+
+源码入口：[分类目录](../SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs)、[脱敏核心](../SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs)、[结果合同](../SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs)、[文件输出](../src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs)、[GUI 服务](../Services/PlanObfuscationExportUiActionService.cs)、[CLI](../SqlXmlAnalyzer.CLI/Program.cs)。
+
+## 3. 字段覆盖与未支持范围
+
+策略版本为 `IMP05-1.0-SQL2022-1.571`。字段名称及基础类型来源于 Microsoft SQL Server 2022 ShowPlan XSD 1.571：[官方 schema](https://schemas.microsoft.com/sqlserver/2004/07/showplan/sql2022/showplanxml.xsd)。本次保存了[来源与 SHA-256](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/schema-reference-sql2022.json)、[schema 副本](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/showplan-sql2022.xsd.reference)和[生成来源记录](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/field-catalog-origin.json)。运行时不访问网络。
+
+目录包含 **213 个不同元素名、302 个不同属性名**；属性按名称合并后为 66 个文本、140 个数值、69 个布尔、27 个枚举。它是字段目录，**不是完整 XSD 验证器**，不检查父子类型、必选属性和全部数值范围。不能从目录存在推导出输入为真实采集的合法计划。逐属性清单见[field-catalog.json](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/field-catalog.json)。
+
+| 类别 | 处理规则 | 保留与验证 |
+| --- | --- | --- |
+| SQL 文本 | StatementText、ParameterizedText、RemoteQuery、Script、QueryStoreStatementHintText 替换为固定注释 | 不保留 SQL 字面量，不生成可执行 SQL |
+| 参数值与常量 | ParameterCompiledValue / ParameterRuntimeValue、ConstValue 分别替换为固定占位符 | 参数名称 Column 也处理 |
+| 标量与表达式文本 | ScalarString、Expression 整段替换 | 不做仅匹配部分 SQL 语法的字符串清洗 |
+| 身份 | Server、Database、Schema、Table、Index、Alias、Column、Statistics、ProcName、CursorName、FunctionName、Assembly、Class、Method 稳定映射 | dbo、@ 参数、Expr 名称均无豁免 |
+| 其他已知自由字符串 | 替换为 `[MASKED_OtherText]` | 包含版本/build、类型等自由字符串元数据；保守策略会损失这些诊断细节 |
+| 元素文本 / CDATA | 非空白文本替换为固定值 | 文本内容无原始标记 |
+| 注释 / 处理指令 | 移除 | 指令名称也不保留 |
+| 数值 / 布尔 / 枚举 | 数值限制 ASCII 字符、长度和有限数；布尔及枚举检查允许值后保留 | EstimateRows、NodeId、PhysicalOp、LogicalOp 等结构信息可保留；该策略不隐藏运行规模 |
+| XML 命名空间 | 只支持 ShowPlan 命名空间，输出重新生成声明 | 不保留可能带敏感名称的前缀 |
+
+映射使用单次调用内的 `(类别, 标识符)` 键，Ordinal 比较，不猜测数据库排序规则；方括号及 `]]` 按标识符引用形式规范化，同名引用可保持一致。大小写不同不会强行合并。映射不是跨文件匿名身份库，不保证不同遍历次序得到相同编号，也不重建同名不同 schema 对象的完整身份。
+
+| 不支持项 | 对外行为 |
+| --- | --- |
+| 非 ShowPlan 根、DTD、不同/新增 namespace | 拒绝读取或 `Blocked`；不输出副本 |
+| 不在目录中的节点、属性、外来声明，例如未来 schema 扩展 | `Blocked`；只报告固定未覆盖类别及数量，不回显未知名称或值 |
+| 将任意文字塞入数值/枚举/布尔字段 | `InvalidStructuralValue`，不导出 |
+| XML 中额外 xsi/xsd 声明，即使未使用 | 当前策略仍阻断，需明确增加支持并验证后再放行 |
+| 死锁 XML / XEL、截图、任意文档、运行日志和 DUMP | 不属于此 XML 脱敏器的支持范围 |
+| 完整 XML 文档合法性、SSMS 重开兼容、SQL Server 2025/后续 schema | 未验证；不再显示旧的 SSMS 可直接打开保证 |
+
+仍可能从结构、数量、时序和数值推测业务信息；唯一字符串标记消失不是对任意数据绝无敏感信息的保证。新增字段必须更新目录、策略、反例及验收证据后才能开放。
+
+## 4. 输出入口核对矩阵
+
+测试标记使用 `SECRET_IMP05_9A51`（单元）与 `SECRET_IMP05_PROCESS_7238`（进程），均为合成信息。下表区分“脱敏输出无标记”和“原始输出有标记且明确提示”，后者不能作为脱敏成功证据。
+
+| 入口 | 当前行为 | 已完成验证 / 限制 |
+| --- | --- | --- |
+| GUI 脱敏计划 | 先显示策略与类别数量，再选择新的文件名；未知类别在对话框前阻断 | 注入对话框与提示回调的服务测试；原 XDocument 不变；没有实际打开 WPF 窗口 |
+| 独立 CLI `redact` | stdout 返回结构化状态和摘要，只保存支持范围内 XML | 实际进程成功/未知字段/同路径失败；原文件 SHA-256 不变；无敏感标记 |
+| 桌面 CLI 单文件 `obfuscated` | 同一核心与文件服务，绕开原始分析/报告生成 | 实际同进程调用 CLI 公共入口，核对文件及捕获输出；未启动桌面 exe UI |
+| 桌面 CLI 批量 `obfuscated` | 明确拒绝，非零退出；批量文件名/进度不能作为脱敏共享结果 | 单元测试确认在目录枚举和原文件名输出前停止 |
+| HTML 报告及 Mermaid 浏览器 HTML | 可见的“未脱敏”提示；正文/图内容保留原始信息 | 真实 HTML 文本与图中标记核对；未验证浏览器显示或离线资源（IMP-22） |
+| PDF / Word | 保存对话框标记未脱敏；文件正文加入提示；附图仍为原始图像 | 实际生成 PDF/Word；Word 解包 XML、PDF 用 pypdf 提取文本验证提示与原始标记；附图脱敏不支持 |
+| HTML / PDF / Word 请求 `RequireRedacted` | 返回 `Blocked`，不打开保存框、不调用图片渲染或写入 | fake writer/renderer 次数为零；无静默回退 |
+| 执行计划 / 死锁诊断复制 | 剪贴板正文带未脱敏声明 | 两个 tab 的服务结果均带原始标记及提示 |
+| 计划节点详情复制 | 正文带未脱敏声明 | 节点对象、谓词等内容保留标记及提示 |
+| 改写 SQL、索引创建/回滚/组合、索引沙箱 DDL 复制 | 保留可执行 SQL 原文；成功提示明确未脱敏 | 服务断言 SQL 不被说明文字破坏；UI 调用点已核对，真实系统剪贴板和沙箱窗口仍待人工验收 |
+| Mermaid 代码复制 | 加 `%%` 注释形式的未脱敏提示，图内容为原始内容 | 服务返回值验证；注释不会代替图中对象脱敏 |
+| 普通 CLI JSON / JUnit / 控制台 | JSON 的 Privacy、JUnit properties 与文本提示说明未脱敏 | 真实 CLI JSON/JUnit 进程及文本服务验证；错误报告也标记原始诊断 |
+| Refactor JSON / 文本、失败报告 | DTO/文件/控制台保留隐私说明 | 单元及真实 dry-run JSON 进程检查；失败文本新增回归 |
+| 旧桌面 CLI TXT | 写出文本前加未脱敏提示，PDF/Word 共用带提示后端 | 调用点核对；没有对每种旧 CLI 参数组合启动独立进程 |
+| 调优会话 `.pesession` | 保存标题及 XML 根 Privacy 标记未脱敏，继续保存原计划供本地复用 | 实际服务保存核对；已有读取兼容测试通过 |
+| SQL 写回、备份、临时图像、日志、DUMP / sidecar | 原始本地诊断/执行数据，不是脱敏共享产物 | SQL 写回沿用 IMP-03/04；不改写 SQL 为脱敏文本；DUMP 另见第 5 节 |
+
+主测试：[核心](../SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs)、[文件](../SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs)、[输出入口](../SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs)、[CLI](../SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs)。原有 `PlanObfuscatorServiceTests` 已改为要求 dbo 和参数名称同样处理，原始输出的旧预期相应加入未脱敏声明。
+
+## 5. 写入、异常与日志
+
+脱敏文件只允许新建：同目录 `CreateNew` 临时文件，分段写入，落盘 flush，SHA-256 核对，再以不覆盖方式移动到最终路径。已有目标（包括源路径）失败，不覆盖原件。仅清理本次拥有的临时文件。取消返回失败/取消状态，无成功声明。此服务没有 SQL 写回语义，也不替代 IMP-03 的备份事务；网络/存储中断后应按返回说明核对目标是否已经出现。
+
+已知 IO、权限、XML、编码、取消与非法路径参数走明确失败；不把这些常见输入/环境错误当未知程序崩溃。脱敏边界错误日志使用固定文案，不记录输入 XML、字段名称或异常中的敏感参数值。未知异常调用共享 `ExceptionPolicy` / `UnexpectedErrorReporter`，先保存 managed exception sidecar，再生成 Windows minidump；捕获本身失败时返回明确的 DUMP 失败说明，不能把诊断错误替换原来的业务失败。
+
+| 配置 | 文件与 stderr 日志级别 | 实证 |
+| --- | --- | --- |
+| Debug | DEBUG、WARN、ERROR、CRITICAL | [Debug 日志](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/Debug/application.log) |
+| Release | ERROR、CRITICAL | [Release 日志](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/Release/application.log) |
+
+CLI JSON 使用 stdout，诊断日志使用 stderr。界面错误提示、JSON 业务状态和覆盖摘要不是日志级别；Release 下仍可见失败原因及是否允许导出。
+
+两种配置均从新增文件导出边界注入未知写入异常，获得真实 `.dmp` 与 `exception.json`；应用验证 MDMP 头和完整流目录边界，进程测试另外检查文件签名及 sidecar。路径记录见[Debug 未知错误](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/Debug/unknown-error.json)、[Release 未知错误](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/Release/unknown-error.json)。没有执行调试器级完整性分析。
+
+**DUMP、异常 sidecar 和既有原始分析日志不经过脱敏器，可能含进程中的原始 SQL / XML。** 沿用共享诊断器的私有目录权限；只作本地诊断，不纳入可共享 XML 载荷。本次合成输入正常与预期失败路径的脱敏日志未发现标记；这不等于全应用日志已完成脱敏治理。
+
+## 6. 验收证据与历史失败
+
+本批证据目录：[20260908T100105576Z_c5b1e0766cfc_bfa90afe](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/deliverable-validation.json)。新源文件、差异归属、文档/适配器快照与历史 SHA-256 检查见该交付校验及[证据清单](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/artifact-manifest.json)。
+
+| 检查 | 最终结果 | 原始证据 |
+| --- | --- | --- |
+| Debug 非增量全量构建 / xUnit | 0 警告、0 错误；944/944，0 skip | [摘要](./acceptance/IMP-02/runs/20260908T101641783Z_c5b1e0766cfc_6f336732/summary.json)、[构建](./acceptance/IMP-02/runs/20260908T101641783Z_c5b1e0766cfc_6f336732/build.stdout.txt)、[TRX](./acceptance/IMP-02/runs/20260908T101641783Z_c5b1e0766cfc_6f336732/test-output/existing-suite.trx) |
+| Release 非增量全量构建 / xUnit | 0 警告、0 错误；944/944，0 skip | [摘要](./acceptance/IMP-02/runs/20260908T101821071Z_c5b1e0766cfc_fc081b13/summary.json)、[构建](./acceptance/IMP-02/runs/20260908T101821071Z_c5b1e0766cfc_fc081b13/build.stdout.txt)、[TRX](./acceptance/IMP-02/runs/20260908T101821071Z_c5b1e0766cfc_fc081b13/test-output/existing-suite.trx) |
+| IMP-02 适配器 v2.4 | 各 42/42 工具回归；5 最小条件通过、17 NotMet、0 ProbeExecutionFailed | [逐项业务观察](./acceptance/IMP-02/runs/20260908T101641783Z_c5b1e0766cfc_6f336732/acceptance-results.json)、[工具回归](./acceptance/IMP-02/runs/20260908T101641783Z_c5b1e0766cfc_6f336732/infrastructure-tests.json) |
+| 进程验证 | 外层 17/17；应用内部 Debug / Release 各 11/11 | [运行器结果](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/verification-results.json)、[Debug](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/Debug/process-results.json)、[Release](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/process-03/Release/process-results.json) |
+| PDF 独立检查 | 两配置真实文件均含未脱敏声明与合成标记 | [文本抽取记录](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/pdf-inspection.json) |
+
+最小条件通过的是 R01、R02、R03、R19、R20。**17 项 NotMet 仍是产品待修复问题**，因此完整矩阵运行器按约定返回 1；全量构建和测试本身退出 0。R04 的无关 XML 仍可被原始扫描误判为 Passed，留待 IMP-06，不以此更改矩阵期望。
+
+保留本轮所有失败记录：首次开发构建缺少 `System.IO` 已补；targeted-01 的旧脱敏/提示断言已更新；targeted-03 的测试框架许可证提示污染捕获 stdout 与文本标签预期已修正；process-01 为临时探针 throw 表达式编译问题；process-02 为探针读取仍打开日志时的共享权限问题。最终 process-03 关闭日志后检查通过。这些是实施/验证过程失败，未抹除，未混入历史 905 测试基线；对应文件仍在本批目录。
+
+最初直接访问未带版本的 schema URL 返回 404，该失败抓取记录也保留；实际使用的是随后成功获取的 `sql2022/showplanxml.xsd`，不能把前者当成功来源。
+
+## 7. 使用与重复验证
+
+独立 CLI 生成脱敏新文件：
+
+```powershell
+dotnet run --project SqlXmlAnalyzer.CLI -- redact input.sqlplan --output new-redacted.sqlplan
+```
+
+退出码 0：支持范围内成功导出；1：输入/覆盖/文件输出失败；2：参数不支持。目标必须不存在。普通扫描或重构加 `--redact` / `--redacted` 会被拒绝，不会悄悄输出原始报告。
+
+GUI 使用“导出脱敏计划”，先核对摘要，再保存为新名称。旧桌面 CLI：`SqlXmlAnalyzer.exe --analyze input.sqlplan --export obfuscated --out new-redacted.sqlplan`，仅支持单文件。
+
+完整构建、单元与矩阵重跑：
+
+```powershell
+pwsh -NoProfile -File DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1 -RepositoryPath E:/SqlXmlAnalyzer -Configuration Debug
+pwsh -NoProfile -File DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1 -RepositoryPath E:/SqlXmlAnalyzer -Configuration Release
+pwsh -NoProfile -File DOCS/implementation/IMP-05/Run-PrivacyVerification.ps1 -RepositoryPath E:/SqlXmlAnalyzer -OutputDirectory E:/SqlXmlAnalyzer/DOCS/implementation/IMP-05/recheck-unique-name
+```
+
+进程脚本编译临时工程，必须使用新的输出目录；只用合成输入，不连接 SQL Server。Windows / .NET 8、PowerShell 7 与 Git 是前提。PDF 文本复核另需 Python 的 pypdf：`python DOCS/implementation/IMP-05/Inspect-PdfOutputs.py.txt <进程输出目录> <新的结果JSON路径>`；脚本本次运行通过的记录见[pdf-inspection-repro.json](./implementation/IMP-05/20260908T100105576Z_c5b1e0766cfc_bfa90afe/pdf-inspection-repro.json)。真实窗口操作补充在[WPF 验收脚本](./acceptance/IMP-02/WPF验收操作脚本.md)。
+
+后续 IMP-06 继续最低输入识别；IMP-22 扩展统一脱敏报告模型、预览和图表一致性。M1 尚未整体完成，本次没有自动关闭原始评审问题。

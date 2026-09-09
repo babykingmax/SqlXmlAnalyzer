@@ -1,0 +1,377 @@
+[
+  {
+    "path": "build.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "build.stdout.txt",
+    "bytes": 871,
+    "sha256": "151841E8C024C98D14E70B8DB8C04FEA307CF16491333807951BE0D8DE6EB0F9"
+  },
+  {
+    "path": "commands.json",
+    "bytes": 4099,
+    "sha256": "F4006BFA573172E92EF1FB1F24B9A995313EFBFB597C00AAB241347D413B8977"
+  },
+  {
+    "path": "configuration-manifest.json",
+    "bytes": 3082,
+    "sha256": "C10B578525E9EB39C0B4DBAA53B4F1D5E1C4BD5DDB63F38E3AC94CF9DB9E1911"
+  },
+  {
+    "path": "environment.json",
+    "bytes": 388,
+    "sha256": "57346E6960A636F26FFEFB7AE137F5276A53EDAB951D8EC2C53A0AB0F1FABEAE"
+  },
+  {
+    "path": "evaluated-properties.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "evaluated-properties.stdout.txt",
+    "bytes": 188,
+    "sha256": "2C00EE5D90F50EDF79FA34F90390C4C8F3A796719FEE428A4BD811B84D0DAAC6"
+  },
+  {
+    "path": "fixture-manifest.json",
+    "bytes": 1384,
+    "sha256": "030008E56771DCB4F4CC0B5B075A68203B2C5E8BED118D4FB813D6CDB3DCB640"
+  },
+  {
+    "path": "git-branch.txt",
+    "bytes": 7,
+    "sha256": "9B3162498C21D7F960877099174ECEA13410BD21D12440B2EA8868117FC08AE0"
+  },
+  {
+    "path": "git-index.txt",
+    "bytes": 50960,
+    "sha256": "BBB3CC8B4DD949A39223AFA65EE071E5BFF373443443326616051379184334B1"
+  },
+  {
+    "path": "git-ls-files.txt",
+    "bytes": 23810,
+    "sha256": "CB041C6507A526772968D6EC5D12FF33B822B9E15EC016E1D7172B1DD2F45D12"
+  },
+  {
+    "path": "git-status-after.txt",
+    "bytes": 8156,
+    "sha256": "8D30DE2BF106CB1723FFD089060BE35C1A5953B1BBF5201F3DE6408B1FB55DA2"
+  },
+  {
+    "path": "git-status-before.txt",
+    "bytes": 703,
+    "sha256": "58439BF1E0A4BAF9996F39FDA83E97A2B62C4B3F0B0C5E6C5D0644D173ECB6D7"
+  },
+  {
+    "path": "git-version.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "git-version.stdout.txt",
+    "bytes": 29,
+    "sha256": "975745A66F4CF5FC84B7EDBB7A9F51C8872FA500D44645EF50C345BC46A82BFF"
+  },
+  {
+    "path": "index.patch",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "input-drift.json",
+    "bytes": 2,
+    "sha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945"
+  },
+  {
+    "path": "input-manifest.json",
+    "bytes": 119620,
+    "sha256": "7973B09A892B50BF542C212097A14473A728BA439524BC22229C593C82068019"
+  },
+  {
+    "path": "input-path-drift.json",
+    "bytes": 2,
+    "sha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945"
+  },
+  {
+    "path": "resolved-packages.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "resolved-packages.stdout.txt",
+    "bytes": 54295,
+    "sha256": "CEF182EDD715DB12BACAAEE48E817DE169DC27AE3756476687DB04D57657E1DE"
+  },
+  {
+    "path": "restore.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "restore.stdout.txt",
+    "bytes": 86,
+    "sha256": "0A5293E62D3BB4D8819D8D749F51206D3AA424744E622337BEE96070823F245B"
+  },
+  {
+    "path": "runtime-list.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "runtime-list.stdout.txt",
+    "bytes": 1097,
+    "sha256": "4E4936B82AB93F0245D2B3C94F15B4601C98D32DD1E3DD91DA69B53EE540A6E0"
+  },
+  {
+    "path": "sdk-info.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "sdk-info.stdout.txt",
+    "bytes": 2183,
+    "sha256": "4C830CDFBDA16AE4B2DB4423B960E483F922F997D8043DD8137B39525E7A5AD0"
+  },
+  {
+    "path": "sdk-list.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "sdk-list.stdout.txt",
+    "bytes": 40,
+    "sha256": "26D32B42D391C8471C3EE8BE198C205E134DE596BB323ACECE94B8824EEBD82D"
+  },
+  {
+    "path": "sdk-version.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "sdk-version.stdout.txt",
+    "bytes": 10,
+    "sha256": "4B509237900912AC8385460ADA8A1332F7CFCCA46D8728BF019800DE733C535F"
+  },
+  {
+    "path": "snapshots/.editorconfig.snapshot",
+    "bytes": 287,
+    "sha256": "34E71AD61C6D641DEDC84CEE4DDEF0646A2A7A981C3453ED60F2392AEB70D2FA"
+  },
+  {
+    "path": "snapshots/.gitattributes.snapshot",
+    "bytes": 2518,
+    "sha256": "45A7CBB7D9942BA7FFCE0B20BC8DBE2D1196533BC6E4BD245871D77FB1EEDFDC"
+  },
+  {
+    "path": "snapshots/.github/workflows/ci.yml.snapshot",
+    "bytes": 1566,
+    "sha256": "30039FC3EE82604C5030929B29CE7319B7CF25ADD25662960FAA18BEE78C4E08"
+  },
+  {
+    "path": "snapshots/.gitignore.snapshot",
+    "bytes": 6466,
+    "sha256": "0131361AE20F09E36B15760D6421EBCD18E5BC231E8F381FE57F558745E7F6B7"
+  },
+  {
+    "path": "snapshots/AGENTS.md.snapshot",
+    "bytes": 3905,
+    "sha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA"
+  },
+  {
+    "path": "snapshots/Directory.Build.props.snapshot",
+    "bytes": 221,
+    "sha256": "EC73F922F75E20CCB4192D7D850AD2D135B50CA4F839117D013287570D3B9688"
+  },
+  {
+    "path": "snapshots/Directory.Packages.props.snapshot",
+    "bytes": 1666,
+    "sha256": "ACB8F8AABAC7050CE1706A65A245015964808D511FA1D0651093D4721804C356"
+  },
+  {
+    "path": "snapshots/DOCS/代码Review报告.md.snapshot",
+    "bytes": 19138,
+    "sha256": "812630E9090A074DEAD10B715CFCD0A5C051EF8671CD68A15637175A7FBA306F"
+  },
+  {
+    "path": "snapshots/DOCS/检索来源与验证记录.md.snapshot",
+    "bytes": 14056,
+    "sha256": "6918E01C2223DF6636D255B02607374DEC1CCFDA38BADC80EE9DAC1D403FBE67"
+  },
+  {
+    "path": "snapshots/DOCS/软件改善实施规划.md.snapshot",
+    "bytes": 40033,
+    "sha256": "085334661143FEEC9034CDD10855DA23938BB2241AA79C088B5CD95B23AB6686"
+  },
+  {
+    "path": "snapshots/DOCS/软件详细设计与问题分析.md.snapshot",
+    "bytes": 20423,
+    "sha256": "84E1798E21B7BB1D2B55095376F7C45A1D77440801D950AD85307F8EAEE65A0E"
+  },
+  {
+    "path": "snapshots/DOCS/baselines/Capture-ImplementationBaseline.ps1.snapshot",
+    "bytes": 13115,
+    "sha256": "689FD555C53A643EB9123E970A471A60A7E4B2DAD8CB446FBFBE88142E5B8EF4"
+  },
+  {
+    "path": "snapshots/DOCS/README.md.snapshot",
+    "bytes": 2996,
+    "sha256": "A0C147B4D47B3D340AAE33B0B2AE9975B435A7C5675AA83B8F4B116C192A59D3"
+  },
+  {
+    "path": "snapshots/DOCS/review-evidence/baseline.json.snapshot",
+    "bytes": 4343,
+    "sha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930"
+  },
+  {
+    "path": "snapshots/DOCS/review-evidence/probe-results.json.snapshot",
+    "bytes": 4066,
+    "sha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88"
+  },
+  {
+    "path": "snapshots/DOCS/review-evidence/ReviewProbe.cs.txt.snapshot",
+    "bytes": 11116,
+    "sha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955"
+  },
+  {
+    "path": "snapshots/DOCS/review-evidence/Run-ReviewProbe.ps1.snapshot",
+    "bytes": 1642,
+    "sha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2"
+  },
+  {
+    "path": "snapshots/DOCS/UI改进和功能改善文档.md.snapshot",
+    "bytes": 20293,
+    "sha256": "5D8EF551F334C623AA57FE7D1D392AEDEA769DC86DAEDE87A07F8B516D56BB6A"
+  },
+  {
+    "path": "snapshots/MainWindow.KeyboardShortcuts.cs.snapshot",
+    "bytes": 1788,
+    "sha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345"
+  },
+  {
+    "path": "snapshots/MainWindow.Services.cs.snapshot",
+    "bytes": 24623,
+    "sha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004"
+  },
+  {
+    "path": "snapshots/RuleConfiguration.json.snapshot",
+    "bytes": 578,
+    "sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.CLI/SqlXmlAnalyzer.CLI.csproj.snapshot",
+    "bytes": 1175,
+    "sha256": "5A147A329590FE647EC55E252840D04BA489875685233AB037D7D18DA2F746BA"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Core/SqlXmlAnalyzer.Core.csproj.snapshot",
+    "bytes": 382,
+    "sha256": "FCF48DAE44FB6C08BE5CA8CE407336F646D5268AA2E1154EDA153687D489ED8F"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.csproj.snapshot",
+    "bytes": 2432,
+    "sha256": "FB447C3543EF04CFBA73AF1BC1FD0B53A2C8CA0D3BB53FC18A5EBC2DDBDA48B8"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.sln.snapshot",
+    "bytes": 9231,
+    "sha256": "9004CEAC6F6B801B9C0D72263EE657D012811BB6ADF524CA7FDECBC215A37599"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan.snapshot",
+    "bytes": 735,
+    "sha256": "25E6E2E94AD8E5245A4F62DB38049B1F3AE8DD249A610697D7F25C1422AAA740"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan.snapshot",
+    "bytes": 791,
+    "sha256": "2F040FAB3FB13E27C00F8CFF925A2A5D41EC6ACBD0AE85A90812197669D12131"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj.snapshot",
+    "bytes": 1413,
+    "sha256": "DF1E075D9ABC6AEAE1CE8FCFB8288E9FBDE7AF6EA885BBB3F03ED60BDE1BB19B"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/TestData/deadlock_bookmark_lookup.xdl.snapshot",
+    "bytes": 1473,
+    "sha256": "163E0AE3497239125857A6E74202D64C0D21DD65F674DAE7AD2BD8EEA351745E"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan.snapshot",
+    "bytes": 536,
+    "sha256": "314B6DB4C78A85C18924651998276660D6312DAA73652DED5F1A94ED62D8F660"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan.snapshot",
+    "bytes": 742,
+    "sha256": "A8833BEB79D709A83136B46D285BEDE354F3D5400787BA1853725F8345CB6E9C"
+  },
+  {
+    "path": "snapshots/SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan.snapshot",
+    "bytes": 1192,
+    "sha256": "6C26E57836F7FC6A57632A358F808EDDFCCDFCE358CDA51292E67D74A88BE465"
+  },
+  {
+    "path": "snapshots/src/SqlXmlAnalyzer.Analysis/SqlXmlAnalyzer.Analysis.csproj.snapshot",
+    "bytes": 340,
+    "sha256": "F6F99C72C27E3325C93610E39F64DBF4963EE74455815204F29A58BF4DB2BABE"
+  },
+  {
+    "path": "snapshots/src/SqlXmlAnalyzer.Application/SqlXmlAnalyzer.Application.csproj.snapshot",
+    "bytes": 534,
+    "sha256": "8B8265284B817F88D4E70C6373065CAE6345FAD4EBB89AB40AD9DF783B26EAD1"
+  },
+  {
+    "path": "snapshots/src/SqlXmlAnalyzer.Refactoring/SqlXmlAnalyzer.Refactoring.csproj.snapshot",
+    "bytes": 450,
+    "sha256": "C8A3125D99112F18E71E3A36651047AD1E7F184AFF2278B161749886C6B5C19C"
+  },
+  {
+    "path": "snapshots/Views/ShellNavigationRail.xaml.snapshot",
+    "bytes": 7681,
+    "sha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A"
+  },
+  {
+    "path": "source-inventory.txt",
+    "bytes": 19509,
+    "sha256": "761CE24A09A62C1A8E50A83E2A1EA859DACBE1099A4E426CE22DE6103BDFF1D9"
+  },
+  {
+    "path": "summary.json",
+    "bytes": 1323,
+    "sha256": "78409CEC457C652A6B788952FB38C4B6C9EA2BCCD19C8FFA3D28BB287393D548"
+  },
+  {
+    "path": "test-nonpassed.json",
+    "bytes": 2,
+    "sha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945"
+  },
+  {
+    "path": "test-output/baseline.trx",
+    "bytes": 1155612,
+    "sha256": "E70EBB0690FDB76306C2CCD42BE09FF058698A07A401235175715DFDB6E3A717"
+  },
+  {
+    "path": "test.stderr.txt",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "test.stdout.txt",
+    "bytes": 444,
+    "sha256": "75A3C31E2CC9DC42CB88CBBE6B6F9AF1A9040EBCEB4DEEE0244EBBEA4867A3D8"
+  },
+  {
+    "path": "untracked-inputs.txt",
+    "bytes": 429,
+    "sha256": "D1F0F4C40F6E003A9F8203EB14103804CE1C7E048BF7C86C79E693F6DE26D964"
+  },
+  {
+    "path": "working-tree.patch",
+    "bytes": 6237,
+    "sha256": "8F7802DFBCD8D570EDD2D7BCFDA1977CCA2B61477007891640592B66A42CDDDB"
+  }
+]

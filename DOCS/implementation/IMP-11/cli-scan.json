@@ -1,0 +1,1480 @@
+[
+  {
+    "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+    "FilePath": "SqlXmlAnalyzer.Tests/TestData/imp11_operator_facts.sqlplan",
+    "FileName": "imp11_operator_facts.sqlplan",
+    "Status": "Passed",
+    "InputStatus": "Success",
+    "InputKind": "ExecutionPlanXml",
+    "InputErrorCode": null,
+    "InputEnvelope": {
+      "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+      "SourceHash": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+      "SourceName": "SqlXmlAnalyzer.Tests/TestData/imp11_operator_facts.sqlplan",
+      "DetectedKind": 2,
+      "CapturedAt": null,
+      "EngineBuild": "16.0.1000.6",
+      "SchemaVersion": "1.6",
+      "SourceBytes": 1603
+    },
+    "Plan": {
+      "Envelope": {
+        "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+        "SourceHash": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+        "SourceName": "SqlXmlAnalyzer.Tests/TestData/imp11_operator_facts.sqlplan",
+        "DetectedKind": 2,
+        "CapturedAt": null,
+        "EngineBuild": "16.0.1000.6",
+        "SchemaVersion": "1.6",
+        "SourceBytes": 1603
+      },
+      "Batches": [
+        {
+          "Key": {
+            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+            "BatchOrdinal": 1
+          },
+          "Location": {
+            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+            "Batch": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "BatchOrdinal": 1
+            },
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]",
+              "Line": 4,
+              "Column": 19,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1"
+          },
+          "Statements": [
+            {
+              "Key": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "Parent": null,
+              "Kind": "StmtSimple",
+              "StatementId": "1",
+              "QueryHash": null,
+              "QueryPlanHash": null,
+              "Text": "SELECT V FROM dbo.T WHERE V=2",
+              "Location": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlan": null,
+                "Operator": null,
+                "Source": {
+                  "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+                  "Line": 4,
+                  "Column": 38,
+                  "EventIndex": null,
+                  "ByteOffset": null,
+                  "ByteLength": null
+                },
+                "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1"
+              },
+              "QueryPlans": [
+                {
+                  "Key": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "Location": {
+                    "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                    "Batch": {
+                      "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                      "BatchOrdinal": 1
+                    },
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlan": {
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                          "BatchOrdinal": 1
+                        },
+                        "StatementOrdinal": 1
+                      },
+                      "QueryPlanOrdinal": 1
+                    },
+                    "Operator": null,
+                    "Source": {
+                      "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]",
+                      "Line": 5,
+                      "Column": 6,
+                      "EventIndex": null,
+                      "ByteOffset": null,
+                      "ByteLength": null
+                    },
+                    "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1"
+                  },
+                  "Operators": [
+                    {
+                      "Key": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "Parent": null,
+                      "PhysicalOp": "Nested Loops",
+                      "LogicalOp": "Inner Join",
+                      "Location": {
+                        "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                        "Batch": {
+                          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                          "BatchOrdinal": 1
+                        },
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "Operator": {
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                                "BatchOrdinal": 1
+                              },
+                              "StatementOrdinal": 1
+                            },
+                            "QueryPlanOrdinal": 1
+                          },
+                          "NodeId": "0",
+                          "OperatorOrdinal": 1
+                        },
+                        "Source": {
+                          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                          "Line": 5,
+                          "Column": 17,
+                          "EventIndex": null,
+                          "ByteOffset": null,
+                          "ByteLength": null
+                        },
+                        "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1"
+                      },
+                      "Objects": [],
+                      "Facts": {
+                        "Objects": [],
+                        "Predicates": [],
+                        "SeekPredicates": [],
+                        "OutputColumns": [],
+                        "Partitioned": null,
+                        "PartitionCount": null,
+                        "PartitionRange": null,
+                        "Execution": {
+                          "ActualExecutionMode": null,
+                          "EstimatedExecutionMode": null,
+                          "Parallel": null,
+                          "Ordered": null,
+                          "ExecutionMode": "N/A",
+                          "ParallelDisplay": "N/A",
+                          "OrderedDisplay": "N/A"
+                        },
+                        "Threads": [],
+                        "EstimatedRows": {
+                          "Value": 100,
+                          "State": "Available",
+                          "Unit": "rows/execution",
+                          "Source": "RelOp/@EstimateRows",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "EstimatedRowsRead": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rows/execution",
+                          "Source": "RelOp/@EstimatedRowsRead",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "EstimatedCpuCost": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimateCPU",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "EstimatedIoCost": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimateIO",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "AverageRowSize": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "bytes/row",
+                          "Source": "RelOp/@AvgRowSize",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "EstimatedExecutions": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "executions",
+                          "Source": "EstimateRebinds + EstimateRewinds + 1",
+                          "Kind": "Estimated",
+                          "Aggregation": "RebindsPlusRewindsPlusOne",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "SubtreeCost": {
+                          "Value": 10,
+                          "State": "Available",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimatedTotalSubtreeCost",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "OwnCost": {
+                          "Value": 6,
+                          "State": "Available",
+                          "Unit": "optimizer-cost",
+                          "Source": "EstimatedTotalSubtreeCost - direct child subtree costs",
+                          "Kind": "Estimated",
+                          "Aggregation": "SubtreeMinusChildren",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "OutputRows": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rows",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "RowsRead": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rows",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ThreadExecutions": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "executions",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "LogicalExecutions": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "executions",
+                          "Source": "serial counter or common active worker executions",
+                          "Kind": "Actual",
+                          "Aggregation": "CommonWorkerExecutions",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "RowsPerExecution": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rows/execution",
+                          "Source": "ActualRows / logical executions",
+                          "Kind": "Actual",
+                          "Aggregation": "RowsPerExecution",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "Rebinds": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rebinds",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "Rewinds": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rewinds",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ElapsedTime": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "ms",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                          "Kind": "Actual",
+                          "Aggregation": "MaxThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "CpuTime": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "ms",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "LogicalReads": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "pages",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "PhysicalReads": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "pages",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ScalarExpressions": [],
+                        "WorkerRows": null
+                      }
+                    },
+                    {
+                      "Key": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "1",
+                        "OperatorOrdinal": 2
+                      },
+                      "Parent": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "PhysicalOp": "Index Seek",
+                      "LogicalOp": "Index Seek",
+                      "Location": {
+                        "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                        "Batch": {
+                          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                          "BatchOrdinal": 1
+                        },
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "Operator": {
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                                "BatchOrdinal": 1
+                              },
+                              "StatementOrdinal": 1
+                            },
+                            "QueryPlanOrdinal": 1
+                          },
+                          "NodeId": "1",
+                          "OperatorOrdinal": 2
+                        },
+                        "Source": {
+                          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                          "Line": 6,
+                          "Column": 21,
+                          "EventIndex": null,
+                          "ByteOffset": null,
+                          "ByteLength": null
+                        },
+                        "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+                      },
+                      "Objects": [
+                        {
+                          "Identity": {
+                            "Server": null,
+                            "Database": "Db",
+                            "Schema": "dbo",
+                            "Object": "T",
+                            "IsComplete": false,
+                            "DisplayName": "?.[Db].[dbo].[T]"
+                          },
+                          "Alias": null,
+                          "Index": "IX_T",
+                          "TableReferenceId": null,
+                          "Location": {
+                            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                            "Batch": {
+                              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                              "BatchOrdinal": 1
+                            },
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                                "BatchOrdinal": 1
+                              },
+                              "StatementOrdinal": 1
+                            },
+                            "QueryPlan": {
+                              "Statement": {
+                                "Batch": {
+                                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                                  "BatchOrdinal": 1
+                                },
+                                "StatementOrdinal": 1
+                              },
+                              "QueryPlanOrdinal": 1
+                            },
+                            "Operator": {
+                              "QueryPlan": {
+                                "Statement": {
+                                  "Batch": {
+                                    "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                                    "BatchOrdinal": 1
+                                  },
+                                  "StatementOrdinal": 1
+                                },
+                                "QueryPlanOrdinal": 1
+                              },
+                              "NodeId": "1",
+                              "OperatorOrdinal": 2
+                            },
+                            "Source": {
+                              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}IndexScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                              "Line": 8,
+                              "Column": 36,
+                              "EventIndex": null,
+                              "ByteOffset": null,
+                              "ByteLength": null
+                            },
+                            "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+                          },
+                          "SourceAttributes": {
+                            "Database": "[Db]",
+                            "Schema": "[dbo]",
+                            "Table": "[T]",
+                            "Index": "[IX_T]"
+                          },
+                          "DisplayName": "?.[Db].[dbo].[T] / Index [IX_T]"
+                        }
+                      ],
+                      "Facts": {
+                        "Objects": [
+                          {
+                            "SourceAttributes": {
+                              "Database": "[Db]",
+                              "Schema": "[dbo]",
+                              "Table": "[T]",
+                              "Index": "[IX_T]"
+                            },
+                            "DisplayName": "[T].[IX_T]"
+                          }
+                        ],
+                        "Predicates": [
+                          "[T].[V]=(2)"
+                        ],
+                        "SeekPredicates": [
+                          "[T].[K]=(1)"
+                        ],
+                        "OutputColumns": [
+                          "[V]"
+                        ],
+                        "Partitioned": null,
+                        "PartitionCount": null,
+                        "PartitionRange": null,
+                        "Execution": {
+                          "ActualExecutionMode": "Batch",
+                          "EstimatedExecutionMode": "Row",
+                          "Parallel": true,
+                          "Ordered": true,
+                          "ExecutionMode": "Batch",
+                          "ParallelDisplay": "True",
+                          "OrderedDisplay": "True"
+                        },
+                        "Threads": [
+                          {
+                            "ThreadId": 1,
+                            "SourceAttributes": {
+                              "Thread": "1",
+                              "ActualRows": "40",
+                              "ActualRowsRead": "400",
+                              "ActualExecutions": "1",
+                              "ActualExecutionMode": "Batch"
+                            },
+                            "OutputRows": {
+                              "Value": 40,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": 400,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 2,
+                            "SourceAttributes": {
+                              "Thread": "2",
+                              "ActualRows": "60",
+                              "ActualRowsRead": "600",
+                              "ActualExecutions": "1",
+                              "ActualExecutionMode": "Batch"
+                            },
+                            "OutputRows": {
+                              "Value": 60,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": 600,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          }
+                        ],
+                        "EstimatedRows": {
+                          "Value": 100,
+                          "State": "Available",
+                          "Unit": "rows/execution",
+                          "Source": "RelOp/@EstimateRows",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "EstimatedRowsRead": {
+                          "Value": 1000,
+                          "State": "Available",
+                          "Unit": "rows/execution",
+                          "Source": "RelOp/@EstimatedRowsRead",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "EstimatedCpuCost": {
+                          "Value": 1,
+                          "State": "Available",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimateCPU",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "EstimatedIoCost": {
+                          "Value": 3,
+                          "State": "Available",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimateIO",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "AverageRowSize": {
+                          "Value": 8,
+                          "State": "Available",
+                          "Unit": "bytes/row",
+                          "Source": "RelOp/@AvgRowSize",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "EstimatedExecutions": {
+                          "Value": 1,
+                          "State": "Available",
+                          "Unit": "executions",
+                          "Source": "EstimateRebinds + EstimateRewinds + 1",
+                          "Kind": "Estimated",
+                          "Aggregation": "RebindsPlusRewindsPlusOne",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "SubtreeCost": {
+                          "Value": 4,
+                          "State": "Available",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimatedTotalSubtreeCost",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "OwnCost": {
+                          "Value": 4,
+                          "State": "Available",
+                          "Unit": "optimizer-cost",
+                          "Source": "EstimatedTotalSubtreeCost - direct child subtree costs",
+                          "Kind": "Estimated",
+                          "Aggregation": "SubtreeMinusChildren",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "OutputRows": {
+                          "Value": 100,
+                          "State": "Available",
+                          "Unit": "rows",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "RowsRead": {
+                          "Value": 1000,
+                          "State": "Available",
+                          "Unit": "rows",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "ThreadExecutions": {
+                          "Value": 2,
+                          "State": "Available",
+                          "Unit": "executions",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "LogicalExecutions": {
+                          "Value": 1,
+                          "State": "Available",
+                          "Unit": "executions",
+                          "Source": "serial counter or common active worker executions",
+                          "Kind": "Actual",
+                          "Aggregation": "CommonWorkerExecutions",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "RowsPerExecution": {
+                          "Value": 100,
+                          "State": "Available",
+                          "Unit": "rows/execution",
+                          "Source": "ActualRows / logical executions",
+                          "Kind": "Actual",
+                          "Aggregation": "RowsPerExecution",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "Rebinds": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rebinds",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "Rewinds": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rewinds",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ElapsedTime": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "ms",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                          "Kind": "Actual",
+                          "Aggregation": "MaxThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "CpuTime": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "ms",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "LogicalReads": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "pages",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "PhysicalReads": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "pages",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ScalarExpressions": [
+                          "[T].[K]=(1)",
+                          "[T].[V]=(2)"
+                        ],
+                        "WorkerRows": {
+                          "Count": 2,
+                          "Total": 100,
+                          "Maximum": 60,
+                          "Average": 50
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Diagnostics": []
+    },
+    "Capabilities": "PlanStatements, PlanOperators, RuntimeCounters, PreservedSource",
+    "InputDiagnostics": [],
+    "FailureMessage": null,
+    "MaxSubtreeCost": 10,
+    "ContainsScans": false,
+    "ScannedOperators": [],
+    "Issues": [
+      {
+        "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+        "Severity": "Info",
+        "Title": "残差谓词 (Residual Predicate)",
+        "Message": "操作符包含需要在内存中逐行过滤的残差谓词：\n[T].[V]=(2)\n这通常意味着底层读取了多余的数据。建议添加 INCLUDE 包含列或优化索引。",
+        "NodeId": "1",
+        "ResultScope": 2,
+        "Location": {
+          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+          "Batch": {
+            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+            "BatchOrdinal": 1
+          },
+          "Statement": {
+            "Batch": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "Operator": {
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "NodeId": "1",
+            "OperatorOrdinal": 2
+          },
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+            "Line": 6,
+            "Column": 21,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+        },
+        "Objects": [
+          {
+            "Identity": {
+              "Server": null,
+              "Database": "Db",
+              "Schema": "dbo",
+              "Object": "T",
+              "IsComplete": false,
+              "DisplayName": "?.[Db].[dbo].[T]"
+            },
+            "Alias": null,
+            "Index": "IX_T",
+            "TableReferenceId": null,
+            "Location": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "Batch": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "BatchOrdinal": 1
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "Operator": {
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "NodeId": "1",
+                "OperatorOrdinal": 2
+              },
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}IndexScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                "Line": 8,
+                "Column": 36,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+            },
+            "SourceAttributes": {
+              "Database": "[Db]",
+              "Schema": "[dbo]",
+              "Table": "[T]",
+              "Index": "[IX_T]"
+            },
+            "DisplayName": "?.[Db].[dbo].[T] / Index [IX_T]"
+          }
+        ],
+        "Metadata": {
+          "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+          "Category": 7,
+          "Scope": 2,
+          "DefaultSeverity": "Info",
+          "Description": "Detects if a Scan or Seek operator has residual predicates that cannot use an index seek."
+        }
+      },
+      {
+        "RuleId": "RULE_022_HIGH_COST_OP",
+        "Severity": "Warning",
+        "Title": "高开销硬件算子 Top 5",
+        "Message": "⏱️ 算子 Node 0 (Nested Loops): 独占单体硬件开销预估高达 6.0000 (占该算子子树开销的 60.0%)。建议在此算子做重点定位。|||⏱️ 算子 Node 1 (Index Seek): 独占单体硬件开销预估高达 4.0000 (占该算子子树开销的 100.0%)。建议在此算子做重点定位。",
+        "NodeId": "0",
+        "ResultScope": 0,
+        "Location": {
+          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+          "Batch": null,
+          "Statement": null,
+          "QueryPlan": null,
+          "Operator": null,
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+            "Line": 3,
+            "Column": 2,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148"
+        },
+        "Objects": [],
+        "Metadata": {
+          "RuleId": "RULE_022_HIGH_COST_OP",
+          "Category": 3,
+          "Scope": 0,
+          "DefaultSeverity": "Warning",
+          "Description": "Detects the top 5 operators with high individual resource costs."
+        }
+      },
+      {
+        "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+        "Severity": "Warning",
+        "Title": "寻址残差谓词漏洞",
+        "Message": "\uD83D\uDEA8 残差谓词 Node 1 (Index Seek on [T].[IX_T]): 定位虽走 Seek 索引，但在过滤列上只有前导列被用于 Seek，其他过滤列作为了“残差谓词”在内存中强行二次比对过滤，带来多余 IO 开销。建议把 [[T].[V]=(2)] 包含的列加入复合索引。 [DBA 提示] 若当前为并行查询且启用了 Bitmap Filter，ActualRowsRead 可能偏高，需结合实际执行时间综合判断。",
+        "NodeId": "1",
+        "ResultScope": 2,
+        "Location": {
+          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+          "Batch": {
+            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+            "BatchOrdinal": 1
+          },
+          "Statement": {
+            "Batch": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "Operator": {
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "NodeId": "1",
+            "OperatorOrdinal": 2
+          },
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+            "Line": 6,
+            "Column": 21,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+        },
+        "Objects": [
+          {
+            "Identity": {
+              "Server": null,
+              "Database": "Db",
+              "Schema": "dbo",
+              "Object": "T",
+              "IsComplete": false,
+              "DisplayName": "?.[Db].[dbo].[T]"
+            },
+            "Alias": null,
+            "Index": "IX_T",
+            "TableReferenceId": null,
+            "Location": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "Batch": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "BatchOrdinal": 1
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "Operator": {
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "NodeId": "1",
+                "OperatorOrdinal": 2
+              },
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}IndexScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                "Line": 8,
+                "Column": 36,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+            },
+            "SourceAttributes": {
+              "Database": "[Db]",
+              "Schema": "[dbo]",
+              "Table": "[T]",
+              "Index": "[IX_T]"
+            },
+            "DisplayName": "?.[Db].[dbo].[T] / Index [IX_T]"
+          }
+        ],
+        "Metadata": {
+          "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+          "Category": 7,
+          "Scope": 2,
+          "DefaultSeverity": "Warning",
+          "Description": "Detects residual predicates on Index Seek operators that cause excess IO overhead."
+        }
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "Severity": "Warning",
+        "Title": "智能索引与 T-SQL 关联汇总",
+        "Message": "\uD83D\uDCA1 **[全局智能索引推荐]**|||评分: 40/100 | 预估提升: 80.0% | 表: [dbo].[T]\n\uD83D\uDC49 CREATE NONCLUSTERED INDEX [IX_T_V]\nON [dbo].[T] ([V])\nWITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);",
+        "NodeId": "",
+        "ResultScope": 0,
+        "Location": {
+          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+          "Batch": null,
+          "Statement": null,
+          "QueryPlan": null,
+          "Operator": null,
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+            "Line": 3,
+            "Column": 2,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148"
+        },
+        "Objects": [],
+        "Metadata": {
+          "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+          "Category": 0,
+          "Scope": 2,
+          "DefaultSeverity": "Warning",
+          "Description": "Correlates execution plan scan nodes with high-performance index suggestions and non-SARGable warnings from refactored T-SQL."
+        }
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "Severity": "Warning",
+        "Title": "智能索引与 T-SQL 关联建议",
+        "Message": "⭐ **[智能索引推荐]** 评分: 40/100 | 建议为表 [dbo].[T] 创建非聚集索引以消除该 Index Seek 节点的开销：\n   \uD83D\uDC49 CREATE NONCLUSTERED INDEX [IX_T_V]\nON [dbo].[T] ([V])\nWITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);",
+        "NodeId": "1",
+        "ResultScope": 2,
+        "Location": {
+          "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+          "Batch": {
+            "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+            "BatchOrdinal": 1
+          },
+          "Statement": {
+            "Batch": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "Operator": {
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "NodeId": "1",
+            "OperatorOrdinal": 2
+          },
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+            "Line": 6,
+            "Column": 21,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+        },
+        "Objects": [
+          {
+            "Identity": {
+              "Server": null,
+              "Database": "Db",
+              "Schema": "dbo",
+              "Object": "T",
+              "IsComplete": false,
+              "DisplayName": "?.[Db].[dbo].[T]"
+            },
+            "Alias": null,
+            "Index": "IX_T",
+            "TableReferenceId": null,
+            "Location": {
+              "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+              "Batch": {
+                "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                "BatchOrdinal": 1
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "Operator": {
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "NodeId": "1",
+                "OperatorOrdinal": 2
+              },
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}IndexScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                "Line": 8,
+                "Column": 36,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2"
+            },
+            "SourceAttributes": {
+              "Database": "[Db]",
+              "Schema": "[dbo]",
+              "Table": "[T]",
+              "Index": "[IX_T]"
+            },
+            "DisplayName": "?.[Db].[dbo].[T] / Index [IX_T]"
+          }
+        ],
+        "Metadata": {
+          "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+          "Category": 0,
+          "Scope": 2,
+          "DefaultSeverity": "Warning",
+          "Description": "Correlates execution plan scan nodes with high-performance index suggestions and non-SARGable warnings from refactored T-SQL."
+        }
+      }
+    ]
+  }
+]

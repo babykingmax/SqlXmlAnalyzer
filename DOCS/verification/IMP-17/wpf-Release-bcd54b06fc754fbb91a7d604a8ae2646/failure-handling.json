@@ -1,0 +1,77 @@
+{
+  "Configuration": "Release",
+  "CompletedAt": "2026-09-09T15:12:22.3919620+08:00",
+  "Passed": true,
+  "Checks": 8,
+  "DiagnosticsDirectory": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-4dd37f4deac141c5a3d81988088de5f4",
+  "Records": [
+    {
+      "Case": "success",
+      "Passed": true,
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "ProtectedFileUnchanged": false,
+      "Dump": null
+    },
+    {
+      "Case": "locked-screenshot",
+      "Passed": true,
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "ProtectedFileUnchanged": true,
+      "Dump": null
+    },
+    {
+      "Case": "existing-screenshot",
+      "Passed": true,
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "ProtectedFileUnchanged": true,
+      "Dump": null
+    },
+    {
+      "Case": "locked-result",
+      "Passed": true,
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "ProtectedFileUnchanged": true,
+      "Dump": null
+    },
+    {
+      "Case": "unknown",
+      "Passed": true,
+      "ExitCode": 3,
+      "ExpectedExitCode": 3,
+      "ProtectedFileUnchanged": false,
+      "Dump": {
+        "Path": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-4dd37f4deac141c5a3d81988088de5f4\\unknown\\dumps\\20260909T071217667Z_39724_4ccd7dd911a14530b4b3b2ea1a8b36be\\process.dmp",
+        "Length": 508666,
+        "SHA256": "557E653BD4C3098066B56FA911E3A0565E074DD35E6232206A8953F8FBC5AD73"
+      }
+    },
+    {
+      "Case": "dump-unavailable",
+      "Passed": true,
+      "ExitCode": 3,
+      "ExpectedExitCode": 3,
+      "ProtectedFileUnchanged": false,
+      "Dump": null
+    },
+    {
+      "Case": "locked-log",
+      "Passed": true,
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "ProtectedFileUnchanged": true,
+      "Dump": null
+    },
+    {
+      "Case": "invalid-arguments",
+      "Passed": true,
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "ProtectedFileUnchanged": false,
+      "Dump": null
+    }
+  ]
+}

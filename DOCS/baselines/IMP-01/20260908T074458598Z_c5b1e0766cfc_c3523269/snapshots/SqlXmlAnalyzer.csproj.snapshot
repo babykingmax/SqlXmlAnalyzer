@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>SqlXmlAnalyzer</AssemblyName>
+    <Description>SQL Server 死锁与执行计划深度分析工具 - 图形界面专业版</Description>
+    <LangVersion>latest</LangVersion>
+    <!-- <ApplicationIcon>app.ico</ApplicationIcon> -->
+
+    <!-- 便于 Visual Studio 2026 调试 -->
+    <DebugType Condition="'$(Configuration)' == 'Debug'">full</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' == 'Debug'">true</DebugSymbols>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DefaultItemExcludes>$(DefaultItemExcludes);SqlXmlAnalyzer.Core\**;SqlXmlAnalyzer.Tests\**;SqlXmlAnalyzer.CLI\**;src\**</DefaultItemExcludes>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="SqlXmlAnalyzer.Core\**" />
+    <Page Remove="SqlXmlAnalyzer.Core\**" />
+    <None Remove="SqlXmlAnalyzer.Core\**" />
+    <Compile Remove="SqlXmlAnalyzer.Tests\**" />
+    <Page Remove="SqlXmlAnalyzer.Tests\**" />
+    <None Remove="SqlXmlAnalyzer.Tests\**" />
+    <Compile Remove="SqlXmlAnalyzer.CLI\**" />
+    <Page Remove="SqlXmlAnalyzer.CLI\**" />
+    <None Remove="SqlXmlAnalyzer.CLI\**" />
+    <Compile Remove="src\**" />
+    <Page Remove="src\**" />
+    <None Remove="src\**" />
+  </ItemGroup>
+  <ItemGroup><!-- 已移除 WebView2，改用纯 WPF 本地控件实现可视化 -->
+  
+    <ProjectReference Include="SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj" />
+    <ProjectReference Include="src\SqlXmlAnalyzer.Application\SqlXmlAnalyzer.Application.csproj" />
+    <ProjectReference Include="src\SqlXmlAnalyzer.Refactoring\SqlXmlAnalyzer.Refactoring.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocX" />
+    <PackageReference Include="MaterialDesignThemes" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Nodify" />
+    <PackageReference Include="QuestPDF" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="RuleConfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

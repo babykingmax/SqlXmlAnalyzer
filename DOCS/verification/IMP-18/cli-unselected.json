@@ -1,0 +1,102 @@
+{
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "IsSuccess": true,
+  "IsDryRun": false,
+  "HasChanges": true,
+  "SourceWritten": false,
+  "Outcome": "CandidateGenerated",
+  "ProposalSchemaVersion": "1",
+  "CanApply": false,
+  "SourceHash": "741998C9A69203E733761CBC0CB057A883BF28C67A68C95C2E854C82B8F8F25D",
+  "Review": {
+    "SourceHash": "741998C9A69203E733761CBC0CB057A883BF28C67A68C95C2E854C82B8F8F25D",
+    "CanApply": false,
+    "Validation": {
+      "SyntaxValid": true,
+      "CheckedProperties": [
+        "ScriptDom TSql160 语法解析",
+        "临时对象创建/删除、表变量声明与批次边界一致性检查"
+      ],
+      "UnprovenProperties": [
+        "结果集及重复行等价性",
+        "类型、NULL、排序规则及错误行为",
+        "事务、会话设置、调用方对象与运行性能"
+      ],
+      "Errors": [],
+      "Equivalence": "Unproven",
+      "IsValid": true,
+      "CanApply": false
+    },
+    "Warnings": [],
+    "PreviewSql": "SELECT * FROM Customers WHERE Age + 10 > 50;\r\n",
+    "Proposals": [
+      {
+        "Id": "F0583D5B7ACA80FB1E7A9F8A8FDFB9FF8DD646C6BFCE7988DED8CAA44D949AAE",
+        "SourceHash": "741998C9A69203E733761CBC0CB057A883BF28C67A68C95C2E854C82B8F8F25D",
+        "BaseSqlHash": "741998C9A69203E733761CBC0CB057A883BF28C67A68C95C2E854C82B8F8F25D",
+        "CandidateHash": "4BBD59C59997E9CD3A32AA34FE5D24D1B6C49D325E0174959869B4E1E0FF2657",
+        "RuleId": "REF_RULE_104_CONST_FOLD",
+        "RuleVersion": "2.0.0.0",
+        "Description": "Folded constant arithmetic on column Age",
+        "IsSelected": false,
+        "DependsOn": [],
+        "Preconditions": [
+          "确认列类型、NULL、排序规则、重复行与聚合边界。",
+          "在隔离数据库验证结果、错误、事务和对象副作用。"
+        ],
+        "Risks": [
+          "ScriptDom 解析成功仅代表语法有效。",
+          "可能改变结果、溢出/错误行为、事务或性能；等价性尚未证明。"
+        ],
+        "Evidence": [
+          "规则在所示输入 AST 上识别到匹配结构；不证明结果等价。",
+          "源 SQL SHA-256 (UTF-8 text): 741998C9A69203E733761CBC0CB057A883BF28C67A68C95C2E854C82B8F8F25D"
+        ],
+        "Warnings": [],
+        "Validation": {
+          "SyntaxValid": true,
+          "CheckedProperties": [
+            "ScriptDom TSql160 语法解析",
+            "临时对象创建/删除、表变量声明与批次边界一致性检查"
+          ],
+          "UnprovenProperties": [
+            "结果集及重复行等价性",
+            "类型、NULL、排序规则及错误行为",
+            "事务、会话设置、调用方对象与运行性能"
+          ],
+          "Errors": [],
+          "Equivalence": "Unproven",
+          "IsValid": true,
+          "CanApply": false
+        },
+        "Diff": {
+          "StartOffset": 8,
+          "OriginalText": " FROM Customers WHERE Age + 10 > 50;",
+          "ReplacementText": "\r\nFROM   Customers\r\nWHERE  Age > 40;\r\n"
+        }
+      }
+    ]
+  },
+  "TimeElapsedMs": 131.108,
+  "OriginalSqlLength": 46,
+  "RefactoredSqlLength": 48,
+  "PassesCount": 2,
+  "Changes": [
+    {
+      "RuleId": "REF_RULE_104_CONST_FOLD",
+      "Description": "Folded constant arithmetic on column Age",
+      "Timestamp": "2026-09-09T07:59:47.4158433Z"
+    }
+  ],
+  "Failures": [],
+  "Warnings": [
+    "已生成可审核提案，尚未应用；语义等价性未证明。选择只改变审核预览，不写回源文件。"
+  ],
+  "Errors": [],
+  "SafetySkips": [],
+  "Diagnostic": null,
+  "Diagnostics": null,
+  "ParseErrors": null,
+  "OriginalSql": "SELECT * FROM Customers WHERE Age + 10 > 50;\r\n",
+  "RefactoredSql": "SELECT *\r\nFROM   Customers\r\nWHERE  Age > 40;\r\n\r\n"
+}

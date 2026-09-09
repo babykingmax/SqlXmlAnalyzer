@@ -1,0 +1,312 @@
+[
+  {
+    "Configuration": "Debug",
+    "ExitCode": 0,
+    "HasFailures": false,
+    "CandidateCount": 4,
+    "StdoutJsonValid": true,
+    "StdoutSha256": "1FD047FF92A1C98BD1746AB73CC876BC26B555FBD5539260FFBE08723268F9DB",
+    "LogPolicyPassed": true,
+    "Candidates": [
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S1",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "SCALAR_TEXT_SYNTAX",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S2",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "MISSING_PREDICATE_EVIDENCE",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S3",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "MISSING_PREDICATE_EVIDENCE",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S4",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "MISSING_PREDICATE_EVIDENCE",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      }
+    ]
+  },
+  {
+    "Configuration": "Release",
+    "ExitCode": 0,
+    "HasFailures": false,
+    "CandidateCount": 4,
+    "StdoutJsonValid": true,
+    "StdoutSha256": "06D8A4F751BC7BE2C1499F0529890CF5904092625733F2FAD71ABB97985563D5",
+    "LogPolicyPassed": true,
+    "Candidates": [
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S1",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "SCALAR_TEXT_SYNTAX",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S2",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "MISSING_PREDICATE_EVIDENCE",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S3",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "MISSING_PREDICATE_EVIDENCE",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      },
+      {
+        "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+        "RuleVersion": "2.1.0",
+        "Scope": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C/B1/S4",
+        "Evidence": [
+          {
+            "Name": "ScoreModel",
+            "Value": "index-evidence-score/2.0.0",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreBreakdown",
+            "Value": "等值 0 + 范围 0 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 40/100（限制到 0–100）",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreWeights",
+            "Value": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreInputScope",
+            "Value": "候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+            "Source": "IndexScoringCalculator"
+          },
+          {
+            "Name": "ScoreEvidenceSource",
+            "Value": "MISSING_PREDICATE_EVIDENCE",
+            "Source": "IndexScoringCalculator"
+          }
+        ],
+        "Limitations": [
+          "既有索引目录与列类型未核验，不判断已存在或被覆盖；建议不保证实际收益。",
+          "工具假设，非 SQL Server 成本或收益预测；未知覆盖不给分，标识符不推断排序规则；不保证 Seek 或消除 Lookup/Sort。"
+        ]
+      }
+    ]
+  }
+]

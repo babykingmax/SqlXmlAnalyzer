@@ -101,7 +101,7 @@ namespace SqlXmlAnalyzer.Services
                 _drawEdge(edge);
             }
 
-            AddGraphTip(placement.TipPosition);
+            AddGraphTip(placement.TipPosition, graph.CycleAnalysis.Summary);
         }
 
         private void ClearGraphState()
@@ -111,6 +111,7 @@ namespace SqlXmlAnalyzer.Services
             _graphState.NodeElements.Clear();
             _graphState.EdgesForDrawing.Clear();
             _graphState.ArrowCache.Clear();
+            _graphState.StepBadges.Clear();
             _graphState.ResourceGroupDetails.Clear();
         }
 
@@ -143,11 +144,11 @@ namespace SqlXmlAnalyzer.Services
             };
         }
 
-        private void AddGraphTip(Point tipPosition)
+        private void AddGraphTip(Point tipPosition, string cycleSummary)
         {
             var tip = new TextBlock
             {
-                Text = "Full graph mode: all parallel threads and lock resources are shown.",
+                Text = "全部线程与资源。" + cycleSummary,
                 FontSize = 10,
                 FontWeight = FontWeights.SemiBold,
                 Foreground = Brushes.SlateGray,

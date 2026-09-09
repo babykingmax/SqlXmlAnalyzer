@@ -1,6 +1,7 @@
 <UserControl x:Class="SqlXmlAnalyzer.Views.PlanComparisonWorkspaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:evidence="clr-namespace:SqlXmlAnalyzer.Core.Services;assembly=SqlXmlAnalyzer.Core">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -46,7 +47,7 @@
                                         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12" Foreground="#37474F"/>
                                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2">
                                             <TextBlock Text="Cost: " Foreground="#78909C" FontSize="11"/>
-                                            <TextBlock Text="{Binding TotalCost, StringFormat={}{0:F4}}" FontWeight="Bold" Foreground="#0078D7" FontSize="11" Margin="0,0,12,0"/>
+                                            <TextBlock Text="{Binding TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontWeight="Bold" Foreground="#0078D7" FontSize="11" Margin="0,0,12,0"/>
                                             <TextBlock Text="Ops: " Foreground="#78909C" FontSize="11"/>
                                             <TextBlock Text="{Binding OperatorCount}" Foreground="#37474F" FontSize="11" Margin="0,0,12,0"/>
                                             <TextBlock Text="Idx: " Foreground="#78909C" FontSize="11"/>
@@ -63,7 +64,7 @@
                                         <Setter.Value>
                                             <ContextMenu>
                                                 <MenuItem Header="设为 [计划 A] (基准)" Command="{Binding PlacementTarget.Tag.SetAsPlanACommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
-                                                <MenuItem Header="设为 [计划 B] (优化后)" Command="{Binding PlacementTarget.Tag.SetAsPlanBCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
+                                                <MenuItem Header="设为 [计划 B] (待比较)" Command="{Binding PlacementTarget.Tag.SetAsPlanBCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
                                                 <Separator/>
                                                 <MenuItem Header="删除快照" Command="{Binding PlacementTarget.Tag.RemoveSnapshotCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}"/>
                                             </ContextMenu>
@@ -129,7 +130,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
                                                 <TextBlock Text="总估算成本" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanA.TotalCost, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
+                                                <TextBlock Text="{Binding PlanA.TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1">
                                                 <TextBlock Text="算子数量" FontSize="10" Foreground="#78909C"/>
@@ -146,16 +147,18 @@
                                 <!-- 差异分析中心指示卡 -->
                                 <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="8" Margin="8,4" VerticalAlignment="Center">
                                     <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="性能变动幅度" FontSize="10" Foreground="#78909C" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{Binding CostDeltaText}" FontSize="16" FontWeight="Bold" Foreground="{Binding CostDeltaColor}" HorizontalAlignment="Center" Margin="0,4"/>
+                                        <TextBlock Text="估算成本变化" FontSize="10" Foreground="#78909C" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CostDeltaText}" FontSize="13" FontWeight="Bold" Foreground="{Binding CostDeltaColor}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4"/>
                                         <Button Content=" 🔁 交换 A/B " Click="SwapPlanAB_Click" FontSize="10" Padding="8,2" Height="22" Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="ComparisonEvidenceNotice" Text="{x:Static evidence:AnalysisDisplayText.ComparisonNotice}"
+                                                   Foreground="#795548" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0"/>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 计划 B 卡片 (优化后) -->
                                 <Border Grid.Column="2" Background="#F5F7FA" BorderBrush="#2E7D32" BorderThickness="2,1,1,1" CornerRadius="4" Padding="12" Margin="4">
                                     <StackPanel>
-                                        <TextBlock Text="[计划 B] (优化后)" FontSize="11" Foreground="#2E7D32" FontWeight="SemiBold"/>
+                                        <TextBlock Text="[计划 B] (待比较)" FontSize="11" Foreground="#2E7D32" FontWeight="SemiBold"/>
                                         <TextBlock Text="{Binding PlanB.Title}" FontSize="13" FontWeight="Bold" Margin="0,4" TextTrimming="CharacterEllipsis"/>
                                         <Grid Margin="0,4,0,0">
                                             <Grid.ColumnDefinitions>
@@ -165,7 +168,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
                                                 <TextBlock Text="总估算成本" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanB.TotalCost, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
+                                                <TextBlock Text="{Binding PlanB.TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1">
                                                 <TextBlock Text="算子数量" FontSize="10" Foreground="#78909C"/>
@@ -180,8 +183,20 @@
                                 </Border>
                             </Grid>
 
+                            <StackPanel Grid.Row="1" Margin="4,0,4,8">
+                                <TextBlock x:Name="ComparisonMatchSummary" Text="{Binding ComparisonSummary}" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignBody}" Margin="0,0,0,4"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,4,0"><TextBlock Text="人工选择 A 的语句" Foreground="{DynamicResource MaterialDesignBody}"/><ComboBox x:Name="ComparisonScopeA" ItemsSource="{Binding ComparisonScopesA}" SelectedItem="{Binding ManualScopeA}" DisplayMemberPath="Label" ToolTip="人工选择计划 A 的语句/QueryPlan" MaxDropDownHeight="220"/></StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="0,0,4,0"><TextBlock Text="人工选择 B 的语句" Foreground="{DynamicResource MaterialDesignBody}"/><ComboBox x:Name="ComparisonScopeB" ItemsSource="{Binding ComparisonScopesB}" SelectedItem="{Binding ManualScopeB}" DisplayMemberPath="Label" ToolTip="人工选择计划 B 的语句/QueryPlan" MaxDropDownHeight="220"/></StackPanel>
+                                    <Button Grid.Column="2" Content="比较所选" Command="{Binding ApplyComparisonSelectionCommand}" Margin="0,0,4,0" ToolTip="人工配对不覆盖采集条件检查"/>
+                                    <Button Grid.Column="3" Content="全部语句" Command="{Binding ResetComparisonSelectionCommand}" Style="{StaticResource SecondaryButtonStyle}"/>
+                                </Grid>
+                                <Expander Header="匹配依据与可比性" Margin="0,4,0,0">
+                                    <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto"><TextBlock x:Name="ComparisonConditionsText" Text="{Binding ComparisonConditions}" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignBody}"/></ScrollViewer>
+                                </Expander>
                             <!-- 查询语句对比 -->
-                            <Expander Grid.Row="1" Header="查询语句对比 (SQL Statements)" ExpandDirection="Down" IsExpanded="False" Margin="4,0,4,8">
+                            <Expander Header="查询语句对比 (SQL Statements)" ExpandDirection="Down" IsExpanded="False" Margin="0,4,0,0">
 
     <Grid>
                                     <Grid.ColumnDefinitions>
@@ -194,6 +209,7 @@
                                     <TextBox Grid.Column="2" Height="50" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding PlanB.StatementText}" FontFamily="Consolas" FontSize="10" Background="{DynamicResource MaterialDesignPaper}" VerticalScrollBarVisibility="Auto"/>
                                 </Grid>
                             </Expander>
+                            </StackPanel>
 
                             <!-- 树状差异并排 -->
                             <Grid Grid.Row="2" Margin="4">

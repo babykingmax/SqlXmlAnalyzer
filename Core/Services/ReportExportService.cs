@@ -17,6 +17,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
         public static void ExportToPdf(string filePath, string title, string content, string? imagePath = null)
         {
+            content = Privacy.OutputPrivacy.MarkRaw(content);
             QuestPDF.Fluent.Document.Create(container =>
             {
                 container.Page(page =>
@@ -58,6 +59,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
         public static void ExportToWord(string filePath, string title, string content, string? imagePath = null)
         {
+            content = Privacy.OutputPrivacy.MarkRaw(content);
             using (var document = DocX.Create(filePath))
             {
                 // Title

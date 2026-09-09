@@ -1,0 +1,162 @@
+{
+  "Implementation": "IMP-10",
+  "VerifiedAt": "2026-09-08T23:32:09.0648293+08:00",
+  "BaseHead": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "Sdk": "10.0.400",
+  "Builds": [
+    {
+      "Errors": 0,
+      "Configuration": "Debug",
+      "Warnings": 0,
+      "Log": "build-debug.log"
+    },
+    {
+      "Errors": 0,
+      "Configuration": "Release",
+      "Warnings": 0,
+      "Log": "build-release.log"
+    }
+  ],
+  "Tests": [
+    {
+      "Configuration": "Debug",
+      "Total": 1290,
+      "Passed": 1290,
+      "Failed": 0,
+      "Skipped": 0,
+      "Trx": "debug-verified.trx",
+      "NativeDumpAndModeLogs": "Passed"
+    },
+    {
+      "Configuration": "Release",
+      "Total": 1290,
+      "Passed": 1290,
+      "Failed": 0,
+      "Skipped": 0,
+      "Trx": "release-verified.trx",
+      "NativeDumpAndModeLogs": "Passed"
+    }
+  ],
+  "AddedTestCases": 43,
+  "PreviousFullSuiteCount": 1247,
+  "RuleParity": {
+    "Evidence": "rule-output-differences.json",
+    "Baseline": "rule-baseline-complete.json",
+    "Current": "rule-current-complete.json",
+    "AllLegacyFieldsUnchanged": true,
+    "Fixtures": 8
+  },
+  "Cli": {
+    "Read": "cli-read.json",
+    "ExitCodes": "cli-exit.json",
+    "ReadExit": 0,
+    "Scan": "cli-scan.json",
+    "ScanExit": 0
+  },
+  "Ui": {
+    "Image": "operator-identities.png",
+    "Scope": "Release production WPF node DataTemplate on STA; not full-window end-to-end interaction",
+    "Process": "ui-process.json",
+    "WindowShown": false,
+    "Observations": "ui-observed.json"
+  },
+  "NativeDump": "Actual Windows minidump and sidecar validated in both configurations; isolated temporary artifacts removed by tests.",
+  "Limitations": [
+    "Synthetic minimal-recognition fixture, not a production capture or full-XSD conformance claim.",
+    "No SQL Server or SSMS execution, no production performance benchmark.",
+    "Full metrics/rules/missing-index workflow/semantic comparison/UI selection/persistence remain in IMP-11/12/15/17/20/21.",
+    "Legacy comparison aligns children by position; multi-query GUI comparison requires selection not yet exposed by a full selector.",
+    "Existing WPF intermediate resources remain untouched; solution builds use obj/imp10-final-identity/<Configuration>."
+  ],
+  "SourceHashes": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/PlanDocument.cs",
+      "Sha256": "ADC5CBD44A9C2A6C347EBA8783EFD00E00843B452214A0E55BE34E171215830E"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanDocumentBuilder.cs",
+      "Sha256": "1FAA3494BAA30DF60EE2CF5882C8A1410F3B6D1E69BD5D86A55CBD18428FE996"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanIdentityAdapter.cs",
+      "Sha256": "C15A8D80CE4625FF8F40AB823E8593D6D9E6A4E602DED0E2BA1165E8F0A838A2"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "Sha256": "4B17C9914A34F0B01934024F3FCB5DC9B9894B4B8B0D9D6390B8EEB67C31998A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "Sha256": "EDBB5538C5A99864F1203B17762ADD7007D7A2ABAA8B9872C36CDD29E260E279"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.cs",
+      "Sha256": "9FD091FF5CEAC66EF0CB8ABCB7BAF525843D568920CFC621F3FBB3D672ECC0E5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+      "Sha256": "AA93A769BC97B27CE95E20D84FFD10A90E3120ABD7AE7093E17D93B34E7762AA"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalysisEngine.cs",
+      "Sha256": "5B4F39B58B8786C5E872C396F7320ED67B20CA099F248035732C15B1E318044B"
+    },
+    {
+      "Path": "Core/Services/PlanGraphNodeBuilderService.cs",
+      "Sha256": "89EB37B015D01C6525BB8EDF50BFBFD3ACCD760D0CA9F9D5367115D3B2640561"
+    },
+    {
+      "Path": "Core/Services/PlanGraphMissingIndexAssociationService.cs",
+      "Sha256": "EFECEF86F216A86D8680F19F4C21D4CF323BB0E10EF67415D7E447E4C99788AF"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonController.cs",
+      "Sha256": "6F801572E11A55C490EAD05F49D792A3775AE20B94EEA6D5F44117EB60809EA0"
+    },
+    {
+      "Path": "Core/Services/PlanAnalysisService.cs",
+      "Sha256": "D6CE2B8D8646576267660FB7B5DD572C76761C58315D479CF3D3AA4396201088"
+    },
+    {
+      "Path": "Core/Services/TuningSessionService.cs",
+      "Sha256": "B1E0ACAE8CD377C445D2637C2C8B76EB70117AF9D6D6844C1D2B23F07241CF4E"
+    },
+    {
+      "Path": "Services/PlanGraphLoadUiActionService.cs",
+      "Sha256": "4140B233811DD6FD1CB5C28161C7EA7107CD2346AF0D056E4F4E1243468ACCF9"
+    },
+    {
+      "Path": "Services/PlanGraphConnectionUiActionService.cs",
+      "Sha256": "D9464B9B1B80190721D40D0126791509137FDB396A61C0A230B674A69594B8A1"
+    },
+    {
+      "Path": "ExecutionPlanVisualizer.cs",
+      "Sha256": "62908437D2E2D550E97CE79AF4D7D994D10328FE3DA7A2EF54A58C11D03D9D49"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "Sha256": "5246C2522A8E07C4F79FB68D4DA9F367134AFCFE99B653E580E2D44E224477A3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityModelTests.cs",
+      "Sha256": "AD897032778121435127F247CCA506A83CEB025154225919D84FA04F93B92D83"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityFlowTests.cs",
+      "Sha256": "2D484E0FC3B2E0DAB29B88D4514D842EC2E89E97ED9A8FFD694E90419AF6F229"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp10_scoped_identities.sqlplan",
+      "Sha256": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861"
+    },
+    {
+      "Path": "DOCS/IMP-10语句算子与对象身份.md",
+      "Sha256": "7E937CF365A842FEDCF27E418AF8C3ACA3387DCCF5D2766362B1D138C75AC3A7"
+    }
+  ],
+  "DocumentationLinks": {
+    "Checked": 103,
+    "Broken": 0
+  },
+  "FinalIdentityRegression": "Re-recognition and AnalyzeDocument preserve the same model/Envelope for unchanged XML, with and without captured source bytes."
+}

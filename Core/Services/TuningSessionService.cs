@@ -11,7 +11,10 @@ namespace SqlXmlAnalyzer.Core.Services
     public sealed record TuningSessionLoadResult(
         IReadOnlyList<PlanSnapshot> Snapshots,
         PlanSnapshot? PlanA,
-        PlanSnapshot? PlanB);
+        PlanSnapshot? PlanB)
+    {
+        public PlanComparisonSelection? ComparisonSelection { get; init; }
+    }
 
     public sealed class TuningSessionService
     {
@@ -36,7 +39,7 @@ namespace SqlXmlAnalyzer.Core.Services
             XElement? rootRelOp = currentPlanDocument
                 .Descendants(showplanNamespace + "RelOp")
                 .FirstOrDefault();
-            double cost = ParseDouble(rootRelOp?.Attribute("EstimatedTotalSubtreeCost")?.Value);
+            double? cost = ParseDouble(rootRelOp?.Attribute("EstimatedTotalSubtreeCost")?.Value);
             int operatorCount = currentPlanDocument
                 .Descendants(showplanNamespace + "RelOp")
                 .Count();
@@ -55,13 +58,22 @@ namespace SqlXmlAnalyzer.Core.Services
                     ? "Untitled"
                     : currentPlanFilePath);
 
+            var identities = PlanIdentityAdapter.GetDocument(currentPlanDocument);
+            var snapshotDocument = new XDocument(currentPlanDocument);
+            if (identities != null) PlanIdentityAdapter.SetEnvelope(snapshotDocument, identities.Envelope);
+            if (identities?.Statements.Count > 1)
+                statementText = string.Join(Environment.NewLine, identities.Statements.Select(statement =>
+                    $"Batch {statement.Key.Batch.BatchOrdinal} / Statement {statement.Key.StatementOrdinal}: {statement.Text ?? "N/A"}"));
+
             return new PlanSnapshot
             {
                 Title = $"Plan version #{versionNumber} - {fileName}",
                 FilePath = currentPlanFilePath ?? string.Empty,
                 CaptureTime = captureTime ?? DateTime.Now,
-                Document = new XDocument(currentPlanDocument),
-                TotalCost = cost,
+                Document = snapshotDocument,
+                TotalCost = CapturedTotal(identities) ?? (identities?.QueryPlans.Count > 0 ? null : cost),
+                OriginalSourceHash = identities?.Envelope.SourceHash,
+                OriginalSourceXmlHash = PlanSnapshot.ComputeXmlHash(snapshotDocument),
                 OperatorCount = operatorCount,
                 MissingIndexCount = missingIndexCount,
                 StatementText = statementText
@@ -72,7 +84,8 @@ namespace SqlXmlAnalyzer.Core.Services
             string filePath,
             IEnumerable<PlanSnapshot> snapshots,
             PlanSnapshot? planA,
-            PlanSnapshot? planB)
+            PlanSnapshot? planB,
+            PlanComparisonSelection? comparisonSelection = null)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -86,7 +99,13 @@ namespace SqlXmlAnalyzer.Core.Services
                     new XAttribute("Title", snapshot.Title),
                     new XAttribute("FilePath", snapshot.FilePath),
                     new XAttribute("CaptureTime", snapshot.CaptureTime.ToString("o", CultureInfo.InvariantCulture)),
-                    new XAttribute("TotalCost", snapshot.TotalCost.ToString(CultureInfo.InvariantCulture)),
+                    snapshot.TotalCost.HasValue ? new XAttribute("TotalCost", snapshot.TotalCost.Value.ToString(CultureInfo.InvariantCulture)) : null,
+                    (snapshot.CapturedOriginalSourceHash ?? PlanSnapshot.NormalizeHash(snapshot.OriginalSourceHash)) is not { } sourceHash
+                        ? null : new XAttribute("OriginalSourceHash", sourceHash),
+                    new XAttribute("OriginalSourceHashBound", snapshot.CapturedOriginalSourceHash != null),
+                    new XAttribute("XmlContentHash", snapshot.XmlContentHash),
+                    new XAttribute("XmlContentHashFormat", "xml-representation/1"),
+                    comparisonSelection == null ? WriteSelection(SessionNamespace + "ComparisonSelection", snapshot.SelectedQueryPlan, snapshot) : null,
                     new XAttribute("OperatorCount", snapshot.OperatorCount),
                     new XAttribute("MissingIndexCount", snapshot.MissingIndexCount),
                     new XElement(SessionNamespace + "StatementText", snapshot.StatementText),
@@ -98,7 +117,8 @@ namespace SqlXmlAnalyzer.Core.Services
 
             var root = new XElement(
                 SessionNamespace + "TuningSession",
-                new XAttribute("Version", "2.0"),
+                new XAttribute("Version", "2.1"),
+                new XAttribute("Privacy", Privacy.OutputPrivacy.RawNotice),
                 new XAttribute("Created", DateTime.Now.ToString("o", CultureInfo.InvariantCulture)),
                 new XElement(SessionNamespace + "Snapshots", snapshotElements));
 
@@ -111,9 +131,14 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 root.Add(new XAttribute("PlanBId", planB.Id));
             }
+            if (comparisonSelection != null)
+                root.Add(new XElement(SessionNamespace + "ComparisonSelection",
+                    WriteSelection(SessionNamespace + "A", comparisonSelection.A, planA),
+                    WriteSelection(SessionNamespace + "B", comparisonSelection.B, planB)));
 
             var document = new XDocument(root);
-            document.Save(filePath);
+            // Adding indentation would change the serialized PlanDoc whose hash is stored above.
+            document.Save(filePath, SaveOptions.DisableFormatting);
         }
 
         public TuningSessionLoadResult Load(string filePath)
@@ -152,10 +177,19 @@ namespace SqlXmlAnalyzer.Core.Services
             snapshotsBySavedId.TryGetValue(planAId, out PlanSnapshot? planA);
             snapshotsBySavedId.TryGetValue(planBId, out PlanSnapshot? planB);
 
+            var selections = document.Root.Elements(SessionNamespace + "ComparisonSelection").ToArray();
+            if (selections.Length > 1 || selections.Any(e => e.Elements().Any(c => c.Name != SessionNamespace + "A" && c.Name != SessionNamespace + "B")
+                || e.Elements(SessionNamespace + "A").Count() > 1 || e.Elements(SessionNamespace + "B").Count() > 1))
+                throw new InvalidDataException("PLAN_SELECTION_NOT_FOUND: 会话包含重复或未知的比较侧。");
             return new TuningSessionLoadResult(
                 snapshots,
                 planA,
-                planB);
+                planB)
+            {
+                ComparisonSelection = selections.Length == 0 ? null : new(
+                    ReadSelection(selections[0].Element(SessionNamespace + "A"), planA?.Document),
+                    ReadSelection(selections[0].Element(SessionNamespace + "B"), planB?.Document))
+            };
         }
 
         private static PlanSnapshot CreateSnapshotFromElement(XElement snapshotElement)
@@ -167,7 +201,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.RoundtripKind,
                 out DateTime captureTime);
-            double totalCost = ParseDouble(snapshotElement.Attribute("TotalCost")?.Value);
+
             int.TryParse(snapshotElement.Attribute("OperatorCount")?.Value, out int operatorCount);
             int.TryParse(snapshotElement.Attribute("MissingIndexCount")?.Value, out int missingIndexCount);
             string statementText = snapshotElement.Element(SessionNamespace + "StatementText")?.Value ?? string.Empty;
@@ -180,13 +214,39 @@ namespace SqlXmlAnalyzer.Core.Services
                 ? new XDocument(new XElement(planDocumentElement))
                 : new XDocument();
 
+            string actualXmlHash = PlanSnapshot.ComputeXmlHash(planDocument);
+            string? savedXmlHash = (string?)snapshotElement.Attribute("XmlContentHash");
+            string? hashFormat = (string?)snapshotElement.Attribute("XmlContentHashFormat");
+            if (hashFormat != null && hashFormat != "xml-representation/1")
+                throw new InvalidDataException("SESSION_HASH_FORMAT_UNSUPPORTED: 不支持的会话 XML 指纹格式。");
+            bool hashBound = savedXmlHash != null && PlanSnapshot.NormalizeHash(savedXmlHash) == actualXmlHash;
+            if (savedXmlHash != null && !hashBound)
+            {
+                // IMP-17 v2.0 wrote indented session XML after hashing a compact PlanDoc.
+                // Accept that historical representation only when its compact hash actually matches.
+                var compact = new XDocument(planDocument);
+                foreach (var text in compact.DescendantNodes().OfType<XText>().Where(t => string.IsNullOrWhiteSpace(t.Value)).ToArray()) text.Remove();
+                if (hashFormat != null)
+                    throw new InvalidDataException("SESSION_CONTENT_HASH_MISMATCH: 会话计划内容与保存的 XML 指纹不一致。");
+                hashBound = PlanSnapshot.NormalizeHash(savedXmlHash) == PlanSnapshot.ComputeXmlHash(compact);
+                // Old sessions discarded document-level whitespace/comments when storing Root.
+                // Keep their byte hash as an unverified historical record if no representation matches.
+                if (!hashBound) Logger.Warning("旧会话 XML 指纹关联无法核验；原始文件指纹仅作为历史记录。");
+            }
+            string? originalSourceHash = (string?)snapshotElement.Attribute("OriginalSourceHash");
+            if (originalSourceHash != null && PlanSnapshot.NormalizeHash(originalSourceHash) == null)
+                throw new InvalidDataException("SESSION_SOURCE_HASH_INVALID: 会话原始文件指纹格式无效。");
+
             return new PlanSnapshot
             {
                 Title = title,
                 FilePath = originalPath,
                 CaptureTime = captureTime == default ? DateTime.Now : captureTime,
                 Document = planDocument,
-                TotalCost = totalCost,
+                TotalCost = CapturedTotal(PlanIdentityAdapter.GetDocument(planDocument)),
+                OriginalSourceHash = (string?)snapshotElement.Attribute("OriginalSourceHash"),
+                OriginalSourceXmlHash = hashBound && (string?)snapshotElement.Attribute("OriginalSourceHashBound") != "false" ? actualXmlHash : null,
+                SelectedQueryPlan = ReadSelection(snapshotElement.Element(SessionNamespace + "ComparisonSelection"), planDocument),
                 OperatorCount = operatorCount,
                 MissingIndexCount = missingIndexCount,
                 StatementText = statementText
@@ -207,15 +267,48 @@ namespace SqlXmlAnalyzer.Core.Services
                 : FallbackShowplanNamespace;
         }
 
-        private static double ParseDouble(string? value)
+        private static double? CapturedTotal(Models.PlanDocument? model)
+        {
+            var statements = model?.Statements.Where(s => s.Parent == null && s.QueryPlans.Count > 0).ToArray();
+            if (statements == null || statements.Length == 0 || statements.Any(s => s.QueryPlans.Count != 1)) return null;
+            double total = 0;
+            foreach (var statement in statements)
+            {
+                var roots = statement.QueryPlans[0].Operators.Where(o => o.Parent == null).ToArray();
+                if (roots.Length != 1 || roots[0].Facts?.SubtreeCost.Value is not { } value || !double.IsFinite(total += value)) return null;
+            }
+            return total;
+        }
+
+        private static XElement? WriteSelection(XName name, Models.PlanQueryPlanKey? selection, PlanSnapshot? snapshot)
+        {
+            if (selection == null) return null;
+            if (snapshot?.IdentityModel?.QueryPlans.Any(q => q.Key == selection) != true)
+                throw new InvalidDataException("PLAN_SELECTION_NOT_FOUND: 保存的比较选择不属于当前快照。");
+            return new XElement(name, new XAttribute("Batch", selection.Statement.Batch.BatchOrdinal),
+                new XAttribute("Statement", selection.Statement.StatementOrdinal), new XAttribute("QueryPlan", selection.QueryPlanOrdinal));
+        }
+
+        private static Models.PlanQueryPlanKey? ReadSelection(XElement? element, XDocument? document)
+        {
+            if (element == null) return null;
+            if (!int.TryParse((string?)element.Attribute("Batch"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int batch) || batch <= 0
+                || !int.TryParse((string?)element.Attribute("Statement"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int statement) || statement <= 0
+                || !int.TryParse((string?)element.Attribute("QueryPlan"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int query) || query <= 0)
+                throw new InvalidDataException("PLAN_SELECTION_NOT_FOUND: 会话比较选择无效。");
+            return PlanIdentityAdapter.GetDocument(document)?.QueryPlans.SingleOrDefault(q => q.Key.Statement.Batch.BatchOrdinal == batch
+                && q.Key.Statement.StatementOrdinal == statement && q.Key.QueryPlanOrdinal == query)?.Key
+                ?? throw new InvalidDataException("PLAN_SELECTION_NOT_FOUND: 会话比较选择不存在。");
+        }
+
+        private static double? ParseDouble(string? value)
         {
             return double.TryParse(
                 value,
                 NumberStyles.Any,
                 CultureInfo.InvariantCulture,
                 out double parsed)
-                ? parsed
-                : 0;
+                && double.IsFinite(parsed) && parsed >= 0 ? parsed : null;
         }
     }
 }

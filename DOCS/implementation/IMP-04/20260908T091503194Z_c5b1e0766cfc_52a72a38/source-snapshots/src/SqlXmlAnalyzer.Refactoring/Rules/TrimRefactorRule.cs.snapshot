@@ -1,0 +1,45 @@
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+
+namespace SqlXmlAnalyzer.Refactoring.Rules;
+
+public class TrimRefactorRule : ISqlRefactorRule
+{
+    public string RuleId => "REF_RULE_103_TRIM";
+    public string Name => "Trim Function Safety Check";
+    public string Description => "Preserves trim functions until equivalence has been established for the data and comparison semantics.";
+    public int Priority => 30;
+
+    public bool CanApply(TSqlFragment fragment, RefactorContext context)
+    {
+        var finder = new TrimFinder();
+        fragment.Accept(finder);
+        return finder.Found;
+    }
+
+    public RuleResult Apply(TSqlFragment fragment, RefactorContext context)
+    {
+        // Explicit selection and direct invocation are not proof of semantic equivalence.
+        if (CanApply(fragment, context))
+            context.SkipUnsafeRewrite(RuleId, "UnprovenTrimEquivalence",
+                "保留 LTRIM/RTRIM/TRIM；移除函数可能改变包含前导空格等数据的比较结果。",
+                "列类型、排序规则、空格/字符集合、NULL、比较运算和实际数据域的等价性尚未证明。");
+        return new RuleResult(fragment, false, null);
+    }
+
+    private sealed class TrimFinder : TSqlFragmentVisitor
+    {
+        public bool Found { get; private set; }
+
+        public override void ExplicitVisit(FunctionCall node)
+        {
+            if (node.FunctionName?.Value is string name &&
+                (name.Equals("LTRIM", StringComparison.OrdinalIgnoreCase) ||
+                 name.Equals("RTRIM", StringComparison.OrdinalIgnoreCase) ||
+                 name.Equals("TRIM", StringComparison.OrdinalIgnoreCase)))
+                Found = true;
+            base.ExplicitVisit(node);
+        }
+    }
+}

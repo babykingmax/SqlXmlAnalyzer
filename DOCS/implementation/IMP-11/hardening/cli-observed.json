@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "ReadExit": 0,
+  "ScanExit": 1,
+  "InputStatus": "Success",
+  "ScanExitReason": "触发 2 个严重级别 (Critical) 的诊断规则",
+  "CriticalRules": [
+    "RULE_004_ESTIMATE_MISMATCH",
+    "RULE_030_CARDINALITY_ERROR"
+  ],
+  "RawThread": "+0",
+  "ThreadId": 0,
+  "OutputRows": 20000,
+  "LogicalExecutions": 1,
+  "RowsPerExecution": 20000,
+  "ReadAndScanAgree": true,
+  "CoreAssemblySha256": "89AA375D429BD1EC1327946570B2272A3686EE2D97371144AFE4911AD6D1B0A3"
+}

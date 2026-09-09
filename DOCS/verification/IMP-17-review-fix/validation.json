@@ -1,0 +1,738 @@
+{
+  "Step": "IMP-17 review fix",
+  "RecordedAt": "2026-09-09T15:15:36.8709780+08:00",
+  "ComparisonModel": "plan-comparison/1.1.0",
+  "SessionVersion": "2.1",
+  "XmlHashFormat": "xml-representation/1",
+  "FixedFindings": [
+    "P1: Seek range identity omitted columns/bounds",
+    "P2: shared snapshot overwrote A/B selection",
+    "P2: restored comparison lost original source hash"
+  ],
+  "BaselineTests": 1928,
+  "AddedTests": 29,
+  "AddedTestBreakdown": {
+    "SelectionIsolation": 6,
+    "PredicateIdentity": 17,
+    "SourceHash": 6
+  },
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Failed": 0,
+        "Passed": 1957,
+        "Skipped": 0
+      },
+      "BuildLog": {
+        "Path": "DOCS/verification/IMP-17-review-fix/build-final-debug.log",
+        "Length": 957,
+        "SHA256": "77F975B31116D3B79BC5710331A57ED5B37070924995CAAD88E682934F8ECA4F"
+      },
+      "TestLog": {
+        "Path": "DOCS/verification/IMP-17-review-fix/test-final-debug.log",
+        "Length": 323,
+        "SHA256": "F17263DEAC1E0CBFB8A6AF3BE98A355281F52EF38D52EBABC00008BC2E8D7DFF"
+      },
+      "WpfBuildAndRunLog": {
+        "Path": "DOCS/verification/IMP-17-review-fix/wpf-debug.log",
+        "Length": 1428,
+        "SHA256": "12FB1706D65B05522097D11FB4710A7FA1FA08DCA7E2C36587ECDF775FCCC6AA"
+      },
+      "Wpf": {
+        "Configuration": "Debug",
+        "CompletedAt": "2026-09-09T15:10:55.9662249+08:00",
+        "Passed": true,
+        "Checks": 8,
+        "DiagnosticsDirectory": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-3b38b0ad22cd46058a13cbbc3d369743",
+        "Records": [
+          {
+            "Case": "success",
+            "Passed": true,
+            "ExitCode": 0,
+            "ExpectedExitCode": 0,
+            "ProtectedFileUnchanged": false,
+            "Dump": null
+          },
+          {
+            "Case": "locked-screenshot",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "existing-screenshot",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "locked-result",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "unknown",
+            "Passed": true,
+            "ExitCode": 3,
+            "ExpectedExitCode": 3,
+            "ProtectedFileUnchanged": false,
+            "Dump": {
+              "SHA256": "F3F2937B662B05361B2BDF44A172F1F6B561EA1775B52734BD7C3E3633D355C5",
+              "Length": 509879,
+              "Path": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-3b38b0ad22cd46058a13cbbc3d369743\\unknown\\dumps\\20260909T071051056Z_58152_34039ae80b0a44429007c47ee1d2b46b\\process.dmp"
+            }
+          },
+          {
+            "Case": "dump-unavailable",
+            "Passed": true,
+            "ExitCode": 3,
+            "ExpectedExitCode": 3,
+            "ProtectedFileUnchanged": false,
+            "Dump": null
+          },
+          {
+            "Case": "locked-log",
+            "Passed": true,
+            "ExitCode": 0,
+            "ExpectedExitCode": 0,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "invalid-arguments",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": false,
+            "Dump": null
+          }
+        ]
+      },
+      "WpfBehavior": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "ManualSelectionAndReset": true,
+        "SameSnapshotSelection": true,
+        "ManualSessionRoundtrip": true,
+        "OriginalHashRestored": true,
+        "records": [
+          {
+            "Theme": "light",
+            "Summary": "语句/计划配对 3；A 未匹配 0；B 未匹配 0；待确认 1。按语句查看差值，未汇总不可比成本。",
+            "Statements": 3,
+            "Delta": 997,
+            "ScreenshotCreated": true,
+            "ColoredChannels": 209657,
+            "ScopeWidthA": 461,
+            "ScopeWidthB": 461
+          },
+          {
+            "Theme": "dark",
+            "Summary": "语句/计划配对 3；A 未匹配 0；B 未匹配 0；待确认 1。按语句查看差值，未汇总不可比成本。",
+            "Statements": 3,
+            "Delta": 997,
+            "ScreenshotCreated": true,
+            "ColoredChannels": 209936,
+            "ScopeWidthA": 461,
+            "ScopeWidthB": 461
+          }
+        ]
+      },
+      "WpfArtifacts": [
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/failure-handling.json",
+          "Length": 2093,
+          "SHA256": "44C8532FD72B3FAFA9993BBD4D7004C9C159B7D2C06CC0C1FD8CCBF1ECDD7E5F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/success/wpf-probe.json",
+          "Length": 901,
+          "SHA256": "FBC93F9DF9E7682DC783E9B2F8C3E278F9BDC5CA4E9AC58B009EF5899A5F1679"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/success/comparison-light.png",
+          "Length": 118077,
+          "SHA256": "8EB3B0FF7386448BD2CAA4BED0C89563B0DD1C3F4972D711287B0F2D65279E72"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/success/comparison-dark.png",
+          "Length": 118320,
+          "SHA256": "A96E96222776BE3022FFC75BFE457DE6F3AA6A05640078D0F315B8FA191D682C"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/success/stdout.log",
+          "Length": 135,
+          "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/success/stderr.log",
+          "Length": 7232,
+          "SHA256": "4D4357E50B644707829EED41D848E4314E922216E269413B819DBFA4BB79BF15"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/locked-screenshot/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/locked-screenshot/stderr.log",
+          "Length": 6581,
+          "SHA256": "1DAED290B8115F967F49EEE00CF4C82964898928B5F8EFDDDAF4469A67B66E75"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/existing-screenshot/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/existing-screenshot/stderr.log",
+          "Length": 6585,
+          "SHA256": "7DD7A9EAD6FD8BBCECA12B9B57ED3E2CCF1A1C78D9B15103A5029050C899EFF5"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/locked-result/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/locked-result/stderr.log",
+          "Length": 8868,
+          "SHA256": "09D467C35578A7517F3B2E84AF1327C850262EF4DC2BB72DD14244B6BB66838F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/unknown/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/unknown/stderr.log",
+          "Length": 1437,
+          "SHA256": "C97CDC23B051B542596FBED7651EBC34BB0644468CD24B844AE562FEB24663CB"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/dump-unavailable/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/dump-unavailable/stderr.log",
+          "Length": 1368,
+          "SHA256": "97DF2887764F308819E893995E74E599D4D0EE2291114FBA6186E0A773998131"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/locked-log/stdout.log",
+          "Length": 135,
+          "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/locked-log/stderr.log",
+          "Length": 7491,
+          "SHA256": "B0B775A4DB89F68D0C5CF44BD3782042362822B1EEA2A673F8108CDE8BC40DF8"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/invalid-arguments/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Debug-2dbe084c44994adca2eef7946b26336c/invalid-arguments/stderr.log",
+          "Length": 489,
+          "SHA256": "28F1B26A0E08CDEDD4FBBCE2C68AF6D39468C95700B826D6CC77F654081F88B3"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Failed": 0,
+        "Passed": 1957,
+        "Skipped": 0
+      },
+      "BuildLog": {
+        "Path": "DOCS/verification/IMP-17-review-fix/build-final-release.log",
+        "Length": 971,
+        "SHA256": "3A7CE3184156BC18B3A9F059C54E6355B762FB2F3570E5FF9493616F672D49BD"
+      },
+      "TestLog": {
+        "Path": "DOCS/verification/IMP-17-review-fix/test-final-release.log",
+        "Length": 325,
+        "SHA256": "8713071A8426F8B9A97719E25E19A15FBD10C646BAA532DA6EDC76D63A941298"
+      },
+      "WpfBuildAndRunLog": {
+        "Path": "DOCS/verification/IMP-17-review-fix/wpf-release.log",
+        "Length": 1457,
+        "SHA256": "5D9CA7C129917315F3AD5B1CB2BF4006B9CC3228E36C69783A4D063F414F4219"
+      },
+      "Wpf": {
+        "Configuration": "Release",
+        "CompletedAt": "2026-09-09T15:12:22.391962+08:00",
+        "Passed": true,
+        "Checks": 8,
+        "DiagnosticsDirectory": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-4dd37f4deac141c5a3d81988088de5f4",
+        "Records": [
+          {
+            "Case": "success",
+            "Passed": true,
+            "ExitCode": 0,
+            "ExpectedExitCode": 0,
+            "ProtectedFileUnchanged": false,
+            "Dump": null
+          },
+          {
+            "Case": "locked-screenshot",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "existing-screenshot",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "locked-result",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "unknown",
+            "Passed": true,
+            "ExitCode": 3,
+            "ExpectedExitCode": 3,
+            "ProtectedFileUnchanged": false,
+            "Dump": {
+              "Path": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-4dd37f4deac141c5a3d81988088de5f4\\unknown\\dumps\\20260909T071217667Z_39724_4ccd7dd911a14530b4b3b2ea1a8b36be\\process.dmp",
+              "Length": 508666,
+              "SHA256": "557E653BD4C3098066B56FA911E3A0565E074DD35E6232206A8953F8FBC5AD73"
+            }
+          },
+          {
+            "Case": "dump-unavailable",
+            "Passed": true,
+            "ExitCode": 3,
+            "ExpectedExitCode": 3,
+            "ProtectedFileUnchanged": false,
+            "Dump": null
+          },
+          {
+            "Case": "locked-log",
+            "Passed": true,
+            "ExitCode": 0,
+            "ExpectedExitCode": 0,
+            "ProtectedFileUnchanged": true,
+            "Dump": null
+          },
+          {
+            "Case": "invalid-arguments",
+            "Passed": true,
+            "ExitCode": 2,
+            "ExpectedExitCode": 2,
+            "ProtectedFileUnchanged": false,
+            "Dump": null
+          }
+        ]
+      },
+      "WpfBehavior": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "ManualSelectionAndReset": true,
+        "SameSnapshotSelection": true,
+        "ManualSessionRoundtrip": true,
+        "OriginalHashRestored": true,
+        "records": [
+          {
+            "Theme": "light",
+            "Summary": "语句/计划配对 3；A 未匹配 0；B 未匹配 0；待确认 1。按语句查看差值，未汇总不可比成本。",
+            "Statements": 3,
+            "Delta": 997,
+            "ScreenshotCreated": true,
+            "ColoredChannels": 209657,
+            "ScopeWidthA": 461,
+            "ScopeWidthB": 461
+          },
+          {
+            "Theme": "dark",
+            "Summary": "语句/计划配对 3；A 未匹配 0；B 未匹配 0；待确认 1。按语句查看差值，未汇总不可比成本。",
+            "Statements": 3,
+            "Delta": 997,
+            "ScreenshotCreated": true,
+            "ColoredChannels": 209936,
+            "ScopeWidthA": 461,
+            "ScopeWidthB": 461
+          }
+        ]
+      },
+      "WpfArtifacts": [
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/failure-handling.json",
+          "Length": 2095,
+          "SHA256": "706454B0BC1B4B20022F7AFD087C3E6D754E2B0A1BE644A362CF1FBC40C92D46"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/success/wpf-probe.json",
+          "Length": 901,
+          "SHA256": "FBC93F9DF9E7682DC783E9B2F8C3E278F9BDC5CA4E9AC58B009EF5899A5F1679"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/success/comparison-light.png",
+          "Length": 118077,
+          "SHA256": "8EB3B0FF7386448BD2CAA4BED0C89563B0DD1C3F4972D711287B0F2D65279E72"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/success/comparison-dark.png",
+          "Length": 118320,
+          "SHA256": "A96E96222776BE3022FFC75BFE457DE6F3AA6A05640078D0F315B8FA191D682C"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/success/stdout.log",
+          "Length": 135,
+          "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/success/stderr.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/locked-screenshot/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/locked-screenshot/stderr.log",
+          "Length": 1660,
+          "SHA256": "8875FF9FF25309D67592535E85E3580C8F100DE1BBE39BD951F8C4A49A80DF36"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/existing-screenshot/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/existing-screenshot/stderr.log",
+          "Length": 1664,
+          "SHA256": "C5D4DB90A2BB54E451BC2FBEBB76394FEFBC72473B26BF95955764028CEC3549"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/locked-result/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/locked-result/stderr.log",
+          "Length": 1640,
+          "SHA256": "ADDBA7A8764BA58073787B54408C0F16CD2C35C43FF24DF154F519CF359463E6"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/unknown/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/unknown/stderr.log",
+          "Length": 1368,
+          "SHA256": "C96E2ECF85EEA2B652A7758A57959051C66D9DFD43E1795A11D5569422D5D914"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/dump-unavailable/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/dump-unavailable/stderr.log",
+          "Length": 1299,
+          "SHA256": "F9F258A45BC60723A5778A0A0B98231902722974CEA57FD3CE930EFC21463E0C"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/locked-log/stdout.log",
+          "Length": 135,
+          "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/locked-log/stderr.log",
+          "Length": 259,
+          "SHA256": "90343EE5CDB4342C4BC6160A11D9F1D2C963297E8B91038FEA04D5E2209CAB41"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/invalid-arguments/stdout.log",
+          "Length": 0,
+          "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-17/wpf-Release-bcd54b06fc754fbb91a7d604a8ae2646/invalid-arguments/stderr.log",
+          "Length": 489,
+          "SHA256": "EB99936EB672326ECDE1CF3C8875713C3867214C78843C72483BCA7FA948EA5C"
+        }
+      ]
+    }
+  ],
+  "SourceFiles": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonEvidence.cs",
+      "Length": 18833,
+      "SHA256": "8DAA856301E156BFA71E6BA3FCA2DB6AE2847FC1321BA3471F6BA3D7BBC76084"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonPredicateEvidence.cs",
+      "Length": 5764,
+      "SHA256": "554C656CB10E83737D2DDD1559120D6BD4AB0900E618F93D144353A2BD774649"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonController.cs",
+      "Length": 14325,
+      "SHA256": "008BE2CA01683CD1F3B9FF69A395DF403F8069B71F1AD4F4012BD2FD56227CA5"
+    },
+    {
+      "Path": "Core/Services/TuningSessionService.cs",
+      "Length": 16781,
+      "SHA256": "75F6C8C73F62B061B022A43724BE467F5BE0433AA9B063743B43C29ADB61D476"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "Length": 10812,
+      "SHA256": "59B3A59996E8762A479A351E970462DEB80BF848B7021B32056ECF7A0942363A"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.Comparison.cs",
+      "Length": 3927,
+      "SHA256": "ACC5C4AF9DEAC8E752F8084952C576382F66EA942E275C267743508FDA84C3BB"
+    },
+    {
+      "Path": "Core/ViewModels/PlanSnapshot.cs",
+      "Length": 2259,
+      "SHA256": "2BB7D0BBB77B12708BDBC4EB76D907F1B939FC1148A73883AB274BE405328F5C"
+    },
+    {
+      "Path": "Services/PlanComparisonUiActionService.cs",
+      "Length": 5984,
+      "SHA256": "40569CD76B7B591C9FB5737BA6E72485953385242C6AF1AC8687D15D6CE9E5CC"
+    },
+    {
+      "Path": "Services/TuningSessionUiActionService.cs",
+      "Length": 3201,
+      "SHA256": "C6C5614B00208485E44EEB5D8B4D2A30F605368DC96600454F7829F28907E914"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonPredicateIdentityTests.cs",
+      "Length": 6567,
+      "SHA256": "9B9538D9BE3C83EACBA93596CB42A85F5A9B020D7D41789F1AE09EE4B7EAFE47"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonSelectionIsolationTests.cs",
+      "Length": 7145,
+      "SHA256": "28B0866A8EF49FECB95EA65CC70EBF2E5CBDA394EADC10F04563CABC68CCA152"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonSourceHashTests.cs",
+      "Length": 5756,
+      "SHA256": "B2D3FD489154781B94A9AD9613ACE8ED19090418134FB0BE45CB441E3D5A544E"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonWorkspaceTests.cs",
+      "Length": 4801,
+      "SHA256": "E2B1DDB8985501F06A0A0CD95BB6698E8DC3A07E954CD9EA245B58059A968AE6"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/WpfProbe.cs.txt",
+      "Length": 11730,
+      "SHA256": "8E6F407B49FBE1A1405D1DB3C49E7E15F34CCD88FE23E02F50E588962DD0BAFB"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/Test-WpfProbeFailureHandling.ps1",
+      "Length": 7987,
+      "SHA256": "C1F44628884E5D0F306A903AFBE05028143C544CBFD3F1F1A3B899EA902F00E0"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/verify-wpf.ps1",
+      "Length": 2407,
+      "SHA256": "A40E54CA450E84230B7ACE76877E8FE2ED3771BB2F514205DAD9E568156A8FD5"
+    }
+  ],
+  "Documentation": [
+    {
+      "Path": "README.md",
+      "Length": 13152,
+      "SHA256": "FB2ED61232776437777329EEE9D06506A69C93A061034DB83FADCFC34A0B26BB"
+    },
+    {
+      "Path": "CHANGELOG.md",
+      "Length": 17228,
+      "SHA256": "750F859A90249D57B077A749A2FDC8212CB9A0A99EEFF6F2E8D511A3116A568B"
+    },
+    {
+      "Path": "Architecture.md",
+      "Length": 23490,
+      "SHA256": "B034EE3C561F3F18883FFA7453471B20398C2593F54B0CA5AD2D926E9B8F6CBF"
+    },
+    {
+      "Path": "UserGuide.md",
+      "Length": 22413,
+      "SHA256": "FC1B2BB55BC55EA5292DEA407739E4244E321CF450E10239B86E9A74FADD1E10"
+    },
+    {
+      "Path": "DOCS/README.md",
+      "Length": 8338,
+      "SHA256": "4931E5AED8DCBB5A293A51A2AE64453A521F6832C7D9B23F42C5184D62F2B44A"
+    },
+    {
+      "Path": "DOCS/IMP-17审查修复与加固说明.md",
+      "Length": 12560,
+      "SHA256": "15A849EA3F774FDF3FF4C7F8728C8A8FC2844CD46DF431C1D5564A3B53B8725F"
+    },
+    {
+      "Path": "DOCS/IMP-17多语句与可比性检查的AB比较.md",
+      "Length": 13178,
+      "SHA256": "C240B06E9D098EC6BFBA3A80A40C98FA00C4408ED46B97A6341E15E3E513E6D9"
+    },
+    {
+      "Path": "DOCS/IMP-17验证探针异常处理修复.md",
+      "Length": 5149,
+      "SHA256": "AA79F7C38BF4A5832ADCF053310CC1D39A305BE18617FF4BF6088691EB19BB41"
+    },
+    {
+      "Path": "DOCS/软件改善实施规划.md",
+      "Length": 56568,
+      "SHA256": "DB04ABF4F40747D711427DB7240A4AB601FC8C62E777AC9B2974D7BD9FFC18C7"
+    },
+    {
+      "Path": "DOCS/软件详细设计与问题分析.md",
+      "Length": 23615,
+      "SHA256": "2A8A14357DCFE697FD99CE96B51EACF77225EE412F635D4DC673F58555F7AE28"
+    }
+  ],
+  "Research": {
+    "Path": "DOCS/verification/IMP-17-review-fix/research.json",
+    "Length": 3167,
+    "SHA256": "704AD57161FC8B2682CD4C82403BDE93F841856D4EF4ED376EB99FC5C0124163"
+  },
+  "EvidenceCollector": {
+    "Path": "DOCS/verification/IMP-17-review-fix/Write-Validation.ps1",
+    "Length": 9065,
+    "SHA256": "31C132B18B73244DF2C0063E2C1014EAFCBEC03E6BB6D1DA9B846033EABA39D1"
+  },
+  "StageLogs": [
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/build-debug.log",
+      "Length": 957,
+      "SHA256": "0A91F70332C2D591C1529713640002180320BFE2244DC18881752081D7DE2395"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/build-final-debug.log",
+      "Length": 957,
+      "SHA256": "77F975B31116D3B79BC5710331A57ED5B37070924995CAAD88E682934F8ECA4F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/build-final-release.log",
+      "Length": 971,
+      "SHA256": "3A7CE3184156BC18B3A9F059C54E6355B762FB2F3570E5FF9493616F672D49BD"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/green-comparison.log",
+      "Length": 7144,
+      "SHA256": "98465FE2401328E4042BA00E76BFD7E3C0A83BC8FB98D32353327C17FE2410AB"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/green-comparison2.log",
+      "Length": 1198,
+      "SHA256": "0CE53B6F16F4623300F3076D9A44E87646328992AC3EFEFBD55BA18CC9D4FD6B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/green-hardening.log",
+      "Length": 1198,
+      "SHA256": "FA8279EE32D684E3B31BBFF57BBA4B7F355362E37F935A949A5935972B5DA00B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/green-predicate.log",
+      "Length": 1197,
+      "SHA256": "B1B9AC4119B277DAC0FBCF62A359696F55482D10936D9F9E7C4951A036041B7B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/green-selection.log",
+      "Length": 1198,
+      "SHA256": "ECD99102BADD7253D187172A221568C0B768CD716C087D0C60D03DD42EF1D61D"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/red-hash.log",
+      "Length": 2318,
+      "SHA256": "E3005494B3377FC494B0EDFF20BCBD16EFA6EDC630800335A4CBE34252391CE8"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/red-predicate-hardening.log",
+      "Length": 6449,
+      "SHA256": "7461050870A71B7E65D17C0BD346EEE7E7FD60FF6C1BF43EC192ADD196A427CD"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/red-predicate-unknown.log",
+      "Length": 5616,
+      "SHA256": "B270489E1414E65B34B04CD6E59B2FEA18EBFE9400895A7B5DFC4E30A725B93B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/red-predicate.log",
+      "Length": 2198,
+      "SHA256": "41D2D49C234E9C415F8D087F23C88E4DAE1432EB451BB4BD609EC6EA9DDF3FEF"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/red-selection-session.log",
+      "Length": 9258,
+      "SHA256": "B60D5280A440C05F21E83F8821D646A9F8D859C4B60800B3D4EA608E91A8CDBE"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/red-selection.log",
+      "Length": 2758,
+      "SHA256": "E172246D00E498261C8F1E11D140721334AA99ECD89A130DCA081462431DDB5B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/test-debug.log",
+      "Length": 1799,
+      "SHA256": "1697B9B2A63127E913B61F21010BFB2C31A3206AC2AA2029DB46EF048A81D9DC"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/test-final-debug.log",
+      "Length": 323,
+      "SHA256": "F17263DEAC1E0CBFB8A6AF3BE98A355281F52EF38D52EBABC00008BC2E8D7DFF"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/test-final-release.log",
+      "Length": 325,
+      "SHA256": "8713071A8426F8B9A97719E25E19A15FBD10C646BAA532DA6EDC76D63A941298"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/wpf-debug.log",
+      "Length": 1428,
+      "SHA256": "12FB1706D65B05522097D11FB4710A7FA1FA08DCA7E2C36587ECDF775FCCC6AA"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-review-fix/wpf-release.log",
+      "Length": 1457,
+      "SHA256": "5D9CA7C129917315F3AD5B1CB2BF4006B9CC3228E36C69783A4D063F414F4219"
+    }
+  ],
+  "Limitations": [
+    "Intermediate red/green logs and initial test-debug.log contain intentional or subsequently fixed failures; final logs are authoritative.",
+    "Predicate checks are targeted structural completeness checks, not full XSD validation or SQL equivalence.",
+    "No new SQL Server performance experiment or coverage report; existing native-plan regressions ran in the full suite.",
+    "Session fingerprints are recorded provenance, not authentication or rereading the original source file.",
+    "Visual inspection covered Debug light and Release light/theme-resource-switch comparison screenshots; no full accessibility audit.",
+    "Existing dirty workspace and previous evidence preserved; no commit, push or publication."
+  ]
+}

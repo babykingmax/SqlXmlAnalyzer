@@ -31,7 +31,7 @@ namespace SqlXmlAnalyzer.Tests.Models
             var sql = suggestion.CreateIndexStatement;
 
             // Assert
-            sql.Should().Be("CREATE NONCLUSTERED INDEX [IX_Employee_DepartmentID_HireDate]\n" +
+            sql.Should().MatchRegex(@"CREATE NONCLUSTERED INDEX \[IX_Employee_[0-9A-F]{64}\]").And.Contain(
                             "ON [dbo].[Employee] ([DepartmentID], [HireDate])\n" +
                             "INCLUDE ([Salary], [Bonus])\n" +
                             "WITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);");
@@ -75,7 +75,7 @@ namespace SqlXmlAnalyzer.Tests.Models
             var sql = suggestion.CreateIndexStatement;
 
             // Assert
-            sql.Should().Be("CREATE NONCLUSTERED INDEX [IX_Employee_DepartmentID]\n" +
+            sql.Should().MatchRegex(@"CREATE NONCLUSTERED INDEX \[IX_Employee_[0-9A-F]{64}\]").And.Contain(
                             "ON [dbo].[Employee] ([DepartmentID])\n" +
                             "WITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);");
         }
@@ -106,7 +106,7 @@ namespace SqlXmlAnalyzer.Tests.Models
             var sql = SqlXmlAnalyzer.Core.Refactoring.IndexDdlCompiler.Generate(suggestion, options);
 
             // Assert
-            sql.Should().Be("CREATE NONCLUSTERED INDEX [IX_Orders_OrderID_CustomerID]\n" +
+            sql.Should().MatchRegex(@"CREATE NONCLUSTERED INDEX \[IX_Orders_[0-9A-F]{64}\]").And.Contain(
                             "ON [sales].[Orders] ([OrderID], [CustomerID])\n" +
                             "WITH (ONLINE = OFF, DATA_COMPRESSION = ROW, SORT_IN_TEMPDB = OFF, MAXDOP = 4);");
         }

@@ -1,0 +1,44 @@
+[
+  {
+    "Version": "2019",
+    "Fault": "lost-ack",
+    "Passed": true,
+    "DatabaseAbsent": true,
+    "CleanupErrors": 0
+  },
+  {
+    "Version": "2019",
+    "Fault": "canceled-after-create",
+    "Passed": true,
+    "DatabaseAbsent": true,
+    "CleanupErrors": 0
+  },
+  {
+    "Version": "2019",
+    "Fault": "create-not-dispatched",
+    "Passed": true,
+    "DatabaseAbsent": true,
+    "CleanupErrors": 0
+  },
+  {
+    "Version": "2025",
+    "Fault": "lost-ack",
+    "Passed": true,
+    "DatabaseAbsent": true,
+    "CleanupErrors": 0
+  },
+  {
+    "Version": "2025",
+    "Fault": "canceled-after-create",
+    "Passed": true,
+    "DatabaseAbsent": true,
+    "CleanupErrors": 0
+  },
+  {
+    "Version": "2025",
+    "Fault": "create-not-dispatched",
+    "Passed": true,
+    "DatabaseAbsent": true,
+    "CleanupErrors": 0
+  }
+]

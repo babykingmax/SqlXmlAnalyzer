@@ -15,7 +15,11 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed record PlanComparisonTreeResult(
         PlanComparisonTreeNode? PlanA,
-        PlanComparisonTreeNode? PlanB);
+        PlanComparisonTreeNode? PlanB)
+    {
+        public IReadOnlyList<PlanComparisonTreeNode> StatementsA { get; init; } = [];
+        public IReadOnlyList<PlanComparisonTreeNode> StatementsB { get; init; } = [];
+    }
 
     public sealed record PlanComparisonTreeNode(
         XElement Source,
@@ -25,7 +29,10 @@ namespace SqlXmlAnalyzer.Core.Services
         PlanComparisonCostTrend CostTrend,
         bool IsPlanB,
         IReadOnlyList<string> RuntimeDeltaTexts,
-        IReadOnlyList<PlanComparisonTreeNode> Children);
+        IReadOnlyList<PlanComparisonTreeNode> Children)
+    {
+        public string EvidenceText { get; init; } = "";
+    }
 
     public sealed class PlanComparisonTreeService
     {
@@ -38,7 +45,25 @@ namespace SqlXmlAnalyzer.Core.Services
 
             return new PlanComparisonTreeResult(
                 comparison.PlanA == null ? null : BuildNode(comparison.PlanA, isPlanB: false),
-                comparison.PlanB == null ? null : BuildNode(comparison.PlanB, isPlanB: true));
+                comparison.PlanB == null ? null : BuildNode(comparison.PlanB, isPlanB: true))
+            {
+                StatementsA = comparison.Statements.Select(s => Statement(s, false)).ToArray(),
+                StatementsB = comparison.Statements.Select(s => Statement(s, true)).ToArray()
+            };
+        }
+
+        private static PlanComparisonTreeNode Statement(StatementComparisonResult result, bool isB)
+        {
+            var statement = isB ? result.B : result.A;
+            var query = isB ? result.QueryB : result.QueryA;
+            var roots = isB ? result.RootsB : result.RootsA;
+            return new(statement?.Source ?? (result.A ?? result.B)!.Source, result.Label, "",
+                PlanComparisonNodeState.Unchanged, PlanComparisonCostTrend.Neutral, isB, [],
+                roots.Select(root => BuildNode(root, isB)).ToArray())
+            {
+                EvidenceText = result.Detail + Environment.NewLine + (query?.Capture.Summary ?? "没有本侧计划")
+                    + Environment.NewLine + (statement?.Statement.Text ?? "本侧未匹配")
+            };
         }
 
         private static PlanComparisonTreeNode BuildNode(
@@ -55,15 +80,19 @@ namespace SqlXmlAnalyzer.Core.Services
                 costTrend,
                 isPlanB,
                 node.RuntimeDeltas.Select(FormatRuntimeDelta).ToList(),
-                node.Children.Select(child => BuildNode(child, isPlanB)).ToList());
+                node.Children.Select(child => BuildNode(child, isPlanB)).ToList())
+            {
+                EvidenceText = $"{node.Identity} ↔ {node.OtherIdentity}\n{node.Confidence}：{node.MatchEvidence}\n{node.CostReason}\n"
+                    + string.Join("\n", node.RuntimeDeltas.Select(d => d.Source + "；" + d.Reason))
+            };
         }
 
         private static string GetOperatorText(PlanComparisonNode node)
         {
             return node.State switch
             {
-                PlanComparisonNodeState.Added => $"{node.PhysicalOp} [Added]",
-                PlanComparisonNodeState.Removed => $"{node.PhysicalOp} [Removed]",
+                PlanComparisonNodeState.Added => $"{node.PhysicalOp} [Added / B 未匹配]",
+                PlanComparisonNodeState.Removed => $"{node.PhysicalOp} [Removed / A 未匹配]",
                 PlanComparisonNodeState.OperatorChanged =>
                     $"{node.PhysicalOp} [from {node.OtherPhysicalOp}]",
                 _ => node.PhysicalOp
@@ -74,7 +103,9 @@ namespace SqlXmlAnalyzer.Core.Services
             PlanComparisonNode node,
             PlanComparisonCostTrend costTrend)
         {
-            string text = FormattableString.Invariant($" (Cost: {node.Cost:F4})");
+            string text = node.Cost.HasValue ? FormattableString.Invariant($" (估算子树成本: {node.Cost:F4})") : " (估算子树成本: N/A)";
+            if (!node.CostPercentDelta.HasValue) return text + (node.CostDelta is { } delta
+                ? FormattableString.Invariant($" (差值 {delta:+0.####;-0.####;0}；百分比 N/A)") : " (差值/百分比 N/A)");
 
             if (costTrend == PlanComparisonCostTrend.Neutral)
             {
@@ -88,7 +119,7 @@ namespace SqlXmlAnalyzer.Core.Services
         private static PlanComparisonCostTrend GetCostTrend(PlanComparisonNode node)
         {
             if (node.State != PlanComparisonNodeState.Unchanged ||
-                Math.Abs(node.CostPercentDelta) <= 5)
+                !node.CostPercentDelta.HasValue || Math.Abs(node.CostPercentDelta.Value) <= 5)
             {
                 return PlanComparisonCostTrend.Neutral;
             }
@@ -100,16 +131,25 @@ namespace SqlXmlAnalyzer.Core.Services
 
         private static string FormatRuntimeDelta(RuntimeMetricDelta delta)
         {
-            string value = delta.Value.ToString(CultureInfo.InvariantCulture);
-
-            if (Math.Abs(delta.Delta) < 1e-9)
+            string label = delta.Label switch
             {
-                return $"{delta.Label}: {value}";
+                "Elapsed" => "Elapsed (ms)",
+                "Logical reads" => "Logical reads (页)",
+                "Rows read" => "Rows read (行)",
+                _ => delta.Label
+            };
+            string value = delta.Value?.ToString(CultureInfo.InvariantCulture) ?? "N/A";
+            if (!delta.Value.HasValue || !delta.Delta.HasValue)
+                return $"{label}: {value} (差值 N/A)";
+
+            if (Math.Abs(delta.Delta.Value) < 1e-9)
+            {
+                return $"{label}: {value}";
             }
 
             string sign = delta.Delta > 0 ? "+" : "-";
-            string magnitude = Math.Abs(delta.Delta).ToString(CultureInfo.InvariantCulture);
-            return $"{delta.Label}: {value} ({sign}{magnitude})";
+            string magnitude = Math.Abs(delta.Delta.Value).ToString(CultureInfo.InvariantCulture);
+            return $"{label}: {value} ({sign}{magnitude})";
         }
     }
 }

@@ -1,0 +1,253 @@
+{
+  "step": "IMP-05",
+  "checkedUtc": "2026-09-08T10:27:08.584641+00:00",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "sourceChanged": 34,
+  "unexpectedChanges": [],
+  "sourceDriftAfterTests": [],
+  "retainedInputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "sha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "sha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "unchanged": true
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "sha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/ReviewProbe.cs.txt",
+      "sha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/Run-ReviewProbe.ps1",
+      "sha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/baseline.json",
+      "sha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/probe-results.json",
+      "sha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "unchanged": true
+    }
+  ],
+  "snapshotEntries": 53,
+  "artifactChecks": [
+    {
+      "manifest": "DOCS/baselines/IMP-01/20260908T074458598Z_c5b1e0766cfc_c3523269/artifact-manifest.json",
+      "entries": 75,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T080801184Z_c5b1e0766cfc_6a19a7b0/artifact-manifest.json",
+      "entries": 47,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T083501166Z_c5b1e0766cfc_71955017/artifact-manifest.json",
+      "entries": 63,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T090642185Z_c5b1e0766cfc_c45e1ec8/artifact-manifest.json",
+      "entries": 63,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-03/20260908T085018432Z_c5b1e0766cfc_65e9ddb4/artifact-manifest.json",
+      "entries": 56,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T093220366Z_c5b1e0766cfc_0420c7c1/artifact-manifest.json",
+      "entries": 63,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-04/20260908T091503194Z_c5b1e0766cfc_52a72a38/artifact-manifest.json",
+      "entries": 114,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-04/20260908T091503194Z_c5b1e0766cfc_52a72a38/process-artifact-manifest.json",
+      "entries": 100,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T095232442Z_c5b1e0766cfc_3a4bacdf/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T095314857Z_c5b1e0766cfc_db4a0d4e/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T095336975Z_c5b1e0766cfc_b33f24a6/artifact-manifest.json",
+      "entries": 17,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/artifact-manifest.json",
+      "entries": 15,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/artifact-manifest-v2.json",
+      "entries": 205,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T101535551Z_c5b1e0766cfc_1d7ea107/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T101641783Z_c5b1e0766cfc_6f336732/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T101821071Z_c5b1e0766cfc_fc081b13/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    }
+  ],
+  "buildAndTest": {
+    "Debug": {
+      "schemaVersion": 2,
+      "adapterVersion": "2.4",
+      "configuration": "Debug",
+      "commandTimeoutSeconds": 900,
+      "step": "IMP-02",
+      "runId": "20260908T101641783Z_c5b1e0766cfc_6f336732",
+      "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+      "runDirectory": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T101641783Z_c5b1e0766cfc_6f336732",
+      "matrixCases": 22,
+      "probeConditionsMet": 5,
+      "notMet": 17,
+      "probeExecutionFailed": 0,
+      "probeConditionsAllMet": false,
+      "infrastructureTests": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "issuesClosed": 0,
+      "existingSuite": {
+        "total": 944,
+        "passed": 944,
+        "failed": 0,
+        "notExecuted": 0
+      },
+      "cliInvalidInputExitCode": 0,
+      "protectedInputDrift": [],
+      "fixtureAndCandidateEntries": 28,
+      "sqlServerExecutionPerformed": false,
+      "wpfVisualTestPerformed": false,
+      "coverageGenerated": false,
+      "note": "Exit 1 means NotMet or ProbeExecutionFailed; neither is a passing condition. Full issue closure requires additional matrix scenarios."
+    },
+    "Release": {
+      "schemaVersion": 2,
+      "adapterVersion": "2.4",
+      "configuration": "Release",
+      "commandTimeoutSeconds": 900,
+      "step": "IMP-02",
+      "runId": "20260908T101821071Z_c5b1e0766cfc_fc081b13",
+      "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+      "runDirectory": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T101821071Z_c5b1e0766cfc_fc081b13",
+      "matrixCases": 22,
+      "probeConditionsMet": 5,
+      "notMet": 17,
+      "probeExecutionFailed": 0,
+      "probeConditionsAllMet": false,
+      "infrastructureTests": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "issuesClosed": 0,
+      "existingSuite": {
+        "passed": 944,
+        "notExecuted": 0,
+        "failed": 0,
+        "total": 944
+      },
+      "cliInvalidInputExitCode": 0,
+      "protectedInputDrift": [],
+      "fixtureAndCandidateEntries": 28,
+      "sqlServerExecutionPerformed": false,
+      "wpfVisualTestPerformed": false,
+      "coverageGenerated": false,
+      "note": "Exit 1 means NotMet or ProbeExecutionFailed; neither is a passing condition. Full issue closure requires additional matrix scenarios."
+    }
+  },
+  "processVerification": {
+    "completed": true,
+    "total": 17,
+    "passed": 17,
+    "failed": 0,
+    "fatalError": null
+  },
+  "applicationChecks": {
+    "Debug": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "sourceUnchanged": true
+    },
+    "Release": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "sourceUnchanged": true
+    }
+  },
+  "dumpChecks": [
+    {
+      "configuration": "Debug",
+      "path": "process-03/Debug/private-dumps/20260908T102002196Z_69152_39d7deb6008e45fbb4e2c6a7f1b94da4/process.dmp",
+      "bytes": 474765,
+      "sha256": "F0B73CC89C34E7574BC4C31391EBA0005576CDC4102996EEEDD5A165726C564C",
+      "validHeaderAndStreams": true,
+      "sidecarPresent": true
+    },
+    {
+      "configuration": "Release",
+      "path": "process-03/Release/private-dumps/20260908T102006743Z_69444_2083b46518874d71943b82d7581e6a53/process.dmp",
+      "bytes": 471738,
+      "sha256": "CF2E526AC707E0CBA7EF77A933D3E83879FF03A0C01858F0E5863673AB8F2AE5",
+      "validHeaderAndStreams": true,
+      "sidecarPresent": true
+    }
+  ],
+  "pdfInspectionPassed": true,
+  "diffCheckExitCode": 0,
+  "documentationLinks": {
+    "total": 140,
+    "failed": []
+  },
+  "sqlServerExecuted": false,
+  "wpfVisualTestPerformed": false,
+  "ssmsCompatibilityTestPerformed": false,
+  "coverageGenerated": false,
+  "passed": true
+}

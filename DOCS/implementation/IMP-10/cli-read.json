@@ -1,0 +1,1154 @@
+{
+  "Privacy": "\u672A\u8131\u654F\uFF1A\u6B64\u8F93\u51FA\u53EF\u80FD\u5305\u542B SQL\u3001\u53C2\u6570\u3001\u5BF9\u8C61\u540D\u79F0\u3001\u6587\u4EF6\u8DEF\u5F84\u6216\u56FE\u50CF\u4E2D\u7684\u654F\u611F\u4FE1\u606F\uFF0C\u4EC5\u4F9B\u672C\u5730\u8BCA\u65AD\uFF1B\u4E0D\u80FD\u4F5C\u4E3A\u8131\u654F\u6750\u6599\u5171\u4EAB\u3002",
+  "Status": "Success",
+  "Kind": "ExecutionPlanXml",
+  "IsSuccess": true,
+  "HasUsableContent": true,
+  "ErrorCode": null,
+  "ErrorMessage": null,
+  "Envelope": {
+    "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+    "SourceHash": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+    "SourceName": "SqlXmlAnalyzer.Tests/TestData/imp10_scoped_identities.sqlplan",
+    "DetectedKind": 2,
+    "CapturedAt": null,
+    "EngineBuild": "16.0.1000.6",
+    "SchemaVersion": "1.539",
+    "SourceBytes": 3031
+  },
+  "Capabilities": "PlanStatements, PlanOperators, PreservedSource",
+  "Diagnostics": [],
+  "Events": [],
+  "Plan": {
+    "Envelope": {
+      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+      "SourceHash": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+      "SourceName": "SqlXmlAnalyzer.Tests/TestData/imp10_scoped_identities.sqlplan",
+      "DetectedKind": 2,
+      "CapturedAt": null,
+      "EngineBuild": "16.0.1000.6",
+      "SchemaVersion": "1.539",
+      "SourceBytes": 3031
+    },
+    "Batches": [
+      {
+        "Key": {
+          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+          "BatchOrdinal": 1
+        },
+        "Location": {
+          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+          "Batch": {
+            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+            "BatchOrdinal": 1
+          },
+          "Statement": null,
+          "QueryPlan": null,
+          "Operator": null,
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]",
+            "Line": 3,
+            "Column": 6,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1"
+        },
+        "Statements": [
+          {
+            "Key": {
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "Parent": null,
+            "Kind": "StmtSimple",
+            "StatementId": "1",
+            "QueryHash": "0xSAME",
+            "QueryPlanHash": null,
+            "Text": "SELECT Id FROM sales.T;",
+            "Location": {
+              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 1
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlan": null,
+              "Operator": null,
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+                "Line": 5,
+                "Column": 10,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1"
+            },
+            "QueryPlans": [
+              {
+                "Key": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Location": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "Batch": {
+                    "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                    "BatchOrdinal": 1
+                  },
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "Operator": null,
+                  "Source": {
+                    "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]",
+                    "Line": 6,
+                    "Column": 12,
+                    "EventIndex": null,
+                    "ByteOffset": null,
+                    "ByteLength": null
+                  },
+                  "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1/Q1"
+                },
+                "Operators": [
+                  {
+                    "Key": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "0",
+                      "OperatorOrdinal": 1
+                    },
+                    "Parent": null,
+                    "PhysicalOp": "Nested Loops",
+                    "LogicalOp": "Inner Join",
+                    "Location": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 1
+                      },
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "BatchOrdinal": 1
+                        },
+                        "StatementOrdinal": 1
+                      },
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "Operator": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "Source": {
+                        "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                        "Line": 8,
+                        "Column": 14,
+                        "EventIndex": null,
+                        "ByteOffset": null,
+                        "ByteLength": null
+                      },
+                      "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1/Q1/N0/O1"
+                    },
+                    "Objects": []
+                  },
+                  {
+                    "Key": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "1",
+                      "OperatorOrdinal": 2
+                    },
+                    "Parent": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "0",
+                      "OperatorOrdinal": 1
+                    },
+                    "PhysicalOp": "Table Scan",
+                    "LogicalOp": "Table Scan",
+                    "Location": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 1
+                      },
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "BatchOrdinal": 1
+                        },
+                        "StatementOrdinal": 1
+                      },
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "Operator": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "1",
+                        "OperatorOrdinal": 2
+                      },
+                      "Source": {
+                        "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                        "Line": 9,
+                        "Column": 32,
+                        "EventIndex": null,
+                        "ByteOffset": null,
+                        "ByteLength": null
+                      },
+                      "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1/Q1/N1/O2"
+                    },
+                    "Objects": [
+                      {
+                        "Identity": {
+                          "Server": null,
+                          "Database": "dbA",
+                          "Schema": "sales",
+                          "Object": "T",
+                          "IsComplete": false,
+                          "DisplayName": "?.[dbA].[sales].[T]"
+                        },
+                        "Alias": "s",
+                        "Index": null,
+                        "TableReferenceId": null,
+                        "Location": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                "BatchOrdinal": 1
+                              },
+                              "StatementOrdinal": 1
+                            },
+                            "QueryPlanOrdinal": 1
+                          },
+                          "Operator": {
+                            "QueryPlan": {
+                              "Statement": {
+                                "Batch": {
+                                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                  "BatchOrdinal": 1
+                                },
+                                "StatementOrdinal": 1
+                              },
+                              "QueryPlanOrdinal": 1
+                            },
+                            "NodeId": "1",
+                            "OperatorOrdinal": 2
+                          },
+                          "Source": {
+                            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}TableScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                            "Line": 10,
+                            "Column": 32,
+                            "EventIndex": null,
+                            "ByteOffset": null,
+                            "ByteLength": null
+                          },
+                          "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1/Q1/N1/O2"
+                        },
+                        "SourceAttributes": {
+                          "Database": "[dbA]",
+                          "Schema": "[sales]",
+                          "Table": "[T]",
+                          "Alias": "[s]",
+                          "FutureField": "retained"
+                        },
+                        "DisplayName": "?.[dbA].[sales].[T] AS [s]"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Key": {
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 2
+            },
+            "Parent": null,
+            "Kind": "StmtSimple",
+            "StatementId": "1",
+            "QueryHash": "0xSAME",
+            "QueryPlanHash": null,
+            "Text": "SELECT Id FROM audit.T;",
+            "Location": {
+              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 1
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 2
+              },
+              "QueryPlan": null,
+              "Operator": null,
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]",
+                "Line": 15,
+                "Column": 10,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S2"
+            },
+            "QueryPlans": [
+              {
+                "Key": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 2
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Location": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "Batch": {
+                    "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                    "BatchOrdinal": 1
+                  },
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 2
+                  },
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 2
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "Operator": null,
+                  "Source": {
+                    "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]",
+                    "Line": 16,
+                    "Column": 12,
+                    "EventIndex": null,
+                    "ByteOffset": null,
+                    "ByteLength": null
+                  },
+                  "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S2/Q1"
+                },
+                "Operators": [
+                  {
+                    "Key": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "0",
+                      "OperatorOrdinal": 1
+                    },
+                    "Parent": null,
+                    "PhysicalOp": "Nested Loops",
+                    "LogicalOp": "Inner Join",
+                    "Location": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 1
+                      },
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "BatchOrdinal": 1
+                        },
+                        "StatementOrdinal": 2
+                      },
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "Operator": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "Source": {
+                        "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                        "Line": 18,
+                        "Column": 14,
+                        "EventIndex": null,
+                        "ByteOffset": null,
+                        "ByteLength": null
+                      },
+                      "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S2/Q1/N0/O1"
+                    },
+                    "Objects": []
+                  },
+                  {
+                    "Key": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "1",
+                      "OperatorOrdinal": 2
+                    },
+                    "Parent": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "0",
+                      "OperatorOrdinal": 1
+                    },
+                    "PhysicalOp": "Index Scan",
+                    "LogicalOp": "Index Scan",
+                    "Location": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 1
+                      },
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "BatchOrdinal": 1
+                        },
+                        "StatementOrdinal": 2
+                      },
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "Operator": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "1",
+                        "OperatorOrdinal": 2
+                      },
+                      "Source": {
+                        "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                        "Line": 19,
+                        "Column": 32,
+                        "EventIndex": null,
+                        "ByteOffset": null,
+                        "ByteLength": null
+                      },
+                      "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S2/Q1/N1/O2"
+                    },
+                    "Objects": [
+                      {
+                        "Identity": {
+                          "Server": null,
+                          "Database": "dbA",
+                          "Schema": "audit",
+                          "Object": "T",
+                          "IsComplete": false,
+                          "DisplayName": "?.[dbA].[audit].[T]"
+                        },
+                        "Alias": "a",
+                        "Index": "IX_T",
+                        "TableReferenceId": null,
+                        "Location": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 1
+                          },
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                "BatchOrdinal": 1
+                              },
+                              "StatementOrdinal": 2
+                            },
+                            "QueryPlanOrdinal": 1
+                          },
+                          "Operator": {
+                            "QueryPlan": {
+                              "Statement": {
+                                "Batch": {
+                                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                  "BatchOrdinal": 1
+                                },
+                                "StatementOrdinal": 2
+                              },
+                              "QueryPlanOrdinal": 1
+                            },
+                            "NodeId": "1",
+                            "OperatorOrdinal": 2
+                          },
+                          "Source": {
+                            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}IndexScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                            "Line": 20,
+                            "Column": 32,
+                            "EventIndex": null,
+                            "ByteOffset": null,
+                            "ByteLength": null
+                          },
+                          "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S2/Q1/N1/O2"
+                        },
+                        "SourceAttributes": {
+                          "Database": "[dbA]",
+                          "Schema": "[audit]",
+                          "Table": "[T]",
+                          "Index": "[IX_T]",
+                          "Alias": "[a]"
+                        },
+                        "DisplayName": "?.[dbA].[audit].[T] / Index [IX_T] AS [a]"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Key": {
+          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+          "BatchOrdinal": 2
+        },
+        "Location": {
+          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+          "Batch": {
+            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+            "BatchOrdinal": 2
+          },
+          "Statement": null,
+          "QueryPlan": null,
+          "Operator": null,
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]",
+            "Line": 27,
+            "Column": 6,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2"
+        },
+        "Statements": [
+          {
+            "Key": {
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 2
+              },
+              "StatementOrdinal": 1
+            },
+            "Parent": null,
+            "Kind": "StmtUseDb",
+            "StatementId": "1",
+            "QueryHash": null,
+            "QueryPlanHash": null,
+            "Text": "USE dbB;",
+            "Location": {
+              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 2
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "BatchOrdinal": 2
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlan": null,
+              "Operator": null,
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtUseDb[1]",
+                "Line": 29,
+                "Column": 10,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S1"
+            },
+            "QueryPlans": []
+          },
+          {
+            "Key": {
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 2
+              },
+              "StatementOrdinal": 2
+            },
+            "Parent": null,
+            "Kind": "StmtCursor",
+            "StatementId": "1",
+            "QueryHash": null,
+            "QueryPlanHash": null,
+            "Text": "OPEN c;",
+            "Location": {
+              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+              "Batch": {
+                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                "BatchOrdinal": 2
+              },
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "BatchOrdinal": 2
+                },
+                "StatementOrdinal": 2
+              },
+              "QueryPlan": null,
+              "Operator": null,
+              "Source": {
+                "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]",
+                "Line": 30,
+                "Column": 10,
+                "EventIndex": null,
+                "ByteOffset": null,
+                "ByteLength": null
+              },
+              "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2"
+            },
+            "QueryPlans": [
+              {
+                "Key": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 2
+                    },
+                    "StatementOrdinal": 2
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Location": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "Batch": {
+                    "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                    "BatchOrdinal": 2
+                  },
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 2
+                    },
+                    "StatementOrdinal": 2
+                  },
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 2
+                      },
+                      "StatementOrdinal": 2
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "Operator": null,
+                  "Source": {
+                    "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}CursorPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Operation[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]",
+                    "Line": 32,
+                    "Column": 28,
+                    "EventIndex": null,
+                    "ByteOffset": null,
+                    "ByteLength": null
+                  },
+                  "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2/Q1"
+                },
+                "Operators": [
+                  {
+                    "Key": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 2
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "NodeId": "0",
+                      "OperatorOrdinal": 1
+                    },
+                    "Parent": null,
+                    "PhysicalOp": "Table Scan",
+                    "LogicalOp": "Table Scan",
+                    "Location": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 2
+                      },
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "BatchOrdinal": 2
+                        },
+                        "StatementOrdinal": 2
+                      },
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 2
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 1
+                      },
+                      "Operator": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 2
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "Source": {
+                        "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}CursorPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Operation[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                        "Line": 32,
+                        "Column": 42,
+                        "EventIndex": null,
+                        "ByteOffset": null,
+                        "ByteLength": null
+                      },
+                      "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2/Q1/N0/O1"
+                    },
+                    "Objects": [
+                      {
+                        "Identity": {
+                          "Server": "remote",
+                          "Database": "dbB",
+                          "Schema": "sales",
+                          "Object": "T",
+                          "IsComplete": true,
+                          "DisplayName": "[remote].[dbB].[sales].[T]"
+                        },
+                        "Alias": "c",
+                        "Index": null,
+                        "TableReferenceId": null,
+                        "Location": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 2
+                          },
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 2
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                "BatchOrdinal": 2
+                              },
+                              "StatementOrdinal": 2
+                            },
+                            "QueryPlanOrdinal": 1
+                          },
+                          "Operator": {
+                            "QueryPlan": {
+                              "Statement": {
+                                "Batch": {
+                                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                  "BatchOrdinal": 2
+                                },
+                                "StatementOrdinal": 2
+                              },
+                              "QueryPlanOrdinal": 1
+                            },
+                            "NodeId": "0",
+                            "OperatorOrdinal": 1
+                          },
+                          "Source": {
+                            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}CursorPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Operation[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}TableScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                            "Line": 32,
+                            "Column": 171,
+                            "EventIndex": null,
+                            "ByteOffset": null,
+                            "ByteLength": null
+                          },
+                          "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2/Q1/N0/O1"
+                        },
+                        "SourceAttributes": {
+                          "Server": "[remote]",
+                          "Database": "[dbB]",
+                          "Schema": "[sales]",
+                          "Table": "[T]",
+                          "Alias": "[c]"
+                        },
+                        "DisplayName": "[remote].[dbB].[sales].[T] AS [c]"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "Key": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 2
+                    },
+                    "StatementOrdinal": 2
+                  },
+                  "QueryPlanOrdinal": 2
+                },
+                "Location": {
+                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                  "Batch": {
+                    "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                    "BatchOrdinal": 2
+                  },
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "BatchOrdinal": 2
+                    },
+                    "StatementOrdinal": 2
+                  },
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 2
+                      },
+                      "StatementOrdinal": 2
+                    },
+                    "QueryPlanOrdinal": 2
+                  },
+                  "Operator": null,
+                  "Source": {
+                    "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}CursorPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Operation[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]",
+                    "Line": 33,
+                    "Column": 28,
+                    "EventIndex": null,
+                    "ByteOffset": null,
+                    "ByteLength": null
+                  },
+                  "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2/Q2"
+                },
+                "Operators": [
+                  {
+                    "Key": {
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 2
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 2
+                      },
+                      "NodeId": "0",
+                      "OperatorOrdinal": 1
+                    },
+                    "Parent": null,
+                    "PhysicalOp": "Table Scan",
+                    "LogicalOp": "Table Scan",
+                    "Location": {
+                      "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                      "Batch": {
+                        "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                        "BatchOrdinal": 2
+                      },
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "BatchOrdinal": 2
+                        },
+                        "StatementOrdinal": 2
+                      },
+                      "QueryPlan": {
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 2
+                          },
+                          "StatementOrdinal": 2
+                        },
+                        "QueryPlanOrdinal": 2
+                      },
+                      "Operator": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 2
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlanOrdinal": 2
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "Source": {
+                        "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}CursorPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Operation[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                        "Line": 33,
+                        "Column": 42,
+                        "EventIndex": null,
+                        "ByteOffset": null,
+                        "ByteLength": null
+                      },
+                      "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2/Q2/N0/O1"
+                    },
+                    "Objects": [
+                      {
+                        "Identity": {
+                          "Server": "remote",
+                          "Database": "dbB",
+                          "Schema": "sales",
+                          "Object": "T.part]x",
+                          "IsComplete": true,
+                          "DisplayName": "[remote].[dbB].[sales].[T.part]]x]"
+                        },
+                        "Alias": "other",
+                        "Index": null,
+                        "TableReferenceId": null,
+                        "Location": {
+                          "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                          "Batch": {
+                            "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                            "BatchOrdinal": 2
+                          },
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                              "BatchOrdinal": 2
+                            },
+                            "StatementOrdinal": 2
+                          },
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                "BatchOrdinal": 2
+                              },
+                              "StatementOrdinal": 2
+                            },
+                            "QueryPlanOrdinal": 2
+                          },
+                          "Operator": {
+                            "QueryPlan": {
+                              "Statement": {
+                                "Batch": {
+                                  "DocumentId": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861",
+                                  "BatchOrdinal": 2
+                                },
+                                "StatementOrdinal": 2
+                              },
+                              "QueryPlanOrdinal": 2
+                            },
+                            "NodeId": "0",
+                            "OperatorOrdinal": 1
+                          },
+                          "Source": {
+                            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtCursor[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}CursorPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Operation[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}TableScan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Object[1]",
+                            "Line": 33,
+                            "Column": 171,
+                            "EventIndex": null,
+                            "ByteOffset": null,
+                            "ByteLength": null
+                          },
+                          "DisplayScope": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B2/S2/Q2/N0/O1"
+                        },
+                        "SourceAttributes": {
+                          "Server": "[remote]",
+                          "Database": "[dbB]",
+                          "Schema": "[sales]",
+                          "Table": "[T.part]]x]",
+                          "Alias": "[other]"
+                        },
+                        "DisplayName": "[remote].[dbB].[sales].[T.part]]x] AS [other]"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Diagnostics": []
+  }
+}

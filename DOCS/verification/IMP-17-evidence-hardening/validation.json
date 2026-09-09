@@ -1,0 +1,255 @@
+{
+  "Step": "IMP-17 evidence hardening after IMP-14–17 review",
+  "RecordedAt": "2026-09-09T15:41:24.6762305+08:00",
+  "ComparisonModel": "plan-comparison/1.2.0",
+  "SessionVersion": "2.1",
+  "FixedFindings": [
+    "BuildResidual omitted from predicate identity",
+    "Sort attributes omitted from operator signature",
+    "Incomplete object identity passed automatic and manual comparability"
+  ],
+  "BaselineTests": 1957,
+  "AddedTests": 55,
+  "RedPhase": {
+    "Total": 44,
+    "Trx": {
+      "Path": "DOCS/verification/IMP-17-evidence-hardening/red-debug.trx",
+      "Length": 240924,
+      "SHA256": "EC6B0A5986C2BC381A7CE9B5774B0D3444F45DF4AA6288EF41B22C75E958CA13"
+    },
+    "Passed": 8,
+    "Failed": 36
+  },
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2012,
+        "Skipped": 0,
+        "Passed": 2012,
+        "Failed": 0
+      },
+      "NewTests": 55,
+      "DiagnosticChecks": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.CancellationAndStaleSelection_DoNotCreateUnknownIncidents",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.LogsFollowBuildPolicy_WithoutSqlParameterValuesOrObjectNames",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.LaterStatementFailure_ProducesDumpOrExplicitFailure_AndNeverReturnsPartialComparison(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.LaterStatementFailure_ProducesDumpOrExplicitFailure_AndNeverReturnsPartialComparison(dumpFails: False)",
+          "Outcome": "Passed"
+        }
+      ],
+      "BuildLog": {
+        "Path": "DOCS/verification/IMP-17-evidence-hardening/build-debug.log",
+        "Length": 957,
+        "SHA256": "45280B397B2A5492A84D607706470A59BE1B846EFAAB37907E0E044FDFF5725C"
+      },
+      "TestLog": {
+        "Path": "DOCS/verification/IMP-17-evidence-hardening/test-debug.log",
+        "Length": 415,
+        "SHA256": "54CA4F3FFD3896300532B0BA8A307E180AAE10F977DCCC6B2D24844054C622D6"
+      },
+      "Trx": {
+        "Path": "DOCS/verification/IMP-17-evidence-hardening/full-debug.trx",
+        "Length": 6899341,
+        "SHA256": "8E15C779FD26977F0903EB10DF93B90BF7A5286B7321903874C460113F643D8A"
+      },
+      "TestedCoreBinary": {
+        "Path": "SqlXmlAnalyzer.Tests/bin/Debug/net8.0-windows/SqlXmlAnalyzer.Core.dll",
+        "Length": 732672,
+        "SHA256": "874B9A92D35A0AA14488BB3DA3BB6498F29C283F43B7ED2E4F532A7A036CB867"
+      },
+      "TestedAppBinary": {
+        "Path": "SqlXmlAnalyzer.Tests/bin/Debug/net8.0-windows/SqlXmlAnalyzer.dll",
+        "Length": 819712,
+        "SHA256": "BDA6612F6CCD46ED0832D24A9A838611CA15E0A47204468B120FF2012B9F8104"
+      }
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2012,
+        "Skipped": 0,
+        "Passed": 2012,
+        "Failed": 0
+      },
+      "NewTests": 55,
+      "DiagnosticChecks": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.LogsFollowBuildPolicy_WithoutSqlParameterValuesOrObjectNames",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.CancellationAndStaleSelection_DoNotCreateUnknownIncidents",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.LaterStatementFailure_ProducesDumpOrExplicitFailure_AndNeverReturnsPartialComparison(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.PlanComparisonDiagnosticTests.LaterStatementFailure_ProducesDumpOrExplicitFailure_AndNeverReturnsPartialComparison(dumpFails: False)",
+          "Outcome": "Passed"
+        }
+      ],
+      "BuildLog": {
+        "Path": "DOCS/verification/IMP-17-evidence-hardening/build-release.log",
+        "Length": 971,
+        "SHA256": "749A185DE38CADCDDD49D24C40F8A0E44765ABE119BBF541C33C34EE70E96225"
+      },
+      "TestLog": {
+        "Path": "DOCS/verification/IMP-17-evidence-hardening/test-release.log",
+        "Length": 419,
+        "SHA256": "E5993D4B0AF2FB268FF312C62001DFC5226DF493E24ECB96656916AAD4C8D520"
+      },
+      "Trx": {
+        "Path": "DOCS/verification/IMP-17-evidence-hardening/full-release.trx",
+        "Length": 3086426,
+        "SHA256": "FF4B68768550234201E8FE05F0F2D3ABC3761AF9809DF7C50D81DD9543066734"
+      },
+      "TestedCoreBinary": {
+        "Path": "SqlXmlAnalyzer.Tests/bin/Release/net8.0-windows/SqlXmlAnalyzer.Core.dll",
+        "Length": 699392,
+        "SHA256": "1F64DFE2EC24D343217B53093BD3A08C33065F9074E2F809B6B6432B23094054"
+      },
+      "TestedAppBinary": {
+        "Path": "SqlXmlAnalyzer.Tests/bin/Release/net8.0-windows/SqlXmlAnalyzer.dll",
+        "Length": 754176,
+        "SHA256": "933F0CEE10E052A4D307ADBED41EDC0C9675F22F4B166001B52E599D2E19C35F"
+      }
+    }
+  ],
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonEvidence.cs",
+      "Length": 20109,
+      "SHA256": "D6919ECFB1C69758AE329F9B25C3B193FF2ADFE11BD405C02C7985EA2641E522"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonPredicateEvidence.cs",
+      "Length": 7452,
+      "SHA256": "5CCEFB9D5AF1EC7463B50F8D7FB6F195C07A8E627A7F0E9F6A29666F590C566A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonSortEvidence.cs",
+      "Length": 4068,
+      "SHA256": "E95D8774B5211024A850F10C0EB31CC4FF1F43D99610CD10841FD5FA4FFAFB12"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonObjectEvidence.cs",
+      "Length": 1386,
+      "SHA256": "B859577E332B9E23EA8B32099C7245BB834CF8CA7BC63B6EEFCE336C7709BDC7"
+    },
+    {
+      "Path": "Core/Services/PlanComparisonController.cs",
+      "Length": 14460,
+      "SHA256": "F08C9E47959C28BB154B01A10E9A9383F379DBB8830BEE32B8123258F354A362"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonEvidenceHardeningTests.cs",
+      "Length": 17881,
+      "SHA256": "D020C36E813517BDE8DFE0D0A7AA1C7A32091ECBE8749F77A9DC117594C8957C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonMultiStatementTests.cs",
+      "Length": 18970,
+      "SHA256": "84A194C407D0CC2C45526ACFC715194952382E050D41820BA0E7BEEF4D1A7F74"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanComparisonPredicateIdentityTests.cs",
+      "Length": 6570,
+      "SHA256": "42051DC9F4651D029D18291DC1E2996105A5E91F70F0ABCAAC906A81663CB632"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/PlanComparisonDiagnosticTests.cs",
+      "Length": 5749,
+      "SHA256": "59AB62AB70DBCD283C4DF9D93377C9F2987D4109DE4419D1CA7D062149D7B8BC"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+      "Length": 2025,
+      "SHA256": "EDBB5538C5A99864F1203B17762ADD7007D7A2ABAA8B9872C36CDD29E260E279"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+      "Length": 4632,
+      "SHA256": "3BDA8B6130B0B9252C0846B462705F736CB2B6EE5736D5338B8CA6BDE6D676AD"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+      "Length": 3977,
+      "SHA256": "C9A218DBD11A9D392CFAEF19607BC8EAE56BE9A4A8FA6CAFEFD8DB61E18321F4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Logger.cs",
+      "Length": 10926,
+      "SHA256": "9BDC93CE515AE8A4F76FAC0FC9B486213FE27DE5E52926EB7E418AF295D621C7"
+    }
+  ],
+  "Documents": [
+    {
+      "Path": "README.md",
+      "Length": 13578,
+      "SHA256": "1484A229DE2F3C9FB92D69CB440DC160A5F2E221A024C8A6C468E57F3B2CC3EA"
+    },
+    {
+      "Path": "CHANGELOG.md",
+      "Length": 17752,
+      "SHA256": "63A3EABBC2873B7882D4811DDB08C91D0CC62E02C3CFD4697FF71DF9C5523E8C"
+    },
+    {
+      "Path": "Architecture.md",
+      "Length": 23788,
+      "SHA256": "0CC753EE8DDE6FC5AAD33DAC74474F002BA169F4B780BDD8C4AD9DA12F80266D"
+    },
+    {
+      "Path": "UserGuide.md",
+      "Length": 22820,
+      "SHA256": "0D9C76BF64B73B28A4FC3BF3F6953BC4596F4BF8FA410559ADBD1BD00BFE30AA"
+    },
+    {
+      "Path": "DOCS/IMP-17比较证据完整性加固.md",
+      "Length": 7085,
+      "SHA256": "08FF9C353C6B5EEFEAFFE2C233BE8377962AF8F7C1D4EACA63A2B4765A32C457"
+    },
+    {
+      "Path": "DOCS/IMP-17审查修复与加固说明.md",
+      "Length": 12873,
+      "SHA256": "1ADA6BE3CD2A83526B4E0617DAA3DCED78921E1475957554749B8D701F51AD00"
+    },
+    {
+      "Path": "DOCS/IMP-17多语句与可比性检查的AB比较.md",
+      "Length": 13460,
+      "SHA256": "DD2763CBEF01574DEBE30B8BF1072E107CC57F8A76263155D502F479999465B4"
+    },
+    {
+      "Path": "DOCS/软件改善实施规划.md",
+      "Length": 56999,
+      "SHA256": "BAD297F521E1F494CA8AFC14387CA5ACDF487DA86CE9124BEDF3F04948297AAA"
+    },
+    {
+      "Path": "DOCS/软件详细设计与问题分析.md",
+      "Length": 24000,
+      "SHA256": "6901623E9953A5C9957E909D7ADBF918D39CFDA03DAC35A7CE0027C8BA0D2141"
+    }
+  ],
+  "Research": {
+    "Path": "DOCS/verification/IMP-17-evidence-hardening/research.json",
+    "Length": 1622,
+    "SHA256": "70C0FE8D3A1DE82B366CA3B4B3E57BD6736E714B46B163D9BBA9436C34CB7582"
+  },
+  "Scope": "Full Debug/Release solution builds and unit tests; no new GUI screenshot or standalone Probe process run; actual minidumps validated by diagnostic unit tests and removed by test cleanup"
+}

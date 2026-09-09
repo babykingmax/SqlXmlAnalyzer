@@ -18,9 +18,6 @@ namespace SqlXmlAnalyzer.Core.Services
                 ["NodeId"] = ("Operator", "Node ID"),
                 ["PhysicalOp"] = ("Operator", "Physical Operator"),
                 ["LogicalOp"] = ("Operator", "Logical Operator"),
-                ["Parallel"] = ("Operator", "Parallel"),
-                ["EstimatedExecutionMode"] = ("Operator", "Estimated Execution Mode"),
-                ["ActualExecutionMode"] = ("Runtime", "Actual Execution Mode"),
                 ["EstimateRows"] = ("Estimates", "Estimated Rows"),
                 ["EstimatedRowsRead"] = ("Estimates", "Estimated Rows Read"),
                 ["EstimateIO"] = ("Estimates", "Estimated I/O Cost"),
@@ -55,13 +52,42 @@ namespace SqlXmlAnalyzer.Core.Services
             }
 
             var properties = new List<PlanPropertyItem>();
+            var operatorFacts = PlanOperatorFactsService.Get(relOp, relOp.Name.Namespace);
+            PlanExecutionFacts facts = operatorFacts.Execution;
+            PlanGraphRuntimeCountersResult counters = new PlanGraphRuntimeCountersService().Parse(relOp, relOp.Name.Namespace);
+            properties.Add(new("Operator", "并行 (Parallel)", facts.ParallelDisplay));
+            properties.Add(new("Operator", "有序扫描 (Ordered)", facts.OrderedDisplay));
+            properties.Add(new("Runtime", "实际执行模式", facts.ActualExecutionMode ?? "N/A"));
+            properties.Add(new("Estimates", "估算执行模式", facts.EstimatedExecutionMode ?? "N/A"));
+            properties.Add(new("Runtime", "实际输出行（行）", counters.ActualRowsDisplay));
+            properties.Add(new("Runtime", "实际读取行（行）", counters.ActualRowsReadDisplay));
+            properties.Add(new("Runtime", "线程执行次数合计（次）", operatorFacts.ThreadExecutions.Display("N0")));
+            properties.Add(new("Runtime", "逻辑执行次数（次）", operatorFacts.LogicalExecutions.Display("N0")));
+            properties.Add(new("Runtime", "每次执行输出行（行/次）", operatorFacts.RowsPerExecution.Display("N2")));
+            properties.Add(new("Estimates", "Estimated Own Cost", operatorFacts.OwnCost.Display()));
+            properties.Add(new("Predicate", "Residual Predicate", string.Join(" AND ", operatorFacts.Predicates)));
+            properties.Add(new("Predicate", "Seek Predicate", string.Join(" AND ", operatorFacts.SeekPredicates)));
+
+            var estimates = new Dictionary<string, Models.PlanMetric<double>>
+            {
+                ["EstimateRows"] = operatorFacts.EstimatedRows,
+                ["EstimatedRowsRead"] = operatorFacts.EstimatedRowsRead,
+                ["EstimateCPU"] = operatorFacts.EstimatedCpuCost,
+                ["EstimateIO"] = operatorFacts.EstimatedIoCost,
+                ["AvgRowSize"] = operatorFacts.AverageRowSize,
+                ["EstimatedTotalSubtreeCost"] = operatorFacts.SubtreeCost
+            };
+            foreach (var pair in estimates)
+                properties.Add(new("Estimates", AttributeMap[pair.Key].Name, pair.Value.Display()));
 
             foreach (XAttribute attribute in relOp.Attributes())
             {
+                if (attribute.Name.LocalName is "Parallel" or "Ordered" or "EstimatedExecutionMode" or "ActualExecutionMode") continue;
+                if (estimates.ContainsKey(attribute.Name.LocalName)) continue;
                 properties.Add(BuildAttributeProperty(attribute));
             }
 
-            foreach (XElement child in relOp.Elements())
+            foreach (XElement child in relOp.Elements().Where(child => child.Name.Namespace == relOp.Name.Namespace))
             {
                 AddChildProperties(properties, child);
             }
@@ -127,10 +153,12 @@ namespace SqlXmlAnalyzer.Core.Services
             List<PlanPropertyItem> properties,
             XElement runtimeInformation)
         {
-            foreach (XElement runtimeCounter in runtimeInformation.Elements())
+            foreach (XElement runtimeCounter in runtimeInformation.Elements(runtimeInformation.Name.Namespace + "RunTimeCountersPerThread"))
             {
                 foreach (XAttribute attribute in runtimeCounter.Attributes())
                 {
+                    // Aggregate rows and mode above use the same reader as graph/table; keep other raw counters below.
+                    if (attribute.Name.LocalName is "ActualRows" or "ActualRowsRead" or "ActualExecutionMode") continue;
                     string name = RuntimeAttributeNames.TryGetValue(attribute.Name.LocalName, out string? displayName)
                         ? displayName
                         : attribute.Name.LocalName;
@@ -149,6 +177,7 @@ namespace SqlXmlAnalyzer.Core.Services
         {
             foreach (XAttribute attribute in element.Attributes())
             {
+                if (attribute.Name.LocalName == "Ordered") continue;
                 properties.Add(new PlanPropertyItem(
                     element.Name.LocalName,
                     attribute.Name.LocalName,
