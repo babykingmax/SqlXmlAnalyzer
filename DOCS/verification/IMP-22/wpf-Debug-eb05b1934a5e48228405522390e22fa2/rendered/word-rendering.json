@@ -1,0 +1,14 @@
+[
+  {
+    "Mode": "raw",
+    "WordVersion": "16.0",
+    "ReadOnly": true,
+    "SourceSha256": "E6036D0E170FFC16B395A00F70CD5DB6EB006D14770F555C631ED20A1C44A2A8"
+  },
+  {
+    "Mode": "redacted",
+    "WordVersion": "16.0",
+    "ReadOnly": true,
+    "SourceSha256": "E3EDE3A5B4064C91F7FA5E7160D015F44B6542032E9CB0A690E16B205D1CC5C9"
+  }
+]

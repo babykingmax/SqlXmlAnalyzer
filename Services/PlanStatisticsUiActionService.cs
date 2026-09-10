@@ -17,6 +17,7 @@ namespace SqlXmlAnalyzer.Services
 
         public void LoadFromPlan(XDocument document, XNamespace showplanNamespace)
         {
+            _statisticsHistogramView.ClearSelection();
             var parameterList = document
                 .Descendants(showplanNamespace + "ParameterList")
                 .Descendants(showplanNamespace + "ColumnReference");
@@ -31,9 +32,9 @@ namespace SqlXmlAnalyzer.Services
             {
                 string column = displayParameter.Attribute("Column")?.Value ?? "@Param";
                 string compiled = displayParameter.Attribute("ParameterCompiledValue")?.Value
-                    ?? (sniffedParameter == null ? "1" : string.Empty);
+                    ?? string.Empty;
                 string runtime = displayParameter.Attribute("ParameterRuntimeValue")?.Value
-                    ?? (sniffedParameter == null ? "1" : string.Empty);
+                    ?? string.Empty;
 
                 _statisticsHistogramView.LoadParameterData(column, compiled, runtime);
             }

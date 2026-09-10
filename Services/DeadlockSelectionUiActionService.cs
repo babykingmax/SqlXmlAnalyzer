@@ -46,19 +46,23 @@ namespace SqlXmlAnalyzer.Services
 
         public void SelectProcess(object? selectedItem)
         {
+            if (_viewModel.DeadlockWorkspace.IsSynchronizingView) return;
             if (selectedItem is DeadlockProcess process)
             {
                 _viewModel.DeadlockPatternText =
                     _detailService.BuildProcessDetail(process);
+                if (_viewModel.DeadlockWorkspace.Analysis != null) _viewModel.DeadlockWorkspace.SelectProcess(process);
             }
         }
 
         public void SelectResource(object? selectedItem)
         {
+            if (_viewModel.DeadlockWorkspace.IsSynchronizingView) return;
             if (selectedItem is LockResource resource)
             {
                 _viewModel.DeadlockPatternText =
                     _detailService.BuildResourceDetail(resource);
+                if (_viewModel.DeadlockWorkspace.Analysis != null) _viewModel.DeadlockWorkspace.SelectResource(resource);
             }
         }
 
@@ -68,6 +72,7 @@ namespace SqlXmlAnalyzer.Services
             {
                 _viewModel.DeadlockPatternText =
                     _detailService.BuildPatternDetail(pattern);
+                if (_viewModel.DeadlockWorkspace.Analysis != null) _viewModel.DeadlockWorkspace.SelectPattern(pattern);
             }
         }
     }

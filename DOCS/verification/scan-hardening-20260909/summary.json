@@ -1,0 +1,88 @@
+{
+  "date": "2026-09-09",
+  "baselineTests": 2342,
+  "newRegressionTests": 46,
+  "firstRegressionRun": {
+    "total": 33,
+    "failedBeforeFix": 28,
+    "passedBeforeFix": 5,
+    "log": ".tmp.scan-hardening-before.log"
+  },
+  "validation": [
+    {
+      "configuration": "debug",
+      "total": 2388,
+      "passed": 2388,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "errors": 0,
+      "trx": ".tmp.scan-hardening-results/debug.trx",
+      "trxSha256": "5F24E4EEE44AF255F53E05BB4B137E1AC7528BD1AF646AE5989908FBAB054D02",
+      "buildLog": ".tmp.scan-hardening-build-debug.log",
+      "buildLogSha256": "A55D7351F5C342EDC94005FB3F6885796B586365807C9446AF811EE6A43EF287"
+    },
+    {
+      "configuration": "release",
+      "total": 2388,
+      "passed": 2388,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "errors": 0,
+      "trx": ".tmp.scan-hardening-results/release.trx",
+      "trxSha256": "A18A6516457B1D9445B647C94AF5EC3C9FF723466D6C8141A57366CB852B1E8C",
+      "buildLog": ".tmp.scan-hardening-build-release.log",
+      "buildLogSha256": "9E4DE2B6C320000B0764A5853CD9C54ABA93D880A1DA8C5395EE286F385AD576"
+    }
+  ],
+  "sources": [
+    {
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "sha256": "F0DBBE5D6B865A61343AE422A82A004BAFC27855356B0E73C42AC762EE896A44"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportFactory.cs",
+      "sha256": "B5655734E37F7442018A5F68D13978D136A3C894AAEC62290862397EC2116744"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/CliScanHardeningTests.cs",
+      "sha256": "63A880F173E4F7E0CDB0000CC7E67DB5EDAED26C38A274AEA826392EE92F635A"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DiagnosticReportHardeningTests.cs",
+      "sha256": "58425F1001909E8F168CBFD16A97F6AA07509D8851F2785E065923D225B9DBAC"
+    }
+  ],
+  "cliSamples": {
+    "directory": "E:\\SqlXmlAnalyzer\\.tmp.scan-hardening-samples-b5ae8a12a0de41bba42e7e24be74db8b",
+    "cases": [
+      {
+        "case": "valid-new-report",
+        "exitCode": 0,
+        "status": "Passed",
+        "cost": 0.25,
+        "costState": "Available",
+        "stdout": "报告已写入到: E:\\SqlXmlAnalyzer\\.tmp.scan-hardening-samples-b5ae8a12a0de41bba42e7e24be74db8b\\report.json"
+      },
+      {
+        "case": "invalid-threshold",
+        "exitCode": 2,
+        "output": "[Error] --max-cost 需要有限且非负的数值（使用小数点或科学记数法）。"
+      },
+      {
+        "case": "protect-source",
+        "exitCode": 2,
+        "sourceUnchanged": true,
+        "output": "[Error] 报告输出路径无效或已存在；请使用新的文件名。"
+      },
+      {
+        "case": "invalid-source-cost",
+        "exitCode": 1,
+        "status": "Failed",
+        "costState": "Invalid",
+        "message": "PLAN_COST_INVALID: 1 个算子的子树开销不是有限非负数，无法确认开销上限。"
+      }
+    ]
+  }
+}

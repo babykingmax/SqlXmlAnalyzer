@@ -11,6 +11,8 @@ using SqlXmlAnalyzer.Core.Services;
 using SqlXmlAnalyzer.Core.Diagnostics;
 using SqlXmlAnalyzer.Core.Mvvm;
 using SqlXmlAnalyzer.Core.Simulation;
+using SqlXmlAnalyzer.Core.Refactoring;
+using System.Globalization;
 
 namespace SqlXmlAnalyzer.ViewModels
 {
@@ -23,6 +25,36 @@ namespace SqlXmlAnalyzer.ViewModels
         private IndexScoreResult? _scoreAssessment;
         private CostImpactResult? _simulation;
         private bool _rowsEdited, _widthEdited, _returnedEdited;
+        private string _indexName = "", _maxDop = "", _compression = "PAGE", _error = "", _outputStatus = "";
+        private bool _online = true, _sortInTempDb = true;
+        private CompiledIndexDdl? _compiled;
+        private string _fullObject = "目标对象未解析";
+        public string FullObject => _fullObject;
+        public string IndexName { get => _indexName; set { _indexName = value; RefreshReview(nameof(IndexName)); } }
+        public string MaxDop { get => _maxDop; set { _maxDop = value; RefreshReview(nameof(MaxDop)); } }
+        public string DataCompression { get => _compression; set { _compression = value; RefreshReview(nameof(DataCompression)); } }
+        public bool Online { get => _online; set { _online = value; RefreshReview(nameof(Online)); } }
+        public bool SortInTempDb { get => _sortInTempDb; set { _sortInTempDb = value; RefreshReview(nameof(SortInTempDb)); } }
+        public string[] CompressionOptions { get; } = ["NONE", "ROW", "PAGE"];
+        public string CompiledIndexName => _compiled?.IndexName ?? "";
+        public string RollbackStatement => _compiled?.Rollback ?? "";
+        public string Error => _error;
+        public string OutputStatus => _outputStatus;
+        public bool CanExport => _compiled != null && !string.IsNullOrEmpty(_compiled.Create) && string.IsNullOrEmpty(_error);
+        public string EnvironmentNotice => "环境未连接核验：请核对 SQL Server 版本/版本类型、ONLINE 支持与锁等待、压缩支持、tempdb 空间、MAXDOP 和既有索引目录。ONLINE 不保证无阻塞。脚本仅供审核，不执行建索引。";
+        public void CopyScript(Action<string> clipboard)
+        {
+            if (!CanExport) return;
+            var result = new ReviewOutputService(_unexpectedErrors).Copy(CreateIndexStatement, clipboard);
+            _outputStatus = result.Message;
+            OnPropertyChanged(nameof(OutputStatus));
+        }
+
+        private void RefreshReview(string? editedProperty = null)
+        {
+            try { RecalculateCore(editedProperty); }
+            catch (Exception) { /* Recalculate has reported the incident and invalidated every script. */ }
+        }
         private readonly XNamespace _ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
 
         public ObservableCollection<IndexColumn> KeyColumns { get; }
@@ -181,7 +213,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     string colFormatted = c.Name.StartsWith("[") ? c.Name : $"[{c.Name}]";
                     if (!AvailableColumns.Contains(colFormatted))
                         AvailableColumns.Add(colFormatted);
-                    Recalculate();
+                    RefreshReview();
                 }
             });
             RemoveIncludeColumnCommand = new RelayCommand(p =>
@@ -192,7 +224,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     string colFormatted = c.Name.StartsWith("[") ? c.Name : $"[{c.Name}]";
                     if (!AvailableColumns.Contains(colFormatted))
                         AvailableColumns.Add(colFormatted);
-                    Recalculate();
+                    RefreshReview();
                 }
             });
             MoveKeyColumnUpCommand = new RelayCommand(p =>
@@ -203,7 +235,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     if (idx > 0)
                     {
                         KeyColumns.Move(idx, idx - 1);
-                        Recalculate();
+                        RefreshReview();
                     }
                 }
             });
@@ -215,7 +247,7 @@ namespace SqlXmlAnalyzer.ViewModels
                     if (idx >= 0 && idx < KeyColumns.Count - 1)
                     {
                         KeyColumns.Move(idx, idx + 1);
-                        Recalculate();
+                        RefreshReview();
                     }
                 }
             });
@@ -231,7 +263,7 @@ namespace SqlXmlAnalyzer.ViewModels
 
                     KeyColumns.Add(new IndexColumn { Name = colName, Usage = usage });
                     AvailableColumns.Remove(colName);
-                    Recalculate();
+                    RefreshReview();
                 }
             });
 
@@ -241,18 +273,23 @@ namespace SqlXmlAnalyzer.ViewModels
                 {
                     IncludeColumns.Add(new IndexColumn { Name = colName, Usage = "INCLUDE" });
                     AvailableColumns.Remove(colName);
-                    Recalculate();
+                    RefreshReview();
                 }
             });
 
             LoadAvailableColumns();
-            Recalculate();
+            RefreshReview();
         }
 
-        public void Recalculate()
+        public void Recalculate() => RecalculateCore(null);
+
+        private void RecalculateCore(string? editedProperty)
         {
             try
             {
+                if (editedProperty != null) OnPropertyChanged(editedProperty);
+                _fullObject = "目标对象未解析";
+                _fullObject = IndexDdlCompiler.ResolveTarget(_suggestion).DisplayName;
                 var temp = new MissingIndexSuggestion
                 {
                     Schema = _suggestion.Schema,
@@ -270,44 +307,82 @@ namespace SqlXmlAnalyzer.ViewModels
 
                 var score = IndexScoringCalculator.Evaluate(temp, _originalPlan, _ns, _unexpectedErrors);
                 var simulation = CostImpactSimulator.Simulate(_originalPlan, temp, _ns, _unexpectedErrors);
-                string ddl = temp.CreateIndexStatement;
+                int? maxDop = null;
+                if (!string.IsNullOrWhiteSpace(_maxDop))
+                {
+                    if (!int.TryParse(_maxDop, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
+                        throw new System.IO.InvalidDataException("MAXDOP 必须为 0–64 的整数，留空使用服务器默认设置。");
+                    maxDop = parsed;
+                }
+                var compiled = IndexDdlCompiler.Compile(temp, new IndexDdlOptions
+                {
+                    IndexName = _indexName, Online = _online, DataCompression = _compression,
+                    SortInTempDb = _sortInTempDb, MaxDop = maxDop
+                }, unexpectedErrors: _unexpectedErrors);
+                _compiled = compiled;
+                _error = compiled.Create.Length == 0 ? "至少选择一个键列才能生成脚本。" : "";
+                _outputStatus = "选项或列发生变化后，请重新核对并复制脚本。";
                 _scoreAssessment = score;
                 _simulation = simulation;
                 CurrentScore = score.Score;
-                CreateIndexStatement = ddl;
+                CreateIndexStatement = compiled.Create;
                 CostReductionDescription = "成本模型未校准，已暂停数值收益预测；" + simulation.Description;
                 OnPropertyChanged(nameof(ScoreBreakdown));
                 OnPropertyChanged(nameof(ScoreWeights));
                 OnPropertyChanged(nameof(ScoreSource));
                 OnPropertyChanged(nameof(CostEvidenceSummary));
+                NotifyReview();
 
                 UpdateTippingPointProperties();
                 Logger.Debug("IMP-08: 索引沙盒展示已刷新；数值收益预测未启用。");
             }
             catch (Exception ex)
             {
-                ExceptionPolicy.Describe(ex, "IndexSandboxViewModel.Recalculate", _unexpectedErrors);
+                _error = ExceptionPolicy.Describe(ex, "IndexSandboxViewModel.Recalculate", _unexpectedErrors);
+                _compiled = null;
+                _outputStatus = "审核失败；旧脚本已清除。";
                 _costReductionDescription = "评估失败，未生成收益预测。";
                 _createIndexStatement = string.Empty;
                 _currentScore = 0;
                 _scoreAssessment = null;
                 _simulation = null;
+                _tippingPointStatus = "N/A（审核失败）";
+                _tippingPointStatusColor = "#757575";
+                _tippingPointDetails = "审核失败，假设输入尚未重新评估。";
+                PublishFailureState(editedProperty);
+                throw;
+            }
+        }
+
+        private void PublishFailureState(string? editedProperty)
+        {
+            // Multicast invocation stops at the first exception. Deliver the invalidated state
+            // independently so one broken subscriber cannot leave other WPF bindings stale.
+            string?[] properties = [nameof(CreateIndexStatement), nameof(RollbackStatement), nameof(CompiledIndexName),
+                nameof(CanExport), nameof(Error), nameof(OutputStatus), nameof(FullObject),
+                nameof(CostReductionDescription), nameof(CurrentScore), nameof(ScoreBreakdown), nameof(ScoreWeights),
+                nameof(ScoreSource), nameof(CostEvidenceSummary), nameof(TippingPointStatus),
+                nameof(TippingPointStatusColor), nameof(TippingPointDetails), editedProperty];
+            foreach (PropertyChangedEventHandler subscriber in PropertyChanged?.GetInvocationList() ?? [])
+            {
                 try
                 {
-                    OnPropertyChanged(nameof(CostReductionDescription));
-                    OnPropertyChanged(nameof(CreateIndexStatement));
-                    OnPropertyChanged(nameof(CurrentScore));
-                    OnPropertyChanged(nameof(ScoreBreakdown));
-                    OnPropertyChanged(nameof(ScoreWeights));
-                    OnPropertyChanged(nameof(ScoreSource));
-                    OnPropertyChanged(nameof(CostEvidenceSummary));
+                    foreach (string? property in properties)
+                        if (property != null) subscriber(this, new PropertyChangedEventArgs(property));
                 }
                 catch (Exception notificationError)
                 {
+                    // Stop retrying this subscriber during this failure broadcast; continue with the others.
                     ExceptionPolicy.Describe(notificationError, "IndexSandboxViewModel.FailureNotification", _unexpectedErrors);
                 }
-                throw;
             }
+        }
+
+        private void NotifyReview()
+        {
+            OnPropertyChanged(nameof(FullObject));
+            OnPropertyChanged(nameof(CompiledIndexName)); OnPropertyChanged(nameof(RollbackStatement));
+            OnPropertyChanged(nameof(CanExport)); OnPropertyChanged(nameof(Error)); OnPropertyChanged(nameof(OutputStatus));
         }
 
         private void LoadAvailableColumns()

@@ -22,6 +22,7 @@ namespace SqlXmlAnalyzer.Core.Services
         public PlanDocument? Plan { get; init; }
         public Rules.PlanDiagnosticReport? Diagnostics { get; init; }
         public RewriteReview? RewriteReview { get; init; }
+        public string RefactoringNotices { get; init; } = "";
     }
 
     public sealed class PlanAnalysisService
@@ -89,7 +90,8 @@ namespace SqlXmlAnalyzer.Core.Services
                 documentText,
                 warningsText + Environment.NewLine + refactoring.Notices,
                 missingIndexes,
-                refactoring.Sql) { Plan = plan, Diagnostics = diagnostics, RewriteReview = refactoring.Review };
+                refactoring.Sql) { Plan = plan, Diagnostics = diagnostics, RewriteReview = refactoring.Review,
+                    RefactoringNotices = refactoring.Notices };
         }
 
         private RefactorPresentation RefactorSql(

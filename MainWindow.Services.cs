@@ -164,7 +164,8 @@ namespace SqlXmlAnalyzer
                     _analysisSessions,
                     DeadlockWorkspace.XelSelector,
                     MainTabControl,
-                    AnalyzeDeadlockXmlAsync);
+                    AnalyzeDeadlockXmlAsync,
+                    (selected, input, source) => _documentAnalysisUiActionService!.SelectDeadlockEventAsync(selected, input, source));
             Core.Services.MissingIndexDeploymentScriptService effectiveMissingIndexDeploymentScriptService =
                 missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
@@ -257,6 +258,9 @@ namespace SqlXmlAnalyzer
                     _sqlDiffUiActionService.ApplyQuickFixResult);
             _planStatisticsUiActionService =
                 new PlanStatisticsUiActionService(PlanWorkspace.StatisticsHistogram);
+            _ = new PlanWorkspaceUiActionService(ViewModel, PlanWorkspace, _sqlDiffUiActionService, _planStatisticsUiActionService,
+                effectivePlanTreeService, effectivePlanOperatorTreeViewRenderer, planPropertyService);
+            _ = new DeadlockWorkspaceUiActionService(ViewModel, DeadlockWorkspace, _deadlockGraphState);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             _analysisResultsUiActionService =
                 new AnalysisResultsUiActionService(
@@ -311,14 +315,6 @@ namespace SqlXmlAnalyzer
             _planAnalysisUiActionService =
                 new PlanAnalysisUiActionService(
                     ViewModel,
-                    effectivePlanTreeService,
-                    effectivePlanOperatorTreeViewRenderer,
-                    PlanWorkspace.XmlTextBox,
-                    PlanWorkspace.StatementTextBox,
-                    PlanWorkspace.WarningsTextBox,
-                    PlanWorkspace.OperatorTree,
-                    PlanWorkspace.VisualTree,
-                    PlanWorkspace.NodifyGraph,
                     MainTabControl,
                     PlanWorkspace.GraphTabControl);
             _planComparisonUiActionService =
@@ -377,6 +373,13 @@ namespace SqlXmlAnalyzer
                         action,
                         System.Windows.Threading.DispatcherPriority.Loaded),
                     _deadlockViewportUiActionService.ZoomToFit);
+            ViewModel.ResultsCleared += (_, _) =>
+            {
+                _analysisSessions.CancelCurrent();
+                _xelDeadlockUiActionService.ClearEvents();
+                _deadlockPlaybackUiActionService.HidePlayback();
+                _deadlockPlaybackUiActionService.SetCurrentPlayback(null, null);
+            };
             _documentAnalysisUiActionService =
                 new DocumentAnalysisUiActionService(
                     _analysisSessions,

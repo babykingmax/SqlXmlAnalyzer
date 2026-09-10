@@ -1,5 +1,29 @@
 # SqlXmlAnalyzer 系统架构指南 🏛️
 
+## IMP-22 统一报告与脱敏预览
+
+审查加固后，`ReportSizeBudget` 在字段收集、不可变快照构造和 XML 写入时共享 800 万内容字符、10 万条总记录预算；JSON/HTML/SVG 编码输出另有限额。完全缺失指标沿用 `PlanOperator.ExportFacts` 的紧凑策略，以 Missing/N/A 表示；有指标时保留完整投影。正文和 XML 在追加前检查，JSON 缓冲区在扩容前检查，预览按隐私模式缓存不可变正文。CLI 超预算返回明确失败，并清除大型旧模型字段，避免再次序列化放大。
+
+`PlanReportXml` 按源元素身份流式裁剪选择范围，保留语句选项、游标祖先、Operation 和命名空间。完整 RECEIVE 必须保留两个操作，因此单操作范围明确拒绝。取消令牌贯穿工厂及渲染入口；回归、XSD 校验和分配量记录见 [IMP-22 审查加固](DOCS/IMP-22审查修复与加固说明.md)。
+
+Core 的 `DiagnosticReport` 保存脱离 XML/控件的不可变选择快照，工厂复用计划范围过滤并验证计划版本或死锁事件指纹。GUI 预览、HTML/PDF/Word 规范正文、JSON 及静态图消费同一模型；CLI 计划扫描新增同名字段。`ReportRedactionService` 分类处理正文、元数据、图标签和源 XML，未知 XML 字段阻止脱敏快照；预览原文样例不进入输出。桌面 `DiagnosticReportExportService` 完成暂存、刷盘、禁止覆盖发布及失败清理。实现、兼容接口边界和浏览器离线验收限制见 [IMP-22](DOCS/IMP-22统一报告与脱敏预览.md)。
+
+## IMP-21 A/B、改写与索引审核界面
+
+审查修复：索引失败状态以独立订阅者调用发布，避免多播通知异常使其他绑定保留旧脚本；选项通知纳入刷新异常边界。候选输出统一带未脱敏消息，只描述输出动作；改写应用错误与导出错误分开保存，复制/保存不能清除应用诊断。设计依据与回归见 [IMP-21 审查加固](DOCS/IMP-21审查修复与加固说明.md)。
+
+比较窗口提供可见 A/B 命令及各侧未匹配清单，仍由 `PlanComparisonController` 判定身份和采集条件。审核窗口以 `RewriteProposalItem` 投影步骤前提、风险、证据、输入 hash 和精确 diff；完整报告与 SQL 对照分页展示。`ReviewOutputService` 负责复制及 UTF-8 新文件输出，以同目录临时文件和禁止覆盖的移动发布候选，失败不授予应用凭据；原文件应用继续经过 `ReviewedSqlApplyService` 与可靠写回。应用边界意外抛出时保守显示提交未知并禁止重试。
+
+`IndexSandboxViewModel` 将名称和环境选项交给同一个 `IndexDdlCompiler`，创建/回滚脚本来自同一编译结果；无效输入清除两者并禁用复制。`IndexDdlOptions.IndexName` 为空时保留既有指纹命名，非空按单个原始标识符转义。完整对象、原计划优化器估算、工具评分及假设输入分区展示。诊断沿用统一 DUMP 和分模式日志，详见 [IMP-21 实施与验证](DOCS/IMP-21审核界面.md)。
+
+## IMP-20 工作区选择与证据导航
+
+审查加固后，手动死锁选择显式清除证据选中值，返回证据同步恢复诊断详情；节点定位仅展开祖先，并在显示前重新计算图坐标。`PlanAnalysisOutput.RefactoringNotices` 独立传递文档级重构提示到工作区和文本报告，既有 `WarningsText` 保持兼容。验证与设计依据见 [IMP-20 审查加固](DOCS/IMP-20审查修复与加固说明.md)。
+
+`MainViewModel` 持有 `PlanWorkspaceViewModel` / `DeadlockWorkspaceViewModel`。计划以完整层级身份生成当前选择，保留原始 XElement，按相同范围投影 SQL、算子、索引、诊断及运行状态；WPF 服务仅负责应用选择和高亮。图的原生选中绑定 `SelectedNode`，重新布局/折叠限定当前节点集合。文档级诊断可通过证据身份切换目标 Batch / Statement / QueryPlan。复制文本使用完整选中范围诊断；IMP-22 的桌面报告入口使用同一选择范围创建不可变快照。
+
+死锁选择使用原始 `DeadlockInput`，不再序列化再解析；`OriginalElement` 引用源元素以保留原始命名空间与行号，分析副本继续规范化。证据位置由事件上下文映射回原始源，事件切换清除旧状态，并沿用会话请求号/取消保护。源修改导致旧证据失效，未知错误复用 DUMP/日志基础设施。清空通知在释放状态前取消请求及清空事件选择器。实现、兼容性和验收见 [IMP-20](DOCS/IMP-20语句事件选择与诊断证据.md)。
+
 ## IMP-19 语义场景证据与应用凭据
 
 联合审查加固：字符串比较保留原始 UTF-16 码元；sql_variant 在列模式阶段明确拒绝，避免 CLR 投影丢失内部属性。`SqlBoundedFileReader` 支撑新快照重载及写回的有界校验，语义入口先完成字节/字符检查再执行 AST。`SqlSemanticDatabaseLifetime` 在建库发出前保护清理流程；清理由新的管理员连接完成，并有独立期限。桌面通过同一实际应用结果派生状态标题与详情。接口迁移与验证记录见 [联合审查修复](DOCS/IMP-18-19联合审查修复与加固说明.md)。
@@ -105,7 +129,7 @@ Thread 按 `xsd:int` 和固定区域设置解析，允许前导符号及 XML 首
 
 `PlanDocumentBuilder` 构建只读 `PlanDocument → PlanBatch → PlanStatement → PlanQueryPlan → PlanOperator` 元数据，定位键包括 DocumentId、各层源序号、NodeId 和用于缺失/重复 ID 消歧的 OperatorOrdinal。StatementId、QueryHash 仅为元数据。`SqlObjectIdentity` 保留 Server/Database/Schema/Object，Alias/Index 独立保存；未知不补造，名称不统一忽略大小写。
 
-`PlanIdentityAdapter` 连接既有 XDocument/XElement 调用并缓存当前版本。XML 变更使旧源码定位失效，新模型不复用旧哈希。RuleEngine 在副本运行临时上下文，报告和图节点保留原始 Location/Objects，连线用完整 SelectionKey。CLI read/scan 输出层级及归属；多语句自动重构需先选定单条语句。IMP-17 的比较默认覆盖所有语句，界面由 `PlanComparisonSelection` 保存双侧人工范围；`PlanSnapshot.SelectedQueryPlan` 仅作为旧调用/会话兼容入口。后续完整会话/工作区改造仍归 IMP-20/21。实现、迁移差异及验证见 [IMP-10](DOCS/IMP-10语句算子与对象身份.md)。
+`PlanIdentityAdapter` 连接既有 XDocument/XElement 调用并缓存当前版本。XML 变更使旧源码定位失效，新模型不复用旧哈希。RuleEngine 在副本运行临时上下文，报告和图节点保留原始 Location/Objects，连线用完整 SelectionKey。CLI read/scan 输出层级及归属；多语句自动重构需先选定单条语句。IMP-17 的比较默认覆盖所有语句，界面由 `PlanComparisonSelection` 保存双侧人工范围；`PlanSnapshot.SelectedQueryPlan` 仅作为旧调用/会话兼容入口。语句/事件工作区选择由 IMP-20 接通；后续完整会话与审核工作区改造仍按后续步骤实施。实现、迁移差异及验证见 [IMP-10](DOCS/IMP-10语句算子与对象身份.md)。
 
 审查加固后，结果可通过 `AnalysisResult.ResultScope` 覆盖调用范围，R035 全局汇总只附文档位置且每份报告保留一次。NodeId 按 Showplan `xsd:int` 规范化，缺失/无效值退回结构序号，原值保存在 XML。比较 UI 处理选择和未知异常，使 PropertyChanged 不打断连续 A/B 更新；CLI read 将取消传入身份构建并在输出前检查。详见[审查修复说明](DOCS/IMP-10审查修复与加固说明.md)。
 
@@ -119,7 +143,7 @@ Thread 按 `xsd:int` 和固定区域设置解析，允许前导符号及 XML 首
 
 `DocumentOpenService` 为 GUI 提供共享结果，事件选择器和 ViewModel 保留输入上下文；XEL 事件保存带时区时间、源序号、字节偏移与长度。`IAnalysisEngine.AnalyzeInput` 传递来源和能力至 `AnalysisReport`，`ApplicationOrchestrator` 在重构前拒绝失败/Partial 辅助计划。CLI scan 继续输出 Passed/Failed 和非零失败码，read 输出契约 JSON；批量单文件失败后继续，取消停止。
 
-未知异常复用 `ExceptionPolicy` / `UnexpectedErrorReporter`，产生去重且经校验的 DUMP 与异常侧车。Debug 记录 DEBUG/WARN/ERROR/CRITICAL，Release 只记录 ERROR/CRITICAL。完整结构、预算默认值测量依据、兼容性与测试边界见 [IMP-09](DOCS/IMP-09统一文档读取与能力契约.md)。语句/算子身份已由 IMP-10 接入，多事件会话持久化继续由 IMP-20 实施。
+未知异常复用 `ExceptionPolicy` / `UnexpectedErrorReporter`，产生去重且经校验的 DUMP 与异常侧车。Debug 记录 DEBUG/WARN/ERROR/CRITICAL，Release 只记录 ERROR/CRITICAL。完整结构、预算默认值测量依据、兼容性与测试边界见 [IMP-09](DOCS/IMP-09统一文档读取与能力契约.md)。语句/算子身份已由 IMP-10 接入，事件选择与来源定位已由 IMP-20 接通，跨启动的多事件会话持久化仍待后续实施。
 
 ### IMP-07 字段事实与展示
 
@@ -155,7 +179,7 @@ Thread 按 `xsd:int` 和固定区域设置解析，允许前导符号及 XML 首
 
 ## 3. 可视化渲染引擎 (UI 层)
 
-`MainWindow` 只负责 WPF 事件协调。浏览器启动、Mermaid 临时页、PDF/Word 导出、临时文件生命周期和异步分析会话分别由 `BrowserLauncher`、`PdfWordReportService`、`TemporaryFileManager` 和 `AnalysisSessionCoordinator` 管理。
+`MainWindow` 只负责 WPF 事件协调。浏览器启动、Mermaid 临时页、临时文件生命周期和异步分析会话由 `BrowserLauncher`、`TemporaryFileManager` 和 `AnalysisSessionCoordinator` 管理。IMP-22 的报告按钮进入 `ReportReviewViewModel`，由 `DiagnosticReportExportService` 输出统一快照；旧 `PdfWordReportService` 保留兼容接口。
 
 执行计划是一个复杂的树状图，WPF 的内建 `TreeView` 无法满足横向展开和算子间带权连线的需求。
 

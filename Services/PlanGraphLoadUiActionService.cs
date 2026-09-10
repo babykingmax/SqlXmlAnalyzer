@@ -40,7 +40,10 @@ namespace SqlXmlAnalyzer.Services
                 return EmptyResult();
             }
 
-            List<XElement> relOps = Core.Services.PlanIdentityAdapter.GetOperatorSources(document, ns);
+            List<XElement> relOps = options.Operators?.ToList()
+                ?? Core.Services.PlanIdentityAdapter.GetOperatorSources(document, ns);
+            if (relOps.Any(op => !ReferenceEquals(op.Document, document)))
+                throw new System.IO.InvalidDataException("图节点不属于当前原始文档。");
             if (relOps.Count == 0)
             {
                 return EmptyResult();
@@ -131,6 +134,7 @@ namespace SqlXmlAnalyzer.Services
 
     internal sealed record PlanGraphLoadUiActionOptions
     {
+        public IReadOnlyList<XElement>? Operators { get; init; }
         public required PlanLayoutMode InitialLayout { get; init; }
         public required PlanColorMode InitialColor { get; init; }
         public required DiagramViewMode InitialView { get; init; }

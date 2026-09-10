@@ -2,6 +2,29 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:SqlXmlAnalyzer.Views">
+    <UserControl.Resources>
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style x:Key="EvidenceListItem" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template"><Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border x:Name="RowBorder" Padding="4" Background="Transparent">
+                        <GridViewRowPresenter Content="{TemplateBinding Content}" Columns="{Binding View.Columns, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                    </Border>
+                    <ControlTemplate.Triggers><Trigger Property="IsSelected" Value="True"><Setter TargetName="RowBorder" Property="Background" Value="#D7EBFF"/></Trigger></ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value></Setter>
+        </Style>
+    </UserControl.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="6,2">
+            <TextBlock Text="{Binding DeadlockWorkspace.Context}" TextWrapping="Wrap" FontSize="11"/>
+            <TextBlock Text="{Binding DeadlockWorkspace.Status}" TextWrapping="Wrap" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding DeadlockWorkspace.Nature}" TextWrapping="Wrap" Foreground="#9B5200"/>
+        </StackPanel>
     <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition x:Name="DeadlockLeftColumn" Width="280" MinWidth="0"/>
@@ -21,7 +44,7 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Text="参与进程 (Processes)" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <ListView Grid.Row="1" Name="DeadlockProcessesList" 
+                        <ListView Grid.Row="1" Name="DeadlockProcessesList" ItemContainerStyle="{StaticResource EvidenceListItem}"
                                   SelectionChanged="DeadlockProcessesList_SelectionChanged">
                             <ListView.View>
                                 <GridView>
@@ -34,7 +57,7 @@
                         </ListView>
 
                         <TextBlock Grid.Row="2" Text="涉及资源 (Resources)" FontWeight="SemiBold" Margin="0,8,0,4"/>
-                        <ListView Grid.Row="3" Name="DeadlockResourcesList" 
+                        <ListView Grid.Row="3" Name="DeadlockResourcesList" ItemContainerStyle="{StaticResource EvidenceListItem}"
                                   SelectionChanged="DeadlockResourcesList_SelectionChanged">
                             <ListView.View>
                                 <GridView>
@@ -53,16 +76,17 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Orientation="Horizontal" Margin="4,2,4,4">
+                        <WrapPanel Margin="4,2,4,4">
                             <TextBlock Text="死锁等待图 (原生拓扑视图)" FontWeight="SemiBold" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource MaterialDesignBody}"/>
                             <ComboBox x:Name="XelDeadlockSelector" Width="230" Margin="12,0,4,0" Visibility="Collapsed" SelectionChanged="XelDeadlockSelector_SelectionChanged" DisplayMemberPath="Timestamp" ToolTip="选择 XML 或 XEL 文件中的死锁事件"/>
-                            <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开左侧进程和资源面板"/>
-                            <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开右侧类型诊断和详情面板"/>
+                            <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Foreground="#333333" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开左侧进程和资源面板"/>
+                            <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Foreground="#333333" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" ToolTip="收起/展开右侧类型诊断和详情面板"/>
                             <Button Content="🔍 适屏" Click="ZoomToFitDeadlock_Click" Margin="4,0,8,0" Padding="8,2" ToolTip="自适应缩放并平移以使全部节点适配当前窗口尺寸"/>
                             <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 依赖推演" Checked="PlaybackModeToggle_Checked" Unchecked="PlaybackModeToggle_Unchecked" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
+                            <TextBlock Text="依赖推演" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <Button Content="复制 Mermaid" Click="CopyDeadlockMermaid_Click" Margin="4,0" Padding="6,2"/>
                             <Button Content="浏览器大图" Click="OpenDeadlockMermaidInBrowser_Click" Margin="4,0" Padding="6,2"/>
-                        </StackPanel>
+                        </WrapPanel>
 
 
                         <!-- Canvas 图形化死锁等待图 - 支持节点拖拽 + 鼠标滚轮缩放 + 中键平移 (纯 WPF 原生) -->
@@ -109,13 +133,35 @@
 
                         <TextBlock Text="诊断模式：除标明观测的锁模式外，均为待验证假设，不代表已证明根因。" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,4"/>
                         <ListBox Grid.Row="1" Name="DeadlockPatternsListBox" Margin="0,0,0,4"
-                                 SelectionChanged="DeadlockPatternsListBox_SelectionChanged"/>
+                                 SelectionChanged="DeadlockPatternsListBox_SelectionChanged">
+                            <ListBox.ItemTemplate><DataTemplate><StackPanel>
+                                <TextBlock Text="{Binding TypeName}" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Severity, StringFormat='严重度：{0}'}" Margin="0,0,12,0"/>
+                                    <TextBlock Text="{Binding Confidence, StringFormat='置信度：{0}'}"/>
+                                </StackPanel>
+                            </StackPanel></DataTemplate></ListBox.ItemTemplate>
+                        </ListBox>
 
                         <TextBlock Grid.Row="2" Text="分析与选中项详情 ( Consolas 等宽对齐 )" FontWeight="SemiBold" Margin="0,8,0,4"/>
-                        <TextBox Grid.Row="3" Name="DeadlockPatternDetail" Text="{Binding DeadlockPatternText, Mode=TwoWay}"
+                        <TabControl Grid.Row="3">
+                        <TabItem Header="诊断详情">
+                        <TextBox Name="DeadlockPatternDetail" Text="{Binding DeadlockPatternText, Mode=TwoWay}"
                                  IsReadOnly="True" TextWrapping="Wrap"
                                  FontFamily="Consolas" FontSize="11"
                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                        </TabItem>
+                        <TabItem Header="证据 SQL/XML">
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="90"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <ComboBox x:Name="DeadlockEvidenceSelector" ItemsSource="{Binding DeadlockWorkspace.Evidence}" SelectedItem="{Binding DeadlockWorkspace.SelectedEvidence}" DisplayMemberPath="Name" ToolTip="选择证据以高亮进程、资源与关系"/>
+                                <TextBlock Grid.Row="1" Text="{Binding DeadlockWorkspace.SourceTarget.Description}" TextWrapping="Wrap" FontSize="10"/>
+                                <TextBox Grid.Row="2" Text="{Binding DeadlockWorkspace.SourceTarget.Sql, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas" VerticalScrollBarVisibility="Auto"/>
+                                <TextBox Grid.Row="3" Text="{Binding DeadlockWorkspace.SourceTarget.Xml, Mode=OneWay}" IsReadOnly="True" FontFamily="Consolas" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                            </Grid>
+                        </TabItem>
+                        </TabControl>
                     </Grid>
                 </Grid>
+    </DockPanel>
 </UserControl>

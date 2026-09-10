@@ -14,6 +14,18 @@ public partial class MainViewModel
     public IReadOnlyList<ComparisonScopeOption> ComparisonScopesA => _comparison?.ScopesA ?? [];
     public IReadOnlyList<ComparisonScopeOption> ComparisonScopesB => _comparison?.ScopesB ?? [];
     public string ComparisonSummary => _comparisonError ?? _comparison?.Summary ?? "尚无比较结果";
+    public string ComparisonUnmatchedA => Unmatched(true);
+    public string ComparisonUnmatchedB => Unmatched(false);
+    private string Unmatched(bool sideA)
+    {
+        if (_comparison == null || PlanA == null && PlanB == null) return "尚无比较结果";
+        var rows = _comparison.Statements.Where(s => sideA
+            ? s.A != null && s.B == null || s.QueryA != null && s.QueryB == null
+            : s.B != null && s.A == null || s.QueryB != null && s.QueryA == null)
+            .Select(s => s.Label + Environment.NewLine + (sideA ? s.A : s.B)?.Statement.Text
+                + Environment.NewLine + s.MatchReason);
+        return string.Join(Environment.NewLine + Environment.NewLine, rows.DefaultIfEmpty("无未匹配项"));
+    }
     public string ComparisonConditions => _comparison == null ? "" : string.Join(Environment.NewLine,
         _comparison.Statements.Select(s => s.Label + "：" + s.Detail + Environment.NewLine
             + "A：" + s.QueryA?.Capture.Summary + "；" + s.QueryA?.Capture.ParameterSummary + Environment.NewLine
@@ -60,6 +72,7 @@ public partial class MainViewModel
         ManualScopeB = ComparisonScopesB.FirstOrDefault(s => s.Key == selectedB)
             ?? ComparisonScopesB.FirstOrDefault(s => s.Key == ComparisonSelection.B);
         OnPropertyChanged(nameof(ComparisonSummary)); OnPropertyChanged(nameof(ComparisonConditions));
+        OnPropertyChanged(nameof(ComparisonUnmatchedA)); OnPropertyChanged(nameof(ComparisonUnmatchedB));
         OnPropertyChanged(nameof(CostDeltaText)); OnPropertyChanged(nameof(CostDeltaColor));
     }
 }

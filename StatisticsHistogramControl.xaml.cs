@@ -29,6 +29,16 @@ namespace SqlXmlAnalyzer
             InitializeComponent();
         }
 
+        public void ClearSelection()
+        {
+            _steps = null; _hasData = false; _dbccCommandsTemplate = "";
+            _paramName = ""; _compiledValueStr = ""; _runtimeValueStr = "";
+            TxtStatsInput.Clear(); DrawCanvas.Children.Clear(); GridStatsUsage.ItemsSource = null;
+            TxtParamName.Text = "未采集参数"; TxtCompiledValue.Text = "N/A"; TxtRuntimeValue.Text = "N/A";
+            PanelEstimates.Visibility = Visibility.Collapsed; PanelSniffingRatio.Visibility = Visibility.Collapsed;
+            TxtStatus.Text = "未采集当前选择的参数/直方图；不构成健康结论。";
+        }
+
         public void LoadParameterData(string paramName, string compiledValStr, string runtimeValStr)
         {
             // Reset previous manual statistics import

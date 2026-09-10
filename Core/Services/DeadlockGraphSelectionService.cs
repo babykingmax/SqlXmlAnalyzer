@@ -21,9 +21,11 @@ namespace SqlXmlAnalyzer.Core.Services
                 return null;
             }
 
-            return resources.FirstOrDefault(resource =>
-                string.Equals(resource.ObjectName, details.ObjectName, StringComparison.Ordinal) &&
-                string.Equals(resource.LockType, details.LockType, StringComparison.Ordinal));
+            if (!int.TryParse(nodeId["res_single_".Length..], System.Globalization.NumberStyles.None,
+                System.Globalization.CultureInfo.InvariantCulture, out int index)) return null;
+            var resource = resources.ElementAtOrDefault(index);
+            return resource != null && resource.ObjectName == details.ObjectName && resource.LockType == details.LockType
+                ? resource : null;
         }
 
         public DeadlockProcess? FindProcessForNode(

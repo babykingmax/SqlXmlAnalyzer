@@ -34,4 +34,22 @@ public partial class RewriteReviewWindow : Window
     }
 
     private void Apply_Click(object sender, RoutedEventArgs e) => ((RewriteReviewViewModel)DataContext).Apply(_lifetime.Token);
+    private void CopyCandidate_Click(object sender, RoutedEventArgs e) => ((RewriteReviewViewModel)DataContext).CopyCandidate(Clipboard.SetText);
+
+    private void SaveCandidate_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "保存候选到新文件（不能覆盖已有文件）", Filter = "SQL 文件|*.sql",
+                DefaultExt = ".sql", AddExtension = true, FileName = "candidate.sql"
+            };
+            if (dialog.ShowDialog(this) == true) ((RewriteReviewViewModel)DataContext).SaveCandidateNew(dialog.FileName);
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, ExceptionPolicy.Describe(exception, "IMP21.RewriteReview.SaveDialog"), "保存失败", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
 }

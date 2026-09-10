@@ -14,6 +14,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly ComboBox _selector;
         private readonly TabControl _mainTabControl;
         private readonly Func<string, string, string, Task> _analyzeDeadlockXmlAsync;
+        private readonly Func<DeadlockInput, InputRecognitionResult?, string, Task>? _selectEventAsync;
         private string _sourceFilePath = string.Empty;
         public InputRecognitionResult? CurrentInput { get; private set; }
 
@@ -22,7 +23,8 @@ namespace SqlXmlAnalyzer.Services
             Core.Services.AnalysisSessionCoordinator analysisSessions,
             ComboBox selector,
             TabControl mainTabControl,
-            Func<string, string, string, Task> analyzeDeadlockXmlAsync)
+            Func<string, string, string, Task> analyzeDeadlockXmlAsync,
+            Func<DeadlockInput, InputRecognitionResult?, string, Task>? selectEventAsync = null)
         {
             _xelReader = xelReader
                 ?? throw new ArgumentNullException(nameof(xelReader));
@@ -34,6 +36,7 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(mainTabControl));
             _analyzeDeadlockXmlAsync = analyzeDeadlockXmlAsync
                 ?? throw new ArgumentNullException(nameof(analyzeDeadlockXmlAsync));
+            _selectEventAsync = selectEventAsync;
         }
 
         public async Task AnalyzeXelFileAsync(string filePath)
@@ -88,15 +91,18 @@ namespace SqlXmlAnalyzer.Services
             try
             {
                 if (_selector.SelectedItem is DeadlockInput input)
-                    await _analyzeDeadlockXmlAsync(input.Document.ToString(), _sourceFilePath, $"{_sourceFilePath} · {input.DisplayName}");
+                {
+                    if (_selectEventAsync != null) await _selectEventAsync(input, CurrentInput, _sourceFilePath);
+                    else await _analyzeDeadlockXmlAsync(input.Document.ToString(), _sourceFilePath, $"{_sourceFilePath} · {input.DisplayName}");
+                }
                 else if (_selector.SelectedItem is Core.XelDeadlockReport report)
                     await _analyzeDeadlockXmlAsync(report.DeadlockXml, _sourceFilePath, $"XEL deadlock event {report.Timestamp}");
             }
             catch (Exception ex)
             {
-                Logger.LogException("Render XEL deadlock graph failed (Selector_SelectionChanged)", ex);
+                string detail = Core.Diagnostics.ExceptionPolicy.Describe(ex, "IMP20.DeadlockEvent.Selection");
                 MessageBox.Show(
-                    "Failed to render the selected deadlock graph: " + ex.Message,
+                    "Failed to render the selected deadlock graph: " + detail,
                     "Deadlock render failed",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -106,14 +112,14 @@ namespace SqlXmlAnalyzer.Services
         public void ShowDocumentEvents(InputRecognitionResult input, string source)
         {
             if (!input.HasUsableContent) { ClearEvents(); return; }
-            ShowXmlEvents(input.Deadlocks, source);
-            CurrentInput = input;
+            ShowXmlEvents(input.Deadlocks, source, input);
             _selector.ToolTip = input.Status == InputStatus.Partial ? InputReadPresentation.Describe(input) : null;
         }
 
-        public void ShowXmlEvents(IReadOnlyList<DeadlockInput> events, string source)
+        public void ShowXmlEvents(IReadOnlyList<DeadlockInput> events, string source, InputRecognitionResult? input = null)
         {
             ClearEvents();
+            CurrentInput = input;
             _sourceFilePath = source;
             _selector.DisplayMemberPath = nameof(DeadlockInput.DisplayName);
             _selector.ItemsSource = events;

@@ -6,6 +6,7 @@ using SqlXmlAnalyzer.Application.Services;
 using SqlXmlAnalyzer.Refactoring;
 using SqlXmlAnalyzer.Application.Models;
 using System.Text.Json;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.ViewModels;
 
@@ -16,10 +17,12 @@ public sealed class RewriteReviewViewModel : ObservableObject
     private readonly IUnexpectedErrorReporter _unexpectedErrors;
     private RewriteReview _review;
     private string _error = "";
+    private string _outputError = "";
     private readonly ReviewedSqlApplyService _applyService;
     private PreparedSqlRewrite? _prepared;
     private string _validationDetails = "尚未执行数据库语义验证。";
     private bool _busy, _reviewedScenarios, _applied;
+    private bool _commitUncertain;
     private ApplySqlRewriteResult? _lastApply;
     private string _applySummary = "";
     private int _selectionVersion;
@@ -27,11 +30,24 @@ public sealed class RewriteReviewViewModel : ObservableObject
     public string OriginalSql => _source;
     public string PreviewSql => _review.PreviewSql;
     public string Details => RewriteReviewFormatter.Format(_review, includeSql: true, applicationStatus: ApplyStatusText);
-    public string ApplyStatusText => _lastApply?.CommitOutcomeUnknown == true ? "提交结果未知，请核对源文件和备份"
+    public string ApplyStatusText => _commitUncertain || _lastApply?.CommitOutcomeUnknown == true ? "提交结果未知，请核对源文件和备份"
         : _lastApply?.SourceWritten == true ? "已写回" : _lastApply != null ? "未写回" : "尚未应用";
     public string PreviewTitle => "审核 SQL · " + ApplyStatusText;
     public string ApplySummary => _applySummary;
-    public string Error => _error;
+    public string Error => string.Join(Environment.NewLine, new[] { _error, _outputError }.Where(e => e.Length > 0).Distinct());
+    private string _outputStatus = "复制和保存新文件仅输出候选，不替代验证，也不修改原文件。";
+    public string OutputStatus => _outputStatus;
+    public bool CanExport => !_busy && _review.Validation.IsValid && _review.Proposals.Any(p => p.IsSelected);
+    public void CopyCandidate(Action<string> clipboard) => Export(service => service.Copy(PreviewSql, clipboard));
+    public void SaveCandidateNew(string path) => Export(service => service.SaveNew(PreviewSql, path));
+    private void Export(Func<ReviewOutputService, ReviewOutputResult> action)
+    {
+        if (!CanExport) return;
+        var result = action(new ReviewOutputService(_unexpectedErrors));
+        _outputStatus = result.Message;
+        _outputError = result.Succeeded ? "" : result.Message;
+        OnPropertyChanged(nameof(OutputStatus)); OnPropertyChanged(nameof(Error));
+    }
     public bool CanApply => !_busy && !_applied && _reviewedScenarios && _prepared?.CanApply == true;
     public bool CanValidate => !_busy && !_applied && _review.Proposals.Any(p => p.IsSelected);
     public bool CanAcknowledge => !_busy && !_applied && _prepared?.CanApply == true;
@@ -63,6 +79,8 @@ public sealed class RewriteReviewViewModel : ObservableObject
         _prepared = null;
         _reviewedScenarios = false;
         _validationDetails = "选择已变化，需要重新执行数据库验证。";
+        _outputStatus = "选择已变化；此前导出的文件和剪贴板不会自动更新。";
+        _outputError = "";
         try
         {
             var ids = _review.Proposals.Where(p => p.IsSelected).Select(p => p.Id).ToHashSet(StringComparer.Ordinal);
@@ -88,6 +106,8 @@ public sealed class RewriteReviewViewModel : ObservableObject
         OnPropertyChanged(nameof(PreviewSql));
         OnPropertyChanged(nameof(Details));
         OnPropertyChanged(nameof(Error));
+        OnPropertyChanged(nameof(OutputStatus));
+        Logger.Debug("IMP-21: 改写选择已刷新，先前应用凭据已失效。");
         NotifyApplyState();
     }
 
@@ -129,6 +149,14 @@ public sealed class RewriteReviewViewModel : ObservableObject
             _validationDetails += $"\n应用结果：{ApplyStatusText}\n{_applySummary}\n{result.Error}";
             return result;
         }
+        catch (Exception exception)
+        {
+            // The service normally returns commit state. An escaping failure cannot prove no write occurred.
+            _commitUncertain = true; _applied = true;
+            _error = ExceptionPolicy.Describe(exception, "IMP21.RewriteReview.Apply", _unexpectedErrors);
+            _validationDetails += "\n" + ApplyStatusText + "\n" + _error;
+            return null;
+        }
         finally { _busy = false; _prepared = null; NotifyApplyState(); OnPropertyChanged(nameof(Error)); }
     }
 
@@ -138,6 +166,7 @@ public sealed class RewriteReviewViewModel : ObservableObject
         OnPropertyChanged(nameof(ValidationDetails)); OnPropertyChanged(nameof(ReviewedScenarios));
         OnPropertyChanged(nameof(ApplyStatusText)); OnPropertyChanged(nameof(ApplySummary));
         OnPropertyChanged(nameof(PreviewTitle)); OnPropertyChanged(nameof(Details));
+        OnPropertyChanged(nameof(CanExport));
     }
 }
 
@@ -147,11 +176,25 @@ public sealed class RewriteProposalItem : ObservableObject
     private readonly Action<string, bool> _select;
     public string Id { get; }
     public string Label { get; }
+    public string Preconditions { get; }
+    public string Warnings { get; }
+    public string Evidence { get; }
+    public string DiffContext { get; }
+    public string OriginalText { get; }
+    public string ReplacementText { get; }
     public bool IsSelected { get => _selected; set { if (value != _selected) _select(Id, value); } }
     internal RewriteProposalItem(RewriteProposal proposal, Action<string, bool> select)
     {
         Id = proposal.Id;
         Label = $"{proposal.RuleId} / {proposal.RuleVersion} — {proposal.Description}";
+        Preconditions = "前提：" + string.Join("；", proposal.Preconditions.DefaultIfEmpty("未提供，需人工核对"));
+        Warnings = "风险与限制：" + string.Join("；", proposal.Risks.Concat(proposal.Warnings)
+            .Concat(proposal.Validation.UnprovenProperties).Concat(proposal.Validation.Errors).DefaultIfEmpty("语义等价性未证明"));
+        Evidence = "证据：" + string.Join("；", proposal.Evidence) + "\n依赖：" + string.Join(", ", proposal.DependsOn)
+            + "；语法验证：" + (proposal.Validation.IsValid ? "通过（不代表语义等价）" : "未通过");
+        DiffContext = $"此步骤输入 hash：{proposal.BaseSqlHash}；UTF-16 偏移：{proposal.Diff.StartOffset}。有依赖时，相对此步骤输入，而非最初原文。";
+        OriginalText = proposal.Diff.OriginalText;
+        ReplacementText = proposal.Diff.ReplacementText;
         _selected = proposal.IsSelected;
         _select = select;
     }

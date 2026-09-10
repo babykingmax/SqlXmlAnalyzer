@@ -1,0 +1,16 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence><Batch><Statements>
+    <StmtSimple StatementText="SELECT 1;"><QueryPlan>
+      <RelOp NodeId="0" PhysicalOp="Nested Loops"><NestedLoops>
+        <RelOp NodeId="1" PhysicalOp="Nested Loops"><NestedLoops>
+          <RelOp NodeId="2" PhysicalOp="Constant Scan"/>
+          <RelOp NodeId="3" PhysicalOp="Constant Scan"/>
+        </NestedLoops></RelOp>
+        <RelOp NodeId="4" PhysicalOp="Nested Loops"><NestedLoops>
+          <RelOp NodeId="5" PhysicalOp="Constant Scan"/>
+          <RelOp NodeId="6" PhysicalOp="Constant Scan"/>
+        </NestedLoops></RelOp>
+      </NestedLoops></RelOp>
+    </QueryPlan></StmtSimple>
+  </Statements></Batch></BatchSequence>
+</ShowPlanXML>

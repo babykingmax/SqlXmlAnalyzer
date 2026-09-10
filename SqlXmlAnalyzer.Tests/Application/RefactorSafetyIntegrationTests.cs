@@ -32,6 +32,7 @@ public sealed class RefactorSafetyIntegrationTests
         var result = service.Analyze(document, ShowplanNs, "missing-imp04-plan.sqlplan");
         result.RefactoredSql.Should().Be(sql);
         result.WarningsText.Should().Contain("未产生 SQL 改写").And.Contain("REF_RULE_103_TRIM").And.Contain("前导空格").And.Contain("验证前提");
+        result.RefactoringNotices.Should().Contain("REF_RULE_103_TRIM").And.Contain("验证前提");
     }
 
     [Fact]

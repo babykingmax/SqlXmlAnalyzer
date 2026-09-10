@@ -59,7 +59,7 @@ namespace SqlXmlAnalyzer.Services
 
             XNamespace ns = currentNamespace;
             List<XElement> relOps =
-                currentDocument.Descendants(ns + "RelOp").ToList();
+                masterNodes.Where(node => node.RawElement != null).Select(node => node.RawElement!).ToList();
             if (relOps.Count == 0)
             {
                 return;

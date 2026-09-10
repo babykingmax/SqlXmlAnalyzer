@@ -6,6 +6,7 @@ namespace SqlXmlAnalyzer.Views
 {
     public partial class PlanWorkspaceView : UserControl
     {
+        private void ShowEvidenceSource_Click(object sender, RoutedEventArgs e) => EvidenceSourceTab.IsSelected = true;
         private void ReviewProposals_Click(object sender, RoutedEventArgs e)
         {
             try

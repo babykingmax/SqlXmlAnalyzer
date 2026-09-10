@@ -1,0 +1,2277 @@
+{
+  "SchemaVersion": "IMP22-1.0",
+  "ProductVersion": "1.0.0",
+  "Kind": "ExecutionPlan",
+  "Scope": "B1/S2/Q1",
+  "CreatedAt": "2026-09-09T15:36:58.501338+00:00",
+  "IsRedacted": false,
+  "PrivacyNotice": "\u672A\u8131\u654F\uFF1A\u6B64\u8F93\u51FA\u53EF\u80FD\u5305\u542B SQL\u3001\u53C2\u6570\u3001\u5BF9\u8C61\u540D\u79F0\u3001\u6587\u4EF6\u8DEF\u5F84\u6216\u56FE\u50CF\u4E2D\u7684\u654F\u611F\u4FE1\u606F\uFF0C\u4EC5\u4F9B\u672C\u5730\u8BCA\u65AD\uFF1B\u4E0D\u80FD\u4F5C\u4E3A\u8131\u654F\u6750\u6599\u5171\u4EAB\u3002",
+  "Capabilities": "\u79BB\u7EBF\u9759\u6001\u5173\u7CFB\u56FE\uFF1B\u4E0D\u662F\u5B9E\u9645\u6267\u884C\u65F6\u95F4\u7EBF\u3002\u56FE\u8D85\u8FC7 80 \u4E2A\u8282\u70B9\u65F6\u5C55\u793A\u524D 80 \u4E2A\uFF0C\u5B8C\u6574\u8282\u70B9/\u8FB9\u4ECD\u5217\u5165\u6B63\u6587\u4E0E JSON\u3002HTML/PDF/Word/JSON \u5305\u542B\u540C\u4E00\u4E8B\u5B9E\u3001\u8BCA\u65AD\u3001\u8FD0\u884C\u8BB0\u5F55\u53CA XML\uFF1BSVG \u4EC5\u5305\u542B\u9759\u6001\u56FE\uFF0Csqlplan \u4EC5\u5305\u542B\u9009\u62E9\u8303\u56F4 XML\uFF1B\u65E0\u4EA4\u4E92\u56DE\u653E\u3002",
+  "IssueCount": 1,
+  "FactCount": 259,
+  "HitCount": 1,
+  "NoHitCount": 30,
+  "SkippedCount": 3,
+  "FailedCount": 0,
+  "Metadata": [
+    {
+      "Name": "DocumentId",
+      "Value": "7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9",
+      "Category": "SourceIdentity"
+    },
+    {
+      "Name": "SourceName",
+      "Value": "E:\\SqlXmlAnalyzer\\DOCS\\verification\\IMP-22\\wpf-Release-bb8e2622c8054405b0e1d13152c4a638\\synthetic-plan.sqlplan",
+      "Category": "Metadata"
+    },
+    {
+      "Name": "SourceHash",
+      "Value": "7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9",
+      "Category": "SourceIdentity"
+    },
+    {
+      "Name": "EngineBuild",
+      "Value": "16.0.1000.6",
+      "Category": "Metadata"
+    },
+    {
+      "Name": "SourceSchema",
+      "Value": "1.571",
+      "Category": "Metadata"
+    },
+    {
+      "Name": "CapturedAt",
+      "Value": "N/A",
+      "Category": "Metadata"
+    },
+    {
+      "Name": "Capabilities",
+      "Value": "PlanStatements, PlanOperators, RuntimeCounters, PreservedSource",
+      "Category": ""
+    },
+    {
+      "Name": "RuleProtocol",
+      "Value": "1.0",
+      "Category": ""
+    },
+    {
+      "Name": "InputDiagnostics",
+      "Value": "[]",
+      "Category": "DiagnosticText"
+    },
+    {
+      "Name": "InputContext",
+      "Value": "\u6765\u6E90\uFF1AE:\\SqlXmlAnalyzer\\DOCS\\verification\\IMP-22\\wpf-Release-bb8e2622c8054405b0e1d13152c4a638\\synthetic-plan.sqlplan\uFF1B\u91C7\u96C6\u65F6\u95F4\uFF1A\u672A\u91C7\u96C6\uFF1B\u5F15\u64CE\uFF1A16.0.1000.6\uFF1BSchema\uFF1A1.571\uFF1B\u80FD\u529B\uFF1APlanStatements, PlanOperators, RuntimeCounters, PreservedSource\uFF1B\u8BFB\u53D6\u72B6\u6001\uFF1ASuccess\r\n\u5F53\u524D\u8303\u56F4\uFF08\u542B\u6587\u6863\u8BCA\u65AD\uFF09\uFF1AHit 1 / NoHit 30 / Skipped 3 / Failed 0\u3002 \u90E8\u5206\u68C0\u67E5\u7F3A\u5C11\u8BC1\u636E\u800C\u8DF3\u8FC7\u3002",
+      "Category": "Metadata"
+    },
+    {
+      "Name": "Configuration",
+      "Value": "{\u0022RULE_001_IMPLICIT_CONV\u0022:{\u0022RuleId\u0022:\u0022RULE_001_IMPLICIT_CONV\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_002_KEY_LOOKUP\u0022:{\u0022RuleId\u0022:\u0022RULE_002_KEY_LOOKUP\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_003_PARAM_SNIFFING\u0022:{\u0022RuleId\u0022:\u0022RULE_003_PARAM_SNIFFING\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_004_ESTIMATE_MISMATCH\u0022:{\u0022RuleId\u0022:\u0022RULE_004_ESTIMATE_MISMATCH\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_017_LARGE_MEMORY_GRANT\u0022:{\u0022RuleId\u0022:\u0022RULE_017_LARGE_MEMORY_GRANT\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_006_RESIDUAL_PREDICATE\u0022:{\u0022RuleId\u0022:\u0022RULE_006_RESIDUAL_PREDICATE\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_008_SPILL_DETECTION\u0022:{\u0022RuleId\u0022:\u0022RULE_008_SPILL_DETECTION\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_009_PARALLEL_SKEW\u0022:{\u0022RuleId\u0022:\u0022RULE_009_PARALLEL_SKEW\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_011_UDF_TVF\u0022:{\u0022RuleId\u0022:\u0022RULE_011_UDF_TVF\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_012_NESTED_LOOPS_HIGH_EXEC\u0022:{\u0022RuleId\u0022:\u0022RULE_012_NESTED_LOOPS_HIGH_EXEC\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_013_ANTI_PATTERN\u0022:{\u0022RuleId\u0022:\u0022RULE_013_ANTI_PATTERN\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_014_SERIAL_PLAN_REASON\u0022:{\u0022RuleId\u0022:\u0022RULE_014_SERIAL_PLAN_REASON\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_015_LOCAL_VARIABLES\u0022:{\u0022RuleId\u0022:\u0022RULE_015_LOCAL_VARIABLES\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:\u0022Warning\u0022},\u0022RULE_016_ZERO_ROW_ACTUALS\u0022:{\u0022RuleId\u0022:\u0022RULE_016_ZERO_ROW_ACTUALS\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_036_WAIT_STATS\u0022:{\u0022RuleId\u0022:\u0022RULE_036_WAIT_STATS\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_037_RESOURCE_SEMAPHORE\u0022:{\u0022RuleId\u0022:\u0022RULE_037_RESOURCE_SEMAPHORE\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_018_OPTIMIZER_ABORT\u0022:{\u0022RuleId\u0022:\u0022RULE_018_OPTIMIZER_ABORT\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_019_CACHE_RECOMPILE\u0022:{\u0022RuleId\u0022:\u0022RULE_019_CACHE_RECOMPILE\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_020_MISSING_INDEX\u0022:{\u0022RuleId\u0022:\u0022RULE_020_MISSING_INDEX\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_021_TABLE_SCAN\u0022:{\u0022RuleId\u0022:\u0022RULE_021_TABLE_SCAN\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_022_HIGH_COST_OP\u0022:{\u0022RuleId\u0022:\u0022RULE_022_HIGH_COST_OP\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_023_RUNNING_TOTAL_PATTERN\u0022:{\u0022RuleId\u0022:\u0022RULE_023_RUNNING_TOTAL_PATTERN\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_024_SCALAR_SUBQUERY_PATTERN\u0022:{\u0022RuleId\u0022:\u0022RULE_024_SCALAR_SUBQUERY_PATTERN\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_025_QUERY_REWRITE\u0022:{\u0022RuleId\u0022:\u0022RULE_025_QUERY_REWRITE\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_026_IMPLICIT_CONV_DOC\u0022:{\u0022RuleId\u0022:\u0022RULE_026_IMPLICIT_CONV_DOC\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_027_PARAM_SNIFFING_DOC\u0022:{\u0022RuleId\u0022:\u0022RULE_027_PARAM_SNIFFING_DOC\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_028_STATS_USAGE\u0022:{\u0022RuleId\u0022:\u0022RULE_028_STATS_USAGE\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_029_MEMORY_GRANT_DOC\u0022:{\u0022RuleId\u0022:\u0022RULE_029_MEMORY_GRANT_DOC\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_030_CARDINALITY_ERROR\u0022:{\u0022RuleId\u0022:\u0022RULE_030_CARDINALITY_ERROR\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_031_KEY_LOOKUP_OP\u0022:{\u0022RuleId\u0022:\u0022RULE_031_KEY_LOOKUP_OP\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_032_MEMORY_SPILL\u0022:{\u0022RuleId\u0022:\u0022RULE_032_MEMORY_SPILL\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_033_THREAD_SKEW\u0022:{\u0022RuleId\u0022:\u0022RULE_033_THREAD_SKEW\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_034_RESIDUAL_PRED_OP\u0022:{\u0022RuleId\u0022:\u0022RULE_034_RESIDUAL_PRED_OP\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null},\u0022RULE_035_SARGABLE_INDEX_RECOMMENDATION\u0022:{\u0022RuleId\u0022:\u0022RULE_035_SARGABLE_INDEX_RECOMMENDATION\u0022,\u0022Enabled\u0022:true,\u0022SeverityOverride\u0022:null}}",
+      "Category": "Configuration"
+    },
+    {
+      "Name": "DocumentRefactoringNotices",
+      "Value": "\u591A\u8BED\u53E5\u8BA1\u5212\u5DF2\u4FDD\u7559\u6240\u6709\u8BED\u53E5\u8EAB\u4EFD\uFF1B\u81EA\u52A8\u91CD\u6784\u9700\u8981\u660E\u786E\u9009\u5B9A\u5355\u6761\u8BED\u53E5\uFF0C\u672C\u6B21\u672A\u751F\u6210\u8DE8\u8BED\u53E5\u6539\u5199\u3002",
+      "Category": "DiagnosticText"
+    }
+  ],
+  "Facts": [
+    {
+      "Name": "B1/S2 SQL",
+      "Value": "SELECT \u0027SECRET_IMP22_7461\u0027 FROM [SECRET_IMP22_7461_Table]",
+      "Category": "SqlText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1 PhysicalOp",
+      "Value": "Table Scan",
+      "Category": "OperatorLabel"
+    },
+    {
+      "Name": "B1/S2/Q1/O1 LogicalOp",
+      "Value": "Table Scan",
+      "Category": "OperatorLabel"
+    },
+    {
+      "Name": "B1/S2/Q1/O1 NodeId",
+      "Value": "0",
+      "Category": "SourceIdentity"
+    },
+    {
+      "Name": "B1/S2/Q1/O1 Source",
+      "Value": "{\u0022XmlPath\u0022:\u0022/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]\u0022,\u0022Line\u0022:3,\u0022Column\u0022:99,\u0022EventIndex\u0022:null,\u0022ByteOffset\u0022:null,\u0022ByteLength\u0022:null}",
+      "Category": "SourceLocation"
+    },
+    {
+      "Name": "B1/S2/Q1/O1 Object",
+      "Value": "?.[SECRET_IMP22_7461_Db].[dbo].[SECRET_IMP22_7461_Table]",
+      "Category": "ObjectIdentity"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field1/Name",
+      "Value": "Database",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field1",
+      "Value": "[SECRET_IMP22_7461_Db]",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field2/Name",
+      "Value": "Schema",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field2",
+      "Value": "dbo",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field3/Name",
+      "Value": "Table",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field3",
+      "Value": "[SECRET_IMP22_7461_Table]",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Objects[1]/DisplayName",
+      "Value": "[SECRET_IMP22_7461_Table]",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Partitioned",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PartitionCount",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PartitionRange",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/ActualExecutionMode",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/EstimatedExecutionMode",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/Parallel",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/Ordered",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/ExecutionMode",
+      "Value": "N/A",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/ParallelDisplay",
+      "Value": "N/A",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Execution/OrderedDisplay",
+      "Value": "N/A",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ThreadId",
+      "Value": "0",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field1/Name",
+      "Value": "Thread",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field1",
+      "Value": "0",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field2/Name",
+      "Value": "ActualRows",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field2",
+      "Value": "100",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field3/Name",
+      "Value": "ActualRowsRead",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field3",
+      "Value": "1000",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field4/Name",
+      "Value": "ActualExecutions",
+      "Category": "XmlFieldName"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field4",
+      "Value": "1",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/Value",
+      "Value": "100",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/Unit",
+      "Value": "rows",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/OutputRows/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/Value",
+      "Value": "1000",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/Unit",
+      "Value": "rows",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/RowsRead/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/Value",
+      "Value": "1",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/Unit",
+      "Value": "executions",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Executions/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/Unit",
+      "Value": "rebinds",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rebinds/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/Unit",
+      "Value": "rewinds",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/Rewinds/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/Unit",
+      "Value": "ms",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/ElapsedTime/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/Unit",
+      "Value": "ms",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/CpuTime/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/Unit",
+      "Value": "pages",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/LogicalReads/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/Unit",
+      "Value": "pages",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Threads[1]/PhysicalReads/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/Value",
+      "Value": "1",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/Unit",
+      "Value": "rows/execution",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/Source",
+      "Value": "RelOp/@EstimateRows",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRows/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/Unit",
+      "Value": "rows/execution",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/Source",
+      "Value": "RelOp/@EstimatedRowsRead",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedRowsRead/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/Unit",
+      "Value": "optimizer-cost",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/Source",
+      "Value": "RelOp/@EstimateCPU",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedCpuCost/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/Unit",
+      "Value": "optimizer-cost",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/Source",
+      "Value": "RelOp/@EstimateIO",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedIoCost/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/Unit",
+      "Value": "bytes/row",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/Source",
+      "Value": "RelOp/@AvgRowSize",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/AverageRowSize/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/Unit",
+      "Value": "executions",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/Source",
+      "Value": "EstimateRebinds \u002B EstimateRewinds \u002B 1",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/Aggregation",
+      "Value": "RebindsPlusRewindsPlusOne",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/EstimatedExecutions/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/Unit",
+      "Value": "optimizer-cost",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/Source",
+      "Value": "RelOp/@EstimatedTotalSubtreeCost",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/Aggregation",
+      "Value": "Attribute",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/SubtreeCost/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/Unit",
+      "Value": "optimizer-cost",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/Source",
+      "Value": "EstimatedTotalSubtreeCost - direct child subtree costs",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/Kind",
+      "Value": "Estimated",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/Aggregation",
+      "Value": "SubtreeMinusChildren",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OwnCost/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/Value",
+      "Value": "100",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/Unit",
+      "Value": "rows",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/OutputRows/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/Value",
+      "Value": "1000",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/Unit",
+      "Value": "rows",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsRead/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/Value",
+      "Value": "1",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/Unit",
+      "Value": "executions",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ThreadExecutions/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/Value",
+      "Value": "1",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/Unit",
+      "Value": "executions",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/Source",
+      "Value": "serial counter or common active worker executions",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/Aggregation",
+      "Value": "CommonWorkerExecutions",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalExecutions/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/Value",
+      "Value": "100",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/State",
+      "Value": "Available",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/Unit",
+      "Value": "rows/execution",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/Source",
+      "Value": "ActualRows / logical executions",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/Aggregation",
+      "Value": "RowsPerExecution",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/IsPresent",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/RowsPerExecution/IsAvailable",
+      "Value": "True",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/Unit",
+      "Value": "rebinds",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rebinds/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/Unit",
+      "Value": "rewinds",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/Rewinds/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/Unit",
+      "Value": "ms",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/Aggregation",
+      "Value": "MaxThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/ElapsedTime/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/Unit",
+      "Value": "ms",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/CpuTime/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/Unit",
+      "Value": "pages",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/LogicalReads/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/Value",
+      "Value": "N/A",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/State",
+      "Value": "Missing",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/Unit",
+      "Value": "pages",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/Source",
+      "Value": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/Kind",
+      "Value": "Actual",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/Aggregation",
+      "Value": "SumThreads",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/IsPresent",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalReads/IsAvailable",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/PhysicalOp",
+      "Value": "Table Scan",
+      "Category": "FactText"
+    },
+    {
+      "Name": "B1/S2/Q1/O1/HasResidualPredicate",
+      "Value": "False",
+      "Category": ""
+    },
+    {
+      "Name": "B1/S2/Q1/O1/WorkerRows",
+      "Value": "N/A",
+      "Category": ""
+    }
+  ],
+  "Issues": [
+    {
+      "Id": "D1",
+      "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+      "RuleVersion": "2.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "Hit",
+      "Severity": "Critical",
+      "Confidence": "High",
+      "Fields": [
+        {
+          "Name": "Title",
+          "Value": "\u57FA\u6570\u4F30\u8BA1\u504F\u5DEE",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "DiagnosticId",
+          "Value": "ADD99E5D1F18B71A34352BCAE73779B8FCC628F27B30BFCD4EF120133D79A7D2",
+          "Category": "SourceIdentity"
+        },
+        {
+          "Name": "Details",
+          "Value": "[Critical] \u57FA\u6570\u4F30\u8BA1\u504F\u5DEE\r\n\u8BCA\u65AD ID\uFF1AADD99E5D1F18B71A34352BCAE73779B8FCC628F27B30BFCD4EF120133D79A7D2\r\n\u6765\u6E90\uFF1A7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\uFF1B\u7F6E\u4FE1\u5EA6\uFF1AHigh\r\n\u89C4\u5219\uFF1ARULE_004_ESTIMATE_MISMATCH v2.0.0\r\n\u4F30\u7B97\u6BCF\u6B21\u6267\u884C 1 \u884C\uFF0C\u5B9E\u9645\u6BCF\u6B21\u6267\u884C 100 \u884C\uFF1B\u504F\u5DEE\u6307\u6807 100 \u500D\uFF08\u8F83\u5C0F\u884C\u6570\u6309\u81F3\u5C11 1 \u884C\u8BA1\u7B97\uFF09\u3002\r\n\u8BC1\u636E EstimatedRows\uFF1A1 rows/execution\uFF1BAvailable/Estimated/Attribute\uFF1BRelOp/@EstimateRows\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u8BC1\u636E OutputRows\uFF1A100 rows\uFF1BAvailable/Actual/SumThreads\uFF1BRunTimeInformation/RunTimeCountersPerThread/@ActualRows\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u8BC1\u636E LogicalExecutions\uFF1A1 executions\uFF1BAvailable/Actual/CommonWorkerExecutions\uFF1Bserial counter or common active worker executions\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u8BC1\u636E RowsPerExecution\uFF1A100 rows/execution\uFF1BAvailable/Actual/RowsPerExecution\uFF1BActualRows / logical executions\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u8BC1\u636E ComparisonDenominator\uFF1A1 rows/execution\uFF1BAvailable//\uFF1Bmax(1, min(EstimatedRows, RowsPerExecution))\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u8BC1\u636E DeviationRatio\uFF1A100 ratio\uFF1BAvailable//\uFF1Bmax(EstimatedRows, RowsPerExecution) / ComparisonDenominator\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u8BC1\u636E AbsoluteRowDifference\uFF1A99 rows/execution\uFF1BAvailable//\uFF1Babs(EstimatedRows - RowsPerExecution)\uFF1B7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1\r\n\u5047\u8BBE\uFF1A\u504F\u5DEE\u53EF\u80FD\u4E0E\u7EDF\u8BA1\u4FE1\u606F\u3001\u53C2\u6570\u5206\u5E03\u3001\u5217\u76F8\u5173\u6027\u6216\u8FC7\u6EE4\u8868\u8FBE\u5F0F\u6709\u5173\uFF0C\u73B0\u6709\u8BC1\u636E\u4E0D\u80FD\u786E\u5B9A\u6839\u56E0\u3002\r\n\u5EFA\u8BAE\uFF1A\u6838\u5BF9\u540C\u6B21\u91C7\u96C6\u7684\u8C13\u8BCD\u3001\u53C2\u6570\u4E0E\u7EDF\u8BA1\u4FE1\u606F\uFF0C\u518D\u6BD4\u8F83\u8C03\u6574\u524D\u540E\u7684\u5B9E\u9645\u8BA1\u5212\u3002\r\n\u9002\u7528\u6761\u4EF6\uFF1ARULE004\uFF1A\u8F83\u5927\u5355\u6B21\u884C\u6570\u81F3\u5C11 100\uFF1B\u504F\u5DEE\u6307\u6807 \u003E= 10 \u4E3A Warning\u3001\u003E= 100 \u4E3A Critical\uFF1B\u4F30\u7B97 \u003E= 1000 \u4E14\u5B9E\u9645 \u003C= 100 \u65F6\u4E3A Critical\u3002\r\n\u9650\u5236\uFF1A\u5B9E\u9645\u603B\u8F93\u51FA\u9664\u4EE5\u903B\u8F91\u6267\u884C\u6B21\u6570\uFF1B\u5E76\u884C worker \u6B21\u6570\u4E0D\u76F8\u52A0\uFF0C\u6B21\u6570\u4E0D\u4E00\u81F4\u65F6\u4E0D\u6BD4\u8F83\u3002\r\n\u9650\u5236\uFF1A\u5206\u6BCD\u4E0B\u9650\u4E3A 1\uFF0C\u96F6\u884C\u4E0E\u4E0D\u8DB3 1 \u884C\u65F6\u8BE5\u6307\u6807\u4E0D\u662F\u672A\u7ECF\u8C03\u6574\u7684\u6570\u5B66\u500D\u6570\uFF1B\u4E0D\u80FD\u636E\u6B64\u65AD\u5B9A\u7EDF\u8BA1\u4FE1\u606F\u8FC7\u65F6\u6216\u8FDE\u63A5\u7B97\u6CD5\u9519\u8BEF\u3002",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Source",
+          "Value": "{\u0022XmlPath\u0022:\u0022/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]\u0022,\u0022Line\u0022:3,\u0022Column\u0022:99,\u0022EventIndex\u0022:null,\u0022ByteOffset\u0022:null,\u0022ByteLength\u0022:null}",
+          "Category": "SourceLocation"
+        },
+        {
+          "Name": "Origins",
+          "Value": "[{\u0022RuleId\u0022:\u0022RULE_004_ESTIMATE_MISMATCH\u0022,\u0022RuleVersion\u0022:\u00222.0.0\u0022}]",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence1/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence1/Name",
+          "Value": "EstimatedRows",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence1/Value",
+          "Value": "1",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence1/State",
+          "Value": "Available",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence2/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence2/Name",
+          "Value": "OutputRows",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence2/Value",
+          "Value": "100",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence2/State",
+          "Value": "Available",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence3/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence3/Name",
+          "Value": "LogicalExecutions",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence3/Value",
+          "Value": "1",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence3/State",
+          "Value": "Available",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence4/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence4/Name",
+          "Value": "RowsPerExecution",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence4/Value",
+          "Value": "100",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence4/State",
+          "Value": "Available",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence5/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence5/Name",
+          "Value": "ComparisonDenominator",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence5/Value",
+          "Value": "1",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence5/State",
+          "Value": "Available",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence6/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence6/Name",
+          "Value": "DeviationRatio",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence6/Value",
+          "Value": "100",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence6/State",
+          "Value": "Available",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence7/Location",
+          "Value": "B1/S2/Q1/O1",
+          "Category": ""
+        },
+        {
+          "Name": "Evidence7/Name",
+          "Value": "AbsoluteRowDifference",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence7/Value",
+          "Value": "99",
+          "Category": "DiagnosticText"
+        },
+        {
+          "Name": "Evidence7/State",
+          "Value": "Available",
+          "Category": ""
+        }
+      ]
+    }
+  ],
+  "Runs": [
+    {
+      "Id": "R1",
+      "RuleId": "RULE_001_IMPLICIT_CONV",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_001_IMPLICIT_CONV v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R2",
+      "RuleId": "RULE_002_KEY_LOOKUP",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_002_KEY_LOOKUP v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R3",
+      "RuleId": "RULE_003_PARAM_SNIFFING",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_003_PARAM_SNIFFING v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R4",
+      "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+      "RuleVersion": "2.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "Hit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[Hit] RULE_004_ESTIMATE_MISMATCH v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_HIT \u2014 \u68C0\u6D4B\u5230\u7B26\u5408\u6761\u4EF6\u7684\u8BCA\u65AD\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R5",
+      "RuleId": "RULE_017_LARGE_MEMORY_GRANT",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_017_LARGE_MEMORY_GRANT v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R6",
+      "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+      "RuleVersion": "2.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_006_RESIDUAL_PREDICATE v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u5DF2\u6267\u884C\u89C4\u5219\uFF0C\u672A\u6EE1\u8DB3\u89E6\u53D1\u6761\u4EF6\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R7",
+      "RuleId": "RULE_008_SPILL_DETECTION",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_008_SPILL_DETECTION v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R8",
+      "RuleId": "RULE_009_PARALLEL_SKEW",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "Skipped",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_MISSING_EVIDENCE",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[Skipped] RULE_009_PARALLEL_SKEW v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_MISSING_EVIDENCE \u2014 \u7F3A\u5C11\u53EF\u7528\u8BC1\u636E\uFF1AParallel / worker \u884C\u5206\u5E03",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R9",
+      "RuleId": "RULE_011_UDF_TVF",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_011_UDF_TVF v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R10",
+      "RuleId": "RULE_012_NESTED_LOOPS_HIGH_EXEC",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "Skipped",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NOT_APPLICABLE",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[Skipped] RULE_012_NESTED_LOOPS_HIGH_EXEC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NOT_APPLICABLE \u2014 \u7B97\u5B50\u4E0D\u5C5E\u4E8E\u672C\u89C4\u5219\u652F\u6301\u7684\u5FAA\u73AF\u6216\u67E5\u627E\u7C7B\u578B\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R11",
+      "RuleId": "RULE_013_ANTI_PATTERN",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_013_ANTI_PATTERN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R12",
+      "RuleId": "RULE_014_SERIAL_PLAN_REASON",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_014_SERIAL_PLAN_REASON v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R13",
+      "RuleId": "RULE_015_LOCAL_VARIABLES",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_015_LOCAL_VARIABLES v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R14",
+      "RuleId": "RULE_016_ZERO_ROW_ACTUALS",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_016_ZERO_ROW_ACTUALS v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R15",
+      "RuleId": "RULE_036_WAIT_STATS",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_036_WAIT_STATS v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R16",
+      "RuleId": "RULE_037_RESOURCE_SEMAPHORE",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_037_RESOURCE_SEMAPHORE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R17",
+      "RuleId": "RULE_018_OPTIMIZER_ABORT",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_018_OPTIMIZER_ABORT v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R18",
+      "RuleId": "RULE_019_CACHE_RECOMPILE",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_019_CACHE_RECOMPILE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R19",
+      "RuleId": "RULE_020_MISSING_INDEX",
+      "RuleVersion": "2.1.1",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_020_MISSING_INDEX v2.1.1 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R20",
+      "RuleId": "RULE_021_TABLE_SCAN",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_021_TABLE_SCAN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R21",
+      "RuleId": "RULE_022_HIGH_COST_OP",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_022_HIGH_COST_OP v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R22",
+      "RuleId": "RULE_023_RUNNING_TOTAL_PATTERN",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_023_RUNNING_TOTAL_PATTERN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R23",
+      "RuleId": "RULE_024_SCALAR_SUBQUERY_PATTERN",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_024_SCALAR_SUBQUERY_PATTERN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R24",
+      "RuleId": "RULE_025_QUERY_REWRITE",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_025_QUERY_REWRITE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R25",
+      "RuleId": "RULE_026_IMPLICIT_CONV_DOC",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_026_IMPLICIT_CONV_DOC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R26",
+      "RuleId": "RULE_027_PARAM_SNIFFING_DOC",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_027_PARAM_SNIFFING_DOC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R27",
+      "RuleId": "RULE_028_STATS_USAGE",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_028_STATS_USAGE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R28",
+      "RuleId": "RULE_029_MEMORY_GRANT_DOC",
+      "RuleVersion": "1.0.0",
+      "Location": "Document",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_029_MEMORY_GRANT_DOC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R29",
+      "RuleId": "RULE_030_CARDINALITY_ERROR",
+      "RuleVersion": "2.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_030_CARDINALITY_ERROR v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u5DF2\u6267\u884C\u89C4\u5219\uFF0C\u672A\u6EE1\u8DB3\u89E6\u53D1\u6761\u4EF6\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R30",
+      "RuleId": "RULE_031_KEY_LOOKUP_OP",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_031_KEY_LOOKUP_OP v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R31",
+      "RuleId": "RULE_032_MEMORY_SPILL",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_032_MEMORY_SPILL v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u517C\u5BB9\u89C4\u5219\u5DF2\u6267\u884C\uFF0C\u672A\u8FD4\u56DE\u5339\u914D\u7ED3\u679C\uFF1B\u4E0D\u8868\u793A\u672A\u5B9E\u73B0\u7684\u68C0\u67E5\u4E5F\u5DF2\u901A\u8FC7\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R32",
+      "RuleId": "RULE_033_THREAD_SKEW",
+      "RuleVersion": "1.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "Skipped",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_MISSING_EVIDENCE",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[Skipped] RULE_033_THREAD_SKEW v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_MISSING_EVIDENCE \u2014 \u7F3A\u5C11\u53EF\u7528\u8BC1\u636E\uFF1A\u5B8C\u6574\u4E14\u89D2\u8272\u660E\u786E\u7684 worker \u884C\u5206\u5E03",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R33",
+      "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+      "RuleVersion": "2.0.0",
+      "Location": "B1/S2/Q1/O1",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_034_RESIDUAL_PRED_OP v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]\uFF1ARULE_NO_HIT \u2014 \u5DF2\u6267\u884C\u89C4\u5219\uFF0C\u672A\u6EE1\u8DB3\u89E6\u53D1\u6761\u4EF6\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    },
+    {
+      "Id": "R34",
+      "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+      "RuleVersion": "2.1.1",
+      "Location": "B1/S2",
+      "Status": "NoHit",
+      "Severity": "N/A",
+      "Confidence": "N/A",
+      "Fields": [
+        {
+          "Name": "ReasonCode",
+          "Value": "RULE_NO_HIT",
+          "Category": ""
+        },
+        {
+          "Name": "Details",
+          "Value": "[NoHit] RULE_035_SARGABLE_INDEX_RECOMMENDATION v2.1.1 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]\uFF1ARULE_NO_HIT \u2014 \u5DF2\u6267\u884C\u89C4\u5219\uFF0C\u672A\u6EE1\u8DB3\u89E6\u53D1\u6761\u4EF6\u3002",
+          "Category": "DiagnosticText"
+        }
+      ]
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "B1/S2/Q1/O1",
+      "Label": "Table Scan ?.[SECRET_IMP22_7461_Db].[dbo].[SECRET_IMP22_7461_Table]"
+    }
+  ],
+  "Edges": [],
+  "SourceXml": "\u003CShowPlanXML xmlns=\u0022http://schemas.microsoft.com/sqlserver/2004/07/showplan\u0022 Version=\u00221.571\u0022 Build=\u002216.0.1000.6\u0022\u003E\r\n  \u003CBatchSequence\u003E\r\n    \u003CBatch\u003E\r\n      \u003CStatements\u003E\r\n        \u003CStmtSimple StatementText=\u0022SELECT \u0027SECRET_IMP22_7461\u0027 FROM [SECRET_IMP22_7461_Table]\u0022\u003E\r\n          \u003CQueryPlan\u003E\r\n            \u003CRelOp NodeId=\u00220\u0022 PhysicalOp=\u0022Table Scan\u0022 LogicalOp=\u0022Table Scan\u0022 EstimateRows=\u00221\u0022\u003E\r\n              \u003CRunTimeInformation\u003E\r\n                \u003CRunTimeCountersPerThread Thread=\u00220\u0022 ActualRows=\u0022100\u0022 ActualRowsRead=\u00221000\u0022 ActualExecutions=\u00221\u0022 /\u003E\r\n              \u003C/RunTimeInformation\u003E\r\n              \u003CTableScan\u003E\r\n                \u003CObject Database=\u0022[SECRET_IMP22_7461_Db]\u0022 Schema=\u0022dbo\u0022 Table=\u0022[SECRET_IMP22_7461_Table]\u0022 /\u003E\r\n              \u003C/TableScan\u003E\r\n            \u003C/RelOp\u003E\r\n          \u003C/QueryPlan\u003E\r\n        \u003C/StmtSimple\u003E\r\n      \u003C/Statements\u003E\r\n    \u003C/Batch\u003E\r\n  \u003C/BatchSequence\u003E\r\n\u003C/ShowPlanXML\u003E"
+}

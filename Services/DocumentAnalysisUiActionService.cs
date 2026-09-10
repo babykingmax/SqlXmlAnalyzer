@@ -114,14 +114,8 @@ namespace SqlXmlAnalyzer.Services
                 {
                     _viewModel.CurrentDeadlockInput = openResult.Input;
                     _viewModel.CurrentDeadlockFilePath = filePath;
-                    if (openResult.Deadlocks.Count > 1 || openResult.Status == InputStatus.Partial ||
-                        openResult.Kind == AnalysisDocumentKind.XelDeadlockTrace)
-                    {
-                        _statusTextBlock.Text = $"{openResult.Status}：已读取 {openResult.Deadlocks.Count} 个死锁事件。";
-                        _showDeadlockEvents(openResult.Input!, filePath);
-                        return;
-                    }
-                    await AnalyzeDeadlockDocumentAsync(openResult.Deadlocks[0].Document, filePath, session.RequestId, session.Token);
+                    _statusTextBlock.Text = $"{openResult.Status}：已读取 {openResult.Deadlocks.Count} 个死锁事件。";
+                    _showDeadlockEvents(openResult.Input!, filePath);
                     return;
                 }
 
@@ -195,6 +189,7 @@ namespace SqlXmlAnalyzer.Services
                     return;
                 }
                 _viewModel.CurrentDeadlockFilePath = sourceFilePath;
+                _viewModel.DeadlockWorkspace.Begin(input, input.Deadlocks[0]);
                 await AnalyzeDeadlockDocumentAsync(input.Deadlocks[0].Document, sourceFilePath, session.RequestId, session.Token);
             }
             catch (OperationCanceledException)
@@ -212,6 +207,18 @@ namespace SqlXmlAnalyzer.Services
                 MessageBox.Show($"Deadlock analysis failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 _statusTextBlock.Text = "Analysis failed";
             }
+        }
+
+        public async Task SelectDeadlockEventAsync(DeadlockInput selected, InputRecognitionResult? input, string source)
+        {
+            var session = _analysisSessions.Begin();
+            _deadlockPlaybackUiActionService.HidePlayback();
+            _deadlockPlaybackUiActionService.SetCurrentPlayback(null, null);
+            _viewModel.CurrentDeadlockInput = input;
+            _viewModel.CurrentDeadlockFilePath = source;
+            _viewModel.DeadlockWorkspace.Begin(input, selected);
+            if (!ReferenceEquals(_viewModel.DeadlockWorkspace.SelectedEvent, selected)) return;
+            await AnalyzeDeadlockDocumentAsync(selected.Document, source, session.RequestId, session.Token);
         }
 
         public async Task AnalyzeDeadlockDocumentAsync(
@@ -253,8 +260,8 @@ namespace SqlXmlAnalyzer.Services
                     return;
                 }
 
-                Logger.LogException("AnalyzeDeadlockDocument", ex);
-                MessageBox.Show($"Deadlock analysis failed: {ex.Message}\n\nDetails were written to the log.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _viewModel.DeadlockWorkspace.ReportFailure(ex);
+                MessageBox.Show(_viewModel.DeadlockWorkspace.Status, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 _statusTextBlock.Text = "Analysis failed";
             }
         }
@@ -285,12 +292,15 @@ namespace SqlXmlAnalyzer.Services
                 PlanAnalysisUiResult uiResult =
                     _planAnalysisUiActionService.Apply(documentResult);
                 _sqlDiffUiActionService.SetSql(
-                    uiResult.QueryText,
-                    uiResult.RefactoredSql,
+                    _viewModel.PlanWorkspace.Selection?.Choice.Statement.Text ?? uiResult.QueryText,
+                    _viewModel.PlanWorkspace.Model?.Statements.Count > 1
+                        ? _viewModel.PlanWorkspace.Selection?.Choice.Statement.Text ?? "" : uiResult.RefactoredSql,
                     _sqlQuickFixUiActionService.CreateLightbulbButton);
                 try
                 {
-                    _planStatisticsUiActionService.LoadFromPlan(doc, _showplanNamespace);
+                    var choice = _viewModel.PlanWorkspace.Selection?.Choice;
+                    var source = choice?.QueryPlan == null ? null : _viewModel.PlanWorkspace.Model!.GetQueryPlanSource(choice.QueryPlan.Key);
+                    _planStatisticsUiActionService.LoadFromPlan(source == null ? new XDocument() : new XDocument(new XElement(source)), _showplanNamespace);
                 }
                 catch (Exception ex)
                 {

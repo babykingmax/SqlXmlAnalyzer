@@ -53,7 +53,8 @@ public static class IndexDdlCompiler
             string fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(
                 new { Version = 1, Target = identity, Keys = keys, Includes = includes }))));
             string prefix = new(identity.Object.Where(c => char.IsLetterOrDigit(c) || c == '_').Take(24).ToArray());
-            string indexName = $"IX_{prefix}_{fingerprint}";
+            string indexName = string.IsNullOrEmpty(options.IndexName) ? $"IX_{prefix}_{fingerprint}" : options.IndexName;
+            QuoteIdentifier(indexName);
             string compression = options.DataCompression?.ToUpperInvariant() ?? "";
             if (compression is not ("" or "NONE" or "ROW" or "PAGE")) throw Invalid("INDEX_COMPRESSION_INVALID");
             if (options.MaxDop is < 0 or > 64) throw Invalid("INDEX_MAXDOP_INVALID");

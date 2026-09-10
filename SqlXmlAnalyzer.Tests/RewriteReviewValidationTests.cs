@@ -43,6 +43,12 @@ public sealed class RewriteReviewValidationTests : IDisposable
         model.ApplyStatusText.Should().Be("已写回");
         model.PreviewTitle.Should().Contain("已写回").And.NotContain("尚未应用");
         model.ApplySummary.Should().Contain(Source).And.Contain("备份");
+        model.CopyCandidate(sql => sql.Should().Be(model.PreviewSql));
+        model.OutputStatus.Should().NotContain("尚未应用");
+        model.SaveCandidateNew(Path.Combine(_directory, "after-apply.sql"));
+        File.ReadAllText(Path.Combine(_directory, "after-apply.sql")).Should().Be(File.ReadAllText(Source));
+        model.OutputStatus.Should().Contain("未脱敏").And.NotContain("尚未应用");
+        model.ApplyStatusText.Should().Be("已写回"); model.Error.Should().BeEmpty();
     }
 
     [Theory]
@@ -70,6 +76,33 @@ public sealed class RewriteReviewValidationTests : IDisposable
             model.ApplyStatusText.Should().Contain(expected);
             model.Items[0].IsSelected.Should().BeTrue();
         }
+    }
+
+    [Theory]
+    [InlineData(true, false, false)]
+    [InlineData(true, false, true)]
+    [InlineData(false, true, false)]
+    [InlineData(false, true, true)]
+    [InlineData(false, false, false)]
+    [InlineData(false, false, true)]
+    public async Task ExportAfterApply_PreservesCommitStateAndOriginalFailure(bool written, bool unknown, bool save)
+    {
+        var model = Model(new(), new OutcomeFiles(written, unknown));
+        await model.ValidateAsync(Source, _suite);
+        model.ReviewedScenarios = true;
+        model.Apply()!.IsSuccess.Should().BeFalse();
+        string state = model.ApplyStatusText, error = model.Error, details = model.ValidationDetails, summary = model.ApplySummary;
+        error.Should().NotBeEmpty();
+        model.CanExport.Should().BeTrue();
+        model.CopyCandidate(_ => throw new IOException("synthetic clipboard failure"));
+        model.Error.Should().Contain(error).And.Contain("synthetic clipboard failure");
+        if (save) model.SaveCandidateNew(Path.Combine(_directory, "export.sql"));
+        else model.CopyCandidate(sql => sql.Should().Be(model.PreviewSql));
+        model.OutputStatus.Should().Contain("已").And.NotContain("尚未应用");
+        model.Error.Should().Be(error, "successful export must only clear the output error");
+        model.ApplyStatusText.Should().Be(state);
+        model.ValidationDetails.Should().Be(details); model.ApplySummary.Should().Be(summary);
+        model.CanApply.Should().BeFalse(); model.CanSelect.Should().Be(!written && !unknown);
     }
 
     private sealed class OutcomeFiles(bool written, bool unknown) : ISqlWritebackService

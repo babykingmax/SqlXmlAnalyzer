@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Mvvm;
 using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.Diagnostics;
 
 using System.Collections.ObjectModel;
 using SqlXmlAnalyzer;
@@ -20,6 +21,9 @@ namespace SqlXmlAnalyzer.Core.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly TuningSessionService _tuningSessionService;
+        public PlanWorkspaceViewModel PlanWorkspace { get; } = new();
+        public DeadlockWorkspaceViewModel DeadlockWorkspace { get; } = new();
+        public event EventHandler? ResultsCleared;
 
         public ObservableCollection<DocumentTabViewModel> Tabs { get; } = new ObservableCollection<DocumentTabViewModel>();
 
@@ -181,9 +185,13 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             {
                 if (p is SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion suggestion)
                 {
-                    var vm = new SqlXmlAnalyzer.ViewModels.IndexSandboxViewModel(suggestion, CurrentPlanDoc);
-                    var win = new SqlXmlAnalyzer.Views.IndexSandboxWindow { DataContext = vm };
-                    win.ShowDialog();
+                    try
+                    {
+                        var vm = new SqlXmlAnalyzer.ViewModels.IndexSandboxViewModel(suggestion, CurrentPlanDoc);
+                        var win = new SqlXmlAnalyzer.Views.IndexSandboxWindow { DataContext = vm };
+                        win.ShowDialog();
+                    }
+                    catch (Exception exception) { StatusText = ExceptionPolicy.Describe(exception, "IMP21.OpenIndexReview"); }
                 }
             });
 
@@ -212,7 +220,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     PlanA = s;
                     StatusText = $"已设置 {s.Title} 为 [计划 A]";
                 }
-            });
+            }, p => p is PlanSnapshot);
             SetAsPlanBCommand = new RelayCommand(p =>
             {
                 if (p is PlanSnapshot s)
@@ -220,19 +228,24 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                     PlanB = s;
                     StatusText = $"已设置 {s.Title} 为 [计划 B]";
                 }
-            });
+            }, p => p is PlanSnapshot);
         }
 
         public void CaptureCurrentPlan()
         {
             if (CurrentPlanDoc == null) return;
 
-            var snapshot = _tuningSessionService.CaptureSnapshot(
-                CurrentPlanDoc,
-                CurrentPlanFilePath,
-                TuningHistory.Count + 1);
-            TuningHistory.Add(snapshot);
-            StatusText = $"已成功捕获当前计划版本: {snapshot.Title}";
+            try
+            {
+                var snapshot = _tuningSessionService.CaptureSnapshot(
+                    CurrentPlanDoc,
+                    CurrentPlanFilePath,
+                    TuningHistory.Count + 1);
+                TuningHistory.Add(snapshot);
+                StatusText = $"已成功捕获当前计划版本: {snapshot.Title}";
+                Logger.Debug("IMP-21: 当前计划快照已加入 A/B 历史。");
+            }
+            catch (Exception exception) { StatusText = ExceptionPolicy.Describe(exception, "IMP21.CapturePlan"); }
         }
 
         public void SaveSession(string filePath)
@@ -278,6 +291,9 @@ namespace SqlXmlAnalyzer.Core.ViewModels
 
         public void ClearResults()
         {
+            ResultsCleared?.Invoke(this, EventArgs.Empty);
+            PlanWorkspace.Clear();
+            DeadlockWorkspace.Clear();
             // Drop the original byte snapshots and complete XML/XEL input records before
             // notifying comparison/selection observers through PlanA and PlanB below.
             CurrentPlanInput = null;

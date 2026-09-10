@@ -10,6 +10,27 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.PlanGraphCollapseStateService _collapseStateService = new();
         private readonly Core.Services.PlanGraphVisibilityStateService _visibilityStateService = new();
 
+        public bool RevealNode(PlanNodeViewModel node, IReadOnlyList<PlanNodeViewModel> masterNodes,
+            Action reapplyLayout, Action updateVisibility)
+        {
+            ArgumentNullException.ThrowIfNull(node);
+            ArgumentNullException.ThrowIfNull(masterNodes);
+            ArgumentNullException.ThrowIfNull(reapplyLayout);
+            ArgumentNullException.ThrowIfNull(updateVisibility);
+            if (node.RawElement == null || !masterNodes.Any(candidate => ReferenceEquals(candidate, node)))
+                throw new System.IO.InvalidDataException("证据节点不属于当前图。");
+            var ancestors = node.RawElement.Ancestors().ToHashSet();
+            var collapsedAncestors = masterNodes.Where(candidate => candidate.IsCollapsed
+                && candidate.RawElement != null && ancestors.Contains(candidate.RawElement)).ToArray();
+            if (collapsedAncestors.Length == 0) return false;
+            foreach (var ancestor in collapsedAncestors) ancestor.IsCollapsed = false;
+            // WPF UpdateLayout does not calculate our graph coordinates. Recalculate before revealing nodes.
+            reapplyLayout();
+            updateVisibility();
+            Logger.Debug($"IMP20 evidence ancestors expanded: count={collapsedAncestors.Length}.");
+            return true;
+        }
+
         public IReadOnlyDictionary<XElement, bool> CalculateExpandAll(
             IReadOnlyList<PlanNodeViewModel> masterNodes)
         {
@@ -126,7 +147,7 @@ namespace SqlXmlAnalyzer.Services
 
             XNamespace ns = currentNamespace;
             List<XElement> relOps =
-                currentDocument.Descendants(ns + "RelOp").ToList();
+                masterNodes.Where(node => node.RawElement != null).Select(node => node.RawElement!).ToList();
 
             IReadOnlyList<Core.Services.PlanGraphVisibilityStateNode> visibilityNodes =
                 masterNodes

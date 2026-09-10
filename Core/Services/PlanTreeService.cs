@@ -31,6 +31,17 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed class PlanTreeService
     {
+        public IReadOnlyList<PlanVisualNode> BuildScopedVisualTree(IReadOnlyList<XElement> operators, XNamespace ns) =>
+            FindRoots(operators, ns).Select(root => BuildVisualNode(root, ns)).ToArray();
+
+        public IReadOnlyList<PlanOperatorTreeNode> BuildScopedOperatorTree(IReadOnlyList<XElement> operators, XNamespace ns) =>
+            FindRoots(operators, ns).Select(root => BuildOperatorNode(root, ns)).ToArray();
+
+        private static IEnumerable<XElement> FindRoots(IReadOnlyList<XElement> operators, XNamespace ns)
+        {
+            var included = operators.ToHashSet();
+            return operators.Where(op => !op.Ancestors(ns + "RelOp").Any(included.Contains));
+        }
         public IReadOnlyList<PlanVisualNode> BuildVisualTree(
             XDocument doc,
             XNamespace ns)

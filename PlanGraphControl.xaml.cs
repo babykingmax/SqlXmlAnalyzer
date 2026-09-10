@@ -122,6 +122,7 @@ namespace SqlXmlAnalyzer
             get => _selectedNode;
             set
             {
+                if (ReferenceEquals(_selectedNode, value)) return;
                 _selectedNode = value;
                 OnPropertyChanged(nameof(SelectedNode));
                 // 选中时可通知宿主 (MainWindow) 刷新右侧属性面板
@@ -193,7 +194,7 @@ namespace SqlXmlAnalyzer
         /// <summary>
         /// 核心：从真实执行计划 XDocument 加载可拖拽节点图 (Plan Explorer 风格)
         /// </summary>
-        public void LoadFromExecutionPlan(XDocument doc, XNamespace ns)
+        public void LoadFromExecutionPlan(XDocument doc, XNamespace ns, IReadOnlyList<XElement>? operators = null)
         {
             ShowEmptyHint(false);
 
@@ -214,6 +215,7 @@ namespace SqlXmlAnalyzer
                     Connections,
                     new PlanGraphLoadUiActionOptions
                     {
+                        Operators = operators,
                         InitialLayout = initialLayout,
                         InitialColor = initialColor,
                         InitialView = initialView,
@@ -222,17 +224,27 @@ namespace SqlXmlAnalyzer
                         ResidualIoMinRowsRead = ResidualIOMinRowsRead
                     });
 
-            if (!result.HasGraph)
-            {
-                ShowEmptyHint(true);
-                return;
-            }
-
             _currentDoc = doc;
             _currentNs = ns;
             _masterNodes = result.MasterNodes.ToList();
             _masterConnections = result.MasterConnections.ToList();
             SelectedNode = result.SelectedNode;
+            EmptyHint.Text = doc.Root == null
+                ? "尚未加载执行计划，请打开 .sqlplan 或 .xml 文件。"
+                : "当前选择未采集可显示的算子。\n请切换语句/计划并核对诊断运行状态。\n空图不构成健康结论。";
+            ShowEmptyHint(!result.HasGraph);
+        }
+
+        public void SelectOperator(Core.Models.PlanOperatorKey key)
+        {
+            var node = _masterNodes.SingleOrDefault(n => n.Identity == key);
+            if (node == null) throw new System.IO.InvalidDataException("证据节点不在当前图范围内。");
+            CollapseUiActionService.RevealNode(node, _masterNodes, ReapplyLayout, UpdateGraphVisibility);
+            SelectedNode = node;
+            UpdateLayout();
+            var container = Editor.ItemContainerGenerator.ContainerFromItem(node) as FrameworkElement;
+            Editor.BringIntoView(new Point(node.Location.X + (container?.ActualWidth ?? 230) / 2,
+                node.Location.Y + (container?.ActualHeight ?? 110) / 2), false);
         }
 
         public void ResetView()

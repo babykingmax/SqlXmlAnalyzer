@@ -1,0 +1,213 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.ViewModels;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        App? app = null; MainWindow? window = null; int code = 0;
+        var records = new List<object>();
+        try
+        {
+            Directory.CreateDirectory(args[1]);
+            app = new App(); app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            var bindingErrors = new StringWriter();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(bindingErrors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var refactoring = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), refactoring, files,
+                new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            window = new MainWindow(orchestrator, files) { Width = 1680, Height = 1050 };
+            window.Show(); Pump();
+            var plan = (PlanWorkspaceView)typeof(MainWindow).GetProperty("PlanWorkspace", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(window)!;
+            // Workspaces may be outside the active TabItem's visual tree.
+            var deadlock = (DeadlockWorkspaceView)typeof(MainWindow).GetProperty("DeadlockWorkspace", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(window)!;
+            string Fixture(string name) => Path.Combine(args[0], "SqlXmlAnalyzer.Tests", "TestData", name);
+            string single = Path.Combine(args[1], "single-statement.sqlplan");
+            File.WriteAllText(single, "<ShowPlanXML xmlns='http://schemas.microsoft.com/sqlserver/2004/07/showplan'><BatchSequence><Batch><Statements><StmtSimple StatementText='SELECT 1'><QueryPlan><RelOp NodeId='0' PhysicalOp='Constant Scan' LogicalOp='Constant Scan' EstimateRows='1' EstimatedTotalSubtreeCost='0.01'/></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>");
+            Wait(window.AnalyzeFileAsync(single));
+            Require(window.ViewModel.CurrentRewriteReview != null && window.ViewModel.CurrentRewriteSource == "SELECT 1", "Single-statement review survives workspace initialization");
+            var noticesBox = (TextBox)plan.FindName("RefactoringNoticesTextBox");
+            Require(!string.IsNullOrWhiteSpace(noticesBox.Text) && noticesBox.Text == window.ViewModel.PlanWorkspace.RefactoringNotices, "Refactoring notices reach the actual TextBox");
+            const string syntheticNotice = "T-SQL 重构失败（合成验证）；已保留原 SQL；DUMP：synthetic-verification.dmp；验证前提未满足。";
+            var syntheticAnalysis = new PlanAnalysisOutput("", "SELECT 1", "", syntheticNotice, [], "SELECT 1")
+                { Diagnostics = window.ViewModel.CurrentPlanDiagnostics, RefactoringNotices = syntheticNotice };
+            var planUi = typeof(MainWindow).GetField("_planAnalysisUiActionService", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(window)!;
+            planUi.GetType().GetMethod("Apply")!.Invoke(planUi, [new PlanDocumentResult(window.ViewModel.CurrentPlanDoc!, single, InputRecognitionService.ShowPlanNamespace, syntheticAnalysis)]);
+            Pump();
+            Require(noticesBox.IsVisible && noticesBox.Text == syntheticNotice, "Failure and DUMP notices are visible");
+            Require(window.ViewModel.PlanWarningsText.Contains(syntheticNotice), "Copied report preserves refactoring failure and DUMP notices");
+            Require(plan.StatementTextBox.Text == "SELECT 1", "Refactoring notices never contaminate SQL");
+            records.Add(new { State = "refactoring-notices", Notice = noticesBox.Text, Synthetic = true });
+            Capture(window, Path.Combine(args[1], "refactoring-notices.png"));
+            Wait(window.AnalyzeFileAsync(Fixture("imp14_cardinality_residual.sqlplan")));
+            var workspace = window.ViewModel.PlanWorkspace;
+            Require(workspace.Selection != null, "Initial plan selection: " + workspace.Status);
+            var selector = (ComboBox)plan.FindName("StatementSelector");
+            selector.SelectedIndex = 1; Pump();
+            Require(workspace.SelectedStatement?.Statement.Key.StatementOrdinal == 2, "Statement binding");
+            Require(window.ViewModel.CurrentRewriteReview == null, "Multi-statement selection does not borrow a prior rewrite review");
+            Require(plan.StatementTextBox.Text.Contains("FROM U") && !plan.StatementTextBox.Text.Contains("FROM T"), "SQL scope");
+            Require(plan.NodifyGraph.Nodes.Count == 1 && plan.NodifyGraph.Nodes[0].Identity!.QueryPlan == workspace.SelectedStatement!.QueryPlan!.Key, "Graph identity");
+            Require(plan.NodifyGraph.Nodes[0].ActualRows == "10,000" && plan.NodifyGraph.Nodes[0].ActualRowsRead == "100,000", "Output/read metrics");
+            var issues = (DataGrid)plan.FindName("DiagnosticIssuesGrid");
+            issues.SelectedItem = workspace.Issues.First(i => i.Diagnostic?.Location.Operator != null); Pump();
+            Require(workspace.SourceTarget?.Location.Operator == plan.NodifyGraph.SelectedNode?.Identity, "Issue to graph");
+            var editor = (Nodify.NodifyEditor)plan.NodifyGraph.FindName("Editor");
+            Require(ReferenceEquals(editor.SelectedItem, plan.NodifyGraph.SelectedNode), "Visible graph selection");
+            Require(ReferenceEquals(plan.RecostDataGrid.SelectedItem, plan.NodifyGraph.SelectedNode), "Table selection");
+            Require(window.ViewModel.PlanWarningsText.Contains(workspace.SelectedIssue!.Diagnostic!.DiagnosticId), "Copied report retains selected diagnostic evidence");
+            records.Add(new { State = "statement-2", workspace.SelectedStatement!.DisplayName, Key = workspace.SourceTarget!.Location.DisplayScope,
+                workspace.SourceTarget.Description, Sql = plan.StatementTextBox.Text, plan.NodifyGraph.Nodes[0].ActualRows, plan.NodifyGraph.Nodes[0].ActualRowsRead });
+            Capture(window, Path.Combine(args[1], "plan-statement-2.png"));
+            ((TabItem)plan.FindName("EvidenceSourceTab")).IsSelected = true; Pump();
+            Require(workspace.SourceTarget!.Xml.Contains("[U]"), "Raw XML");
+            Capture(window, Path.Combine(args[1], "plan-evidence-source.png"));
+            Wait(window.AnalyzeFileAsync(Fixture("imp10_scoped_identities.sqlplan")));
+            ((ComboBox)plan.FindName("BatchSelector")).SelectedIndex = 1; Pump();
+            Require(workspace.SelectedStatement?.Statement.Kind == "StmtUseDb", "Batch binding");
+            Require(plan.NodifyGraph.Nodes.Count == 0 && plan.PropertiesGrid.ItemsSource == null && plan.RecostDataGrid.Items.Count == 0, "Empty state clears old graph, table, properties");
+            Require(((TextBlock)plan.NodifyGraph.FindName("EmptyHint")).Text.Contains("未采集"), "Empty graph explains missing operators rather than unopened file");
+            Require(workspace.SourceTarget == null && plan.StatementTextBox.Text.Contains("USE"), "Empty source and SQL");
+            Capture(window, Path.Combine(args[1], "plan-no-operators.png"));
+            selector.SelectedIndex = 2; Pump();
+            Require(plan.NodifyGraph.Nodes.Count == 1 && workspace.SelectedStatement!.QueryPlan!.Key.QueryPlanOrdinal == 2, "Cursor QueryPlan selection");
+            Wait(window.AnalyzeFileAsync(Fixture("imp20_navigation_branches.sqlplan")));
+            var graph = plan.NodifyGraph;
+            var branch = graph.Nodes.Single(n => n.NodeId == "1");
+            var target = graph.Nodes.Single(n => n.NodeId == "3");
+            void RefreshGraph()
+            {
+                var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+                typeof(PlanGraphControl).GetMethod("ReapplyLayout", flags)!.Invoke(graph, null);
+                typeof(PlanGraphControl).GetMethod("UpdateGraphVisibility", flags)!.Invoke(graph, null);
+                Pump();
+            }
+            foreach (var mode in new[] { PlanLayoutMode.Horizontal, PlanLayoutMode.Vertical })
+            {
+                graph.LayoutMode = mode; branch.IsCollapsed = true; RefreshGraph();
+                Require(!target.IsVisible, "Evidence starts hidden in a collapsed branch");
+                workspace.NavigateOperator(target.RawElement!); Pump();
+                Require(target.IsVisible && graph.SelectedNode == target, "Evidence reveals and selects its node");
+                Require(graph.Nodes.Where(n => n.IsVisible).Select(n => n.Location).Distinct().Count() == graph.Nodes.Count(n => n.IsVisible), "Revealed nodes never overlap after graph layout");
+            }
+            graph.LayoutMode = PlanLayoutMode.Horizontal;
+            var otherBranch = graph.Nodes.Single(n => n.NodeId == "4");
+            otherBranch.IsCollapsed = true; RefreshGraph();
+            graph.SelectedNode = graph.Nodes.Single(n => n.NodeId == "2"); Pump();
+            Require(otherBranch.IsCollapsed && !graph.Nodes.Single(n => n.NodeId == "5").IsVisible, "Selecting a visible node preserves unrelated collapse state");
+            records.Add(new { State = "evidence-layout", Nodes = graph.Nodes.Select(n => new { n.NodeId, n.Location.X, n.Location.Y, n.IsVisible, n.IsCollapsed }) });
+            var visible = graph.Nodes.Where(n => n.IsVisible).ToArray();
+            double left = visible.Min(n => n.Location.X), top = visible.Min(n => n.Location.Y);
+            double right = visible.Max(n => n.Location.X) + 250, bottom = visible.Max(n => n.Location.Y) + 130;
+            editor.ViewportZoom = Math.Min(1, Math.Min(editor.ActualWidth / (right - left), editor.ActualHeight / (bottom - top))) * 0.9;
+            Pump(); editor.BringIntoView(new System.Windows.Point((left + right) / 2, (top + bottom) / 2), false); Pump();
+            Capture(window, Path.Combine(args[1], "plan-evidence-layout.png"));
+            Wait(window.AnalyzeFileAsync(Fixture("deadlock_multiple_events.xdl")));
+            Until(() => window.ViewModel.DeadlockWorkspace.Analysis != null);
+            deadlock.XelSelector.SelectedIndex = 1;
+            // Switch again before the pending analysis returns to verify latest-selection wins.
+            deadlock.XelSelector.SelectedIndex = 0; deadlock.XelSelector.SelectedIndex = 1;
+            Until(() => window.ViewModel.DeadlockWorkspace.Analysis?.Processes.First().Id == "p3"); Pump();
+            var eventWorkspace = window.ViewModel.DeadlockWorkspace;
+            Require(deadlock.ProcessesList.Items.Cast<DeadlockProcess>().Select(p => p.Id).SequenceEqual(new[] { "p3", "p4" }), "Selected event process table");
+            deadlock.PatternsListBox.SelectedItem = eventWorkspace.Analysis!.Patterns.First(p => p.Evidence.Count > 0); Pump();
+            Require(eventWorkspace.SourceTarget?.Location?.EventIndex == 2, "Event evidence source ordinal");
+            Require(eventWorkspace.SourceTarget!.Location!.XmlPath.Contains("event[2]"), "Event wrapper source path");
+            Require(eventWorkspace.SourceTarget.Location.Line != null, "Original source line retained");
+            Require(Descendants(deadlock.GraphCanvas).Any(e => e.Effect != null), "Evidence highlights actual graph nodes");
+            Require(Descendants(deadlock.GraphCanvas).OfType<System.Windows.Shapes.Line>().Count(line => line.Effect != null) == 2, "Wait-for evidence highlights its exact waiter and owner links");
+            var savedEvidence = eventWorkspace.SelectedEvidence!;
+            var savedTarget = eventWorkspace.SourceTarget!;
+            var evidenceSelector = (ComboBox)deadlock.FindName("DeadlockEvidenceSelector");
+            var evidenceTabs = Descendants(deadlock).OfType<TabControl>().Single(); evidenceTabs.SelectedIndex = 1; Pump();
+            deadlock.ProcessesList.SelectedItem = eventWorkspace.Analysis.Processes.Single(p => p.Id != savedTarget.Process!.Id); Pump();
+            Require(eventWorkspace.SelectedEvidence == null && evidenceSelector.SelectedItem == null, "Manual process selection clears the bound evidence selection");
+            Require(eventWorkspace.SourceTarget!.EdgeId == null, "Manual source no longer advertises a dependency");
+            Capture(window, Path.Combine(args[1], "deadlock-manual-selection.png"));
+            evidenceSelector.SelectedItem = savedEvidence; Pump();
+            Require(eventWorkspace.SourceTarget!.EdgeId == savedTarget.EdgeId && eventWorkspace.SourceTarget.Process == savedTarget.Process, "Same evidence can restore the original process and edge");
+            deadlock.ResourcesList.SelectedItem = eventWorkspace.Analysis.Resources.Single(r => r.Id != savedTarget.Resource!.Id); Pump();
+            Require(evidenceSelector.SelectedItem == null && eventWorkspace.SourceTarget!.EdgeId == null, "Manual resource selection clears old evidence");
+            evidenceSelector.SelectedItem = savedEvidence; Pump();
+            Require(eventWorkspace.SourceTarget!.EdgeId == savedTarget.EdgeId, "Same evidence can restore after a resource selection");
+            evidenceSelector.SelectedItem = null; Pump();
+            Require(eventWorkspace.SourceTarget == null && deadlock.ProcessesList.SelectedItem == null && deadlock.ResourcesList.SelectedItem == null, "Cleared evidence clears source and bound lists");
+            evidenceSelector.SelectedItem = savedEvidence; Pump();
+            Require(window.ViewModel.DeadlockPatternText.Contains("Lock Chain Details"), "Returning to evidence restores its diagnostic details");
+            records.Add(new { State = "deadlock-roundtrip", Process = eventWorkspace.SourceTarget!.Process!.Id, eventWorkspace.SourceTarget.EdgeId });
+            evidenceTabs.SelectedIndex = 0; Pump();
+            Capture(window, Path.Combine(args[1], "deadlock-event-2.png"));
+            evidenceTabs.SelectedIndex = 1; Pump();
+            Capture(window, Path.Combine(args[1], "deadlock-source.png"));
+            records.Add(new { State = "event-2", Event = eventWorkspace.SelectedEvent!.DisplayName, eventWorkspace.SourceTarget.Description,
+                ProcessIds = eventWorkspace.Analysis.Processes.Select(p => p.Id), eventWorkspace.Nature });
+            window.ViewModel.ClearResults(); Pump();
+            Require(plan.NodifyGraph.Nodes.Count == 0 && deadlock.ProcessesList.Items.Count == 0 && deadlock.GraphCanvas.Children.Count == 0, "Clear results");
+            Require(deadlock.XelSelector.Items.Count == 0, "Clear releases event selector and source snapshots");
+            if (bindingErrors.ToString().Length != 0)
+            {
+                File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), bindingErrors.ToString());
+                throw new InvalidOperationException("Production bindings emitted errors; see binding-errors.txt");
+            }
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new { Passed = true, BindingErrors = 0, Records = records }, new JsonSerializerOptions { WriteIndented = true }));
+            Console.WriteLine("PASS: production MainWindow; selectors; graph/table/source linkage; latest event wins; empty state; clear; refactoring notices; collapsed evidence layout; deadlock selection roundtrip; eight screenshots; zero binding errors.");
+        }
+        catch (Exception exception) { Logger.Error(ExceptionPolicy.Describe(exception, "IMP20.WpfVerification")); code = 1; }
+        finally { window?.Close(); app?.Shutdown(); }
+        return code;
+    }
+    private static void Require(bool condition, string reason) { if (!condition) throw new InvalidOperationException(reason); }
+    private static IEnumerable<FrameworkElement> Descendants(DependencyObject root)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is FrameworkElement element) yield return element;
+            foreach (var nested in Descendants(child)) yield return nested;
+        }
+    }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Until(Func<bool> complete)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!complete()) { if (timer.Elapsed > TimeSpan.FromSeconds(45)) throw new TimeoutException("WPF state did not settle."); Pump(); Thread.Sleep(10); }
+    }
+    private static void Wait(Task task) { Until(() => task.IsCompleted); task.GetAwaiter().GetResult(); Pump(); }
+    private static void Capture(Window window, string path)
+    {
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        int width = (int)Math.Ceiling(view.ActualWidth), height = (int)Math.Ceiling(view.ActualHeight);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+        var drawing = new DrawingVisual();
+        using (var context = drawing.RenderOpen())
+        {
+            context.DrawRectangle(window.Background, null, new Rect(0, 0, width, height));
+            context.DrawRectangle(new VisualBrush(view) { Stretch = Stretch.None, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top }, null, new Rect(0, 0, width, height));
+        }
+        bitmap.Render(drawing);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = new FileStream(path, FileMode.CreateNew); encoder.Save(output);
+    }
+}

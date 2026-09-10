@@ -32,6 +32,10 @@
                                 <Button Content="📸 捕获当前计划" Command="{Binding CaptureCurrentPlanCommand}" Height="28" Margin="0,0,4,0" ToolTip="将当前查看的执行计划加入调优历史列表中"/>
                                 <Button Content="🧹 清空历史" Command="{Binding ClearHistoryCommand}" Style="{StaticResource SecondaryButtonStyle}" Height="28" Margin="4,0,0,0"/>
                             </UniformGrid>
+                            <UniformGrid Columns="2" Margin="0,6,0,0">
+                                <Button x:Name="SetSelectedPlanA" Content="设为 A（基准）" Command="{Binding SetAsPlanACommand}" CommandParameter="{Binding SelectedItem, ElementName=TuningHistoryListView}" Margin="0,0,4,0" Height="30"/>
+                                <Button x:Name="SetSelectedPlanB" Content="设为 B（待比较）" Command="{Binding SetAsPlanBCommand}" CommandParameter="{Binding SelectedItem, ElementName=TuningHistoryListView}" Margin="4,0,0,0" Height="30"/>
+                            </UniformGrid>
                         </StackPanel>
 
                         <!-- 历史快照列表 -->
@@ -91,7 +95,7 @@
                         <Grid Visibility="{Binding CompareVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=negate, FallbackValue=Visible}" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock Text="⚖️" FontSize="64" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                                <TextBlock Text="请在左侧调优历史中选中并右键设置『计划 A』和『计划 B』来进行并排差异对比。" 
+                                <TextBlock Text="选中左侧快照，点击『设为 A』或『设为 B』进行比较。"
                                            Foreground="#78909C" FontSize="14" HorizontalAlignment="Center"/>
                                 <TextBlock Text="提示：可以右键选中快照并设为计划 A/B；双击快照可以将其重新载入主窗口进行详细诊断。" 
                                            Foreground="#B0BEC5" FontSize="12" Margin="0,8,0,0" HorizontalAlignment="Center" FontStyle="Italic"/>
@@ -155,7 +159,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <!-- 计划 B 卡片 (优化后) -->
+                                <!-- 计划 B 卡片 (待比较) -->
                                 <Border Grid.Column="2" Background="#F5F7FA" BorderBrush="#2E7D32" BorderThickness="2,1,1,1" CornerRadius="4" Padding="12" Margin="4">
                                     <StackPanel>
                                         <TextBlock Text="[计划 B] (待比较)" FontSize="11" Foreground="#2E7D32" FontWeight="SemiBold"/>
@@ -183,7 +187,8 @@
                                 </Border>
                             </Grid>
 
-                            <StackPanel Grid.Row="1" Margin="4,0,4,8">
+                            <ScrollViewer Grid.Row="1" MaxHeight="300" VerticalScrollBarVisibility="Auto" Margin="4,0,4,8">
+                            <StackPanel>
                                 <TextBlock x:Name="ComparisonMatchSummary" Text="{Binding ComparisonSummary}" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignBody}" Margin="0,0,0,4"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -193,7 +198,14 @@
                                     <Button Grid.Column="3" Content="全部语句" Command="{Binding ResetComparisonSelectionCommand}" Style="{StaticResource SecondaryButtonStyle}"/>
                                 </Grid>
                                 <Expander Header="匹配依据与可比性" Margin="0,4,0,0">
-                                    <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto"><TextBlock x:Name="ComparisonConditionsText" Text="{Binding ComparisonConditions}" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignBody}"/></ScrollViewer>
+                                    <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto"><TextBlock x:Name="ComparisonConditionsText" Text="{Binding ComparisonConditions}" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignBody}" FontWeight="Normal"/></ScrollViewer>
+                                </Expander>
+                                <Expander x:Name="UnmatchedPlans" Header="未匹配语句 / QueryPlan 清单" Margin="0,4,0,0">
+                                    <Grid Height="110">
+                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBox x:Name="UnmatchedPlanA" Text="{Binding ComparisonUnmatchedA, Mode=OneWay}" IsReadOnly="True" FontWeight="Normal" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="A 未匹配项"/>
+                                        <TextBox x:Name="UnmatchedPlanB" Grid.Column="2" Text="{Binding ComparisonUnmatchedB, Mode=OneWay}" IsReadOnly="True" FontWeight="Normal" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="B 未匹配项"/>
+                                    </Grid>
                                 </Expander>
                             <!-- 查询语句对比 -->
                             <Expander Header="查询语句对比 (SQL Statements)" ExpandDirection="Down" IsExpanded="False" Margin="0,4,0,0">
@@ -210,6 +222,7 @@
                                 </Grid>
                             </Expander>
                             </StackPanel>
+                            </ScrollViewer>
 
                             <!-- 树状差异并排 -->
                             <Grid Grid.Row="2" Margin="4">

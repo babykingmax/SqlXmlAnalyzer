@@ -63,12 +63,15 @@ namespace SqlXmlAnalyzer.Services
             ArgumentNullException.ThrowIfNull(documentResult);
 
             Core.DeadlockAnalysisOutput analysis = documentResult.Analysis;
+            if (!_viewModel.DeadlockWorkspace.Complete(documentResult.Document, analysis))
+                throw new System.IO.InvalidDataException("死锁分析结果已失效，请重新选择事件。");
             _viewModel.CurrentDeadlockDoc = documentResult.Document;
             _viewModel.CurrentDeadlockAnalysis = analysis;
             _viewModel.ActivateWorkspace(Core.ViewModels.WorkspaceMode.Deadlock);
             _processesList.ItemsSource = analysis.Processes;
             _resourcesList.ItemsSource = analysis.Resources;
             _patternsList.ItemsSource = analysis.Patterns;
+            _viewModel.DeadlockPatternText = _viewModel.DeadlockWorkspace.Status + Environment.NewLine + _viewModel.DeadlockWorkspace.Nature;
 
             var playbackViewModel = new DeadlockPlaybackViewModel(analysis.Timeline);
             playbackViewModel.StepChanged += _playbackStepChangedHandler;

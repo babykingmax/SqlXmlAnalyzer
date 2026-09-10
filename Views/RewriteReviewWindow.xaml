@@ -5,7 +5,7 @@
         WindowStartupLocation="CenterOwner" Background="#F5F7FA" Foreground="#17243A">
     <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/><RowDefinition Height="120"/><RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/><RowDefinition Height="180"/><RowDefinition Height="*"/>
             <RowDefinition Height="3*"/><RowDefinition Height="110"/><RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,12">
@@ -17,18 +17,43 @@
             <TextBox Text="{Binding ApplySummary, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent"
                      MaxHeight="56" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="应用目标与备份"/>
         </StackPanel>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="White" Padding="8">
+        <TabControl x:Name="ReviewTabs" Grid.Row="1" Grid.RowSpan="3" Margin="0,0,0,4">
+        <TabItem Header="逐项选择与差异">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Background="White" Foreground="#17243A" FontWeight="Normal" Padding="8">
             <ItemsControl ItemsSource="{Binding Items}" IsEnabled="{Binding CanSelect}">
                 <ItemsControl.ItemTemplate><DataTemplate>
-                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,6">
-                        <TextBlock Text="{Binding Label}" TextWrapping="Wrap"/>
-                    </CheckBox>
+                    <StackPanel Margin="4,6">
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBlock Text="{Binding Label}" TextWrapping="Wrap"/>
+                        </CheckBox>
+                        <TextBlock Text="{Binding Preconditions}" TextWrapping="Wrap" Margin="24,4,0,0"/>
+                        <TextBlock Text="{Binding Warnings}" Foreground="#8A4600" TextWrapping="Wrap" Margin="24,4,0,0"/>
+                        <Expander Header="查看此项证据与修改差异" IsExpanded="True" Margin="24,4,0,0">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Evidence}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding DiffContext}" TextWrapping="Wrap" FontSize="11" Margin="0,4"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                    <DockPanel><TextBlock DockPanel.Dock="Top" Text="− 替换前" Foreground="#922020"/>
+                                        <TextBox Text="{Binding OriginalText, Mode=OneWay}" IsReadOnly="True" Background="#FFF0F0" FontFamily="Consolas" MaxHeight="140" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                                    </DockPanel>
+                                    <DockPanel Grid.Column="2"><TextBlock DockPanel.Dock="Top" Text="+ 替换后" Foreground="#176230"/>
+                                        <TextBox Text="{Binding ReplacementText, Mode=OneWay}" IsReadOnly="True" Background="#EEFAF0" FontFamily="Consolas" MaxHeight="140" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                                    </DockPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
                 </DataTemplate></ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <TextBox Grid.Row="2" Text="{Binding Details, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"
+        </TabItem>
+        <TabItem Header="完整审核报告">
+        <TextBox Text="{Binding Details, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Foreground="#17243A" FontWeight="Normal"
                  VerticalScrollBarVisibility="Auto" Margin="0,10" Padding="8" AutomationProperties.Name="提案前提风险证据与 SQL diff"/>
-        <Grid Grid.Row="3">
+        </TabItem>
+        <TabItem Header="完整 SQL 对照">
+        <Grid Margin="0,10,0,0" TextElement.Foreground="#17243A" TextElement.FontWeight="Normal">
             <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
             <DockPanel><TextBlock DockPanel.Dock="Top" Text="原始 SQL" FontWeight="SemiBold" Margin="0,0,0,6"/>
                 <TextBox x:Name="ReviewOriginalSql" Text="{Binding OriginalSql, Mode=OneWay}" IsReadOnly="True" FontFamily="Consolas" Padding="8"
@@ -39,16 +64,25 @@
                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
             </DockPanel>
         </Grid>
+        </TabItem>
+        </TabControl>
         <TextBox Grid.Row="4" Text="{Binding ValidationDetails, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Auto" Margin="0,8,0,0" Padding="8" AutomationProperties.Name="数据库场景验证和应用结果"/>
-        <DockPanel Grid.Row="5" Margin="0,12,0,0" LastChildFill="True">
+        <StackPanel Grid.Row="5" Margin="0,10,0,0">
+            <DockPanel Margin="0,0,0,8">
+                <Button x:Name="CopyCandidateSql" DockPanel.Dock="Right" Content="复制候选 SQL" IsEnabled="{Binding CanExport}" Click="CopyCandidate_Click" Margin="8,0,0,0" Padding="12,6"/>
+                <Button x:Name="SaveCandidateSql" DockPanel.Dock="Right" Content="保存为新 .sql 文件" IsEnabled="{Binding CanExport}" Click="SaveCandidate_Click" Padding="12,6"/>
+                <TextBlock Text="{Binding OutputStatus}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            </DockPanel>
+        <DockPanel LastChildFill="True">
             <Button DockPanel.Dock="Right" Content="关闭" IsCancel="True" MinWidth="90" Padding="12,6"/>
-            <Button x:Name="ApplyReviewedSql" DockPanel.Dock="Right" Content="备份并应用" IsEnabled="{Binding CanApply}" Click="Apply_Click" Margin="8,0" Padding="12,6"/>
+            <Button x:Name="ApplyReviewedSql" DockPanel.Dock="Right" Content="备份并应用到原文件" IsEnabled="{Binding CanApply}" Click="Apply_Click" Margin="8,0" Padding="12,6"/>
             <Button x:Name="ValidateReviewedSql" DockPanel.Dock="Right" Content="验证所选 SQL" IsEnabled="{Binding CanValidate}" Click="Validate_Click" Padding="12,6"/>
             <StackPanel>
                 <CheckBox Content="已审核所列场景；测试通过不代表任意输入等价" IsChecked="{Binding ReviewedScenarios}" IsEnabled="{Binding CanAcknowledge}"/>
-            <TextBlock Text="{Binding Error}" Foreground="#A02020" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Error, Mode=OneWay}" IsReadOnly="True" Foreground="#A02020" TextWrapping="Wrap" MaxHeight="80" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0"/>
             </StackPanel>
         </DockPanel>
+        </StackPanel>
     </Grid>
 </Window>

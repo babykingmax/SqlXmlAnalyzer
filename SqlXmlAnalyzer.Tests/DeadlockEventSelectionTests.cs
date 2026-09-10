@@ -14,6 +14,26 @@ namespace SqlXmlAnalyzer.Tests;
 public sealed class DeadlockEventSelectionTests
 {
     [Fact]
+    public void TypedSelection_ReceivesOriginalEventAndInputBeforeInitialNotification()
+    {
+        RunSta(() =>
+        {
+            var input = new InputRecognitionService().Parse(InputRecognitionTests.Fixture("deadlock_multiple_events.xdl"));
+            using var sessions = new AnalysisSessionCoordinator(); var selector = new ComboBox();
+            var selected = new List<DeadlockInput>();
+            var service = new XelDeadlockUiActionService(new XelReader(), sessions, selector, new TabControl(),
+                (_, _, _) => throw new InvalidOperationException("The typed path must not serialize and reparse the event."),
+                (item, context, _) => { context.Should().BeSameAs(input); selected.Add(item); return Task.CompletedTask; });
+            selector.SelectionChanged += (_, _) => service.HandleSelectionChangedAsync().GetAwaiter().GetResult();
+            service.ShowDocumentEvents(input, "events.xdl"); selector.SelectedIndex = 1;
+            selected.Should().HaveCount(2);
+            selected[0].Should().BeSameAs(input.Deadlocks[0]); selected[1].Should().BeSameAs(input.Deadlocks[1]);
+            selected[1].OriginalElement!.Document.Should().BeSameAs(input.Document);
+            service.ClearEvents(); service.CurrentInput.Should().BeNull();
+        });
+    }
+
+    [Fact]
     public void PartialDocument_SelectorRetainsContractAndSkippedRangeWhileSelectingValidEvents()
     {
         RunSta(() =>

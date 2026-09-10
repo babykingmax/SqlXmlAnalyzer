@@ -315,7 +315,9 @@ public sealed class InputRecognitionService : IDiagnosticDocumentReader
             {
                 CapturedAt = capturedAt,
                 Location = source.Location(node, index),
-                OriginalElement = new XElement(node)
+                // Preserve the source node and its line information for evidence navigation.
+                // Graph consumers continue to use the separate normalized Document above.
+                OriginalElement = node
             });
         }
         if (events.Count == 0)

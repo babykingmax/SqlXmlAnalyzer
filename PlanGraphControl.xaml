@@ -55,6 +55,7 @@
                 <nodify:NodifyEditor x:Name="Editor"
                                      VirtualizingPanel.IsVirtualizing="False"
                                      ItemsSource="{Binding Nodes}"
+                                     SelectedItem="{Binding SelectedNode, Mode=TwoWay}"
                                      Connections="{Binding Connections}"
                                      Background="Transparent"
                                      Margin="0,26,0,0"
