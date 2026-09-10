@@ -1,0 +1,289 @@
+{
+  "date": "2026-09-10",
+  "validatedCommit": "2f50216d58d57f2546c8316dac508fdbcce2637b",
+  "validatedTree": "03d1277034bdb01fa981e38ca818bee06186aec3",
+  "validationMethod": "Fresh detached Git worktree; full Release solution build and xUnit suite; clean checkout after tests",
+  "configuration": "Release",
+  "tests": {
+    "total": 2414,
+    "passed": 2414,
+    "failed": 0,
+    "skipped": 0
+  },
+  "build": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "checkoutClean": true,
+  "changedFiles": 413,
+  "originalWorkspaceEvidence": "DOCS/verification/IMP-22-hardening/summary.json",
+  "artifacts": [
+    {
+      "sha256": "C50661B325A2B60E126372F2B7132CF6C810C4163239F388806FD683C7363A9E",
+      "path": "E:\\SqlXmlAnalyzer\\.tmp.publish-imp20-22-f35668bb\\isolated-build-release.log"
+    },
+    {
+      "sha256": "8EB89C8B9B3CBBE47C13E2CA4E0E843C38E5C939129F8BB480C68E50DF34A992",
+      "path": "E:\\SqlXmlAnalyzer\\.tmp.publish-imp20-22-f35668bb\\results\\isolated-release.trx"
+    }
+  ],
+  "sourceGitBlobs": [
+    {
+      "path": "Core/Services/DeadlockGraphSelectionService.cs",
+      "gitBlob": "aa97f1a5583cefb2754f5740d6584c8ee9f1b672"
+    },
+    {
+      "path": "Core/Services/DiagnosticReportExportService.cs",
+      "gitBlob": "a1d94b17d97bb880e2b75cf529829b9899771543"
+    },
+    {
+      "path": "Core/Services/PlanAnalysisService.cs",
+      "gitBlob": "328ba079382e0c0c5b6fe9bc217ffb773aa46797"
+    },
+    {
+      "path": "Core/Services/PlanTreeService.cs",
+      "gitBlob": "d73905f2adc1f8001b2dd2f755f0d5fee2b4cb1f"
+    },
+    {
+      "path": "Core/Services/WorkspaceSourceFormatter.cs",
+      "gitBlob": "9c833143a5f342a6208642ff05e4ada16c653a0e"
+    },
+    {
+      "path": "Core/ViewModels/DeadlockWorkspaceViewModel.cs",
+      "gitBlob": "0c194227785320f9960eede9cba0a5182fbe2ddf"
+    },
+    {
+      "path": "Core/ViewModels/MainViewModel.Comparison.cs",
+      "gitBlob": "c9fb6ba3c191a127df5a021f6e098b40e5023a6d"
+    },
+    {
+      "path": "Core/ViewModels/MainViewModel.cs",
+      "gitBlob": "a29d2719b4775691534a7936c2193ba72a172405"
+    },
+    {
+      "path": "Core/ViewModels/PlanWorkspaceViewModel.cs",
+      "gitBlob": "29061f65d6e2eacee8fbb3bf52d6a85a2a556f39"
+    },
+    {
+      "path": "MainWindow.ReportEvents.cs",
+      "gitBlob": "1dbc260be9df3a46bf4a8c89e13e384f6c1bd608"
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "gitBlob": "873046e51395a035d1242544d9945ba1fb247bce"
+    },
+    {
+      "path": "PlanGraphControl.xaml",
+      "gitBlob": "7a25ae51c280e837141282a9add08ae177bf01df"
+    },
+    {
+      "path": "PlanGraphControl.xaml.cs",
+      "gitBlob": "78c1fa0a3a6a64a5f6650f5a16b9ce5174cf5599"
+    },
+    {
+      "path": "Services/DeadlockAnalysisUiActionService.cs",
+      "gitBlob": "df786e2bde293e09f5f6bb4bc6ea56780ba95b2d"
+    },
+    {
+      "path": "Services/DeadlockSelectionUiActionService.cs",
+      "gitBlob": "9915f5f657f4609822c35398fdd1097d471820b3"
+    },
+    {
+      "path": "Services/DeadlockWorkspaceUiActionService.cs",
+      "gitBlob": "f1eaf4b58d25425199a5200745e6cba498e25412"
+    },
+    {
+      "path": "Services/DocumentAnalysisUiActionService.cs",
+      "gitBlob": "d3af15e0d8c17879639a6f2f9287b1514d076906"
+    },
+    {
+      "path": "Services/PlanAnalysisUiActionService.cs",
+      "gitBlob": "40ec225a40ea022fd9665ab9a42fc3671533f85a"
+    },
+    {
+      "path": "Services/PlanGraphCollapseUiActionService.cs",
+      "gitBlob": "5204273922498ddf39a26598d95f02858e84158f"
+    },
+    {
+      "path": "Services/PlanGraphLayoutUiActionService.cs",
+      "gitBlob": "9605e2817cbebc559f5b5cac4849b51c0cf08683"
+    },
+    {
+      "path": "Services/PlanGraphLoadUiActionService.cs",
+      "gitBlob": "6fbbc11f87d25eae612195386a51f60a7e587b7b"
+    },
+    {
+      "path": "Services/PlanStatisticsUiActionService.cs",
+      "gitBlob": "4d002b98db315a0201d59befb746d9ff95951af2"
+    },
+    {
+      "path": "Services/PlanWorkspaceUiActionService.cs",
+      "gitBlob": "aaf342ef8c91143650364d85e26639dd949feab8"
+    },
+    {
+      "path": "Services/XelDeadlockUiActionService.cs",
+      "gitBlob": "cea3d9f0b99cbf2a84f441cb5e29c7fbef1eb4f8"
+    },
+    {
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "gitBlob": "1e70f5371cdd9062571fc0685192b37dbe365127"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+      "gitBlob": "abbaa5ec23d7f57e0e3707453fc97a97fdfe3a59"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlOptions.cs",
+      "gitBlob": "ae8a67b0d5910459da121c9bbaf5ad00f96efb14"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReport.cs",
+      "gitBlob": "fce4db1edae03f6c7de39983da8855e32450511a"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportFactory.cs",
+      "gitBlob": "1bb120d116cd98bdfcc208ccf04ef03eba0806bf"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportRenderer.cs",
+      "gitBlob": "a7a9dcd1587b89cd48611ff81e197b6a5ab8b161"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/PlanReportXml.cs",
+      "gitBlob": "d6b3bc3caaf40376d11b40d61b0b8bc8b54ab8ef"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/ReportRedactionService.cs",
+      "gitBlob": "90f1377ea1afcad0249e6ab03a124bd79ad1bd92"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/ReportSizeBudget.cs",
+      "gitBlob": "f5091d1e01dcfd1599324beb1a82c5c808183900"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "gitBlob": "a2b81402230914fe44a8d3648819f59f14dfe7db"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Services/ReviewOutputService.cs",
+      "gitBlob": "fe565c5b2cadf25e584f849132cf8b367ed6009b"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/CliScanHardeningTests.cs",
+      "gitBlob": "e3f4c387e87504d7b23310bf94de722910bd1b25"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+      "gitBlob": "cfe31c030500bdb2ad15a76fe77ffed22109dc52"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DeadlockEventSelectionTests.cs",
+      "gitBlob": "a4632224fcad6806b816adb0c4a5d653c33259cd"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DiagnosticReportBudgetAndScopeTests.cs",
+      "gitBlob": "ffbd24aed9424860a08a6a8bc5d7ffb780effe77"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DiagnosticReportHardeningTests.cs",
+      "gitBlob": "78819c8d36f2a72ea8d45c47fc39769c2256b223"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DiagnosticReportTests.cs",
+      "gitBlob": "d70ada61c69246716b40071049bccd72cc187e61"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/ReviewWorkspaceDiagnosticTests.cs",
+      "gitBlob": "3a48da470038c7c1964f21344d2179943e6cc2ea"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/UnifiedReportDiagnosticTests.cs",
+      "gitBlob": "5e005fc25c7167d8b688cf94dfa72298a79ef5fd"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Diagnostics/WorkspaceSelectionDiagnosticTests.cs",
+      "gitBlob": "6136591cf093cece8e6305aaa5aa7111775e7e48"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/ReviewWorkspaceHardeningTests.cs",
+      "gitBlob": "9baf8803b1a6c7686fc5b3fcfe975c7838f751df"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/ReviewWorkspaceTests.cs",
+      "gitBlob": "c93d8822bb8e52e3a010aa1e048de7c54ef58c32"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/RewriteReviewValidationTests.cs",
+      "gitBlob": "95b486934d10b2c1469bedad323f9dc2cb86c14b"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/WorkspaceSelectionHardeningTests.cs",
+      "gitBlob": "505cd16ba8b54b7d684e7690fe69db25d0fcc45c"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/WorkspaceSelectionTests.cs",
+      "gitBlob": "a122de69afd142122c66dc1e6d5df157f7e4e198"
+    },
+    {
+      "path": "StatisticsHistogramControl.xaml.cs",
+      "gitBlob": "80ff9d38be0389ba3b49aaac062f7b1438dcf0e8"
+    },
+    {
+      "path": "ViewModels/IndexSandboxViewModel.cs",
+      "gitBlob": "040bba6384ba1a506ba7e60937cc3c08ed6be39b"
+    },
+    {
+      "path": "ViewModels/ReportReviewViewModel.cs",
+      "gitBlob": "cd5e378c06ae9be7edff376dd48d2633eee8cf15"
+    },
+    {
+      "path": "ViewModels/RewriteReviewViewModel.cs",
+      "gitBlob": "124f46d2f7e2129e9e5b0c6e15631e5394b13c0f"
+    },
+    {
+      "path": "Views/DeadlockWorkspaceView.xaml",
+      "gitBlob": "d24329c2ae8c996b10963cacf0c5d96b4652468d"
+    },
+    {
+      "path": "Views/IndexSandboxWindow.xaml",
+      "gitBlob": "099d812a14b26750c00f52e33dd553b7b503c7dc"
+    },
+    {
+      "path": "Views/IndexSandboxWindow.xaml.cs",
+      "gitBlob": "f28223c0acb8d74e92026a8a2bcf659516a32c82"
+    },
+    {
+      "path": "Views/PlanComparisonWorkspaceView.xaml",
+      "gitBlob": "294bf7f3c0326144b22c58d76733b7288f6b2af6"
+    },
+    {
+      "path": "Views/PlanWorkspaceView.xaml",
+      "gitBlob": "8d495aab57fd4139b6f96963b824f42d3a3aab80"
+    },
+    {
+      "path": "Views/PlanWorkspaceView.xaml.cs",
+      "gitBlob": "c0b2120fb3b1124bc9a034d823266e438d2a44f8"
+    },
+    {
+      "path": "Views/ReportReviewWindow.xaml",
+      "gitBlob": "5e5001f5ff393025a4823ab4458de0f60a2909c2"
+    },
+    {
+      "path": "Views/ReportReviewWindow.xaml.cs",
+      "gitBlob": "6a603ad4969b089fd53abfa6c5b24670facb5363"
+    },
+    {
+      "path": "Views/RewriteReviewWindow.xaml",
+      "gitBlob": "25226064f9f88297bd11b00325925c292e7e8ed4"
+    },
+    {
+      "path": "Views/RewriteReviewWindow.xaml.cs",
+      "gitBlob": "09abfe9aa0113a232eda062eef163aaee3de13ad"
+    }
+  ],
+  "notes": [
+    "A following documentation-only commit records this result.",
+    "Historical working-file SHA-256 values may vary after Git line-ending conversion; validated Git tree and source blob IDs identify the published code.",
+    "No SSMS or full manual GUI acceptance was repeated for this publication."
+  ]
+}
