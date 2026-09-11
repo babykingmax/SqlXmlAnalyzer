@@ -125,5 +125,48 @@
     "directoryRemoval": "git worktree remove returned Permission denied; residual directory remains",
     "subsequentDeletion": "Automatic approval rejected both batch and verified literal-path Remove-Item commands: blocked by policy",
     "generatedEvidenceRetained": true
+  },
+  "committedSourceVerification": {
+    "verifiedAt": "2026-09-11T10:02:47.1235146+08:00",
+    "sourceCommit": "d3c92c21c389f4459c2ff8fee0b744129f8058dc",
+    "sourceTree": "b8c1cbb3812d06f830e083bf0f41498aaf056211",
+    "configuration": "Release",
+    "checkoutKind": "Independent local Git clone from the committed branch; shared Git objects, fresh build outputs",
+    "cleanAfterTests": true,
+    "build": {
+      "command": "dotnet build SqlXmlAnalyzer.sln -c Release -m:1 -t:Rebuild -warnaserror -v minimal",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "logSha256": "F5D5E24AB8B79CA2543B076B32F6CC2C4239E1009EE363CA86C60C71E3BF21D7"
+    },
+    "tests": {
+      "command": "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Release --no-build --blame-hang --blame-hang-timeout 120s --logger 'trx;LogFileName=checkout-release.trx' --results-directory <external-validation-directory> -v minimal",
+      "exitCode": 0,
+      "total": 3066,
+      "passed": 3066,
+      "failed": 0,
+      "notExecuted": 0,
+      "startedAt": "2026-09-11T10:00:34.1653248+08:00",
+      "finishedAt": "2026-09-11T10:02:06.7052444+08:00",
+      "trxSha256": "D0375562EA4E23582C0A99FEB8BB1F7A1C1B2B42A1D3F1CBE2E0636AA7B63EC8",
+      "logSha256": "C03DEB942E84117B2AF8EAD7F899EBA0134C919E8AE0702A52EADFF34573E9EE"
+    },
+    "rawEvidenceDirectory": "C:/Users/Administrator/AppData/Local/Temp/SqlXmlAnalyzer-GitHub-f284024ab5bd43819255820d0852d548",
+    "newManualUsabilityAcceptance": false,
+    "applicationReleaseApproved": false,
+    "publicationLinkCheck": {
+      "checkedAt": "2026-09-11T10:01:08.7295141+08:00",
+      "documents": 51,
+      "localLinks": 805,
+      "missingCount": 0,
+      "missing": [],
+      "method": "Check local Markdown file/directory targets against the Git index; no claim about remote URLs or fragment anchors."
+    },
+    "preparationNotes": [
+      "Two XAML lines and existing document/script trailing whitespace were normalized before the verified commit; no additional UI behavior was changed in the publication step.",
+      "52 raw text outputs and 16 compatibility .log files were excluded from newly submitted files; historical structured summaries and screenshots remain.",
+      "The original working-tree validation and this committed-source verification are separate runs."
+    ]
   }
 }

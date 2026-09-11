@@ -7,6 +7,7 @@
 - 登记 PW-01～PW-05 的实际画布、诊断范围徽标、问题摘要、详情表达和命令层级问题；PW-06 为后续在线采集与实验历史能力。本条仅记录评估和文档工作，不表示这些问题已修复。
 - 将几何/绑定/回归通过与可用性、真实 DPI、硬件键盘和正式发布批准分别记录。详见[设计](DOCS/plan-workspace-design-and-gap-assessment.md)和[验收矩阵](DOCS/verification/plan-workspace-redesign/acceptance-matrix.md)。
 - 提交前重新执行 Debug/Release 全量重建（警告即失败）及测试：构建均 0 警告、0 错误，各 3066 项通过、0 失败、0 跳过。结果及本地日志校验值见[本轮验证记录](DOCS/verification/plan-workspace-redesign/publish-validation.json)，不替代后续独立检出或实机验收。
+- 源码提交 `d3c92c2` 的独立 Git 检出随后再次通过 Release 强制重建及全量 3066 项测试，测试后工作树干净。源码提交排除生成产物与原始日志；旧临时 worktree 已注销，目录清理遇到权限错误及自动审批拒绝，临时清理仍未完成。
 
 ## 2026-09-10 · 执行计划工作区与图形优化
 

@@ -13,6 +13,8 @@
 - [已实现的计划图优化及历史证据](DOCS/verification/plan-workspace-redesign/graph-polish.md)
 - [2026-09-11 提交前验证](DOCS/verification/plan-workspace-redesign/publish-validation.json)：本地工作树 Debug/Release 全量重建均为 0 警告、0 错误，各 3066 项测试通过。本轮未新增实机或人工可用性验收。
 
+源码提交 `d3c92c2` 已在独立 Git 检出中再次通过 Release 全量重建（0 警告、0 错误）与全部 3066 项测试，测试后检出工作树干净。提交排除构建产物、临时文件及原始日志；本机临时清理尚未完成，实际状态见上述验证记录。
+
 以下按时间保留此前实施记录；其中的测试数量、候选和验收状态属于对应阶段。
 
 CLI 改写审核的参数重放、报告输入保护及目录链接处理见 [CLI 审核重放与输入保护](DOCS/CLI审核重放与输入保护.md)。
