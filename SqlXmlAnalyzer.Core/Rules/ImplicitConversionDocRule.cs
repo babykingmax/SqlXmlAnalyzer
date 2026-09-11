@@ -13,54 +13,47 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var doc = relOp.Document;
+            if (doc == null) return null;
+
+            var convs = new HashSet<string>();
+            var scalarOps = doc.Descendants(ns + "ScalarOperator");
+            foreach (var op in scalarOps)
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
-
-                var convs = new HashSet<string>();
-                var scalarOps = doc.Descendants(ns + "ScalarOperator");
-                foreach (var op in scalarOps)
+                if (op == null) continue;
+                string s = op.Attribute("ScalarString")?.Value ?? "";
+                if (s.Contains("CONVERT_IMPLICIT"))
                 {
-                    if (op == null) continue;
-                    string s = op.Attribute("ScalarString")?.Value ?? "";
-                    if (s.Contains("CONVERT_IMPLICIT"))
-                    {
-                        convs.Add(s);
-                    }
-                }
-                var pacs = doc.Descendants(ns + "PlanAffectingConvert");
-                foreach (var pac in pacs)
-                {
-                    if (pac == null) continue;
-                    string expr = pac.Attribute("Expression")?.Value ?? "";
-                    if (expr.Contains("CONVERT_IMPLICIT"))
-                    {
-                        convs.Add(expr);
-                    }
-                }
-
-                var messages = new List<string>();
-                foreach (var c in convs.Distinct())
-                {
-                    messages.Add($"⚠️ 隐式转换风险: SQL 引擎执行了 CONVERT_IMPLICIT。这通常由于字段类型不匹配引起，极易导致索引扫描失效（Index Scan）：\n   👉 表达式: {c}");
-                }
-
-                if (messages.Any())
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = this.RuleId,
-                        Severity = "Warning",
-                        Title = "隐式转换风险",
-                        Message = string.Join("|||", messages),
-                        NodeId = "0"
-                    };
+                    convs.Add(s);
                 }
             }
-            catch (Exception ex)
+            var pacs = doc.Descendants(ns + "PlanAffectingConvert");
+            foreach (var pac in pacs)
             {
-                Logger.Warning($"ImplicitConversionDocRule failed: {ex.Message}");
+                if (pac == null) continue;
+                string expr = pac.Attribute("Expression")?.Value ?? "";
+                if (expr.Contains("CONVERT_IMPLICIT"))
+                {
+                    convs.Add(expr);
+                }
+            }
+
+            var messages = new List<string>();
+            foreach (var c in convs.Distinct())
+            {
+                messages.Add($"⚠️ 隐式转换风险: SQL 引擎执行了 CONVERT_IMPLICIT。这通常由于字段类型不匹配引起，极易导致索引扫描失效（Index Scan）：\n   👉 表达式: {c}");
+            }
+
+            if (messages.Any())
+            {
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = "Warning",
+                    Title = "隐式转换风险",
+                    Message = string.Join("|||", messages),
+                    NodeId = "0"
+                };
             }
 
             return null;

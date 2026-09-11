@@ -1,0 +1,117 @@
+{
+  "Passed": true,
+  "BindingErrors": 0,
+  "ValidationScope": "Compiled window bindings, layout, themes and scrolling; bitmap capture unavailable in this session.",
+  "report": [
+    {
+      "Theme": "light",
+      "ActualWidth": 1000,
+      "ActualHeight": 620,
+      "ScrollableHeight": 485.90666666666675,
+      "ScrollOffsets": [
+        0,
+        242.95333333333338,
+        485.90666666666675
+      ],
+      "Evidence": [
+        {
+          "Binding": "ImpactSummary",
+          "Text": "SQL Server 原始 Impact：80.0%（优化器估算，非实测收益）",
+          "ActualWidth": 279,
+          "ActualHeight": 26.406666666666666
+        },
+        {
+          "Binding": "ScoreBreakdown",
+          "Text": "等值 30 + 范围 15 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 85/100（限制到 0–100）",
+          "ActualWidth": 279,
+          "ActualHeight": 26.406666666666666
+        },
+        {
+          "Binding": "ScoreWeights",
+          "Text": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+          "ActualWidth": 279,
+          "ActualHeight": 39.61000000000001
+        },
+        {
+          "Binding": "ScoreSource",
+          "Text": "谓词证据来源：计划谓词文本的语法分析（较低可信度）；候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+          "ActualWidth": 279,
+          "ActualHeight": 39.61000000000001
+        },
+        {
+          "Binding": "ModelSummary",
+          "Text": "评分 index-evidence-score/2.0.1；成本 captured-cost-exposure/2.0.0；输入 sandbox-input-assumptions/2.0.0",
+          "ActualWidth": 279,
+          "ActualHeight": 24.006666666666668
+        },
+        {
+          "Binding": "CostEvidenceSummary",
+          "Text": "范围：4 个 QueryPlan / 4 个算子；全部自身估算成本 N/A，关联访问算子成本 N/A。候选逐项独立；多个候选按算子身份取并集，同一算子只计一次，不相加评分或假设收益。",
+          "ActualWidth": 279,
+          "ActualHeight": 52.81333333333334
+        },
+        {
+          "Binding": "InputAssumptionsNotice",
+          "Text": "假设输入（非实测）：总行数=当前目标/QueryPlan 的 1 项计划估算最大值（假设）；行宽=当前目标/QueryPlan 的 1 项计划估算最大值（假设）；返回行数=当前目标/QueryPlan 的 1 项计划估算最大值（假设）。",
+          "ActualWidth": 279,
+          "ActualHeight": 52.81333333333334
+        }
+      ]
+    },
+    {
+      "Theme": "dark",
+      "ActualWidth": 1000,
+      "ActualHeight": 620,
+      "ScrollableHeight": 485.90666666666675,
+      "ScrollOffsets": [
+        0,
+        242.95333333333338,
+        485.90666666666675
+      ],
+      "Evidence": [
+        {
+          "Binding": "ImpactSummary",
+          "Text": "SQL Server 原始 Impact：80.0%（优化器估算，非实测收益）",
+          "ActualWidth": 279,
+          "ActualHeight": 26.406666666666666
+        },
+        {
+          "Binding": "ScoreBreakdown",
+          "Text": "等值 30 + 范围 15 + 排序 0 + 已知覆盖 40 − 宽度惩罚 0 → 85/100（限制到 0–100）",
+          "ActualWidth": 279,
+          "ActualHeight": 26.406666666666666
+        },
+        {
+          "Binding": "ScoreWeights",
+          "Text": "连续等值前导键每列 30；首个不等值键 15；一个兼容排序 15；已核验输出列覆盖比例 × 40；键超过 4/INCLUDE 超过 8 时每列扣 2；总分 0–100。",
+          "ActualWidth": 279,
+          "ActualHeight": 39.61000000000001
+        },
+        {
+          "Binding": "ScoreSource",
+          "Text": "谓词证据来源：计划谓词文本的语法分析（较低可信度）；候选所属捕获 QueryPlan 与完整对象；无计划时仅使用声明的列角色。",
+          "ActualWidth": 279,
+          "ActualHeight": 39.61000000000001
+        },
+        {
+          "Binding": "ModelSummary",
+          "Text": "评分 index-evidence-score/2.0.1；成本 captured-cost-exposure/2.0.0；输入 sandbox-input-assumptions/2.0.0",
+          "ActualWidth": 279,
+          "ActualHeight": 24.006666666666668
+        },
+        {
+          "Binding": "CostEvidenceSummary",
+          "Text": "范围：4 个 QueryPlan / 4 个算子；全部自身估算成本 N/A，关联访问算子成本 N/A。候选逐项独立；多个候选按算子身份取并集，同一算子只计一次，不相加评分或假设收益。",
+          "ActualWidth": 279,
+          "ActualHeight": 52.81333333333334
+        },
+        {
+          "Binding": "InputAssumptionsNotice",
+          "Text": "假设输入（非实测）：总行数=当前目标/QueryPlan 的 1 项计划估算最大值（假设）；行宽=当前目标/QueryPlan 的 1 项计划估算最大值（假设）；返回行数=当前目标/QueryPlan 的 1 项计划估算最大值（假设）。",
+          "ActualWidth": 279,
+          "ActualHeight": 52.81333333333334
+        }
+      ]
+    }
+  ]
+}

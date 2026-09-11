@@ -6,9 +6,8 @@
         <StmtSimple StatementText="SELECT * FROM Table1" StatementId="1" StatementCompId="1" StatementType="SELECT">
           <QueryPlan>
             <MemoryGrantInfo GrantedMemory="20000" MaxUsedMemory="1000" UsedMemory="1000" />
-            <SpillToTempDb SpillLevel="1" />
             <RelOp NodeId="0" PhysicalOp="Sort" LogicalOp="Sort" EstimateRows="1000">
-              <MemoryGrantInfo GrantedMemory="20000" MaxUsedMemory="1000" UsedMemory="1000" />
+              <Warnings><SpillToTempDb SpillLevel="1" /></Warnings>
             </RelOp>
           </QueryPlan>
         </StmtSimple>

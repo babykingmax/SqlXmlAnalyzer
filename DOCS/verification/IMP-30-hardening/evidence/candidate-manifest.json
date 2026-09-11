@@ -1,0 +1,199 @@
+{
+  "SchemaVersion": 1,
+  "Id": "2.0.0-imp30-20260910T113215Z-0f3c050f",
+  "Kind": "candidate",
+  "CreatedUtc": "2026-09-10T11:32:16.3220654Z",
+  "ApprovedForDistribution": false,
+  "Files": [
+    {
+      "Path": "build-evidence.json",
+      "Bytes": 163677,
+      "Sha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A"
+    },
+    {
+      "Path": "cli/RuleConfiguration.json",
+      "Bytes": 578,
+      "Sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+    },
+    {
+      "Path": "cli/SqlXmlAnalyzer.Analysis.pdb",
+      "Bytes": 15144,
+      "Sha256": "5A3AE02CA3643822DF174D2C7126CE1776BEFA78ED4D1A0E56A54E28E27A8778"
+    },
+    {
+      "Path": "cli/SqlXmlAnalyzer.Application.pdb",
+      "Bytes": 40868,
+      "Sha256": "138DF4EE8EA8BC2B387B1A616348B5F02B1426B26C6B8330BD799F71FF99E411"
+    },
+    {
+      "Path": "cli/SqlXmlAnalyzer.CLI.exe",
+      "Bytes": 133681487,
+      "Sha256": "1239D73F2C530868B7EFBE2FF654A05A897D518D17BA4048E67687CD797D10B7"
+    },
+    {
+      "Path": "cli/SqlXmlAnalyzer.CLI.pdb",
+      "Bytes": 24288,
+      "Sha256": "BF7920797C25E10DCF2965302FEB35D0E4C556E93D2E04D5FDB2A1B61967764C"
+    },
+    {
+      "Path": "cli/SqlXmlAnalyzer.Core.pdb",
+      "Bytes": 223040,
+      "Sha256": "B8F29B3445FC87CBE38F97DD0E16AE2717F35A2EA159A6372E91A2A38FDD847E"
+    },
+    {
+      "Path": "cli/SqlXmlAnalyzer.Refactoring.pdb",
+      "Bytes": 39264,
+      "Sha256": "60836811C09A3FE390973E54CDD42F82F6C1E98E4648D165D7B78B85ECA79A21"
+    },
+    {
+      "Path": "docs/IssueStatus.md",
+      "Bytes": 2114,
+      "Sha256": "8A543BA738A96D4BCE9FC890748E4D642E0A3785A7E259C63E080E9F29F343BB"
+    },
+    {
+      "Path": "docs/ReleaseNotes.md",
+      "Bytes": 4397,
+      "Sha256": "E252230B3B17F1AF1715E6962C916D57E94C5F8DF22F0D8F628AC91D2487BFC1"
+    },
+    {
+      "Path": "docs/UpgradeRollback.md",
+      "Bytes": 4661,
+      "Sha256": "50ADF5E9B199E6B9C5D45FA54692DD5F2EFDD91272A2B3BEDB5494739186AC8D"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Black.ttf",
+      "Bytes": 664748,
+      "Sha256": "808C62839C62DBCE7DE689AF7603666FC7F8B81E0DF537D8A5212C87580D4337"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-BlackItalic.ttf",
+      "Bytes": 698264,
+      "Sha256": "3214F75BF96783A571BD25338C867C669E7C5E7C08A227F18A7B63766D6E6CBE"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Bold.ttf",
+      "Bytes": 656544,
+      "Sha256": "8A0AACE75D33794EECE4B28187BFC1DF0BBD2888B5D8A56E01788C8D65D16BE1"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-BoldItalic.ttf",
+      "Bytes": 698364,
+      "Sha256": "62C1B7F0D2E74B45960154C3520EFC337B553DB0961BFDC950D5618334596CC8"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-ExtraBold.ttf",
+      "Bytes": 613920,
+      "Sha256": "61018DE62BDAF90D4AC80B1D53C5C130756C8E9219AEA3D2773FC9BD5869AF97"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-ExtraBoldItalic.ttf",
+      "Bytes": 671876,
+      "Sha256": "A42B384B9C37913A61023E3A47C07FEAD26E776127BBC9E6A0C96FE413089374"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-ExtraLight.ttf",
+      "Bytes": 626624,
+      "Sha256": "989989B481DB5DF0827D90C51FD08D024FE7BC4E367046E2584A0D3B0487936D"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-ExtraLightItalic.ttf",
+      "Bytes": 653640,
+      "Sha256": "FC56526250B9B64CE0908C52350B03E91B84AFECB08FD2834A12E57B91ABDB31"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Italic.ttf",
+      "Bytes": 722900,
+      "Sha256": "E399C44EFE1387100531D26C7E4800C5D12251B890D6654A3098C7C679CB1786"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Light.ttf",
+      "Bytes": 643884,
+      "Sha256": "CF2A774503BAF418D584F49967BD160E1E03F087C13B25602F28024EC7788F08"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-LightItalic.ttf",
+      "Bytes": 657552,
+      "Sha256": "700E6722FD14A10E7646347A6B14C486D4C364A373BA61C70E0B5CCEE7811635"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Medium.ttf",
+      "Bytes": 636396,
+      "Sha256": "D3AC182A6833E005745DD75679FBAD081C0B12535DF4E93AD8ED57817A31A338"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-MediumItalic.ttf",
+      "Bytes": 694924,
+      "Sha256": "ECBCE6CFFA42D8A67AFEB27A9D6E85D515E81481D4B2CECE989E833A48048405"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Regular.ttf",
+      "Bytes": 656568,
+      "Sha256": "D636E4683231F931EDA222D588E944D082BFD3BDBA02F928BEE461C0F185B251"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-SemiBold.ttf",
+      "Bytes": 668548,
+      "Sha256": "71B8B7DECBE75A881ED267BE539D402BD1E9420B799658AADA4E0D1BD5AF803C"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-SemiBoldItalic.ttf",
+      "Bytes": 697364,
+      "Sha256": "5ADEB6B334D8FB99EF053BC052B952773D544315E0E1D668A12C0CE8BD51375C"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-Thin.ttf",
+      "Bytes": 584056,
+      "Sha256": "663C55BFE9A38270FFF44DA273BF4D792EAFC3E7E1201F62C3064CAD80C5D5E7"
+    },
+    {
+      "Path": "gui/LatoFont/Lato-ThinItalic.ttf",
+      "Bytes": 608716,
+      "Sha256": "E5E86E219CE6987B175470D94D57753A387D1860B635DA6327A60E8D19A33BEB"
+    },
+    {
+      "Path": "gui/LatoFont/OFL.txt",
+      "Bytes": 4500,
+      "Sha256": "14B8609FD8281CB961730DE7D3B2964DCC6E0E395E759B1422E52E39A0FDC6B2"
+    },
+    {
+      "Path": "gui/RuleConfiguration.json",
+      "Bytes": 578,
+      "Sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+    },
+    {
+      "Path": "gui/SqlXmlAnalyzer.Analysis.pdb",
+      "Bytes": 15144,
+      "Sha256": "5A3AE02CA3643822DF174D2C7126CE1776BEFA78ED4D1A0E56A54E28E27A8778"
+    },
+    {
+      "Path": "gui/SqlXmlAnalyzer.Application.pdb",
+      "Bytes": 40868,
+      "Sha256": "138DF4EE8EA8BC2B387B1A616348B5F02B1426B26C6B8330BD799F71FF99E411"
+    },
+    {
+      "Path": "gui/SqlXmlAnalyzer.Core.pdb",
+      "Bytes": 223040,
+      "Sha256": "B8F29B3445FC87CBE38F97DD0E16AE2717F35A2EA159A6372E91A2A38FDD847E"
+    },
+    {
+      "Path": "gui/SqlXmlAnalyzer.Refactoring.pdb",
+      "Bytes": 39264,
+      "Sha256": "60836811C09A3FE390973E54CDD42F82F6C1E98E4648D165D7B78B85ECA79A21"
+    },
+    {
+      "Path": "gui/SqlXmlAnalyzer.exe",
+      "Bytes": 271215290,
+      "Sha256": "CAFBE78832E738A5780D7D8DC85F68C222FCDCEB1A873FE50805DE8D1CDFE433"
+    },
+    {
+      "Path": "gui/SqlXmlAnalyzer.pdb",
+      "Bytes": 320048,
+      "Sha256": "DE18415649910A368C23CE1C6717C282D59C1D5976B566CD97A910820C88224E"
+    },
+    {
+      "Path": "release-status.json",
+      "Bytes": 537,
+      "Sha256": "BA93B59F2AF1E9C70D3707859F6A8DCCC9B64629F55D62D5BA4482BFAE1AF35E"
+    }
+  ]
+}

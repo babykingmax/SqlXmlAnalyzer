@@ -8,7 +8,8 @@ namespace SqlXmlAnalyzer.Core.Rules
     {
         Plan,
         Statement,
-        Operator
+        Operator,
+        QueryPlan
     }
 
     public enum RuleCategory
@@ -37,14 +38,18 @@ namespace SqlXmlAnalyzer.Core.Rules
         RuleCategory Category,
         RuleScope Scope,
         string DefaultSeverity,
-        string Description);
+        string Description)
+    {
+        public string Version { get; init; } = "1.0.0";
+    }
 
     public static class RuleMetadataCatalog
     {
         private sealed record Definition(
             RuleCategory Category,
             RuleScope Scope,
-            string DefaultSeverity);
+            string DefaultSeverity,
+            string Version = "1.0.0");
 
         private static readonly IReadOnlyDictionary<string, string> DeprecatedRuleIdAliases =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -58,36 +63,36 @@ namespace SqlXmlAnalyzer.Core.Rules
             {
                 ["RULE_001_IMPLICIT_CONV"] = new(RuleCategory.ImplicitConversion, RuleScope.Operator, "Warning"),
                 ["RULE_002_KEY_LOOKUP"] = new(RuleCategory.KeyLookup, RuleScope.Operator, "Warning"),
-                ["RULE_003_PARAM_SNIFFING"] = new(RuleCategory.ParameterSensitivity, RuleScope.Plan, "Warning"),
-                ["RULE_004_ESTIMATE_MISMATCH"] = new(RuleCategory.Cardinality, RuleScope.Operator, "Warning"),
-                ["RULE_006_RESIDUAL_PREDICATE"] = new(RuleCategory.ResidualPredicate, RuleScope.Operator, "Info"),
+                ["RULE_003_PARAM_SNIFFING"] = new(RuleCategory.ParameterSensitivity, RuleScope.QueryPlan, "Warning", "2.0.0"),
+                ["RULE_004_ESTIMATE_MISMATCH"] = new(RuleCategory.Cardinality, RuleScope.Operator, "Warning", "2.0.0"),
+                ["RULE_006_RESIDUAL_PREDICATE"] = new(RuleCategory.ResidualPredicate, RuleScope.Operator, "Info", "2.0.0"),
                 ["RULE_008_SPILL_DETECTION"] = new(RuleCategory.Memory, RuleScope.Operator, "Warning"),
                 ["RULE_009_PARALLEL_SKEW"] = new(RuleCategory.Parallelism, RuleScope.Operator, "Warning"),
                 ["RULE_011_UDF_TVF"] = new(RuleCategory.UdfAndTableVariable, RuleScope.Operator, "Warning"),
                 ["RULE_012_NESTED_LOOPS_HIGH_EXEC"] = new(RuleCategory.AntiPattern, RuleScope.Operator, "Critical"),
-                ["RULE_013_ANTI_PATTERN"] = new(RuleCategory.AntiPattern, RuleScope.Operator, "Warning"),
-                ["RULE_014_SERIAL_PLAN_REASON"] = new(RuleCategory.AntiPattern, RuleScope.Plan, "Info"),
+                ["RULE_013_ANTI_PATTERN"] = new(RuleCategory.AntiPattern, RuleScope.Operator, "Warning", "2.0.0"),
+                ["RULE_014_SERIAL_PLAN_REASON"] = new(RuleCategory.AntiPattern, RuleScope.QueryPlan, "Info", "2.0.0"),
                 ["RULE_015_LOCAL_VARIABLES"] = new(RuleCategory.AntiPattern, RuleScope.Statement, "Warning"),
                 ["RULE_016_ZERO_ROW_ACTUALS"] = new(RuleCategory.Cardinality, RuleScope.Operator, "Warning"),
-                ["RULE_017_LARGE_MEMORY_GRANT"] = new(RuleCategory.Memory, RuleScope.Plan, "Warning"),
+                ["RULE_017_LARGE_MEMORY_GRANT"] = new(RuleCategory.Memory, RuleScope.QueryPlan, "Warning", "2.0.0"),
                 ["RULE_018_OPTIMIZER_ABORT"] = new(RuleCategory.OptimizerAbort, RuleScope.Statement, "Critical"),
-                ["RULE_019_CACHE_RECOMPILE"] = new(RuleCategory.CacheAndRecompile, RuleScope.Plan, "Warning"),
-                ["RULE_020_MISSING_INDEX"] = new(RuleCategory.MissingIndex, RuleScope.Plan, "Warning"),
+                ["RULE_019_CACHE_RECOMPILE"] = new(RuleCategory.CacheAndRecompile, RuleScope.QueryPlan, "Warning", "2.0.0"),
+                ["RULE_020_MISSING_INDEX"] = new(RuleCategory.MissingIndex, RuleScope.Plan, "Warning", "2.1.1"),
                 ["RULE_021_TABLE_SCAN"] = new(RuleCategory.TableScan, RuleScope.Operator, "Warning"),
                 ["RULE_022_HIGH_COST_OP"] = new(RuleCategory.HighCost, RuleScope.Plan, "Warning"),
                 ["RULE_023_RUNNING_TOTAL_PATTERN"] = new(RuleCategory.AntiPattern, RuleScope.Statement, "Critical"),
-                ["RULE_024_SCALAR_SUBQUERY_PATTERN"] = new(RuleCategory.AntiPattern, RuleScope.Statement, "Warning"),
+                ["RULE_024_SCALAR_SUBQUERY_PATTERN"] = new(RuleCategory.AntiPattern, RuleScope.Statement, "Warning", "2.0.0"),
                 ["RULE_025_QUERY_REWRITE"] = new(RuleCategory.QueryRewrite, RuleScope.Plan, "Warning"),
                 ["RULE_026_IMPLICIT_CONV_DOC"] = new(RuleCategory.ImplicitConversion, RuleScope.Plan, "Warning"),
                 ["RULE_027_PARAM_SNIFFING_DOC"] = new(RuleCategory.ParameterSensitivity, RuleScope.Plan, "Warning"),
-                ["RULE_028_STATS_USAGE"] = new(RuleCategory.ParameterSensitivity, RuleScope.Plan, "Warning"),
-                ["RULE_029_MEMORY_GRANT_DOC"] = new(RuleCategory.Memory, RuleScope.Plan, "Warning"),
-                ["RULE_030_CARDINALITY_ERROR"] = new(RuleCategory.Cardinality, RuleScope.Operator, "Warning"),
+                ["RULE_028_STATS_USAGE"] = new(RuleCategory.ParameterSensitivity, RuleScope.QueryPlan, "Warning", "2.0.0"),
+                ["RULE_029_MEMORY_GRANT_DOC"] = new(RuleCategory.Memory, RuleScope.QueryPlan, "Warning", "2.0.0"),
+                ["RULE_030_CARDINALITY_ERROR"] = new(RuleCategory.Cardinality, RuleScope.Operator, "Warning", "2.0.0"),
                 ["RULE_031_KEY_LOOKUP_OP"] = new(RuleCategory.KeyLookup, RuleScope.Operator, "Warning"),
-                ["RULE_032_MEMORY_SPILL"] = new(RuleCategory.Memory, RuleScope.Operator, "Warning"),
+                ["RULE_032_MEMORY_SPILL"] = new(RuleCategory.Memory, RuleScope.Operator, "Warning", "2.0.0"),
                 ["RULE_033_THREAD_SKEW"] = new(RuleCategory.Parallelism, RuleScope.Operator, "Warning"),
-                ["RULE_034_RESIDUAL_PRED_OP"] = new(RuleCategory.ResidualPredicate, RuleScope.Operator, "Warning"),
-                ["RULE_035_SARGABLE_INDEX_RECOMMENDATION"] = new(RuleCategory.MissingIndex, RuleScope.Operator, "Warning"),
+                ["RULE_034_RESIDUAL_PRED_OP"] = new(RuleCategory.ResidualPredicate, RuleScope.Operator, "Warning", "2.0.0"),
+                ["RULE_035_SARGABLE_INDEX_RECOMMENDATION"] = new(RuleCategory.MissingIndex, RuleScope.Statement, "Warning", "2.1.1"),
                 ["RULE_036_WAIT_STATS"] = new(RuleCategory.WaitStats, RuleScope.Plan, "Warning"),
                 ["RULE_037_RESOURCE_SEMAPHORE"] = new(RuleCategory.ResourceSemaphore, RuleScope.Plan, "Critical")
             };
@@ -132,7 +137,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 definition.Category,
                 definition.Scope,
                 definition.DefaultSeverity,
-                description);
+                description) { Version = definition.Version };
         }
 
         public static string GetCategoryTitle(RuleCategory category)

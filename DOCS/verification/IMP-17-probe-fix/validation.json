@@ -1,0 +1,260 @@
+{
+  "Step": "IMP-17 probe exception follow-up",
+  "CompletedAt": "2026-09-09T14:38:48.9457370+08:00",
+  "ProductionLogicChanged": false,
+  "AddedXunitTests": 0,
+  "AddedProcessCasesPerConfiguration": 8,
+  "ExitCodes": {
+    "UnexpectedFailure": 3,
+    "Success": 0,
+    "ExpectedFailure": 2
+  },
+  "Runs": [
+    {
+      "Configuration": "Debug",
+      "ProcessChecksPassed": 8,
+      "Directory": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092",
+      "DiagnosticsDirectory": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-46b976909e55454095ce7a3a3e7e0db9",
+      "FullSuitePassed": 1928,
+      "FullSuiteFailed": 0,
+      "FullSuiteSkipped": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0
+    },
+    {
+      "Configuration": "Release",
+      "ProcessChecksPassed": 8,
+      "Directory": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1",
+      "DiagnosticsDirectory": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP17-probe-regression-7cc063c4752a4bb79cb823a53b3a9844",
+      "FullSuitePassed": 1928,
+      "FullSuiteFailed": 0,
+      "FullSuiteSkipped": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0
+    }
+  ],
+  "WindowsEvents": {
+    "StartTime": "2026-09-09T14:34:00",
+    "EndTime": "2026-09-09T14:38:23.6056955+08:00",
+    "Queried": true,
+    "ProbeCrashEvents": 0,
+    "ReadErrors": [],
+    "Events": []
+  },
+  "HistoricalManifest": "DOCS/verification/IMP-17/validation.json",
+  "Notes": "Original crash was a real temporary Probe.exe failure. Unique output directories were already applied; this follow-up adds the missing exception boundary. Historical records and user files are retained.",
+  "FileHashes": [
+    {
+      "Path": "DOCS/verification/IMP-17/WpfProbe.cs.txt",
+      "SHA256": "70BCCCA7B1A6306AD3D8CEA8C8528603CF42AE85369876AAFFA99106B78F7A5D"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/verify-wpf.ps1",
+      "SHA256": "A40E54CA450E84230B7ACE76877E8FE2ED3771BB2F514205DAD9E568156A8FD5"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/Test-WpfProbeFailureHandling.ps1",
+      "SHA256": "173E8C701C419383DE6192562802D17E1C5609AD53A595923B36202F48A11070"
+    },
+    {
+      "Path": "DOCS/IMP-17验证探针异常处理修复.md",
+      "SHA256": "0D3DA0B293970C529BED3F8784205B5BA9B6E403DCB3B75C655546BB40A4B6C2"
+    },
+    {
+      "Path": "DOCS/IMP-17多语句与可比性检查的AB比较.md",
+      "SHA256": "056B9642787E8F4ABA500D54C278D371B1201296CE77D5401C439B4831234608"
+    },
+    {
+      "Path": "CHANGELOG.md",
+      "SHA256": "9CBA4BB122E2301F59EA430876EDB0113D0125B65DD0E7C39EBC39F595D867B0"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/build-debug.log",
+      "SHA256": "CAE03619AA6B3C6152A104FB474590F648CDF68F5742F436E3B8D1AE0FA7ECAC"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/test-debug.log",
+      "SHA256": "ACD5669C9E244D6EAA497CACA6EA184E816D8A7C70F750552EFB9488184B935C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/build-release.log",
+      "SHA256": "9E14461355ABAE360F0156F5B424AD09A566B2A96F2ADB17E2F62BA7F45DC73F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/test-release.log",
+      "SHA256": "20EB1800EF482D1D9334E854B067680936549640B4ED2C1A8CA33F2F9823C7B5"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/probe-debug.log",
+      "SHA256": "980D5079CB5608FA9A3D3BACF7B16279CD235FB4AD7C6685D37947CF2B97EC1F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/probe-release.log",
+      "SHA256": "09C9BFE3F791C325E87F3A015D686738397EB9A607BEE59F8D1A2B308561265A"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17-probe-fix/windows-events.json",
+      "SHA256": "50E2B60822FBBAFC0D97A580EDE816D2252A0DBA6D77CF0D54F224322707543D"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/failure-handling.json",
+      "SHA256": "5023FCA5BBBA6E70963440B56A24B84F8958CEAAF392E021E4E583A507D0CD54"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/success/stdout.log",
+      "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/success/stderr.log",
+      "SHA256": "4658CACDC6D6D8FE8150237E68168A98F55D12E26FF10A3BAC57F9B057EF46AA"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/locked-screenshot/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/locked-screenshot/stderr.log",
+      "SHA256": "B7A95B126EB1FF2AD0187D919AA9BFC575BE51FD1F490D2ACEF00523FD1214A6"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/existing-screenshot/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/existing-screenshot/stderr.log",
+      "SHA256": "99F8EE9768115DA7C23FF0E0A9AD9492FA0417F2DCA5958E47CE2114A3A107A4"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/locked-result/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/locked-result/stderr.log",
+      "SHA256": "416CCDC85B021D009A81D9D4516459C4B9AC2D88D6D42979C8E66C2C27840328"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/unknown/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/unknown/stderr.log",
+      "SHA256": "09EBC928E0DD3D28034818931D1509CC3E2855F0C3BCA714FF9BDE357A69377B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/dump-unavailable/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/dump-unavailable/stderr.log",
+      "SHA256": "152FDB559D41053CBA07BCC5A1A91003FF62468176453AF32A55311C9C31798D"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/locked-log/stdout.log",
+      "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/locked-log/stderr.log",
+      "SHA256": "67B90A72CA5254912E4210668E88D38EAF8512BCC20700134F66ED32B141526C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/invalid-arguments/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/invalid-arguments/stderr.log",
+      "SHA256": "3D683E1FCD423D4DB8C8DF710222D5C4EFCBF840259F24F312F05BD1013FB161"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/success/wpf-probe.json",
+      "SHA256": "333224021973AF2DF867B4D702BD6E171AC9A5AC985F13133844ED9CE1EB59B7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/success/comparison-light.png",
+      "SHA256": "8EB3B0FF7386448BD2CAA4BED0C89563B0DD1C3F4972D711287B0F2D65279E72"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Debug-a7f4bae2a30240189db86fae326e9092/success/comparison-dark.png",
+      "SHA256": "A96E96222776BE3022FFC75BFE457DE6F3AA6A05640078D0F315B8FA191D682C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/failure-handling.json",
+      "SHA256": "80264A683D773B2C280C7ADEAAB66880818F22044B92AD817D2E2411E747CC7C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/success/stdout.log",
+      "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/success/stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/locked-screenshot/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/locked-screenshot/stderr.log",
+      "SHA256": "74AEDD20B531BD860688B12424FFC7E178B2A690449DAEA0541444CF4A656B02"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/existing-screenshot/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/existing-screenshot/stderr.log",
+      "SHA256": "1E89564B4D885C6851CFA36BFCE5558870D4D36EB62C64E952604EB59F9CEE6B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/locked-result/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/locked-result/stderr.log",
+      "SHA256": "D9B976F3EDD2F4568C584C3B7D4573646D9BCC65D946DCB6650A86A0976BD4B0"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/unknown/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/unknown/stderr.log",
+      "SHA256": "7447E82B9B03B8242F8AB22FBE8240EADBDA483395817E375211E0F5A2B34F88"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/dump-unavailable/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/dump-unavailable/stderr.log",
+      "SHA256": "4B43AAAFB374F97A3AFF41411694D02116D7D5D12700C87BE0550B815A360893"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/locked-log/stdout.log",
+      "SHA256": "6BCDEC6562FFDD4D888EB9863395229E52C8FAEE76E500874C31F2C98DF4F2F7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/locked-log/stderr.log",
+      "SHA256": "2A1BD3EC15847DA4E49BD23F44A225E66D2EF31373FA108950D9FBC4B8FE42AA"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/invalid-arguments/stdout.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/invalid-arguments/stderr.log",
+      "SHA256": "4182CB206FCCE34EF25DCA3AF4C2ADB6F6F3ABF7FE971B2C40FCC64FFE2BEED2"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/success/wpf-probe.json",
+      "SHA256": "333224021973AF2DF867B4D702BD6E171AC9A5AC985F13133844ED9CE1EB59B7"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/success/comparison-light.png",
+      "SHA256": "8EB3B0FF7386448BD2CAA4BED0C89563B0DD1C3F4972D711287B0F2D65279E72"
+    },
+    {
+      "Path": "DOCS/verification/IMP-17/wpf-Release-205b79d51c764485b08cab3cbb388aa1/success/comparison-dark.png",
+      "SHA256": "A96E96222776BE3022FFC75BFE457DE6F3AA6A05640078D0F315B8FA191D682C"
+    }
+  ]
+}

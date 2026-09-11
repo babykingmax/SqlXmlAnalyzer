@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:conv="clr-namespace:SqlXmlAnalyzer.Converters"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="索引沙盒模拟 (Index Sandbox)" Height="620" Width="1000"
+        Title="索引审核与沙盒假设" Height="860" Width="1200" MinWidth="1050" MinHeight="740"
         WindowStartupLocation="CenterOwner" 
         WindowStyle="None"
         AllowsTransparency="True"
@@ -26,6 +26,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/> <!-- Custom TitleBar -->
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>  <!-- Main Content -->
                 <RowDefinition Height="Auto"/> <!-- Script Footer -->
             </Grid.RowDefinitions>
@@ -39,14 +40,34 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <materialDesign:PackIcon Kind="FlaskOutline" Width="18" Height="18" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
-                        <TextBlock Text="{Binding Table, StringFormat='索引优化沙盒 - {0}'}" FontSize="13" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="索引审核与沙盒假设" FontSize="13" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Button Grid.Column="1" Click="Close_Click" Style="{StaticResource MaterialDesignFlatButton}" Width="40" Height="40" Padding="0" Content="✕" Foreground="{DynamicResource MaterialDesignBody}" FontSize="14"/>
                 </Grid>
             </materialDesign:ColorZone>
 
             <!-- Main Content -->
-            <Grid Grid.Row="1" Margin="16">
+            <StackPanel Grid.Row="1" Margin="16,8,16,0">
+                <TextBlock Text="目标对象（实例 / 数据库 / 架构 / 表）" FontWeight="SemiBold"/>
+                <TextBox x:Name="IndexFullObject" Text="{Binding FullObject, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" TextWrapping="Wrap"/>
+                <Grid Margin="0,6">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,12,0"><TextBlock Text="自定义索引名（原始名称；留空自动生成）" FontSize="11"/>
+                        <TextBox x:Name="IndexNameEditor" Text="{Binding IndexName, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="0,0,12,0"><TextBlock Text="DATA_COMPRESSION" FontSize="11"/>
+                        <ComboBox ItemsSource="{Binding CompressionOptions}" SelectedItem="{Binding DataCompression, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="0,0,12,0"><TextBlock Text="MAXDOP（空=默认，0–64）" FontSize="11"/>
+                        <TextBox x:Name="IndexMaxDopEditor" Text="{Binding MaxDop, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3"><CheckBox Content="ONLINE" IsChecked="{Binding Online}"/>
+                        <CheckBox Content="SORT_IN_TEMPDB" IsChecked="{Binding SortInTempDb}" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Grid>
+                <TextBlock Text="{Binding EnvironmentNotice}" TextWrapping="Wrap" FontSize="11"/>
+            </StackPanel>
+            <Grid Grid.Row="2" Margin="16,10">
                 <Grid.ColumnDefinitions>
                     <!-- Available Columns -->
                     <ColumnDefinition Width="260"/>
@@ -153,7 +174,7 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Margin="0,0,0,8">
                                 <TextBlock Text="包含列 (Include Columns)" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
-                                <TextBlock Text="仅存储在叶子节点，用于覆盖索引，不参与排序且无大小限制" FontSize="11" Foreground="Gray"/>
+                                <TextBlock Text="存储于叶子级，用于覆盖；仍需核对数据类型与存储开销" FontSize="11" Foreground="Gray" TextWrapping="Wrap"/>
                             </StackPanel>
                             <Border Grid.Row="1" Background="#08000000" CornerRadius="4" Padding="4">
                                 <ListBox ItemsSource="{Binding IncludeColumns}" BorderThickness="0" Background="Transparent">
@@ -183,7 +204,7 @@
                         <!-- 评分板 (带有圆环) -->
                         <materialDesign:Card Padding="12" Margin="0,0,0,12" materialDesign:ElevationAssist.Elevation="Dp2">
                             <StackPanel>
-                                <TextBlock Text="索引契合评分" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <TextBlock Text="工具规则评分（非性能收益）" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
                                 <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,4,0,12"/>
                                 
                                 <Grid Width="120" Height="120" Margin="0,4" HorizontalAlignment="Center">
@@ -197,27 +218,33 @@
                                         <TextBlock Text="SCORE" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" FontWeight="SemiBold"/>
                                     </StackPanel>
                                 </Grid>
+                                <TextBlock Text="{Binding ScoreBreakdown}" Foreground="{DynamicResource MaterialDesignBody}" TextWrapping="Wrap" FontSize="11" Margin="0,4"/>
+                                <TextBlock Text="{Binding ScoreWeights}" Foreground="{DynamicResource MaterialDesignBody}" TextWrapping="Wrap" FontSize="11" Margin="0,4"/>
+                                <TextBlock Text="{Binding ScoreSource}" Foreground="{DynamicResource MaterialDesignBody}" TextWrapping="Wrap" FontSize="11" Margin="0,4"/>
                             </StackPanel>
                         </materialDesign:Card>
 
                         <!-- 成本模拟板 -->
                         <materialDesign:Card Padding="12" Margin="0,0,0,12" materialDesign:ElevationAssist.Elevation="Dp2">
                             <StackPanel>
-                                <TextBlock Text="成本影响模拟" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <TextBlock Text="原计划优化器估算（独立于沙盒假设）" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding ImpactSummary}" Foreground="{DynamicResource MaterialDesignBody}" TextWrapping="Wrap" FontSize="11" Margin="0,4"/>
                                 <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,4,0,8"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" ToolTip="{Binding CostReductionDescription}" Margin="0,4">
-                                    <TextBlock Text="预估总成本降低: " FontSize="12" VerticalAlignment="Center" Foreground="Gray"/>
-                                    <TextBlock Text="{Binding EstimatedCostReductionPercent, StringFormat={}{0}%}" Foreground="#2E7D32" FontWeight="Bold" FontSize="20" VerticalAlignment="Center"/>
-                                    <TextBlock Text=" ▲" Foreground="#2E7D32" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/>
-                                </StackPanel>
-                                <TextBlock Text="{Binding CostReductionDescription}" Foreground="Gray" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" TextAlignment="Center"/>
+                                <TextBlock x:Name="CostReductionSummaryText" Text="{Binding CostReductionSummary}" Foreground="{DynamicResource MaterialDesignBody}"
+                                           FontWeight="Bold" FontSize="15" TextWrapping="Wrap" Margin="0,4"/>
+                                <TextBlock x:Name="SimulationNoticeText" Text="{Binding SimulationNotice}" Foreground="{DynamicResource MaterialDesignBody}"
+                                           FontSize="12" TextWrapping="Wrap" Margin="0,4"/>
+                                <TextBlock Text="{Binding ModelSummary}" Foreground="{DynamicResource MaterialDesignBody}" FontSize="10" TextWrapping="Wrap" Margin="0,4"/>
+                                <TextBlock Text="{Binding CostEvidenceSummary}" Foreground="{DynamicResource MaterialDesignBody}" FontSize="11" TextWrapping="Wrap" Margin="0,4"/>
+                                <TextBlock Text="{Binding CostReductionDescription}" Foreground="{DynamicResource MaterialDesignBody}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" TextAlignment="Center"/>
                             </StackPanel>
                         </materialDesign:Card>
 
                         <!-- Tipping Point 临界线展示板 -->
                         <materialDesign:Card Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
                             <StackPanel>
-                                <TextBlock Text="回表临界值分析 (Tipping Point)" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <TextBlock Text="回表启发式参考（工具假设）" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                <TextBlock Text="{Binding InputAssumptionsNotice}" Foreground="{DynamicResource MaterialDesignBody}" FontSize="11" TextWrapping="Wrap" Margin="0,4"/>
                                 <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,4,0,8"/>
 
                                 <Grid Margin="0,3">
@@ -249,8 +276,8 @@
 
                                 <Separator Background="{DynamicResource MaterialDesignDivider}" Margin="0,8"/>
 
-                                <TextBlock Text="{Binding TippingPointStatus}" Foreground="{Binding TippingPointStatusColor}" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-                                <TextBlock Text="{Binding TippingPointDetails}" Foreground="Gray" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" LineHeight="16"/>
+                                <TextBlock Text="{Binding TippingPointStatus}" Foreground="{DynamicResource MaterialDesignBody}" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding TippingPointDetails}" Foreground="{DynamicResource MaterialDesignBody}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" FontStyle="Italic" LineHeight="16"/>
                             </StackPanel>
                         </materialDesign:Card>
                     </StackPanel>
@@ -258,7 +285,7 @@
             </Grid>
 
             <!-- 底部：脚本与操作 -->
-            <materialDesign:Card Grid.Row="2" Padding="16" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,1,0,0">
+            <materialDesign:Card Grid.Row="3" Padding="16" Background="{DynamicResource MaterialDesignCardBackground}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,1,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -266,11 +293,16 @@
                     </Grid.ColumnDefinitions>
                     
                     <StackPanel Grid.Column="0" Margin="0,0,16,0">
-                        <TextBlock Text="生成的 CREATE INDEX 脚本" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesignBody}" FontSize="12" Margin="0,0,0,6"/>
-                        <TextBox Text="{Binding CreateIndexStatement}" IsReadOnly="True" Height="50" TextWrapping="Wrap" Background="#0A000000" FontFamily="Consolas" FontSize="11.5" Padding="6" BorderBrush="{DynamicResource MaterialDesignDivider}"/>
+                        <TextBlock Text="{Binding CompiledIndexName, StringFormat='最终索引名：{0}'}" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesignBody}" FontSize="12" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                        <TabControl Height="125">
+                            <TabItem Header="CREATE INDEX（审核后自行执行）"><TextBox x:Name="IndexCreateSql" Text="{Binding CreateIndexStatement, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11.5" Padding="6" VerticalScrollBarVisibility="Auto"/></TabItem>
+                            <TabItem Header="DROP INDEX（回滚前核对既有索引）"><TextBox Text="{Binding RollbackStatement, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11.5" Padding="6" VerticalScrollBarVisibility="Auto"/></TabItem>
+                        </TabControl>
+                        <TextBox Text="{Binding Error, Mode=OneWay}" IsReadOnly="True" Foreground="{DynamicResource CriticalBrush}" TextWrapping="Wrap" MaxHeight="60" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0"/>
+                        <TextBox Text="{Binding OutputStatus, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" FontSize="11" MaxHeight="60" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0"/>
                     </StackPanel>
                     
-                    <Button Grid.Column="1" Content="复制脚本并关闭" Click="CopyAndClose_Click" Width="160" Height="36" Style="{StaticResource MaterialDesignRaisedButton}" VerticalAlignment="Bottom" Cursor="Hand" FontSize="12" FontWeight="SemiBold"/>
+                    <Button x:Name="CopyIndexScript" Grid.Column="1" Content="复制创建脚本" Click="CopyAndClose_Click" IsEnabled="{Binding CanExport}" Width="145" Height="36" Style="{StaticResource MaterialDesignRaisedButton}" VerticalAlignment="Bottom" Cursor="Hand" FontSize="12" FontWeight="SemiBold"/>
                 </Grid>
             </materialDesign:Card>
         </Grid>

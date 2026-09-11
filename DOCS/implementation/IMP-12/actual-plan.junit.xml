@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+  <testsuite name="SqlXmlAnalyzer.CLI" tests="1" failures="0" errors="0" time="0.215">
+    <properties><property name="Privacy" value="未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。" /></properties>
+    <testcase name="imp11_operator_facts.sqlplan" classname="SqlXmlAnalyzer.CLI.PlanScan" time="0.000">
+      <system-out>执行计划诊断协议 v1.0
+规则执行：Hit 5 / NoHit 39 / Skipped 7 / Failed 0。
+部分检查缺少证据而跳过；未命中不代表这些检查已通过。
+
+[Info] 残差谓词 (Residual Predicate)
+诊断 ID：0F01F03A8A727036C16A534810699F57588E6C220EF34387C55180E566FEAC1A
+来源：26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2；置信度：Unspecified
+规则：RULE_006_RESIDUAL_PREDICATE v1.0.0
+兼容规则报告了一个候选诊断。
+证据 SourceScope：/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]；XML scope；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2
+适用条件：当前规则已实现的 XML 检查与配置。
+限制：此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。
+兼容说明（包含待核验推断与建议）：操作符包含需要在内存中逐行过滤的残差谓词：
+[T].[V]=(2)
+这通常意味着底层读取了多余的数据。建议添加 INCLUDE 包含列或优化索引。
+
+[Warning] 高开销硬件算子 Top 5
+诊断 ID：76E3C2F6C975319FC08292A5602214F28724D0DF441B60674169349986E1E17B
+来源：26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148；置信度：Unspecified
+规则：RULE_022_HIGH_COST_OP v1.0.0
+兼容规则报告了一个候选诊断。
+证据 SourceScope：/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]；XML scope；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148
+适用条件：当前规则已实现的 XML 检查与配置。
+限制：此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。
+兼容说明（包含待核验推断与建议）：⏱️ 算子 Node 0 (Nested Loops): 独占单体硬件开销预估高达 6.0000 (占该算子子树开销的 60.0%)。建议在此算子做重点定位。|||⏱️ 算子 Node 1 (Index Seek): 独占单体硬件开销预估高达 4.0000 (占该算子子树开销的 100.0%)。建议在此算子做重点定位。
+
+[Warning] 寻址残差谓词漏洞
+诊断 ID：319F716422A892BE78530E1356DB49F712C594D18CCCD1DF47A66E9C134C3CE2
+来源：26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2；置信度：High
+规则：RULE_034_RESIDUAL_PRED_OP v1.0.0
+存在残差谓词，实际读取 1000 行，输出 100 行。
+证据 OutputRows：100 rows；Available/Actual/SumThreads；RunTimeInformation/RunTimeCountersPerThread/@ActualRows；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2
+证据 RowsRead：1000 rows；Available/Actual/SumThreads；RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2
+证据 ResidualPredicate：[T].[V]=(2)；operator payload/Predicate；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2
+假设：残差过滤可能增加读取工作量；不能仅凭此证据确定应新建哪个索引。
+建议：核对 Seek 与残差条件、现有索引和查询需求，再验证候选方案。
+适用条件：Seek 带残差；完整读取/输出计数满足原有 1.2 倍且差值超过 100 行的阈值。
+限制：读取量差异不是实测耗时改善，也不证明索引变更必然有效。
+
+[Warning] 智能索引与 T-SQL 关联汇总
+诊断 ID：1C2F4B73DA4D24CD75D217225AF04DDAB159B9473F5BD008B5F68845444CA290
+来源：26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148；置信度：Unspecified
+规则：RULE_035_SARGABLE_INDEX_RECOMMENDATION v1.0.0
+兼容规则报告了一个候选诊断。
+证据 SourceScope：/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]；XML scope；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148
+适用条件：当前规则已实现的 XML 检查与配置。
+限制：此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。
+兼容说明（包含待核验推断与建议）：💡 **[全局智能索引推荐]**|||评分: 40/100 | 预估提升: 80.0% | 表: [dbo].[T]
+👉 CREATE NONCLUSTERED INDEX [IX_T_V]
+ON [dbo].[T] ([V])
+WITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);
+
+[Warning] 智能索引与 T-SQL 关联建议
+诊断 ID：44995D8BFB126747599C7D1386F0F85B299D0341D7FB4650B95DA4179E06F6FD
+来源：26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2；置信度：Unspecified
+规则：RULE_035_SARGABLE_INDEX_RECOMMENDATION v1.0.0
+兼容规则报告了一个候选诊断。
+证据 SourceScope：/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}NestedLoops[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]；XML scope；26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2
+适用条件：当前规则已实现的 XML 检查与配置。
+限制：此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。
+兼容说明（包含待核验推断与建议）：⭐ **[智能索引推荐]** 评分: 40/100 | 建议为表 [dbo].[T] 创建非聚集索引以消除该 Index Seek 节点的开销：
+   👉 CREATE NONCLUSTERED INDEX [IX_T_V]
+ON [dbo].[T] ([V])
+WITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);
+
+[Skipped] RULE_004_ESTIMATE_MISMATCH v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：EstimatedRows / RowsPerExecution
+[Skipped] RULE_009_PARALLEL_SKEW v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：Parallel / worker 行分布
+[Skipped] RULE_012_NESTED_LOOPS_HIGH_EXEC v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：OutputRows / LogicalExecutions
+[Skipped] RULE_012_NESTED_LOOPS_HIGH_EXEC v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N1/O2]：RULE_NOT_APPLICABLE — 算子不属于本规则支持的循环或查找类型。
+[Skipped] RULE_016_ZERO_ROW_ACTUALS v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：EstimatedRows / RowsPerExecution
+[Skipped] RULE_030_CARDINALITY_ERROR v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：EstimatedRows / RowsPerExecution
+[Skipped] RULE_033_THREAD_SKEW v1.0.0 [26FD3127A2807F2A6AD39BF75E1ADACA0BEA7CFE2D9BF1F955A7996637D14148/B1/S1/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：完整且角色明确的 worker 行分布</system-out>
+    </testcase>
+  </testsuite>
+</testsuites>

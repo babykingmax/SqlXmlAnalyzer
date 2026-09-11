@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic regression fixture, not a captured SQL Server execution. -->
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.6" Build="16.0.1000.6">
+  <BatchSequence><Batch><Statements><StmtSimple StatementId="1" StatementText="SELECT V FROM dbo.T WHERE V=2">
+    <QueryPlan><RelOp NodeId="0" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="100" EstimatedTotalSubtreeCost="10">
+      <NestedLoops><RelOp NodeId="1" PhysicalOp="Index Seek" LogicalOp="Index Seek" EstimateRows="100" EstimatedRowsRead="1000" EstimatedTotalSubtreeCost="4" EstimateCPU="1" EstimateIO="3" EstimateRebinds="0" EstimateRewinds="0" AvgRowSize="8" EstimatedExecutionMode="Row" Parallel="true">
+        <OutputList><ColumnReference Column="[V]"/></OutputList>
+        <IndexScan Ordered="true"><Object Database="[Db]" Schema="[dbo]" Table="[T]" Index="[IX_T]"/>
+          <SeekPredicates><SeekPredicateNew><ScalarOperator ScalarString="[T].[K]=(1)"/></SeekPredicateNew></SeekPredicates>
+          <Predicate><ScalarOperator ScalarString="[T].[V]=(2)"/></Predicate>
+        </IndexScan>
+        <RunTimeInformation>
+          <RunTimeCountersPerThread Thread="1" ActualRows="40" ActualRowsRead="400" ActualExecutions="1" ActualExecutionMode="Batch"/>
+          <RunTimeCountersPerThread Thread="2" ActualRows="60" ActualRowsRead="600" ActualExecutions="1" ActualExecutionMode="Batch"/>
+        </RunTimeInformation>
+      </RelOp></NestedLoops>
+    </RelOp></QueryPlan>
+  </StmtSimple></Statements></Batch></BatchSequence>
+</ShowPlanXML>

@@ -1,0 +1,3 @@
+System.InvalidOperationException: UI verification failed: comparison notice
+   at DisplayUiProbe.Require(Boolean condition, String description) in E:\SqlXmlAnalyzer\bin\imp08-ui\Program.cs:line 200
+   at DisplayUiProbe.<>c__DisplayClass1_0.<<Main>b__0>d.MoveNext() in E:\SqlXmlAnalyzer\bin\imp08-ui\Program.cs:line 76

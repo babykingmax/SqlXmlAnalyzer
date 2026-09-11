@@ -1,0 +1,50 @@
+{
+  "Status": "Success",
+  "Kind": "DeadlockXml",
+  "IsSuccess": true,
+  "HasUsableContent": true,
+  "ErrorCode": null,
+  "ErrorMessage": null,
+  "Envelope": {
+    "DocumentId": "54682A9AB8A40B2C379B9F8ABB9E938B60C84E3ED08DBA553068687402C1554A",
+    "SourceHash": "54682A9AB8A40B2C379B9F8ABB9E938B60C84E3ED08DBA553068687402C1554A",
+    "SourceName": "SqlXmlAnalyzer.Tests/TestData/deadlock_multiple_events.xdl",
+    "DetectedKind": 1,
+    "CapturedAt": null,
+    "EngineBuild": null,
+    "SchemaVersion": null,
+    "SourceBytes": 1346
+  },
+  "Capabilities": "DeadlockGraph, MultipleEvents, OffsetTimestamps, PreservedSource",
+  "Diagnostics": [],
+  "Events": [
+    {
+      "Index": 1,
+      "PayloadIndex": 1,
+      "Timestamp": "2026-09-08T08:00:00\u002B08:00",
+      "CapturedAt": "2026-09-08T08:00:00+08:00",
+      "Location": {
+        "XmlPath": "/{urn:imp06:xe}events[1]/{urn:imp06:xe}event[1]/{urn:imp06:xe}data[1]/{urn:imp06:xe}value[1]/{urn:imp06:xe}deadlock[1]",
+        "Line": 4,
+        "Column": 8,
+        "EventIndex": 1,
+        "ByteOffset": null,
+        "ByteLength": null
+      }
+    },
+    {
+      "Index": 2,
+      "PayloadIndex": 1,
+      "Timestamp": "2026-09-08T08:01:00\u002B08:00",
+      "CapturedAt": "2026-09-08T08:01:00+08:00",
+      "Location": {
+        "XmlPath": "/{urn:imp06:xe}events[1]/{urn:imp06:xe}event[2]/{urn:imp06:xe}data[1]/{urn:imp06:xe}value[1]/{urn:imp06:xe}deadlock[1]",
+        "Line": 16,
+        "Column": 8,
+        "EventIndex": 2,
+        "ByteOffset": null,
+        "ByteLength": null
+      }
+    }
+  ]
+}

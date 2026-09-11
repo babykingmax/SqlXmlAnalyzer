@@ -8,6 +8,7 @@ namespace SqlXmlAnalyzer.Core.Abstractions
     public interface ISqlRefactorRule
     {
         string RuleId { get; }
+        string RuleVersion => GetType().Assembly.GetName().Version?.ToString() ?? "unversioned";
         string Name { get; }
         string Description { get; }
         int Priority { get; }

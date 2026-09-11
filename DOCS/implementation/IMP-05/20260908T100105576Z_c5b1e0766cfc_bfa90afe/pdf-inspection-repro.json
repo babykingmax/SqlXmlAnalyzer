@@ -1,0 +1,23 @@
+{
+  "tool": "pypdf text extraction",
+  "passed": true,
+  "results": [
+    {
+      "configuration": "Debug",
+      "path": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-05\\20260908T100105576Z_c5b1e0766cfc_bfa90afe\\process-03\\Debug\\raw.pdf",
+      "pages": 1,
+      "markerPresent": true,
+      "rawNoticePresent": true,
+      "sharingLimitPresent": true
+    },
+    {
+      "configuration": "Release",
+      "path": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-05\\20260908T100105576Z_c5b1e0766cfc_bfa90afe\\process-03\\Release\\raw.pdf",
+      "pages": 1,
+      "markerPresent": true,
+      "rawNoticePresent": true,
+      "sharingLimitPresent": true
+    }
+  ],
+  "visualInspection": false
+}

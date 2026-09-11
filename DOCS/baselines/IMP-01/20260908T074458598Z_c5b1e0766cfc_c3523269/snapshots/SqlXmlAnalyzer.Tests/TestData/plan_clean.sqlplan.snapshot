@@ -1,0 +1,17 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple>
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Index Seek" LogicalOp="Index Seek">
+              <IndexScan>
+                <Object Database="[TestDB]" Schema="[dbo]" Table="[CleanTable]" Index="[IX_Clean]" />
+              </IndexScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

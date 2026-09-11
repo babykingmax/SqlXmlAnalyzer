@@ -1,0 +1,140 @@
+{
+  "RecordedUtc": "2026-09-09T03:31:54.8032443Z",
+  "Task": "IMP-15",
+  "Head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "RedRegression": {
+    "Failed": 8,
+    "Total": 8
+  },
+  "Configurations": [
+    {
+      "Configuration": "debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Total": 1720,
+      "Passed": 1720,
+      "Failed": 0,
+      "Skipped": 0,
+      "Imp15Cases": 36,
+      "DdlCases": 20,
+      "TargetCases": 12,
+      "ErrorAndLogCases": 4,
+      "DeterministicIdentifierSamples": 100,
+      "NativeDumpValidated": true,
+      "CaptureFailureValidated": true,
+      "BuildLogPolicyValidated": true,
+      "CliBoundStatementCandidates": 4,
+      "CliObservedExitCode": 0,
+      "CliHasFailures": false,
+      "CliLogPolicyVerified": true
+    },
+    {
+      "Configuration": "release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Total": 1720,
+      "Passed": 1720,
+      "Failed": 0,
+      "Skipped": 0,
+      "Imp15Cases": 36,
+      "DdlCases": 20,
+      "TargetCases": 12,
+      "ErrorAndLogCases": 4,
+      "DeterministicIdentifierSamples": 100,
+      "NativeDumpValidated": true,
+      "CaptureFailureValidated": true,
+      "BuildLogPolicyValidated": true,
+      "CliBoundStatementCandidates": 4,
+      "CliObservedExitCode": 0,
+      "CliHasFailures": false,
+      "CliLogPolicyVerified": true
+    }
+  ],
+  "LocalDb": {
+    "Evidence": "localdb-results.json",
+    "InstanceCleanupVerified": true,
+    "Version": "17.0.4075.5",
+    "Targets": 5,
+    "Passed": true
+  },
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+      "Sha256": "D93ED42F83B4AE1558C9B0E7F7FCAEA583A8AE638DA8D927538BB1895B305712"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlOptions.cs",
+      "Sha256": "703A8C7381E55AD78C6746DC03B5EFC9B7D912DFB44C39718DCE89DB54B7DFDF"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/MissingIndexSuggester.cs",
+      "Sha256": "EB37B02514B684F246EE75CBD0813495F08FB4AC8063C688E0A7AB298B243847"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/MissingIndexSuggestion.cs",
+      "Sha256": "D97A53BB17E23C13DCE1A228389672EC0F691248206181D95819F358BC4DE647"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/IndexTargetResolver.cs",
+      "Sha256": "47C3DE52B6AB3A98C486F9A418CA01F0281F2FD6B391CD025D46C28DE84EB39D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+      "Sha256": "E575FDD62C2D3EEFC7992E51366C5F470FEEF8F9B30213E86735FACF74A49E14"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+      "Sha256": "B46553804BBBB0C286CD1C26DE15B3D4B60FA59E2244CA833DA1D06B226C3131"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+      "Sha256": "AAB644DF87EDAD47786B28340F2B69CFAD361E49A5C3EB39B3B7E65FC31DEAF8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/MissingIndexRule.cs",
+      "Sha256": "3BBB7C3395809D04AAD9C42B2B2A99788D619D1FE74BDD3C07F48602A44E5F9C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleMetadata.cs",
+      "Sha256": "19693175B1A63590C901DFAA61D9691A348908FC2F3BFDFC64571547CB4D023F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.Execution.cs",
+      "Sha256": "5531DDF10D2FD89B4FF3FEE001F6A8F67638AB5E3AF45EFCC176A1FD2ECA3B88"
+    },
+    {
+      "Path": "ViewModels/IndexSandboxViewModel.cs",
+      "Sha256": "E74F7ADCF67359EDB52AAC43D8E1C5865D07FCA47104AC987F059D734D5EF7B4"
+    },
+    {
+      "Path": "Core/Services/MissingIndexDeploymentScriptService.cs",
+      "Sha256": "9390A8CB7B71860070A75DB078B72075CDDB5FF2D72C929473E179A4B2078E36"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Refactoring/IndexDdlIdentityTests.cs",
+      "Sha256": "2C108B3D8C99638B6EAC4C327CBE48D25AF2157C3ABADB15A96138332F941503"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/IndexTargetIdentityTests.cs",
+      "Sha256": "05332413171B1250956F375E58EAC2FAE537EBD9E63F4637D3A5886679C0B2C4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/IndexDdlDiagnosticTests.cs",
+      "Sha256": "78CE2245F128F9FC7AEA2C1B86239B4C71772CA889C3AB3E9F8C145F5D7D7B54"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_index_targets.sqlplan",
+      "Sha256": "D164E054018D8757FB06F28D5390AADD93DCF936D69CA0CE1686559922F6FB95"
+    },
+    {
+      "Path": "DOCS/verification/IMP-15/verify-localdb.ps1",
+      "Sha256": "889AE349ADFDBFA459841021819E70D37A11E8CDF7D6F505D1399CB5F2DCD7F0"
+    }
+  ],
+  "Limits": [
+    "Showplan fixture is synthetic; actual DDL was executed on isolated LocalDB.",
+    "Online index creation was not tested; LocalDB used OFF/ROW/SORT_IN_TEMPDB OFF.",
+    "No production schema/index catalog was inspected and no full WPF/SSMS manual acceptance was performed.",
+    "Existing mixed working tree was preserved; these hashes identify this validation snapshot."
+  ]
+}

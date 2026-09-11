@@ -27,11 +27,11 @@ namespace SqlXmlAnalyzer.Tests
             result.PlanA!.State.Should().Be(PlanComparisonNodeState.OperatorChanged);
             result.PlanA.PhysicalOp.Should().Be("Nested Loops");
             result.PlanA.OtherPhysicalOp.Should().Be("Hash Match");
-            result.PlanA.CostPercentDelta.Should().BeApproximately(100, 0.001);
+            result.PlanA.CostPercentDelta.Should().BeNull("物理算子变更仅有候选对应，不能直接比较运行口径");
             result.PlanA.RuntimeDeltas.Should().Contain(delta =>
                 delta.Label == "Elapsed" &&
                 delta.Value == 20 &&
-                delta.Delta == 12);
+                delta.Delta == null);
             result.PlanA.Children.Should().ContainSingle();
             result.PlanA.Children[0].State.Should().Be(PlanComparisonNodeState.OperatorChanged);
         }
@@ -105,6 +105,9 @@ namespace SqlXmlAnalyzer.Tests
                                         ShowplanNs + "QueryPlan",
                                         rootRelOp)))))));
 
+            document.Descendants(ShowplanNs + "StmtSimple").Single().SetAttributeValue("StatementText", "SELECT 1");
+            foreach (var op in document.Descendants(ShowplanNs + "RelOp"))
+                op.SetAttributeValue("LogicalOp", op == rootRelOp ? "Inner Join" : "Index Scan");
             return new PlanSnapshot
             {
                 Document = document,

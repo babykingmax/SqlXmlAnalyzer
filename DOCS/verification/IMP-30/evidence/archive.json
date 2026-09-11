@@ -1,0 +1,10 @@
+{
+  "ApprovedForDistribution": false,
+  "ManifestSha256": "63CD4E762C4C5181209F9CB1EAE9A2B3D169A8EFBD87510509807C3C4C652954",
+  "ExtractedDirectory": "E:\\SqlXmlAnalyzer\\.tmp.imp30-zipcheck-rc1",
+  "ArchiveSha256": "011926EB268D5B84FE1D01A640553752AF31DB4E5183D2400BA63E3B1CBA34E0",
+  "Archive": "E:\\SqlXmlAnalyzer\\publish\\imp30-rc1.zip",
+  "ArchiveBytes": 167938774,
+  "Files": 38,
+  "Passed": true
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+    "FilePath": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T101535551Z_c5b1e0766cfc_1d7ea107\\fixtures\\not-a-plan.sqlplan",
+    "FileName": "not-a-plan.sqlplan",
+    "Status": "Passed",
+    "FailureMessage": null,
+    "MaxSubtreeCost": 0,
+    "ContainsScans": false,
+    "ScannedOperators": [],
+    "Issues": []
+  }
+]

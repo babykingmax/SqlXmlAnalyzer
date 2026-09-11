@@ -1,0 +1,123 @@
+{
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "Validation": {
+    "Status": "Different",
+    "SourceHash": "143A51F31A21AED92BC3D7B0C16573D243ED414C577C91A89B4E02531795BF86",
+    "CandidateHash": "438BFDADAC7FEF88844839FB170473B05C2880F156F51FD0A7ABAF1E485CD16A",
+    "SuiteHash": "9B863BA2EDC322C86804F8C71381AC919B6AD5DED7F5F0CCC7C667EECA9E15A5",
+    "ServerVersion": "17.0.4075.5",
+    "CompatibilityLevel": 170,
+    "Collation": "Latin1_General_100_CI_AS_SC",
+    "SessionSettings": "SET ANSI_NULLS ON; SET QUOTED_IDENTIFIER ON; SET ANSI_WARNINGS ON; SET ANSI_PADDING ON; SET CONCAT_NULL_YIELDS_NULL ON; SET ARITHABORT ON; SET NUMERIC_ROUNDABORT OFF; SET XACT_ABORT OFF; SET NOCOUNT OFF; SET LANGUAGE us_english; SET DATEFORMAT ymd; SET DATEFIRST 7; SET TRANSACTION ISOLATION LEVEL READ COMMITTED; SET LOCK_TIMEOUT 5000;",
+    "Cases": [
+      {
+        "Name": "binary-control",
+        "Matches": false,
+        "CompletedWithoutErrors": true,
+        "Original": {
+          "Execution": {
+            "Results": [
+              {
+                "Columns": [
+                  "{\"ColumnName\":\"Value\",\"DataTypeName\":\"varbinary\",\"ColumnSize\":2,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}"
+                ],
+                "Rows": [
+                  "[[\"binary\",\"ANg=\"]]"
+                ]
+              }
+            ],
+            "ErrorNumbers": [],
+            "RecordsAffected": -1
+          },
+          "ObservedState": {
+            "Results": [],
+            "ErrorNumbers": [],
+            "RecordsAffected": -1
+          },
+          "ObjectState": {
+            "Results": [
+              {
+                "Columns": [
+                  "{\"ColumnName\":\"SchemaName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"TableName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"column_id\",\"DataTypeName\":\"int\",\"ColumnSize\":4,\"NumericPrecision\":10,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"ColumnName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"TypeName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"max_length\",\"DataTypeName\":\"smallint\",\"ColumnSize\":2,\"NumericPrecision\":5,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"precision\",\"DataTypeName\":\"tinyint\",\"ColumnSize\":1,\"NumericPrecision\":3,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"scale\",\"DataTypeName\":\"tinyint\",\"ColumnSize\":1,\"NumericPrecision\":3,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"is_nullable\",\"DataTypeName\":\"bit\",\"ColumnSize\":1,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"is_identity\",\"DataTypeName\":\"bit\",\"ColumnSize\":1,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"is_computed\",\"DataTypeName\":\"bit\",\"ColumnSize\":1,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"collation_name\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}"
+                ],
+                "Rows": []
+              }
+            ],
+            "ErrorNumbers": [],
+            "RecordsAffected": 0
+          },
+          "TransactionCount": 0,
+          "TransactionState": 1,
+          "SessionOptions": 5496
+        },
+        "Candidate": {
+          "Execution": {
+            "Results": [
+              {
+                "Columns": [
+                  "{\"ColumnName\":\"Value\",\"DataTypeName\":\"varbinary\",\"ColumnSize\":2,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}"
+                ],
+                "Rows": [
+                  "[[\"binary\",\"Adg=\"]]"
+                ]
+              }
+            ],
+            "ErrorNumbers": [],
+            "RecordsAffected": -1
+          },
+          "ObservedState": {
+            "Results": [],
+            "ErrorNumbers": [],
+            "RecordsAffected": -1
+          },
+          "ObjectState": {
+            "Results": [
+              {
+                "Columns": [
+                  "{\"ColumnName\":\"SchemaName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"TableName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"column_id\",\"DataTypeName\":\"int\",\"ColumnSize\":4,\"NumericPrecision\":10,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"ColumnName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"TypeName\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"max_length\",\"DataTypeName\":\"smallint\",\"ColumnSize\":2,\"NumericPrecision\":5,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"precision\",\"DataTypeName\":\"tinyint\",\"ColumnSize\":1,\"NumericPrecision\":3,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"scale\",\"DataTypeName\":\"tinyint\",\"ColumnSize\":1,\"NumericPrecision\":3,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"is_nullable\",\"DataTypeName\":\"bit\",\"ColumnSize\":1,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"is_identity\",\"DataTypeName\":\"bit\",\"ColumnSize\":1,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":false}",
+                  "{\"ColumnName\":\"is_computed\",\"DataTypeName\":\"bit\",\"ColumnSize\":1,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}",
+                  "{\"ColumnName\":\"collation_name\",\"DataTypeName\":\"nvarchar\",\"ColumnSize\":128,\"NumericPrecision\":255,\"NumericScale\":255,\"AllowDBNull\":true}"
+                ],
+                "Rows": []
+              }
+            ],
+            "ErrorNumbers": [],
+            "RecordsAffected": 0
+          },
+          "TransactionCount": 0,
+          "TransactionState": 1,
+          "SessionOptions": 5496
+        }
+      }
+    ],
+    "Errors": [],
+    "CleanupFailures": [],
+    "Diagnostics": [],
+    "CanPrepareApply": false,
+    "Limitation": "仅在记录的数据库版本、兼容级别、排序规则、会话设置和场景数据中匹配；未证明任意输入等价，也未证明性能改善。",
+    "Isolation": "专用 LocalDB；每个场景/每侧独立新库；TRUSTWORTHY/DB_CHAINING OFF；无登录数据库用户 WITH NO REVERT；连接不复用。"
+  },
+  "SourceWritten": false,
+  "OriginalSql": null,
+  "CandidateSql": null
+}

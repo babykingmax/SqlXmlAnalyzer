@@ -1,0 +1,24 @@
+{
+  "IsSuccess": false,
+  "ErrorMessage": "SQL 写回失败（Replace），未覆盖当前源文件：Access to the path is denied. 已验证备份：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\locked.sql.SqlXmlAnalyzer-c216245a808c42e7969437338f8e1a0e.bak；源 SHA-256：64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD。恢复前先另存当前文件，再校验备份并复制恢复。",
+  "Warnings": [],
+  "Writeback": {
+    "Stage": "Replace",
+    "SourceWritten": false,
+    "CommitOutcomeUnknown": false,
+    "IsCanceled": false,
+    "BackupVerified": true,
+    "BackupPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\locked.sql.SqlXmlAnalyzer-c216245a808c42e7969437338f8e1a0e.bak",
+    "TemporaryPath": null,
+    "SourceSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  "HasChanges": false,
+  "Changes": [],
+  "Failures": [],
+  "WarningsList": [],
+  "Errors": [
+    "SQL 写回失败（Replace），未覆盖当前源文件：Access to the path is denied. 已验证备份：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\locked.sql.SqlXmlAnalyzer-c216245a808c42e7969437338f8e1a0e.bak；源 SHA-256：64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD。恢复前先另存当前文件，再校验备份并复制恢复。"
+  ],
+  "OriginalSql": null,
+  "RefactoredSql": null
+}

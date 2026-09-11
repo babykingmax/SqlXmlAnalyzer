@@ -1,0 +1,705 @@
+{
+  "Step": "IMP-20",
+  "Phase": "Hardening",
+  "VerifiedAt": "2026-09-09T22:19:50.9607566+08:00",
+  "BaseCommit": "6737ecb791636ee71c9d0b31eda831773a43ab5d",
+  "Scope": "Current uncommitted IMP-20 implementation; existing staged AGENTS.md excluded.",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2273,
+        "Passed": 2273,
+        "Failed": 0,
+        "Skipped": 0,
+        "Added": 44,
+        "Cases": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.MultipleRootsAndNestedStatements_DoNotBorrowChildStatementOperators",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ClearingEvidence_ClearsTargetAndCanSelectAgain",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringFailure_PropagatesFromAnalysisThroughUiToSelectedReport(failure: \"dump\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ManualDeadlockSelection_ClearsEvidenceAndAllowsReturningToTheSameEvidence(resource: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ManualDeadlockSelection_ClearsEvidenceAndAllowsReturningToTheSameEvidence(resource: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.DiagnosticProviderFailure_PreservesUsefulErrorState",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ReselectingEvidence_AfterSourceMutationRejectsStaleTarget",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.SelectingNode_UpdatesDiagnosticDetailsToTheSameNode",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.EmptyAndIncompleteDiagnostics_ExposeActualRunState(state: \"NoHit\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealForeignNode_RejectsItBeforeChangingCollapseState",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.MissingReportAndLongSql_AreNotHiddenOrTruncated",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringFailure_PropagatesFromAnalysisThroughUiToSelectedReport(failure: \"capture-failure\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringNotices_RemainDocumentScopedAndClearOnNewInput",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealVisibleNode_DoesNotRelayoutOrUndoUserPositions",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.SameProcessIdsInDifferentEvents_CannotReuseOldDiagnostics",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DeadlockEventSelection_RetainsOriginalEventAndRawEvidenceAndClearsOnSwitch",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StatementSelection_SynchronizesSqlGraphTreesIssuesAndOriginalIdentity",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"old-issue\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealHiddenNode_RecalculatesCoordinatesBeforeMakingNodesVisible(direction: Vertical)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealHiddenNode_RecalculatesCoordinatesBeforeMakingNodesVisible(direction: Horizontal)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.RelayoutOfSelectedQueryPlan_DoesNotReserveSpaceForOtherStatements",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.Complete_AfterClearDoesNotReviveAnOldEvent",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.EmptyAndIncompleteDiagnostics_ExposeActualRunState(state: \"Skipped\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"source\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DocumentDiagnostic_CanNavigateEvidenceInAnotherBatchWithoutLocalNodeIdGuessing",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: False, dumpFails: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"foreign-batch\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DeadlockEventSelectionTests.TypedSelection_ReceivesOriginalEventAndInputBeforeInitialNotification",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.FailedWorkspaceOpen_DoesNotReturnSuccessfulUiResult",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: False, dumpFails: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: True, dumpFails: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealNode_PreservesTargetAndUnrelatedCollapsedBranches",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.ClearResults_ReleasesBothWorkspaceSelections",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"foreign-report\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.MissingIndexes_FollowExactStatementAndQueryPlanScope",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DeadlockSourceMutation_PreventsNavigationToStaleEvidence(originalSource: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.Logs_FollowBuildMode_WithoutSourceSqlOrObjectNames",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DeadlockSourceMutation_PreventsNavigationToStaleEvidence(originalSource: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.BatchAndQueryPlanSelection_IncludeStatementsWithoutOperatorsAndClearOldEvidence",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: True, dumpFails: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.IdenticalResourceNames_ResolveTheExactDisplayedResource",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.ExpectedCancellationOrInputFailure_DoesNotRequestDump",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.EmptyAndIncompleteDiagnostics_ExposeActualRunState(state: \"Failed\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringFailure_PropagatesFromAnalysisThroughUiToSelectedReport(failure: \"expected\")",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "BuildLog": {
+        "Path": ".tmp.imp20-hardening-build-debug.log",
+        "Bytes": 957,
+        "Sha256": "A69FFCED2FA7C76D50FFA83F1309C14E7843ED849E4015AF461AC85C23C288C6"
+      },
+      "TestLog": {
+        "Path": ".tmp.imp20-hardening-tests-debug.log",
+        "Bytes": 527,
+        "Sha256": "0FBB113AB2849E46EF797527E10E78A3F08355640DBB3FEAABB775ACD2D36AA6"
+      },
+      "Trx": {
+        "Path": ".tmp.imp20-hardening-tests-debug/imp20-hardening-debug.trx",
+        "Bytes": 8047867,
+        "Sha256": "49C0FDFC8642A766C407B879E587EF093B72EFCA6372E74D90B9518B6E161F64"
+      },
+      "Wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "Result": {
+          "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/verification.json",
+          "Bytes": 2282,
+          "Sha256": "6D1312FA4113FABE63DE256AF493EFDCF09BA3E3DF1BD9C59EB737C74AB00979"
+        },
+        "Screenshots": [
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/plan-statement-2.png",
+            "Bytes": 233766,
+            "Sha256": "635D5094DE0ADF0CC7A7805EE88541E844E49E4DA60E9075EBDFA7FFBF90BB35"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/plan-evidence-source.png",
+            "Bytes": 274104,
+            "Sha256": "A2060C1648812A94E070CCBDAB30821EC3903539E46F0E81D8965ABBFC7B9956"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/plan-no-operators.png",
+            "Bytes": 177313,
+            "Sha256": "E9DB5B4989E117342710FDC55F94BD883BB1963E5DAC775137A000B2E1C70372"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/deadlock-event-2.png",
+            "Bytes": 268054,
+            "Sha256": "FF448BDAE313077CB82D1F0A27C9FA32E5A8ED1DAE6E429F01D96DBDD618F7E0"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/deadlock-source.png",
+            "Bytes": 239602,
+            "Sha256": "2F5339EAB20F43B43DF6CF50A02946A384A9A37CD1BBA923D0B1E76FFAA862E7"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/refactoring-notices.png",
+            "Bytes": 194670,
+            "Sha256": "5FC3BCF97DC3FEB10E5C7631A699398841F6B9745CB7649AB69E4812200635B0"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/plan-evidence-layout.png",
+            "Bytes": 211562,
+            "Sha256": "5C85556C8EE6A3720698C72C67F7E087B3036B4437EDBAB5BD594192FA9C52C1"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Debug-b24f117d54cd45729e633683c41adcec/deadlock-manual-selection.png",
+            "Bytes": 213599,
+            "Sha256": "A3EB9101E4D3F40E0C01D5159665A777B0D4D269AA9743ADB928DADAD236C21C"
+          }
+        ]
+      }
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2273,
+        "Passed": 2273,
+        "Failed": 0,
+        "Skipped": 0,
+        "Added": 44,
+        "Cases": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ManualDeadlockSelection_ClearsEvidenceAndAllowsReturningToTheSameEvidence(resource: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.IdenticalResourceNames_ResolveTheExactDisplayedResource",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"foreign-batch\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringNotices_RemainDocumentScopedAndClearOnNewInput",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"foreign-report\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DocumentDiagnostic_CanNavigateEvidenceInAnotherBatchWithoutLocalNodeIdGuessing",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.RelayoutOfSelectedQueryPlan_DoesNotReserveSpaceForOtherStatements",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealHiddenNode_RecalculatesCoordinatesBeforeMakingNodesVisible(direction: Vertical)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: True, dumpFails: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"old-issue\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ClearingEvidence_ClearsTargetAndCanSelectAgain",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ReselectingEvidence_AfterSourceMutationRejectsStaleTarget",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: False, dumpFails: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: False, dumpFails: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.EmptyAndIncompleteDiagnostics_ExposeActualRunState(state: \"Skipped\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.MissingReportAndLongSql_AreNotHiddenOrTruncated",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.ManualDeadlockSelection_ClearsEvidenceAndAllowsReturningToTheSameEvidence(resource: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.EmptyAndIncompleteDiagnostics_ExposeActualRunState(state: \"Failed\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DeadlockEventSelection_RetainsOriginalEventAndRawEvidenceAndClearsOnSwitch",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.DiagnosticProviderFailure_PreservesUsefulErrorState",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringFailure_PropagatesFromAnalysisThroughUiToSelectedReport(failure: \"dump\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.ExpectedCancellationOrInputFailure_DoesNotRequestDump",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StatementSelection_SynchronizesSqlGraphTreesIssuesAndOriginalIdentity",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.MultipleRootsAndNestedStatements_DoNotBorrowChildStatementOperators",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.UnexpectedFailure_ProducesValidatedDumpOrExplicitFailure_AndClearsSelection(deadlock: True, dumpFails: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.SameProcessIdsInDifferentEvents_CannotReuseOldDiagnostics",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.FailedWorkspaceOpen_DoesNotReturnSuccessfulUiResult",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DeadlockEventSelectionTests.TypedSelection_ReceivesOriginalEventAndInputBeforeInitialNotification",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.EmptyAndIncompleteDiagnostics_ExposeActualRunState(state: \"NoHit\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealVisibleNode_DoesNotRelayoutOrUndoUserPositions",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.StaleOrForeignSelection_IsRejectedAndClearedWithoutDump(fault: \"source\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DeadlockSourceMutation_PreventsNavigationToStaleEvidence(originalSource: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.Complete_AfterClearDoesNotReviveAnOldEvent",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.WorkspaceSelectionDiagnosticTests.Logs_FollowBuildMode_WithoutSourceSqlOrObjectNames",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringFailure_PropagatesFromAnalysisThroughUiToSelectedReport(failure: \"expected\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealNode_PreservesTargetAndUnrelatedCollapsedBranches",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.SelectingNode_UpdatesDiagnosticDetailsToTheSameNode",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.ClearResults_ReleasesBothWorkspaceSelections",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RefactoringFailure_PropagatesFromAnalysisThroughUiToSelectedReport(failure: \"capture-failure\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.BatchAndQueryPlanSelection_IncludeStatementsWithoutOperatorsAndClearOldEvidence",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealForeignNode_RejectsItBeforeChangingCollapseState",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.MissingIndexes_FollowExactStatementAndQueryPlanScope",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionHardeningTests.RevealHiddenNode_RecalculatesCoordinatesBeforeMakingNodesVisible(direction: Horizontal)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.WorkspaceSelectionTests.DeadlockSourceMutation_PreventsNavigationToStaleEvidence(originalSource: True)",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "BuildLog": {
+        "Path": ".tmp.imp20-hardening-build-release.log",
+        "Bytes": 971,
+        "Sha256": "767204C1212E98F679419D5F878796863A568D16D46D35B73846401414E2FFA0"
+      },
+      "TestLog": {
+        "Path": ".tmp.imp20-hardening-tests-release.log",
+        "Bytes": 537,
+        "Sha256": "4B2FE045524EB2D2614C942329CA5BBD84433620A833A3ADE1F4CEC61EABB154"
+      },
+      "Trx": {
+        "Path": ".tmp.imp20-hardening-tests-release/imp20-hardening-release.trx",
+        "Bytes": 3523376,
+        "Sha256": "7B8B69EB0B5CB2E2AB70529490F2BE48C55DEF17DD9EB546D3230AEA2C686710"
+      },
+      "Wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "Result": {
+          "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/verification.json",
+          "Bytes": 2282,
+          "Sha256": "6D1312FA4113FABE63DE256AF493EFDCF09BA3E3DF1BD9C59EB737C74AB00979"
+        },
+        "Screenshots": [
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/plan-statement-2.png",
+            "Bytes": 233775,
+            "Sha256": "FDCE090F44737674C9F0C43B9F4A19AD97A4535C9452C453C3431E722335D38D"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/plan-evidence-source.png",
+            "Bytes": 274076,
+            "Sha256": "32453375454FBE3429844F280EC12261E599B0EE2C53FE8540499C516E8544C8"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/plan-no-operators.png",
+            "Bytes": 177313,
+            "Sha256": "E9DB5B4989E117342710FDC55F94BD883BB1963E5DAC775137A000B2E1C70372"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/deadlock-event-2.png",
+            "Bytes": 268071,
+            "Sha256": "8FAE306EA5937AEC2097B2382EB500CB55EFC23E0D9A37B9071F8EC62DF3BF1F"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/deadlock-source.png",
+            "Bytes": 239602,
+            "Sha256": "2F5339EAB20F43B43DF6CF50A02946A384A9A37CD1BBA923D0B1E76FFAA862E7"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/refactoring-notices.png",
+            "Bytes": 194849,
+            "Sha256": "4FC1C5A5421AC143BB6566E933E7103F60676725579DCB095B3D0F2B706E112B"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/plan-evidence-layout.png",
+            "Bytes": 211689,
+            "Sha256": "C87E662C187F9D244CA880F9ECE47169E0D5E7A523E8A1AE614CE550C0D2DEDF"
+          },
+          {
+            "Path": "DOCS/verification/IMP-20/wpf-Release-3290ec704c5d4241b381d3ffcdac67a9/deadlock-manual-selection.png",
+            "Bytes": 213607,
+            "Sha256": "C2F90DBDE788E49358F6338D50806CA5E73794C0A8D7E5D51C835589BB844CD2"
+          }
+        ]
+      }
+    }
+  ],
+  "SourceFiles": [
+    {
+      "Path": "Core/Services/DeadlockGraphSelectionService.cs",
+      "Bytes": 1792,
+      "Sha256": "04F7EB7677FD788BE2DA7A74909B053359A99C220FA273DD7302780B56210260"
+    },
+    {
+      "Path": "Core/Services/PlanAnalysisService.cs",
+      "Bytes": 6568,
+      "Sha256": "9B4C18CE7FBF546FAF87187362D54C17B6C4573A47FD4E28AD9128712D82DC67"
+    },
+    {
+      "Path": "Core/Services/PlanTreeService.cs",
+      "Bytes": 5047,
+      "Sha256": "ECDE229228CFF926C658C2B995D3C503753A7AEFEB8EACF6049D1EB8AADE3262"
+    },
+    {
+      "Path": "Core/Services/WorkspaceSourceFormatter.cs",
+      "Bytes": 1009,
+      "Sha256": "BA4DE05E78CE8F1B59BD67FC7C37CCFAC5A95E14365A942CEAAAFE8A698EED93"
+    },
+    {
+      "Path": "Core/ViewModels/DeadlockWorkspaceViewModel.cs",
+      "Bytes": 11936,
+      "Sha256": "62330983861CFA6EFED5F417C407E89ED1632DAC1E5C3174D1610BA1BE520F74"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "Bytes": 11466,
+      "Sha256": "CBAA0A6965AE422586B8784415330543BE725A1F9E0618E4B55DD4091E4552AD"
+    },
+    {
+      "Path": "Core/ViewModels/PlanWorkspaceViewModel.cs",
+      "Bytes": 15275,
+      "Sha256": "AFEFE15F69E42A7E01891E982AA5C29A40CC3823D261D41AAC1BB1289807B274"
+    },
+    {
+      "Path": "MainWindow.Services.cs",
+      "Bytes": 25080,
+      "Sha256": "6210801C39F5C4F0C816422AA049A3DB60D5AFDCCEC8F2349B38F07979282AF6"
+    },
+    {
+      "Path": "PlanGraphControl.xaml",
+      "Bytes": 45980,
+      "Sha256": "51C43EFC9787F42C036D1CF8397FD5D7A51C64D4601A06748541A2E2306F7287"
+    },
+    {
+      "Path": "PlanGraphControl.xaml.cs",
+      "Bytes": 14037,
+      "Sha256": "B970889F60960BB4804ECB9147A877A31CF4B0419A7F54EF40C0BE20390BDCFA"
+    },
+    {
+      "Path": "Services/DeadlockAnalysisUiActionService.cs",
+      "Bytes": 4675,
+      "Sha256": "268C553B8C7523045EDDC92205940DFC3270BCDFF2BDB8EB6DA3FE46DAF04422"
+    },
+    {
+      "Path": "Services/DeadlockSelectionUiActionService.cs",
+      "Bytes": 3189,
+      "Sha256": "599C609E6AFA1F0FFEC163C41F3F32BB90D4C6D0D33AC81AF67767D14B4E9A90"
+    },
+    {
+      "Path": "Services/DeadlockWorkspaceUiActionService.cs",
+      "Bytes": 4077,
+      "Sha256": "CC9F656C1CC866A61E3A25D64ED057A306B80A6B6C9F5144F38AAF0520E6A980"
+    },
+    {
+      "Path": "Services/DocumentAnalysisUiActionService.cs",
+      "Bytes": 16411,
+      "Sha256": "DA2C796A6EA19ECACED986F41CC5EABDC71DF7FD4DF93EC498CE827A1EF39960"
+    },
+    {
+      "Path": "Services/PlanAnalysisUiActionService.cs",
+      "Bytes": 1982,
+      "Sha256": "57750F6EBB59F7731067C93987D4BB18A1A8B5075810B1BE4966F1740E2EDA99"
+    },
+    {
+      "Path": "Services/PlanGraphCollapseUiActionService.cs",
+      "Bytes": 11134,
+      "Sha256": "B3997D50C9AA438F47BF96720478FA4B65C2DA852BC88DF7034F570E85274E5E"
+    },
+    {
+      "Path": "Services/PlanGraphLayoutUiActionService.cs",
+      "Bytes": 3758,
+      "Sha256": "4E09672DC0C12538960FC4095B5838580F9F0F540B5FFE320BC334B212766084"
+    },
+    {
+      "Path": "Services/PlanGraphLoadUiActionService.cs",
+      "Bytes": 5589,
+      "Sha256": "7EB814903A0E555ACA5C5417D82B8E2907B7CAD88A46BCB6A2A9C5394C0FB268"
+    },
+    {
+      "Path": "Services/PlanStatisticsUiActionService.cs",
+      "Bytes": 1956,
+      "Sha256": "0F8345628C48CB7E588B5D9A7158D84BC3DA4E503B5AE769C86941138E53D123"
+    },
+    {
+      "Path": "Services/PlanWorkspaceUiActionService.cs",
+      "Bytes": 6379,
+      "Sha256": "4E9C2FD1542A2FBC7C02EE3D750363D986320490D2F736A91C5697FBB39F394C"
+    },
+    {
+      "Path": "Services/XelDeadlockUiActionService.cs",
+      "Bytes": 5915,
+      "Sha256": "3B10AA7C9D0AAE1AA32CEA77C1D5478D9A84F6298D7D7DB67083473538010691"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "Bytes": 23294,
+      "Sha256": "EE0A8B4A5D211BD525D67923906F745FF8706704AF1F390DC3DF8F5A9B81B2D0"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+      "Bytes": 5264,
+      "Sha256": "D2F156AB801EE9F3D0D0A942C01B1D0A3AD075F8AAEE17540A1438E03332EE3D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockEventSelectionTests.cs",
+      "Bytes": 10563,
+      "Sha256": "D5B4942CCF579F8DFE24889D3CDCA25476788180CBBBADF554A24731F9E751A8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/WorkspaceSelectionDiagnosticTests.cs",
+      "Bytes": 5634,
+      "Sha256": "0D0BD79A281ACB5870ADFAB3BE33FED930D5C0281C389A6C84CCDABC36A6AE81"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp20_navigation_branches.sqlplan",
+      "Bytes": 769,
+      "Sha256": "2BDDF7266CEA3E4D0A1BEC576CDD68542735677B5FEE644EA47646BC6DDE796C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/WorkspaceSelectionHardeningTests.cs",
+      "Bytes": 12810,
+      "Sha256": "FB8AE133361078231AB4111A3CC7C990058B2DEE2CFEB055C124760267A34D6C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/WorkspaceSelectionTests.cs",
+      "Bytes": 16695,
+      "Sha256": "83A9D84362CF6F42A02C912C197C0E17DB8103D0ECA8C1F92E8BAC34E074B359"
+    },
+    {
+      "Path": "StatisticsHistogramControl.xaml.cs",
+      "Bytes": 22399,
+      "Sha256": "E50F4780DD82C8CEA190A546B0D515E903E05CADA331F6EE4179CC712BC00F7A"
+    },
+    {
+      "Path": "Views/DeadlockWorkspaceView.xaml",
+      "Bytes": 13064,
+      "Sha256": "D1C57FC051C8C5F33943AB35C94807E26104E5D15704996388A9E876E75F1D12"
+    },
+    {
+      "Path": "Views/PlanWorkspaceView.xaml",
+      "Bytes": 33972,
+      "Sha256": "886EF1AF6A520071954B5097A11FCD19F189B5C86DCC8C4D0686FE0063E5CD69"
+    },
+    {
+      "Path": "Views/PlanWorkspaceView.xaml.cs",
+      "Bytes": 5177,
+      "Sha256": "10A0537895DA4686D588E7E24AFE314249D8A62FEC41EC91EB51050F0DA48BD4"
+    }
+  ],
+  "VerificationScripts": [
+    {
+      "Path": "DOCS/verification/IMP-20/Run-WpfVerification.ps1",
+      "Bytes": 1839,
+      "Sha256": "B5EA49567889CE0D788DF128B06CB12A0047E1B0203D976FBE8E283D0BACE69E"
+    },
+    {
+      "Path": "DOCS/verification/IMP-20/WpfProbe.cs.txt",
+      "Bytes": 18501,
+      "Sha256": "B22A90FB1CE196D3E3B9DA85F932FC73FF061D61FC4B0389B8E2E70AA2C1CF96"
+    },
+    {
+      "Path": "DOCS/verification/IMP-20/Write-VerificationSummary.ps1",
+      "Bytes": 5494,
+      "Sha256": "FAD8745F7C13D29A8440BC4F7C953FA081EEDBBFDDFC453439FA5786109C6C5F"
+    }
+  ],
+  "Limits": [
+    "Synthetic repository fixtures; no new live SQL Server concurrency capture.",
+    "HTML remains a whole-document report; report unification is IMP-22.",
+    "Selection persistence across application restarts is outside IMP-20."
+  ]
+}

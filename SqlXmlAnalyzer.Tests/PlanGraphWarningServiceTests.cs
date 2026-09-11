@@ -76,8 +76,10 @@ namespace SqlXmlAnalyzer.Tests
         {
             XDocument document = XDocument.Parse($"""
                 <ShowPlanXML xmlns="{Ns}">
-                  <MemoryGrantInfo GrantedMemory="20480" MaxUsedMemory="1024" />
-                  <RelOp NodeId="0" />
+                  <BatchSequence><Batch><Statements><StmtSimple><QueryPlan>
+                    <MemoryGrantInfo GrantedMemory="20480" MaxUsedMemory="1024" />
+                    <RelOp NodeId="0" />
+                  </QueryPlan></StmtSimple></Statements></Batch></BatchSequence>
                 </ShowPlanXML>
                 """);
             XElement relOp = document.Descendants(Ns + "RelOp").Single();
@@ -91,6 +93,67 @@ namespace SqlXmlAnalyzer.Tests
             result.WarningsText.Should().Contain("内存预估过度");
             result.WarningsText.Should().Contain("申请 20.0MB");
             result.WarningsText.Should().Contain("仅用 1.0MB");
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void BuildWarnings_MemoryEvidenceStaysWithinOwningQueryPlan(bool separateStatements)
+        {
+            XElement Plan(string grant, string used, string? warning) => new(Ns + "QueryPlan",
+                new XElement(Ns + "MemoryGrantInfo", new XAttribute("GrantedMemory", grant), new XAttribute("MaxUsedMemory", used)),
+                warning == null ? null : new XElement(Ns + "Warnings", new XElement(Ns + "MemoryGrantWarning", new XAttribute("GrantWarningKind", warning))),
+                new XElement(Ns + "RelOp", new XAttribute("NodeId", "0")));
+            var firstPlan = Plan("20480", "1024", "Excessive Grant");
+            var secondPlan = Plan("1024", "1024", null);
+            var statements = separateStatements
+                ? new XElement(Ns + "Statements", new XElement(Ns + "StmtSimple", firstPlan), new XElement(Ns + "StmtSimple", secondPlan))
+                : new XElement(Ns + "Statements", new XElement(Ns + "StmtSimple", firstPlan, secondPlan));
+            _ = new XDocument(new XElement(Ns + "ShowPlanXML", new XElement(Ns + "BatchSequence", new XElement(Ns + "Batch", statements))));
+
+            var first = _service.BuildWarnings(firstPlan.Element(Ns + "RelOp")!, Ns, CreateContext(nodeId: "0"), []);
+            var second = _service.BuildWarnings(secondPlan.Element(Ns + "RelOp")!, Ns, CreateContext(nodeId: "0"), []);
+
+            first.WarningsText.Should().Contain("申请 20.0MB").And.Contain("内存分配警告: Excessive Grant");
+            second.WarningsText.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void BuildWarnings_MemoryWarningsUseRootAncestryInsteadOfNodeId()
+        {
+            var child = new XElement(Ns + "RelOp", new XAttribute("NodeId", "0"));
+            var root = new XElement(Ns + "RelOp", new XAttribute("NodeId", "42"), new XElement(Ns + "NestedLoops", child));
+            _ = new XElement(Ns + "QueryPlan", new XElement(Ns + "MemoryGrantInfo",
+                new XAttribute("GrantedMemory", "20480"), new XAttribute("MaxUsedMemory", "1024")), root);
+
+            _service.BuildWarnings(root, Ns, CreateContext(nodeId: "42"), []).WarningsText.Should().Contain("内存预估过度");
+            _service.BuildWarnings(child, Ns, CreateContext(nodeId: "0"), []).WarningsText.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void BuildWarnings_NestedQueryPlanUsesItsOwnRootAndWarnings()
+        {
+            var nestedRoot = new XElement(Ns + "RelOp", new XAttribute("NodeId", "7"));
+            var nestedPlan = new XElement(Ns + "QueryPlan",
+                new XElement(Ns + "Warnings", new XElement(Ns + "MemoryGrantWarning", new XAttribute("GrantWarningKind", "Nested Grant"))), nestedRoot);
+            var root = new XElement(Ns + "RelOp", new XAttribute("NodeId", "0"),
+                new XElement(Ns + "UDF", new XElement(Ns + "Statements", new XElement(Ns + "StmtSimple", nestedPlan))));
+            _ = new XDocument(new XElement(Ns + "QueryPlan", new XElement(Ns + "MemoryGrantInfo",
+                new XAttribute("GrantedMemory", "20480"), new XAttribute("MaxUsedMemory", "1024")), root));
+
+            string warnings = _service.BuildWarnings(nestedRoot, Ns, CreateContext(nodeId: "7"), []).WarningsText;
+
+            warnings.Should().Contain("内存分配警告: Nested Grant").And.NotContain("内存预估过度");
+        }
+
+        [Fact]
+        public void BuildWarnings_DetachedOperatorDoesNotBorrowDocumentMemoryEvidence()
+        {
+            var root = new XElement(Ns + "RelOp", new XAttribute("NodeId", "0"));
+            _ = new XDocument(new XElement(Ns + "ShowPlanXML", new XElement(Ns + "MemoryGrantInfo",
+                new XAttribute("GrantedMemory", "20480"), new XAttribute("MaxUsedMemory", "1024")), root));
+
+            _service.BuildWarnings(root, Ns, CreateContext(nodeId: "0"), []).WarningsText.Should().BeEmpty();
         }
 
         [Fact]

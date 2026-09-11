@@ -1,0 +1,194 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Configuration;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.Rules;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    private const string First = "RULE_004_ESTIMATE_MISMATCH", Second = "RULE_030_CARDINALITY_ERROR";
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        var errors = new StringWriter(); App? app = null; MainWindow? main = null; RuleConfigurationWindow? window = null;
+        try
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.SetError(new StreamWriter(Console.OpenStandardError(), new UTF8Encoding(false)) { AutoFlush = true });
+            Directory.CreateDirectory(args[1]); app = new App(); app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(errors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler(); var session = new RuleConfigurationSession(RuleConfigurationDocument.Defaults);
+            var analysis = new SqlXmlAnalysisEngine(ruleEngineFactory: () => { var engine = new RuleEngine(configuration: session.Capture()); engine.RegisterDefaultRules(); return engine; });
+            var refactor = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var gate = new GatedAnalysis(analysis);
+            var orchestrator = new ApplicationOrchestrator(gate, refactor, files, new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            main = new MainWindow(orchestrator, files, configuration: session) { Width = 1400, Height = 950, ShowActivated = false, Left = -20000 }; main.Show(); Pump();
+            string plan = Path.Combine(args[1], "fixture.sqlplan");
+            File.WriteAllText(plan, """
+              <ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+              <StmtSimple StatementId="1" StatementText="SELECT 1" StatementType="SELECT"><QueryPlan>
+              <RelOp NodeId="0" PhysicalOp="Index Seek" LogicalOp="Index Seek" Parallel="false" EstimateRows="1">
+              <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="100000" ActualExecutions="2" ActualRowsRead="200000"/></RunTimeInformation>
+              </RelOp></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>
+              """);
+            Wait(main.AnalyzeFileAsync(plan)); Until(() => main.ViewModel.PlanWorkspace.Report != null);
+            var previous = main.ViewModel.PlanWorkspace.Report!;
+            var entry = Descendants(main).OfType<Button>().Single(b => AutomationProperties.GetName(b) == "规则配置");
+            entry.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); Pump();
+            window = app.Windows.OfType<RuleConfigurationWindow>().Single(); var model = window.Model;
+            Until(() => !model.IsBusy); Require(model.Rows.Count == 34, "Production configuration entry and metadata rows");
+            string configPath = Path.Combine(args[1], "rules.json");
+            File.WriteAllText(configPath, """
+                {"futureRoot":{"keep":true},"Rules":[{"RuleId":"RULE_004_ESTIMATE_MISMATCH","futureField":[1,2]},
+                {"RuleId":"FUTURE_RULE","Enabled":"new-mode","SeverityOverride":{"new":true}}]}
+                """);
+            Wait(model.LoadAsync(configPath));
+            Edit(window, First, false, "Info"); Edit(window, Second, false, "Info");
+            Require(model.ChangeCount == 2, "Checkbox and ComboBox bindings update draft");
+            ((TextBox)window.FindName("RuleFilter")).Text = "Cardinality"; Pump();
+            Capture(window, Path.Combine(args[1], "configuration-change-preview.png"));
+            var committedSource = main.ViewModel.CurrentPlanSource!;
+            string secondPlan = Path.Combine(args[1], "second.sqlplan");
+            File.WriteAllText(secondPlan, File.ReadAllText(plan).Replace("SELECT 1", "SELECT 2"));
+            gate.HoldNext = true;
+            Task pendingSecondPlan = main.AnalyzeFileAsync(secondPlan);
+            Until(() => gate.Entered.IsSet);
+            Require(ReferenceEquals(main.ViewModel.CurrentPlanSource, committedSource)
+                && ReferenceEquals(main.ViewModel.CurrentPlanInput, committedSource.Input)
+                && main.ViewModel.CurrentPlanFilePath == plan, "Pending B does not publish B provenance over A");
+            Click(window, "ApplyConfiguration");
+            gate.Release.Set(); Wait(pendingSecondPlan);
+            Require(ReferenceEquals(main.ViewModel.CurrentPlanSource, committedSource), "Cancelled B cannot commit over A");
+            Require(main.ViewModel.PlanWorkspace.NeedsConfigurationReanalysis && ReferenceEquals(previous, main.ViewModel.PlanWorkspace.Report), "Apply retains old immutable result and marks reanalysis");
+            Require(main.ViewModel.PlanWarningsText.Contains("需要重新分析"), "Visible selected report marks stale configuration");
+            Capture(main, Path.Combine(args[1], "workspace-needs-reanalysis.png"));
+            File.WriteAllText(plan, File.ReadAllText(plan).Replace("SELECT 1", "SELECT 3"));
+            Recalculate(window);
+            Require(ReferenceEquals(gate.LastInput, committedSource.Input)
+                && main.ViewModel.CurrentPlanSource!.FilePath == plan
+                && main.ViewModel.CurrentPlanDoc!.ToString().Contains("SELECT 1"), "Reanalysis and refactoring use A snapshot after source file changes");
+            var disabled = main.ViewModel.PlanWorkspace.Report!;
+            Require(!main.ViewModel.PlanWorkspace.NeedsConfigurationReanalysis && disabled.Diagnostics.All(d => d.Origins.All(o => o.RuleId != First && o.RuleId != Second)), "Production reanalysis disables both diagnostic origins");
+            CheckGraph(main);
+            Edit(window, First, true, "Info"); Edit(window, Second, true, "Info");
+            Click(window, "SaveConfiguration"); Until(() => !model.IsBusy);
+            var saved = JsonNode.Parse(File.ReadAllText(configPath))!;
+            Require(saved["futureRoot"]!["keep"]!.GetValue<bool>() && saved["Rules"]![1]!["Enabled"]!.GetValue<string>() == "new-mode"
+                && saved["Rules"]![0]!["futureField"]!.AsArray().Count == 2, "Save preserves unknown configuration semantics");
+            Require(Directory.GetFiles(args[1], "rules.json.*.bak").Length > 0, "Save has original backup");
+            Require(ReferenceEquals(disabled, main.ViewModel.PlanWorkspace.Report), "Saving alone leaves active report unchanged");
+            var coordinator = (AnalysisSessionCoordinator)typeof(MainWindow).GetField("_analysisSessions", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(main)!;
+            var deadlockRequest = coordinator.Begin(AnalysisDocumentKind.DeadlockXml);
+            Click(window, "ApplyConfiguration");
+            Require(!deadlockRequest.Token.IsCancellationRequested && coordinator.IsCurrent(deadlockRequest.RequestId), "Production apply callback leaves deadlock request active");
+            Click(window, "ApplyConfiguration"); Recalculate(window);
+            Require(main.ViewModel.PlanWorkspace.Report!.Diagnostics.Single(d => d.RuleId == First).Severity.ToString() == "Info", "UI severity overrides reach real diagnostic engine"); CheckGraph(main);
+            Capture(main, Path.Combine(args[1], "workspace-info-override.png"));
+            Click(window, "ResetConfiguration"); Click(window, "ApplyConfiguration"); Recalculate(window);
+            Require(main.ViewModel.PlanWorkspace.Report!.Diagnostics.Single(d => d.RuleId == First).Severity.ToString() == "Critical", "Restoring defaults restores adaptive severity"); CheckGraph(main);
+            string invalid = Path.Combine(args[1], "invalid.json"); File.WriteAllText(invalid, "{\"Rules\":[{\"RuleId\":\"RULE_004_ESTIMATE_MISMATCH\",\"Enabled\":7}]}");
+            var draft = model.Draft; Wait(model.LoadAsync(invalid));
+            Require(ReferenceEquals(draft, model.Draft) && model.Status.Contains("$.Rules[0].Enabled"), "Invalid load retains draft and shows property location");
+            Capture(window, Path.Combine(args[1], "invalid-config-retains-draft.png"));
+            File.WriteAllText(configPath, "{\"externalEditor\":true}"); Click(window, "SaveConfiguration"); Until(() => !model.IsBusy);
+            Require(File.ReadAllText(configPath) == "{\"externalEditor\":true}" && model.Status.Contains("未保存"), "Concurrent modification rejected without source corruption");
+            Capture(window, Path.Combine(args[1], "save-conflict.png"));
+            Require(errors.ToString().Length == 0, "WPF binding errors: " + errors);
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new
+            {
+                Passed = true, BindingErrors = 0, ProductionNavigation = true, Rows = model.Rows.Count,
+                PendingPlanDoesNotPublishSource = true, CancelledPlanCannotCommit = true,
+                ReanalysisAndRefactoringShareOriginalInput = true, ConfigurationPreservesDeadlockRequest = true,
+                CheckboxAndComboBoxBindings = true, ImmutableGraphAndListSnapshot = true, ActualReanalysis = true,
+                SeverityOverrideAndReset = true, UnknownFieldsPreserved = true, ConflictPreservesSource = true,
+                EvidenceKind = "Off-screen WPF test host with actual production windows and event handlers; not desktop input automation"
+            }, new JsonSerializerOptions { WriteIndented = true }));
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+        finally { File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), errors.ToString()); window?.Close(); main?.Close(); app?.Shutdown(); }
+    }
+    private static void CheckGraph(MainWindow main)
+    {
+        var graph = Descendants(main).OfType<PlanGraphControl>().Single();
+        foreach (var node in graph.Nodes)
+            Require(ReferenceEquals(node.Diagnostics!.Context, main.ViewModel.PlanWorkspace.Report!.Context), "Graph nodes share actual list report context");
+        Require(graph.Nodes.Count > 0, "Production graph contains nodes");
+    }
+    private static void Edit(RuleConfigurationWindow window, string id, bool enabled, string severity)
+    {
+        ((TextBox)window.FindName("RuleFilter")).Text = id; Pump();
+        var grid = (DataGrid)window.FindName("RulesGrid"); grid.UpdateLayout(); Pump();
+        Descendants(grid).OfType<CheckBox>().Single(c => c.DataContext is RuleConfigurationRow row && row.RuleId == id).IsChecked = enabled;
+        Descendants(grid).OfType<ComboBox>().Single(c => c.DataContext is RuleConfigurationRow row && row.RuleId == id).SelectedItem = severity; Pump();
+    }
+    private static void Recalculate(RuleConfigurationWindow window) { Click(window, "RecalculatePlan"); Until(() => !window.Model.IsBusy); Require(window.Model.Status.Contains("已完成"), window.Model.Status); }
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject parent)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        { var child = VisualTreeHelper.GetChild(parent, i); yield return child; foreach (var descendant in Descendants(child)) yield return descendant; }
+    }
+    private static void Click(Window window, string name)
+    {
+        var button = (Button)window.FindName(name); Require(button.IsEnabled, name + " enabled");
+        button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); Pump();
+    }
+    private sealed class GatedAnalysis(IAnalysisEngine inner) : IAnalysisEngine
+    {
+        public bool HoldNext;
+        public ManualResetEventSlim Entered { get; } = new();
+        public ManualResetEventSlim Release { get; } = new();
+        public InputRecognitionResult? LastInput;
+        public SqlXmlAnalyzer.Core.AnalysisReport Analyze(string xml) => inner.Analyze(xml);
+        public SqlXmlAnalyzer.Core.AnalysisReport AnalyzeInput(InputRecognitionResult input, CancellationToken token)
+        {
+            LastInput = input;
+            if (HoldNext) { HoldNext = false; Entered.Set(); Release.Wait(token); }
+            return inner.AnalyzeInput(input, token);
+        }
+    }
+    private static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Until(Func<bool> predicate)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!predicate()) { if (timer.Elapsed > TimeSpan.FromSeconds(30)) throw new TimeoutException("WPF operation timed out"); Pump(); Thread.Sleep(10); }
+        Pump();
+    }
+    private static void Wait(Task task) { Until(() => task.IsCompleted); task.GetAwaiter().GetResult(); }
+    private static void Capture(Window window, string path)
+    {
+        var timer = Stopwatch.StartNew(); while (timer.ElapsedMilliseconds < 250) { Pump(); Thread.Sleep(10); }
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        int width = (int)Math.Ceiling(view.ActualWidth), height = (int)Math.Ceiling(view.ActualHeight);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32); var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            drawing.DrawRectangle(window.Background, null, new Rect(0, 0, width, height));
+            drawing.DrawRectangle(new VisualBrush(view), null, new Rect(0, 0, width, height));
+        }
+        bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = new FileStream(path, FileMode.Create); encoder.Save(output);
+    }
+}

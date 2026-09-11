@@ -1,0 +1,184 @@
+[
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Case": "rowcount"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Case": "rowcount-big"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Case": "sequential-observer"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Case": "sentinel"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Case": "select-batch-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Case": "mixed-batch-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Case": "zero-dml"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Case": "transaction-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "Inconclusive",
+    "Expected": "Inconclusive",
+    "Version": "15.0.4382.1",
+    "Case": "observer-error"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Case": "keyword-literal-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "validate=1,apply=1",
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2019",
+    "Case": "apply-rowcount"
+  },
+  {
+    "Passed": true,
+    "Actual": "validate=2,apply=2",
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2019",
+    "Case": "apply-mutating-observer"
+  },
+  {
+    "Passed": true,
+    "Actual": "validate=1,apply=1",
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2019",
+    "Case": "apply-readonly-difference"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Case": "rowcount"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Case": "rowcount-big"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Case": "sequential-observer"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Case": "sentinel"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Case": "select-batch-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Case": "mixed-batch-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "Different",
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Case": "zero-dml"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Case": "transaction-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "Inconclusive",
+    "Expected": "Inconclusive",
+    "Version": "17.0.4075.5",
+    "Case": "observer-error"
+  },
+  {
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Case": "keyword-literal-control"
+  },
+  {
+    "Passed": true,
+    "Actual": "validate=1,apply=1",
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2025",
+    "Case": "apply-rowcount"
+  },
+  {
+    "Passed": true,
+    "Actual": "validate=2,apply=2",
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2025",
+    "Case": "apply-mutating-observer"
+  },
+  {
+    "Passed": true,
+    "Actual": "validate=1,apply=1",
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2025",
+    "Case": "apply-readonly-difference"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "Baseline": "IMP-27 hardening before IMP-28",
+  "HistoricalHead": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "CurrentHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "CapturedUtc": "2026-09-10T08:14:19.7185746Z",
+  "CliSha256": "F9F92F5851FFDAED6110297CF4D7BFAEB2DE4CB1F93C1C2A2AD4152D0BFCF8DB",
+  "CoreSha256": "CDF939692FBBA8E8293595241F0D187456E8561AD1AEAECC19374BBB0C02BAD4",
+  "FixtureRootReplacement": "<fixture-root>",
+  "SessionFixture": "Reconstructed synthetic Version 2.0 document using historical writer fields; not emitted by an old binary",
+  "ConfigurationFixture": "configuration-imp01.json retrieved with git show from historical HEAD; line endings normalized to LF",
+  "AppSha256": "024C906CAC1FB9D8FE670AA8B6FCEC235100D5CA089787CDE2130E75856BCC14",
+  "CurrentSessionFixture": "session-v2.1-before.pesession emitted by pre-IMP28 Release TuningSessionService using synthetic plan, fixed capture time and local fixture filename"
+}

@@ -1,0 +1,56 @@
+# IMP-03 / IMP-04 / IMP-05 复审问题修复与加固
+
+日期：2026-09-08（Asia/Taipei）。仓库：`E:/SqlXmlAnalyzer`。HEAD：`c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15`，修复位于未提交工作树。
+
+**本轮已修复复审确认的 1 项 P2 缺陷：实际日志目录与 GUI“打开日志目录”入口不一致。** 同时加固该入口的路径解析、目录检查、系统打开失败和诊断失败处理。此次没有扩展 SQL 改写或脱敏规则的能力边界。
+
+## 1. 缺陷与修复
+
+IMP-04 将日志迁至 `%LOCALAPPDATA%\SqlXmlAnalyzer\log`，但 `LogFolderActionService` 仍拼接程序目录和 `log`，导致 GUI 打开旧目录或提示目录不存在。自定义日志文件也无法从该入口定位。
+
+| 部位 | 本轮行为 |
+| --- | --- |
+| [Logger.GetLogDirectory](../SqlXmlAnalyzer.Core/Logger.cs) | 在锁内读取当前已创建日志文件的目录；没有活动日志文件时返回统一默认目录。查询不会初始化日志或创建文件。 |
+| [LogFolderActionService](../Core/Services/LogFolderActionService.cs) | 每次操作时解析完整日志目录，跟随 Logger 初始化及重新初始化；不追加第二层 `log`。注入参数改为 `logDirectoryProvider`，表示完整目录。 |
+| 目录不可用 | 不启动系统文件浏览器，也不创建目标目录。提示“目录不存在或无法访问”及目标路径，避免把 `Directory.Exists=false` 单独认定为目录从未创建。 |
+| 路径/目录/打开失败 | 返回 `Failed`；IO、权限、非法路径和 Win32 shell 错误记录 ERROR，取消记录 WARN，不生成 DUMP。 |
+| 未知异常 | 通过共享诊断器生成 DUMP，返回结构化 `Diagnostic` 和含 DUMP 路径的提示。捕获失败时保留原始错误并明确说明 DUMP 生成失败。 |
+| [MainWindowShellActionService](../Services/MainWindowShellActionService.cs) | 将目录解析和打开统一交由可测试服务执行，根据结果显示提示；未知异常的诊断信息不再丢失。 |
+| [App 错误提示](../App.xaml.cs) | 没有活动日志文件时使用相同默认目录解析器，不再显示过期的程序目录说明。 |
+
+`Opened` 表示系统打开请求正常返回，不代表已经自动验证 Explorer 窗口可见。没有活动日志文件时返回默认目录也不代表该目录一定存在或文件日志已成功启用。
+
+## 2. 本轮验证
+
+测试源码：[LogFolderActionServiceTests](../SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs)。日志目录相关用例由 2 项增至 23 项，净增 21 项；未生成覆盖率报告。
+
+| 检查 | 结果 | 本轮证据 |
+| --- | --- | --- |
+| 修复前回归 | 新增默认/自定义路径两个用例均失败，旧用例 2 项通过 | [日志](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/regression-before.log)、[TRX](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/regression-before/regression-before.trx) |
+| 修复后定向验证 | Debug 23 通过，0 失败、0 跳过 | [TRX](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/targeted-debug-01/targeted-debug-01.trx) |
+| Debug 完整构建/测试 | 0 警告、0 错误；965 通过，0 失败、0 跳过 | [构建日志](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/debug-build-01.log)、[TRX](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/full-debug/full-debug.trx) |
+| Release 完整构建/测试 | 0 警告、0 错误；965 通过，0 失败、0 跳过 | [构建日志](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/release-build-01.log)、[TRX](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/full-release/full-release.trx) |
+
+用例覆盖默认日志、自定义日志、中文/空格相对路径、服务创建后日志重新初始化、未初始化查询、日志创建失败、空白/非法路径、目录不可用、权限失败、目录在打开前消失、Win32 打开失败、三个阶段的未知异常，以及诊断组件自身失败。
+
+两配置均执行真实 Windows DUMP 测试：校验生成文件的 MDMP 头和数据流边界，核对异常 sidecar 与返回的 DUMP 路径；同时验证文件及 stderr 中 Debug 的 DEBUG/WARN/ERROR/CRITICAL 和 Release 的 ERROR/CRITICAL，且 stdout 不混入日志。测试临时 DUMP 在测试清理时删除，验证结果保留在 TRX，不能把其中临时路径当作持久附件。
+
+全量回归包含既有 IMP-03 写回、IMP-04 风险限制/诊断与 IMP-05 脱敏测试。本轮没有重跑独立验收矩阵或先前的独立进程演练，其历史数值仍属于原批次；没有执行实际 WPF/Explorer、SSMS 或 SQL Server 人工验收。
+
+## 3. 版本、归属与重复执行
+
+本轮证据目录：[20260908T111034810Z_c5b1e0766cfc_e7c9972e](./implementation/IMP-03-05-review-fix/20260908T111034810Z_c5b1e0766cfc_e7c9972e/summary.json)。保存 HEAD、SDK、初始工作树状态、修改前快照、逐文件修改前后 SHA-256、差异和本轮日志/TRX。
+
+已有用户改动 `AGENTS.md`、`MainWindow.Services.cs`、`MainWindow.KeyboardShortcuts.cs`、`Views/ShellNavigationRail.xaml` 以及四个原始 review-evidence 附件保持原指纹。修复前失败证据不覆盖；原 IMP-03/04/05 的报告和附件继续保留。已有说明文档仅追加本次进度链接，不改写其历史测试结果。
+
+在仓库根目录重复执行：
+
+```powershell
+& .\DOCS\implementation\IMP-03-05-review-fix\20260908T111034810Z_c5b1e0766cfc_e7c9972e\Verify-LogFolderFix.ps1 -RepositoryRoot E:\SqlXmlAnalyzer
+```
+
+脚本为每次运行创建新的 UTC/GUID 目录，记录当前待测源码指纹，依次构建并测试 Debug/Release；它不宣称重新测试冻结的历史二进制。
+
+## 4. 检索记录
+
+按用户优先级尝试 Microsoft 官方 API 文档检索。浏览工具连接失败，读取官方文档的命令被自动审批拒绝，仅返回 `blocked by policy`；GitHub 插件当前无可调用检索接口。本轮未获得新的外部检索证据，修复依据为本地实现、调用链与真实回归测试，不将未读取的页面列为已验证来源。此改动不涉及 SQL Server 语义判断。

@@ -10,49 +10,27 @@ namespace SqlXmlAnalyzer.Core.Rules
         public string Name => "Multiple Scalar Subqueries Detection";
         public string Description => "Detects multiple scalar subqueries in the SELECT clause.";
 
+        public RuleEvaluation Evaluate(RuleAnalysisContext context)
+        {
+            if (StatementSqlAnalysis.Parse(context.LegacyElement, context.Namespace) == null)
+                return RuleEvaluation.Skipped("RULE_MISSING_EVIDENCE", "StatementText 缺失或无法解析，不能检查 SELECT 列表中的标量子查询。");
+            return LegacyDiagnosticAdapter.Evaluate(this, context);
+        }
+
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var fragment = StatementSqlAnalysis.Parse(relOp, ns);
+            if (fragment == null) return null;
+            int scalarCount = StatementSqlAnalysis.MaximumSelectListSubqueries(fragment);
+            if (scalarCount < 2) return null;
+            return new AnalysisResult
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
-
-                var statement = relOp.Ancestors(ns + "StmtSimple").FirstOrDefault()
-                    ?? doc.Descendants(ns + "StmtSimple").FirstOrDefault();
-                if (statement == null) return null;
-                var stmts = new[] { statement };
-                foreach (var stmt in stmts)
-                {
-                    if (stmt == null) continue;
-                    string sqlText = stmt.Attribute("StatementText")?.Value ?? "";
-                    if (!string.IsNullOrEmpty(sqlText))
-                    {
-                        var match = System.Text.RegularExpressions.Regex.Match(sqlText, @"\bFROM\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-                        if (match.Success)
-                        {
-                            string selectClause = sqlText.Substring(0, match.Index);
-                            int scalarCount = System.Text.RegularExpressions.Regex.Matches(selectClause, @"\(\s*SELECT\s+", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Count;
-                            if (scalarCount >= 2)
-                            {
-                                return new AnalysisResult
-                                {
-                                    RuleId = this.RuleId,
-                                    Severity = "Warning",
-                                    Title = "标量子查询反模式",
-                                    Message = $"🚨 **[设计缺陷] SELECT 列表中检测到 {scalarCount} 个标量子查询！**\n   每个子查询等同于每一行触发一次单独的隐式游标调用，造成性能灾难。\n   👉 **重构建议: 强制整合为一个 (LEFT JOIN) 或使用 CROSS APPLY 统一计算。**",
-                                    NodeId = "0"
-                                };
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"MultipleScalarSubqueriesRule failed: {ex.Message}");
-            }
-
-            return null;
+                RuleId = RuleId,
+                Severity = "Warning",
+                Title = "标量子查询反模式",
+                Message = $"SELECT 列表中检测到 {scalarCount} 个标量子查询。请检查执行计划中是否存在重复访问和较高的实际执行次数；仅凭语法不能认定逐行执行或性能问题。\n可评估 JOIN / APPLY 或合并计算，但需要验证多行、空值与无匹配行时的语义。",
+                NodeId = "0"
+            };
         }
     }
 }

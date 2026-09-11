@@ -1,4 +1,5 @@
 using System.Text;
+using System.Globalization;
 
 namespace SqlXmlAnalyzer.Core.Services
 {
@@ -6,8 +7,8 @@ namespace SqlXmlAnalyzer.Core.Services
         string NodeId,
         string PhysicalOp,
         string LogicalOp,
-        double SubtreeCost,
-        int CostPercent,
+        double? SubtreeCost,
+        int? CostPercent,
         string EstimatedRows,
         string ActualRows,
         string EstimatedDataSize,
@@ -22,10 +23,15 @@ namespace SqlXmlAnalyzer.Core.Services
         public string BuildNodeInfo(PlanGraphNodeClipboardInfo node)
         {
             var builder = new StringBuilder();
+            builder.AppendLine(Privacy.OutputPrivacy.RawNotice);
             builder.AppendLine($"Node ID: {node.NodeId}");
             builder.AppendLine($"Physical Op: {node.PhysicalOp}");
             builder.AppendLine($"Logical Op: {node.LogicalOp}");
-            builder.AppendLine($"Estimated Cost: {node.SubtreeCost} ({node.CostPercent:F1}%)");
+            bool costAvailable = node.SubtreeCost is double cost && double.IsFinite(cost) && cost >= 0;
+            string costText = costAvailable ? node.SubtreeCost!.Value.ToString("G", CultureInfo.InvariantCulture) : "N/A";
+            string percentText = costAvailable && node.CostPercent is int percent
+                ? $" ({percent.ToString("F1", CultureInfo.InvariantCulture)}%)" : "";
+            builder.AppendLine($"Estimated Cost: {costText}{percentText}");
             builder.AppendLine($"Estimated Rows: {node.EstimatedRows}");
             builder.AppendLine($"Actual Rows: {node.ActualRows}");
             builder.AppendLine($"Estimated Data Size: {node.EstimatedDataSize}");

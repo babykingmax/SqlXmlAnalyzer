@@ -9,6 +9,17 @@ namespace SqlXmlAnalyzer.Views
         public PlanComparisonWorkspaceView()
         {
             InitializeComponent();
+            TuningHistoryListView.KeyDown += (_, e) =>
+            {
+                if (e.Key != Key.Enter) return;
+                TuningHistoryMouseDoubleClicked?.Invoke(TuningHistoryListView, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
+                e.Handled = true;
+            };
+        }
+        public void MoveWorkspaceFocus(bool reverse)
+        {
+            FrameworkElement[] groups = [TuningHistoryListView, SetSelectedPlanA, SetSelectedPlanB, PlanATreeView, PlanBTreeView];
+            Services.WorkspaceAccessibility.MoveFocus(groups, reverse);
         }
 
         public ListView TuningHistoryList => TuningHistoryListView;

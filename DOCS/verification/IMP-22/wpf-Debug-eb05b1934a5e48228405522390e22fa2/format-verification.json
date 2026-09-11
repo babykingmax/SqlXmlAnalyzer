@@ -1,0 +1,28 @@
+[
+  {
+    "Mode": "raw",
+    "Facts": 259,
+    "Issues": 1,
+    "PdfPages": 10,
+    "CanonicalLines": 456,
+    "Passed": true
+  },
+  {
+    "Mode": "Word-raw",
+    "Pages": 14,
+    "Passed": true
+  },
+  {
+    "Mode": "redacted",
+    "Facts": 259,
+    "Issues": 1,
+    "PdfPages": 8,
+    "CanonicalLines": 439,
+    "Passed": true
+  },
+  {
+    "Mode": "Word-redacted",
+    "Pages": 11,
+    "Passed": true
+  }
+]

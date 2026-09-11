@@ -16,6 +16,7 @@ namespace SqlXmlAnalyzer
                 _viewMode = value;
                 OnPropertyChanged(nameof(ViewMode));
                 OnPropertyChanged(nameof(PrimaryDisplayValue));
+                OnPropertyChanged(nameof(PrimaryMetricHelp));
             }
         }
 
@@ -32,6 +33,7 @@ namespace SqlXmlAnalyzer
                 OnPropertyChanged(nameof(DynamicBorderBrush));
                 OnPropertyChanged(nameof(DynamicBorderThickness));
                 OnPropertyChanged(nameof(PrimaryDisplayValue));
+                OnPropertyChanged(nameof(PrimaryMetricHelp));
                 OnPropertyChanged(nameof(CostBadgeBrush));
                 OnPropertyChanged(nameof(CostBadgeForeground));
             }
@@ -58,6 +60,12 @@ namespace SqlXmlAnalyzer
         public double IoPercent { get; set; }
 
         public string NodeId { get; set; } = "?";
+        public Core.Models.PlanOperatorKey? Identity { get; set; }
+        public Core.Models.PlanOperatorFacts? Facts { get; set; }
+        public Core.Rules.PlanDiagnosticReport? Diagnostics { get; set; }
+        public Core.Models.PlanLocation? SourceLocation { get; set; }
+        public System.Collections.Generic.IReadOnlyList<Core.Models.SqlObjectReference> ObjectReferences { get; set; } = System.Array.Empty<Core.Models.SqlObjectReference>();
+        public string SelectionKey => Identity?.ToString() ?? NodeId;
         public string PhysicalOp { get; set; } = "Unknown";
         public string LogicalOp { get; set; } = "";
         public double Cost { get; set; }
@@ -66,7 +74,9 @@ namespace SqlXmlAnalyzer
         public int CostPercent { get; set; }
         public string EstRows { get; set; } = "0";
         public double EstRowsNum { get; set; }
-        public string ActualRows { get; set; } = "";
+        public string ActualRows { get; set; } = "N/A";
+        // True only when every runtime counter for this operator has valid output rows, including zero.
+        public bool HasActualRows { get; set; }
         public double ActualRowsNum { get; set; }
         public string ObjectDetails { get; set; } = "";
 
@@ -77,8 +87,10 @@ namespace SqlXmlAnalyzer
         public Brush? IconBrush { get; set; }
 
         public string OperatorType { get; set; } = "Other";
-        public bool IsParallel { get; set; }
+        public bool? IsParallel { get; set; }
+        public string ParallelDisplay => IsParallel?.ToString() ?? "N/A";
         public string Warnings { get; set; } = "";
+        public string DiagnosticStatusText { get; set; } = "";
         private static readonly Core.Services.PlanGraphCostVisualService CostVisualService = new();
         private static readonly Core.Services.PlanGraphNodeDisplayService NodeDisplayService = new();
         private static readonly Core.Services.PlanGraphOperatorVisualService OperatorVisualService = new();
@@ -110,8 +122,8 @@ namespace SqlXmlAnalyzer
         public XElement? RawElement { get; set; }
 
         public double ActualRecost { get; set; }
-        public string ExecutionMode { get; set; } = "Row";
-        public string ActualRowsRead { get; set; } = "";
+        public string ExecutionMode { get; set; } = "N/A";
+        public string ActualRowsRead { get; set; } = "N/A";
         public string EstimatedRowsToBeRead { get; set; } = "";
         public string EstimatedIOCost { get; set; } = "";
         public string EstimatedCPUCost { get; set; } = "";
@@ -124,7 +136,7 @@ namespace SqlXmlAnalyzer
         public string EstimatedDataSize { get; set; } = "";
         public string ActualRebinds { get; set; } = "0";
         public string ActualRewinds { get; set; } = "0";
-        public string Ordered { get; set; } = "False";
+        public string Ordered { get; set; } = "N/A";
         public string DatabaseName { get; set; } = "";
         public string TableName { get; set; } = "";
         public string IndexName { get; set; } = "";
@@ -158,10 +170,12 @@ namespace SqlXmlAnalyzer
                 _isCollapsed = value;
                 OnPropertyChanged(nameof(IsCollapsed));
                 OnPropertyChanged(nameof(CollapseButtonText));
+                OnPropertyChanged(nameof(CollapseActionLabel));
             }
         }
 
-        public string CollapseButtonText => IsCollapsed ? "+" : "-";
+        public string CollapseButtonText => IsCollapsed ? "+" : "−";
+        public string CollapseActionLabel => IsCollapsed ? "展开子树" : "折叠子树";
 
         private bool _isVisible = true;
         public bool IsVisible
@@ -202,19 +216,19 @@ namespace SqlXmlAnalyzer
                 {
                     DiagramViewMode.CostPercent => ColorMode switch
                     {
-                        PlanColorMode.TotalCost => $"Cost: {CostPercent}%",
-                        PlanColorMode.CpuCost => $"CPU: {CpuPercent:F1}%",
-                        PlanColorMode.IoCost => $"I/O: {IoPercent:F1}%",
+                        PlanColorMode.TotalCost => Facts != null && !Facts.OwnCost.IsAvailable ? "估算成本 N/A" : $"估算成本 {CostPercent}%",
+                        PlanColorMode.CpuCost => Facts != null && !Facts.EstimatedCpuCost.IsAvailable ? "估算 CPU N/A" : $"估算 CPU {CpuPercent:F1}%",
+                        PlanColorMode.IoCost => Facts != null && !Facts.EstimatedIoCost.IsAvailable ? "估算 I/O N/A" : $"估算 I/O {IoPercent:F1}%",
                         _ => $"Cost: {CostPercent}%"
                     },
-                    DiagramViewMode.CpuIo => $"C: {EstimatedCPUCost}\nI: {EstimatedIOCost}",
-                    DiagramViewMode.Rows => $"R: {(ActualRowsNum > 0 ? ActualRows : EstRows)}",
+                    DiagramViewMode.CpuIo => $"估算 CPU {EstimatedCPUCost} / I/O {EstimatedIOCost}",
+                    DiagramViewMode.Rows => $"实 {ComparableActualRowsDisplay} / 估 {EstimatedRowsDisplay} · {RowEstimateRatioDisplay}",
                     _ => $"{CostPercent}%"
                 };
             }
         }
 
-        public string ActualRowsDisplay => string.IsNullOrEmpty(ActualRows) ? "N/A" : ActualRows;
+        public string ActualRowsDisplay => HasActualRows && !string.IsNullOrEmpty(ActualRows) ? ActualRows : "N/A";
 
         public Brush DynamicBackgroundBrush
         {
@@ -269,8 +283,10 @@ namespace SqlXmlAnalyzer
         {
             get
             {
+                if (!HasComparableRows) return Brushes.DimGray;
+
                 Core.Services.PlanGraphRowSkewResult result =
-                    RowSkewService.Analyze(ActualRowsNum, EstRowsNum);
+                    RowSkewService.Analyze(ComparableRows, EstRowsNum);
 
                 return result.BrushKey switch
                 {
@@ -283,12 +299,80 @@ namespace SqlXmlAnalyzer
         }
 
         public string SkewWarning =>
-            RowSkewService.Analyze(ActualRowsNum, EstRowsNum).Warning;
+            HasComparableRows ? RowSkewService.Analyze(ComparableRows, EstRowsNum).Warning : string.Empty;
+
+        public bool HasComparableRows => Facts == null ? HasActualRows && double.IsFinite(ActualRowsNum) && double.IsFinite(EstRowsNum) && EstRowsNum >= 0 : Facts.EstimatedRows.IsAvailable && Facts.RowsPerExecution.IsAvailable;
+        private double ComparableRows => Facts == null ? ActualRowsNum : (double)(Facts.RowsPerExecution.Value ?? 0);
+        public double? ComparableActualRows => HasComparableRows ? ComparableRows : null;
+
+        public string ObjectDisplay => !string.IsNullOrWhiteSpace(TableName)
+            ? TableName + (string.IsNullOrWhiteSpace(IndexName) ? "" : " · " + IndexName)
+            : string.IsNullOrWhiteSpace(ObjectDetails) ? "—" : ObjectDetails;
+        public string NodeObjectDisplay
+        {
+            get
+            {
+                var identity = ObjectReferences.FirstOrDefault()?.Identity;
+                if (!string.IsNullOrWhiteSpace(identity?.Object))
+                    return (string.IsNullOrWhiteSpace(identity.Schema) ? "" : Core.Models.SqlObjectIdentity.Quote(identity.Schema) + ".")
+                        + Core.Models.SqlObjectIdentity.Quote(identity.Object);
+                if (!string.IsNullOrWhiteSpace(TableName) && !string.Equals(TableName.Trim(), "Unknown", StringComparison.OrdinalIgnoreCase))
+                    return TableName;
+                return "—";
+            }
+        }
+        public string EstimatedRowsDisplay => Facts != null && !Facts.EstimatedRows.IsAvailable ? "N/A"
+            : FormatComparisonRows(EstRowsNum);
+        public string ComparableActualRowsDisplay => HasComparableRows
+            ? FormatComparisonRows(ComparableRows) : "N/A";
+        public double? RowEstimateRatio => !HasComparableRows || EstRowsNum <= 0 ? null : ComparableRows / EstRowsNum;
+        public string RowEstimateRatioDisplay => !HasComparableRows ? "N/A"
+            : EstRowsNum == 0 ? (ComparableRows == 0 ? "均为 0" : "估算为 0")
+            : FormatComparisonRatio(RowEstimateRatio!.Value);
+        private static string FormatComparisonRows(double value) => value > 0 && value < 1
+            ? value.ToString("G3", System.Globalization.CultureInfo.InvariantCulture)
+            : Core.Services.PlanGraphMetricService.FormatNumber(value);
+        private static string FormatComparisonRatio(double ratio) => (ratio > 0 && ratio < 0.01 || ratio >= 100000
+            ? ratio.ToString("0.##E+0", System.Globalization.CultureInfo.InvariantCulture)
+            : ratio.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)) + "×";
+        public string RowComparisonHelp => $"每次执行：实际 {ComparableActualRowsDisplay} / 估算 {EstimatedRowsDisplay}；实际÷估算 {RowEstimateRatioDisplay}。实际总输出行：{ActualRowsDisplay}。";
+        public string PrimaryMetricHelp => ViewMode switch
+        {
+            DiagramViewMode.Rows => RowComparisonHelp,
+            DiagramViewMode.CpuIo => $"{PrimaryDisplayValue}。SQL Server 优化器的估算成本单位，不是实测耗时。",
+            _ => ColorMode switch
+            {
+                PlanColorMode.CpuCost => $"{PrimaryDisplayValue}。相对于当前计划中最大的单算子估算 CPU 成本，不是实测耗时。",
+                PlanColorMode.IoCost => $"{PrimaryDisplayValue}。相对于当前计划中最大的单算子估算 I/O 成本，不是实测耗时。",
+                _ => $"{PrimaryDisplayValue}。自身估算成本 ÷ 当前计划中最大的估算子树成本，不是实测耗时。"
+            }
+        };
+        public int DiagnosticCount => Diagnostics?.Diagnostics.Count ?? 0;
+        public string DiagnosticSummary => DiagnosticCount == 0 ? "无命中问题" : $"{DiagnosticCount} 个问题";
+        public string DiagnosticBadgeText => $"{DiagnosticSeverity} {DiagnosticCount}";
+        public string DiagnosticStatusSummary => Diagnostics == null ? FirstSummaryLine(DiagnosticStatusText)
+            : Core.Rules.DiagnosticTextFormatter.Summary(Diagnostics);
+        public string TopDiagnosticSummary => Diagnostics?.Diagnostics.OrderByDescending(d => d.Severity).FirstOrDefault() is { } diagnostic
+            ? FirstSummaryLine($"{diagnostic.Title}：{diagnostic.Summary}")
+            : FirstSummaryLine(Warnings);
+        private static string FirstSummaryLine(string text)
+        {
+            int end = text.IndexOfAny(new[] { '\r', '\n' });
+            string line = end < 0 ? text : text[..end];
+            return line.Length > 180 ? line[..177] + "…" : line;
+        }
+        public string DiagnosticBadgeVisibility => DiagnosticCount > 0 ? "Visible" : "Collapsed";
+        public string DiagnosticSeverity => Diagnostics?.Diagnostics.Any(d => d.Severity.ToString() == "Critical") == true ? "严重"
+            : Diagnostics?.Diagnostics.Any(d => d.Severity.ToString() == "Warning") == true ? "警告" : "提示";
+        public double? ReadAmplification => Facts?.RowsRead.IsAvailable == true && Facts.OutputRows.IsAvailable && Facts.OutputRows.Value > 0
+            ? (double)(Facts.RowsRead.Value!.Value / Facts.OutputRows.Value!.Value) : null;
+        public string ReadAmplificationDisplay => ReadAmplification is { } value ? $"{value:0.##}×" : "N/A";
 
         public string HasObjectDetails => NodeDisplayService.GetTextVisibility(ObjectDetails);
-        public string IsParallelVisible => NodeDisplayService.GetBooleanVisibility(IsParallel);
+        public string IsParallelVisible => NodeDisplayService.GetBooleanVisibility(IsParallel == true);
         public string HasWarningVisible => NodeDisplayService.GetTextVisibility(Warnings);
-        public string HasExtraInfo => NodeDisplayService.GetExtraInfoVisibility(IsParallel, Warnings);
+        public string HasDiagnosticStatusVisible => NodeDisplayService.GetTextVisibility(DiagnosticStatusText);
+        public string HasExtraInfo => NodeDisplayService.GetExtraInfoVisibility(IsParallel == true, Warnings);
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

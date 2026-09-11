@@ -392,7 +392,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         }
 
         [Fact]
-        public void Run_WithLTrimRTrim_ShouldOptimizeAndWarn()
+        public void Run_WithLTrimRTrim_ShouldPreserveAndExplainSafetySkip()
         {
             // Arrange
             string sql = "SELECT * FROM Users WHERE LTRIM(RTRIM(UserName)) = 'admin'";
@@ -403,16 +403,14 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.OutputSql.Should().Contain("UserName = 'admin'");
-            result.OutputSql.Should().NotContain("LTRIM");
-            result.OutputSql.Should().NotContain("RTRIM");
-            result.Context.RefactorChanges.Should().HaveCount(1);
-            result.Context.RefactorChanges.First().RuleId.Should().Be("REF_RULE_103_TRIM");
-            result.Context.Warnings.Should().Contain(w => w.Contains("Removed LTRIM on column UserName"));
+            result.OutputSql.Should().Be(sql);
+            result.Context.RefactorChanges.Should().BeEmpty();
+            result.Context.SafetySkips.Should().ContainSingle(s => s.RuleId == "REF_RULE_103_TRIM");
+            result.Context.Warnings.Should().Contain(w => w.Contains("前导空格"));
         }
 
         [Fact]
-        public void Run_WithRTrim_ShouldOptimizeWithoutWarn()
+        public void Run_WithRTrim_ShouldPreserveWithoutSemanticEvidence()
         {
             // Arrange
             string sql = "SELECT * FROM Users WHERE RTRIM(UserName) = 'admin'";
@@ -423,14 +421,13 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.OutputSql.Should().Contain("UserName = 'admin'");
-            result.OutputSql.Should().NotContain("RTRIM");
-            result.Context.RefactorChanges.Should().HaveCount(1);
-            result.Context.Warnings.Should().BeEmpty();
+            result.OutputSql.Should().Be(sql);
+            result.Context.RefactorChanges.Should().BeEmpty();
+            result.Context.Warnings.Should().NotBeEmpty();
         }
 
         [Fact]
-        public void Run_WithTrim_ShouldOptimizeAndWarn()
+        public void Run_WithTrim_ShouldPreserveAndExplainSafetySkip()
         {
             // Arrange
             string sql = "SELECT * FROM Users WHERE TRIM(UserName) = 'admin'";
@@ -441,10 +438,9 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.OutputSql.Should().Contain("UserName = 'admin'");
-            result.OutputSql.Should().NotContain("TRIM");
-            result.Context.RefactorChanges.Should().HaveCount(1);
-            result.Context.Warnings.Should().Contain(w => w.Contains("Removed LTRIM on column UserName"));
+            result.OutputSql.Should().Be(sql);
+            result.Context.RefactorChanges.Should().BeEmpty();
+            result.Context.Warnings.Should().Contain(w => w.Contains("前导空格"));
         }
 
         [Fact]
@@ -1517,7 +1513,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
         }
 
         [Fact]
-        public void Run_WithTableVariable_ShouldConvertTableVariableToTempTable()
+        public void Run_WithTableVariable_ShouldPreserveAndExplainTransactionAndNameRisks()
         {
             // Arrange
             string sql = @"
@@ -1538,18 +1534,14 @@ SELECT * FROM @MyTable;
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.OutputSql.Should().NotContain("DECLARE @MyTable TABLE");
-            result.OutputSql.Should().Contain("CREATE TABLE #MyTable");
-            result.OutputSql.Should().Contain("INSERT INTO #MyTable");
-            result.OutputSql.Should().Contain("#MyTable");
-            result.OutputSql.Should().Contain("OBJECT_ID('tempdb..#MyTable')");
-            result.OutputSql.Should().Contain("DROP TABLE #MyTable");
-            result.Context.RefactorChanges.Should().HaveCount(1);
-            result.Context.RefactorChanges.First().RuleId.Should().Be("REF_RULE_002_TABLE_VAR");
+            result.OutputSql.Should().Be(sql);
+            result.OutputSql.Should().NotContain("#MyTable");
+            result.Context.RefactorChanges.Should().BeEmpty();
+            result.Context.SafetySkips.Should().ContainSingle(s => s.RuleId == "REF_RULE_002_TABLE_VAR");
         }
 
         [Fact]
-        public void Run_WithTableVariableInStoredProcedure_ShouldConvertButNotAppendDropTableAtBatchEnd()
+        public void Run_WithTableVariableInStoredProcedure_ShouldPreserveItsScope()
         {
             // Arrange
             string sql = @"
@@ -1574,13 +1566,10 @@ END
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.OutputSql.Should().NotContain("DECLARE @UserTable TABLE");
-            result.OutputSql.Should().Contain("CREATE TABLE #UserTable");
-            result.OutputSql.Should().Contain("INSERT INTO #UserTable");
-            result.OutputSql.Should().Contain("#UserTable");
-            // Since it's inside a stored procedure, it shouldn't append DROP TABLE to the batch end
-            result.OutputSql.Should().NotContain("DROP TABLE #UserTable");
-            result.Context.RefactorChanges.Should().HaveCount(1);
+            result.OutputSql.Should().Be(sql);
+            result.OutputSql.Should().NotContain("#UserTable");
+            result.Context.RefactorChanges.Should().BeEmpty();
+            result.Context.Warnings.Should().Contain(w => w.Contains("作用域"));
         }
 
         [Fact]

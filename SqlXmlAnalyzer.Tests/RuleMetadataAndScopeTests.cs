@@ -133,7 +133,7 @@ namespace SqlXmlAnalyzer.Tests
             results.Count(result => result.RuleId == "RULE_003_PARAM_SNIFFING")
                 .Should().Be(1);
             results.Single(result => result.RuleId == "RULE_003_PARAM_SNIFFING")
-                .Metadata!.Scope.Should().Be(RuleScope.Plan);
+                .Metadata!.Scope.Should().Be(RuleScope.QueryPlan);
         }
 
         [Fact]

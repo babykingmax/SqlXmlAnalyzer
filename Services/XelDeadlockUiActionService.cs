@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.Generic;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -11,14 +13,20 @@ namespace SqlXmlAnalyzer.Services
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly ComboBox _selector;
         private readonly TabControl _mainTabControl;
-        private readonly Func<string, string, Task> _analyzeDeadlockXmlAsync;
+        private readonly Func<string, string, string, Task> _analyzeDeadlockXmlAsync;
+        private readonly Func<DeadlockInput, InputRecognitionResult?, string, Task>? _selectEventAsync;
+        private string _sourceFilePath = string.Empty;
+        private bool _suppressSelection;
+        private Views.XelSearchWindow? _searchWindow;
+        public InputRecognitionResult? CurrentInput { get; private set; }
 
         public XelDeadlockUiActionService(
             Core.XelReader xelReader,
             Core.Services.AnalysisSessionCoordinator analysisSessions,
             ComboBox selector,
             TabControl mainTabControl,
-            Func<string, string, Task> analyzeDeadlockXmlAsync)
+            Func<string, string, string, Task> analyzeDeadlockXmlAsync,
+            Func<DeadlockInput, InputRecognitionResult?, string, Task>? selectEventAsync = null)
         {
             _xelReader = xelReader
                 ?? throw new ArgumentNullException(nameof(xelReader));
@@ -30,33 +38,35 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(mainTabControl));
             _analyzeDeadlockXmlAsync = analyzeDeadlockXmlAsync
                 ?? throw new ArgumentNullException(nameof(analyzeDeadlockXmlAsync));
+            _selectEventAsync = selectEventAsync;
         }
 
         public async Task AnalyzeXelFileAsync(string filePath)
         {
             Core.Services.AnalysisSession session = _analysisSessions.Begin();
+            ClearEvents();
             try
             {
-                var reports = await _xelReader.ReadDeadlocksAsync(filePath, session.Token);
+                var input = await _xelReader.ReadDocumentAsync(filePath, cancellationToken: session.Token);
                 if (!_analysisSessions.IsCurrent(session.RequestId))
                 {
                     return;
                 }
 
-                if (reports.Count == 0)
+                if (input.Status == InputStatus.Cancelled) return;
+                if (!input.HasUsableContent)
                 {
                     MessageBox.Show(
-                        "No xml_deadlock_report events were found in this XEL file.",
-                        "No deadlocks found",
+                        InputReadPresentation.Describe(input),
+                        "XEL 读取失败",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                     return;
                 }
 
-                _selector.ItemsSource = reports;
-                _selector.Visibility = Visibility.Visible;
-                _selector.SelectedIndex = 0;
-                _mainTabControl.SelectedIndex = 0;
+                if (input.Status == InputStatus.Partial)
+                    MessageBox.Show(InputReadPresentation.Describe(input), "部分读取", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowDocumentEvents(input, filePath);
             }
             catch (OperationCanceledException)
             {
@@ -80,26 +90,90 @@ namespace SqlXmlAnalyzer.Services
 
         public async Task HandleSelectionChangedAsync()
         {
-            if (_selector.SelectedItem is not Core.XelDeadlockReport report)
-            {
-                return;
-            }
-
+            if (_suppressSelection) return;
             try
             {
-                await _analyzeDeadlockXmlAsync(
-                    report.DeadlockXml,
-                    $"XEL deadlock event {report.Timestamp}");
+                if (_selector.SelectedItem is DeadlockInput input)
+                {
+                    if (_selectEventAsync != null) await _selectEventAsync(input, CurrentInput, _sourceFilePath);
+                    else await _analyzeDeadlockXmlAsync(input.Document.ToString(), _sourceFilePath, $"{_sourceFilePath} · {input.DisplayName}");
+                }
+                else if (_selector.SelectedItem is Core.XelDeadlockReport report)
+                    await _analyzeDeadlockXmlAsync(report.DeadlockXml, _sourceFilePath, $"XEL deadlock event {report.Timestamp}");
             }
             catch (Exception ex)
             {
-                Logger.LogException("Render XEL deadlock graph failed (Selector_SelectionChanged)", ex);
+                string detail = Core.Diagnostics.ExceptionPolicy.Describe(ex, "IMP20.DeadlockEvent.Selection");
                 MessageBox.Show(
-                    "Failed to render the selected deadlock graph: " + ex.Message,
+                    "Failed to render the selected deadlock graph: " + detail,
                     "Deadlock render failed",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        public async Task OpenSearchAsync(Window owner)
+        {
+            try
+            {
+                if (_searchWindow != null) { _searchWindow.Activate(); return; }
+                var model = new ViewModels.XelSearchViewModel(SelectSearchEventAsync);
+                _searchWindow = new Views.XelSearchWindow(model) { Owner = owner };
+                _searchWindow.Closed += (_, _) => _searchWindow = null;
+                _searchWindow.Show();
+                await model.InitializeAsync(CurrentInput == null ? null : new(_sourceFilePath, CurrentInput));
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(owner, Core.Diagnostics.ExceptionPolicy.Describe(exception, "IMP23.XelSearch.Open"), "XEL 检索失败");
+            }
+        }
+
+        internal async Task SelectSearchEventAsync(XelSearchEvent entry)
+        {
+            entry.ValidateSource();
+            _suppressSelection = true;
+            try { ShowXmlEvents(entry.Source.Input.Deadlocks, entry.Source.Path, entry.Source.Input, entry.Event); }
+            finally { _suppressSelection = false; }
+            if (_selectEventAsync != null) await _selectEventAsync(entry.Event, entry.Source.Input, entry.Source.Path);
+            else await _analyzeDeadlockXmlAsync(entry.Event.Document.ToString(), entry.Source.Path, entry.Event.DisplayName);
+        }
+
+        public void ShowDocumentEvents(InputRecognitionResult input, string source)
+        {
+            if (!input.HasUsableContent) { ClearEvents(); return; }
+            ShowXmlEvents(input.Deadlocks, source, input);
+            _selector.ToolTip = input.Status == InputStatus.Partial ? InputReadPresentation.Describe(input) : null;
+        }
+
+        public void ShowDocumentEventsWithoutAnalysis(InputRecognitionResult input, string source)
+        {
+            bool previous = _suppressSelection;
+            _suppressSelection = true;
+            try { ShowDocumentEvents(input, source); }
+            finally { _suppressSelection = previous; }
+        }
+
+        public void ShowXmlEvents(IReadOnlyList<DeadlockInput> events, string source, InputRecognitionResult? input = null, DeadlockInput? selected = null)
+        {
+            ClearEvents();
+            CurrentInput = input;
+            _sourceFilePath = source;
+            _selector.DisplayMemberPath = nameof(DeadlockInput.DisplayName);
+            _selector.ItemsSource = events;
+            _selector.Visibility = Visibility.Visible;
+            _mainTabControl.SelectedIndex = 0;
+            if (selected == null) _selector.SelectedIndex = 0;
+            else _selector.SelectedItem = selected;
+        }
+
+        public void ClearEvents()
+        {
+            CurrentInput = null;
+            _selector.ToolTip = null;
+            _selector.ItemsSource = null;
+            _selector.Visibility = Visibility.Collapsed;
+            _sourceFilePath = string.Empty;
         }
     }
 }

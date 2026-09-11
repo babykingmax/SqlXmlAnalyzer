@@ -1,0 +1,31 @@
+{
+  "Date": "2026-09-10",
+  "Runs": [
+    {
+      "Configuration": "Debug",
+      "Outcome": "Completed",
+      "Total": 2973,
+      "Passed": 2973,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "TrxSha256": "CDA3CC9EA6B83B934BBA3FC5EC2DC9BF377D53E6415621FAA95463D2B1C42D41",
+      "BuildWarnings": 0,
+      "BuildErrors": 0
+    },
+    {
+      "Configuration": "Release",
+      "Outcome": "Completed",
+      "Total": 2973,
+      "Passed": 2973,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "TrxSha256": "B43E9C121225D43974311955D97AC50F98A4BC21545CB994335A99D24FC3CE20",
+      "BuildWarnings": 0,
+      "BuildErrors": 0
+    }
+  ],
+  "NuGetProjects": 7,
+  "NuGetVulnerabilitiesReported": 0,
+  "EvidenceDirectory": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Hardening-20260910-093308de59e34769aa79dcce49d43ea5",
+  "Scope": "Full solution builds and full xUnit test suite; no coverage report or production SQL Server version matrix."
+}

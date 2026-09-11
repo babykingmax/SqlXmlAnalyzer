@@ -4,18 +4,26 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Configuration;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Core.Rules
 {
-    public class RuleEngine
+    public partial class RuleEngine
     {
         private readonly List<IPlanAnalyzerRule> _rules = new();
         private readonly RuleConfigurationRoot _config;
+        private readonly Diagnostics.IUnexpectedErrorReporter _unexpectedErrors;
+        private readonly Dictionary<IPlanAnalyzerRule, RuleMetadata> _metadata = new();
 
-        public RuleEngine(string? configPath = null)
+        public RuleEngine(string? configPath = null, Diagnostics.IUnexpectedErrorReporter? unexpectedErrors = null,
+            RuleConfigurationDocument? configuration = null)
         {
-            ConfigurationLoadResult = RuleConfigurationLoader.Load(configPath);
-            _config = ConfigurationLoadResult.Configuration;
+            _unexpectedErrors = unexpectedErrors ?? Diagnostics.UnexpectedErrorReporter.Shared;
+            ConfigurationLoadResult = configuration == null ? RuleConfigurationLoader.Load(configPath, _unexpectedErrors)
+                : new(configuration.ToLegacy(), "会话配置快照", configuration.Warnings, [], false) { Document = configuration };
+            _config = new RuleConfigurationRoot { Rules = ConfigurationLoadResult.Configuration.Rules.Select(c =>
+                new RuleConfig { RuleId = c.RuleId, Enabled = c.Enabled, SeverityOverride = c.SeverityOverride }).ToList() };
 
             foreach (string warning in ConfigurationLoadResult.Warnings)
             {
@@ -24,21 +32,24 @@ namespace SqlXmlAnalyzer.Core.Rules
 
             if (!ConfigurationLoadResult.IsSuccess)
             {
-                throw new InvalidOperationException(
+                throw new System.IO.InvalidDataException(
                     string.Join(Environment.NewLine, ConfigurationLoadResult.Errors));
             }
         }
 
         public RuleConfigurationLoadResult ConfigurationLoadResult { get; }
-        public IReadOnlyList<IPlanAnalyzerRule> RegisteredRules => _rules;
+        public IReadOnlyList<IPlanAnalyzerRule> RegisteredRules => _rules.AsReadOnly();
 
         public void RegisterRule(IPlanAnalyzerRule rule)
         {
             ArgumentNullException.ThrowIfNull(rule);
             RuleMetadata metadata = rule.Metadata;
+            if (metadata.RuleId != rule.RuleId || string.IsNullOrWhiteSpace(metadata.RuleId)
+                || string.IsNullOrWhiteSpace(metadata.Version) || !Enum.IsDefined(metadata.Scope))
+                throw new InvalidOperationException("RULE_METADATA_INVALID: RuleId 和版本必须有效。");
 
             if (_rules.Any(existing =>
-                    string.Equals(existing.Metadata.RuleId, metadata.RuleId, StringComparison.Ordinal)))
+                    string.Equals(_metadata[existing].RuleId, metadata.RuleId, StringComparison.Ordinal)))
             {
                 throw new InvalidOperationException($"Duplicate rule id: {metadata.RuleId}");
             }
@@ -48,96 +59,11 @@ namespace SqlXmlAnalyzer.Core.Rules
             {
                 Logger.Verbose(
                     $"[RuleEngine] Rule '{rule.Name}' ({metadata.RuleId}) is disabled by configuration.");
-                return;
+                // Keep the registration so every disabled rule has a visible Skipped run.
             }
 
             _rules.Add(rule);
-        }
-
-        public List<AnalysisResult> AnalyzePlan(XDocument document, XNamespace ns)
-        {
-            var results = new List<AnalysisResult>();
-            if (document.Root == null)
-            {
-                return results;
-            }
-
-            var temporaryContexts = new List<XElement>();
-            try
-            {
-                List<XElement> relOps = document.Descendants(ns + "RelOp").ToList();
-                XElement planContext = relOps.FirstOrDefault()
-                    ?? CreateTemporaryContext(document.Root, ns, temporaryContexts);
-
-                foreach (IPlanAnalyzerRule rule in _rules)
-                {
-                    IEnumerable<XElement> contexts = rule.Metadata.Scope switch
-                    {
-                        RuleScope.Plan => new[] { planContext },
-                        RuleScope.Statement => GetStatementContexts(
-                            document,
-                            ns,
-                            temporaryContexts),
-                        RuleScope.Operator => relOps,
-                        _ => Array.Empty<XElement>()
-                    };
-
-                    foreach (XElement context in contexts)
-                    {
-                        AnalysisResult? result = ExecuteRule(rule, context, ns);
-                        if (result != null)
-                        {
-                            results.Add(result);
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                foreach (XElement context in temporaryContexts)
-                {
-                    context.Remove();
-                }
-            }
-
-            return results;
-        }
-
-        /// <summary>
-        /// Compatibility entry point for operator-detail views. Operator rules run for
-        /// every node; plan and statement rules run only for the first applicable node.
-        /// </summary>
-        public List<AnalysisResult> AnalyzeNode(XElement relOp, XNamespace ns)
-        {
-            var results = new List<AnalysisResult>();
-            XDocument? document = relOp.Document;
-            XElement? firstPlanRelOp = document?.Descendants(ns + "RelOp").FirstOrDefault();
-            XElement? statement = relOp.Ancestors(ns + "StmtSimple").FirstOrDefault();
-            XElement? firstStatementRelOp = statement?.Descendants(ns + "RelOp").FirstOrDefault();
-
-            foreach (IPlanAnalyzerRule rule in _rules)
-            {
-                bool shouldRun = rule.Metadata.Scope switch
-                {
-                    RuleScope.Operator => true,
-                    RuleScope.Plan => ReferenceEquals(relOp, firstPlanRelOp),
-                    RuleScope.Statement => ReferenceEquals(relOp, firstStatementRelOp),
-                    _ => false
-                };
-
-                if (!shouldRun)
-                {
-                    continue;
-                }
-
-                AnalysisResult? result = ExecuteRule(rule, relOp, ns);
-                if (result != null)
-                {
-                    results.Add(result);
-                }
-            }
-
-            return results;
+            _metadata.Add(rule, metadata);
         }
 
         public void RegisterDefaultRules()
@@ -178,63 +104,12 @@ namespace SqlXmlAnalyzer.Core.Rules
             RegisterRule(new SargableIndexRecommendationRule());
         }
 
-        private AnalysisResult? ExecuteRule(
-            IPlanAnalyzerRule rule,
-            XElement context,
-            XNamespace ns)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            AnalysisResult? result = rule.Analyze(context, ns);
-            stopwatch.Stop();
-
-            if (result == null)
-            {
-                return null;
-            }
-
-            result.Metadata = rule.Metadata;
-            RuleConfig? ruleConfig = FindConfiguration(rule);
-            if (ruleConfig?.SeverityOverride != null)
-            {
-                result.Severity = ruleConfig.SeverityOverride;
-            }
-
-            Logger.Verbose(
-                $"[RuleEngine] Rule '{rule.Name}' hit in {rule.Metadata.Scope} scope " +
-                $"on Node {result.NodeId}. Time: {stopwatch.ElapsedMilliseconds}ms");
-            return result;
-        }
-
         private RuleConfig? FindConfiguration(IPlanAnalyzerRule rule)
         {
             return _config.Rules.FirstOrDefault(configuration =>
-                configuration.RuleId == rule.Metadata.RuleId
+                configuration.RuleId == (_metadata.TryGetValue(rule, out var metadata) ? metadata.RuleId : rule.Metadata.RuleId)
                 || configuration.RuleId == rule.Name);
         }
 
-        private static IReadOnlyList<XElement> GetStatementContexts(
-            XDocument document,
-            XNamespace ns,
-            List<XElement> temporaryContexts)
-        {
-            var contexts = new List<XElement>();
-            foreach (XElement statement in document.Descendants(ns + "StmtSimple"))
-            {
-                XElement? context = statement.Descendants(ns + "RelOp").FirstOrDefault();
-                contexts.Add(context ?? CreateTemporaryContext(statement, ns, temporaryContexts));
-            }
-            return contexts;
-        }
-
-        private static XElement CreateTemporaryContext(
-            XElement parent,
-            XNamespace ns,
-            List<XElement> temporaryContexts)
-        {
-            var context = new XElement(ns + "RelOp");
-            parent.Add(context);
-            temporaryContexts.Add(context);
-            return context;
-        }
     }
 }

@@ -1,0 +1,82 @@
+{
+  "TimestampUtc": "2026-09-09T01:20:26.0821890Z",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1481,
+      "Passed": 1481,
+      "Failed": 0,
+      "Trx": "debug.trx"
+    },
+    {
+      "Configuration": "Release",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1481,
+      "Passed": 1481,
+      "Failed": 0,
+      "Trx": "release.trx"
+    }
+  ],
+  "CoreAssemblySha256": "E8B0D7106BEACADE331D5A7990354ED68FD96DABBA01067D5BB6FF1652CFEF8F",
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticProtocol.cs",
+      "SHA256": "39CBDEF10FD497B321AEB6CF156FFB60ABD6127E570D92B43B9ACE2463678FEE"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.Execution.cs",
+      "SHA256": "80B620C4068ADBB4C0503AE165669C57C6D8D556FFC934020BF6A03D1E4FC650"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/LegacyDiagnosticAdapter.cs",
+      "SHA256": "0A9DD0C61C511B6BD295960B99EADFA754EA07EE7C0AE0EBCBEA2C94349ED60A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/DiagnosticTextFormatter.cs",
+      "SHA256": "36DEF4B0AEFEA551092940EFBE116C877F956A65EDC34A344463E00B51368427"
+    },
+    {
+      "Path": "Core/Services/PlanGraphWarningService.cs",
+      "SHA256": "DA3C5B0698870B17BF1D790FB60A43F5288B4D749CE9DCC0F785434E5D470C2F"
+    },
+    {
+      "Path": "Core/Services/PlanGraphNodeBuilderService.cs",
+      "SHA256": "55A37983528F86979037F680022984B4D11840A33E80E4DF495C0DA126CA45C8"
+    },
+    {
+      "Path": "Services/PlanGraphNodeUiActionService.cs",
+      "SHA256": "A248C7BF4E64B404F9E5B049FBA6F1A3D7972FEDC5CC3649D6293E54B2C51D05"
+    },
+    {
+      "Path": "ViewModels/PlanNodeViewModel.cs",
+      "SHA256": "C295DFE0353F6C35FB445D3F27D619C4911F1570C6CAA75B43196AFB7FE8A227"
+    },
+    {
+      "Path": "PlanGraphControl.xaml",
+      "SHA256": "2231288AC0E9213FEA8E00F633FD1C2E681C440589AA17322F308BDDE11F181A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolTests.cs",
+      "SHA256": "770A1A84D55B5CF19020794B9480C4A5AFF22E87ED6838B82C3343F68822F594"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolFlowTests.cs",
+      "SHA256": "6C94B582A63128E450AF40F0616AD6BEA20B9555FAA747032D5FB4C3D92A37E1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolHardeningTests.cs",
+      "SHA256": "1574E93EE7C07A10594651A19F8163FD960792BDF385788652E60B56691A1C98"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolHardeningFlowTests.cs",
+      "SHA256": "74E746FF6DCD2803C2169ACEDCDD0DA260847E047AA4DBC730CE27F9A9ACCC00"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolStatusViewTests.cs",
+      "SHA256": "EA68C203AEA9E81733CF1DAB8B50432F4D02A90C40BCA86B626B96EE912A2BAD"
+    }
+  ]
+}

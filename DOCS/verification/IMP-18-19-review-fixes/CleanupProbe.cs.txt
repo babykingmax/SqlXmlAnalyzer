@@ -1,0 +1,52 @@
+using System.Text.Json;
+using Microsoft.Data.SqlClient;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Application.Services;
+
+Logger.Initialize(enableFileLogging: false);
+var results = new List<object>();
+foreach (string version in new[] { "2019", "2025" })
+foreach (string fault in new[] { "lost-ack", "canceled-after-create", "create-not-dispatched" })
+{
+    string instance = "SqlXmlAnalyzer_IMP19_" + version;
+    string database = "SxaSemantic_" + Guid.NewGuid().ToString("N");
+    string connectionString = $"Server=(localdb)\\{instance};Database=master;Integrated Security=true;Encrypt=false;Pooling=false;Connect Timeout=10";
+    await using var admin = new SqlConnection(connectionString);
+    await admin.OpenAsync();
+    using var request = new CancellationTokenSource();
+    var cleanupFailures = new List<Exception>();
+    bool observed = false, failed = false;
+    try
+    {
+        await SqlSemanticDatabaseLifetime.RunAsync<int>(async () =>
+        {
+            if (fault == "create-not-dispatched") throw new IOException("synthetic pre-dispatch failure");
+            using var command = admin.CreateCommand();
+            command.CommandText = $"CREATE DATABASE [{database}];";
+            command.CommandTimeout = 15;
+            await command.ExecuteNonQueryAsync();
+            // Force loss of the original connection after the server has committed.
+            await admin.CloseAsync();
+            if (fault == "canceled-after-create")
+            { request.Cancel(); throw new OperationCanceledException(request.Token); }
+            throw new IOException("synthetic lost CREATE acknowledgement");
+        }, () => { observed = true; return Task.FromResult(1); },
+        token => LocalDbSqlSemanticRunner.CleanupDatabaseAsync(instance, database, token), cleanupFailures.Add, request.Token);
+    }
+    catch (Exception e) when (e is IOException or OperationCanceledException) { failed = true; }
+    await using var verifier = new SqlConnection(connectionString);
+    await verifier.OpenAsync();
+    using var verify = verifier.CreateCommand();
+    verify.CommandText = "SELECT COUNT(*) FROM sys.databases WHERE name=@name;";
+    verify.Parameters.AddWithValue("@name", database);
+    bool absent = Convert.ToInt32(await verify.ExecuteScalarAsync()) == 0;
+    bool passed = failed && !observed && absent && cleanupFailures.Count == 0;
+    results.Add(new { Version = version, Fault = fault, Passed = passed, DatabaseAbsent = absent, CleanupErrors = cleanupFailures.Count });
+    if (!absent)
+    {
+        using var cleanupDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        await LocalDbSqlSemanticRunner.CleanupDatabaseAsync(instance, database, cleanupDeadline.Token);
+    }
+    if (!passed) throw new InvalidOperationException($"Cleanup regression: {version}/{fault}");
+}
+Console.WriteLine(JsonSerializer.Serialize(results, new JsonSerializerOptions { WriteIndented = true }));

@@ -1,0 +1,20 @@
+[
+  {
+    "Configuration": "debug",
+    "Total": 3034,
+    "Passed": 3034,
+    "Failed": 0,
+    "NotExecuted": 0,
+    "ResultPath": "E:\\SqlXmlAnalyzer\\.tmp.plan-ui-test-results\\plan-ui-final-debug.trx",
+    "Sha256": "926F9ED0DBCEF58C0A9450F1AB079587C4B8EB570D2DCDE410C80EE390F0FA26"
+  },
+  {
+    "Configuration": "release",
+    "Total": 3034,
+    "Passed": 3034,
+    "Failed": 0,
+    "NotExecuted": 0,
+    "ResultPath": "E:\\SqlXmlAnalyzer\\.tmp.plan-ui-test-results\\plan-ui-final-release.trx",
+    "Sha256": "680A50E385B3DF0689E208865D648C5EC18A13A22AAC8A5B057C497213D38621"
+  }
+]

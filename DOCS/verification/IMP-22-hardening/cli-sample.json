@@ -1,0 +1,11 @@
+{
+  "exitCode": 1,
+  "status": "Failed",
+  "failure": "REPORT_BUDGET_EXCEEDED: 报告超过大小预算（800 万内容字符或 10 万条记录），请缩小选择范围。",
+  "planIsNull": true,
+  "diagnosticsIsNull": true,
+  "reportIsNull": true,
+  "outputBytes": 1381,
+  "inputUnchanged": true,
+  "directory": "E:\\SqlXmlAnalyzer\\.tmp.imp22-fix-cli-0d1f34e503b143e7b12d37786daa1ccd"
+}

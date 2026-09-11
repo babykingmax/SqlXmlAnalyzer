@@ -1,0 +1,1 @@
+CREATE TABLE #T (id int); DECLARE @T TABLE (id int); SELECT * FROM @T;

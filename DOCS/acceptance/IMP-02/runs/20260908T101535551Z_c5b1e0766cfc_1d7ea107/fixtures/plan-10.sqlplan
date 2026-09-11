@@ -1,0 +1,24 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="select 1" StatementSubTreeCost="1">
+          <QueryPlan>
+            <RelOp PhysicalOp="Nested Loops">
+              <NestedLoops>
+                <RelOp PhysicalOp="Index Seek">
+                  <IndexScan>
+                    <Object Table="ChildTable" />
+                    <Predicate>
+                      <ScalarOperator ScalarString="ChildFilter" />
+                    </Predicate>
+                  </IndexScan>
+                </RelOp>
+              </NestedLoops>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

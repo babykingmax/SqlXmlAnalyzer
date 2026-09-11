@@ -1,0 +1,3 @@
+INSERT dbo.T VALUES(1);
+GO 2
+SELECT COUNT(*) AS N FROM dbo.T;

@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "checkedUtc": "2026-09-08T09:00:41.5062663+00:00",
+  "total": 32,
+  "passed": 32,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "R02 rejects failed fallback to original SQL",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R02 accepts successful unchanged SQL",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R02 rejects swallowed rule failure even when IsSuccess is true",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R19 rejects failed fallback to original SQL",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R19 accepts successful unchanged SQL",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R19 rejects swallowed rule failure even when IsSuccess is true",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R20 rejects failed fallback to original SQL",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R20 accepts successful unchanged SQL",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R20 rejects swallowed rule failure even when IsSuccess is true",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R02 keeps successful unsafe rewriting NotMet",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R19 keeps unsafe table conversion NotMet",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R20 rejects duplicate creation and caller-table cleanup",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Refactor parser errors cannot pass",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Refactor error collection cannot pass",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Malformed observation is an infrastructure error",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 accepts separate ActRows and ActRowsRead columns",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 accepts explicit Path with additional formatting",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 accepts property-element bindings and Chinese headers",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 rejects the original incorrect binding",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 rejects swapped output/read bindings",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 rejects missing and duplicate output columns",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "R21 rejects unsupported bindings and ignores nested Path text",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Unchanged input snapshot has no drift",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Untracked source addition is detected",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Staged source addition is detected",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "New configuration is detected",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Tracked deletion is detected without a hash exception",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Content changes including publish.ps1 are detected",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Generated directories and new evidence do not trigger source drift",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "HEAD changes are detected even with identical file contents",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Compilation copy uses frozen bytes after the live source changes",
+      "status": "Passed",
+      "error": null
+    },
+    {
+      "name": "Tampered snapshot is rejected before compilation copy",
+      "status": "Passed",
+      "error": null
+    }
+  ],
+  "sqlServerExecuted": false,
+  "wpfVisualTestPerformed": false
+}

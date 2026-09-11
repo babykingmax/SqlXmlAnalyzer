@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "ObserveSql": "",
+      "SetupSql": "CREATE TABLE dbo.T(N int, Value sql_variant); INSERT dbo.T VALUES(41,CAST('a' AS varchar(1)));",
+      "OrderedResults": false,
+      "Name": "variant"
+    }
+  ],
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025"
+}

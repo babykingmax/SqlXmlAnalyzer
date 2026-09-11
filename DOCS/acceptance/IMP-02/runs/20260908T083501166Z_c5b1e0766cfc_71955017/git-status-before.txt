@@ -1,0 +1,5 @@
+ M AGENTS.md
+ M MainWindow.Services.cs
+ M Views/ShellNavigationRail.xaml
+?? DOCS/
+?? MainWindow.KeyboardShortcuts.cs

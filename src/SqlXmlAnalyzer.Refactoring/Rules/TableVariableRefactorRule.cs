@@ -8,25 +8,39 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
     {
         public string RuleId => "REF_RULE_002_TABLE_VAR";
         public string Name => "Table Variable to Temp Table";
-        public string Description => "Converts table variables (@Table) to temp tables (#Table) to improve query optimization and parallel execution.";
+        public string Description => "Preserves table variables until transaction, scope and temporary-name equivalence is established.";
         public int Priority => 60;
 
         public bool CanApply(TSqlFragment fragment, RefactorContext context)
         {
-            var collector = new TableVariableDeclarationCollector();
+            var collector = new DeclarationFinder();
             fragment.Accept(collector);
-            return collector.Declarations.Count > 0;
+            return collector.Found;
         }
 
         public RuleResult Apply(TSqlFragment fragment, RefactorContext context)
         {
-            var visitor = new TableVariableVisitor(context);
-            fragment.Accept(visitor);
-            if (visitor.Changed)
+            if (CanApply(fragment, context))
             {
-                return new RuleResult(fragment, true, "Converted table variables to temp tables");
+                var scope = SqlRewriteScope.Analyze(context.OriginalSql);
+                foreach (string limitation in scope.Limitations)
+                    context.SkipUnsafeRewrite(RuleId, "UnsupportedTableVariableScope", limitation,
+                        "需要明确的批次、声明作用域、对象所有权与生命周期；保留原文，不创建或清理对象。");
+                context.SkipUnsafeRewrite(RuleId, "UnprovenTableVariableEquivalence",
+                    "保留表变量；临时表的事务回滚、作用域及同名对象行为可能不同。",
+                    "须验证事务/回滚、过程和动态 SQL 作用域、并发会话及既有同名临时表；禁止自动创建或删除可能属于其他代码的临时表。");
             }
             return new RuleResult(fragment, false, null);
+        }
+
+        private sealed class DeclarationFinder : TSqlFragmentVisitor
+        {
+            public bool Found { get; private set; }
+            public override void ExplicitVisit(DeclareTableVariableStatement node)
+            {
+                Found = true;
+                base.ExplicitVisit(node);
+            }
         }
     }
 }

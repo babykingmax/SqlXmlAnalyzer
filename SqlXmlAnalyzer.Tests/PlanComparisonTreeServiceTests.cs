@@ -34,16 +34,16 @@ namespace SqlXmlAnalyzer.Tests
             result.PlanA.Should().NotBeNull();
             result.PlanA!.Source.Should().BeSameAs(source);
             result.PlanA.OperatorText.Should().Be("Nested Loops [from Hash Match]");
-            result.PlanA.CostText.Should().Be(" (Cost: 10.0000)");
+            result.PlanA.CostText.Should().Be(" (估算子树成本: 10.0000)");
             result.PlanA.CostTrend.Should().Be(PlanComparisonCostTrend.Neutral);
             result.PlanA.RuntimeDeltaTexts.Should().Equal(
-                "Elapsed: 20 (+12)",
-                "Rows read: 100");
+                "Elapsed (ms): 20 (+12)",
+                "Rows read (行): 100");
         }
 
         [Theory]
-        [InlineData(PlanComparisonNodeState.Added, true, "Index Seek [Added]")]
-        [InlineData(PlanComparisonNodeState.Removed, false, "Index Seek [Removed]")]
+        [InlineData(PlanComparisonNodeState.Added, true, "Index Seek [Added / B 未匹配]")]
+        [InlineData(PlanComparisonNodeState.Removed, false, "Index Seek [Removed / A 未匹配]")]
         public void BuildTree_FormatsAddedAndRemovedOperators(
             PlanComparisonNodeState state,
             bool isPlanB,
@@ -67,9 +67,9 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Theory]
-        [InlineData(100, PlanComparisonCostTrend.Higher, " (Cost: 10.0000) (+100.0%)")]
-        [InlineData(-20, PlanComparisonCostTrend.Lower, " (Cost: 10.0000) (-20.0%)")]
-        [InlineData(4.9, PlanComparisonCostTrend.Neutral, " (Cost: 10.0000)")]
+        [InlineData(100, PlanComparisonCostTrend.Higher, " (估算子树成本: 10.0000) (+100.0%)")]
+        [InlineData(-20, PlanComparisonCostTrend.Lower, " (估算子树成本: 10.0000) (-20.0%)")]
+        [InlineData(4.9, PlanComparisonCostTrend.Neutral, " (估算子树成本: 10.0000)")]
         public void BuildTree_FormatsCostTrendOnlyForMaterialUnchangedDeltas(
             double costPercentDelta,
             PlanComparisonCostTrend expectedTrend,

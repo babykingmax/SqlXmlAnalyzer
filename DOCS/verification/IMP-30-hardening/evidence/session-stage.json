@@ -1,0 +1,84 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A",
+  "StartedAtUtc": "2026-09-10T11:33:20.5971172Z",
+  "CompletedAtUtc": "2026-09-10T11:33:28.0165891Z",
+  "Results": [
+    {
+      "Path": "build.command.json",
+      "Bytes": 423,
+      "Sha256": "310D56DAD8DB2B7D4D3C1BB520F730F545321C80B2C015489E37D8881D2737AF"
+    },
+    {
+      "Path": "build.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "build.stdout.txt",
+      "Bytes": 332,
+      "Sha256": "D15588AD7F674EDB12FB56378007B626FE859608837D4CE7FDE709D916D0986D"
+    },
+    {
+      "Path": "candidate.command.json",
+      "Bytes": 286,
+      "Sha256": "5135C9A00B901BCDF4CA11F369FF07C87CF321A40C7A28C7136013B32A9A813A"
+    },
+    {
+      "Path": "candidate.json",
+      "Bytes": 450,
+      "Sha256": "EE90AF71F4E0175D60757C768FDC0E4753383E2BC0AD49A943D24CFB2833E2C0"
+    },
+    {
+      "Path": "candidate.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "candidate.stdout.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "host/bin/Release/net8.0/SessionHook.dll",
+      "Bytes": 10240,
+      "Sha256": "964128F54A0E6C1FEAC79A261AC0B6FE6C5FAA4B9B2A04A109C003EE0E6C1058"
+    },
+    {
+      "Path": "host/SessionHook.csproj",
+      "Bytes": 144,
+      "Sha256": "B8FAE8D3DC920323FEADEF0A64FABB8B4E320C415E56C5A3AE973266BCE85942"
+    },
+    {
+      "Path": "host/StartupHook.cs",
+      "Bytes": 3023,
+      "Sha256": "EEED3DFBEB6D74C38819ABE73F10167468812C6502CE80C2461039DFFC9DD59E"
+    },
+    {
+      "Path": "inputs.json",
+      "Bytes": 774,
+      "Sha256": "D10BC4120B6805F3599333E97E9287C9E4D501964C72045A2FBC340A18E4440A"
+    },
+    {
+      "Path": "restored.command.json",
+      "Bytes": 320,
+      "Sha256": "04C919581C45EA3579ABA0165EDA7F374D4C505DA96E3D86C4310735194E2D60"
+    },
+    {
+      "Path": "restored.json",
+      "Bytes": 484,
+      "Sha256": "4C1EB52F05D89BBAF8DEFA4E1A546BDF64C71127650288848C2F4B78A851A19B"
+    },
+    {
+      "Path": "restored.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "restored.stdout.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    }
+  ]
+}

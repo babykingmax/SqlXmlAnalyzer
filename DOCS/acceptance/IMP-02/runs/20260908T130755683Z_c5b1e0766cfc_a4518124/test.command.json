@@ -1,0 +1,23 @@
+{
+  "executable": "dotnet",
+  "arguments": [
+    "test",
+    "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+    "--configuration",
+    "Debug",
+    "--no-build",
+    "--no-restore",
+    "--nologo",
+    "--logger",
+    "trx;LogFileName=existing-suite.trx",
+    "--results-directory",
+    "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T130755683Z_c5b1e0766cfc_a4518124\\test-output"
+  ],
+  "startedUtc": "2026-09-08T13:08:10.8199008+00:00",
+  "finishedUtc": "2026-09-08T13:08:24.4962859+00:00",
+  "processId": 64672,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

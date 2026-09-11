@@ -1,0 +1,1 @@
+SELECT Id FROM dbo.InputText WHERE LTRIM(Value)=N'x';

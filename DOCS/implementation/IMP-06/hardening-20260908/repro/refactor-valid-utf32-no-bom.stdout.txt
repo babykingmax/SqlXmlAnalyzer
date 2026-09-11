@@ -1,0 +1,1 @@
+报告已写入到: E:\SqlXmlAnalyzer\DOCS\implementation\IMP-06\hardening-20260908\repro\refactor-valid-utf32-no-bom.report.json

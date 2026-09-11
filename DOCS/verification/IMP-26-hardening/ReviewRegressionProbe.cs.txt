@@ -1,0 +1,101 @@
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Threading;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Services;
+using SqlXmlAnalyzer.Views;
+
+internal static partial class Program
+{
+    private static void VerifyReviewRegressions(MainWindow main, PlanWorkspaceView workspace, string repository, string output)
+    {
+        var graph = workspace.NodifyGraph;
+        string multiple = Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp14_cardinality_residual.sqlplan");
+        bool switched = false;
+        NotifyCollectionChangedEventHandler switchStatement = (_, e) =>
+        {
+            if (switched || e.Action != NotifyCollectionChangedAction.Add) return;
+            switched = true;
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                main.ViewModel.PlanWorkspace.SelectedStatement = main.ViewModel.PlanWorkspace.Statements[1]));
+        };
+        long before = main.ViewModel.AnalysisOperation.Progress.RequestId;
+        graph.Nodes.CollectionChanged += switchStatement;
+        try { Wait(main.AnalyzeFileAsync(multiple)); }
+        finally { graph.Nodes.CollectionChanged -= switchStatement; }
+        Require(switched && !main.ViewModel.AnalysisOperation.IsBusy && main.ViewModel.AnalysisOperation.Progress.RequestId == before + 1,
+            "Changing statement during initial commit preserves the document request and ends busy state");
+        var selection = main.ViewModel.PlanWorkspace.Selection!;
+        Require(ReferenceEquals(selection.Choice, main.ViewModel.PlanWorkspace.Statements[1])
+            && graph.AllNodes.All(n => selection.Operators.Contains(n.RawElement!)), "Initial replacement commits only the selected statement nodes");
+        string comparison = new TextRange(workspace.OriginalSqlText.Document.ContentStart, workspace.OriginalSqlText.Document.ContentEnd).Text;
+        Require(comparison.Contains(selection.Choice.Statement.Text!), "Initial replacement finishes SQL comparison for the latest statement");
+
+        before = main.ViewModel.AnalysisOperation.Progress.RequestId;
+        main.ViewModel.PlanWorkspace.SelectedStatement = main.ViewModel.PlanWorkspace.Statements[0];
+        main.ViewModel.PlanWorkspace.SelectedStatement = main.ViewModel.PlanWorkspace.Statements[1];
+        Until(() => !main.ViewModel.AnalysisOperation.IsBusy);
+        Require(main.ViewModel.AnalysisOperation.Progress.RequestId == before + 1
+            && main.ViewModel.AnalysisOperation.Progress.State is AnalysisOperationState.Ready or AnalysisOperationState.Partial,
+            "Rapid manual selection replacement inherits completion ownership");
+
+        string large = Path.Combine(repository, "DOCS/verification/IMP-26/fixtures/plan-1000.sqlplan");
+        bool paged = false;
+        NotifyCollectionChangedEventHandler nextPage = (_, e) =>
+        {
+            if (paged || e.Action != NotifyCollectionChangedAction.Add || graph.Nodes.Count < 8) return;
+            paged = true;
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                _ = graph.NavigatePageAsync(64)));
+        };
+        graph.Nodes.CollectionChanged += nextPage;
+        try { Wait(main.AnalyzeFileAsync(large)); }
+        finally { graph.Nodes.CollectionChanged -= nextPage; }
+        Require(paged && main.ViewModel.AnalysisOperation.Progress.State == AnalysisOperationState.Ready
+            && graph.AllNodes.Count == 1000 && graph.Nodes.SequenceEqual(graph.AllNodes.Skip(64).Take(64)),
+            "Paging during first-screen batches completes the requested page without clearing the document");
+
+        ((Nodify.NodifyEditor)graph.FindName("Editor")).ViewportLocation = new Point(50000, 50000);
+        graph.LayoutMode = PlanLayoutMode.Vertical;
+        Wait(graph.PendingPage);
+        Require(graph.Connections.Count > 0 && graph.Connections.All(c => c.LayoutMode == PlanLayoutMode.Vertical && c.ArrowAngle == -90),
+            "Vertical large-graph layout updates connection anchors and arrows");
+        Wait(graph.NavigatePageAsync(128));
+        Require(graph.Connections.All(c => c.LayoutMode == PlanLayoutMode.Vertical), "Next page keeps the latest connection layout");
+        Require(PageHasVisibleNode(graph), "Paging from a distant viewport brings the new page's nodes into view");
+        Capture(main, Path.Combine(output, "large-graph-vertical-after-review.png"), 1);
+
+        graph.LayoutMode = PlanLayoutMode.Horizontal;
+        Wait(graph.PendingPage);
+        bool optionsChanged = false;
+        PropertyChangedEventHandler changeOptions = (_, e) =>
+        {
+            if (optionsChanged || e.PropertyName != "Selection" || main.ViewModel.PlanWorkspace.Selection == null) return;
+            optionsChanged = true;
+            ((ComboBox)graph.FindName("CmbViewMode")).SelectedIndex = (int)DiagramViewMode.Rows;
+            ((ComboBox)graph.FindName("CmbColorMode")).SelectedIndex = (int)PlanColorMode.CpuCost;
+            ((ComboBox)graph.FindName("CmbLinkMetric")).SelectedIndex = (int)LinkMetricMode.DataSize;
+            ((ComboBox)graph.FindName("CmbLayoutMode")).SelectedIndex = (int)PlanLayoutMode.Vertical;
+        };
+        main.ViewModel.PlanWorkspace.PropertyChanged += changeOptions;
+        try { Wait(main.AnalyzeFileAsync(large)); }
+        finally { main.ViewModel.PlanWorkspace.PropertyChanged -= changeOptions; }
+        Require(optionsChanged && main.ViewModel.AnalysisOperation.Progress.State == AnalysisOperationState.Ready
+            && graph.AllNodes.All(n => n.ViewMode == DiagramViewMode.Rows && n.ColorMode == PlanColorMode.CpuCost)
+            && graph.Connections.All(c => c.CurrentLinkMetric == LinkMetricMode.DataSize && c.LayoutMode == PlanLayoutMode.Vertical),
+            "Options changed after background preparation starts are applied to the committed graph");
+        Capture(main, Path.Combine(output, "large-graph-current-options-after-review.png"), 1);
+    }
+
+    private static bool PageHasVisibleNode(PlanGraphControl graph)
+    {
+        var editor = (Nodify.NodifyEditor)graph.FindName("Editor");
+        var viewport = new Rect(editor.ViewportLocation, new Size(editor.ActualWidth / editor.ViewportZoom, editor.ActualHeight / editor.ViewportZoom));
+        return graph.Nodes.Any(node => viewport.Contains(new Point(node.Location.X + 115, node.Location.Y + 55)));
+    }
+}

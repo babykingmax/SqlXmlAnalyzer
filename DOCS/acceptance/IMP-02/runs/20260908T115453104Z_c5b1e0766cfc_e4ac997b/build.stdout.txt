@@ -1,0 +1,13 @@
+  SqlXmlAnalyzer.Core -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer.Core\debug\SqlXmlAnalyzer.Core.dll
+  SqlXmlAnalyzer.Analysis -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer.Analysis\debug\SqlXmlAnalyzer.Analysis.dll
+  SqlXmlAnalyzer.Refactoring -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer.Refactoring\debug\SqlXmlAnalyzer.Refactoring.dll
+  SqlXmlAnalyzer.Application -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer.Application\debug\SqlXmlAnalyzer.Application.dll
+  SqlXmlAnalyzer.CLI -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer.CLI\debug\SqlXmlAnalyzer.CLI.dll
+  SqlXmlAnalyzer -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer\debug\SqlXmlAnalyzer.dll
+  SqlXmlAnalyzer.Tests -> C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-Imp06-Build-a9a369cceabe4bb0ad5fa12d0be0db48\bin\SqlXmlAnalyzer.Tests\debug\SqlXmlAnalyzer.Tests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:10.12

@@ -1,0 +1,11 @@
+{
+  "ArchiveBytes": 167939348,
+  "CandidateId": "2.0.0-imp30-20260910T113215Z-0f3c050f",
+  "ApprovedForDistribution": false,
+  "ExtractedDirectory": "E:\\SqlXmlAnalyzer\\.tmp.imp30-hardening-zipcheck",
+  "ManifestSha256": "A100086C166EEF569BD5F38E30525E54B0836599B74F1B4B81739DCA613D164E",
+  "ArchiveSha256": "B60F731C54F0BBC97A453889E894BBB2F8A9443DF45223184BF3089EE58D9676",
+  "Passed": true,
+  "Archive": "E:\\SqlXmlAnalyzer\\publish\\imp30-rc2.zip",
+  "Files": 38
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "configuration": "Debug",
+    "kind": "legacy",
+    "exitCode": 1,
+    "inputStatus": "Success",
+    "matchingDiagnosticCount": 1,
+    "passed": true
+  },
+  {
+    "configuration": "Debug",
+    "kind": "future",
+    "exitCode": 0,
+    "inputStatus": "Success",
+    "matchingDiagnosticCount": 0,
+    "passed": true
+  },
+  {
+    "configuration": "Release",
+    "kind": "legacy",
+    "exitCode": 1,
+    "inputStatus": "Success",
+    "matchingDiagnosticCount": 1,
+    "passed": true
+  },
+  {
+    "configuration": "Release",
+    "kind": "future",
+    "exitCode": 0,
+    "inputStatus": "Success",
+    "matchingDiagnosticCount": 0,
+    "passed": true
+  }
+]

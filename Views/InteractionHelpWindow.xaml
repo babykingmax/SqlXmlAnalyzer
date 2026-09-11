@@ -1,0 +1,15 @@
+<Window x:Class="SqlXmlAnalyzer.Views.InteractionHelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="快捷键与显示选项" Width="560" Height="540" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource SurfaceBrush}" Foreground="{DynamicResource TextBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <StackPanel Margin="20" MinWidth="340">
+            <TextBlock Text="快捷键与显示选项" FontSize="20" FontWeight="SemiBold"/>
+            <CheckBox x:Name="ReduceMotion" Content="减少动画：停用自动推演，保留手动单步" Margin="0,16,0,12" Checked="MotionChanged" Unchecked="MotionChanged" AutomationProperties.Name="减少动画"/>
+            <TextBlock TextWrapping="Wrap" Text="窗口较窄时侧栏自动折叠；内容可滚动。Tab 会将获得焦点的操作滚动到可见范围。" Margin="0,0,0,12"/>
+            <TextBlock FontFamily="Consolas" TextWrapping="Wrap" Text="Ctrl+O     打开执行计划&#10;Ctrl+Shift+O  打开死锁 / XEL&#10;Alt+1 / 2 / 3  死锁 / 计划 / 比较&#10;F6 / Shift+F6  切换工作区焦点区域&#10;F8 / Shift+F8  下一个 / 上一个问题&#10;Ctrl+Shift+G  聚焦图节点&#10;方向键 / Home / End  选择图节点&#10;Enter      查看节点详情&#10;Ctrl+Shift+E  查看原始证据&#10;Escape     返回原焦点 / 关闭窗口&#10;Ctrl+R     导出当前计划或死锁 HTML 报告&#10;Ctrl+Shift+C  复制当前分析结果&#10;Ctrl+L     清空结果&#10;Ctrl+,     规则配置&#10;Ctrl+F1    本帮助&#10;F1         关于"/>
+            <TextBlock TextWrapping="Wrap" Margin="0,12" Text="比较：捕获计划后，用 Tab 进入历史列表，方向键选取，再 Tab 到“设为 A / B”。Enter 打开选中历史记录。查看对比后，可切回相应计划或死锁工作区导出报告。"/>
+            <Button Content="关闭 (Esc)" IsCancel="True" Click="Close_Click" HorizontalAlignment="Right"/>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

@@ -12,7 +12,7 @@ namespace SqlXmlAnalyzer.Services
             XElement relOp,
             XNamespace ns,
             double residualIoThreshold,
-            int residualIoMinRowsRead)
+            int residualIoMinRowsRead, Core.Rules.PlanDiagnosticReport? report = null)
         {
             ArgumentNullException.ThrowIfNull(relOp);
             ArgumentNullException.ThrowIfNull(ns);
@@ -23,12 +23,17 @@ namespace SqlXmlAnalyzer.Services
                     ns,
                     new Core.Services.PlanGraphNodeWarningSettings(
                         residualIoThreshold,
-                        residualIoMinRowsRead));
+                        residualIoMinRowsRead), report);
 
             var vm = new PlanNodeViewModel
             {
                 RawElement = node.RawElement,
+                Facts = node.Facts,
+                Diagnostics = node.Diagnostics,
                 NodeId = node.NodeId,
+                Identity = node.Identity,
+                SourceLocation = node.SourceLocation,
+                ObjectReferences = node.ObjectReferences,
                 PhysicalOp = node.PhysicalOp,
                 LogicalOp = node.LogicalOp,
                 ExecutionMode = node.ExecutionMode,
@@ -49,6 +54,7 @@ namespace SqlXmlAnalyzer.Services
                 ActualExecutions = node.ActualExecutions,
                 ActualRows = node.ActualRows,
                 ActualRowsRead = node.ActualRowsRead,
+                HasActualRows = node.HasActualRows,
                 ActualRowsNum = node.ActualRowsNum,
                 EstimatedOperatorCost = node.EstimatedOperatorCost,
                 EstimatedSubtreeCostStr = node.EstimatedSubtreeCostStr,
@@ -70,6 +76,7 @@ namespace SqlXmlAnalyzer.Services
                 PartitionRange = node.PartitionRange,
                 IsParallel = node.IsParallel,
                 Warnings = node.Warnings,
+                DiagnosticStatusText = node.DiagnosticStatusText,
                 NodeSeverity = node.NodeSeverity,
                 OperatorType = node.OperatorType,
                 Location = new Point(50, 50)

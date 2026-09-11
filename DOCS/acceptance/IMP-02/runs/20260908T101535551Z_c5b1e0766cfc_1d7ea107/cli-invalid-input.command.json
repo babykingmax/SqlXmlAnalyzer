@@ -1,0 +1,24 @@
+{
+  "executable": "dotnet",
+  "arguments": [
+    "run",
+    "--project",
+    "SqlXmlAnalyzer.CLI",
+    "--configuration",
+    "Debug",
+    "--no-build",
+    "--no-restore",
+    "--",
+    "--path",
+    "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T101535551Z_c5b1e0766cfc_1d7ea107\\fixtures\\not-a-plan.sqlplan",
+    "--format",
+    "json"
+  ],
+  "startedUtc": "2026-09-08T10:16:04.3585397+00:00",
+  "finishedUtc": "2026-09-08T10:16:05.4057124+00:00",
+  "processId": 6532,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

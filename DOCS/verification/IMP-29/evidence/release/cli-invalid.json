@@ -1,0 +1,26 @@
+[
+  {
+    "Case": "dtd",
+    "ExitCode": 1,
+    "Status": "Failed",
+    "InputStatus": "MalformedXml",
+    "Passed": true,
+    "SourceSha256": "ADFE85B23AE26856B78170BB4E41590242A1329AEC483C353CB654163E5285A0"
+  },
+  {
+    "Case": "malformed",
+    "ExitCode": 1,
+    "Status": "Failed",
+    "InputStatus": "MalformedXml",
+    "Passed": true,
+    "SourceSha256": "4EDCC635564E8A9A959B8F81D7EADF7387B4A0DF3C4BE39347A15A87E3E04624"
+  },
+  {
+    "Case": "wrong-root",
+    "ExitCode": 1,
+    "Status": "Failed",
+    "InputStatus": "Unrecognized",
+    "Passed": true,
+    "SourceSha256": "8DB6FC3911E40C5C2AB90F9CAE80D32A39F4C7B91468C7E750EE724610544C94"
+  }
+]

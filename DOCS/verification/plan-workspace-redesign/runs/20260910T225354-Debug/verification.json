@@ -1,0 +1,309 @@
+{
+  "Passed": true,
+  "Checks": [
+    "Probe isolates application startup callback",
+    "Demo exposes real findings",
+    "Checks are retained separately",
+    "Problem navigation excludes rule run records",
+    "Check view contains execution records only",
+    "Selecting a finding selects the same scoped node",
+    "Selecting a node retains the complete findings list",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Graph remains visible in matrix",
+    "Graph fits workspace width",
+    "Default graph height \u003E=65%: ",
+    "Evidence command opens auxiliary source view",
+    "Hotspots are a primary view",
+    "Bounded page for 100 nodes",
+    "Cross-page navigation reaches target for 100 nodes",
+    "Search reaches last page for 100 nodes",
+    "Bounded page for 1000 nodes",
+    "Cross-page navigation reaches target for 1000 nodes",
+    "Search reaches last page for 1000 nodes",
+    "Bounded page for 5000 nodes",
+    "Cross-page navigation reaches target for 5000 nodes",
+    "Search reaches last page for 5000 nodes",
+    "Rapid statement switching leaves the latest selection visible",
+    "No WPF data binding errors: "
+  ],
+  "Matrix": [
+    {
+      "name": "light-1280x720-100",
+      "WorkspaceWidth": 1212,
+      "WorkspaceHeight": 621.5966666666667,
+      "GraphWidth": 920,
+      "GraphHeight": 476.99333333333334,
+      "GraphHeightRatio": 0.7673679073783106,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1280x720-125",
+      "WorkspaceWidth": 956,
+      "WorkspaceHeight": 477.5966666666667,
+      "GraphWidth": 948,
+      "GraphHeight": 332.99333333333334,
+      "GraphHeightRatio": 0.6972270884079314,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1280x720-150",
+      "WorkspaceWidth": 785.1428571428571,
+      "WorkspaceHeight": 381.5966666666667,
+      "GraphWidth": 781.1428571428571,
+      "GraphHeight": 298.5966666666667,
+      "GraphHeightRatio": 0.7824928589522969,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1280x720-200",
+      "WorkspaceWidth": 572,
+      "WorkspaceHeight": 261.5966666666667,
+      "GraphWidth": 568,
+      "GraphHeight": 178.5966666666667,
+      "GraphHeightRatio": 0.6827176696950777,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1366x768-100",
+      "WorkspaceWidth": 1298.2857142857142,
+      "WorkspaceHeight": 669.5966666666667,
+      "GraphWidth": 1006.2857142857142,
+      "GraphHeight": 524.9933333333333,
+      "GraphHeightRatio": 0.7840441260659402,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1366x768-125",
+      "WorkspaceWidth": 1024.5714285714284,
+      "WorkspaceHeight": 515.8823809523809,
+      "GraphWidth": 1016.5714285714284,
+      "GraphHeight": 371.27904761904756,
+      "GraphHeightRatio": 0.7196970885759304,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1366x768-150",
+      "WorkspaceWidth": 842.8571428571428,
+      "WorkspaceHeight": 413.5966666666667,
+      "GraphWidth": 838.8571428571428,
+      "GraphHeight": 330.5966666666667,
+      "GraphHeightRatio": 0.7993214000757582,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1366x768-200",
+      "WorkspaceWidth": 614.8571428571428,
+      "WorkspaceHeight": 285.5966666666667,
+      "GraphWidth": 610.8571428571428,
+      "GraphHeight": 202.5966666666667,
+      "GraphHeightRatio": 0.7093803615821846,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1920x1080-100",
+      "WorkspaceWidth": 1852,
+      "WorkspaceHeight": 981.5966666666667,
+      "GraphWidth": 1236,
+      "GraphHeight": 836.9933333333333,
+      "GraphHeightRatio": 0.8526855904835319,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1920x1080-125",
+      "WorkspaceWidth": 1468,
+      "WorkspaceHeight": 765.5966666666667,
+      "GraphWidth": 852,
+      "GraphHeight": 620.9933333333333,
+      "GraphHeightRatio": 0.8111233504151446,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1920x1080-150",
+      "WorkspaceWidth": 1212,
+      "WorkspaceHeight": 621.5966666666667,
+      "GraphWidth": 920,
+      "GraphHeight": 476.99333333333334,
+      "GraphHeightRatio": 0.7673679073783106,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "light-1920x1080-200",
+      "WorkspaceWidth": 892,
+      "WorkspaceHeight": 441.5966666666667,
+      "GraphWidth": 884,
+      "GraphHeight": 296.99333333333334,
+      "GraphHeightRatio": 0.672544327780252,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1280x720-100",
+      "WorkspaceWidth": 1212,
+      "WorkspaceHeight": 621.5966666666667,
+      "GraphWidth": 920,
+      "GraphHeight": 476.99333333333334,
+      "GraphHeightRatio": 0.7673679073783106,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1280x720-125",
+      "WorkspaceWidth": 956,
+      "WorkspaceHeight": 477.5966666666667,
+      "GraphWidth": 948,
+      "GraphHeight": 332.99333333333334,
+      "GraphHeightRatio": 0.6972270884079314,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1280x720-150",
+      "WorkspaceWidth": 785.1428571428571,
+      "WorkspaceHeight": 381.5966666666667,
+      "GraphWidth": 781.1428571428571,
+      "GraphHeight": 298.5966666666667,
+      "GraphHeightRatio": 0.7824928589522969,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1280x720-200",
+      "WorkspaceWidth": 572,
+      "WorkspaceHeight": 261.5966666666667,
+      "GraphWidth": 568,
+      "GraphHeight": 178.5966666666667,
+      "GraphHeightRatio": 0.6827176696950777,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1366x768-100",
+      "WorkspaceWidth": 1298.2857142857142,
+      "WorkspaceHeight": 669.5966666666667,
+      "GraphWidth": 1006.2857142857142,
+      "GraphHeight": 524.9933333333333,
+      "GraphHeightRatio": 0.7840441260659402,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1366x768-125",
+      "WorkspaceWidth": 1024.5714285714284,
+      "WorkspaceHeight": 515.8823809523809,
+      "GraphWidth": 1016.5714285714284,
+      "GraphHeight": 371.27904761904756,
+      "GraphHeightRatio": 0.7196970885759304,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1366x768-150",
+      "WorkspaceWidth": 842.8571428571428,
+      "WorkspaceHeight": 413.5966666666667,
+      "GraphWidth": 838.8571428571428,
+      "GraphHeight": 330.5966666666667,
+      "GraphHeightRatio": 0.7993214000757582,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1366x768-200",
+      "WorkspaceWidth": 614.8571428571428,
+      "WorkspaceHeight": 285.5966666666667,
+      "GraphWidth": 610.8571428571428,
+      "GraphHeight": 202.5966666666667,
+      "GraphHeightRatio": 0.7093803615821846,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1920x1080-100",
+      "WorkspaceWidth": 1852,
+      "WorkspaceHeight": 981.5966666666667,
+      "GraphWidth": 1236,
+      "GraphHeight": 836.9933333333333,
+      "GraphHeightRatio": 0.8526855904835319,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1920x1080-125",
+      "WorkspaceWidth": 1468,
+      "WorkspaceHeight": 765.5966666666667,
+      "GraphWidth": 852,
+      "GraphHeight": 620.9933333333333,
+      "GraphHeightRatio": 0.8111233504151446,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1920x1080-150",
+      "WorkspaceWidth": 1212,
+      "WorkspaceHeight": 621.5966666666667,
+      "GraphWidth": 920,
+      "GraphHeight": 476.99333333333334,
+      "GraphHeightRatio": 0.7673679073783106,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "name": "dark-1920x1080-200",
+      "WorkspaceWidth": 892,
+      "WorkspaceHeight": 441.5966666666667,
+      "GraphWidth": 884,
+      "GraphHeight": 296.99333333333334,
+      "GraphHeightRatio": 0.672544327780252,
+      "ActualMonitorDpi": 1.75
+    },
+    {
+      "Nodes": 100,
+      "ElapsedMs": 2033,
+      "VisibleNodes": 36
+    },
+    {
+      "Nodes": 1000,
+      "ElapsedMs": 15239,
+      "VisibleNodes": 40
+    },
+    {
+      "Nodes": 5000,
+      "ElapsedMs": 94050,
+      "VisibleNodes": 8
+    }
+  ],
+  "BindingErrors": 0,
+  "EvidenceKind": "Production WPF controls rendered off-screen using software rendering. Matrix uses DIP sizes and scaled bitmaps; physical display DPI, hardware keyboard and screen readers are not certified."
+}

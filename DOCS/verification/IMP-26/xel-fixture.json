@@ -1,0 +1,9 @@
+{
+  "FixtureOnly": true,
+  "DeadlockCycles": 2,
+  "FileName": "multiple.xel",
+  "Cleanup": "Dedicated database and XE session dropped",
+  "Sha256": "06BF4E69E2EBDB554A7D4DFB04D6F69BF13B9E7E33CF0C6FDF73244AC5B2C3B3",
+  "SqlVersion": "15.0.4382.1",
+  "Length": 26112
+}

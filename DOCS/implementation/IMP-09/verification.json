@@ -1,0 +1,145 @@
+{
+  "Implementation": "IMP-09",
+  "VerifiedAt": "2026-09-08T22:38:52.2890898+08:00",
+  "BaseHead": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "Builds": [
+    {
+      "Configuration": "Debug",
+      "Log": "final/build-debug.log",
+      "Warnings": 0,
+      "Errors": 0
+    },
+    {
+      "Configuration": "Release",
+      "Log": "final/build-release.log",
+      "Warnings": 0,
+      "Errors": 0
+    }
+  ],
+  "Tests": [
+    {
+      "Configuration": "Debug",
+      "Total": 1227,
+      "Passed": 1227,
+      "Failed": 0,
+      "Skipped": 0,
+      "Trx": "final/debug-verified.trx"
+    },
+    {
+      "Configuration": "Release",
+      "Total": 1227,
+      "Passed": 1227,
+      "Failed": 0,
+      "Skipped": 0,
+      "Trx": "final/release-verified.trx"
+    }
+  ],
+  "AddedTestCases": 44,
+  "CliSample": "final/cli-read.json",
+  "UiEvidence": "final/ui-debug/imp09-partial-selector.png",
+  "SampleMeasurements": "input-samples.json",
+  "NativeDump": "Validated Windows minidump and exception sidecar in DocumentReadContractTests.UnknownReadFailure_GeneratesValidatedDumpAndModeAppropriateLogs; isolated temporary dumps removed by test cleanup.",
+  "Limitations": [
+    "Positive XEL records are validated through IXelEventSource test doubles; no production binary XEL positive sample is available.",
+    "WPF evidence renders real STA controls, not a full-window end-to-end automation.",
+    "Default budgets are conservative initial limits measured against 10 small repository fixtures, not a production capacity benchmark."
+  ],
+  "EnvironmentNotes": [
+    "Regenerated individual WPF .g.resources outputs after an in-use build error.",
+    "Final TRX and screenshot files use a fresh directory to avoid overwriting in-use evidence files."
+  ],
+  "SourceHashes": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/DocumentReadContract.cs",
+      "SHA256": "AB71B40663538512140175C221F2AAC39ECF2CEA42A7D52D63C0B4F6BFA3C962"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+      "SHA256": "583B307514ADE978174BBDFD7FDBDD497B815D456F50C7D1554CB835BA04CFE3"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/DocumentOpenService.cs",
+      "SHA256": "5F26414576FC35955A1467A3F0DBAE34C3BB2CDBF5008C429BECFFD068B9CF23"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/InputReadPresentation.cs",
+      "SHA256": "B1D0077CFAE990F7F6E78D1914A57818469C0B64EFEC4C9247A203E0DF30AF7F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Parsers/SafeXmlHelper.cs",
+      "SHA256": "2CA2DD3F65CB7E5865453848B7C4C123069C653894AFF557278BF3F8115A6D68"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/XelReader.cs",
+      "SHA256": "79980112DE122137603B49005AF0422FCE48D3404C81A23C5DFC4A8BFC559A16"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/AnalysisReport.cs",
+      "SHA256": "A49647DF07D1FC87A8E64B2BB7F1FC7F0ED5FB4EC9F5C80FF92EA886B5F27511"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisEngine.cs",
+      "SHA256": "4ECE1346F4B01E3A2A31CC3587BED1DC8580095866AC3979E77F24560E2A0708"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "SHA256": "07D1837E631238486B83C73B77A55AC4E3828C612E0773B96AE2DD4EB8FEA43E"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalysisEngine.cs",
+      "SHA256": "528F0FE744FDF9C82870E45649E9DCCEE5358CB77B9E75760C8B8AB7D3009249"
+    },
+    {
+      "Path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "SHA256": "94B5A1C3B1C13BE4CE9E1BB6ABE3D7292D6364E12948DFCAF5A29550100BCCAF"
+    },
+    {
+      "Path": "Services/DocumentAnalysisUiActionService.cs",
+      "SHA256": "61CC61445F7EB56DA07A91C10C63EC106DDB18822118033BD653FD12B1D53292"
+    },
+    {
+      "Path": "Services/XelDeadlockUiActionService.cs",
+      "SHA256": "0345AD15ACF1F9650728EF70730870BDEB5DE339A781977FFCC9FC4E0F5DC41B"
+    },
+    {
+      "Path": "Core/Services/CliService.cs",
+      "SHA256": "0DA1515B97E9ACDB07416DE528B819AD789C2A9F5FCA64A105F1051772DAB97C"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "SHA256": "0C3CD7171592186B1135B113DF371AFAF7F0F3F9241027A89C0F3B419706D578"
+    },
+    {
+      "Path": "MainWindow.Documents.cs",
+      "SHA256": "585DE63FBB5C5738D22DE347D570BAECB8EFCF0014A9966ACC9F084CC1030B2A"
+    },
+    {
+      "Path": "MainWindow.Services.cs",
+      "SHA256": "6E12DEE48835A1217B8748A147370BC7199B9F1908565366E1FFE1EF8068251D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentReadContractTests.cs",
+      "SHA256": "F44468992466C50688EAF23345B68AC248B4C488511C61CF6A1AD3D2C060E67E"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/XelDocumentReadTests.cs",
+      "SHA256": "7C71750F5B6A9C9B07FFD4108B9E3344A8A3030C624A3C87AC36994A608BC54E"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockEventSelectionTests.cs",
+      "SHA256": "804101CB5BA5FFEF713AC70A84AEC76F3560247EA5AABEBA501477AA99A758B1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/InputRecognitionTests.cs",
+      "SHA256": "813AF934667CDAA2D819E85D9EDFC33D9CAEE634B407FE34CB48C003C46F2F2D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DocumentOpenServiceTests.cs",
+      "SHA256": "2E5B15E84ECE30170E5BA70E68964BEC3BB776F30B9E3F8C18A50641B352E06D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+      "SHA256": "A974BF826F1C8342E7E332A6C5DA86502D53343D672F9DB91169F8D44567CC6D"
+    }
+  ]
+}

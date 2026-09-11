@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "Name": "duplicate-rows",
+      "ObserveSql": "",
+      "OrderedResults": false,
+      "SetupSql": "CREATE TABLE dbo.InputText(Id int); INSERT dbo.InputText VALUES(1),(1),(2);"
+    }
+  ]
+}

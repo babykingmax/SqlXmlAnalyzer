@@ -1,0 +1,150 @@
+{
+  "TimestampUtc": "2026-09-09T01:44:32.5933244Z",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1524,
+      "Passed": 1524,
+      "Failed": 0,
+      "Trx": "debug.trx"
+    },
+    {
+      "Configuration": "Release",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1524,
+      "Passed": 1524,
+      "Failed": 0,
+      "Trx": "release.trx"
+    }
+  ],
+  "CoreAssemblySha256": "7C1629BA9C38B1B1977842923B896DEFCF11DC3B1EDCD76FEE08DBEB286AC964",
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockCycleAnalysis.cs",
+      "SHA256": "F61A7FF530CFB00C7EEBCD49B410F9BC24DE03832E45197A1A24820AE3A68904"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockDiagnostics.cs",
+      "SHA256": "085C81B93EE653817E9376727A5ECA0E874C952501D69453A72EEA99F7CA883F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockGraph.cs",
+      "SHA256": "A64BE8E638000238ED16C225CDE712A0BDB7960BD673B02722E9AEEE1203A0D4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockXmlParser.cs",
+      "SHA256": "A7F75D02DCE63D52105F8AD28C8369DFDF1E43C281F311DC8AE2BEEA2C852B88"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/DeadlockAnalysisService.cs",
+      "SHA256": "B1B6ED4C229F4BAAE5767A28C86E0AFE03BF60183CDD789F31865159BB0101DB"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Parsers/DeadlockTimelineParser.cs",
+      "SHA256": "A0A0D7ECF3CDDDB4D1B926830F099AF5235AB6E7EE7C109B33412AA51BD9DC79"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/DeadlockParseResult.cs",
+      "SHA256": "246FAE68A4FB66138CECF2D9C7F406A1FA8C525BFC9A7ADF787E86C330AF6E3A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/DeadlockEvent.cs",
+      "SHA256": "4712301C3D1D357C36F604E2C9EBA87FDD6FD81A9C7C6849F3A382BD8F5A1DA9"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphLayoutService.cs",
+      "SHA256": "06BB6CF6AE82B97CA6A35D16557929F03A95F3C5C8B49ECF59C9951EBC217B6D"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphEdgeService.cs",
+      "SHA256": "1549D7BA944EF6A90DAC03B8D04390610191EE7F87E320EBE92FB060C56E69D0"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphPlacementService.cs",
+      "SHA256": "A14E1D7C812D8E229CD2E486C5782835A16DE02F16B82FAF50FDB812E53F93E7"
+    },
+    {
+      "Path": "Core/Services/DeadlockPlaybackStateService.cs",
+      "SHA256": "5C7A7D8CFD8D07C80B46D92818271791F4E1343B1AFD1E274B9E9C087B694C54"
+    },
+    {
+      "Path": "Core/Services/DeadlockGraphVisualStateService.cs",
+      "SHA256": "A478CD937797139DFC19433127B8103C22824B7078B5FC07F0C5B9D1F92AADC9"
+    },
+    {
+      "Path": "Core/Services/DeadlockSelectionDetailService.cs",
+      "SHA256": "40D97FDC808168F06B8256B57A37C3C2D5213144AC770CBC1BD30F85B1F8D5B0"
+    },
+    {
+      "Path": "Core/Services/AnalysisReportController.cs",
+      "SHA256": "412BFBE1B1D2E99C099637ABFD81DDE462D6F00174E037B7145E29DDC3C7826C"
+    },
+    {
+      "Path": "Core/Services/HtmlReportActionService.cs",
+      "SHA256": "C9A744F9C644DB6F800354B1166E89F913933F63465D765C8CF5887BCDD4BA14"
+    },
+    {
+      "Path": "Core/Services/MermaidDiagramService.cs",
+      "SHA256": "8326D6C564A2081FDC1CC6A59E6BBB310C32B01F60392A15CDF0C72B8F94E103"
+    },
+    {
+      "Path": "Core/Services/CliService.cs",
+      "SHA256": "2A011081628416DA1473CD833E41B3F7EA6A0A3D904441DC1507E42D57A3A305"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "SHA256": "8C4ED58667AAA708266D2B1549B3491D28FBD6672D007963A9546FA3B8AD28C8"
+    },
+    {
+      "Path": "Services/DeadlockGraphElementUiActionService.cs",
+      "SHA256": "43BDD5CD47C22D5FB62BFACD7508F0A114E2DA9D451A0A808F41A1CC9801302C"
+    },
+    {
+      "Path": "Services/DeadlockGraphPlaybackVisualService.cs",
+      "SHA256": "5BA0B06AF809A87A69D93EA4056FD5AB16DADA1A30DEB5ADDD66F4D4E703A430"
+    },
+    {
+      "Path": "Services/DeadlockPlaybackUiActionService.cs",
+      "SHA256": "589911682D5E98E4274924101390F44F752E1A499ACCEFBE1C6D40606E4B43D3"
+    },
+    {
+      "Path": "Services/DeadlockGraphRenderUiActionService.cs",
+      "SHA256": "3B99B1CABAB51D16A0DBBD233E9B247D4928FBE3C9F24882D79CB1B808CBDDA9"
+    },
+    {
+      "Path": "Services/DeadlockAnalysisUiActionService.cs",
+      "SHA256": "EDB676C5A5459B94FEF694A16F2BD77CCA68C2CC84FF67B23FCFB7291C56D115"
+    },
+    {
+      "Path": "Services/ReportExportUiActionService.cs",
+      "SHA256": "52C24390A99FDC73FDB2147169B7E3A7A7DB1AB21ECB4E5039D32E45B7C8637E"
+    },
+    {
+      "Path": "ViewModels/DeadlockPlaybackViewModel.cs",
+      "SHA256": "860F14AEF5A998034DB5B53ED8E548AE79CB5E5872079664FC77020757FB5648"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedGraphTests.cs",
+      "SHA256": "C623319C0DBF1464BF5B8EF5AE0084256238828D761349A2AA523DE9E1E3A0B7"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/DeadlockUnifiedDiagnosticTests.cs",
+      "SHA256": "3426CF18B8C9E029C6018EC1E930AE3203CC3800368E5C2293746EF1B3F77EF8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedViewTests.cs",
+      "SHA256": "12D4D335A1B8623A9B0C758152339890FBC83FA439D91882E68E43CD5BFFA1A5"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DeadlockPatternAnalyzerTests.cs",
+      "SHA256": "FB397E6320ABBB51795359B718DE094F7B6BC520DFB3D981BC154BEB3180E07C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp13_overlapping_deadlock.xdl",
+      "SHA256": "934B2228A7CB9AE33D081F3A5AC16F86FA77FECA47B77664AA25B93F2C059F69"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "Privacy": "\u672A\u8131\u654F\uFF1A\u6B64\u8F93\u51FA\u53EF\u80FD\u5305\u542B SQL\u3001\u53C2\u6570\u3001\u5BF9\u8C61\u540D\u79F0\u3001\u6587\u4EF6\u8DEF\u5F84\u6216\u56FE\u50CF\u4E2D\u7684\u654F\u611F\u4FE1\u606F\uFF0C\u4EC5\u4F9B\u672C\u5730\u8BCA\u65AD\uFF1B\u4E0D\u80FD\u4F5C\u4E3A\u8131\u654F\u6750\u6599\u5171\u4EAB\u3002",
+  "Validation": {
+    "Status": "Failed",
+    "SourceHash": "6BA855680245BC67C1F8717FAA2F845C3639DEF272729AEDDFF51D5391788830",
+    "CandidateHash": "D8B6DBC623C56886A1B3157FCF6AA42191824B2E3B10B4C8A77FF01C375D33DC",
+    "SuiteHash": "91F4E26CC8F6C02CDEE466BF9215BDF90E8237949CB5DB948A1A9D3839F27555",
+    "ServerVersion": "15.0.4382.1",
+    "CompatibilityLevel": 150,
+    "Collation": "Latin1_General_100_CI_AS_SC",
+    "SessionSettings": "SET ANSI_NULLS ON; SET QUOTED_IDENTIFIER ON; SET ANSI_WARNINGS ON; SET ANSI_PADDING ON; SET CONCAT_NULL_YIELDS_NULL ON; SET ARITHABORT ON; SET NUMERIC_ROUNDABORT OFF; SET XACT_ABORT OFF; SET NOCOUNT OFF; SET LANGUAGE us_english; SET DATEFORMAT ymd; SET DATEFIRST 7; SET TRANSACTION ISOLATION LEVEL READ COMMITTED; SET LOCK_TIMEOUT 5000;",
+    "Cases": [],
+    "Errors": [
+      "\u672A\u77E5\u8BED\u4E49\u9A8C\u8BC1\u9519\u8BEF\uFF1BDUMP\uFF1AC:\\Users\\Administrator\\AppData\\Local\\SqlXmlAnalyzer\\dumps\\20260909T082953783Z_62264_9b32c7dcc3044c96899aeabe4b35f071\\process.dmp\uFF1B\u5F02\u5E38\u8BB0\u5F55\uFF1AC:\\Users\\Administrator\\AppData\\Local\\SqlXmlAnalyzer\\dumps\\20260909T082953783Z_62264_9b32c7dcc3044c96899aeabe4b35f071\\exception.json"
+    ],
+    "CleanupFailures": [],
+    "Diagnostics": [
+      {
+        "DumpPath": "C:\\Users\\Administrator\\AppData\\Local\\SqlXmlAnalyzer\\dumps\\20260909T082953783Z_62264_9b32c7dcc3044c96899aeabe4b35f071\\process.dmp",
+        "MetadataPath": "C:\\Users\\Administrator\\AppData\\Local\\SqlXmlAnalyzer\\dumps\\20260909T082953783Z_62264_9b32c7dcc3044c96899aeabe4b35f071\\exception.json",
+        "Failure": null,
+        "DumpCreated": true,
+        "Summary": "DUMP\uFF1AC:\\Users\\Administrator\\AppData\\Local\\SqlXmlAnalyzer\\dumps\\20260909T082953783Z_62264_9b32c7dcc3044c96899aeabe4b35f071\\process.dmp\uFF1B\u5F02\u5E38\u8BB0\u5F55\uFF1AC:\\Users\\Administrator\\AppData\\Local\\SqlXmlAnalyzer\\dumps\\20260909T082953783Z_62264_9b32c7dcc3044c96899aeabe4b35f071\\exception.json"
+      }
+    ],
+    "CanPrepareApply": false,
+    "Limitation": "\u4EC5\u5728\u8BB0\u5F55\u7684\u6570\u636E\u5E93\u7248\u672C\u3001\u517C\u5BB9\u7EA7\u522B\u3001\u6392\u5E8F\u89C4\u5219\u3001\u4F1A\u8BDD\u8BBE\u7F6E\u548C\u573A\u666F\u6570\u636E\u4E2D\u5339\u914D\uFF1B\u672A\u8BC1\u660E\u4EFB\u610F\u8F93\u5165\u7B49\u4EF7\uFF0C\u4E5F\u672A\u8BC1\u660E\u6027\u80FD\u6539\u5584\u3002"
+  },
+  "SourceWritten": false,
+  "OriginalSql": null,
+  "CandidateSql": null
+}

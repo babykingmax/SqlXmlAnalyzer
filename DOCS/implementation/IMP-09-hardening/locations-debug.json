@@ -1,0 +1,39 @@
+{
+  "Configuration": "Debug",
+  "MeasuredAt": "2026-09-08T22:56:58.7008780+08:00",
+  "Scope": "Recognition and source locations; in-memory XML with repeated unsupported sibling records; not a production throughput benchmark.",
+  "Measurements": [
+    {
+      "Records": 20000,
+      "MedianMilliseconds": 32.959,
+      "SamplesMilliseconds": [
+        38.594,
+        32.959,
+        24.234
+      ]
+    },
+    {
+      "Records": 40000,
+      "MedianMilliseconds": 88.121,
+      "SamplesMilliseconds": [
+        48.128,
+        96.771,
+        88.121
+      ]
+    },
+    {
+      "Records": 80000,
+      "MedianMilliseconds": 132.978,
+      "SamplesMilliseconds": [
+        235.089,
+        132.978,
+        120.065
+      ]
+    }
+  ],
+  "Cancellation": {
+    "ObservedMilliseconds": 30.955,
+    "Status": "Cancelled",
+    "RequestedAfterMilliseconds": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "Passed": true,
+  "BindingErrors": 0,
+  "Marker": "SECRET_IMP22_7461",
+  "Reports": [
+    {
+      "Prefix": "redacted",
+      "Scope": "B1/S2/Q1",
+      "IssueCount": 1,
+      "FactCount": 259,
+      "HitCount": 1,
+      "NoHitCount": 30,
+      "SkippedCount": 3,
+      "FailedCount": 0
+    },
+    {
+      "Prefix": "raw",
+      "Scope": "B1/S2/Q1",
+      "IssueCount": 1,
+      "FactCount": 259,
+      "HitCount": 1,
+      "NoHitCount": 30,
+      "SkippedCount": 3,
+      "FailedCount": 0
+    }
+  ]
+}

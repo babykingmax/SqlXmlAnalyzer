@@ -21,7 +21,7 @@
                                          Width="18"
                                          Height="18"
                                          VerticalAlignment="Center"
-                                         Foreground="{DynamicResource MaterialDesignPrimaryBrush}"/>
+                                         Foreground="{DynamicResource AccentBrush}"/>
                 <TextBlock Text="SqlXmlAnalyzer"
                            FontSize="13"
                            FontWeight="SemiBold"

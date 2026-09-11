@@ -1,0 +1,149 @@
+[
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "restore",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-8da4afb40ef047b8934e0a08e0f4dea1\\DiagnosticProbe.csproj",
+      "--nologo"
+    ],
+    "processId": 58164,
+    "startUtc": "2026-09-08T09:30:47.6771383Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-8da4afb40ef047b8934e0a08e0f4dea1\\DiagnosticProbe.csproj",
+      "-c",
+      "Debug",
+      "--no-restore",
+      "--nologo",
+      "-p:BuildProjectReferences=false"
+    ],
+    "processId": 50292,
+    "startUtc": "2026-09-08T09:30:48.9652958Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-8da4afb40ef047b8934e0a08e0f4dea1\\bin\\Debug\\net8.0\\DiagnosticProbe.dll",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\debug\\unknown-error"
+    ],
+    "processId": 62732,
+    "startUtc": "2026-09-08T09:30:50.3388653Z",
+    "exitCode": 1
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Debug\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\debug\\risk-preserved.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "processId": 69492,
+    "startUtc": "2026-09-08T09:30:50.8236328Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Debug\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\debug\\candidate.sql",
+      "--format",
+      "json",
+      "--show-sql",
+      "--dry-run"
+    ],
+    "processId": 38540,
+    "startUtc": "2026-09-08T09:30:51.1364307Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Debug\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\debug\\applied.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "processId": 49008,
+    "startUtc": "2026-09-08T09:30:51.5369603Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-8da4afb40ef047b8934e0a08e0f4dea1\\DiagnosticProbe.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--nologo",
+      "-p:BuildProjectReferences=false"
+    ],
+    "processId": 58544,
+    "startUtc": "2026-09-08T09:30:51.9331843Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-Imp04Probe-8da4afb40ef047b8934e0a08e0f4dea1\\bin\\Release\\net8.0\\DiagnosticProbe.dll",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\release\\unknown-error"
+    ],
+    "processId": 62848,
+    "startUtc": "2026-09-08T09:30:53.2624680Z",
+    "exitCode": 1
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Release\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\release\\risk-preserved.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "processId": 47404,
+    "startUtc": "2026-09-08T09:30:53.7226221Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Release\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\release\\candidate.sql",
+      "--format",
+      "json",
+      "--show-sql",
+      "--dry-run"
+    ],
+    "processId": 66808,
+    "startUtc": "2026-09-08T09:30:54.0217673Z",
+    "exitCode": 0
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.CLI\\bin\\Release\\net8.0\\SqlXmlAnalyzer.CLI.dll",
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-04\\20260908T091503194Z_c5b1e0766cfc_52a72a38\\process-final\\release\\applied.sql",
+      "--format",
+      "json",
+      "--show-sql"
+    ],
+    "processId": 55956,
+    "startUtc": "2026-09-08T09:30:54.3890012Z",
+    "exitCode": 0
+  }
+]

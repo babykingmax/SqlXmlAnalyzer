@@ -1,0 +1,31 @@
+{
+  "Passed": true,
+  "ManagedHeapLimitBytes": 268435456,
+  "Measurements": [
+    {
+      "NameLength": 50,
+      "InputCharacters": 2391,
+      "AllocatedBytes": 259808,
+      "ElapsedMs": 9
+    },
+    {
+      "NameLength": 384,
+      "InputCharacters": 4729,
+      "AllocatedBytes": 330648,
+      "ElapsedMs": 1
+    },
+    {
+      "NameLength": 2048,
+      "InputCharacters": 16377,
+      "AllocatedBytes": 735784,
+      "ElapsedMs": 1
+    }
+  ],
+  "LargeInputCharacters": 8388955,
+  "LargeInputStatus": "Success",
+  "LargeInputBuildSucceeded": true,
+  "LargeInputSearchMatches": 1,
+  "LargeInputIsolated": true,
+  "OriginalTraceValidated": true,
+  "Scope": "Synthetic allocation regression, not a general large-catalog performance benchmark"
+}

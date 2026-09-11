@@ -1,0 +1,226 @@
+[
+  {
+    "path": "change-ownership.json",
+    "sha256": "54D0F0DC329C9BDF422279B2718A1909E7950D9D76FAD2839BADBBFF683620BA"
+  },
+  {
+    "path": "cli-smoke-results.json",
+    "sha256": "5F519B005018E68876983C9F4BB389B270D0912EBFD8D3C82C93A41B591CBB21"
+  },
+  {
+    "path": "cli-smoke/locked.sql",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "cli-smoke/locked.sql.SqlXmlAnalyzer-c216245a808c42e7969437338f8e1a0e.bak",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "cli-smoke/locked.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "cli-smoke/locked.stdout.txt",
+    "sha256": "265BC1779FB010728E297E915639177C0226F5A4A3D12D9554D0053F87E83126"
+  },
+  {
+    "path": "cli-smoke/original.sql",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "cli-smoke/same-report-path.sql",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "cli-smoke/same-report-path.stderr.txt",
+    "sha256": "12023F01D3E66D5FACEFEBE30D7D4E335024FE00964C047DFC09C3A246CAAF29"
+  },
+  {
+    "path": "cli-smoke/same-report-path.stdout.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "cli-smoke/success.sql",
+    "sha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E"
+  },
+  {
+    "path": "cli-smoke/success.sql.SqlXmlAnalyzer-a3b4d274745d40b99c6fdc2b1516d01a.bak",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "cli-smoke/success.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "cli-smoke/success.stdout.txt",
+    "sha256": "BABBFB622607C157FB16570D2FA227F0BED5F1AF6060DCBD1839B3E242A82CAF"
+  },
+  {
+    "path": "deliverable-validation.json",
+    "sha256": "C1D9DDF82E151AF0846E7BEE05BE5DB2FDD6BB765E1C9E3C6ED772F2BFAFA5E9"
+  },
+  {
+    "path": "diff-check.stderr.txt",
+    "sha256": "461F7A04174AEE179572200A3AEA35877790D2571A4EA4E26F552BF97253C943"
+  },
+  {
+    "path": "diff-check.stdout.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "git-ls-files.txt",
+    "sha256": "48715D339602E567B627AE69B90C89EE61F822AE5C60A730365F5A6F0C0D393D"
+  },
+  {
+    "path": "git-status-final.txt",
+    "sha256": "E73C93D1CED6AF45972BD21BB39D92913D4145A21043B82E38C5248A7258D611"
+  },
+  {
+    "path": "input-snapshot-final.json",
+    "sha256": "5DC15CC69A2DE2FB88836870D4F94AED2267B64941F1EB8AFC56C5C2527E6C8B"
+  },
+  {
+    "path": "Run-CliSmoke.ps1",
+    "sha256": "AB9F3B69AD0755026EF208F6586B3286A87B76C9D95C0DFEFB2E53AACA172696"
+  },
+  {
+    "path": "source-snapshot-manifest.json",
+    "sha256": "6ADD2D057A28D4FF89C121175239051498D9AEADD8C76F3F12AD299B1EB40E01"
+  },
+  {
+    "path": "source-snapshots/App.xaml.cs.snapshot",
+    "sha256": "C8A7442681C976DFC549D02FB3647663F8A5672AF3610E2368E4FBD2235C34FF"
+  },
+  {
+    "path": "source-snapshots/Core/Services/PlanAnalysisService.cs.snapshot",
+    "sha256": "3D72C2FA1AF6787C28F47366DD9F6942577C3A0137A6926DCDC4907520ABA1F6"
+  },
+  {
+    "path": "source-snapshots/DOCS/软件改善实施规划.md.snapshot",
+    "sha256": "25674E0E65E5E0DAE9D2F912ADEEA817B5B5533355BAACFD87CE9F10D40B0026"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/acceptance-matrix.json.snapshot",
+    "sha256": "0D3E4D5EA1546B3D729AF65E504E90BFB57ACD47ECF3B003E1A463F1D1F2A472"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt.snapshot",
+    "sha256": "70C8DB267EA34D46CD2427BAD77B31A751DE50F7F15C6CF0436FC3766BACC8FE"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/README.md.snapshot",
+    "sha256": "C2762AD06748B7A105F6F277106EEA8A0BC4BC23C68CB226A9540057DC77EB0E"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1.snapshot",
+    "sha256": "8B73B28F931CA2C90437D016B55ECB5CE29C90E9350826DE30FC9475401E1A0C"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-02审查反例验收矩阵.md.snapshot",
+    "sha256": "73F0C9CE205565B23483499F6B5820F53F4C2386C22B05143D957718518FEA6E"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-03安全写回与恢复说明.md.snapshot",
+    "sha256": "8012075B89DEEAA4E221D736B240764364933568BA85F6DEF8B5EAF12DC83933"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.CLI/Program.cs.snapshot",
+    "sha256": "C9CE09DE417A39F1B045A53E391CEDAF87E863A8C24524134E493F9F87AAEAAA"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs.snapshot",
+    "sha256": "1865D77A64CF475B5112E40967960444771004B4DCEA90EC1A101EC6A37CECCD"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs.snapshot",
+    "sha256": "9C7BC90D194B0FD3E41ED57C7788B14F8C1CD506EA812C5D758C655DB4F442E0"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs.snapshot",
+    "sha256": "D0BBE90EDB0356D5F89E8375BE304AC99647080D0038DDBC0392F14BB0237C99"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs.snapshot",
+    "sha256": "DF44844D9D77C628046A5F136A5D8DA3B5568805957D21E805431924DE57E019"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs.snapshot",
+    "sha256": "55EFFBC9E0231C903CECF4D7CF1CA691F24E405DEF8BED660BABBC5B62F6296D"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs.snapshot",
+    "sha256": "A533CD51CB98553A4F7D8B99CD6E4B0359D4EB4BA142984E00324DEEEF9490C2"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs.snapshot",
+    "sha256": "A75238F528E25BE81E5929DF41955EEA00B988A65F751DE1C8A766F161E4C043"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs.snapshot",
+    "sha256": "9BAC9B2C31CDC932DC71789E48A1A401E72744556163D0750857B966AC368AF4"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs.snapshot",
+    "sha256": "D326A090CE1C7B5C5695E260C5B58C59C276586ECEB60D7B7586E71C7A60E7DF"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs.snapshot",
+    "sha256": "F6DCFD0F657F87C1CF53662E3E5A5153CC0D5253F3565527CAFD2223E31F011F"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs.snapshot",
+    "sha256": "D6757DE1C9A9227E1298EEBFE94F78BBAD61E55339E27AE2B2F77AE665D9140A"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs.snapshot",
+    "sha256": "114664AD54A574242658791837AF3491D8E09D699937BBE4CA38AA35437310EC"
+  },
+  {
+    "path": "tracked-diff.stderr.txt",
+    "sha256": "461F7A04174AEE179572200A3AEA35877790D2571A4EA4E26F552BF97253C943"
+  },
+  {
+    "path": "tracked-implementation.diff",
+    "sha256": "F4C658CFFD053AEDCE32003067DF76EF0908AD658B735806769DFEBBDF08AB03"
+  },
+  {
+    "path": "Verify-Deliverable.ps1",
+    "sha256": "932A41C6CE15EAD2DAD237063310F95C960F7D3F7110FAD832A994208F23449B"
+  },
+  {
+    "path": "writeback-tests-01.log",
+    "sha256": "22243C5812595FFC123F001BA646F27E350673D868050BB85AEEEA6FE07892C7"
+  },
+  {
+    "path": "writeback-tests-02.log",
+    "sha256": "C257C77CF304A872DF40987B0C5F1BE7CB2B8EAAE23D897EB81B57301E0F66E1"
+  },
+  {
+    "path": "writeback-tests-02.trx",
+    "sha256": "9C578AE4143E17FDA8B36E5BE86688BFA645610023232FCC617C3E59F00A2E54"
+  },
+  {
+    "path": "writeback-tests-03.log",
+    "sha256": "569023E91EE73C0D0786B5A5378AD3B0AE68F778BE8297AE0EB8128F414B5ECB"
+  },
+  {
+    "path": "writeback-tests-03.trx",
+    "sha256": "C9C284D2026C154EF692E60567F8E84EDFF4009D78C99C3A0610EA8C1630C952"
+  },
+  {
+    "path": "writeback-tests-04.log",
+    "sha256": "79ADB2DE50F5FC98743EA688F3AE9C2D62D2B2687BFC166CEB08BB0F2F6D14AA"
+  },
+  {
+    "path": "writeback-tests-04.trx",
+    "sha256": "5560B851D9990A409F8872B9BB92611871CCC35A12139717A3BA672A7501438C"
+  },
+  {
+    "path": "writeback-tests-05.log",
+    "sha256": "093A055556656C88F449EEB4A701A828CBB2DE65FF8D823565E0D27EE0A65440"
+  },
+  {
+    "path": "writeback-tests-05.trx",
+    "sha256": "2F1ECD232F924F7C5788776A1C7F445C1EBE7B048E314DA9DA3F5FF5FE1B95CC"
+  }
+]

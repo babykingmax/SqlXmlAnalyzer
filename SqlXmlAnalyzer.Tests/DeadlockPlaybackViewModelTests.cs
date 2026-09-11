@@ -24,7 +24,7 @@ namespace SqlXmlAnalyzer.Tests
             viewModel.TotalSteps.Should().Be(3);
             viewModel.CurrentStep.Should().Be(0);
             viewModel.IsPlaying.Should().BeFalse();
-            viewModel.CurrentStepDescription.Should().Be("准备就绪。点击播放开始回放死锁形成过程。");
+            viewModel.CurrentStepDescription.Should().Be("依赖推演已就绪；合成步骤不代表真实事件顺序。");
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace SqlXmlAnalyzer.Tests
             viewModel.StepForwardCommand.Execute(null);
 
             viewModel.CurrentStep.Should().Be(1);
-            viewModel.CurrentStepDescription.Should().Be("步骤 1/2: Event 1");
+            viewModel.CurrentStepDescription.Should().Be("依赖推演步骤 1/2: Event 1");
             eventFired.Should().BeTrue();
         }
 
@@ -63,7 +63,7 @@ namespace SqlXmlAnalyzer.Tests
             viewModel.StepBackwardCommand.Execute(null);
 
             viewModel.CurrentStep.Should().Be(1);
-            viewModel.CurrentStepDescription.Should().Be("步骤 1/2: Event 1");
+            viewModel.CurrentStepDescription.Should().Be("依赖推演步骤 1/2: Event 1");
         }
 
         [Fact]

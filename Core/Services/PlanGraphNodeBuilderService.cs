@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Rules;
+using SqlXmlAnalyzer.Core.Diagnostics;
 
 namespace SqlXmlAnalyzer.Core.Services
 {
@@ -13,7 +14,12 @@ namespace SqlXmlAnalyzer.Core.Services
     public sealed class PlanGraphNodeBuildResult
     {
         public required XElement RawElement { get; init; }
+        public Models.PlanOperatorFacts? Facts { get; init; }
+        public PlanDiagnosticReport? Diagnostics { get; init; }
         public required string NodeId { get; init; }
+        public Models.PlanOperatorKey? Identity { get; init; }
+        public Models.PlanLocation? SourceLocation { get; init; }
+        public System.Collections.Generic.IReadOnlyList<Models.SqlObjectReference> ObjectReferences { get; init; } = Array.Empty<Models.SqlObjectReference>();
         public required string PhysicalOp { get; init; }
         public required string LogicalOp { get; init; }
         public required string ExecutionMode { get; init; }
@@ -34,6 +40,7 @@ namespace SqlXmlAnalyzer.Core.Services
         public required string ActualExecutions { get; init; }
         public required string ActualRows { get; init; }
         public required string ActualRowsRead { get; init; }
+        public required bool HasActualRows { get; init; }
         public double ActualRowsNum { get; init; }
         public required string EstimatedOperatorCost { get; init; }
         public required string EstimatedSubtreeCostStr { get; init; }
@@ -53,48 +60,68 @@ namespace SqlXmlAnalyzer.Core.Services
         public required string Partitioned { get; init; }
         public required string PartitionCount { get; init; }
         public required string PartitionRange { get; init; }
-        public bool IsParallel { get; init; }
+        public bool? IsParallel { get; init; }
         public required string Warnings { get; init; }
+        public string DiagnosticStatusText { get; init; } = string.Empty;
         public required string NodeSeverity { get; init; }
         public required string OperatorType { get; init; }
     }
 
     public sealed class PlanGraphNodeBuilderService
     {
-        private readonly RuleEngine _ruleEngine = new();
+        private RuleEngine? _ruleEngine;
         private readonly PlanGraphOperatorTypeService _operatorTypeService = new();
         private readonly PlanGraphRelOpDetailsService _relOpDetailsService = new();
         private readonly PlanGraphRuntimeCountersService _runtimeCountersService = new();
         private readonly PlanGraphWarningService _warningService = new();
+        private readonly IPlanExecutionFactsReader? _executionFacts;
+        private readonly IUnexpectedErrorReporter? _unexpectedErrors;
 
-        public PlanGraphNodeBuilderService()
+        public PlanGraphNodeBuilderService(IPlanExecutionFactsReader? executionFacts = null,
+            IUnexpectedErrorReporter? unexpectedErrors = null, RuleEngine? ruleEngine = null)
         {
-            _ruleEngine.RegisterDefaultRules();
+            _executionFacts = executionFacts;
+            _unexpectedErrors = unexpectedErrors;
+            _ruleEngine = ruleEngine;
         }
 
         public PlanGraphNodeBuildResult Build(
             XElement relOp,
             XNamespace ns,
-            PlanGraphNodeWarningSettings warningSettings)
+            PlanGraphNodeWarningSettings warningSettings, PlanDiagnosticReport? report = null)
         {
             ArgumentNullException.ThrowIfNull(relOp);
+            ArgumentNullException.ThrowIfNull(ns);
+            ArgumentNullException.ThrowIfNull(warningSettings);
+            try
+            {
+                return BuildCore(relOp, ns, warningSettings, report);
+            }
+            catch (Exception ex)
+            {
+                ExceptionPolicy.Describe(ex, "PlanGraphNodeBuilderService.Build", _unexpectedErrors);
+                throw;
+            }
+        }
+
+        private PlanGraphNodeBuildResult BuildCore(XElement relOp, XNamespace ns,
+            PlanGraphNodeWarningSettings warningSettings, PlanDiagnosticReport? report)
+        {
+            var facts = PlanOperatorFactsService.Get(relOp, ns);
+            PlanExecutionFacts executionFacts = _executionFacts?.Read(relOp, ns) ?? facts.Execution;
+            var identity = PlanIdentityAdapter.GetOperator(relOp);
 
             string nodeId = relOp.Attribute("NodeId")?.Value ?? "?";
             string physical = relOp.Attribute("PhysicalOp")?.Value ?? relOp.Attribute("LogicalOp")?.Value ?? "Unknown";
             string logical = relOp.Attribute("LogicalOp")?.Value ?? "Unknown";
 
-            double estimatedRows = ParseDouble(relOp.Attribute("EstimateRows")?.Value);
-            double estimatedRowsRead = ParseDouble(relOp.Attribute("EstimatedRowsRead")?.Value, estimatedRows);
-            double subtreeCost = ParseDouble(relOp.Attribute("EstimatedTotalSubtreeCost")?.Value);
+            double estimatedRows = facts.EstimatedRows.Value ?? 0;
+            double estimatedRowsRead = facts.EstimatedRowsRead.Value ?? 0;
+            double subtreeCost = facts.SubtreeCost.Value ?? 0;
 
-            string estimatedIoCost = relOp.Attribute("EstimateIO")?.Value ?? "0";
-            string estimatedCpuCost = relOp.Attribute("EstimateCPU")?.Value ?? "0";
-            string estimatedExecutions = relOp.Attribute("EstimateRebinds") != null
-                ? (ParseDouble(relOp.Attribute("EstimateRebinds")?.Value)
-                    + ParseDouble(relOp.Attribute("EstimateRewinds")?.Value)
-                    + 1.0).ToString("0.0")
-                : "1.0";
-            string estimatedRowSize = relOp.Attribute("AvgRowSize")?.Value ?? "0";
+            string estimatedIoCost = facts.EstimatedIoCost.Display();
+            string estimatedCpuCost = facts.EstimatedCpuCost.Display();
+            string estimatedExecutions = facts.EstimatedExecutions.Display("0.0");
 
             PlanGraphRuntimeCountersResult runtimeCounters =
                 _runtimeCountersService.Parse(relOp, ns);
@@ -103,9 +130,9 @@ namespace SqlXmlAnalyzer.Core.Services
             string residualPredicate = string.Join(" AND ", relOpDetails.Predicates);
             string seekPredicate = string.Join(" AND ", relOpDetails.SeekPredicates);
 
-            double estimatedRowSizeNumber = ParseDouble(estimatedRowSize);
-            double estimatedCpuNumber = ParseDouble(estimatedCpuCost);
-            double estimatedIoNumber = ParseDouble(estimatedIoCost);
+            double estimatedRowSizeNumber = facts.AverageRowSize.Value ?? 0;
+            double estimatedCpuNumber = facts.EstimatedCpuCost.Value ?? 0;
+            double estimatedIoNumber = facts.EstimatedIoCost.Value ?? 0;
             double estimatedDataSizeMB = (estimatedRows * estimatedRowSizeNumber) / (1024.0 * 1024.0);
             double actualDataSizeMB = runtimeCounters.HasActual
                 ? (runtimeCounters.ActualRows * estimatedRowSizeNumber) / (1024.0 * 1024.0)
@@ -113,6 +140,12 @@ namespace SqlXmlAnalyzer.Core.Services
             string estimatedDataSize = FormatDataSizeMB(estimatedDataSizeMB);
             string actualDataSize = FormatDataSizeMB(actualDataSizeMB);
 
+            if (report == null && _ruleEngine == null)
+            {
+                _ruleEngine = new RuleEngine(unexpectedErrors: _unexpectedErrors);
+                _ruleEngine.RegisterDefaultRules();
+            }
+            PlanDiagnosticReport diagnostics = report?.ForOperator(relOp) ?? _ruleEngine!.AnalyzeNodeDetailed(relOp, ns);
             PlanGraphWarningResult warningResult =
                 _warningService.BuildWarnings(
                     relOp,
@@ -129,14 +162,9 @@ namespace SqlXmlAnalyzer.Core.Services
                         runtimeCounters.IsThreadDataSkewed,
                         warningSettings.ResidualIOThreshold,
                         warningSettings.ResidualIOMinRowsRead),
-                    _ruleEngine.AnalyzeNode(relOp, ns));
+                    diagnostics.ToLegacyResults(), diagnostics);
 
-            bool isParallel =
-                relOp.Attribute("Parallel")?.Value == "1"
-                || relOp.Descendants(ns + "ThreadStat").Any()
-                || physical.Contains("Parallelism");
-
-            double ownCost = subtreeCost;
+            double ownCost = facts.OwnCost.Value ?? 0;
             double actualRecost = CalculateActualRecost(
                 ownCost,
                 estimatedRows,
@@ -146,52 +174,55 @@ namespace SqlXmlAnalyzer.Core.Services
             return new PlanGraphNodeBuildResult
             {
                 RawElement = relOp,
+                Facts = facts,
+                Diagnostics = diagnostics,
                 NodeId = nodeId,
+                Identity = identity?.Key,
+                SourceLocation = identity?.Location,
+                ObjectReferences = identity?.Objects ?? Array.Empty<Models.SqlObjectReference>(),
                 PhysicalOp = physical,
                 LogicalOp = logical,
-                ExecutionMode = "Row",
+                ExecutionMode = executionFacts.ExecutionMode,
                 Cost = ownCost,
                 OwnCost = ownCost,
                 ActualRecost = actualRecost,
                 SubtreeCost = subtreeCost,
                 CostPercent = 1,
-                EstRows = PlanGraphMetricService.FormatNumber(estimatedRows),
+                EstRows = facts.EstimatedRows.IsAvailable ? PlanGraphMetricService.FormatNumber(estimatedRows) : "N/A",
                 EstRowsNum = estimatedRows,
-                EstimatedRowsToBeRead = PlanGraphMetricService.FormatNumber(estimatedRowsRead),
+                EstimatedRowsToBeRead = facts.EstimatedRowsRead.IsAvailable ? PlanGraphMetricService.FormatNumber(estimatedRowsRead) : "N/A",
                 EstimatedCPUCostNum = estimatedCpuNumber,
                 EstimatedIOCostNum = estimatedIoNumber,
                 AvgRowSizeNum = estimatedRowSizeNumber,
                 EstimatedIOCost = estimatedIoCost,
                 EstimatedCPUCost = estimatedCpuCost,
                 EstimatedExecutions = estimatedExecutions,
-                ActualExecutions = runtimeCounters.HasActual ? runtimeCounters.ActualExecutions.ToString("F0") : string.Empty,
-                ActualRows = runtimeCounters.HasActual
-                    ? runtimeCounters.ActualRows.ToString("N0", CultureInfo.InvariantCulture)
-                    : string.Empty,
-                ActualRowsRead = runtimeCounters.HasActual && runtimeCounters.HasActualRead
-                    ? runtimeCounters.ActualRowsRead.ToString("N0")
-                    : string.Empty,
+                ActualExecutions = facts.ThreadExecutions.Display("N0"),
+                ActualRows = runtimeCounters.ActualRowsDisplay,
+                ActualRowsRead = runtimeCounters.ActualRowsReadDisplay,
+                HasActualRows = runtimeCounters.HasActual,
                 ActualRowsNum = runtimeCounters.ActualRows,
-                EstimatedOperatorCost = ownCost.ToString("0.0000000"),
-                EstimatedSubtreeCostStr = subtreeCost.ToString("0.0000000"),
-                EstimatedRowSize = estimatedRowSizeNumber.ToString("0") + " B",
-                EstimatedDataSize = estimatedDataSize,
-                ActualDataSize = runtimeCounters.HasActual ? actualDataSize : string.Empty,
-                ActualRebinds = runtimeCounters.HasActual ? runtimeCounters.ActualRebinds.ToString() : string.Empty,
-                ActualRewinds = runtimeCounters.HasActual ? runtimeCounters.ActualRewinds.ToString() : string.Empty,
-                Ordered = relOp.Attribute("LogicalOp")?.Value?.Contains("Sort") == true ? "True" : "False",
-                DatabaseName = relOpDetails.DatabaseName,
-                TableName = relOpDetails.TableName,
-                IndexName = relOpDetails.IndexName,
+                EstimatedOperatorCost = facts.OwnCost.Display("0.0000000"),
+                EstimatedSubtreeCostStr = facts.SubtreeCost.Display("0.0000000"),
+                EstimatedRowSize = facts.AverageRowSize.IsAvailable ? estimatedRowSizeNumber.ToString("0") + " B" : "N/A",
+                EstimatedDataSize = facts.EstimatedRows.IsAvailable && facts.AverageRowSize.IsAvailable ? estimatedDataSize : "N/A",
+                ActualDataSize = runtimeCounters.HasActual && facts.AverageRowSize.IsAvailable ? actualDataSize : "N/A",
+                ActualRebinds = facts.Rebinds.Display(),
+                ActualRewinds = facts.Rewinds.Display(),
+                Ordered = executionFacts.OrderedDisplay,
+                DatabaseName = identity == null ? relOpDetails.DatabaseName : identity.Objects.Count == 1 ? identity.Objects[0].Identity.Database ?? "" : "",
+                TableName = identity == null ? relOpDetails.TableName : identity.Objects.Count == 1 ? identity.Objects[0].Identity.Object ?? "" : "",
+                IndexName = identity == null ? relOpDetails.IndexName : identity.Objects.Count == 1 ? identity.Objects[0].Index ?? "" : "",
                 SeekPredicates = string.Join("\n", relOpDetails.SeekPredicates),
                 Predicate = string.Join("\n", relOpDetails.Predicates),
                 OutputList = string.Join(", ", relOpDetails.OutputColumns),
-                ObjectDetails = relOpDetails.ObjectDetails,
-                Partitioned = relOpDetails.IsPartitioned ? "True" : "False",
+                ObjectDetails = identity == null ? relOpDetails.ObjectDetails : string.Join("; ", identity.Objects.Select(obj => obj.DisplayName)),
+                Partitioned = facts.Partitioned?.ToString() ?? "N/A",
                 PartitionCount = relOpDetails.PartitionCount,
                 PartitionRange = relOpDetails.PartitionRange,
-                IsParallel = isParallel,
+                IsParallel = executionFacts.Parallel,
                 Warnings = warningResult.WarningsText,
+                DiagnosticStatusText = warningResult.DiagnosticStatusText,
                 NodeSeverity = warningResult.HighestSeverity,
                 OperatorType = _operatorTypeService.DetectOperatorType(physical, logical)
             };
@@ -216,27 +247,11 @@ namespace SqlXmlAnalyzer.Core.Services
 
         private static string FormatDataSizeMB(double sizeMB)
         {
+            if (!double.IsFinite(sizeMB)) return "N/A";
             return sizeMB < 1.0
                 ? $"{sizeMB * 1024:F0} KB"
                 : $"{sizeMB:F0} MB";
         }
 
-        private static double ParseDouble(
-            string? value,
-            double defaultValue = 0.0)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return defaultValue;
-            }
-
-            return double.TryParse(
-                value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture,
-                out double parsed)
-                ? parsed
-                : defaultValue;
-        }
     }
 }

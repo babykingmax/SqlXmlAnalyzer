@@ -40,7 +40,10 @@ namespace SqlXmlAnalyzer.Services
                 return EmptyResult();
             }
 
-            List<XElement> relOps = document.Descendants(ns + "RelOp").ToList();
+            List<XElement> relOps = options.Operators?.ToList()
+                ?? Core.Services.PlanIdentityAdapter.GetOperatorSources(document, ns);
+            if (relOps.Any(op => !ReferenceEquals(op.Document, document)))
+                throw new System.IO.InvalidDataException("图节点不属于当前原始文档。");
             if (relOps.Count == 0)
             {
                 return EmptyResult();
@@ -51,17 +54,19 @@ namespace SqlXmlAnalyzer.Services
 
             foreach (XElement relOp in relOps)
             {
+                options.CancellationToken.ThrowIfCancellationRequested();
                 PlanNodeViewModel vm =
                     _nodeUiActionService.CreateNodeFromRelOp(
                         relOp,
                         ns,
                         options.ResidualIoThreshold,
-                        options.ResidualIoMinRowsRead);
+                        options.ResidualIoMinRowsRead, options.Diagnostics);
                 nodeMap[relOp] = vm;
                 allNodes.Add(vm);
             }
 
-            ApplyMissingIndexAssociations(document, ns, allNodes);
+            ApplyMissingIndexAssociations(document, ns, allNodes, options.MissingIndexes);
+            options.CancellationToken.ThrowIfCancellationRequested();
 
             _costUiActionService.ApplyCostCalculations(
                 relOps,
@@ -75,6 +80,7 @@ namespace SqlXmlAnalyzer.Services
                 ns,
                 nodeMap,
                 options.InitialLayout);
+            options.CancellationToken.ThrowIfCancellationRequested();
 
             _connectionUiActionService.BuildConnections(
                 relOps,
@@ -100,15 +106,17 @@ namespace SqlXmlAnalyzer.Services
         private void ApplyMissingIndexAssociations(
             XDocument document,
             XNamespace ns,
-            IReadOnlyList<PlanNodeViewModel> allNodes)
+            IReadOnlyList<PlanNodeViewModel> allNodes,
+            IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>? suppliedIndexes)
         {
             IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion> missingIndexes =
-                PlanDiagnosticAnalyzer.ExtractMissingIndexes(document, ns);
+                suppliedIndexes ?? PlanDiagnosticAnalyzer.ExtractMissingIndexes(document, ns);
             IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion?> matchedSuggestions =
                 _missingIndexAssociationService.MatchSuggestions(
                     allNodes
                         .Select(node => new Core.Services.PlanGraphMissingIndexNodeInfo(
-                            node.TableName))
+                            node.TableName) { ObjectIdentity = node.ObjectReferences.Count == 1 ? node.ObjectReferences[0].Identity : null,
+                                QueryPlan = node.Identity?.QueryPlan })
                         .ToList(),
                     missingIndexes);
 
@@ -130,6 +138,10 @@ namespace SqlXmlAnalyzer.Services
 
     internal sealed record PlanGraphLoadUiActionOptions
     {
+        public System.Threading.CancellationToken CancellationToken { get; init; }
+        public IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>? MissingIndexes { get; init; }
+        public Core.Rules.PlanDiagnosticReport? Diagnostics { get; init; }
+        public IReadOnlyList<XElement>? Operators { get; init; }
         public required PlanLayoutMode InitialLayout { get; init; }
         public required PlanColorMode InitialColor { get; init; }
         public required DiagramViewMode InitialView { get; init; }

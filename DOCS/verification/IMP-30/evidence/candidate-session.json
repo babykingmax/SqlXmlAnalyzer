@@ -1,0 +1,10 @@
+{
+  "Passed": true,
+  "Snapshots": 2,
+  "PlanA": "SELECT 1",
+  "PlanB": "SELECT 2",
+  "SessionSha256": "8121ABB32DEA9E51287C9B8E9BDC4819A151F666D48808C66D90BE499D401055",
+  "AppAssembly": "SqlXmlAnalyzer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "Executable": "E:\\SqlXmlAnalyzer\\publish\\imp30-rc1\\gui\\SqlXmlAnalyzer.exe",
+  "Scope": "Actual single-file GUI process with test-only startup hook; no window interaction."
+}

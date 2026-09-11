@@ -1,0 +1,2305 @@
+diff --git a/.gitignore b/.gitignore
+index e304f98..fae3c93 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -91,6 +91,8 @@ StyleCopReport.xml
+ *.tmp_proj
+ *_wpftmp.csproj
+ *.log
++*.dmp
++*.dmp.partial
+ *.vspscc
+ *.vssscc
+ .builds
+diff --git a/AGENTS.md b/AGENTS.md
+index 82dea7e..7d4e0f2 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -57,3 +57,7 @@ Pull requests should include a concise problem statement, implementation summary
+ ## Security & Configuration
+ 
+ Treat `.sqlplan`, `.xdl`, `.xel`, and SQL text as untrusted input. Avoid logging sensitive SQL or identifiers unnecessarily. Keep `RuleConfiguration.json` changes backward-compatible and document any new rule IDs or severity defaults.
++
++
++
++ 
+diff --git a/App.xaml.cs b/App.xaml.cs
+index ea188d4..7767309 100644
+--- a/App.xaml.cs
++++ b/App.xaml.cs
+@@ -11,15 +11,27 @@ using SqlXmlAnalyzer.Analysis;
+ using SqlXmlAnalyzer.Refactoring;
+ using SqlXmlAnalyzer.Refactoring.Rules;
+ using SqlXmlAnalyzer.Core.Configuration;
++using SqlXmlAnalyzer.Core.Diagnostics;
++using Microsoft.Extensions.Logging;
+ 
+ namespace SqlXmlAnalyzer
+ {
+     public partial class App : System.Windows.Application
+     {
+         public static IServiceProvider ServiceProvider { get; private set; } = null!;
++        private GlobalExceptionHandlers? _exceptionHandlers;
+ 
+         protected override void OnStartup(StartupEventArgs e)
+         {
++            Logger.Initialize();
++            _exceptionHandlers = new GlobalExceptionHandlers();
++            DispatcherUnhandledException += (_, args) =>
++            {
++                string detail = ExceptionPolicy.Describe(args.Exception, "WPF.DispatcherUnhandledException");
++                Logger.Flush();
++                args.Handled = true;
++                ShowFriendlyError("界面操作时发生错误", args.Exception, detail);
++            };
+             base.OnStartup(e);
+ 
+             var serviceCollection = new ServiceCollection();
+@@ -54,74 +66,6 @@ namespace SqlXmlAnalyzer
+                 return;
+             }
+ 
+-            // ==================== 初始化全局日志系统（GUI 专用配置） ====================
+-            try
+-            {
+-                // 【修改后】默认日志目录：应用程序同级目录下的 log 文件夹
+-                // 例如：D:\Tools\SqlXmlAnalyzer\log\SqlXmlAnalyzer_20260601_103000.log
+-                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+-                string defaultLogDir = Path.Combine(baseDirectory, "log");
+-
+-                Directory.CreateDirectory(defaultLogDir);
+-
+-                string defaultLogFile = Path.Combine(defaultLogDir,
+-                    $"SqlXmlAnalyzer_{DateTime.Now:yyyyMMdd_HHmmss}.log");
+-
+-                Logger.Initialize(
+-                    forceVerbose: false,
+-                    logLevel: Logger.IsDebugMode ? LogLevel.Debug : LogLevel.Info,
+-                    customLogFilePath: defaultLogFile,
+-                    enableFileLogging: true
+-                );
+-
+-                Logger.Info("=== SqlXmlAnalyzer WPF 应用启动 ===");
+-                Logger.Info($"日志文件: {Logger.LogFilePath}");
+-            }
+-            catch (Exception logEx)
+-            {
+-                // 即使日志初始化失败，也要尽量记录（兜底）
+-                try
+-                {
+-                    // 兜底1：尝试写入应用程序目录下的 log 文件夹
+-                    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+-                    string fallbackDir = Path.Combine(baseDir, "log");
+-                    Directory.CreateDirectory(fallbackDir);
+-                    string fallbackLog = Path.Combine(fallbackDir, "SqlXmlAnalyzer_startup_error.log");
+-                    File.AppendAllText(fallbackLog, $"[{DateTime.Now}] Logger 初始化失败: {logEx}\r\n");
+-
+-                    // 兜底2：同时也写一份到桌面，方便用户快速找到
+-                    string desktopFallback = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "SqlXmlAnalyzer_crash.log");
+-                    File.AppendAllText(desktopFallback, $"[{DateTime.Now}] Logger 初始化失败: {logEx}\r\n");
+-                }
+-                catch { }
+-            }
+-
+-            // ==================== 全局异常捕获（确保所有错误都进日志） ====================
+-            // UI 线程未处理异常
+-            this.DispatcherUnhandledException += (sender, args) =>
+-            {
+-                Logger.Critical("UI 线程未处理异常 (DispatcherUnhandledException)", args.Exception);
+-                Logger.Flush();
+-                args.Handled = true; // 防止应用直接崩溃
+-                ShowFriendlyError("界面操作时发生错误", args.Exception);
+-            };
+-
+-            // 非 UI 线程未处理异常
+-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+-            {
+-                var ex = args.ExceptionObject as Exception;
+-                Logger.Critical("应用程序域未处理异常 (AppDomain.UnhandledException)", ex);
+-                Logger.Flush();
+-            };
+-
+-            // Task 异步未观察异常
+-            TaskScheduler.UnobservedTaskException += (sender, args) =>
+-            {
+-                Logger.Critical("异步任务未观察异常 (UnobservedTaskException)", args.Exception);
+-                Logger.Flush();
+-                args.SetObserved(); // 防止进程终止
+-            };
+-
+             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+             if (e.Args.Length > 0 && File.Exists(e.Args[0]))
+             {
+@@ -135,8 +79,16 @@ namespace SqlXmlAnalyzer
+ 
+         private void ConfigureServices(IServiceCollection services)
+         {
+-            services.AddLogging();
++            services.AddLogging(logging =>
++            {
++                logging.ClearProviders();
++                logging.AddProvider(new ApplicationLoggerProvider());
++                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
++            });
++            services.AddSingleton<IUnexpectedErrorReporter>(UnexpectedErrorReporter.Shared);
+             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
++            services.AddSingleton<ISqlWritebackFileSystem, PhysicalSqlWritebackFileSystem>();
++            services.AddSingleton<ISqlWritebackService, SqlWritebackService>();
+             services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = false });
+             services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine());
+             services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
+@@ -223,15 +175,16 @@ namespace SqlXmlAnalyzer
+                 coordinator.Dispose();
+             }
+             Logger.Shutdown();
++            _exceptionHandlers?.Dispose();
+             base.OnExit(e);
+         }
+ 
+-        private void ShowFriendlyError(string title, Exception ex)
++        private void ShowFriendlyError(string title, Exception ex, string? diagnostic = null)
+         {
+             // 这里可以弹出友好提示，同时错误已经记录到日志
+             string logLocation = Logger.LogFilePath ?? "应用程序目录下的 log 文件夹";
+             MessageBox.Show(
+-                $"{title}\n\n详细信息已记录到日志文件：\n{logLocation}\n\n错误摘要：{ex.Message}",
++                $"{title}\n\n日志文件：\n{logLocation}\n\n错误摘要：{diagnostic ?? ex.Message}",
+                 "SqlXmlAnalyzer 错误",
+                 MessageBoxButton.OK,
+                 MessageBoxImage.Error);
+diff --git a/Core/Services/PlanAnalysisService.cs b/Core/Services/PlanAnalysisService.cs
+index 18d49bd..108d4e0 100644
+--- a/Core/Services/PlanAnalysisService.cs
++++ b/Core/Services/PlanAnalysisService.cs
+@@ -7,6 +7,7 @@ using System.Xml.Linq;
+ using SqlXmlAnalyzer.Application;
+ using SqlXmlAnalyzer.Application.Services;
+ using SqlXmlAnalyzer.Core.Models;
++using SqlXmlAnalyzer.Core.Diagnostics;
+ 
+ namespace SqlXmlAnalyzer.Core.Services
+ {
+@@ -23,15 +24,18 @@ namespace SqlXmlAnalyzer.Core.Services
+         private readonly ApplicationOrchestrator _orchestrator;
+         private readonly IFileHandler _fileHandler;
+         private readonly TemporaryFileManager _temporaryFileManager;
++        private readonly IUnexpectedErrorReporter _unexpectedErrors;
+ 
+         public PlanAnalysisService(
+             ApplicationOrchestrator orchestrator,
+             IFileHandler fileHandler,
+-            TemporaryFileManager temporaryFileManager)
++            TemporaryFileManager temporaryFileManager,
++            IUnexpectedErrorReporter? unexpectedErrors = null)
+         {
+             _orchestrator = orchestrator;
+             _fileHandler = fileHandler;
+             _temporaryFileManager = temporaryFileManager;
++            _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
+         }
+ 
+         public PlanAnalysisOutput Analyze(
+@@ -59,7 +63,7 @@ namespace SqlXmlAnalyzer.Core.Services
+                     showplanNamespace);
+             cancellationToken.ThrowIfCancellationRequested();
+ 
+-            string refactoredSql = RefactorSql(
++            RefactorPresentation refactoring = RefactorSql(
+                 queryText,
+                 filePath,
+                 cancellationToken);
+@@ -67,19 +71,19 @@ namespace SqlXmlAnalyzer.Core.Services
+                 mermaid,
+                 queryText,
+                 documentText,
+-                warningsText,
++                warningsText + Environment.NewLine + refactoring.Notices,
+                 missingIndexes,
+-                refactoredSql);
++                refactoring.Sql);
+         }
+ 
+-        private string RefactorSql(
++        private RefactorPresentation RefactorSql(
+             string queryText,
+             string planFilePath,
+             CancellationToken cancellationToken)
+         {
+             if (queryText == "未能提取语句" || string.IsNullOrWhiteSpace(queryText))
+             {
+-                return queryText;
++                return new(queryText, string.Empty);
+             }
+ 
+             try
+@@ -98,29 +102,11 @@ namespace SqlXmlAnalyzer.Core.Services
+                         temporarySqlPath,
+                         planPath: planPath,
+                         isDryRun: true,
+-                        options: options);
++                        options: options,
++                        cancellationToken: cancellationToken);
+                     cancellationToken.ThrowIfCancellationRequested();
+ 
+-                    if (!result.IsSuccess || result.Result == null)
+-                    {
+-                        return $"/* T-SQL 智能重构失败: {result.ErrorMessage} */\r\n"
+-                            + queryText;
+-                    }
+-                    if (result.Result.Errors.Count == 0)
+-                    {
+-                        return result.Result.OutputSql;
+-                    }
+-
+-                    var errorText = new System.Text.StringBuilder();
+-                    errorText.AppendLine("/*");
+-                    errorText.AppendLine("T-SQL 智能重构失败，解析语法树时发生以下错误：");
+-                    foreach (string error in result.Result.Errors)
+-                    {
+-                        errorText.AppendLine($"- {error}");
+-                    }
+-                    errorText.AppendLine("*/");
+-                    errorText.AppendLine(queryText);
+-                    return errorText.ToString();
++                    return RefactorPresentation.FromResult(result, queryText);
+                 }
+                 finally
+                 {
+@@ -133,8 +119,8 @@ namespace SqlXmlAnalyzer.Core.Services
+             }
+             catch (Exception ex)
+             {
+-                return $"/* T-SQL 智能重构发生意外异常: {ex.Message} */\r\n"
+-                    + queryText;
++                string detail = ExceptionPolicy.Describe(ex, "PlanAnalysisService.RefactorSql", _unexpectedErrors);
++                return new(queryText, $"T-SQL 重构失败，已保留原 SQL：{detail}");
+             }
+         }
+     }
+diff --git a/MainWindow.Services.cs b/MainWindow.Services.cs
+index cb25b83..fd7844c 100644
+--- a/MainWindow.Services.cs
++++ b/MainWindow.Services.cs
+@@ -66,6 +66,7 @@ namespace SqlXmlAnalyzer
+         {
+             InitializeComponent();
+             WireMainShellEvents();
++            WireKeyboardShortcuts();
+             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
+             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
+             this.DataContext = ViewModel;
+diff --git a/SqlXmlAnalyzer.CLI/Program.cs b/SqlXmlAnalyzer.CLI/Program.cs
+index 4ca9b02..12b04af 100644
+--- a/SqlXmlAnalyzer.CLI/Program.cs
++++ b/SqlXmlAnalyzer.CLI/Program.cs
+@@ -20,6 +20,7 @@ using SqlXmlAnalyzer.Core.Models;
+ using SqlXmlAnalyzer.Refactoring;
+ using SqlXmlAnalyzer.Refactoring.Rules;
+ using SqlXmlAnalyzer.Core.Configuration;
++using SqlXmlAnalyzer.Core.Diagnostics;
+ 
+ namespace SqlXmlAnalyzer.CLI
+ {
+@@ -38,20 +39,23 @@ namespace SqlXmlAnalyzer.CLI
+ 
+         public static int Main(string[] args)
+         {
++            Console.OutputEncoding = new UTF8Encoding(false);
++            SqlXmlAnalyzer.Logger.Initialize();
++            using var handlers = new GlobalExceptionHandlers();
+             try
+             {
+-                var initField = typeof(SqlXmlAnalyzer.Logger).GetField("_initialized", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+-                if (initField != null)
+-                {
+-                    initField.SetValue(null, false);
+-                }
+-                SqlXmlAnalyzer.Logger.Initialize(logLevel: SqlXmlAnalyzer.LogLevel.Error, enableFileLogging: false);
++                return Run(args);
+             }
+-            catch
++            catch (Exception exception)
+             {
+-                // Ignore logger init error
++                Console.Error.WriteLine($"[ERROR] {ExceptionPolicy.Describe(exception, "CLI.Main")}");
++                return exception is OperationCanceledException ? 130 : 1;
+             }
++            finally { SqlXmlAnalyzer.Logger.Flush(); }
++        }
+ 
++        private static int Run(string[] args)
++        {
+             if (args.Length > 0 && args[0].Equals("refactor", StringComparison.OrdinalIgnoreCase))
+             {
+                 return HandleRefactorCommand(args.Skip(1).ToArray());
+@@ -196,7 +200,7 @@ namespace SqlXmlAnalyzer.CLI
+                 }
+                 catch (Exception ex)
+                 {
+-                    Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
++                    Console.Error.WriteLine($"[Error] 无法写入输出文件: {ExceptionPolicy.Describe(ex, "CLI.ScanReport")}");
+                     return 2;
+                 }
+             }
+@@ -387,7 +391,7 @@ namespace SqlXmlAnalyzer.CLI
+             catch (Exception ex)
+             {
+                 result.Status = "Failed";
+-                result.FailureMessage = $"解析执行计划异常: {ex.Message}";
++                result.FailureMessage = $"解析执行计划异常: {ExceptionPolicy.Describe(ex, "CLI.ScanPlan")}";
+             }
+ 
+             return result;
+@@ -682,17 +686,27 @@ namespace SqlXmlAnalyzer.CLI
+             }
+ 
+             // Setup services
++            try
++            {
++                SqlReportPathGuard.Validate(sqlPath, outputPath);
++            }
++            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
++            {
++                Console.Error.WriteLine($"[Error] 不安全的报告输出路径：{ex.Message}");
++                return 2; // Never write an error report over the SQL input either.
++            }
+             var services = new ServiceCollection();
+             services.AddLogging(configure =>
+             {
+-                configure.AddConsole(options =>
+-                {
+-                    options.LogToStandardErrorThreshold = Microsoft.Extensions.Logging.LogLevel.Trace;
+-                });
+-                configure.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Warning);
++                configure.ClearProviders();
++                configure.AddProvider(new ApplicationLoggerProvider());
++                configure.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+             });
++            services.AddSingleton<IUnexpectedErrorReporter>(UnexpectedErrorReporter.Shared);
+ 
+             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
++            services.AddSingleton<ISqlWritebackFileSystem, PhysicalSqlWritebackFileSystem>();
++            services.AddSingleton<ISqlWritebackService, SqlWritebackService>();
+ 
+             bool isJson = format.Equals("json", StringComparison.OrdinalIgnoreCase) ||
+                           (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+@@ -732,13 +746,22 @@ namespace SqlXmlAnalyzer.CLI
+                 refactorOptions = refactorOptions with { MaxPasses = maxPasses.Value };
+             }
+ 
++            using var cancellation = new System.Threading.CancellationTokenSource();
++            ConsoleCancelEventHandler cancelHandler = (_, e) =>
++            {
++                e.Cancel = true;
++                try { cancellation.Cancel(); } catch (ObjectDisposedException) { }
++            };
++            Console.CancelKeyPress += cancelHandler;
+             try
+             {
+-                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath);
++                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath, cancellation.Token);
+ 
+                 if (orchestratorResult.Result == null)
+                 {
+-                    // Handle failure before refactoring engine ran
++                    // Revalidate before writing a failure report: an alias may have appeared
++                    // during analysis or writeback. Never use the SQL source as an error log.
++                    SqlReportPathGuard.Validate(sqlPath, outputPath);
+                     if (isJson)
+                     {
+                         var jsonResult = new
+@@ -746,7 +769,20 @@ namespace SqlXmlAnalyzer.CLI
+                             IsSuccess = false,
+                             ErrorMessage = orchestratorResult.ErrorMessage,
+                             Warnings = orchestratorResult.Warnings,
++                            Writeback = orchestratorResult.Writeback == null ? null : new
++                            {
++                                Stage = orchestratorResult.Writeback.Stage.ToString(),
++                                orchestratorResult.Writeback.SourceWritten,
++                                orchestratorResult.Writeback.CommitOutcomeUnknown,
++                                orchestratorResult.Writeback.IsCanceled,
++                                orchestratorResult.Writeback.BackupVerified,
++                                orchestratorResult.Writeback.BackupPath,
++                                orchestratorResult.Writeback.TemporaryPath,
++                                orchestratorResult.Writeback.SourceSha256
++                            },
+                             HasChanges = false,
++                            SourceWritten = orchestratorResult.Writeback?.SourceWritten ?? false,
++                            Outcome = "Failed",
+                             Changes = new List<object>(),
+                             Failures = new List<object>(),
+                             WarningsList = new List<object>(),
+@@ -771,7 +807,7 @@ namespace SqlXmlAnalyzer.CLI
+                             }
+                             catch (Exception ex)
+                             {
+-                                Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
++                                Console.Error.WriteLine($"[Error] 无法写入输出文件: {ExceptionPolicy.Describe(ex, "CLI.FailureJsonReport")}");
+                             }
+                         }
+                         else
+@@ -798,7 +834,7 @@ namespace SqlXmlAnalyzer.CLI
+                             }
+                             catch (Exception ex)
+                             {
+-                                Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
++                                Console.Error.WriteLine($"[Error] 无法写入输出文件: {ExceptionPolicy.Describe(ex, "CLI.FailureTextReport")}");
+                             }
+                         }
+                         else
+@@ -815,10 +851,14 @@ namespace SqlXmlAnalyzer.CLI
+             catch (Exception ex)
+             {
+                 Console.ForegroundColor = ConsoleColor.Red;
+-                Console.Error.WriteLine($"[ERROR] Command execution crashed: {ex.Message}");
++                Console.Error.WriteLine($"[ERROR] Command execution crashed: {ExceptionPolicy.Describe(ex, "CLI.Refactor")}");
+                 Console.ResetColor();
+                 return 1;
+             }
++            finally
++            {
++                Console.CancelKeyPress -= cancelHandler;
++            }
+         }
+ 
+         private static void PrintRefactorUsage()
+diff --git a/SqlXmlAnalyzer.Core/Logger.cs b/SqlXmlAnalyzer.Core/Logger.cs
+index 3bbe9c3..1788012 100644
+--- a/SqlXmlAnalyzer.Core/Logger.cs
++++ b/SqlXmlAnalyzer.Core/Logger.cs
+@@ -1,16 +1,3 @@
+-// =====================================================================================
+-// Logger.cs - SqlXmlAnalyzer 高级条件日志系统 (v2)
+-// 支持功能：
+-//   • 编译时 DEBUG/RELEASE 控制
+-//   • 运行时 --verbose / --debug 强制详细日志
+-//   • --log-level 精确控制日志级别 (debug/verbose/info/warning/error/critical)
+-//   • --log-file 指定自定义日志文件路径
+-//   • 同时输出到控制台 + 文件
+-//   • XML 节点级深度调试信息
+-// =====================================================================================
+-
+-#nullable disable
+-
+ using System;
+ using System.IO;
+ using System.Text;
+@@ -18,374 +5,109 @@ using System.Xml.Linq;
+ 
+ namespace SqlXmlAnalyzer
+ {
+-    /// <summary>
+-    /// 日志级别（数字越小越详细）
+-    /// </summary>
+-    public enum LogLevel
+-    {
+-        Debug = 0,
+-        Verbose = 1,
+-        Info = 2,
+-        Warning = 3,
+-        Error = 4,
+-        Critical = 5,
+-        None = 6
+-    }
++    public enum LogLevel { Debug = 0, Verbose = 1, Info = 2, Warning = 3, Error = 4, Critical = 5, None = 6 }
+ 
+-    /// <summary>
+-    /// 高级条件日志记录器
+-    /// </summary>
++    /// <summary>Shared file/stderr logger. Release builds cannot enable diagnostics below Error.</summary>
+     public static class Logger
+     {
+-        // ==================== 状态 ====================
+         public static bool IsDebugMode { get; } =
+ #if DEBUG
+             true;
+ #else
+             false;
+ #endif
+-
+         public static bool IsReleaseMode => !IsDebugMode;
+-
+-        /// <summary>
+-        /// 当前生效的最小日志级别
+-        /// </summary>
+-        public static LogLevel MinimumLogLevel { get; private set; } = LogLevel.Info;
+-
+-        /// <summary>
+-        /// 是否处于详细模式（兼容旧逻辑）
+-        /// </summary>
+-        public static bool VerboseMode { get; private set; }
+-
+-        /// <summary>
+-        /// 是否已启用文件日志
+-        /// </summary>
++        public static LogLevel MinimumLogLevel { get; private set; } = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
++        public static bool VerboseMode => IsEnabled(LogLevel.Debug);
+         public static bool FileLoggingEnabled { get; private set; }
++        public static string? LogFilePath { get; private set; }
++        public static string? CustomLogFilePath { get; private set; }
++        private static StreamWriter? _fileWriter;
++        private static readonly object _lock = new();
++        private static bool _initialized;
++        private static bool _sinkFailureReported;
+ 
+-        /// <summary>
+-        /// 当前日志文件完整路径
+-        /// </summary>
+-        public static string LogFilePath { get; private set; }
+-
+-        /// <summary>
+-        /// 用户指定的自定义日志路径（如果有）
+-        /// </summary>
+-        public static string CustomLogFilePath { get; private set; }
++        public static string GetDefaultLogDirectory() => Path.Combine(
++            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SqlXmlAnalyzer", "log");
+ 
+-        private static StreamWriter _fileWriter;
+-        private static readonly object _lock = new object();
+-        private static bool _initialized = false;
+-
+-        // ==================== 初始化 ====================
+-        /// <summary>
+-        /// 获取推荐的默认日志目录（应用程序同级 log 文件夹）
+-        /// 默认行为：所有日志会输出到 exe 同目录下的 log 文件夹
+-        /// </summary>
+-        public static string GetDefaultLogDirectory()
+-        {
+-            try
+-            {
+-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+-                return Path.Combine(baseDir, "log");
+-            }
+-            catch
+-            {
+-                // 极端情况下兜底到当前目录
+-                return Path.Combine(Directory.GetCurrentDirectory(), "log");
+-            }
+-        }
+-
+-        /// <summary>
+-        /// 初始化日志系统
+-        /// </summary>
+-        public static void Initialize(
+-            bool forceVerbose = false,
+-            LogLevel? logLevel = null,
+-            string customLogFilePath = null,
+-            bool enableFileLogging = true)
+-        {
+-            if (_initialized) return;
+-
+-            // 确定最终日志级别
+-            if (logLevel.HasValue)
+-            {
+-                MinimumLogLevel = logLevel.Value;
+-            }
+-            else if (forceVerbose || IsDebugMode)
+-            {
+-                MinimumLogLevel = LogLevel.Debug;
+-            }
+-            else
+-            {
+-                MinimumLogLevel = LogLevel.Info;   // Release 默认只显示 Info 及以上
+-            }
+-
+-            VerboseMode = MinimumLogLevel <= LogLevel.Verbose;
+-            FileLoggingEnabled = enableFileLogging;
+-            CustomLogFilePath = customLogFilePath;
+-
+-            if (FileLoggingEnabled)
+-            {
+-                try
+-                {
+-                    string finalLogPath;
+-
+-                    if (!string.IsNullOrWhiteSpace(customLogFilePath))
+-                    {
+-                        // 用户指定了自定义路径
+-                        finalLogPath = customLogFilePath;
+-                        string dir = Path.GetDirectoryName(finalLogPath);
+-                        if (!string.IsNullOrEmpty(dir))
+-                            Directory.CreateDirectory(dir);
+-                    }
+-                    else
+-                    {
+-                        // 【修改后】默认使用应用程序同级 log 目录
+-                        string logDir = GetDefaultLogDirectory();
+-                        Directory.CreateDirectory(logDir);
+-                        CleanupOldLogs(logDir);
+-
+-                        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+-                        finalLogPath = Path.Combine(logDir, $"SqlXmlAnalyzer_{timestamp}.log");
+-                    }
+-
+-                    LogFilePath = Path.GetFullPath(finalLogPath);
+-
+-                    _fileWriter = new StreamWriter(LogFilePath, false, Encoding.UTF8)
+-                    {
+-                        AutoFlush = false   // 我们手动控制 Flush
+-                    };
+-
+-                    // 写入日志头
+-                    WriteLogHeader();
+-                    FileLoggingEnabled = true;
+-                }
+-                catch (Exception ex)
+-                {
+-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+-                    Console.WriteLine($"[警告] 无法创建日志文件: {ex.Message}");
+-                    Console.ResetColor();
+-                    FileLoggingEnabled = false;
+-                    LogFilePath = null;
+-                }
+-            }
+-
+-            _initialized = true;
+-
+-            // 记录初始化信息（如果允许）
+-            if (ShouldLog(LogLevel.Debug))
+-            {
+-                Debug($"Logger 初始化完成 | MinimumLogLevel={MinimumLogLevel} | VerboseMode={VerboseMode}");
+-                Debug($"文件日志: {(FileLoggingEnabled ? LogFilePath : "已禁用")}");
+-            }
+-        }
+-
+-        private static void WriteLogHeader()
+-        {
+-            if (_fileWriter == null) return;
+-
+-            _fileWriter.WriteLine("====================================================================");
+-            _fileWriter.WriteLine("SqlXmlAnalyzer 详细日志");
+-            _fileWriter.WriteLine($"启动时间        : {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
+-            _fileWriter.WriteLine($"版本            : {Core.ProductInfo.Version}");
+-            _fileWriter.WriteLine($"构建模式        : {(IsDebugMode ? "DEBUG" : "RELEASE")}");
+-            _fileWriter.WriteLine($"日志级别        : {MinimumLogLevel}");
+-            _fileWriter.WriteLine($"Verbose 模式    : {VerboseMode}");
+-            if (!string.IsNullOrEmpty(CustomLogFilePath))
+-                _fileWriter.WriteLine($"自定义日志路径  : {CustomLogFilePath}");
+-            _fileWriter.WriteLine($"日志文件        : {LogFilePath}");
+-            _fileWriter.WriteLine("====================================================================");
+-            _fileWriter.WriteLine();
+-            _fileWriter.Flush();
+-        }
+-
+-        public static void Shutdown()
++        public static void Initialize(bool forceVerbose = false, LogLevel? logLevel = null,
++            string? customLogFilePath = null, bool enableFileLogging = true)
+         {
+             lock (_lock)
+             {
+-                if (_fileWriter != null)
++                if (_initialized) return;
++                // Legacy verbose/info calls are diagnostic information and use the DEBUG tag.
++                var requested = Normalize(logLevel ?? (IsDebugMode ? LogLevel.Debug : LogLevel.Error));
++                MinimumLogLevel = IsDebugMode ? requested : (LogLevel)Math.Max((int)LogLevel.Error, (int)requested);
++                CustomLogFilePath = customLogFilePath;
++                if (enableFileLogging)
+                 {
+                     try
+                     {
+-                        _fileWriter.WriteLine();
+-                        _fileWriter.WriteLine("====================================================================");
+-                        _fileWriter.WriteLine($"日志结束时间: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
+-                        _fileWriter.WriteLine("====================================================================");
+-                        _fileWriter.Flush();
+-                        _fileWriter.Dispose();
++                        string path = customLogFilePath ?? Path.Combine(GetDefaultLogDirectory(),
++                            $"SqlXmlAnalyzer_{DateTime.UtcNow:yyyyMMddTHHmmssfffZ}_{Environment.ProcessId}_{Guid.NewGuid():N}.log");
++                        path = Path.GetFullPath(path);
++                        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
++                        var stream = new FileStream(path, customLogFilePath == null ? FileMode.CreateNew : FileMode.Append,
++                            FileAccess.Write, FileShare.Read);
++                        _fileWriter = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = true };
++                        LogFilePath = path;
++                        FileLoggingEnabled = true;
+                     }
+-                    catch { }
+-                    _fileWriter = null;
+-                }
+-            }
+-        }
+-
+-        // ==================== 核心判断 ====================
+-
+-        private static bool ShouldLog(LogLevel level)
+-        {
+-            return level >= MinimumLogLevel;
+-        }
+-
+-        // ==================== 写入实现 ====================
+-
+-        private static void Write(string levelTag, string message, ConsoleColor? color = null, bool isError = false)
+-        {
+-            lock (_lock)
+-            {
+-                // 控制台输出
+-                if (color.HasValue)
+-                    Console.ForegroundColor = color.Value;
+-
+-                string line = $"[{levelTag}] {DateTime.Now:HH:mm:ss.fff} {message}";
+-
+-                if (isError)
+-                    Console.Error.WriteLine(line);
+-                else
+-                    Console.WriteLine(line);
+-
+-                if (color.HasValue)
+-                    Console.ResetColor();
+-
+-                // 文件输出（总是尝试写入，除非被级别过滤）
+-                if (_fileWriter != null)
+-                {
+-                    try
++                    catch (Exception exception)
+                     {
+-                        _fileWriter.WriteLine($"[{levelTag}] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {message}");
++                        FileLoggingEnabled = false;
++                        ReportSinkFailure(exception);
+                     }
+-                    catch { }
+                 }
++                _initialized = true;
+             }
+         }
+ 
+-        // ==================== 公开日志方法 ====================
+-
+-        public static void Debug(string message)
++        private static LogLevel Normalize(LogLevel level) => level is LogLevel.Info or LogLevel.Verbose ? LogLevel.Debug : level;
++        public static bool IsEnabled(LogLevel level)
+         {
+-            if (!ShouldLog(LogLevel.Debug)) return;
+-            Write("DEBUG", message, ConsoleColor.DarkGray);
+-        }
+-
+-        public static void Verbose(string message)
+-        {
+-            if (!ShouldLog(LogLevel.Verbose)) return;
+-            Write("VERBOSE", message, ConsoleColor.DarkCyan);
++            level = Normalize(level);
++            return level != LogLevel.None && level >= MinimumLogLevel && (IsDebugMode || level >= LogLevel.Error);
+         }
++        private static bool ShouldLog(LogLevel level) => IsEnabled(level);
+ 
+-        public static void Info(string message)
++        private static void Write(LogLevel level, string message, Exception? exception = null)
+         {
+-            if (!ShouldLog(LogLevel.Info)) return;
+-            Write("INFO", message, ConsoleColor.Gray);
+-        }
+-
+-        public static void Warning(string message)
+-        {
+-            if (!ShouldLog(LogLevel.Warning)) return;
+-            Write("WARN", "⚠️  " + message, ConsoleColor.Yellow);
+-        }
+-
+-        public static void Error(string message)
+-        {
+-            if (!ShouldLog(LogLevel.Error)) return;
+-            Write("ERROR", "❌ " + message, ConsoleColor.Red, isError: true);
+-        }
+-
+-        public static void Error(string message, Exception ex)
+-        {
+-            if (!ShouldLog(LogLevel.Error)) return;
+-
+-            Write("ERROR", "❌ " + message, ConsoleColor.Red, isError: true);
+-
+-            if (ex == null) return;
+-
+-            if (ShouldLog(LogLevel.Debug))
+-            {
+-                Write("ERROR", $"   异常类型: {ex.GetType().FullName}", ConsoleColor.Red, isError: true);
+-                Write("ERROR", $"   消息: {ex.Message}", ConsoleColor.Red, isError: true);
+-                Write("ERROR", $"   堆栈:\n{ex.StackTrace}", ConsoleColor.Red, isError: true);
+-
+-                var inner = ex.InnerException;
+-                int i = 1;
+-                while (inner != null)
+-                {
+-                    Write("ERROR", $"   [Inner {i}] {inner.GetType().Name}: {inner.Message}", ConsoleColor.Red, isError: true);
+-                    inner = inner.InnerException;
+-                    i++;
+-                }
+-            }
+-            else if (ShouldLog(LogLevel.Error))
++            if (!IsEnabled(level)) return;
++            if (!_initialized) Initialize();
++            lock (_lock)
+             {
+-                Write("ERROR", $"   异常类型: {ex.GetType().Name}", ConsoleColor.Red, isError: true);
+-                Write("ERROR", $"   消息: {ex.Message}", ConsoleColor.Red, isError: true);
++                if (!IsEnabled(level)) return;
++                string tag = level == LogLevel.Warning ? "WARN" : level.ToString().ToUpperInvariant();
++                string line = $"[{tag}] {DateTimeOffset.Now:O} {message}";
++                if (exception != null) line += Environment.NewLine + exception;
++                // Stdout remains exclusively available for CLI result documents, including JSON.
++                try { Console.Error.WriteLine(line); } catch (Exception outputError) { ReportSinkFailure(outputError); }
++                try { _fileWriter?.WriteLine(line); } catch (Exception fileError) { ReportSinkFailure(fileError); }
+             }
+         }
+ 
+-        public static void Critical(string message, Exception ex = null)
++        private static void ReportSinkFailure(Exception exception)
+         {
+-            if (!ShouldLog(LogLevel.Critical)) return;
+-
+-            Write("CRITICAL", "💥 " + message, ConsoleColor.DarkRed, isError: true);
+-
+-            if (ex != null && ShouldLog(LogLevel.Error))
+-            {
+-                Write("CRITICAL", $"   异常: {ex.GetType().FullName} - {ex.Message}", ConsoleColor.DarkRed, isError: true);
+-                if (ShouldLog(LogLevel.Debug) && !string.IsNullOrEmpty(ex.StackTrace))
+-                    Write("CRITICAL", $"   堆栈:\n{ex.StackTrace}", ConsoleColor.DarkRed, isError: true);
+-            }
++            if (_sinkFailureReported) return;
++            _sinkFailureReported = true;
++            try { Console.Error.WriteLine($"[ERROR] 日志写入失败：{exception.GetType().Name}: {exception.Message}"); }
++            catch { /* An unavailable diagnostic sink must not replace the original failure. */ }
+         }
+ 
+-        /// <summary>
+-        /// 专门记录异常的强力方法（即使当前日志级别较高，也会确保完整异常信息写入日志文件）
+-        /// 推荐在所有 catch 块中使用
+-        /// </summary>
+-        public static void LogException(string context, Exception ex)
++        public static void Debug(string message) => Write(LogLevel.Debug, message);
++        public static void Verbose(string message) => Debug(message);
++        public static void Info(string message) => Debug(message);
++        public static void Warning(string message) => Write(LogLevel.Warning, message);
++        public static void Error(string message) => Write(LogLevel.Error, message);
++        public static void Error(string message, Exception exception) => Write(LogLevel.Error, message, exception);
++        public static void Critical(string message, Exception? exception = null) => Write(LogLevel.Critical, message, exception);
++        public static void LogException(string context, Exception exception)
+         {
+-            if (ex == null) return;
+-
+-            // 临时降低级别确保能写进去
+-            var originalLevel = MinimumLogLevel;
+-            if (MinimumLogLevel > LogLevel.Error)
+-                MinimumLogLevel = LogLevel.Error;
+-
+-            try
+-            {
+-                Error($"[{context}] 发生异常", ex);
+-
+-                // 额外强制写入完整堆栈到文件（绕过级别限制）
+-                if (_fileWriter != null)
+-                {
+-                    lock (_lock)
+-                    {
+-                        _fileWriter.WriteLine($"[FULL EXCEPTION] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
+-                        _fileWriter.WriteLine($"Context   : {context}");
+-                        _fileWriter.WriteLine($"Type      : {ex.GetType().FullName}");
+-                        _fileWriter.WriteLine($"Message   : {ex.Message}");
+-                        _fileWriter.WriteLine("StackTrace:");
+-                        _fileWriter.WriteLine(ex.StackTrace ?? "(no stack trace)");
+-
+-                        Exception inner = ex.InnerException;
+-                        int depth = 1;
+-                        while (inner != null)
+-                        {
+-                            _fileWriter.WriteLine($"[InnerException {depth}] {inner.GetType().Name}: {inner.Message}");
+-                            _fileWriter.WriteLine(inner.StackTrace);
+-                            inner = inner.InnerException;
+-                            depth++;
+-                        }
+-                        _fileWriter.WriteLine(new string('=', 100));
+-                        _fileWriter.Flush();
+-                    }
+-                }
+-            }
+-            finally
+-            {
+-                MinimumLogLevel = originalLevel;
+-            }
++            Core.Diagnostics.ExceptionPolicy.Describe(exception, context);
+         }
+ 
+-        // ==================== XML 调试方法 ====================
+-
+         public static void LogXmlElement(XElement element, string context = "", int maxDepth = 2)
+         {
+             if (!ShouldLog(LogLevel.Debug) || element == null) return;
+@@ -400,7 +122,7 @@ namespace SqlXmlAnalyzer
+                         Debug($"[XML]   @{attr.Name.LocalName} = \"{attr.Value}\"");
+                 }
+ 
+-                string text = element.Value?.Trim();
++                string? text = element.Value?.Trim();
+                 if (!string.IsNullOrEmpty(text))
+                 {
+                     string display = text.Length > 180 ? text.Substring(0, 180) + "..." : text;
+@@ -473,61 +195,34 @@ namespace SqlXmlAnalyzer
+         {
+             lock (_lock)
+             {
+-                try { _fileWriter?.Flush(); } catch { }
++                try { _fileWriter?.Flush(); } catch (Exception exception) { ReportSinkFailure(exception); }
+             }
+         }
+ 
+-        /// <summary>
+-        /// 自动清理 7 天前的历史日志文件，防止磁盘空间膨胀
+-        /// </summary>
+-        private static void CleanupOldLogs(string logDir, int keepDays = 7)
++        public static void Shutdown()
+         {
+-            try
+-            {
+-                if (!Directory.Exists(logDir)) return;
+-                var dirInfo = new DirectoryInfo(logDir);
+-                var files = dirInfo.GetFiles("SqlXmlAnalyzer_*.log");
+-                var cutoff = DateTime.Now.AddDays(-keepDays);
+-                foreach (var file in files)
+-                {
+-                    if (file.LastWriteTime < cutoff)
+-                    {
+-                        try
+-                        {
+-                            file.Delete();
+-                        }
+-                        catch { } // 忽略被占用或无法删除的文件
+-                    }
+-                }
+-            }
+-            catch (Exception ex)
++            lock (_lock)
+             {
+-                Console.WriteLine($"[警告] 清理历史日志失败: {ex.Message}");
++                try { _fileWriter?.Dispose(); } catch (Exception exception) { ReportSinkFailure(exception); }
++                _fileWriter = null;
++                FileLoggingEnabled = false;
++                LogFilePath = null;
++                CustomLogFilePath = null;
++                MinimumLogLevel = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
++                _initialized = false;
++                _sinkFailureReported = false;
+             }
+         }
+ 
+-        /// <summary>
+-        /// 辅助方法：把字符串转换为 LogLevel
+-        /// </summary>
+-        public static LogLevel ParseLogLevel(string value)
++        public static LogLevel ParseLogLevel(string? value) => value?.Trim().ToLowerInvariant() switch
+         {
+-            if (string.IsNullOrWhiteSpace(value)) return LogLevel.Info;
+-
+-            value = value.Trim().ToLowerInvariant();
+-
+-            return value switch
+-            {
+-                "debug" or "d" => LogLevel.Debug,
+-                "verbose" or "v" => LogLevel.Verbose,
+-                "info" or "i" => LogLevel.Info,
+-                "warning" or "warn" or "w" => LogLevel.Warning,
+-                "error" or "err" or "e" => LogLevel.Error,
+-                "critical" or "crit" or "c" => LogLevel.Critical,
+-                "none" or "off" => LogLevel.None,
+-                _ => LogLevel.Info
+-            };
+-        }
++            "debug" or "d" => LogLevel.Debug,
++            "verbose" or "v" => LogLevel.Verbose,
++            "warning" or "warn" or "w" => LogLevel.Warning,
++            "error" or "err" or "e" => LogLevel.Error,
++            "critical" or "crit" or "fatal" or "c" => LogLevel.Critical,
++            "none" or "off" => LogLevel.None,
++            _ => LogLevel.Info
++        };
+     }
+ }
+-
+-
+diff --git a/SqlXmlAnalyzer.Core/Models/RefactorResult.cs b/SqlXmlAnalyzer.Core/Models/RefactorResult.cs
+index 12df62f..69f5c6c 100644
+--- a/SqlXmlAnalyzer.Core/Models/RefactorResult.cs
++++ b/SqlXmlAnalyzer.Core/Models/RefactorResult.cs
+@@ -4,6 +4,8 @@ using SqlXmlAnalyzer.Core;
+ 
+ namespace SqlXmlAnalyzer.Core.Models
+ {
++    public enum RefactorOutcome { Failed, NoChanges, CandidateGenerated, Applied }
++
+     public record RefactorResult(
+         string OutputSql,
+         bool IsSuccess,
+@@ -14,5 +16,10 @@ namespace SqlXmlAnalyzer.Core.Models
+     {
+         public double TimeElapsedMs { get; init; }
+         public int PassesCount { get; init; }
++        public Diagnostics.UnexpectedErrorReport? Diagnostic { get; init; }
++        /// <summary>Set by the application only after file writeback is confirmed.</summary>
++        public bool SourceWritten { get; init; }
++        public RefactorOutcome Outcome => !IsSuccess ? RefactorOutcome.Failed : SourceWritten
++            ? RefactorOutcome.Applied : Context.Changed ? RefactorOutcome.CandidateGenerated : RefactorOutcome.NoChanges;
+     }
+ }
+diff --git a/SqlXmlAnalyzer.Core/RefactorContext.cs b/SqlXmlAnalyzer.Core/RefactorContext.cs
+index 214b94e..c0c0736 100644
+--- a/SqlXmlAnalyzer.Core/RefactorContext.cs
++++ b/SqlXmlAnalyzer.Core/RefactorContext.cs
+@@ -10,6 +10,7 @@ namespace SqlXmlAnalyzer.Core
+     {
+         private readonly List<RefactorChange> _changes = new();
+         private readonly List<RefactorFailure> _failures = new();
++        private readonly List<Models.RefactorSafetySkip> _safetySkips = new();
+ 
+         public string OriginalSql { get; }
+         public AnalysisReport Analysis { get; }
+@@ -18,6 +19,7 @@ namespace SqlXmlAnalyzer.Core
+         // New properties
+         public IReadOnlyList<RefactorChange> RefactorChanges => _changes.AsReadOnly();
+         public IReadOnlyList<RefactorFailure> RefactorFailures => _failures.AsReadOnly();
++        public IReadOnlyList<Models.RefactorSafetySkip> SafetySkips => _safetySkips.AsReadOnly();
+ 
+         // Backward-compatible properties & fields
+         public IList<string> Logs { get; } = new List<string>();
+@@ -52,6 +54,22 @@ namespace SqlXmlAnalyzer.Core
+ 
+         // Backward-compatible methods
+         public void Log(string message) => Logs.Add(message);
+-        public void Warn(string message) => Warnings.Add(message);
++        public void Warn(string message)
++        {
++            if (!Warnings.Contains(message)) Warnings.Add(message);
++        }
++
++        internal void DiscardChanges()
++        {
++            _changes.Clear();
++            Changed = false;
++        }
++
++        public void SkipUnsafeRewrite(string ruleId, string reasonCode, string reason, string requiredEvidence)
++        {
++            if (_safetySkips.Exists(skip => skip.RuleId == ruleId && skip.ReasonCode == reasonCode)) return;
++            _safetySkips.Add(new Models.RefactorSafetySkip(ruleId, reasonCode, reason, requiredEvidence));
++            Warn($"[{ruleId}] 已跳过：{reason} 验证前提：{requiredEvidence}");
++        }
+     }
+ }
+diff --git a/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs b/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
+index adb708c..061ce54 100644
+--- a/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
++++ b/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
+@@ -33,7 +33,8 @@ namespace SqlXmlAnalyzer.Tests.Application
+                 _refactoringEngine,
+                 _fileHandler,
+                 _reporter,
+-                NullLogger<ApplicationOrchestrator>.Instance
++                NullLogger<ApplicationOrchestrator>.Instance,
++                new SqlWritebackService(_fileHandler)
+             );
+         }
+ 
+@@ -62,11 +63,11 @@ namespace SqlXmlAnalyzer.Tests.Application
+ 
+             // Assert
+             result.IsSuccess.Should().BeTrue();
+-            result.Result.Should().Be(expectedResult);
++            result.Result.Should().Be(expectedResult with { SourceWritten = true });
+             _refactoringEngine.LastSql.Should().Be("SELECT * FROM Users");
+             _refactoringEngine.LastReport.Should().NotBeNull();
+             _refactoringEngine.LastReport!.Issues.Should().BeEmpty();
+-            _reporter.ReportedResult.Should().Be(expectedResult);
++            _reporter.ReportedResult.Should().BeSameAs(result.Result);
+         }
+ 
+         [Fact]
+@@ -224,7 +225,7 @@ namespace SqlXmlAnalyzer.Tests.Application
+         }
+ 
+         // Fakes / Stubs
+-        private class FakeFileHandler : IFileHandler
++        private class FakeFileHandler : IFileHandler, ISqlWritebackFileSystem
+         {
+             public Dictionary<string, string> Files { get; } = new(StringComparer.OrdinalIgnoreCase);
+             public Exception? ThrowException { get; set; }
+@@ -244,7 +245,30 @@ namespace SqlXmlAnalyzer.Tests.Application
+ 
+             public bool Exists(string path)
+             {
+-                return Files.ContainsKey(path);
++                return Files.ContainsKey(Path.GetFileName(path));
++            }
++
++            public byte[] ReadAllBytes(string path) => System.Text.Encoding.UTF8.GetBytes(ReadAllText(Path.GetFileName(path)));
++            public Stream CreateNew(string path, string sourcePath)
++            {
++                string key = Path.GetFileName(path);
++                if (Files.ContainsKey(key)) throw new IOException("File already exists");
++                return new StoredStream(bytes => Files[key] = System.Text.Encoding.UTF8.GetString(bytes));
++            }
++            public void FlushToDisk(Stream stream) => stream.Flush();
++            public void Replace(string temporaryPath, string sourcePath)
++            {
++                Files[Path.GetFileName(sourcePath)] = Files[Path.GetFileName(temporaryPath)];
++                Delete(temporaryPath);
++            }
++            public void Delete(string path) => Files.Remove(Path.GetFileName(path));
++            private sealed class StoredStream(Action<byte[]> store) : MemoryStream
++            {
++                protected override void Dispose(bool disposing)
++                {
++                    if (disposing) store(ToArray());
++                    base.Dispose(disposing);
++                }
+             }
+         }
+ 
+diff --git a/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs b/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
+index de2a118..24a6ac3 100644
+--- a/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
++++ b/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
+@@ -9,21 +9,132 @@ namespace SqlXmlAnalyzer.Tests.Application
+ {
+     public class CliProgramTests : IDisposable
+     {
++        private readonly string _tempDirectory;
+         private readonly string _tempSqlFile;
+         private readonly string _tempPlanFile;
+ 
+         public CliProgramTests()
+         {
+-            _tempSqlFile = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.sql");
+-            _tempPlanFile = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.sqlplan");
++            _tempDirectory = Path.Combine(Path.GetTempPath(), $"SqlXmlAnalyzer-CliTests-{Guid.NewGuid():N}");
++            Directory.CreateDirectory(_tempDirectory);
++            _tempSqlFile = Path.Combine(_tempDirectory, "query.sql");
++            _tempPlanFile = Path.Combine(_tempDirectory, "plan.sqlplan");
+         }
+ 
+         public void Dispose()
+         {
+-            if (File.Exists(_tempSqlFile)) File.Delete(_tempSqlFile);
+-            if (File.Exists(_tempPlanFile)) File.Delete(_tempPlanFile);
++            string full = Path.GetFullPath(_tempDirectory);
++            string prefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer-CliTests-");
++            if (!full.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Unexpected test cleanup path");
++            Directory.Delete(full, recursive: true);
+         }
+ 
++        [Fact]
++        public void Main_Refactor_WhenUnsafeRulesAreDetected_ReportsSkipsAndLeavesBytesAndDirectoryUnchanged()
++        {
++            const string sql = "DECLARE @stage TABLE(Id int); SELECT LTRIM(Name) FROM Users;";
++            byte[] original = System.Text.Encoding.Unicode.GetPreamble()
++                .Concat(System.Text.Encoding.Unicode.GetBytes(sql)).ToArray();
++            File.WriteAllBytes(_tempSqlFile, original);
++            var output = new StringWriter();
++            TextWriter previous = Console.Out;
++            int code;
++            try
++            {
++                Console.SetOut(output);
++                code = Program.Main(new[] { "refactor", _tempSqlFile, "--format", "json", "--show-sql" });
++            }
++            finally { Console.SetOut(previous); }
++            code.Should().Be(0);
++            using var json = JsonDocument.Parse(output.ToString());
++            json.RootElement.GetProperty("IsSuccess").GetBoolean().Should().BeTrue();
++            json.RootElement.GetProperty("HasChanges").GetBoolean().Should().BeFalse();
++            json.RootElement.GetProperty("SourceWritten").GetBoolean().Should().BeFalse();
++            json.RootElement.GetProperty("Outcome").GetString().Should().Be("NoChanges");
++            json.RootElement.GetProperty("SafetySkips").GetArrayLength().Should().Be(2);
++            json.RootElement.GetProperty("Warnings").GetArrayLength().Should().Be(2);
++            json.RootElement.GetProperty("Warnings")[0].GetString().Should().Contain("已跳过");
++            json.RootElement.GetProperty("RefactoredSql").GetString().Should().Be(sql);
++            File.ReadAllBytes(_tempSqlFile).Should().Equal(original);
++            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
++        }
++
++        [Theory]
++        [InlineData(true, "CandidateGenerated")]
++        [InlineData(false, "Applied")]
++        public void Main_Refactor_DistinguishesCandidateFromConfirmedWriteback(bool dryRun, string outcome)
++        {
++            const string sql = "SELECT * FROM Users WHERE Age + 10 > 50;";
++            File.WriteAllText(_tempSqlFile, sql);
++            var arguments = new System.Collections.Generic.List<string> { "refactor", _tempSqlFile, "--format", "json" };
++            if (dryRun) arguments.Add("--dry-run");
++            var output = new StringWriter();
++            TextWriter previous = Console.Out;
++            int code;
++            try { Console.SetOut(output); code = Program.Main(arguments.ToArray()); }
++            finally { Console.SetOut(previous); }
++            code.Should().Be(0);
++            using var json = JsonDocument.Parse(output.ToString());
++            json.RootElement.GetProperty("Outcome").GetString().Should().Be(outcome);
++            json.RootElement.GetProperty("SourceWritten").GetBoolean().Should().Be(!dryRun);
++            if (dryRun) File.ReadAllText(_tempSqlFile).Should().Be(sql);
++            else File.ReadAllText(_tempSqlFile).Should().Contain("Age > 40");
++        }
++
++        [Fact]
++        public void Main_Refactor_WhenSourceIsLocked_ReturnsJsonFailureAndRetainsBackup()
++        {
++            byte[] original = System.Text.Encoding.UTF8.GetBytes("SELECT * FROM Users WHERE Age + 10 > 50;");
++            File.WriteAllBytes(_tempSqlFile, original);
++            using var locked = new FileStream(_tempSqlFile, FileMode.Open, FileAccess.Read, FileShare.Read);
++            var output = new StringWriter();
++            TextWriter previous = Console.Out;
++            int code;
++            try
++            {
++                Console.SetOut(output);
++                code = Program.Main(new[] { "refactor", _tempSqlFile, "--format", "json" });
++            }
++            finally { Console.SetOut(previous); }
++            code.Should().Be(1);
++            using var json = JsonDocument.Parse(output.ToString());
++            json.RootElement.GetProperty("IsSuccess").GetBoolean().Should().BeFalse();
++            var writeback = json.RootElement.GetProperty("Writeback");
++            writeback.GetProperty("Stage").GetString().Should().Be("Replace");
++            writeback.GetProperty("SourceWritten").GetBoolean().Should().BeFalse();
++            File.ReadAllBytes(writeback.GetProperty("BackupPath").GetString()!).Should().Equal(original);
++            File.ReadAllBytes(_tempSqlFile).Should().Equal(original);
++        }
++
++        [Theory]
++        [InlineData(false)]
++        [InlineData(true)]
++        public void Main_Refactor_WhenReportTargetsSql_RejectsBeforeWriting(bool dryRun)
++        {
++            File.WriteAllText(_tempSqlFile, "SELECT 1;");
++            string alias = Path.Combine(_tempDirectory, ".", "query.sql");
++            var args = dryRun
++                ? new[] { "refactor", _tempSqlFile, "--dry-run", "--output", alias }
++                : new[] { "refactor", _tempSqlFile, "--output", alias };
++            Program.Main(args).Should().Be(2);
++            File.ReadAllText(_tempSqlFile).Should().Be("SELECT 1;");
++            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
++        }
++
++        [Fact]
++        public void Main_Refactor_WhenReportIsHardLinkToSql_RejectsTheAlias()
++        {
++            File.WriteAllText(_tempSqlFile, "SELECT 1;");
++            string alias = Path.Combine(_tempDirectory, "report.json");
++            CreateHardLink(alias, _tempSqlFile, IntPtr.Zero).Should().BeTrue();
++            Program.Main(new[] { "refactor", _tempSqlFile, "--dry-run", "--output", alias }).Should().Be(2);
++            File.ReadAllText(_tempSqlFile).Should().Be("SELECT 1;");
++        }
++
++        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
++        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
++        private static extern bool CreateHardLink(string fileName, string existingFileName, IntPtr securityAttributes);
++
+         [Fact]
+         public void Main_Refactor_Help_ShouldReturnSuccess()
+         {
+diff --git a/SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs b/SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs
+index 3af1e69..889bfa5 100644
+--- a/SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs
++++ b/SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs
+@@ -392,7 +392,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
+         }
+ 
+         [Fact]
+-        public void Run_WithLTrimRTrim_ShouldOptimizeAndWarn()
++        public void Run_WithLTrimRTrim_ShouldPreserveAndExplainSafetySkip()
+         {
+             // Arrange
+             string sql = "SELECT * FROM Users WHERE LTRIM(RTRIM(UserName)) = 'admin'";
+@@ -403,16 +403,14 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
+ 
+             // Assert
+             result.IsSuccess.Should().BeTrue();
+-            result.OutputSql.Should().Contain("UserName = 'admin'");
+-            result.OutputSql.Should().NotContain("LTRIM");
+-            result.OutputSql.Should().NotContain("RTRIM");
+-            result.Context.RefactorChanges.Should().HaveCount(1);
+-            result.Context.RefactorChanges.First().RuleId.Should().Be("REF_RULE_103_TRIM");
+-            result.Context.Warnings.Should().Contain(w => w.Contains("Removed LTRIM on column UserName"));
++            result.OutputSql.Should().Be(sql);
++            result.Context.RefactorChanges.Should().BeEmpty();
++            result.Context.SafetySkips.Should().ContainSingle(s => s.RuleId == "REF_RULE_103_TRIM");
++            result.Context.Warnings.Should().Contain(w => w.Contains("前导空格"));
+         }
+ 
+         [Fact]
+-        public void Run_WithRTrim_ShouldOptimizeWithoutWarn()
++        public void Run_WithRTrim_ShouldPreserveWithoutSemanticEvidence()
+         {
+             // Arrange
+             string sql = "SELECT * FROM Users WHERE RTRIM(UserName) = 'admin'";
+@@ -423,14 +421,13 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
+ 
+             // Assert
+             result.IsSuccess.Should().BeTrue();
+-            result.OutputSql.Should().Contain("UserName = 'admin'");
+-            result.OutputSql.Should().NotContain("RTRIM");
+-            result.Context.RefactorChanges.Should().HaveCount(1);
+-            result.Context.Warnings.Should().BeEmpty();
++            result.OutputSql.Should().Be(sql);
++            result.Context.RefactorChanges.Should().BeEmpty();
++            result.Context.Warnings.Should().NotBeEmpty();
+         }
+ 
+         [Fact]
+-        public void Run_WithTrim_ShouldOptimizeAndWarn()
++        public void Run_WithTrim_ShouldPreserveAndExplainSafetySkip()
+         {
+             // Arrange
+             string sql = "SELECT * FROM Users WHERE TRIM(UserName) = 'admin'";
+@@ -441,10 +438,9 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
+ 
+             // Assert
+             result.IsSuccess.Should().BeTrue();
+-            result.OutputSql.Should().Contain("UserName = 'admin'");
+-            result.OutputSql.Should().NotContain("TRIM");
+-            result.Context.RefactorChanges.Should().HaveCount(1);
+-            result.Context.Warnings.Should().Contain(w => w.Contains("Removed LTRIM on column UserName"));
++            result.OutputSql.Should().Be(sql);
++            result.Context.RefactorChanges.Should().BeEmpty();
++            result.Context.Warnings.Should().Contain(w => w.Contains("前导空格"));
+         }
+ 
+         [Fact]
+@@ -1517,7 +1513,7 @@ namespace SqlXmlAnalyzer.Tests.Refactoring
+         }
+ 
+         [Fact]
+-        public void Run_WithTableVariable_ShouldConvertTableVariableToTempTable()
++        public void Run_WithTableVariable_ShouldPreserveAndExplainTransactionAndNameRisks()
+         {
+             // Arrange
+             string sql = @"
+@@ -1538,18 +1534,14 @@ SELECT * FROM @MyTable;
+ 
+             // Assert
+             result.IsSuccess.Should().BeTrue();
+-            result.OutputSql.Should().NotContain("DECLARE @MyTable TABLE");
+-            result.OutputSql.Should().Contain("CREATE TABLE #MyTable");
+-            result.OutputSql.Should().Contain("INSERT INTO #MyTable");
+-            result.OutputSql.Should().Contain("#MyTable");
+-            result.OutputSql.Should().Contain("OBJECT_ID('tempdb..#MyTable')");
+-            result.OutputSql.Should().Contain("DROP TABLE #MyTable");
+-            result.Context.RefactorChanges.Should().HaveCount(1);
+-            result.Context.RefactorChanges.First().RuleId.Should().Be("REF_RULE_002_TABLE_VAR");
++            result.OutputSql.Should().Be(sql);
++            result.OutputSql.Should().NotContain("#MyTable");
++            result.Context.RefactorChanges.Should().BeEmpty();
++            result.Context.SafetySkips.Should().ContainSingle(s => s.RuleId == "REF_RULE_002_TABLE_VAR");
+         }
+ 
+         [Fact]
+-        public void Run_WithTableVariableInStoredProcedure_ShouldConvertButNotAppendDropTableAtBatchEnd()
++        public void Run_WithTableVariableInStoredProcedure_ShouldPreserveItsScope()
+         {
+             // Arrange
+             string sql = @"
+@@ -1574,13 +1566,10 @@ END
+ 
+             // Assert
+             result.IsSuccess.Should().BeTrue();
+-            result.OutputSql.Should().NotContain("DECLARE @UserTable TABLE");
+-            result.OutputSql.Should().Contain("CREATE TABLE #UserTable");
+-            result.OutputSql.Should().Contain("INSERT INTO #UserTable");
+-            result.OutputSql.Should().Contain("#UserTable");
+-            // Since it's inside a stored procedure, it shouldn't append DROP TABLE to the batch end
+-            result.OutputSql.Should().NotContain("DROP TABLE #UserTable");
+-            result.Context.RefactorChanges.Should().HaveCount(1);
++            result.OutputSql.Should().Be(sql);
++            result.OutputSql.Should().NotContain("#UserTable");
++            result.Context.RefactorChanges.Should().BeEmpty();
++            result.Context.Warnings.Should().Contain(w => w.Contains("作用域"));
+         }
+ 
+         [Fact]
+diff --git a/Views/ShellNavigationRail.xaml b/Views/ShellNavigationRail.xaml
+index b39cac8..0344a39 100644
+--- a/Views/ShellNavigationRail.xaml
++++ b/Views/ShellNavigationRail.xaml
+@@ -16,7 +16,8 @@
+             <StackPanel Grid.Row="0">
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnOpenDeadlockClick"
+-                        ToolTip="Open deadlock XML/XDL/XEL"
++                        ToolTip="打开死锁文件 (XML / XDL / XEL)  ·  Ctrl+Shift+O"
++                        AutomationProperties.Name="打开死锁文件"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -27,7 +28,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnOpenPlanClick"
+-                        ToolTip="Open execution plan"
++                        ToolTip="打开执行计划 (.sqlplan)  ·  Ctrl+O"
++                        AutomationProperties.Name="打开执行计划"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,16">
+@@ -41,7 +43,8 @@
+ 
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnGenerateHtmlReportClick"
+-                        ToolTip="Export HTML report"
++                        ToolTip="导出 HTML 报告  ·  Ctrl+R"
++                        AutomationProperties.Name="导出 HTML 报告"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -52,7 +55,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnExportWordClick"
+-                        ToolTip="Export Word report"
++                        ToolTip="导出 Word 报告"
++                        AutomationProperties.Name="导出 Word 报告"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -63,7 +67,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnExportPdfClick"
+-                        ToolTip="Export PDF report"
++                        ToolTip="导出 PDF 报告"
++                        AutomationProperties.Name="导出 PDF 报告"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -74,7 +79,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnExportObfuscatedPlanClick"
+-                        ToolTip="Export obfuscated execution plan"
++                        ToolTip="导出脱敏执行计划"
++                        AutomationProperties.Name="导出脱敏执行计划"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,16">
+@@ -88,7 +94,8 @@
+             <StackPanel Grid.Row="2">
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnCopyAnalysisResultClick"
+-                        ToolTip="Copy analysis result"
++                        ToolTip="复制分析结果  ·  Ctrl+Shift+C"
++                        AutomationProperties.Name="复制分析结果"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -99,7 +106,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnClearResultsClick"
+-                        ToolTip="Clear all results"
++                        ToolTip="清空所有结果  ·  Ctrl+L"
++                        AutomationProperties.Name="清空所有结果"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,16">
+@@ -113,12 +121,14 @@
+                 <ToggleButton x:Name="ThemeToggle"
+                               Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                               Click="OnThemeToggleClick"
+-                              ToolTip="Toggle dark theme"
++                              ToolTip="切换深色 / 浅色主题"
++                              AutomationProperties.Name="切换深色或浅色主题"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,16"/>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnAboutClick"
+-                        ToolTip="About"
++                        ToolTip="关于 SqlXmlAnalyzer  ·  F1"
++                        AutomationProperties.Name="关于"
+                         Width="48"
+                         Height="48">
+                     <materialDesign:PackIcon Kind="InformationOutline"
+diff --git a/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs b/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
+index 401dc62..9664a8f 100644
+--- a/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
++++ b/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
+@@ -9,6 +9,7 @@ using SqlXmlAnalyzer.Application.Services;
+ using SqlXmlAnalyzer.Core;
+ using SqlXmlAnalyzer.Core.Abstractions;
+ using SqlXmlAnalyzer.Core.Models;
++using SqlXmlAnalyzer.Core.Diagnostics;
+ 
+ namespace SqlXmlAnalyzer.Application
+ {
+@@ -19,19 +20,25 @@ namespace SqlXmlAnalyzer.Application
+         private readonly IFileHandler _fileHandler;
+         private readonly IResultReporter _reporter;
+         private readonly ILogger<ApplicationOrchestrator> _logger;
++        private readonly ISqlWritebackService _writebackService;
++        private readonly IUnexpectedErrorReporter _unexpectedErrors;
+ 
+         public ApplicationOrchestrator(
+             IAnalysisEngine analysisEngine,
+             IRefactoringEngine refactoringEngine,
+             IFileHandler fileHandler,
+             IResultReporter reporter,
+-            ILogger<ApplicationOrchestrator> logger)
++            ILogger<ApplicationOrchestrator> logger,
++            ISqlWritebackService? writebackService = null,
++            IUnexpectedErrorReporter? unexpectedErrors = null)
+         {
+             _analysisEngine = analysisEngine;
+             _refactoringEngine = refactoringEngine;
+             _fileHandler = fileHandler;
+             _reporter = reporter;
+             _logger = logger;
++            _writebackService = writebackService ?? new SqlWritebackService(new PhysicalSqlWritebackFileSystem());
++            _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
+         }
+ 
+         public OrchestratorResult Execute(
+@@ -39,18 +46,23 @@ namespace SqlXmlAnalyzer.Application
+             string? planPath = null,
+             bool isDryRun = false,
+             RefactorOptions? options = null,
+-            string? outputPath = null)
++            string? outputPath = null,
++            System.Threading.CancellationToken cancellationToken = default)
+         {
+             var warnings = new List<string>();
++            SqlWritebackResult? writeback = null;
+             _logger.LogInformation("OrchestrationStarted: SQL file: {SqlPath}, Execution Plan: {PlanPath}, DryRun: {DryRun}", sqlPath, planPath, isDryRun);
+             try
+             {
++                cancellationToken.ThrowIfCancellationRequested();
++                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                 if (!_fileHandler.Exists(sqlPath))
+                 {
+                     throw new FileNotFoundException($"SQL file not found: {sqlPath}", sqlPath);
+                 }
+ 
+-                var sql = _fileHandler.ReadAllText(sqlPath);
++                SqlFileSnapshot? snapshot = isDryRun ? null : _writebackService.ReadSnapshot(sqlPath, cancellationToken);
++                var sql = snapshot?.Text ?? _fileHandler.ReadAllText(sqlPath);
+                 var report = new AnalysisReport(ImmutableList<IAnalysisIssue>.Empty);
+ 
+                 if (planPath != null)
+@@ -77,20 +89,30 @@ namespace SqlXmlAnalyzer.Application
+                 }
+ 
+                 var opt = options ?? new RefactorOptions();
++                cancellationToken.ThrowIfCancellationRequested();
+                 var result = _refactoringEngine.Run(sql, report, opt, isDryRun);
++                warnings.AddRange(result.Context.Warnings);
++                cancellationToken.ThrowIfCancellationRequested();
++                if (result.IsSuccess && (result.Errors.Count > 0 || result.ParseErrors?.Count > 0 ||
++                    result.Context.RefactorFailures.Count > 0))
++                {
++                    var errors = new List<string>(result.Errors) { "重构记录了执行错误，禁止写回 SQL。" };
++                    result = result with { IsSuccess = false, Errors = errors };
++                }
+ 
+                 if (result.IsSuccess && !isDryRun)
+                 {
+-                    string backupPath = sqlPath + ".bak";
+-                    try
+-                    {
+-                        _fileHandler.WriteAllText(backupPath, sql);
+-                    }
+-                    catch (Exception ex)
++                    writeback = _writebackService.WriteBack(snapshot!, result.OutputSql, cancellationToken);
++                    warnings.AddRange(writeback.Warnings);
++                    if (!writeback.IsSuccess)
+                     {
+-                        _logger.LogWarning(ex, "Failed to create backup file: {BackupPath}", backupPath);
++                        _logger.LogError("SqlWritebackFailed: Stage={Stage}, Detail={Detail}", writeback.Stage, writeback.ErrorMessage);
++                        return new OrchestratorResult(null, false, writeback.ErrorMessage,
++                            writeback.ErrorException, warnings) { Writeback = writeback };
+                     }
+-                    _fileHandler.WriteAllText(sqlPath, result.OutputSql);
++                    result = result with { SourceWritten = writeback.SourceWritten };
++                    if (writeback.SourceWritten)
++                        warnings.Add($"SQL 已写回。备份：{writeback.BackupPath}；原始 SHA-256：{writeback.SourceSha256}。恢复前先另存当前文件，再校验备份并复制恢复。");
+                 }
+ 
+                 if (result.Context != null)
+@@ -101,9 +123,25 @@ namespace SqlXmlAnalyzer.Application
+                     }
+                 }
+ 
++                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                 _reporter.Report(result, isDryRun, outputPath);
+                 _logger.LogInformation("OrchestrationCompleted: Success={IsSuccess}", result.IsSuccess);
+-                return new OrchestratorResult(result, result.IsSuccess, null, null, warnings);
++                return new OrchestratorResult(result, result.IsSuccess, null, null, warnings) { Writeback = writeback };
++            }
++            catch (Exception ex) when (writeback?.SourceWritten == true)
++            {
++                string detail = ExceptionPolicy.Describe(ex, "ReportAfterWriteback", _unexpectedErrors);
++                string message = $"SQL 已写回，但后续报告失败：{detail}。备份：{writeback.BackupPath}；请勿将此状态当作未写入。";
++                return new OrchestratorResult(null, false, message, ex, warnings) { Writeback = writeback };
++            }
++            catch (OperationCanceledException ex)
++            {
++                return new OrchestratorResult(null, false, "操作已取消，未执行 SQL 写回。", ex, warnings);
++            }
++            catch (System.Text.DecoderFallbackException ex)
++            {
++                return new OrchestratorResult(null, false,
++                    "SQL 文件编码无法安全解码，未写回。请使用 UTF-8 或带 BOM 的 UTF-16/UTF-32 副本后重试。", ex, warnings);
+             }
+             catch (FileNotFoundException ex)
+             {
+@@ -137,10 +175,10 @@ namespace SqlXmlAnalyzer.Application
+             }
+             catch (Exception ex)
+             {
+-                var errMsg = $"[ERROR] Orchestration pipeline crashed: {ex.Message}";
++                var errMsg = $"[ERROR] Orchestration pipeline crashed: {ExceptionPolicy.Describe(ex, "ApplicationOrchestrator", _unexpectedErrors)}";
+                 _logger.LogCritical(ex, errMsg);
+                 _logger.LogInformation("OrchestrationCompleted: Success=False");
+-                return new OrchestratorResult(null, false, errMsg, ex, warnings);
++                return new OrchestratorResult(null, false, errMsg, ex, warnings) { Writeback = writeback };
+             }
+         }
+     }
+diff --git a/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs b/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
+index 99953e4..3a48577 100644
+--- a/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
++++ b/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
+@@ -10,5 +10,8 @@ namespace SqlXmlAnalyzer.Application.Models
+         string? ErrorMessage,
+         Exception? ErrorException,
+         IReadOnlyList<string> Warnings
+-    );
++    )
++    {
++        public SqlWritebackResult? Writeback { get; init; }
++    }
+ }
+diff --git a/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs b/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs
+index 2e2b55c..a9bee36 100644
+--- a/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs
++++ b/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs
+@@ -8,6 +8,8 @@ namespace SqlXmlAnalyzer.Application.Models
+         public bool IsSuccess { get; set; }
+         public bool IsDryRun { get; set; }
+         public bool HasChanges { get; set; }
++        public bool SourceWritten { get; set; }
++        public string Outcome { get; set; } = string.Empty;
+ 
+         // Metadata
+         public double TimeElapsedMs { get; set; }
+@@ -19,6 +21,8 @@ namespace SqlXmlAnalyzer.Application.Models
+         public List<FailureDto> Failures { get; set; } = new();
+         public List<string> Warnings { get; set; } = new();
+         public List<string> Errors { get; set; } = new();
++        public List<Core.Models.RefactorSafetySkip> SafetySkips { get; set; } = new();
++        public Core.Diagnostics.UnexpectedErrorReport? Diagnostic { get; set; }
+         public List<ParseErrorDto>? ParseErrors { get; set; }
+ 
+         public string? OriginalSql { get; set; }
+diff --git a/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs b/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
+index 9de24f3..e2e25de 100644
+--- a/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
++++ b/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
+@@ -28,9 +28,8 @@ namespace SqlXmlAnalyzer.Application.Services
+                 }
+                 catch (Exception ex)
+                 {
+-                    Console.ForegroundColor = ConsoleColor.Red;
+-                    Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
+-                    Console.ResetColor();
++                    Core.Diagnostics.ExceptionPolicy.Describe(ex, "ConsoleResultReporter");
++                    throw;
+                 }
+                 return;
+             }
+@@ -65,11 +64,12 @@ namespace SqlXmlAnalyzer.Application.Services
+             else
+             {
+                 Console.ForegroundColor = ConsoleColor.Cyan;
+-                Console.Write("Normal (Changes written to disk)".PadRight(49));
++                Console.Write("Normal (Writeback enabled)".PadRight(49));
+             }
+             Console.ResetColor();
+             Console.WriteLine("│");
+             Console.WriteLine("└──────────────────────────────────────────────────────────┘");
++            Console.WriteLine($"结果状态：{DescribeOutcome(result.Outcome)}");
+ 
+             var context = result.Context;
+             if (context != null)
+@@ -231,6 +231,14 @@ namespace SqlXmlAnalyzer.Application.Services
+             Console.WriteLine("────────────────────────────────────────────────────────────");
+         }
+ 
++        private static string DescribeOutcome(RefactorOutcome outcome) => outcome switch
++        {
++            RefactorOutcome.Failed => "失败，候选不可应用。",
++            RefactorOutcome.Applied => "SQL 已写回。",
++            RefactorOutcome.CandidateGenerated => "已生成候选 SQL，尚未应用。",
++            _ => "分析完成，未产生 SQL 改写。"
++        };
++
+         private string FormatReportText(RefactorResult result, bool isDryRun)
+         {
+             var sb = new StringBuilder();
+@@ -238,8 +246,9 @@ namespace SqlXmlAnalyzer.Application.Services
+             sb.AppendLine("│                    REFACTORING REPORT                    │");
+             sb.AppendLine("├──────────────────────────────────────────────────────────┤");
+             sb.AppendLine($"│ Status: {(result.IsSuccess ? "SUCCESS" : "FAILED").PadRight(49)}│");
+-            sb.AppendLine($"│ Mode:   {(isDryRun ? "Dry-Run (No files modified)" : "Normal (Changes written to disk)").PadRight(49)}│");
++            sb.AppendLine($"│ Mode:   {(isDryRun ? "Dry-Run (No files modified)" : "Normal (Writeback enabled)").PadRight(49)}│");
+             sb.AppendLine("└──────────────────────────────────────────────────────────┘");
++            sb.AppendLine($"结果状态：{DescribeOutcome(result.Outcome)}");
+ 
+             var context = result.Context;
+             if (context != null)
+diff --git a/src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs b/src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs
+index 764b471..050eed1 100644
+--- a/src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs
++++ b/src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs
+@@ -27,6 +27,8 @@ namespace SqlXmlAnalyzer.Application.Services
+                 IsSuccess = result.IsSuccess,
+                 IsDryRun = isDryRun,
+                 HasChanges = context?.Changed ?? false,
++                SourceWritten = result.SourceWritten,
++                Outcome = result.Outcome.ToString(),
+                 TimeElapsedMs = result.TimeElapsedMs,
+                 OriginalSqlLength = context?.OriginalSql?.Length ?? 0,
+                 RefactoredSqlLength = result.OutputSql?.Length ?? 0,
+@@ -45,6 +47,8 @@ namespace SqlXmlAnalyzer.Application.Services
+                     Timestamp = f.Timestamp
+                 }).ToList() ?? new(),
+                 Warnings = context?.Warnings?.ToList() ?? new(),
++                SafetySkips = context?.SafetySkips.ToList() ?? new(),
++                Diagnostic = result.Diagnostic,
+                 Errors = result.Errors?.ToList() ?? new(),
+                 ParseErrors = result.ParseErrors?.Select(pe => new ParseErrorDto
+                 {
+@@ -77,7 +81,8 @@ namespace SqlXmlAnalyzer.Application.Services
+                 }
+                 catch (Exception ex)
+                 {
+-                    Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
++                    Core.Diagnostics.ExceptionPolicy.Describe(ex, "JsonResultReporter");
++                    throw;
+                 }
+             }
+             else
+diff --git a/src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs b/src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs
+index d2a9502..175b0f3 100644
+--- a/src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs
++++ b/src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs
+@@ -8,7 +8,7 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
+     {
+         public string RuleId => "REF_RULE_002_TABLE_VAR";
+         public string Name => "Table Variable to Temp Table";
+-        public string Description => "Converts table variables (@Table) to temp tables (#Table) to improve query optimization and parallel execution.";
++        public string Description => "Preserves table variables until transaction, scope and temporary-name equivalence is established.";
+         public int Priority => 60;
+ 
+         public bool CanApply(TSqlFragment fragment, RefactorContext context)
+@@ -20,12 +20,10 @@ namespace SqlXmlAnalyzer.Refactoring.Rules
+ 
+         public RuleResult Apply(TSqlFragment fragment, RefactorContext context)
+         {
+-            var visitor = new TableVariableVisitor(context);
+-            fragment.Accept(visitor);
+-            if (visitor.Changed)
+-            {
+-                return new RuleResult(fragment, true, "Converted table variables to temp tables");
+-            }
++            if (CanApply(fragment, context))
++                context.SkipUnsafeRewrite(RuleId, "UnprovenTableVariableEquivalence",
++                    "保留表变量；临时表的事务回滚、作用域及同名对象行为可能不同。",
++                    "须验证事务/回滚、过程和动态 SQL 作用域、并发会话及既有同名临时表；禁止自动创建或删除可能属于其他代码的临时表。");
+             return new RuleResult(fragment, false, null);
+         }
+     }
+diff --git a/src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs b/src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs
+index 7fd2022..cc048bd 100644
+--- a/src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs
++++ b/src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs
+@@ -1,204 +1,45 @@
+-using System;
+ using Microsoft.SqlServer.TransactSql.ScriptDom;
+ using SqlXmlAnalyzer.Core;
+ using SqlXmlAnalyzer.Core.Abstractions;
+ 
+-namespace SqlXmlAnalyzer.Refactoring.Rules
+-{
+-    public class TrimRefactorRule : ISqlRefactorRule
+-    {
+-        public string RuleId => "REF_RULE_103_TRIM";
+-        public string Name => "Trim Function Optimizer";
+-        public string Description => "Rewrites LTRIM(RTRIM(Column)) = 'xxx' to Column = 'xxx'. Removing RTRIM is always safe, LTRIM removal assumes no leading space values.";
+-        public int Priority => 30;
+-
+-        public bool CanApply(TSqlFragment fragment, RefactorContext context)
+-        {
+-            var visitor = new FinderVisitor();
+-            fragment.Accept(visitor);
+-            return visitor.Found;
+-        }
+-
+-        public RuleResult Apply(TSqlFragment fragment, RefactorContext context)
+-        {
+-            var visitor = new RewriteVisitor(context);
+-            if (fragment is BooleanExpression boolExpr)
+-            {
+-                var replaced = visitor.Rewrite(boolExpr);
+-                if (replaced != boolExpr)
+-                {
+-                    var desc = visitor.ChangeDetail ?? "Optimized LTRIM/RTRIM comparison";
+-                    return new RuleResult(replaced, true, desc);
+-                }
+-            }
+-            else
+-            {
+-                fragment.Accept(visitor);
+-                if (visitor.Changed)
+-                {
+-                    var desc = visitor.ChangeDetail ?? "Optimized LTRIM/RTRIM comparison";
+-                    return new RuleResult(fragment, true, desc);
+-                }
+-            }
+-            return new RuleResult(fragment, false, null);
+-        }
+-
+-        private class FinderVisitor : TSqlFragmentVisitor
+-        {
+-            public bool Found { get; private set; }
+-
+-            public override void ExplicitVisit(BooleanComparisonExpression node)
+-            {
+-                if (node.ComparisonType == BooleanComparisonType.Equals ||
+-                    node.ComparisonType == BooleanComparisonType.NotEqualToBrackets ||
+-                    node.ComparisonType == BooleanComparisonType.NotEqualToExclamation)
+-                {
+-                    if (IsOptimizeable(node.FirstExpression, node.SecondExpression) ||
+-                        IsOptimizeable(node.SecondExpression, node.FirstExpression))
+-                    {
+-                        Found = true;
+-                        return;
+-                    }
+-                }
+-                base.ExplicitVisit(node);
+-            }
+-        }
+-
+-        private class RewriteVisitor : SqlXmlAnalyzer.Core.Refactoring.BooleanExpressionReplacementVisitor
+-        {
+-            public string? ChangeDetail { get; private set; }
+-
+-            public RewriteVisitor(RefactorContext context) : base(context)
+-            {
+-            }
++namespace SqlXmlAnalyzer.Refactoring.Rules;
+ 
+-            public BooleanExpression Rewrite(BooleanExpression expr)
+-            {
+-                return ReplaceExpression(expr);
+-            }
+-
+-            protected override BooleanExpression ReplaceExpression(BooleanExpression expression)
+-            {
+-                if (expression is BooleanComparisonExpression compExpr &&
+-                    (compExpr.ComparisonType == BooleanComparisonType.Equals ||
+-                     compExpr.ComparisonType == BooleanComparisonType.NotEqualToBrackets ||
+-                     compExpr.ComparisonType == BooleanComparisonType.NotEqualToExclamation))
+-                {
+-                    if (TryOptimize(compExpr.FirstExpression, compExpr.SecondExpression, compExpr.ComparisonType, out var optimized))
+-                    {
+-                        return optimized;
+-                    }
+-                    if (TryOptimize(compExpr.SecondExpression, compExpr.FirstExpression, compExpr.ComparisonType, out var optimizedReversed))
+-                    {
+-                        return optimizedReversed;
+-                    }
+-                }
+-                return expression;
+-            }
+-
+-            private bool TryOptimize(ScalarExpression left, ScalarExpression right, BooleanComparisonType compType, out BooleanExpression optimized)
+-            {
+-                optimized = null!;
+-                if (TryStripTrims(left, out var colRef, out bool hasLTrim, out bool hasRTrim))
+-                {
+-                    if (right is StringLiteral strLit)
+-                    {
+-                        // Ensure literal doesn't have leading/trailing spaces that would break equivalence
+-                        if (strLit.Value.Length > 0 &&
+-                            !char.IsWhiteSpace(strLit.Value[0]) &&
+-                            !char.IsWhiteSpace(strLit.Value[strLit.Value.Length - 1]))
+-                        {
+-                            optimized = new BooleanComparisonExpression
+-                            {
+-                                ComparisonType = compType,
+-                                FirstExpression = colRef,
+-                                SecondExpression = right
+-                            };
+-                            var colName = GetColumnName(colRef!);
+-                            if (hasLTrim)
+-                            {
+-                                _context.Warn($"Removed LTRIM on column {colName}. Note: This assumes column values do not contain leading spaces.");
+-                            }
+-                            _context.Log($"Optimized LTRIM/RTRIM on column {colName}");
+-                            ChangeDetail = $"Optimized LTRIM/RTRIM comparison on column {colName}";
+-                            return true;
+-                        }
+-                    }
+-                }
+-                return false;
+-            }
+-        }
+-
+-        private static bool IsOptimizeable(ScalarExpression expr, ScalarExpression comparison)
+-        {
+-            if (TryStripTrims(expr, out _, out _, out _))
+-            {
+-                if (comparison is StringLiteral strLit)
+-                {
+-                    return strLit.Value.Length > 0 &&
+-                           !char.IsWhiteSpace(strLit.Value[0]) &&
+-                           !char.IsWhiteSpace(strLit.Value[strLit.Value.Length - 1]);
+-                }
+-            }
+-            return false;
+-        }
+-
+-        private static bool TryStripTrims(ScalarExpression expr, out ColumnReferenceExpression? colRef, out bool hasLTrim, out bool hasRTrim)
+-        {
+-            colRef = null;
+-            hasLTrim = false;
+-            hasRTrim = false;
++public class TrimRefactorRule : ISqlRefactorRule
++{
++    public string RuleId => "REF_RULE_103_TRIM";
++    public string Name => "Trim Function Safety Check";
++    public string Description => "Preserves trim functions until equivalence has been established for the data and comparison semantics.";
++    public int Priority => 30;
+ 
+-            ScalarExpression current = expr;
+-            while (true)
+-            {
+-                if (current is FunctionCall funcCall)
+-                {
+-                    var name = funcCall.FunctionName?.Value;
+-                    if (string.Equals(name, "LTRIM", StringComparison.OrdinalIgnoreCase) && funcCall.Parameters.Count == 1)
+-                    {
+-                        hasLTrim = true;
+-                        current = funcCall.Parameters[0];
+-                    }
+-                    else if (string.Equals(name, "RTRIM", StringComparison.OrdinalIgnoreCase) && funcCall.Parameters.Count == 1)
+-                    {
+-                        hasRTrim = true;
+-                        current = funcCall.Parameters[0];
+-                    }
+-                    else if (string.Equals(name, "TRIM", StringComparison.OrdinalIgnoreCase) && funcCall.Parameters.Count == 1)
+-                    {
+-                        hasLTrim = true;
+-                        hasRTrim = true;
+-                        current = funcCall.Parameters[0];
+-                    }
+-                    else
+-                    {
+-                        break;
+-                    }
+-                }
+-                else
+-                {
+-                    break;
+-                }
+-            }
++    public bool CanApply(TSqlFragment fragment, RefactorContext context)
++    {
++        var finder = new TrimFinder();
++        fragment.Accept(finder);
++        return finder.Found;
++    }
+ 
+-            if (current is ColumnReferenceExpression col)
+-            {
+-                colRef = col;
+-                return hasLTrim || hasRTrim;
+-            }
++    public RuleResult Apply(TSqlFragment fragment, RefactorContext context)
++    {
++        // Explicit selection and direct invocation are not proof of semantic equivalence.
++        if (CanApply(fragment, context))
++            context.SkipUnsafeRewrite(RuleId, "UnprovenTrimEquivalence",
++                "保留 LTRIM/RTRIM/TRIM；移除函数可能改变包含前导空格等数据的比较结果。",
++                "列类型、排序规则、空格/字符集合、NULL、比较运算和实际数据域的等价性尚未证明。");
++        return new RuleResult(fragment, false, null);
++    }
+ 
+-            return false;
+-        }
++    private sealed class TrimFinder : TSqlFragmentVisitor
++    {
++        public bool Found { get; private set; }
+ 
+-        private static string GetColumnName(ColumnReferenceExpression colRef)
++        public override void ExplicitVisit(FunctionCall node)
+         {
+-            var mpi = colRef.MultiPartIdentifier;
+-            if (mpi != null && mpi.Identifiers.Count > 0)
+-            {
+-                return mpi.Identifiers[mpi.Identifiers.Count - 1].Value;
+-            }
+-            return "Column";
++            if (node.FunctionName?.Value is string name &&
++                (name.Equals("LTRIM", StringComparison.OrdinalIgnoreCase) ||
++                 name.Equals("RTRIM", StringComparison.OrdinalIgnoreCase) ||
++                 name.Equals("TRIM", StringComparison.OrdinalIgnoreCase)))
++                Found = true;
++            base.ExplicitVisit(node);
+         }
+     }
+ }
+diff --git a/src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs b/src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs
+index 8f31a27..5a61c8a 100644
+--- a/src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs
++++ b/src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs
+@@ -1,148 +1,145 @@
+-using System;
+-using System.Collections.Generic;
+-using System.IO;
+-using System.Linq;
++using System.Diagnostics;
+ using Microsoft.Extensions.Logging;
+ using Microsoft.SqlServer.TransactSql.ScriptDom;
+ using SqlXmlAnalyzer.Core;
+ using SqlXmlAnalyzer.Core.Abstractions;
++using SqlXmlAnalyzer.Core.Diagnostics;
+ using SqlXmlAnalyzer.Core.Models;
+ 
+-namespace SqlXmlAnalyzer.Refactoring
++namespace SqlXmlAnalyzer.Refactoring;
++
++public class SqlRefactoringEngine : IRefactoringEngine
+ {
+-    public class SqlRefactoringEngine : IRefactoringEngine
++    private readonly IEnumerable<ISqlRefactorRule> _rules;
++    private readonly IRuleFilter _ruleFilter;
++    private readonly ILogger<SqlRefactoringEngine> _logger;
++    private readonly IUnexpectedErrorReporter _unexpectedErrors;
++
++    public SqlRefactoringEngine(IEnumerable<ISqlRefactorRule> rules, IRuleFilter ruleFilter,
++        ILogger<SqlRefactoringEngine> logger, IUnexpectedErrorReporter? unexpectedErrors = null)
+     {
+-        private readonly IEnumerable<ISqlRefactorRule> _rules;
+-        private readonly IRuleFilter _ruleFilter;
+-        private readonly ILogger<SqlRefactoringEngine> _logger;
++        _rules = rules;
++        _ruleFilter = ruleFilter;
++        _logger = logger;
++        _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
++    }
+ 
+-        public SqlRefactoringEngine(
+-            IEnumerable<ISqlRefactorRule> rules,
+-            IRuleFilter ruleFilter,
+-            ILogger<SqlRefactoringEngine> logger)
++    public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
++    {
++        var timer = Stopwatch.StartNew();
++        var context = new RefactorContext(sql, report, isDryRun);
++        var errors = new List<string>();
++        int passCount = 0;
++        RefactorResult Failure(string message, IReadOnlyList<ParseError>? parseErrors = null,
++            UnexpectedErrorReport? diagnostic = null)
+         {
+-            _rules = rules;
+-            _ruleFilter = ruleFilter;
+-            _logger = logger;
++            context.DiscardChanges();
++            errors.Add(message);
++            return new RefactorResult(sql, false, errors, context, parseErrors)
++            {
++                TimeElapsedMs = timer.Elapsed.TotalMilliseconds, PassesCount = passCount, Diagnostic = diagnostic
++            };
+         }
+-
+-        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
++        RefactorResult ExceptionFailure(Exception exception, string operation)
+         {
+-            var sw = System.Diagnostics.Stopwatch.StartNew();
+-            var context = new RefactorContext(sql, report, isDryRun);
+-            var errors = new List<string>();
+-
+-            if (string.IsNullOrWhiteSpace(sql))
++            if (exception is OperationCanceledException)
+             {
+-                sw.Stop();
+-                return new RefactorResult(sql, true, errors, context) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = 0 };
++                _logger.LogWarning("RefactorCanceled: Operation={Operation}", operation);
++                return Failure("重构已取消，保留原 SQL。");
+             }
++            if (ExceptionPolicy.IsExpected(exception))
++            {
++                _logger.LogError(exception, "RefactorFailed: Operation={Operation}", operation);
++                return Failure($"重构失败，保留原 SQL：{exception.Message}");
++            }
++            var diagnostic = _unexpectedErrors.Report(exception, operation);
++            _logger.LogCritical(exception, "UnexpectedRefactorFailure: Operation={Operation}, Dump={Dump}", operation, diagnostic.DumpPath);
++            return Failure($"重构发生未知错误，保留原 SQL：{exception.Message}；{diagnostic.Summary}", diagnostic: diagnostic);
++        }
+ 
+-            _logger.LogInformation("RefactorStarted: DryRun={DryRun}", isDryRun);
++        try
++        {
++            if (options.MaxPasses < 1)
++            {
++                _logger.LogError("Invalid refactoring pass limit.");
++                return Failure("MaxPasses 必须大于 0。");
++            }
++            if (string.IsNullOrWhiteSpace(sql))
++                return new RefactorResult(sql, true, errors, context) { TimeElapsedMs = timer.Elapsed.TotalMilliseconds };
+ 
++            _logger.LogDebug("RefactorStarted: DryRun={DryRun}, SqlLength={SqlLength}", isDryRun, sql.Length);
+             var parser = new TSql160Parser(true);
+-            TSqlFragment fragment;
+-            using (var reader = new StringReader(sql))
++            using var reader = new StringReader(sql);
++            var fragment = parser.Parse(reader, out var parseErrors);
++            if (parseErrors.Count > 0)
+             {
+-                fragment = parser.Parse(reader, out var parseErrors);
+-                if (parseErrors != null && parseErrors.Count > 0)
+-                {
+-                    foreach (var err in parseErrors)
+-                    {
+-                        errors.Add($"Line {err.Line}, Col {err.Column}: {err.Message}");
+-                    }
+-                    _logger.LogError("ParserFailed: Errors={Errors}", string.Join("; ", errors));
+-                    sw.Stop();
+-                    return new RefactorResult(sql, false, errors, context, parseErrors != null ? new List<ParseError>(parseErrors) : null) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = 0 };
+-                }
++                _logger.LogError("ParserFailed: Count={Count}", parseErrors.Count);
++                errors.AddRange(parseErrors.Select(error => $"Line {error.Line}, Col {error.Column}: {error.Message}"));
++                return Failure("输入 SQL 语法错误，保留原 SQL。", parseErrors.ToList());
+             }
+ 
+             var activeRules = _ruleFilter.Filter(_rules, options).ToList();
+             var currentFragment = Rules.SqlNodeCloner.Clone(fragment) ?? fragment;
+-            int passCount = 0;
+-
+             for (int pass = 1; pass <= options.MaxPasses; pass++)
+             {
+                 passCount = pass;
+                 bool passChanged = false;
+-                var rulesAppliedThisPass = new List<string>();
+-
+                 foreach (var rule in activeRules)
+                 {
+                     try
+                     {
+-                        if (rule.CanApply(currentFragment, context))
++                        if (!rule.CanApply(currentFragment, context)) continue;
++                        int skipsBefore = context.SafetySkips.Count;
++                        var result = rule.Apply(currentFragment, context);
++                        if (context.SafetySkips.Count > skipsBefore)
++                            _logger.LogWarning("UnsafeRewriteSkipped: RuleId={RuleId}, Reason={Reason}",
++                                rule.RuleId, context.SafetySkips[^1].ReasonCode);
++                        if (result.IsApplied)
+                         {
+-                            var result = rule.Apply(currentFragment, context);
+-                            if (result.IsApplied)
+-                            {
+-                                currentFragment = result.Fragment;
+-                                var description = result.ChangeDescription ?? $"Applied rule {rule.Name} ({rule.RuleId})";
+-                                context.RecordChange(rule.RuleId, description);
+-                                rulesAppliedThisPass.Add(rule.RuleId);
+-                                passChanged = true;
+-
+-                                _logger.LogInformation("RuleApplied: RuleId={RuleId}, Description={Description}", rule.RuleId, description);
+-                            }
+-                            else
+-                            {
+-                                _logger.LogInformation("RuleSkipped: RuleId={RuleId}, Reason=Apply returned not applied", rule.RuleId);
+-                            }
+-                        }
+-                        else
+-                        {
+-                            _logger.LogInformation("RuleSkipped: RuleId={RuleId}, Reason=CanApply returned false", rule.RuleId);
++                            currentFragment = result.Fragment;
++                            context.RecordChange(rule.RuleId, result.ChangeDescription ?? $"Applied rule {rule.RuleId}");
++                            passChanged = true;
++                            _logger.LogDebug("RuleApplied: RuleId={RuleId}, Pass={Pass}", rule.RuleId, pass);
+                         }
+                     }
+-                    catch (Exception ex)
++                    catch (Exception exception)
+                     {
+-                        context.RecordFailure(rule.RuleId, ex.GetType().Name, ex.StackTrace ?? ex.Message);
+-                        _logger.LogError(ex, "RuleFailed: RuleId={RuleId}, Error={ErrorMessage}", rule.RuleId, ex.Message);
++                        context.RecordFailure(rule.RuleId, exception.GetType().Name, exception.StackTrace ?? exception.Message);
++                        // A rule can mutate its AST before throwing. Never return a partial candidate.
++                        return ExceptionFailure(exception, $"RefactorRule:{rule.RuleId}");
+                     }
+                 }
+-
+-                if (rulesAppliedThisPass.Count > 0)
+-                {
+-                    _logger.LogInformation("PassCompleted: Pass={Pass}, RulesApplied={RulesApplied}", pass, string.Join(", ", rulesAppliedThisPass));
+-                }
+-
+-                if (!passChanged)
+-                {
+-                    break; // Fixed point reached
+-                }
++                if (!passChanged) break;
+             }
+ 
+-            string finalSql = GenerateSql(currentFragment);
+-
+-            // Validation pass: ensure refactored SQL parses without error
+-            using (var validationReader = new StringReader(finalSql))
++            // Safety-only observations must not trigger formatting-only file writes or backups.
++            string finalSql = context.RefactorChanges.Count == 0 ? sql : GenerateSql(currentFragment);
++            using var validationReader = new StringReader(finalSql);
++            parser.Parse(validationReader, out var validationErrors);
++            if (validationErrors.Count > 0)
+             {
+-                parser.Parse(validationReader, out var validationErrors);
+-                if (validationErrors != null && validationErrors.Count > 0)
+-                {
+-                    var validationMsg = "Refactored SQL has syntax errors. Reverting changes.";
+-                    errors.Add(validationMsg);
+-                    _logger.LogError("ValidationFailed: Message={Message}", validationMsg);
+-                    sw.Stop();
+-                    return new RefactorResult(sql, false, errors, context, validationErrors != null ? new List<ParseError>(validationErrors) : null) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = passCount };
+-                }
++                _logger.LogError("RefactorValidationFailed: Count={Count}", validationErrors.Count);
++                return Failure("候选 SQL 存在语法错误，已丢弃候选并保留原 SQL。", validationErrors.ToList());
+             }
+-
+-            sw.Stop();
+-            _logger.LogInformation("RefactorFinished: ChangesCount={ChangesCount}", context.RefactorChanges.Count);
+-            return new RefactorResult(finalSql, true, errors, context) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = passCount };
++            _logger.LogDebug("RefactorFinished: Changes={Changes}, SafetySkips={SafetySkips}", context.RefactorChanges.Count, context.SafetySkips.Count);
++            return new RefactorResult(finalSql, true, errors, context)
++            {
++                TimeElapsedMs = timer.Elapsed.TotalMilliseconds, PassesCount = passCount
++            };
+         }
+-
+-        private string GenerateSql(TSqlFragment fragment)
++        catch (Exception exception)
+         {
+-            var generator = new Sql160ScriptGenerator(new SqlScriptGeneratorOptions
+-            {
+-                KeywordCasing = KeywordCasing.Uppercase,
+-                MultilineSelectElementsList = false
+-            });
+-
+-            generator.GenerateScript(fragment, out string script);
+-            return script;
++            return ExceptionFailure(exception, "RefactoringPipeline");
+         }
+     }
++
++    private static string GenerateSql(TSqlFragment fragment)
++    {
++        var generator = new Sql160ScriptGenerator(new SqlScriptGeneratorOptions
++        {
++            KeywordCasing = KeywordCasing.Uppercase, MultilineSelectElementsList = false
++        });
++        generator.GenerateScript(fragment, out string script);
++        return script;
++    }
+ }

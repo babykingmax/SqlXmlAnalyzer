@@ -1,0 +1,27 @@
+<!-- Synthetic regression fixture; dependency shape, not a captured SQL Server chronology. -->
+<deadlock>
+  <victim-list><victimProcess id="a"/><victimProcess id="c"/></victim-list>
+  <process-list>
+    <process id="a" spid="51" ecid="0" priority="0" logused="100" isolationlevel="serializable">
+      <executionStack><frame procname="synthetic" line="1" sqlhandle="synthetic">SELECT synthetic</frame></executionStack>
+      <inputbuf>SELECT synthetic</inputbuf>
+    </process>
+    <process id="b" spid="51" ecid="1" priority="0" logused="200"><inputbuf>SELECT synthetic</inputbuf></process>
+    <process id="c" spid="52" ecid="0" priority="0" logused="50"><inputbuf>SELECT synthetic</inputbuf></process>
+  </process-list>
+  <resource-list>
+    <exchangeEvent id="exchange-ab" WaitType="e_waitPortOpen" nodeId="7">
+      <owner-list><owner id="b" ownerActivity="notYetOpened"/></owner-list>
+      <waiter-list><waiter id="a" waiterActivity="waitForAllOwnersToOpen"/></waiter-list>
+    </exchangeEvent>
+    <SyncPoint id="sync-ba" type="Barrier" nodeId="8">
+      <owner-list><owner id="a"/></owner-list><waiter-list><waiter id="b"/></waiter-list>
+    </SyncPoint>
+    <keylock id="key-ac" dbid="5" objectname="synthetic.Table" indexname="synthetic.Index" hobtid="123">
+      <owner-list><owner id="c" mode="X"/></owner-list><waiter-list><waiter id="a" mode="X" requestType="wait"/></waiter-list>
+    </keylock>
+    <keylock id="key-cb" dbid="5" objectname="synthetic.Table" indexname="synthetic.Index" hobtid="123">
+      <owner-list><owner id="b" mode="RangeS-S"/></owner-list><waiter-list><waiter id="c" mode="RangeX-X" requestType="convert"/></waiter-list>
+    </keylock>
+  </resource-list>
+</deadlock>

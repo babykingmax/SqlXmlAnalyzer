@@ -1,0 +1,44 @@
+[
+  {
+    "path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+    "tracked": true,
+    "exists": true,
+    "bytes": 735,
+    "sha256": "25E6E2E94AD8E5245A4F62DB38049B1F3AE8DD249A610697D7F25C1422AAA740"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+    "tracked": true,
+    "exists": true,
+    "bytes": 791,
+    "sha256": "2F040FAB3FB13E27C00F8CFF925A2A5D41EC6ACBD0AE85A90812197669D12131"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/deadlock_bookmark_lookup.xdl",
+    "tracked": true,
+    "exists": true,
+    "bytes": 1473,
+    "sha256": "163E0AE3497239125857A6E74202D64C0D21DD65F674DAE7AD2BD8EEA351745E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+    "tracked": true,
+    "exists": true,
+    "bytes": 536,
+    "sha256": "314B6DB4C78A85C18924651998276660D6312DAA73652DED5F1A94ED62D8F660"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+    "tracked": true,
+    "exists": true,
+    "bytes": 742,
+    "sha256": "A8833BEB79D709A83136B46D285BEDE354F3D5400787BA1853725F8345CB6E9C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+    "tracked": true,
+    "exists": true,
+    "bytes": 1192,
+    "sha256": "6C26E57836F7FC6A57632A358F808EDDFCCDFCE358CDA51292E67D74A88BE465"
+  }
+]

@@ -1,0 +1,5 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+<StmtSimple StatementId="1" StatementText="SELECT 3" StatementType="SELECT"><QueryPlan>
+<RelOp NodeId="0" PhysicalOp="Index Seek" LogicalOp="Index Seek" Parallel="false" EstimateRows="1">
+<RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="100000" ActualExecutions="2" ActualRowsRead="200000"/></RunTimeInformation>
+</RelOp></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>

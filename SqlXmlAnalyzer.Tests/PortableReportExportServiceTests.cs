@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core.Services;
@@ -38,8 +38,8 @@ namespace SqlXmlAnalyzer.Tests
             exporter.Extension.Should().Be("docx");
             exporter.OutputPath.Should().Be(@"C:\Reports\deadlock.docx");
             exporter.Title.Should().Be("Diagnostic Report");
-            exporter.Content.Should().Be("Report content");
-            dialogService.LastSaveRequest!.Title.Should().Be("Save DOCX analysis report");
+        exporter.Content.Should().Be(SqlXmlAnalyzer.Core.Privacy.OutputPrivacy.MarkRaw("Report content"));
+            dialogService.LastSaveRequest!.Title.Should().Be("Save DOCX analysis report（未脱敏，仅供本地诊断）");
             dialogService.LastSaveRequest.DefaultExtension.Should().Be(".docx");
             dialogService.LastSaveRequest.FileName.Should().Be("Report.docx");
         }

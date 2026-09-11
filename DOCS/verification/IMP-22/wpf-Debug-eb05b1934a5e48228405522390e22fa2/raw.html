@@ -1,0 +1,457 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"><title>DiagnosticReport</title><style>body{font:14px sans-serif;margin:24px;color:#172b4d;background:white}pre{white-space:pre-wrap;overflow-wrap:anywhere}svg{max-width:100%;height:auto}h1{font-size:24px}</style></head><body><h1>诊断报告 / B1/S2/Q1</h1><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 118" role="img" aria-label="静态关系图"><desc>未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。</desc><rect width="900" height="118" fill="white"/><text x="8" y="20" font-size="14" fill="#172b4d">未脱敏图形，仅供本地诊断 / B1/S2/Q1</text><g transform="translate(0,32)"><rect x="8" y="8" width="750" height="54" rx="5" fill="#edf5ff" stroke="#557799"/><text x="18" y="28" font-size="12" fill="#172b4d">B1/S2/Q1/O1</text><text x="18" y="48" font-size="12" fill="#172b4d">Table Scan ?.[SECRET_IMP22_7461_Db].[dbo].[SECRET_IMP22_7461_Table]</text></g></svg><pre id="report-text">未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。
+DiagnosticReport IMP22-1.0 | SqlXmlAnalyzer 1.0.0
+Kind: ExecutionPlan | Scope: B1/S2/Q1 | CreatedAt: 2026-09-09T15:36:11.2723291+00:00
+Facts: 259 | Issues: 1 | Hit: 1 | NoHit: 30 | Skipped: 3 | Failed: 0
+离线静态关系图；不是实际执行时间线。图超过 80 个节点时展示前 80 个，完整节点/边仍列入正文与 JSON。HTML/PDF/Word/JSON 包含同一事实、诊断、运行记录及 XML；SVG 仅包含静态图，sqlplan 仅包含选择范围 XML；无交互回放。
+=== Metadata ===
+DocumentId: 7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9
+SourceName: E:\SqlXmlAnalyzer\DOCS\verification\IMP-22\wpf-Debug-eb05b1934a5e48228405522390e22fa2\synthetic-plan.sqlplan
+SourceHash: 7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9
+EngineBuild: 16.0.1000.6
+SourceSchema: 1.571
+CapturedAt: N/A
+Capabilities: PlanStatements, PlanOperators, RuntimeCounters, PreservedSource
+RuleProtocol: 1.0
+InputDiagnostics: []
+InputContext: 来源：E:\SqlXmlAnalyzer\DOCS\verification\IMP-22\wpf-Debug-eb05b1934a5e48228405522390e22fa2\synthetic-plan.sqlplan；采集时间：未采集；引擎：16.0.1000.6；Schema：1.571；能力：PlanStatements, PlanOperators, RuntimeCounters, PreservedSource；读取状态：Success
+当前范围（含文档诊断）：Hit 1 / NoHit 30 / Skipped 3 / Failed 0。 部分检查缺少证据而跳过。
+Configuration: {&quot;RULE_001_IMPLICIT_CONV&quot;:{&quot;RuleId&quot;:&quot;RULE_001_IMPLICIT_CONV&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_002_KEY_LOOKUP&quot;:{&quot;RuleId&quot;:&quot;RULE_002_KEY_LOOKUP&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_003_PARAM_SNIFFING&quot;:{&quot;RuleId&quot;:&quot;RULE_003_PARAM_SNIFFING&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_004_ESTIMATE_MISMATCH&quot;:{&quot;RuleId&quot;:&quot;RULE_004_ESTIMATE_MISMATCH&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_017_LARGE_MEMORY_GRANT&quot;:{&quot;RuleId&quot;:&quot;RULE_017_LARGE_MEMORY_GRANT&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_006_RESIDUAL_PREDICATE&quot;:{&quot;RuleId&quot;:&quot;RULE_006_RESIDUAL_PREDICATE&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_008_SPILL_DETECTION&quot;:{&quot;RuleId&quot;:&quot;RULE_008_SPILL_DETECTION&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_009_PARALLEL_SKEW&quot;:{&quot;RuleId&quot;:&quot;RULE_009_PARALLEL_SKEW&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_011_UDF_TVF&quot;:{&quot;RuleId&quot;:&quot;RULE_011_UDF_TVF&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_012_NESTED_LOOPS_HIGH_EXEC&quot;:{&quot;RuleId&quot;:&quot;RULE_012_NESTED_LOOPS_HIGH_EXEC&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_013_ANTI_PATTERN&quot;:{&quot;RuleId&quot;:&quot;RULE_013_ANTI_PATTERN&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_014_SERIAL_PLAN_REASON&quot;:{&quot;RuleId&quot;:&quot;RULE_014_SERIAL_PLAN_REASON&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_015_LOCAL_VARIABLES&quot;:{&quot;RuleId&quot;:&quot;RULE_015_LOCAL_VARIABLES&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:&quot;Warning&quot;},&quot;RULE_016_ZERO_ROW_ACTUALS&quot;:{&quot;RuleId&quot;:&quot;RULE_016_ZERO_ROW_ACTUALS&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_036_WAIT_STATS&quot;:{&quot;RuleId&quot;:&quot;RULE_036_WAIT_STATS&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_037_RESOURCE_SEMAPHORE&quot;:{&quot;RuleId&quot;:&quot;RULE_037_RESOURCE_SEMAPHORE&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_018_OPTIMIZER_ABORT&quot;:{&quot;RuleId&quot;:&quot;RULE_018_OPTIMIZER_ABORT&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_019_CACHE_RECOMPILE&quot;:{&quot;RuleId&quot;:&quot;RULE_019_CACHE_RECOMPILE&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_020_MISSING_INDEX&quot;:{&quot;RuleId&quot;:&quot;RULE_020_MISSING_INDEX&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_021_TABLE_SCAN&quot;:{&quot;RuleId&quot;:&quot;RULE_021_TABLE_SCAN&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_022_HIGH_COST_OP&quot;:{&quot;RuleId&quot;:&quot;RULE_022_HIGH_COST_OP&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_023_RUNNING_TOTAL_PATTERN&quot;:{&quot;RuleId&quot;:&quot;RULE_023_RUNNING_TOTAL_PATTERN&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_024_SCALAR_SUBQUERY_PATTERN&quot;:{&quot;RuleId&quot;:&quot;RULE_024_SCALAR_SUBQUERY_PATTERN&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_025_QUERY_REWRITE&quot;:{&quot;RuleId&quot;:&quot;RULE_025_QUERY_REWRITE&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_026_IMPLICIT_CONV_DOC&quot;:{&quot;RuleId&quot;:&quot;RULE_026_IMPLICIT_CONV_DOC&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_027_PARAM_SNIFFING_DOC&quot;:{&quot;RuleId&quot;:&quot;RULE_027_PARAM_SNIFFING_DOC&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_028_STATS_USAGE&quot;:{&quot;RuleId&quot;:&quot;RULE_028_STATS_USAGE&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_029_MEMORY_GRANT_DOC&quot;:{&quot;RuleId&quot;:&quot;RULE_029_MEMORY_GRANT_DOC&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_030_CARDINALITY_ERROR&quot;:{&quot;RuleId&quot;:&quot;RULE_030_CARDINALITY_ERROR&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_031_KEY_LOOKUP_OP&quot;:{&quot;RuleId&quot;:&quot;RULE_031_KEY_LOOKUP_OP&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_032_MEMORY_SPILL&quot;:{&quot;RuleId&quot;:&quot;RULE_032_MEMORY_SPILL&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_033_THREAD_SKEW&quot;:{&quot;RuleId&quot;:&quot;RULE_033_THREAD_SKEW&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_034_RESIDUAL_PRED_OP&quot;:{&quot;RuleId&quot;:&quot;RULE_034_RESIDUAL_PRED_OP&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null},&quot;RULE_035_SARGABLE_INDEX_RECOMMENDATION&quot;:{&quot;RuleId&quot;:&quot;RULE_035_SARGABLE_INDEX_RECOMMENDATION&quot;,&quot;Enabled&quot;:true,&quot;SeverityOverride&quot;:null}}
+DocumentRefactoringNotices: 多语句计划已保留所有语句身份；自动重构需要明确选定单条语句，本次未生成跨语句改写。
+=== Facts ===
+B1/S2 SQL: SELECT &#39;SECRET_IMP22_7461&#39; FROM [SECRET_IMP22_7461_Table]
+B1/S2/Q1/O1 PhysicalOp: Table Scan
+B1/S2/Q1/O1 LogicalOp: Table Scan
+B1/S2/Q1/O1 NodeId: 0
+B1/S2/Q1/O1 Source: {&quot;XmlPath&quot;:&quot;/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]&quot;,&quot;Line&quot;:3,&quot;Column&quot;:99,&quot;EventIndex&quot;:null,&quot;ByteOffset&quot;:null,&quot;ByteLength&quot;:null}
+B1/S2/Q1/O1 Object: ?.[SECRET_IMP22_7461_Db].[dbo].[SECRET_IMP22_7461_Table]
+B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field1/Name: Database
+B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field1: [SECRET_IMP22_7461_Db]
+B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field2/Name: Schema
+B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field2: dbo
+B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field3/Name: Table
+B1/S2/Q1/O1/Objects[1]/SourceAttributes/Field3: [SECRET_IMP22_7461_Table]
+B1/S2/Q1/O1/Objects[1]/DisplayName: [SECRET_IMP22_7461_Table]
+B1/S2/Q1/O1/Partitioned: N/A
+B1/S2/Q1/O1/PartitionCount: N/A
+B1/S2/Q1/O1/PartitionRange: N/A
+B1/S2/Q1/O1/Execution/ActualExecutionMode: N/A
+B1/S2/Q1/O1/Execution/EstimatedExecutionMode: N/A
+B1/S2/Q1/O1/Execution/Parallel: N/A
+B1/S2/Q1/O1/Execution/Ordered: N/A
+B1/S2/Q1/O1/Execution/ExecutionMode: N/A
+B1/S2/Q1/O1/Execution/ParallelDisplay: N/A
+B1/S2/Q1/O1/Execution/OrderedDisplay: N/A
+B1/S2/Q1/O1/Threads[1]/ThreadId: 0
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field1/Name: Thread
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field1: 0
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field2/Name: ActualRows
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field2: 100
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field3/Name: ActualRowsRead
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field3: 1000
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field4/Name: ActualExecutions
+B1/S2/Q1/O1/Threads[1]/SourceAttributes/Field4: 1
+B1/S2/Q1/O1/Threads[1]/OutputRows/Value: 100
+B1/S2/Q1/O1/Threads[1]/OutputRows/State: Available
+B1/S2/Q1/O1/Threads[1]/OutputRows/Unit: rows
+B1/S2/Q1/O1/Threads[1]/OutputRows/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRows
+B1/S2/Q1/O1/Threads[1]/OutputRows/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/OutputRows/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/OutputRows/IsPresent: True
+B1/S2/Q1/O1/Threads[1]/OutputRows/IsAvailable: True
+B1/S2/Q1/O1/Threads[1]/RowsRead/Value: 1000
+B1/S2/Q1/O1/Threads[1]/RowsRead/State: Available
+B1/S2/Q1/O1/Threads[1]/RowsRead/Unit: rows
+B1/S2/Q1/O1/Threads[1]/RowsRead/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead
+B1/S2/Q1/O1/Threads[1]/RowsRead/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/RowsRead/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/RowsRead/IsPresent: True
+B1/S2/Q1/O1/Threads[1]/RowsRead/IsAvailable: True
+B1/S2/Q1/O1/Threads[1]/Executions/Value: 1
+B1/S2/Q1/O1/Threads[1]/Executions/State: Available
+B1/S2/Q1/O1/Threads[1]/Executions/Unit: executions
+B1/S2/Q1/O1/Threads[1]/Executions/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions
+B1/S2/Q1/O1/Threads[1]/Executions/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/Executions/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/Executions/IsPresent: True
+B1/S2/Q1/O1/Threads[1]/Executions/IsAvailable: True
+B1/S2/Q1/O1/Threads[1]/Rebinds/Value: N/A
+B1/S2/Q1/O1/Threads[1]/Rebinds/State: Missing
+B1/S2/Q1/O1/Threads[1]/Rebinds/Unit: rebinds
+B1/S2/Q1/O1/Threads[1]/Rebinds/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds
+B1/S2/Q1/O1/Threads[1]/Rebinds/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/Rebinds/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/Rebinds/IsPresent: False
+B1/S2/Q1/O1/Threads[1]/Rebinds/IsAvailable: False
+B1/S2/Q1/O1/Threads[1]/Rewinds/Value: N/A
+B1/S2/Q1/O1/Threads[1]/Rewinds/State: Missing
+B1/S2/Q1/O1/Threads[1]/Rewinds/Unit: rewinds
+B1/S2/Q1/O1/Threads[1]/Rewinds/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds
+B1/S2/Q1/O1/Threads[1]/Rewinds/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/Rewinds/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/Rewinds/IsPresent: False
+B1/S2/Q1/O1/Threads[1]/Rewinds/IsAvailable: False
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/Value: N/A
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/State: Missing
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/Unit: ms
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/IsPresent: False
+B1/S2/Q1/O1/Threads[1]/ElapsedTime/IsAvailable: False
+B1/S2/Q1/O1/Threads[1]/CpuTime/Value: N/A
+B1/S2/Q1/O1/Threads[1]/CpuTime/State: Missing
+B1/S2/Q1/O1/Threads[1]/CpuTime/Unit: ms
+B1/S2/Q1/O1/Threads[1]/CpuTime/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms
+B1/S2/Q1/O1/Threads[1]/CpuTime/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/CpuTime/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/CpuTime/IsPresent: False
+B1/S2/Q1/O1/Threads[1]/CpuTime/IsAvailable: False
+B1/S2/Q1/O1/Threads[1]/LogicalReads/Value: N/A
+B1/S2/Q1/O1/Threads[1]/LogicalReads/State: Missing
+B1/S2/Q1/O1/Threads[1]/LogicalReads/Unit: pages
+B1/S2/Q1/O1/Threads[1]/LogicalReads/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads
+B1/S2/Q1/O1/Threads[1]/LogicalReads/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/LogicalReads/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/LogicalReads/IsPresent: False
+B1/S2/Q1/O1/Threads[1]/LogicalReads/IsAvailable: False
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/Value: N/A
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/State: Missing
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/Unit: pages
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/Kind: Actual
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/Aggregation: Attribute
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/IsPresent: False
+B1/S2/Q1/O1/Threads[1]/PhysicalReads/IsAvailable: False
+B1/S2/Q1/O1/EstimatedRows/Value: 1
+B1/S2/Q1/O1/EstimatedRows/State: Available
+B1/S2/Q1/O1/EstimatedRows/Unit: rows/execution
+B1/S2/Q1/O1/EstimatedRows/Source: RelOp/@EstimateRows
+B1/S2/Q1/O1/EstimatedRows/Kind: Estimated
+B1/S2/Q1/O1/EstimatedRows/Aggregation: Attribute
+B1/S2/Q1/O1/EstimatedRows/IsPresent: True
+B1/S2/Q1/O1/EstimatedRows/IsAvailable: True
+B1/S2/Q1/O1/EstimatedRowsRead/Value: N/A
+B1/S2/Q1/O1/EstimatedRowsRead/State: Missing
+B1/S2/Q1/O1/EstimatedRowsRead/Unit: rows/execution
+B1/S2/Q1/O1/EstimatedRowsRead/Source: RelOp/@EstimatedRowsRead
+B1/S2/Q1/O1/EstimatedRowsRead/Kind: Estimated
+B1/S2/Q1/O1/EstimatedRowsRead/Aggregation: Attribute
+B1/S2/Q1/O1/EstimatedRowsRead/IsPresent: False
+B1/S2/Q1/O1/EstimatedRowsRead/IsAvailable: False
+B1/S2/Q1/O1/EstimatedCpuCost/Value: N/A
+B1/S2/Q1/O1/EstimatedCpuCost/State: Missing
+B1/S2/Q1/O1/EstimatedCpuCost/Unit: optimizer-cost
+B1/S2/Q1/O1/EstimatedCpuCost/Source: RelOp/@EstimateCPU
+B1/S2/Q1/O1/EstimatedCpuCost/Kind: Estimated
+B1/S2/Q1/O1/EstimatedCpuCost/Aggregation: Attribute
+B1/S2/Q1/O1/EstimatedCpuCost/IsPresent: False
+B1/S2/Q1/O1/EstimatedCpuCost/IsAvailable: False
+B1/S2/Q1/O1/EstimatedIoCost/Value: N/A
+B1/S2/Q1/O1/EstimatedIoCost/State: Missing
+B1/S2/Q1/O1/EstimatedIoCost/Unit: optimizer-cost
+B1/S2/Q1/O1/EstimatedIoCost/Source: RelOp/@EstimateIO
+B1/S2/Q1/O1/EstimatedIoCost/Kind: Estimated
+B1/S2/Q1/O1/EstimatedIoCost/Aggregation: Attribute
+B1/S2/Q1/O1/EstimatedIoCost/IsPresent: False
+B1/S2/Q1/O1/EstimatedIoCost/IsAvailable: False
+B1/S2/Q1/O1/AverageRowSize/Value: N/A
+B1/S2/Q1/O1/AverageRowSize/State: Missing
+B1/S2/Q1/O1/AverageRowSize/Unit: bytes/row
+B1/S2/Q1/O1/AverageRowSize/Source: RelOp/@AvgRowSize
+B1/S2/Q1/O1/AverageRowSize/Kind: Estimated
+B1/S2/Q1/O1/AverageRowSize/Aggregation: Attribute
+B1/S2/Q1/O1/AverageRowSize/IsPresent: False
+B1/S2/Q1/O1/AverageRowSize/IsAvailable: False
+B1/S2/Q1/O1/EstimatedExecutions/Value: N/A
+B1/S2/Q1/O1/EstimatedExecutions/State: Missing
+B1/S2/Q1/O1/EstimatedExecutions/Unit: executions
+B1/S2/Q1/O1/EstimatedExecutions/Source: EstimateRebinds + EstimateRewinds + 1
+B1/S2/Q1/O1/EstimatedExecutions/Kind: Estimated
+B1/S2/Q1/O1/EstimatedExecutions/Aggregation: RebindsPlusRewindsPlusOne
+B1/S2/Q1/O1/EstimatedExecutions/IsPresent: False
+B1/S2/Q1/O1/EstimatedExecutions/IsAvailable: False
+B1/S2/Q1/O1/SubtreeCost/Value: N/A
+B1/S2/Q1/O1/SubtreeCost/State: Missing
+B1/S2/Q1/O1/SubtreeCost/Unit: optimizer-cost
+B1/S2/Q1/O1/SubtreeCost/Source: RelOp/@EstimatedTotalSubtreeCost
+B1/S2/Q1/O1/SubtreeCost/Kind: Estimated
+B1/S2/Q1/O1/SubtreeCost/Aggregation: Attribute
+B1/S2/Q1/O1/SubtreeCost/IsPresent: False
+B1/S2/Q1/O1/SubtreeCost/IsAvailable: False
+B1/S2/Q1/O1/OwnCost/Value: N/A
+B1/S2/Q1/O1/OwnCost/State: Missing
+B1/S2/Q1/O1/OwnCost/Unit: optimizer-cost
+B1/S2/Q1/O1/OwnCost/Source: EstimatedTotalSubtreeCost - direct child subtree costs
+B1/S2/Q1/O1/OwnCost/Kind: Estimated
+B1/S2/Q1/O1/OwnCost/Aggregation: SubtreeMinusChildren
+B1/S2/Q1/O1/OwnCost/IsPresent: False
+B1/S2/Q1/O1/OwnCost/IsAvailable: False
+B1/S2/Q1/O1/OutputRows/Value: 100
+B1/S2/Q1/O1/OutputRows/State: Available
+B1/S2/Q1/O1/OutputRows/Unit: rows
+B1/S2/Q1/O1/OutputRows/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRows
+B1/S2/Q1/O1/OutputRows/Kind: Actual
+B1/S2/Q1/O1/OutputRows/Aggregation: SumThreads
+B1/S2/Q1/O1/OutputRows/IsPresent: True
+B1/S2/Q1/O1/OutputRows/IsAvailable: True
+B1/S2/Q1/O1/RowsRead/Value: 1000
+B1/S2/Q1/O1/RowsRead/State: Available
+B1/S2/Q1/O1/RowsRead/Unit: rows
+B1/S2/Q1/O1/RowsRead/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead
+B1/S2/Q1/O1/RowsRead/Kind: Actual
+B1/S2/Q1/O1/RowsRead/Aggregation: SumThreads
+B1/S2/Q1/O1/RowsRead/IsPresent: True
+B1/S2/Q1/O1/RowsRead/IsAvailable: True
+B1/S2/Q1/O1/ThreadExecutions/Value: 1
+B1/S2/Q1/O1/ThreadExecutions/State: Available
+B1/S2/Q1/O1/ThreadExecutions/Unit: executions
+B1/S2/Q1/O1/ThreadExecutions/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions
+B1/S2/Q1/O1/ThreadExecutions/Kind: Actual
+B1/S2/Q1/O1/ThreadExecutions/Aggregation: SumThreads
+B1/S2/Q1/O1/ThreadExecutions/IsPresent: True
+B1/S2/Q1/O1/ThreadExecutions/IsAvailable: True
+B1/S2/Q1/O1/LogicalExecutions/Value: 1
+B1/S2/Q1/O1/LogicalExecutions/State: Available
+B1/S2/Q1/O1/LogicalExecutions/Unit: executions
+B1/S2/Q1/O1/LogicalExecutions/Source: serial counter or common active worker executions
+B1/S2/Q1/O1/LogicalExecutions/Kind: Actual
+B1/S2/Q1/O1/LogicalExecutions/Aggregation: CommonWorkerExecutions
+B1/S2/Q1/O1/LogicalExecutions/IsPresent: True
+B1/S2/Q1/O1/LogicalExecutions/IsAvailable: True
+B1/S2/Q1/O1/RowsPerExecution/Value: 100
+B1/S2/Q1/O1/RowsPerExecution/State: Available
+B1/S2/Q1/O1/RowsPerExecution/Unit: rows/execution
+B1/S2/Q1/O1/RowsPerExecution/Source: ActualRows / logical executions
+B1/S2/Q1/O1/RowsPerExecution/Kind: Actual
+B1/S2/Q1/O1/RowsPerExecution/Aggregation: RowsPerExecution
+B1/S2/Q1/O1/RowsPerExecution/IsPresent: True
+B1/S2/Q1/O1/RowsPerExecution/IsAvailable: True
+B1/S2/Q1/O1/Rebinds/Value: N/A
+B1/S2/Q1/O1/Rebinds/State: Missing
+B1/S2/Q1/O1/Rebinds/Unit: rebinds
+B1/S2/Q1/O1/Rebinds/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds
+B1/S2/Q1/O1/Rebinds/Kind: Actual
+B1/S2/Q1/O1/Rebinds/Aggregation: SumThreads
+B1/S2/Q1/O1/Rebinds/IsPresent: False
+B1/S2/Q1/O1/Rebinds/IsAvailable: False
+B1/S2/Q1/O1/Rewinds/Value: N/A
+B1/S2/Q1/O1/Rewinds/State: Missing
+B1/S2/Q1/O1/Rewinds/Unit: rewinds
+B1/S2/Q1/O1/Rewinds/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds
+B1/S2/Q1/O1/Rewinds/Kind: Actual
+B1/S2/Q1/O1/Rewinds/Aggregation: SumThreads
+B1/S2/Q1/O1/Rewinds/IsPresent: False
+B1/S2/Q1/O1/Rewinds/IsAvailable: False
+B1/S2/Q1/O1/ElapsedTime/Value: N/A
+B1/S2/Q1/O1/ElapsedTime/State: Missing
+B1/S2/Q1/O1/ElapsedTime/Unit: ms
+B1/S2/Q1/O1/ElapsedTime/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms
+B1/S2/Q1/O1/ElapsedTime/Kind: Actual
+B1/S2/Q1/O1/ElapsedTime/Aggregation: MaxThreads
+B1/S2/Q1/O1/ElapsedTime/IsPresent: False
+B1/S2/Q1/O1/ElapsedTime/IsAvailable: False
+B1/S2/Q1/O1/CpuTime/Value: N/A
+B1/S2/Q1/O1/CpuTime/State: Missing
+B1/S2/Q1/O1/CpuTime/Unit: ms
+B1/S2/Q1/O1/CpuTime/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms
+B1/S2/Q1/O1/CpuTime/Kind: Actual
+B1/S2/Q1/O1/CpuTime/Aggregation: SumThreads
+B1/S2/Q1/O1/CpuTime/IsPresent: False
+B1/S2/Q1/O1/CpuTime/IsAvailable: False
+B1/S2/Q1/O1/LogicalReads/Value: N/A
+B1/S2/Q1/O1/LogicalReads/State: Missing
+B1/S2/Q1/O1/LogicalReads/Unit: pages
+B1/S2/Q1/O1/LogicalReads/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads
+B1/S2/Q1/O1/LogicalReads/Kind: Actual
+B1/S2/Q1/O1/LogicalReads/Aggregation: SumThreads
+B1/S2/Q1/O1/LogicalReads/IsPresent: False
+B1/S2/Q1/O1/LogicalReads/IsAvailable: False
+B1/S2/Q1/O1/PhysicalReads/Value: N/A
+B1/S2/Q1/O1/PhysicalReads/State: Missing
+B1/S2/Q1/O1/PhysicalReads/Unit: pages
+B1/S2/Q1/O1/PhysicalReads/Source: RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads
+B1/S2/Q1/O1/PhysicalReads/Kind: Actual
+B1/S2/Q1/O1/PhysicalReads/Aggregation: SumThreads
+B1/S2/Q1/O1/PhysicalReads/IsPresent: False
+B1/S2/Q1/O1/PhysicalReads/IsAvailable: False
+B1/S2/Q1/O1/PhysicalOp: Table Scan
+B1/S2/Q1/O1/HasResidualPredicate: False
+B1/S2/Q1/O1/WorkerRows: N/A
+=== Diagnostics ===
+D1 | RULE_004_ESTIMATE_MISMATCH / 2.0.0 | B1/S2/Q1/O1 | Hit | Critical | High
+Title: 基数估计偏差
+DiagnosticId: ADD99E5D1F18B71A34352BCAE73779B8FCC628F27B30BFCD4EF120133D79A7D2
+Details: [Critical] 基数估计偏差
+诊断 ID：ADD99E5D1F18B71A34352BCAE73779B8FCC628F27B30BFCD4EF120133D79A7D2
+来源：7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1；置信度：High
+规则：RULE_004_ESTIMATE_MISMATCH v2.0.0
+估算每次执行 1 行，实际每次执行 100 行；偏差指标 100 倍（较小行数按至少 1 行计算）。
+证据 EstimatedRows：1 rows/execution；Available/Estimated/Attribute；RelOp/@EstimateRows；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+证据 OutputRows：100 rows；Available/Actual/SumThreads；RunTimeInformation/RunTimeCountersPerThread/@ActualRows；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+证据 LogicalExecutions：1 executions；Available/Actual/CommonWorkerExecutions；serial counter or common active worker executions；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+证据 RowsPerExecution：100 rows/execution；Available/Actual/RowsPerExecution；ActualRows / logical executions；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+证据 ComparisonDenominator：1 rows/execution；Available//；max(1, min(EstimatedRows, RowsPerExecution))；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+证据 DeviationRatio：100 ratio；Available//；max(EstimatedRows, RowsPerExecution) / ComparisonDenominator；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+证据 AbsoluteRowDifference：99 rows/execution；Available//；abs(EstimatedRows - RowsPerExecution)；7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1
+假设：偏差可能与统计信息、参数分布、列相关性或过滤表达式有关，现有证据不能确定根因。
+建议：核对同次采集的谓词、参数与统计信息，再比较调整前后的实际计划。
+适用条件：RULE004：较大单次行数至少 100；偏差指标 &gt;= 10 为 Warning、&gt;= 100 为 Critical；估算 &gt;= 1000 且实际 &lt;= 100 时为 Critical。
+限制：实际总输出除以逻辑执行次数；并行 worker 次数不相加，次数不一致时不比较。
+限制：分母下限为 1，零行与不足 1 行时该指标不是未经调整的数学倍数；不能据此断定统计信息过时或连接算法错误。
+Source: {&quot;XmlPath&quot;:&quot;/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]&quot;,&quot;Line&quot;:3,&quot;Column&quot;:99,&quot;EventIndex&quot;:null,&quot;ByteOffset&quot;:null,&quot;ByteLength&quot;:null}
+Origins: [{&quot;RuleId&quot;:&quot;RULE_004_ESTIMATE_MISMATCH&quot;,&quot;RuleVersion&quot;:&quot;2.0.0&quot;}]
+Evidence1/Location: B1/S2/Q1/O1
+Evidence1/Name: EstimatedRows
+Evidence1/Value: 1
+Evidence1/State: Available
+Evidence2/Location: B1/S2/Q1/O1
+Evidence2/Name: OutputRows
+Evidence2/Value: 100
+Evidence2/State: Available
+Evidence3/Location: B1/S2/Q1/O1
+Evidence3/Name: LogicalExecutions
+Evidence3/Value: 1
+Evidence3/State: Available
+Evidence4/Location: B1/S2/Q1/O1
+Evidence4/Name: RowsPerExecution
+Evidence4/Value: 100
+Evidence4/State: Available
+Evidence5/Location: B1/S2/Q1/O1
+Evidence5/Name: ComparisonDenominator
+Evidence5/Value: 1
+Evidence5/State: Available
+Evidence6/Location: B1/S2/Q1/O1
+Evidence6/Name: DeviationRatio
+Evidence6/Value: 100
+Evidence6/State: Available
+Evidence7/Location: B1/S2/Q1/O1
+Evidence7/Name: AbsoluteRowDifference
+Evidence7/Value: 99
+Evidence7/State: Available
+=== Rule Runs ===
+R1 | RULE_001_IMPLICIT_CONV / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_001_IMPLICIT_CONV v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R2 | RULE_002_KEY_LOOKUP / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_002_KEY_LOOKUP v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R3 | RULE_003_PARAM_SNIFFING / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_003_PARAM_SNIFFING v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R4 | RULE_004_ESTIMATE_MISMATCH / 2.0.0 | B1/S2/Q1/O1 | Hit | N/A | N/A
+ReasonCode: RULE_HIT
+Details: [Hit] RULE_004_ESTIMATE_MISMATCH v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_HIT — 检测到符合条件的诊断。
+R5 | RULE_017_LARGE_MEMORY_GRANT / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_017_LARGE_MEMORY_GRANT v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R6 | RULE_006_RESIDUAL_PREDICATE / 2.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_006_RESIDUAL_PREDICATE v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 已执行规则，未满足触发条件。
+R7 | RULE_008_SPILL_DETECTION / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_008_SPILL_DETECTION v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R8 | RULE_009_PARALLEL_SKEW / 1.0.0 | B1/S2/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_MISSING_EVIDENCE
+Details: [Skipped] RULE_009_PARALLEL_SKEW v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：Parallel / worker 行分布
+R9 | RULE_011_UDF_TVF / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_011_UDF_TVF v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R10 | RULE_012_NESTED_LOOPS_HIGH_EXEC / 1.0.0 | B1/S2/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Skipped] RULE_012_NESTED_LOOPS_HIGH_EXEC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NOT_APPLICABLE — 算子不属于本规则支持的循环或查找类型。
+R11 | RULE_013_ANTI_PATTERN / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_013_ANTI_PATTERN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R12 | RULE_014_SERIAL_PLAN_REASON / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_014_SERIAL_PLAN_REASON v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R13 | RULE_015_LOCAL_VARIABLES / 1.0.0 | B1/S2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_015_LOCAL_VARIABLES v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R14 | RULE_016_ZERO_ROW_ACTUALS / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_016_ZERO_ROW_ACTUALS v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R15 | RULE_036_WAIT_STATS / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_036_WAIT_STATS v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R16 | RULE_037_RESOURCE_SEMAPHORE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_037_RESOURCE_SEMAPHORE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R17 | RULE_018_OPTIMIZER_ABORT / 1.0.0 | B1/S2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_018_OPTIMIZER_ABORT v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R18 | RULE_019_CACHE_RECOMPILE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_019_CACHE_RECOMPILE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R19 | RULE_020_MISSING_INDEX / 2.1.1 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_020_MISSING_INDEX v2.1.1 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R20 | RULE_021_TABLE_SCAN / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_021_TABLE_SCAN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R21 | RULE_022_HIGH_COST_OP / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_022_HIGH_COST_OP v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R22 | RULE_023_RUNNING_TOTAL_PATTERN / 1.0.0 | B1/S2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_023_RUNNING_TOTAL_PATTERN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R23 | RULE_024_SCALAR_SUBQUERY_PATTERN / 1.0.0 | B1/S2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_024_SCALAR_SUBQUERY_PATTERN v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R24 | RULE_025_QUERY_REWRITE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_025_QUERY_REWRITE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R25 | RULE_026_IMPLICIT_CONV_DOC / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_026_IMPLICIT_CONV_DOC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R26 | RULE_027_PARAM_SNIFFING_DOC / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_027_PARAM_SNIFFING_DOC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R27 | RULE_028_STATS_USAGE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_028_STATS_USAGE v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R28 | RULE_029_MEMORY_GRANT_DOC / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_029_MEMORY_GRANT_DOC v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R29 | RULE_030_CARDINALITY_ERROR / 2.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_030_CARDINALITY_ERROR v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 已执行规则，未满足触发条件。
+R30 | RULE_031_KEY_LOOKUP_OP / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_031_KEY_LOOKUP_OP v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R31 | RULE_032_MEMORY_SPILL / 1.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_032_MEMORY_SPILL v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。
+R32 | RULE_033_THREAD_SKEW / 1.0.0 | B1/S2/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_MISSING_EVIDENCE
+Details: [Skipped] RULE_033_THREAD_SKEW v1.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_MISSING_EVIDENCE — 缺少可用证据：完整且角色明确的 worker 行分布
+R33 | RULE_034_RESIDUAL_PRED_OP / 2.0.0 | B1/S2/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_034_RESIDUAL_PRED_OP v2.0.0 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2/Q1/N0/O1]：RULE_NO_HIT — 已执行规则，未满足触发条件。
+R34 | RULE_035_SARGABLE_INDEX_RECOMMENDATION / 2.1.1 | B1/S2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [NoHit] RULE_035_SARGABLE_INDEX_RECOMMENDATION v2.1.1 [7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9/B1/S2]：RULE_NO_HIT — 已执行规则，未满足触发条件。
+=== Graph nodes / edges (complete) ===
+B1/S2/Q1/O1: Table Scan ?.[SECRET_IMP22_7461_Db].[dbo].[SECRET_IMP22_7461_Table]
+=== Source XML (selection) ===
+&lt;ShowPlanXML xmlns=&quot;http://schemas.microsoft.com/sqlserver/2004/07/showplan&quot; Version=&quot;1.571&quot; Build=&quot;16.0.1000.6&quot;&gt;
+  &lt;BatchSequence&gt;
+    &lt;Batch&gt;
+      &lt;Statements&gt;
+        &lt;StmtSimple StatementText=&quot;SELECT &#39;SECRET_IMP22_7461&#39; FROM [SECRET_IMP22_7461_Table]&quot;&gt;
+          &lt;QueryPlan&gt;
+            &lt;RelOp NodeId=&quot;0&quot; PhysicalOp=&quot;Table Scan&quot; LogicalOp=&quot;Table Scan&quot; EstimateRows=&quot;1&quot;&gt;
+              &lt;RunTimeInformation&gt;
+                &lt;RunTimeCountersPerThread Thread=&quot;0&quot; ActualRows=&quot;100&quot; ActualRowsRead=&quot;1000&quot; ActualExecutions=&quot;1&quot; /&gt;
+              &lt;/RunTimeInformation&gt;
+              &lt;TableScan&gt;
+                &lt;Object Database=&quot;[SECRET_IMP22_7461_Db]&quot; Schema=&quot;dbo&quot; Table=&quot;[SECRET_IMP22_7461_Table]&quot; /&gt;
+              &lt;/TableScan&gt;
+            &lt;/RelOp&gt;
+          &lt;/QueryPlan&gt;
+        &lt;/StmtSimple&gt;
+      &lt;/Statements&gt;
+    &lt;/Batch&gt;
+  &lt;/BatchSequence&gt;
+&lt;/ShowPlanXML&gt;
+</pre></body></html>

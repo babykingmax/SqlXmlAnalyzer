@@ -11,6 +11,8 @@ namespace SqlXmlAnalyzer.Core.Models
         public string ResourceId { get; set; } = "";
         public string LockMode { get; set; } = "";
         public string Description { get; set; } = "";
+        public string EvidenceId { get; init; } = "";
+        public Services.SourceLocation? Source { get; init; }
 
         // UI Helpers
         public bool IsInCycle { get; set; }

@@ -1,0 +1,23 @@
+[
+  {
+    "File": "invalid-utf8-byte.sqlplan",
+    "StrictXmlError": "Invalid character in the given encoding. Line 6, position 90.",
+    "SharedInputStatus": "Success",
+    "GuiOpenStatus": "Success",
+    "HasReplacementCharacter": true
+  },
+  {
+    "File": "valid-utf16-no-bom.sqlplan",
+    "StrictXmlError": null,
+    "SharedInputStatus": "Success",
+    "GuiOpenStatus": "Success",
+    "HasReplacementCharacter": false
+  },
+  {
+    "File": "valid-utf32-no-bom.sqlplan",
+    "StrictXmlError": null,
+    "SharedInputStatus": "Success",
+    "GuiOpenStatus": "Success",
+    "HasReplacementCharacter": false
+  }
+]

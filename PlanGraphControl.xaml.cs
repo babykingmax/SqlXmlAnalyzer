@@ -48,7 +48,6 @@ namespace SqlXmlAnalyzer
         private static readonly PlanGraphModeUiActionService ModeUiActionService = new();
         private static readonly PlanGraphNodeClipboardUiActionService NodeClipboardUiActionService = new();
         private static readonly PlanGraphPanUiActionService PanUiActionService = new();
-        private static readonly PlanGraphViewportUiActionService ViewportUiActionService = new();
 
         public ObservableCollection<PlanNodeViewModel> Nodes { get; } = new();
         public ObservableCollection<ConnectionViewModel> Connections { get; } = new();
@@ -122,6 +121,7 @@ namespace SqlXmlAnalyzer
             get => _selectedNode;
             set
             {
+                if (ReferenceEquals(_selectedNode, value)) return;
                 _selectedNode = value;
                 OnPropertyChanged(nameof(SelectedNode));
                 // 选中时可通知宿主 (MainWindow) 刷新右侧属性面板
@@ -132,6 +132,57 @@ namespace SqlXmlAnalyzer
 
         public event EventHandler<PlanNodeViewModel?>? NodeSelected;
         public event EventHandler<PlanNodeViewModel?>? NodeDoubleClicked;
+        public void OpenSelectedNode() { if (SelectedNode != null) NodeDoubleClicked?.Invoke(this, SelectedNode); }
+        public void FocusFirstNode()
+        {
+            if (Nodes.Count == 0) { Focus(); return; }
+            FocusNode(SelectedNode != null && Nodes.Contains(SelectedNode) ? SelectedNode : Nodes[0]);
+        }
+        private async void FocusNode(PlanNodeViewModel node)
+        {
+            try
+            {
+                SelectKeyboardNode(node);
+                long intentRevision = _viewportIntentRevision;
+                await PendingPage;
+                // Focus itself triggers AccessiblePlanNode's selection hook,
+                // which centers the node. Do not let an old cross-page focus
+                // overwrite a newer fit/zoom or steal focus from its button.
+                if (intentRevision != _viewportIntentRevision || !ReferenceEquals(SelectedNode, node) || !Nodes.Contains(node)) return;
+                UpdateLayout();
+                var visual = Services.WorkspaceAccessibility.Descendants(Editor).OfType<AccessiblePlanNode>().FirstOrDefault(item => ReferenceEquals(item.DataContext, node));
+                if (visual != null) Services.WorkspaceAccessibility.Focus(visual);
+                else Editor.Focus();
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception exception) { WorkspaceAccessibility.Report(exception, "GraphFocus", this); }
+        }
+        private void Graph_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.OriginalSource is not AccessiblePlanNode && !ReferenceEquals(e.OriginalSource, Editor)) return;
+            if (Keyboard.Modifiers != ModifierKeys.None || Nodes.Count == 0) return;
+            try
+            {
+                if (e.Key == Key.Enter) OpenSelectedNode();
+                else if (e.Key is Key.Left or Key.Up or Key.Right or Key.Down or Key.Home or Key.End)
+                {
+                    var available = _masterNodes.Where(node => node.IsVisible).ToList();
+                    if (available.Count == 0) return;
+                    int index = e.Key == Key.Home ? 0 : e.Key == Key.End ? available.Count - 1 :
+                        Core.Services.WorkspaceInteractionService.MoveSelection(available.Count, SelectedNode == null ? -1 : available.IndexOf(SelectedNode), e.Key is Key.Left or Key.Up ? -1 : 1);
+                    FocusNode(available[index]);
+                }
+                else return;
+                e.Handled = true;
+            }
+            catch (Exception exception) { Services.WorkspaceAccessibility.Report(exception, "GraphKeyboard", this); e.Handled = true; }
+        }
+        public void SelectKeyboardNode(PlanNodeViewModel node)
+        {
+            if (!_masterNodes.Contains(node)) return;
+            if (node.Identity != null) SelectOperator(node.Identity);
+            else SelectedNode = node;
+        }
 
         private Core.Services.PlanGraphPanState _panState = new(false, new Point());
 
@@ -151,7 +202,7 @@ namespace SqlXmlAnalyzer
                 e.GetPosition(this),
                 Editor.ViewportLocation,
                 Editor.ViewportZoom,
-                location => Editor.ViewportLocation = location);
+                Editor.PanViewport);
         }
 
         private void Editor_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -173,6 +224,7 @@ namespace SqlXmlAnalyzer
         {
             InitializeComponent();
             DataContext = this;
+            InitializePresentation();
 
             Editor.DisablePanning = false;
             Editor.DisableZooming = false;
@@ -193,8 +245,10 @@ namespace SqlXmlAnalyzer
         /// <summary>
         /// 核心：从真实执行计划 XDocument 加载可拖拽节点图 (Plan Explorer 风格)
         /// </summary>
-        public void LoadFromExecutionPlan(XDocument doc, XNamespace ns)
+        public void LoadFromExecutionPlan(XDocument doc, XNamespace ns, IReadOnlyList<XElement>? operators = null,
+            Core.Rules.PlanDiagnosticReport? diagnostics = null)
         {
+            InvalidateGraph();
             ShowEmptyHint(false);
 
             PlanLayoutMode initialLayout = CmbLayoutMode != null && CmbLayoutMode.SelectedIndex >= 0 ? (PlanLayoutMode)CmbLayoutMode.SelectedIndex : PlanLayoutMode.Horizontal;
@@ -214,6 +268,8 @@ namespace SqlXmlAnalyzer
                     Connections,
                     new PlanGraphLoadUiActionOptions
                     {
+                        Operators = operators,
+                        Diagnostics = diagnostics,
                         InitialLayout = initialLayout,
                         InitialColor = initialColor,
                         InitialView = initialView,
@@ -222,25 +278,38 @@ namespace SqlXmlAnalyzer
                         ResidualIoMinRowsRead = ResidualIOMinRowsRead
                     });
 
-            if (!result.HasGraph)
-            {
-                ShowEmptyHint(true);
-                return;
-            }
-
             _currentDoc = doc;
             _currentNs = ns;
             _masterNodes = result.MasterNodes.ToList();
             _masterConnections = result.MasterConnections.ToList();
+            ApplyAutomaticViewMode();
+            OnPropertyChanged(nameof(AllNodes));
+            _pageStart = 0;
+            PageDescription = Core.Services.PlanGraphPageService.ForIndex(_masterNodes.Count, 0).Description;
+            OnPropertyChanged(nameof(PageDescription)); OnPropertyChanged(nameof(CanPreviousPage)); OnPropertyChanged(nameof(CanNextPage));
             SelectedNode = result.SelectedNode;
+            RefreshPageContext(Nodes.ToArray());
+            if (_masterNodes.Count > Core.Services.PlanGraphPageService.MaximumVisibleNodes)
+                _ = NavigatePageAsync(0);
+            EmptyHint.Text = doc.Root == null
+                ? "尚未加载执行计划，请打开 .sqlplan 或 .xml 文件。"
+                : "当前选择未采集可显示的算子。\n请切换语句/计划并核对诊断运行状态。\n空图不构成健康结论。";
+            ShowEmptyHint(!result.HasGraph);
+            if (_masterNodes.Count <= Core.Services.PlanGraphPageService.MaximumVisibleNodes)
+                ApplyPendingViewport();
         }
 
-        public void ResetView()
+        public void SelectOperator(Core.Models.PlanOperatorKey key)
         {
-            ViewportUiActionService.ResetView(
-                zoom => Editor.ViewportZoom = zoom,
-                Nodes);
+            var node = _masterNodes.SingleOrDefault(n => n.Identity == key);
+            if (node == null) throw new System.IO.InvalidDataException("证据节点不在当前图范围内。");
+            CollapseUiActionService.RevealNode(node, _masterNodes, ReapplyLayout, UpdateGraphVisibility);
+            RevealPage(node);
+            SelectedNode = node;
+            CenterNode(node);
         }
+
+        public void ResetView() => ResetZoom();
 
 
         private void CopyNodeInfo_Click(object sender, RoutedEventArgs e)
@@ -279,7 +348,7 @@ namespace SqlXmlAnalyzer
             ReapplyLayout();
         }
 
-        private void ToggleCollapse_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void ToggleCollapse_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
             if (sender is Button btn && btn.DataContext is PlanNodeViewModel node)
@@ -295,6 +364,13 @@ namespace SqlXmlAnalyzer
 
         private void UpdateGraphVisibility()
         {
+            if (_masterNodes.Count > Core.Services.PlanGraphPageService.MaximumVisibleNodes)
+            {
+                CollapseUiActionService.UpdateVisibility(_currentDoc, _currentNs, _masterNodes, _masterConnections,
+                    new HashSet<PlanNodeViewModel>(), new HashSet<ConnectionViewModel>());
+                _ = NavigatePageAsync(_pageStart);
+                return;
+            }
             CollapseUiActionService.UpdateVisibility(
                 _currentDoc,
                 _currentNs,
@@ -302,12 +378,16 @@ namespace SqlXmlAnalyzer
                 _masterConnections,
                 Nodes,
                 Connections);
+            RefreshPageContext(Nodes.ToArray());
         }
 
         private void CmbViewMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CmbViewMode == null || Nodes == null) return;
-            ModeUiActionService.ApplyViewMode(CmbViewMode.SelectedIndex, Nodes);
+            if (_presentationReady && !_applyingPreferences) _hasExplicitViewMode = true;
+            ModeUiActionService.ApplyViewMode(CmbViewMode.SelectedIndex, _masterNodes);
+            OnPropertyChanged(nameof(GraphLegend));
+            NotifyPreferencesChanged();
         }
 
         private void CmbLayoutMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -316,6 +396,7 @@ namespace SqlXmlAnalyzer
             ModeUiActionService.ApplyLayoutMode(
                 CmbLayoutMode.SelectedIndex,
                 mode => LayoutMode = mode);
+            NotifyPreferencesChanged();
         }
 
         private void CmbColorMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -324,6 +405,7 @@ namespace SqlXmlAnalyzer
             ModeUiActionService.ApplyColorMode(
                 CmbColorMode.SelectedIndex,
                 mode => ColorMode = mode);
+            NotifyPreferencesChanged();
         }
 
         private void CmbLinkMetric_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -332,10 +414,17 @@ namespace SqlXmlAnalyzer
             ModeUiActionService.ApplyLinkMetric(
                 CmbLinkMetric.SelectedIndex,
                 metric => LinkMetric = metric);
+            NotifyPreferencesChanged();
         }
 
         private void ReapplyLayout()
         {
+            if (_masterNodes.Count > Core.Services.PlanGraphPageService.MaximumVisibleNodes)
+            {
+                foreach (var connection in _masterConnections) connection.LayoutMode = LayoutMode;
+                _ = NavigatePageAsync(_pageStart);
+                return;
+            }
             LayoutUiActionService.ReapplyLayout(
                 _currentDoc,
                 _currentNs,
@@ -346,17 +435,17 @@ namespace SqlXmlAnalyzer
 
         private void ReapplyColorMode()
         {
-            ModeUiActionService.ApplyColorMode(ColorMode, Nodes);
+            ModeUiActionService.ApplyColorMode(ColorMode, _masterNodes);
         }
 
         private void ReapplyLinkMetric()
         {
-            ModeUiActionService.ApplyLinkMetric(LinkMetric, Connections);
+            ModeUiActionService.ApplyLinkMetric(LinkMetric, _masterConnections);
         }
 
         private void UpdateConnectionHighlights()
         {
-            ConnectionUiActionService.UpdateHighlights(_selectedNode?.NodeId, Connections);
+            ConnectionUiActionService.UpdateHighlights(_selectedNode?.SelectionKey, Connections);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

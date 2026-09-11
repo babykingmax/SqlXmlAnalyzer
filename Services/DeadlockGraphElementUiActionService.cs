@@ -13,6 +13,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly DeadlockNodeInteractionBinder _nodeInteractionBinder;
         private readonly Core.Services.DeadlockGraphEdgeRegistryService _edgeRegistryService;
         private readonly Core.Services.DeadlockGraphGeometryService _geometryService;
+        private readonly Core.Services.DeadlockStepBadgeService _stepBadgeService = new();
         private readonly Canvas _graphCanvas;
         private readonly ListView _processesList;
         private readonly ListView _resourcesList;
@@ -55,6 +56,13 @@ namespace SqlXmlAnalyzer.Services
                 placement.NodeId,
                 placement.Process.ThreadCount);
 
+            card.ToolTip = placement.Process.IsInCycle ? "共享等待图：环成员" : "共享等待图：未确认属于环";
+            if (placement.Process.IsInCycle && !placement.IsVictim && card is Border cycleCard)
+            {
+                cycleCard.BorderBrush = System.Windows.Media.Brushes.DarkOrange;
+                cycleCard.BorderThickness = new Thickness(3);
+            }
+
             AddNode(card, placement.NodeId, placement.Position.X, placement.Position.Y);
         }
 
@@ -67,16 +75,21 @@ namespace SqlXmlAnalyzer.Services
                 placement.NodeId,
                 placement.Resource.LockCount);
 
+            container.ToolTip = (placement.Resource.IsInCycle ? "共享等待图：环内资源" : "共享等待图：环外资源")
+                + "\n原始资源 ID: " + placement.Resource.RawResources.First().SourceId;
+
             AddNode(container, placement.NodeId, placement.Position.X, placement.Position.Y);
         }
 
         public void DrawEdge(Core.Services.DeadlockGraphEdge edge)
         {
+            if (_graphState.ArrowCache.ContainsKey(edge.Key)) return;
             Core.Services.DeadlockConnectionPoints points =
                 _geometryService.CalculateConnectionPoints(
                     _graphState.NodePositions,
                     edge.FromId,
-                    edge.ToId);
+                    edge.ToId,
+                    edge.ParallelOffset);
 
             DeadlockGraphEdgeElements elements =
                 _edgeElementFactory.CreateEdge(
@@ -84,11 +97,14 @@ namespace SqlXmlAnalyzer.Services
                     edge.Label,
                     edge.IsWaitEdge);
 
+            elements.Line.StrokeThickness = edge.IsInCycle ? 3.5 : 1.5;
+            elements.Label.ToolTip = (edge.IsInCycle ? "环内关系" : "环外关系") + "\n证据 ID: " + edge.EvidenceId;
+
             _graphCanvas.Children.Add(elements.Line);
             _graphCanvas.Children.Add(elements.ArrowHead);
             _graphCanvas.Children.Add(elements.Label);
 
-            _graphState.ArrowCache[(edge.FromId, edge.ToId)] = elements;
+            _graphState.ArrowCache.Add(edge.Key, elements);
             _graphState.EdgesForDrawing.Add(edge);
         }
 
@@ -116,22 +132,32 @@ namespace SqlXmlAnalyzer.Services
                 UpdateConnectionsForNode);
         }
 
-        private void UpdateConnectionsForNode(string movedId)
+        internal void UpdateConnectionsForNode(string movedId)
         {
             IReadOnlyList<Core.Services.DeadlockGraphEdge> edgesToUpdate =
                 _edgeRegistryService.FindEdgesForNode(_graphState.EdgesForDrawing, movedId);
 
             foreach (Core.Services.DeadlockGraphEdge edge in edgesToUpdate)
             {
-                var key = (edge.FromId, edge.ToId);
+                var key = edge.Key;
                 if (_graphState.ArrowCache.TryGetValue(key, out DeadlockGraphEdgeElements? cached))
                 {
                     Core.Services.DeadlockConnectionPoints points =
                         _geometryService.CalculateConnectionPoints(
                             _graphState.NodePositions,
                             edge.FromId,
-                            edge.ToId);
+                            edge.ToId,
+                            edge.ParallelOffset);
                     _edgeElementFactory.UpdateEdge(cached, points);
+                    if (_graphState.StepBadges.TryGetValue(key, out Border? badge) && badge.Child is TextBlock text
+                        && int.TryParse(text.Text, System.Globalization.NumberStyles.None,
+                            System.Globalization.CultureInfo.InvariantCulture, out int step) && step > 0)
+                    {
+                        var placement = _stepBadgeService.PlaceBadge(step,
+                            points.From.X, points.From.Y, points.To.X, points.To.Y);
+                        Canvas.SetLeft(badge, placement.Left);
+                        Canvas.SetTop(badge, placement.Top);
+                    }
                 }
             }
         }

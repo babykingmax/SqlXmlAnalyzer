@@ -1,0 +1,1 @@
+SELECT CAST(NULL AS sql_variant) AS Value WHERE 1=0;

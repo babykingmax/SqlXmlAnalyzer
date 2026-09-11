@@ -1,0 +1,7 @@
+{
+  "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\host-fault-adapter\\runs\\20260908T095325626Z_c5b1e0766cfc_3cb6e8a2\\diagnostics\\20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed\\process.dmp",
+  "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\host-fault-adapter\\runs\\20260908T095325626Z_c5b1e0766cfc_3cb6e8a2\\diagnostics\\20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed\\exception.json",
+  "Failure": null,
+  "DumpCreated": true,
+  "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\host-fault-adapter\\runs\\20260908T095325626Z_c5b1e0766cfc_3cb6e8a2\\diagnostics\\20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\host-fault-adapter\\runs\\20260908T095325626Z_c5b1e0766cfc_3cb6e8a2\\diagnostics\\20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed\\exception.json"
+}

@@ -1,0 +1,1 @@
+UPDATE dbo.T SET Value=Value WHERE Value + 1 > 16777216; UPDATE dbo.T SET Value=Value WHERE Value + 1 <= 16777216;

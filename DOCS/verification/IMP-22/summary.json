@@ -1,0 +1,1317 @@
+{
+  "Step": "IMP-22",
+  "VerifiedAt": "2026-09-09T23:38:00.4907804+08:00",
+  "BaseCommit": "6737ecb791636ee71c9d0b31eda831773a43ab5d",
+  "Scope": "Unified immutable diagnostic report and redaction preview on the existing uncommitted IMP-20/21 worktree. Staged AGENTS.md preserved.",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2342,
+        "Passed": 2342,
+        "Failed": 0,
+        "Skipped": 0,
+        "Added": 31,
+        "Cases": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"html\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.UnknownWriterFailure_CreatesValidatedDumpOrExplicitFailureAndNoReport(dumpFails: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.UnknownWriterFailure_CreatesValidatedDumpOrExplicitFailureAndNoReport(dumpFails: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.HtmlAndJson_ContainExactlyTheSameCanonicalReport(redact: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.BrokenReporter_PreservesPrimaryFailure",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.CancelledPreview_DoesNotReturnPayload",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"sqlplan\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InvalidScopeAndMismatchedSource_AreRejected",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.NestedStatementXml_DoesNotIncludeAnotherSelectableStatement",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"pdf\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.DeadlockReport_UsesSelectedEventAndMasksSqlObjectsAndRawAttributeNames(unknownElement: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.CliScan_ExposesSameUnifiedDocumentReport",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Snapshot_IsDetachedAndRejectsStaleRecreation",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnknownXml_BlocksRedactedExportWithoutPartialPayload(mode: \"attribute\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnknownXml_BlocksRedactedExportWithoutPartialPayload(mode: \"namespace\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.ReportLogs_RespectBuildModeAndNeverLogSuccessfulRawPayload",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnsupportedFormatOrExtension_NeverInvokesWriter(format: \"exe\", name: \"report.exe\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.DeadlockReport_UsesSelectedEventAndMasksSqlObjectsAndRawAttributeNames(unknownElement: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.MultipleDeadlocks_ExportOnlySelectedEventAndRejectAnotherEventsAnalysis",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.ExportLocksSnapshotAndFormatUntilWriterCompletes",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Redaction_CoversAllPayloadSurfacesAndDoesNotExportBeforeSamples",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnsupportedFormatOrExtension_NeverInvokesWriter(format: \"html\", name: \"report.sql\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InterruptedExport_DoesNotPublishOrLeaveOwnedTemporaryFile(mode: \"empty\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.HtmlAndJson_ContainExactlyTheSameCanonicalReport(redact: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.SelectedStatement_UsesSameIssuesAsWorkspaceAndPreservesOutputVersusReadRows",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"json\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnknownXml_BlocksRedactedExportWithoutPartialPayload(mode: \"element\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InterruptedExport_DoesNotPublishOrLeaveOwnedTemporaryFile(mode: \"cancel\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"docx\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"svg\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InterruptedExport_DoesNotPublishOrLeaveOwnedTemporaryFile(mode: \"io\")",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "BuildLog": {
+        "Path": ".tmp.imp22-build-debug.log",
+        "Bytes": 957,
+        "Sha256": "4F184457A0A521F505939732C9BB888A473EB1F0AA5EA810919753E28A45677A"
+      },
+      "TestLog": {
+        "Path": ".tmp.imp22-tests-debug.log",
+        "Bytes": 487,
+        "Sha256": "E40B0DCEC1EDC06CCE8D2510252F65319018E8E00BDC1ADA45DE04A4AF14CEE9"
+      },
+      "Trx": {
+        "Path": ".tmp.imp22-tests-debug/imp22-debug.trx",
+        "Bytes": 9075513,
+        "Sha256": "B639D9B5548D3A3296F01F95B9743C785F4A899DDA53FD7902B7622C64B1A206"
+      },
+      "Wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "Reports": [
+          {
+            "Prefix": "redacted",
+            "Scope": "B1/S2/Q1",
+            "IssueCount": 1,
+            "FactCount": 259,
+            "HitCount": 1,
+            "NoHitCount": 30,
+            "SkippedCount": 3,
+            "FailedCount": 0
+          },
+          {
+            "Prefix": "raw",
+            "Scope": "B1/S2/Q1",
+            "IssueCount": 1,
+            "FactCount": 259,
+            "HitCount": 1,
+            "NoHitCount": 30,
+            "SkippedCount": 3,
+            "FailedCount": 0
+          }
+        ]
+      },
+      "FormatChecks": [
+        {
+          "Mode": "raw",
+          "Facts": 259,
+          "Issues": 1,
+          "PdfPages": 10,
+          "CanonicalLines": 456,
+          "Passed": true
+        },
+        {
+          "Mode": "Word-raw",
+          "Pages": 14,
+          "Passed": true
+        },
+        {
+          "Mode": "redacted",
+          "Facts": 259,
+          "Issues": 1,
+          "PdfPages": 8,
+          "CanonicalLines": 439,
+          "Passed": true
+        },
+        {
+          "Mode": "Word-redacted",
+          "Pages": 11,
+          "Passed": true
+        }
+      ],
+      "Artifacts": [
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/binding-errors.txt",
+          "Bytes": 0,
+          "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/format-verification.json",
+          "Bytes": 434,
+          "Sha256": "2D216F1B56C9CED947F265DD81026F3B6C4EA4B95E56541E097314AE09C9BD6B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/plan-redacted-preview.png",
+          "Bytes": 177135,
+          "Sha256": "5E1F843950D690D7029D93B93B29B333A5BBDA22AFF23B80814A2F6FD1885345"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw-canonical.txt",
+          "Bytes": 35072,
+          "Sha256": "C2790E42C8A8FFEAA9C2E714183F3A1A4F503A982DD83409689C06ACA612EA02"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw-exported.png",
+          "Bytes": 241900,
+          "Sha256": "3B25BCE1DABB7F2FEC990BF28B32CF709E389E14EE50A2F85E3987690D50A66E"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw.docx",
+          "Bytes": 60788,
+          "Sha256": "E6036D0E170FFC16B395A00F70CD5DB6EB006D14770F555C631ED20A1C44A2A8"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw.html",
+          "Bytes": 38653,
+          "Sha256": "B2D2100F9CC4F0833D089A7A5F0C537F58B62C2E32AAFD66FF981FBCFABD5944"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw.json",
+          "Bytes": 78462,
+          "Sha256": "8DC2F0E21E379A88CD394F67C291126EFBFBCEC3906ADFEA365008E471DF5665"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw.pdf",
+          "Bytes": 215132,
+          "Sha256": "5C4C9559F43F328462A25795058F1BB0BF0F4AEBC7D9B845A2FC8C2B83371387"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw.sqlplan",
+          "Bytes": 874,
+          "Sha256": "FB07B809181D956D10188D8B63B1C416D5A5BA9A8FC2228DAEF83DCCA7398AD3"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/raw.svg",
+          "Bytes": 738,
+          "Sha256": "CABED3389A572BFB3BCAAF32303405F9C0FA354F117FB705DAC8F9FCB6B5BF17"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted-canonical.txt",
+          "Bytes": 20665,
+          "Sha256": "FDDC2A6A67706830BD2702220262E7934B0657715B5B182BEB2D62F56A31C2EB"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted-exported.png",
+          "Bytes": 188285,
+          "Sha256": "819FC1BB08F15F598CC10497E2B5D9F8FBEFF7B240201B0DE6CB61D3A21E1422"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted.docx",
+          "Bytes": 42475,
+          "Sha256": "E3EDE3A5B4064C91F7FA5E7160D015F44B6542032E9CB0A690E16B205D1CC5C9"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted.html",
+          "Bytes": 22303,
+          "Sha256": "10C963B4708A6ADA57A288D877A57599D8C2AF73A9A3F48ABB91C9DEB593AD52"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted.json",
+          "Bytes": 58058,
+          "Sha256": "0011412C48D67F6385FB89D6E37C3373C9B6D1AF0CB689672BAA0B607231AE28"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted.pdf",
+          "Bytes": 124523,
+          "Sha256": "E54E7C9843B2066F72006FA7B33BEA7F204FAE126482D4963080E32DFE561E28"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted.sqlplan",
+          "Bytes": 856,
+          "Sha256": "A7349829F15AB282D8D6606B120B15897EC92FA00C126E905A0DBBE9EBDC6394"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redacted.svg",
+          "Bytes": 673,
+          "Sha256": "E194843EEC846E48563E92AD017CAE46C0DAB073926A0C5B009E5397991D2881"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/redaction-categories-samples.png",
+          "Bytes": 92776,
+          "Sha256": "304E5717726A2090C1069E5194203AC52853D59A1B64C9DE9359C50A144F020A"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/synthetic-plan.sqlplan",
+          "Bytes": 840,
+          "Sha256": "7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/unsupported-blocked.png",
+          "Bytes": 74116,
+          "Sha256": "D7B96277AA6CB437953ED30C04D7A0ABA1CA85EB8A1CBA381F5E1A6E12CCC018"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/verification.json",
+          "Bytes": 531,
+          "Sha256": "3F3FD82167B5B780E83CDA3BAE7B707D65F435771F0B49DDC2EC0FDEBEC58AFC"
+        }
+      ],
+      "Rendered": [
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-contact-1.png",
+          "Bytes": 1420593,
+          "Sha256": "67879769FB85D27C254D0813C492997BC7EB4864978B108C0EDF84BB48F23AC2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-1.png",
+          "Bytes": 357214,
+          "Sha256": "1345058ABC16D9DFF1D089F3FCFEA08ABC1C7B22BBA22663A680B633D15DF6D9"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-10.png",
+          "Bytes": 61824,
+          "Sha256": "B8DDCBA0BAE56A887CE25ABCAC77F8279CFA65DE653B99152976F05C2A5BC032"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-2.png",
+          "Bytes": 285711,
+          "Sha256": "D3E1AC5EE59AB602F06C638DB603600CF9D2B370D6F241F63AD6FE510D2961F8"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-3.png",
+          "Bytes": 279269,
+          "Sha256": "325FE1D3FFEEE44789454DEA3EB3C75C4CB2415A21D34D4E352F30FA2130D79B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-4.png",
+          "Bytes": 265851,
+          "Sha256": "F7DA206E85421FDDAEEAF737518E2B9DB4D3F9F5866D1669CAEBE16F6253FB77"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-5.png",
+          "Bytes": 256975,
+          "Sha256": "347ED7B79335B92687EC55064A1F8A4DAC96374761CCB1BC8C418AD4E788AE65"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-6.png",
+          "Bytes": 341496,
+          "Sha256": "FAE2818B18299752C08C46CD8CEF286F23EE0B7163F7540DA4FAA82517557668"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-7.png",
+          "Bytes": 292744,
+          "Sha256": "8D5870127D1B7BC09A71F54222B44BCD079CED9C999B7FABB93DA29DC7836CEE"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-8.png",
+          "Bytes": 349987,
+          "Sha256": "54DE8D99BFDC8082BA463BBAB391839975E7A47B1B79EB1C88E30BE260087648"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/raw-page-9.png",
+          "Bytes": 343602,
+          "Sha256": "F4F41161B16D782EE1571E3C987B74067A6AFFFC32CFC6EE95CB2644B812CD0E"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-contact-1.png",
+          "Bytes": 864709,
+          "Sha256": "948DFCBA023AD456ABDFEA99E4B6F5F5E4161008CE5221D56709A6DBA6493417"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-1.png",
+          "Bytes": 279810,
+          "Sha256": "6050B5C3DF25F8FA2E227FC85D96B4F34FB17BDA4392957A459FF4EC65B49207"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-2.png",
+          "Bytes": 272544,
+          "Sha256": "50699B097E90BA8811CE2614197C963A9638B7B98D6CD62E8A776931A003B39F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-3.png",
+          "Bytes": 269314,
+          "Sha256": "5B77F181FFF68062601867299C693FCCECD3491782AFC6AF6CE7DB00BBF08547"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-4.png",
+          "Bytes": 248954,
+          "Sha256": "FDFF8A60FCE200D1FE3DA6CA3B3FF1CBBF0B56C3A84DA9C263B9892BEC7D925C"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-5.png",
+          "Bytes": 238494,
+          "Sha256": "3D42F5D76A58533591E64B21F1F79D377B5EADA6ADD5F0186C8CDBF0F2D9DC09"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-6.png",
+          "Bytes": 235393,
+          "Sha256": "583782D7009D66CEFDB52EFEC446D7904B8412BD0651AF1AC1EEBFEAC3898F06"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-7.png",
+          "Bytes": 232657,
+          "Sha256": "8750FED2B24273E3168EC8E8A16073E8FC864F23150B347098F4FD6CB1DD0EE0"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/redacted-page-8.png",
+          "Bytes": 22708,
+          "Sha256": "79F216804C42988AA063DE90613EE5AA09F273CC7E710B9587B73AC594B6BB08"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-contact-1.png",
+          "Bytes": 1276778,
+          "Sha256": "BCE5C4391888F24CB2C747DF816D3479DF6F8513842087A083D191F522904888"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-contact-2.png",
+          "Bytes": 183653,
+          "Sha256": "1797E2D4BE50D30B59B1F13AD41493D24D59F47D9F37831C661512B196EF07F5"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-1.png",
+          "Bytes": 262695,
+          "Sha256": "E90F82A72CF500D2D2D2C6451F41D0CE6A00449F55C5F9E68D8366B9DCC289E3"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-10.png",
+          "Bytes": 213447,
+          "Sha256": "96FE899EA43A03598152CE8508AD04DF974C76AE59422DC32B5CF0E7CF8B7B1B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-11.png",
+          "Bytes": 260415,
+          "Sha256": "17BA54EF685517063E0FCC9D2186C6A04574E87138AE85CC90073CC488F40F18"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-12.png",
+          "Bytes": 259830,
+          "Sha256": "9601ECA07ED27417F1C3FD8BFA0E9CB33458CAA10A11D27F553548676A369219"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-13.png",
+          "Bytes": 258274,
+          "Sha256": "C39046A236415042B9449910EFC3585D5E244A3EDDFA1BE1D2E88BA111B5E886"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-14.png",
+          "Bytes": 96610,
+          "Sha256": "A01818EEE82F47B1BDBA163228BE1C65C3023AA0380C0519E8BA20021EE73B99"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-2.png",
+          "Bytes": 276733,
+          "Sha256": "2ECB69CA19D1920A9C3755DD37CE0908EA570869350BDABD5547D92BF5671B5D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-3.png",
+          "Bytes": 207382,
+          "Sha256": "BB2BC8B3E547C028A0A032E4443DC9107B0E6623C5A2BE66CEE80E403C4ADCFD"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-4.png",
+          "Bytes": 201761,
+          "Sha256": "2370B047F8EFC39C37F76FB6FC8D289058D0FBFA82A90B3F478A0223CB9F462D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-5.png",
+          "Bytes": 212346,
+          "Sha256": "9D909F9EAC8C51162100F310869AE216F1696A6FA578AE23C95872BFAF37D9ED"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-6.png",
+          "Bytes": 203954,
+          "Sha256": "48B784D1299222CD6F8AFA0C1E16C440A353276E51FD47A2B414B86D2EB3A158"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-7.png",
+          "Bytes": 198407,
+          "Sha256": "8F2C89AB1741E9615A11A5CA34242F43115A1E91A20C8FCADDDE70FF2BE18F7A"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-8.png",
+          "Bytes": 203668,
+          "Sha256": "C144DA589ECFF935C2992CBD4DEA386800DC2199BC5F075BE8DF10C791567AD7"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw-page-9.png",
+          "Bytes": 250135,
+          "Sha256": "479B28FDE45AB0ED66F0663FDC0EEB090D062845EA5B0C5E8AE7D9644A5F41C0"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-raw.pdf",
+          "Bytes": 247917,
+          "Sha256": "5AA6CB9BFC04B8C90C3D8F78381FC3253AD84FF06329DE12DE25577DC3C25EFE"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-contact-1.png",
+          "Bytes": 816558,
+          "Sha256": "1659A7697B98FF2D98CB45ABBBAFBE37F189CBD25ED8D725C0FD7AA24770D912"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-1.png",
+          "Bytes": 197725,
+          "Sha256": "23E43D3A89520D3CC0AD97D20A51772FE80144F231F78D14FDE28092D47695D5"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-10.png",
+          "Bytes": 148699,
+          "Sha256": "A7EF48000316DFBF89D4AC3FBBFDBA21E4F7408CB41706CEF4B63DD686B4EF0D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-11.png",
+          "Bytes": 6928,
+          "Sha256": "EE68B3AFB2CBD67F16E1A4B5FC3C79763265637F4961F3868BC6E5B740D57285"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-2.png",
+          "Bytes": 226798,
+          "Sha256": "BF63AD8D14CD20704A32BB6F78032605817F48C7BCCDA5FAFBFC7857D007C1A2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-3.png",
+          "Bytes": 212454,
+          "Sha256": "D0BAEE95E15C2924E3359805C4BCB019A7807EA61C676FC763350A719FC711EB"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-4.png",
+          "Bytes": 215659,
+          "Sha256": "DD66F56351D680AB59DBCABE24226FF9DCA1B8CE2767796DCAAA2624BE4C4D0E"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-5.png",
+          "Bytes": 195042,
+          "Sha256": "BC07BAB7FBC433AE237BCF7144C8E5767DF5D1E76CC9EA7ECDC3345021593005"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-6.png",
+          "Bytes": 191056,
+          "Sha256": "ADC6219E386C5DC702AEB8675CF0E76E27123F9195420C3CC53E5EE1186BAD59"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-7.png",
+          "Bytes": 179811,
+          "Sha256": "E7A9F4BC5C553522B1944AF55B1330515F230AD917D3AC074CD8E0E3871ABCB2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-8.png",
+          "Bytes": 170548,
+          "Sha256": "12807910603B2B39B78A3ED7E57B43B658D915A4BF9193201133B149E1421713"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted-page-9.png",
+          "Bytes": 174718,
+          "Sha256": "B90994678FF95135BF8463F66B1BACDE59B12AB3A69D606F7F5F5D64B8A15BCC"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-redacted.pdf",
+          "Bytes": 153953,
+          "Sha256": "D8875EEC15DE9776C206B9E8A560F21161A36F8D671DE382C2BC2D519D5070FD"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Debug-eb05b1934a5e48228405522390e22fa2/rendered/word-rendering.json",
+          "Bytes": 350,
+          "Sha256": "F544D7BBAB582BDC7D2279E56394CE169C67F0316869DBF501765B2E68EA4F35"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2342,
+        "Passed": 2342,
+        "Failed": 0,
+        "Skipped": 0,
+        "Added": 31,
+        "Cases": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"pdf\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"html\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.HtmlAndJson_ContainExactlyTheSameCanonicalReport(redact: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.ExportLocksSnapshotAndFormatUntilWriterCompletes",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.MultipleDeadlocks_ExportOnlySelectedEventAndRejectAnotherEventsAnalysis",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InterruptedExport_DoesNotPublishOrLeaveOwnedTemporaryFile(mode: \"empty\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.UnknownWriterFailure_CreatesValidatedDumpOrExplicitFailureAndNoReport(dumpFails: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.SelectedStatement_UsesSameIssuesAsWorkspaceAndPreservesOutputVersusReadRows",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"json\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.UnknownWriterFailure_CreatesValidatedDumpOrExplicitFailureAndNoReport(dumpFails: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.DeadlockReport_UsesSelectedEventAndMasksSqlObjectsAndRawAttributeNames(unknownElement: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.CancelledPreview_DoesNotReturnPayload",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InterruptedExport_DoesNotPublishOrLeaveOwnedTemporaryFile(mode: \"cancel\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"sqlplan\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnknownXml_BlocksRedactedExportWithoutPartialPayload(mode: \"element\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"docx\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.CliScan_ExposesSameUnifiedDocumentReport",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.ReportLogs_RespectBuildModeAndNeverLogSuccessfulRawPayload",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnsupportedFormatOrExtension_NeverInvokesWriter(format: \"html\", name: \"report.sql\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.NestedStatementXml_DoesNotIncludeAnotherSelectableStatement",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.HtmlAndJson_ContainExactlyTheSameCanonicalReport(redact: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnsupportedFormatOrExtension_NeverInvokesWriter(format: \"exe\", name: \"report.exe\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.DeadlockReport_UsesSelectedEventAndMasksSqlObjectsAndRawAttributeNames(unknownElement: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InvalidScopeAndMismatchedSource_AreRejected",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Export_PublishesCompleteNewArtifactsAndPreservesExistingFile(format: \"svg\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.InterruptedExport_DoesNotPublishOrLeaveOwnedTemporaryFile(mode: \"io\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.Diagnostics.UnifiedReportDiagnosticTests.BrokenReporter_PreservesPrimaryFailure",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Redaction_CoversAllPayloadSurfacesAndDoesNotExportBeforeSamples",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.Snapshot_IsDetachedAndRejectsStaleRecreation",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnknownXml_BlocksRedactedExportWithoutPartialPayload(mode: \"namespace\")",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.DiagnosticReportTests.UnknownXml_BlocksRedactedExportWithoutPartialPayload(mode: \"attribute\")",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "BuildLog": {
+        "Path": ".tmp.imp22-build-release.log",
+        "Bytes": 971,
+        "Sha256": "3060C0AFBFA98F1DCEFFF0177D638E44E56985C4464B8DCDDEACBD1350135861"
+      },
+      "TestLog": {
+        "Path": ".tmp.imp22-tests-release.log",
+        "Bytes": 497,
+        "Sha256": "59600EAFAEC64C9525C085CC0AB70034A3369F7A04B02BBECEEB2AD7EB7598C2"
+      },
+      "Trx": {
+        "Path": ".tmp.imp22-tests-release/imp22-release.trx",
+        "Bytes": 3657364,
+        "Sha256": "E0670DC836EB30920F9D5F161672A437BE3F70246EFEFF6C133C2C33A0153280"
+      },
+      "Wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "Reports": [
+          {
+            "Prefix": "redacted",
+            "Scope": "B1/S2/Q1",
+            "IssueCount": 1,
+            "FactCount": 259,
+            "HitCount": 1,
+            "NoHitCount": 30,
+            "SkippedCount": 3,
+            "FailedCount": 0
+          },
+          {
+            "Prefix": "raw",
+            "Scope": "B1/S2/Q1",
+            "IssueCount": 1,
+            "FactCount": 259,
+            "HitCount": 1,
+            "NoHitCount": 30,
+            "SkippedCount": 3,
+            "FailedCount": 0
+          }
+        ]
+      },
+      "FormatChecks": [
+        {
+          "Mode": "raw",
+          "Facts": 259,
+          "Issues": 1,
+          "PdfPages": 10,
+          "CanonicalLines": 456,
+          "Passed": true
+        },
+        {
+          "Mode": "Word-raw",
+          "Pages": 14,
+          "Passed": true
+        },
+        {
+          "Mode": "redacted",
+          "Facts": 259,
+          "Issues": 1,
+          "PdfPages": 8,
+          "CanonicalLines": 439,
+          "Passed": true
+        },
+        {
+          "Mode": "Word-redacted",
+          "Pages": 11,
+          "Passed": true
+        }
+      ],
+      "Artifacts": [
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/binding-errors.txt",
+          "Bytes": 0,
+          "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/format-verification.json",
+          "Bytes": 434,
+          "Sha256": "2D216F1B56C9CED947F265DD81026F3B6C4EA4B95E56541E097314AE09C9BD6B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/plan-redacted-preview.png",
+          "Bytes": 177452,
+          "Sha256": "8957E1BAC3FC0914CCEA136C32C1F33D167140010822186D829BD527D3FCE50F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw-canonical.txt",
+          "Bytes": 35076,
+          "Sha256": "5754FF006452DAFFAF4DCAA32AD86FE3371D138CB729600D227A709A19EDB435"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw-exported.png",
+          "Bytes": 242625,
+          "Sha256": "6C903C9F1F426B8DD8C086F2B64F9057C2C9F90BA5FAE6E29CC5CF0A0D853575"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw.docx",
+          "Bytes": 60790,
+          "Sha256": "EFAA7286015CCDF6264DB671BA4C139B24A25E01EE64E96FCA3F58813542BAD5"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw.html",
+          "Bytes": 38657,
+          "Sha256": "5FFADD31D6F554E1ECE1ECB06B0A371075B85B28DDF0B72A1DA37FCC5ECC4266"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw.json",
+          "Bytes": 78465,
+          "Sha256": "24AFA23A88409A33AFB33DC7B9B05E7FF501DB0ADCA235F2634AD0E14C55B802"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw.pdf",
+          "Bytes": 215108,
+          "Sha256": "00548D4BC75AE20DEDDCFA08D9576B1E0CCEA1C518B95D25BD2F08118742B81B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw.sqlplan",
+          "Bytes": 874,
+          "Sha256": "FB07B809181D956D10188D8B63B1C416D5A5BA9A8FC2228DAEF83DCCA7398AD3"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/raw.svg",
+          "Bytes": 738,
+          "Sha256": "CABED3389A572BFB3BCAAF32303405F9C0FA354F117FB705DAC8F9FCB6B5BF17"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted-canonical.txt",
+          "Bytes": 20665,
+          "Sha256": "21BE0EB42A8E7E3B44A56876C280C4E929175BE2321CFABA362EF23E7E36BE22"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted-exported.png",
+          "Bytes": 188607,
+          "Sha256": "BD50CB9E02CDE481DE5370248E546574B05AF399EFFA4B89AC2EB37BDE405DA2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted.docx",
+          "Bytes": 42476,
+          "Sha256": "D276ECFC363A3623A0527E157A376F7EEE3D148F5BBDC64609515DEC2FD374A0"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted.html",
+          "Bytes": 22303,
+          "Sha256": "07FDCF02A858FC5216B206CE63AE045E556BFBBACE42C240686D8790576805EB"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted.json",
+          "Bytes": 58057,
+          "Sha256": "E3BAEF57E6BAC1B1010585A23DA84070A8C709E0218BEBC2456B884D1CB5411E"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted.pdf",
+          "Bytes": 124523,
+          "Sha256": "83F7DE6C02B681794777867756308B5B97B00C1524A2D96D1938ED77E6D4012F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted.sqlplan",
+          "Bytes": 856,
+          "Sha256": "A7349829F15AB282D8D6606B120B15897EC92FA00C126E905A0DBBE9EBDC6394"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redacted.svg",
+          "Bytes": 673,
+          "Sha256": "E194843EEC846E48563E92AD017CAE46C0DAB073926A0C5B009E5397991D2881"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/redaction-categories-samples.png",
+          "Bytes": 92650,
+          "Sha256": "EE648341DA832642CD12CD5A694258550756D146778CEF596DE34896B7AF5943"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/synthetic-plan.sqlplan",
+          "Bytes": 840,
+          "Sha256": "7DBC76A7C9681AD0E5B7D0C7D26557182A38F24E9F0882C936A1639AADAA03A9"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/unsupported-blocked.png",
+          "Bytes": 74116,
+          "Sha256": "D7B96277AA6CB437953ED30C04D7A0ABA1CA85EB8A1CBA381F5E1A6E12CCC018"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/verification.json",
+          "Bytes": 531,
+          "Sha256": "3F3FD82167B5B780E83CDA3BAE7B707D65F435771F0B49DDC2EC0FDEBEC58AFC"
+        }
+      ],
+      "Rendered": [
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-contact-1.png",
+          "Bytes": 1420870,
+          "Sha256": "C9F59FD058353FBDDBF26EEE661C508C92A83DF48422BAF3DFCF2AA893A1798F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-1.png",
+          "Bytes": 358165,
+          "Sha256": "145D6E705460B47FD0B9E2FF1EA403BD6D0EC0E66BF8B5481E165B40FC8FBC22"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-10.png",
+          "Bytes": 61824,
+          "Sha256": "B8DDCBA0BAE56A887CE25ABCAC77F8279CFA65DE653B99152976F05C2A5BC032"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-2.png",
+          "Bytes": 285711,
+          "Sha256": "D3E1AC5EE59AB602F06C638DB603600CF9D2B370D6F241F63AD6FE510D2961F8"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-3.png",
+          "Bytes": 279269,
+          "Sha256": "325FE1D3FFEEE44789454DEA3EB3C75C4CB2415A21D34D4E352F30FA2130D79B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-4.png",
+          "Bytes": 265851,
+          "Sha256": "F7DA206E85421FDDAEEAF737518E2B9DB4D3F9F5866D1669CAEBE16F6253FB77"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-5.png",
+          "Bytes": 256975,
+          "Sha256": "347ED7B79335B92687EC55064A1F8A4DAC96374761CCB1BC8C418AD4E788AE65"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-6.png",
+          "Bytes": 341496,
+          "Sha256": "FAE2818B18299752C08C46CD8CEF286F23EE0B7163F7540DA4FAA82517557668"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-7.png",
+          "Bytes": 292744,
+          "Sha256": "8D5870127D1B7BC09A71F54222B44BCD079CED9C999B7FABB93DA29DC7836CEE"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-8.png",
+          "Bytes": 349987,
+          "Sha256": "54DE8D99BFDC8082BA463BBAB391839975E7A47B1B79EB1C88E30BE260087648"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/raw-page-9.png",
+          "Bytes": 343602,
+          "Sha256": "F4F41161B16D782EE1571E3C987B74067A6AFFFC32CFC6EE95CB2644B812CD0E"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-contact-1.png",
+          "Bytes": 864809,
+          "Sha256": "08914656605C6AA73B5C29B189B39A433D1F56FE6C9C5B86B36F69D4AEE8685B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-1.png",
+          "Bytes": 279742,
+          "Sha256": "AA5470009FBB994CFD9603BF28BEA246669A3CC40340F6FFCF15D0D98E09EF13"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-2.png",
+          "Bytes": 272544,
+          "Sha256": "50699B097E90BA8811CE2614197C963A9638B7B98D6CD62E8A776931A003B39F"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-3.png",
+          "Bytes": 269314,
+          "Sha256": "5B77F181FFF68062601867299C693FCCECD3491782AFC6AF6CE7DB00BBF08547"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-4.png",
+          "Bytes": 248954,
+          "Sha256": "FDFF8A60FCE200D1FE3DA6CA3B3FF1CBBF0B56C3A84DA9C263B9892BEC7D925C"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-5.png",
+          "Bytes": 238494,
+          "Sha256": "3D42F5D76A58533591E64B21F1F79D377B5EADA6ADD5F0186C8CDBF0F2D9DC09"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-6.png",
+          "Bytes": 235393,
+          "Sha256": "583782D7009D66CEFDB52EFEC446D7904B8412BD0651AF1AC1EEBFEAC3898F06"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-7.png",
+          "Bytes": 232657,
+          "Sha256": "8750FED2B24273E3168EC8E8A16073E8FC864F23150B347098F4FD6CB1DD0EE0"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/redacted-page-8.png",
+          "Bytes": 22708,
+          "Sha256": "79F216804C42988AA063DE90613EE5AA09F273CC7E710B9587B73AC594B6BB08"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-contact-1.png",
+          "Bytes": 1276701,
+          "Sha256": "C1FD11F9C3D6CF9E6E4C1EF183E8C37A51DA38223D1C1C73163FCB7EF0FBD5D2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-contact-2.png",
+          "Bytes": 183653,
+          "Sha256": "1797E2D4BE50D30B59B1F13AD41493D24D59F47D9F37831C661512B196EF07F5"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-1.png",
+          "Bytes": 262910,
+          "Sha256": "640D1E5EB9131143DC49F7582D3315FC5F05E9FA68A10540C31EA5609906FC06"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-10.png",
+          "Bytes": 213447,
+          "Sha256": "96FE899EA43A03598152CE8508AD04DF974C76AE59422DC32B5CF0E7CF8B7B1B"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-11.png",
+          "Bytes": 260415,
+          "Sha256": "17BA54EF685517063E0FCC9D2186C6A04574E87138AE85CC90073CC488F40F18"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-12.png",
+          "Bytes": 259830,
+          "Sha256": "9601ECA07ED27417F1C3FD8BFA0E9CB33458CAA10A11D27F553548676A369219"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-13.png",
+          "Bytes": 258274,
+          "Sha256": "C39046A236415042B9449910EFC3585D5E244A3EDDFA1BE1D2E88BA111B5E886"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-14.png",
+          "Bytes": 96610,
+          "Sha256": "A01818EEE82F47B1BDBA163228BE1C65C3023AA0380C0519E8BA20021EE73B99"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-2.png",
+          "Bytes": 276733,
+          "Sha256": "2ECB69CA19D1920A9C3755DD37CE0908EA570869350BDABD5547D92BF5671B5D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-3.png",
+          "Bytes": 207382,
+          "Sha256": "BB2BC8B3E547C028A0A032E4443DC9107B0E6623C5A2BE66CEE80E403C4ADCFD"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-4.png",
+          "Bytes": 201761,
+          "Sha256": "2370B047F8EFC39C37F76FB6FC8D289058D0FBFA82A90B3F478A0223CB9F462D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-5.png",
+          "Bytes": 212346,
+          "Sha256": "9D909F9EAC8C51162100F310869AE216F1696A6FA578AE23C95872BFAF37D9ED"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-6.png",
+          "Bytes": 203954,
+          "Sha256": "48B784D1299222CD6F8AFA0C1E16C440A353276E51FD47A2B414B86D2EB3A158"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-7.png",
+          "Bytes": 198407,
+          "Sha256": "8F2C89AB1741E9615A11A5CA34242F43115A1E91A20C8FCADDDE70FF2BE18F7A"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-8.png",
+          "Bytes": 203668,
+          "Sha256": "C144DA589ECFF935C2992CBD4DEA386800DC2199BC5F075BE8DF10C791567AD7"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw-page-9.png",
+          "Bytes": 250135,
+          "Sha256": "479B28FDE45AB0ED66F0663FDC0EEB090D062845EA5B0C5E8AE7D9644A5F41C0"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-raw.pdf",
+          "Bytes": 247934,
+          "Sha256": "8AE82E354ABC957FE657246A81F1897C9EAA9F7E723A3C5C7854A5EEB07D9B7D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-contact-1.png",
+          "Bytes": 816562,
+          "Sha256": "777764E5EC8BF2A0F35A8B538249DD5A9A16366F67F8FF96AC59207190D27785"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-1.png",
+          "Bytes": 198144,
+          "Sha256": "7D692F56983FFBD9E49EFCA7FC9ABAA5B97B38E7885A3C76A647B28B0E5A0D70"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-10.png",
+          "Bytes": 148699,
+          "Sha256": "A7EF48000316DFBF89D4AC3FBBFDBA21E4F7408CB41706CEF4B63DD686B4EF0D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-11.png",
+          "Bytes": 6928,
+          "Sha256": "EE68B3AFB2CBD67F16E1A4B5FC3C79763265637F4961F3868BC6E5B740D57285"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-2.png",
+          "Bytes": 226798,
+          "Sha256": "BF63AD8D14CD20704A32BB6F78032605817F48C7BCCDA5FAFBFC7857D007C1A2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-3.png",
+          "Bytes": 212454,
+          "Sha256": "D0BAEE95E15C2924E3359805C4BCB019A7807EA61C676FC763350A719FC711EB"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-4.png",
+          "Bytes": 215659,
+          "Sha256": "DD66F56351D680AB59DBCABE24226FF9DCA1B8CE2767796DCAAA2624BE4C4D0E"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-5.png",
+          "Bytes": 195042,
+          "Sha256": "BC07BAB7FBC433AE237BCF7144C8E5767DF5D1E76CC9EA7ECDC3345021593005"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-6.png",
+          "Bytes": 191056,
+          "Sha256": "ADC6219E386C5DC702AEB8675CF0E76E27123F9195420C3CC53E5EE1186BAD59"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-7.png",
+          "Bytes": 179811,
+          "Sha256": "E7A9F4BC5C553522B1944AF55B1330515F230AD917D3AC074CD8E0E3871ABCB2"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-8.png",
+          "Bytes": 170548,
+          "Sha256": "12807910603B2B39B78A3ED7E57B43B658D915A4BF9193201133B149E1421713"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted-page-9.png",
+          "Bytes": 174718,
+          "Sha256": "B90994678FF95135BF8463F66B1BACDE59B12AB3A69D606F7F5F5D64B8A15BCC"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-redacted.pdf",
+          "Bytes": 153953,
+          "Sha256": "402068321C07587CF4E2D3AB1725DD1EC7654A888F373889BB2064782479BA5D"
+        },
+        {
+          "Path": "DOCS/verification/IMP-22/wpf-Release-bb8e2622c8054405b0e1d13152c4a638/rendered/word-rendering.json",
+          "Bytes": 350,
+          "Sha256": "9EE4871F88006BF89D189A8F9B836C945FFCA550CB108FCEA86173C83DB6E958"
+        }
+      ]
+    }
+  ],
+  "SourceFiles": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReport.cs",
+      "Bytes": 3542,
+      "Sha256": "6F16715977D9E6FCB398CEF5FCF151533934694574038E2C853BAF304F24CB93"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportFactory.cs",
+      "Bytes": 13064,
+      "Sha256": "B3B5B7DF2DB4BDB47BBFF54E8C1A8E2F28534043A8A5A7A97DC0ABED41D9C105"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportRenderer.cs",
+      "Bytes": 4833,
+      "Sha256": "093DB02719BE5E76A75CF47D2C7842736F08CAB746E85D67DD96FF0946B94F41"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Reporting/ReportRedactionService.cs",
+      "Bytes": 6133,
+      "Sha256": "531D22F152C35CDB4DDA08F7592DCA8915C20D117AA46C675659360AAAD2970D"
+    },
+    {
+      "Path": "Core/Services/DiagnosticReportExportService.cs",
+      "Bytes": 6642,
+      "Sha256": "8731B8E159137216D316FC50E005D64B3A6A00BC0D5AE032072599E3AACD88AA"
+    },
+    {
+      "Path": "Core/ViewModels/PlanWorkspaceViewModel.cs",
+      "Bytes": 15613,
+      "Sha256": "A1A6A348F33F5A241DD997ABBD13CB8898D09B11169A0EE4CC9CA238BE8C0D65"
+    },
+    {
+      "Path": "Core/ViewModels/DeadlockWorkspaceViewModel.cs",
+      "Bytes": 12318,
+      "Sha256": "B018DDBDFE96098A4EA6CA36547EAAA871B5D37B069175E6C6B05582349AC078"
+    },
+    {
+      "Path": "ViewModels/ReportReviewViewModel.cs",
+      "Bytes": 3393,
+      "Sha256": "0E2B6FD199F1FA18B984CFB16571C30CA9383968602087C6AC0A919A8AB8AEFB"
+    },
+    {
+      "Path": "Views/ReportReviewWindow.xaml",
+      "Bytes": 4869,
+      "Sha256": "ECB056922FECC6286D8BEE21916DCA5B66A76B07A4567A9BF0495A7936360E47"
+    },
+    {
+      "Path": "Views/ReportReviewWindow.xaml.cs",
+      "Bytes": 1153,
+      "Sha256": "77C20B795E575A421291D3D2827111B26C16FE9917E92E7838E928CA5CBBB1FC"
+    },
+    {
+      "Path": "MainWindow.ReportEvents.cs",
+      "Bytes": 2782,
+      "Sha256": "5AE975AFBFB22CC882B396FC0F49E2C7B640F61DB2B1FF315A2149DA8E0C8586"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "Bytes": 51733,
+      "Sha256": "AF99AC5AC887B30DA3AD9D46999D93B526706B2809908F9E339C523E3895109B"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/DiagnosticReportTests.cs",
+      "Bytes": 18696,
+      "Sha256": "083A3D98307167E2B4BB63ED9A783D227588A83B5F72ADB6F1D327E88397D20A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/UnifiedReportDiagnosticTests.cs",
+      "Bytes": 4920,
+      "Sha256": "A71A3E07BD0E449060B6EF4950C50BEF0268ECCD6DE52C3BF2AF56959680B354"
+    }
+  ],
+  "Documents": [
+    {
+      "Path": "Architecture.md",
+      "Bytes": 31980,
+      "Sha256": "2254838459257C6256420FF5B89086F242A315B4584144688D4C6F7EE6834064"
+    },
+    {
+      "Path": "UserGuide.md",
+      "Bytes": 31091,
+      "Sha256": "3AEDF9593A2C461FF7FB40B365102C8E52F3D7CDCF29C44FF0FF7A2DBDEF7842"
+    },
+    {
+      "Path": "CHANGELOG.md",
+      "Bytes": 25402,
+      "Sha256": "BFB91BFCDEFFE61D7B3CE9F8516247779026860E09441175F84EADAB310A5765"
+    },
+    {
+      "Path": "DOCS/README.md",
+      "Bytes": 11945,
+      "Sha256": "EBAB3785FB99EACFA4A22C2C395CE73A6369F85C5BDEE17CA2BB71271A65B81C"
+    },
+    {
+      "Path": "DOCS/软件改善实施规划.md",
+      "Bytes": 64317,
+      "Sha256": "5538C2D6873CC120D7B85B6E0B45DB016F9644AA82D28CABFAD8526F89697A27"
+    },
+    {
+      "Path": "DOCS/UI改进和功能改善文档.md",
+      "Bytes": 23180,
+      "Sha256": "7F341CA65A130EF9051D27302A52FEA6229E0E56D561829A67A46AF112E6F283"
+    },
+    {
+      "Path": "DOCS/IMP-22统一报告与脱敏预览.md",
+      "Bytes": 9927,
+      "Sha256": "7046A4D9F6643A191E1512F833F0428F8EE6021C73D65EA305377A7E04EBEE05"
+    }
+  ],
+  "VerificationScripts": [
+    {
+      "Path": "DOCS/verification/IMP-22/Run-WpfVerification.ps1",
+      "Bytes": 1839,
+      "Sha256": "6946745215C6E53AF1FBB187F51651C2306E3B212541365D6045A58FD94A53B0"
+    },
+    {
+      "Path": "DOCS/verification/IMP-22/WpfProbe.cs.txt",
+      "Bytes": 9224,
+      "Sha256": "E0DE5052FBEA4B8494EA376D6A7C13DDAAC29056624A0F43BD2A7C29BE821C65"
+    },
+    {
+      "Path": "DOCS/verification/IMP-22/Verify-ReportFiles.py",
+      "Bytes": 5158,
+      "Sha256": "E9FD2A1B4C499BA549D6BCCCE14CDA247E882FDCF2F470B5266095777B9557B9"
+    },
+    {
+      "Path": "DOCS/verification/IMP-22/Render-WordReports.ps1",
+      "Bytes": 1529,
+      "Sha256": "DB586D4D45D2CC2F91C02C94F4A2EFAAFE8ADD5B7E35E543B942CDA5C0D0A0DF"
+    },
+    {
+      "Path": "DOCS/verification/IMP-22/Write-VerificationSummary.ps1",
+      "Bytes": 6092,
+      "Sha256": "0BDD0974F46B81B0D03FEA885D4255B40C2C10BC1C0907EC38FFEFCAE2A8DE0E"
+    }
+  ],
+  "OfflineBrowser": {
+    "Verified": false,
+    "Reason": "Browser tool security policy blocked file:// navigation. No alternate browser, localhost server or debugger workaround attempted. Static HTML/CSP/SVG and content checks passed."
+  },
+  "Limits": [
+    "Synthetic fixtures; no new SQL execution or performance claim.",
+    "Report free text is replaced as whole fields; source XML follows the documented supported policy. Before-samples remain local UI only.",
+    "SVG is graph-only and sqlplan is selection-XML-only, explicitly excluded from full-report equivalence.",
+    "All PDF pages and Word-rendered pages were generated and reviewed. LibreOffice unavailable; installed Word used read-only after packaged renderer diagnosis.",
+    "No general browser/DPI/accessibility certification or coverage percentage claimed."
+  ]
+}

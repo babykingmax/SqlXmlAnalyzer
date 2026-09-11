@@ -1,0 +1,1 @@
+[xUnit.net 00:00:07.75]     SqlXmlAnalyzer.Tests.InputRecognitionTests.DesktopCli_InvalidInput_PropagatesFailureThroughWpfShutdown(batch: True) [FAIL]

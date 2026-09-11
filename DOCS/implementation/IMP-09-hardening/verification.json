@@ -1,0 +1,85 @@
+{
+  "Implementation": "IMP-09 review hardening",
+  "VerifiedAt": "2026-09-08T23:00:39.7464074+08:00",
+  "Tests": [
+    {
+      "Configuration": "Debug",
+      "Total": 1247,
+      "Passed": 1247,
+      "Trx": "debug.trx",
+      "Skipped": 0,
+      "NativeDumpAndLogRegression": "Passed",
+      "Failed": 0
+    },
+    {
+      "Configuration": "Release",
+      "Total": 1247,
+      "Passed": 1247,
+      "Trx": "release.trx",
+      "Skipped": 0,
+      "NativeDumpAndLogRegression": "Passed",
+      "Failed": 0
+    }
+  ],
+  "AddedTestCases": 20,
+  "Builds": [
+    {
+      "Log": "build-debug.log",
+      "Configuration": "Debug",
+      "Warnings": 0,
+      "Errors": 0
+    },
+    {
+      "Log": "build-release.log",
+      "Configuration": "Release",
+      "Warnings": 0,
+      "Errors": 0
+    }
+  ],
+  "Measurements": [
+    "locations-debug.json",
+    "locations-release.json"
+  ],
+  "CliEvidence": [
+    "cli-partial.json",
+    "cli-partial-exit.json"
+  ],
+  "SourceHashes": [
+    {
+      "SHA256": "F7ACAC0746170ADC137642D92DEE48E784C7040EB086DD4FBE846DED9EA9D7B5",
+      "Path": "SqlXmlAnalyzer.Core/Services/DocumentReadContract.cs"
+    },
+    {
+      "SHA256": "6FFEBCF239B1015192552EE266BC262F03A1931763E12785C021432BF766A2A6",
+      "Path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs"
+    },
+    {
+      "SHA256": "10C53F1345E413F652D874C8A13DB19E103A154890BFD17DA807B60F2AC836B3",
+      "Path": "SqlXmlAnalyzer.Core/Parsers/SafeXmlHelper.cs"
+    },
+    {
+      "SHA256": "205FAC1C8B36289812B10C31DD95D6C24E2847D9A070A260422E620DD807C2CA",
+      "Path": "SqlXmlAnalyzer.CLI/Program.cs"
+    },
+    {
+      "SHA256": "A18C9AB47528DE9B9F09D2CB432161BABD34731503CFFC5D8021512C4469FFAF",
+      "Path": "src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs"
+    },
+    {
+      "SHA256": "B9EF0936C15DE7AC8B8E6B6AC5B382942FD1BBB64F49EE323672C8CE98C074E2",
+      "Path": "SqlXmlAnalyzer.Tests/DocumentReadHardeningTests.cs"
+    },
+    {
+      "SHA256": "77AC11B8B4CF27C842F7E84B78DC2DAFB0037362973D0617560ADBC95B1DAAB4",
+      "Path": "DOCS/implementation/IMP-09-hardening/Measure-ReadLocations.ps1"
+    }
+  ],
+  "EnvironmentNotes": [
+    "Default WPF generated resource was locked; deletion was rejected by automatic approval policy. Full builds used isolated IntermediateOutputPath under each project obj directory."
+  ],
+  "Limitations": [
+    "CLI cancellation is tested with injected tokens, not a physical console keypress.",
+    "Performance numbers cover source locations on repeated in-memory sibling records only.",
+    "Positive production XEL binary validation remains unavailable; existing IXelEventSource tests retained."
+  ]
+}

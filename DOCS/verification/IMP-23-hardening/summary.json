@@ -1,0 +1,522 @@
+{
+  "Task": "IMP-23 review hardening",
+  "Date": "2026-09-10",
+  "Status": "All five reviewed defects fixed; automated verification passed",
+  "Tests": [
+    {
+      "Configuration": "Debug",
+      "Total": 2480,
+      "Passed": 2480,
+      "Failed": 0,
+      "Skipped": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Imp23Tests": 66,
+      "AddedTests": 21,
+      "TrxSha256": "673056F5DB57D9B90DC33520BCB0E7420C19732FDF9E59048CAAE30EA9153395",
+      "NewTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"actions\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"bytes\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"event\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"fields\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"members\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"original\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.DatabaseName_FromCurrentdbname_IsSearchableAndPartOfStructureIdentity",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: Invalid, code: \"INPUT_XEL_INVALID_EVENTS\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: TooLarge, code: \"INPUT_TOO_LARGE\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: UnexpectedError, code: \"INPUT_UNEXPECTED_ERROR\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: Unsupported, code: \"UNKNOWN_FORMAT\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.LargeStructuralLabels_AreIsolatedWithoutDroppingSearchOrTrace",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.LargeTopologyWork_IsIsolatedBeforeEnumeratingAllPermutations",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.NamespaceNormalization_DoesNotInvalidateUnchangedOriginalEvidence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.OriginalChangedBeforeFirstBuild_IsRejectedInsteadOfBlessingMismatchedEvidence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.RolloverFileWithoutDeadlocks_IsRetainedAndDoesNotAbortBatch(recordCount: 0)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.RolloverFileWithoutDeadlocks_IsRetainedAndDoesNotAbortBatch(recordCount: 2)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.StreamingHash_PreservesUtf8AcrossBufferBoundaries",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.SymmetricGraph_UsesBoundedAllocationsInsteadOfMultiplyingLabelsByPermutations",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.CancelledInitialization_CanRetryImportWithoutClaimingEmptySearchSucceeded",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.SearchAndImportDuringInitialization_DoNotCancelOrReplaceInitialSource",
+          "Outcome": "Passed"
+        }
+      ],
+      "DiagnosticTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.BrokenReporter_PreservesNavigationFailure",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.Logs_UseRequiredBuildLevelsAndDoNotContainQueryOrSourcePayload",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "Total": 2480,
+      "Passed": 2480,
+      "Failed": 0,
+      "Skipped": 0,
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Imp23Tests": 66,
+      "AddedTests": 21,
+      "TrxSha256": "D88D4DEB4BB856137FEF0B7CCB5AFCDECFFBE63E3BB4A7D2F077108C19A9B0F3",
+      "NewTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"actions\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"bytes\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"event\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"fields\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"members\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.ChangedSnapshot_CannotAcquireNewBaselineOnImportOrRebuild(target: \"original\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.DatabaseName_FromCurrentdbname_IsSearchableAndPartOfStructureIdentity",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: Invalid, code: \"INPUT_XEL_INVALID_EVENTS\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: TooLarge, code: \"INPUT_TOO_LARGE\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: UnexpectedError, code: \"INPUT_UNEXPECTED_ERROR\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.FailedOrUnsupportedFile_StillRejectsWholeImport(status: Unsupported, code: \"UNKNOWN_FORMAT\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.LargeStructuralLabels_AreIsolatedWithoutDroppingSearchOrTrace",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.LargeTopologyWork_IsIsolatedBeforeEnumeratingAllPermutations",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.NamespaceNormalization_DoesNotInvalidateUnchangedOriginalEvidence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.OriginalChangedBeforeFirstBuild_IsRejectedInsteadOfBlessingMismatchedEvidence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.RolloverFileWithoutDeadlocks_IsRetainedAndDoesNotAbortBatch(recordCount: 0)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.RolloverFileWithoutDeadlocks_IsRetainedAndDoesNotAbortBatch(recordCount: 2)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.StreamingHash_PreservesUtf8AcrossBufferBoundaries",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchHardeningTests.SymmetricGraph_UsesBoundedAllocationsInsteadOfMultiplyingLabelsByPermutations",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.CancelledInitialization_CanRetryImportWithoutClaimingEmptySearchSucceeded",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.SearchAndImportDuringInitialization_DoNotCancelOrReplaceInitialSource",
+          "Outcome": "Passed"
+        }
+      ],
+      "DiagnosticTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.BrokenReporter_PreservesNavigationFailure",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.Logs_UseRequiredBuildLevelsAndDoNotContainQueryOrSourcePayload",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        }
+      ]
+    }
+  ],
+  "PreviousVerification": "DOCS/verification/IMP-23/summary.json",
+  "SourceFiles": [
+    {
+      "SHA256": "A114C4983A397E090B4D626C60F0C326E1434F1B4D9A7573E97EDBD718A54B35",
+      "Path": "MainWindow.Services.cs"
+    },
+    {
+      "SHA256": "5AE5495F1ABC86A2987C3E575D9B97B29769678254DD3D9FDCB9BD66E15EDC50",
+      "Path": "Services/XelDeadlockUiActionService.cs"
+    },
+    {
+      "SHA256": "98ADC96D2AA383EB3FF42AAE515EEE5FEB41A1CB89A344A3855EA00E37A6901F",
+      "Path": "SqlXmlAnalyzer.Core/Services/XelSearchModels.cs"
+    },
+    {
+      "SHA256": "28C197B514B7BA31550D5D2FD2336F61B0E2E708AC531026B6EF9B3E2949C249",
+      "Path": "SqlXmlAnalyzer.Core/Services/XelSearchService.cs"
+    },
+    {
+      "SHA256": "3268010BD98C31057C005CAEE646C122710508899BAA88C84C6C9DDFCDD14DE0",
+      "Path": "SqlXmlAnalyzer.Core/Services/XelStructureKey.cs"
+    },
+    {
+      "SHA256": "8135C950650A30E595A6D999089E8D1404D92FFC15743936BC1CF4879D38A969",
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/XelSearchDiagnosticTests.cs"
+    },
+    {
+      "SHA256": "70AA8009E4B0E539748ACCC9FF3CD19767D429EAF58670F64C3A30A74F4451E6",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp23_search_a.xdl"
+    },
+    {
+      "SHA256": "0793337A2AB0C64751B20FB5C6E092B2F9C04D7AF33EDC97A2D1C8FFB74EC691",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp23_search_b.xdl"
+    },
+    {
+      "SHA256": "D88DDFD5B152E02CD44C4851E713142BA9976D10E694B99140732CBF38C072E9",
+      "Path": "SqlXmlAnalyzer.Tests/XelSearchHardeningTests.cs"
+    },
+    {
+      "SHA256": "2A50B6D1406C7B8303F5441045626B848B82E8EDA93BD78808B270EE8F07C7A2",
+      "Path": "SqlXmlAnalyzer.Tests/XelSearchServiceTests.cs"
+    },
+    {
+      "SHA256": "CDE4D966B595BCA864BB6E78B189FD386B30251430DB95D569B1C48984F1A63D",
+      "Path": "SqlXmlAnalyzer.Tests/XelSearchViewModelTests.cs"
+    },
+    {
+      "SHA256": "D595713F97D86F119170F884C8CC4E32BF55B22CC001A399D60D13F04ECCC90C",
+      "Path": "ViewModels/XelSearchViewModel.cs"
+    },
+    {
+      "SHA256": "CD78FA231B933F76A2626F19FB46D07E0D0103819B314B1A230CBF0C3ABB71D7",
+      "Path": "Views/DeadlockWorkspaceView.xaml"
+    },
+    {
+      "SHA256": "2C93054DBE6A97F714BF5E83F19F18F06DF917314DD716A6F442AC5E229A06FA",
+      "Path": "Views/DeadlockWorkspaceView.xaml.cs"
+    },
+    {
+      "SHA256": "F03030CDB750C00C495690003CF01762E0B69FBB049F1D4AE5882E784E9F3237",
+      "Path": "Views/XelSearchWindow.xaml"
+    },
+    {
+      "SHA256": "BCDABE54E293D5FFCE3CE30F470828C7A970F670CC606C4A7D5003651BB6B36A",
+      "Path": "Views/XelSearchWindow.xaml.cs"
+    }
+  ],
+  "Documents": [
+    {
+      "SHA256": "25AB9D3DD49CBD79B992BCD9ACDC58F74FD3FB95A36C76B1E62C56991D789FD6",
+      "Path": "README.md"
+    },
+    {
+      "SHA256": "4A7FB5C5D89E48A061C89A37DEE600FDF7FADCC65A3BD4241F59B46B07469207",
+      "Path": "UserGuide.md"
+    },
+    {
+      "SHA256": "2392EC1AEA08044184C3B1BD2B785564352F787AB1C9FF4A5A8961CE63DE4157",
+      "Path": "Architecture.md"
+    },
+    {
+      "SHA256": "04769466CE6BCBFA8B2662F7EB123C9DD2DE72C17B556B46F3034577FE3CBA9D",
+      "Path": "CHANGELOG.md"
+    },
+    {
+      "SHA256": "C35B245B2D7D2326BB9574AE07402A9C5DDD6F4F70D72934F24B0354D5BC2F4B",
+      "Path": "DOCS/README.md"
+    },
+    {
+      "SHA256": "A156931F548F1AA673DAAADF658E7C41804CDA947A9732B59DBC2875816895FF",
+      "Path": "DOCS/软件改善实施规划.md"
+    },
+    {
+      "SHA256": "4DF863EBECB9C600D0C75EEF41068FD07F4089331183F2F79E2B768AA3573328",
+      "Path": "DOCS/IMP-23XEL搜索聚合与事件追溯.md"
+    },
+    {
+      "SHA256": "E190C4D4C0A5B564B7AD5771D306BAD2E28C28EB20ED23DB846C9F445C6DE35E",
+      "Path": "DOCS/IMP-23审查修复与加固说明.md"
+    }
+  ],
+  "Artifacts": [
+    {
+      "SHA256": "05765BB5441764649CB916E6142A7518F1A5C3095DD3D726CDDA6E8627F716A0",
+      "Path": "DOCS/verification/IMP-23-hardening/build-Debug.txt"
+    },
+    {
+      "SHA256": "562A71037ADD17CBF3A24C0A1908CD187AAF543FFB711A15BCF26886AE667994",
+      "Path": "DOCS/verification/IMP-23-hardening/build-Release.txt"
+    },
+    {
+      "SHA256": "981CDB220C3F4EA5B4F11ADF5FE75062498ACB08C6EF9FAA665B9044CD5909B4",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-Debug.json"
+    },
+    {
+      "SHA256": "77F4DABC87FD20982326BD274442E1FEE601CA32EE492730C4C500A551D7EB54",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-Debug.stderr.txt"
+    },
+    {
+      "SHA256": "3B09B557BB32DFBD746A270045AAD6920CD5BFDA812B805130E0E6209575927F",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-Debug.stdout.txt"
+    },
+    {
+      "SHA256": "A423F51D913E3D9B6AE3093572602EA2D8C86B1D5065AC97C64D2F3F90EE949B",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-probe-Debug.txt"
+    },
+    {
+      "SHA256": "DA498D0749CEFC00D9ABFFD4C9F0B755EFFACC27C7284DDDDA2984E6093E96E1",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-probe-Release.txt"
+    },
+    {
+      "SHA256": "E38A59496C4F697E1324EA7EA8FE6829E86E497C112C45DF75752C5A8A07D27A",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-Release.json"
+    },
+    {
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-Release.stderr.txt"
+    },
+    {
+      "SHA256": "3B09B557BB32DFBD746A270045AAD6920CD5BFDA812B805130E0E6209575927F",
+      "Path": "DOCS/verification/IMP-23-hardening/memory-Release.stdout.txt"
+    },
+    {
+      "SHA256": "B41D71446786C18FE5A412FA22748CE94DDBDF61DEBB110257DC7DAF0D0CE8E3",
+      "Path": "DOCS/verification/IMP-23-hardening/MemoryProbe.cs.txt"
+    },
+    {
+      "SHA256": "AF9EDFAC641E79810247D6681613E416F4CA1A5C6EB5CA2750E61D11C1F160CD",
+      "Path": "DOCS/verification/IMP-23-hardening/README.md"
+    },
+    {
+      "SHA256": "1E74CBA0108EC13920C4F367E1D41D6C322C15A38EB7D4FB24BFB61B9BA8315B",
+      "Path": "DOCS/verification/IMP-23-hardening/real-xel-Debug.json"
+    },
+    {
+      "SHA256": "1E74CBA0108EC13920C4F367E1D41D6C322C15A38EB7D4FB24BFB61B9BA8315B",
+      "Path": "DOCS/verification/IMP-23-hardening/real-xel-Release.json"
+    },
+    {
+      "SHA256": "E548A936CFAF30A567057F00706C2265BEC79071BE25E68989D439BD088B8B06",
+      "Path": "DOCS/verification/IMP-23-hardening/Run-MemoryProbe.ps1"
+    },
+    {
+      "SHA256": "31445AA9A8F62D58FA84DA8FA530C658305F83E6B761AD9F680B8D3FB6E1F604",
+      "Path": "DOCS/verification/IMP-23-hardening/Run-WpfProbe.ps1"
+    },
+    {
+      "SHA256": "D198B1A8037014D9104E2B61CF1C639522D374866746F879B2EC6FCBDF367D11",
+      "Path": "DOCS/verification/IMP-23-hardening/Run-XelProbe.ps1"
+    },
+    {
+      "SHA256": "17B216133EED2EB97307A5060439EED621455390AD9B7079C932868FE4B05DD9",
+      "Path": "DOCS/verification/IMP-23-hardening/tests-Debug.txt"
+    },
+    {
+      "SHA256": "D6BCB80BF59605F621379CFD5EAA685E1920FB7A41805E906F3F763E74DC0B4A",
+      "Path": "DOCS/verification/IMP-23-hardening/tests-Release.txt"
+    },
+    {
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/binding-errors.txt"
+    },
+    {
+      "SHA256": "2839CB63AF423296B7CDBF31B86FA29704183CD59A640AC3288FA3E8C7C6BF69",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/filtered-events.png"
+    },
+    {
+      "SHA256": "1B8A9C859F017041FA8B4FE56742142C33839743687C4FF49808CB23E2D5D3AF",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/initial-load-controls.png"
+    },
+    {
+      "SHA256": "1AF244077E82C55A0AC873A2DB196CD001708A100EF61F5B44F27D8ABD5AE20B",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/invalid-offset-retains-results.png"
+    },
+    {
+      "SHA256": "9852C6F858D50C8A641915B8F9A9F0756B46BD36C3D0A8B66E938363BE903350",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/original-event-workspace.png"
+    },
+    {
+      "SHA256": "F1CEE813C2460CA9EA2599E9D6F840033585A7865CC73B3DE7D4D321FD7E13DC",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/search-group-members.png"
+    },
+    {
+      "SHA256": "F0663B6AE3F5F94A817F704764C19E8A770843273ABDA3B78B79AAA8809EA347",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/stderr.txt"
+    },
+    {
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/stdout.txt"
+    },
+    {
+      "SHA256": "DEBF83DD5428BC4E61C5EED8F7F28A6C2E8BE43749311A15140B3EAF13F4DBA5",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Debug/verification.json"
+    },
+    {
+      "SHA256": "56CCBB8F7B6741246FB37C7E6555A39784294F2228E7B112026C2F1C1767860C",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-probe-Debug.txt"
+    },
+    {
+      "SHA256": "F1C28A85151B35859B30B938D042035101A8BF74CA4D8D26C45ACCA8F265D0F8",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-probe-Release.txt"
+    },
+    {
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/binding-errors.txt"
+    },
+    {
+      "SHA256": "2839CB63AF423296B7CDBF31B86FA29704183CD59A640AC3288FA3E8C7C6BF69",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/filtered-events.png"
+    },
+    {
+      "SHA256": "1B8A9C859F017041FA8B4FE56742142C33839743687C4FF49808CB23E2D5D3AF",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/initial-load-controls.png"
+    },
+    {
+      "SHA256": "1AF244077E82C55A0AC873A2DB196CD001708A100EF61F5B44F27D8ABD5AE20B",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/invalid-offset-retains-results.png"
+    },
+    {
+      "SHA256": "9852C6F858D50C8A641915B8F9A9F0756B46BD36C3D0A8B66E938363BE903350",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/original-event-workspace.png"
+    },
+    {
+      "SHA256": "F1CEE813C2460CA9EA2599E9D6F840033585A7865CC73B3DE7D4D321FD7E13DC",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/search-group-members.png"
+    },
+    {
+      "SHA256": "9C3F1C162A10CBCBDAF2EBEF126C82ED0AF814EC34615CF953814D904B242F4F",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/stderr.txt"
+    },
+    {
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/stdout.txt"
+    },
+    {
+      "SHA256": "DEBF83DD5428BC4E61C5EED8F7F28A6C2E8BE43749311A15140B3EAF13F4DBA5",
+      "Path": "DOCS/verification/IMP-23-hardening/wpf-Release/verification.json"
+    },
+    {
+      "SHA256": "B16681AE0BC84522393A24144982A208D122710C435191C5976B2A1939C06032",
+      "Path": "DOCS/verification/IMP-23-hardening/WpfProbe.cs.txt"
+    },
+    {
+      "SHA256": "AC645869D48FEA8160B6AB838DA1688142297DC79CA4572FD104E0DB450ADDFA",
+      "Path": "DOCS/verification/IMP-23-hardening/xel-probe-Debug.txt"
+    },
+    {
+      "SHA256": "BE344B57259229219901FE4221277757195A8F67408524F125FCFF20DD14B3A4",
+      "Path": "DOCS/verification/IMP-23-hardening/xel-probe-Release.txt"
+    },
+    {
+      "SHA256": "EEAD91CBDBC80A1F32AB0180CCF5DF4FBB1B55C7F2D86B4A86C06A92D6F0BF74",
+      "Path": "DOCS/verification/IMP-23-hardening/XelProbe.cs.txt"
+    }
+  ],
+  "Environment": {
+    "BuildIntermediateDirectory": "obj/imp23-hardening/{Configuration}/",
+    "SDK": "10.0.400",
+    "PowerShell": "7.6.5",
+    "BuildWorkaround": "Windows Restart Manager identified GoogleDriveFS.exe holding the standard WPF generated resource; used a separate intermediate directory, kept standard output directories."
+  },
+  "UiLimitation": "Off-screen production WPF host; no mouse/keyboard E2E. Existing desktop access limitation remains.",
+  "ScopeLimits": "Synthetic allocation regression is not a large-catalog performance benchmark. No coverage report or publish performed."
+}

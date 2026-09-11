@@ -1,0 +1,20 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple>
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Index Scan" LogicalOp="Index Scan">
+              <IndexScan>
+                <Object Database="[TestDB]" Schema="[dbo]" Table="[Users]" />
+              </IndexScan>
+              <ScalarOperator ScalarString="CONVERT_IMPLICIT(nvarchar(50), [TestDB].[dbo].[Users].[Account], 0)">
+                <Convert DataType="nvarchar" Length="100" Style="0" Implicit="1" />
+              </ScalarOperator>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

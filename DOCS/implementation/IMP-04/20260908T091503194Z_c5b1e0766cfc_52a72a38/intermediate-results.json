@@ -1,0 +1,21 @@
+{
+  "classification": "Current-step development findings, not historical baseline failures",
+  "firstBuild": "One nullable warning fixed",
+  "firstTargetedTests": "145 passed, 2 failed: log read sharing and parser position message; second attempt 147 passed",
+  "initialFullDebug": "884 passed before outcome tests were added",
+  "firstProcessCheck": "8 structural assertions passed but did not detect Chinese encoding corruption; UTF-8 fixed and assertions strengthened",
+  "encodingVerification": [
+    {
+      "configuration": "debug",
+      "oldStructuralCheckPassed": true,
+      "oldChineseTextCorrupted": true,
+      "finalChineseTextPreserved": true
+    },
+    {
+      "configuration": "release",
+      "oldStructuralCheckPassed": true,
+      "oldChineseTextCorrupted": true,
+      "finalChineseTextPreserved": true
+    }
+  ]
+}

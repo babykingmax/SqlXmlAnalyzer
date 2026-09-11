@@ -1,0 +1,24 @@
+{
+  "IsSuccess": true,
+  "IsDryRun": false,
+  "HasChanges": true,
+  "TimeElapsedMs": 128.0833,
+  "OriginalSqlLength": 40,
+  "RefactoredSqlLength": 44,
+  "PassesCount": 2,
+  "Changes": [
+    {
+      "RuleId": "REF_RULE_104_CONST_FOLD",
+      "Description": "Folded constant arithmetic on column Age",
+      "Timestamp": "2026-09-08T09:09:32.2498647Z"
+    }
+  ],
+  "Failures": [],
+  "Warnings": [
+    "SQL 已写回。备份：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\success.sql.SqlXmlAnalyzer-a3b4d274745d40b99c6fdc2b1516d01a.bak；原始 SHA-256：64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD。恢复前先另存当前文件，再校验备份并复制恢复。"
+  ],
+  "Errors": [],
+  "ParseErrors": null,
+  "OriginalSql": null,
+  "RefactoredSql": null
+}

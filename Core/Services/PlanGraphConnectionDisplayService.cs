@@ -19,9 +19,12 @@ namespace SqlXmlAnalyzer.Core.Services
     public sealed record PlanGraphConnectionNodeInfo(
         string PhysicalOp,
         double EstimatedRows,
-        string? ActualRowsText,
+        bool HasActualRows,
         double ActualRows,
-        double AverageRowSize);
+        double AverageRowSize)
+    {
+        public Models.PlanOperatorFacts? Facts { get; init; }
+    }
 
     public sealed class PlanGraphConnectionDisplayService
     {
@@ -32,7 +35,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 return 0;
             }
 
-            return source.ActualRows > 0
+            return source.HasActualRows
                 ? source.ActualRows
                 : source.EstimatedRows;
         }
@@ -63,7 +66,10 @@ namespace SqlXmlAnalyzer.Core.Services
             PlanGraphConnectionMetricKind metricKind,
             PlanGraphConnectionNodeInfo? source)
         {
+            if (source?.Facts is { } facts && ((!facts.OutputRows.IsAvailable && !facts.EstimatedRows.IsAvailable)
+                || metricKind == PlanGraphConnectionMetricKind.DataSize && !facts.AverageRowSize.IsAvailable)) return "N/A";
             double metricValue = GetMetricValue(metricKind, source);
+            if (!double.IsFinite(metricValue)) return "N/A";
             return metricKind switch
             {
                 PlanGraphConnectionMetricKind.DataSize =>
@@ -75,7 +81,8 @@ namespace SqlXmlAnalyzer.Core.Services
         public PlanGraphConnectionStrokeKey GetStrokeKey(
             PlanGraphConnectionNodeInfo? source)
         {
-            if (source == null || !HasActualRowsForStroke(source))
+            if (source == null || !source.HasActualRows || source.Facts is { } facts
+                && (!facts.EstimatedRows.IsAvailable || !facts.RowsPerExecution.IsAvailable))
             {
                 return PlanGraphConnectionStrokeKey.Default;
             }
@@ -83,9 +90,10 @@ namespace SqlXmlAnalyzer.Core.Services
             double estimatedRows = source.EstimatedRows <= 0
                 ? 1.0
                 : source.EstimatedRows;
-            double actualRows = source.ActualRows <= 0
+            double comparableRows = source.Facts == null ? source.ActualRows : (double)(source.Facts.RowsPerExecution.Value ?? 0);
+            double actualRows = comparableRows <= 0
                 ? 1.0
-                : source.ActualRows;
+                : comparableRows;
             double ratio = actualRows / estimatedRows;
 
             if (ratio > 5.0 || ratio < 0.2)
@@ -109,8 +117,9 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 return "未知数据流";
             }
+            if (source.Facts is { } facts) return BuildFactsToolTip(source.PhysicalOp, targetPhysicalOp, facts);
 
-            bool hasActualRows = HasActualRowsForTooltip(source);
+            bool hasActualRows = source.HasActualRows;
             string estimatedRowsText =
                 PlanGraphMetricService.FormatNumber(source.EstimatedRows);
             string actualRowsText = hasActualRows
@@ -128,7 +137,7 @@ namespace SqlXmlAnalyzer.Core.Services
             builder.AppendLine($"数据流: {source.PhysicalOp} ➔ {targetPhysicalOp}");
             builder.AppendLine($"预估行数: {estimatedRowsText} ({source.EstimatedRows:N0})");
 
-            if (actualRowsText != "N/A")
+            if (hasActualRows)
             {
                 builder.AppendLine($"实际行数: {actualRowsText} ({source.ActualRows:N0})");
             }
@@ -136,7 +145,7 @@ namespace SqlXmlAnalyzer.Core.Services
             builder.AppendLine($"平均行宽: {source.AverageRowSize:N0} 字节");
             builder.AppendLine($"预估大小: {estimatedSizeText}");
 
-            if (actualSizeText != "N/A")
+            if (hasActualRows)
             {
                 builder.AppendLine($"实际大小: {actualSizeText}");
                 double ratio = source.EstimatedRows > 0
@@ -157,19 +166,27 @@ namespace SqlXmlAnalyzer.Core.Services
             return builder.ToString().TrimEnd();
         }
 
-        private static bool HasActualRowsForStroke(
-            PlanGraphConnectionNodeInfo source)
+        private static string BuildFactsToolTip(string physicalOp, string? target, Models.PlanOperatorFacts facts)
         {
-            return source.ActualRows > 0
-                || (!string.IsNullOrEmpty(source.ActualRowsText)
-                    && source.ActualRowsText != "N/A");
-        }
-
-        private static bool HasActualRowsForTooltip(
-            PlanGraphConnectionNodeInfo source)
-        {
-            return !string.IsNullOrEmpty(source.ActualRowsText)
-                && source.ActualRowsText != "N/A";
+            var builder = new StringBuilder();
+            builder.AppendLine($"数据流: {physicalOp} ➔ {target}");
+            builder.AppendLine($"预估行数（每次执行）: {facts.EstimatedRows.Display("N0")}");
+            if (facts.OutputRows.IsAvailable) builder.AppendLine($"实际行数: {facts.OutputRows.Display("N0")}（全部线程/执行的总输出）");
+            builder.AppendLine($"实际读取行: {facts.RowsRead.Display("N0")}");
+            builder.AppendLine($"平均行宽: {facts.AverageRowSize.Display("N0")} 字节");
+            string Size(double? rows) => rows.HasValue && facts.AverageRowSize.IsAvailable
+                && double.IsFinite(rows.Value * facts.AverageRowSize.Value!.Value)
+                ? PlanGraphMetricService.FormatBytes(rows.Value * facts.AverageRowSize.Value.Value) : "N/A";
+            builder.AppendLine($"预估大小（每次执行）: {Size(facts.EstimatedRows.Value)}");
+            if (facts.OutputRows.IsAvailable) builder.AppendLine($"实际大小（按估算行宽推算）: {Size((double?)facts.OutputRows.Value)}");
+            builder.AppendLine($"线程执行次数合计: {facts.ThreadExecutions.Display("N0")}");
+            builder.AppendLine($"逻辑执行次数: {facts.LogicalExecutions.Display("N0")}");
+            if (facts.EstimatedRows.IsAvailable && facts.RowsPerExecution.IsAvailable && facts.EstimatedRows.Value > 0)
+            {
+                double ratio = (double)facts.RowsPerExecution.Value!.Value / facts.EstimatedRows.Value!.Value;
+                builder.AppendLine($"估算偏差: {ratio:F2} 倍（每次执行输出行）");
+            }
+            return builder.ToString().TrimEnd();
         }
     }
 }

@@ -57,7 +57,7 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void Parse_WhenActualRowsReadIsMissing_UsesActualRowsAsRowsRead()
+        public void Parse_WhenActualRowsReadIsMissing_DoesNotSubstituteOutputRows()
         {
             XElement relOp = CreateRelOp(
                 new XElement(Ns + "RunTimeCountersPerThread",
@@ -68,8 +68,9 @@ namespace SqlXmlAnalyzer.Tests
             result.HasActual.Should().BeTrue();
             result.HasActualRead.Should().BeFalse();
             result.ActualRows.Should().Be(42);
-            result.ActualRowsRead.Should().Be(42);
-            result.ActualExecutions.Should().Be(1);
+            result.ActualRowsRead.Should().Be(0);
+            result.ActualExecutions.Should().Be(0);
+            result.Facts!.ThreadExecutions.IsAvailable.Should().BeFalse();
         }
 
         [Fact]
@@ -127,7 +128,7 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void Parse_WhenValuesAreInvalid_UsesExistingDefaults()
+        public void Parse_WhenRowsAreInvalid_DoesNotClaimActualCounters()
         {
             XElement relOp = CreateRelOp(
                 new XElement(Ns + "RunTimeCountersPerThread",
@@ -139,7 +140,9 @@ namespace SqlXmlAnalyzer.Tests
 
             result.ActualRows.Should().Be(0);
             result.ActualRowsRead.Should().Be(0);
-            result.ActualExecutions.Should().Be(1);
+            result.HasActual.Should().BeFalse();
+            result.HasActualRead.Should().BeFalse();
+            result.ActualExecutions.Should().Be(0);
         }
 
         private static XElement CreateRelOp(params XElement[] runtimeCounters)

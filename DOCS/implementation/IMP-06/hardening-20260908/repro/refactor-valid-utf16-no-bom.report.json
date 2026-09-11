@@ -1,0 +1,21 @@
+﻿{
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "IsSuccess": true,
+  "IsDryRun": true,
+  "HasChanges": false,
+  "SourceWritten": false,
+  "Outcome": "NoChanges",
+  "TimeElapsedMs": 55.3229,
+  "OriginalSqlLength": 9,
+  "RefactoredSqlLength": 9,
+  "PassesCount": 1,
+  "Changes": [],
+  "Failures": [],
+  "Warnings": [],
+  "Errors": [],
+  "SafetySkips": [],
+  "Diagnostic": null,
+  "ParseErrors": null,
+  "OriginalSql": null,
+  "RefactoredSql": null
+}

@@ -9,6 +9,10 @@ namespace SqlXmlAnalyzer.Analysis
         public IssueSeverity Severity { get; }
         public string? TableName { get; }
         public string? ColumnName { get; }
+        public Core.Models.PlanLocation? Location { get; init; }
+        public Core.Rules.PlanDiagnostic? Diagnostic { get; init; }
+        public Core.Rules.RuleRun? Run { get; init; }
+        public System.Collections.Generic.IReadOnlyList<Core.Models.SqlObjectReference> Objects { get; init; } = System.Array.Empty<Core.Models.SqlObjectReference>();
 
         public SqlPlanAnalysisIssue(
             string issueType,

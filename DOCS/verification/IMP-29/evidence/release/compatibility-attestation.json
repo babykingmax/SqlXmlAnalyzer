@@ -1,0 +1,24 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "389C4966BACC82BE6B7760753669836DC3A2BB8A1EAED26EEC94C45CD3F3C3BF",
+  "StartedAtUtc": "2026-09-10T10:31:29.2192225Z",
+  "CompletedAtUtc": "2026-09-10T10:31:31.5851071Z",
+  "Results": [
+    {
+      "Path": "latest-Release.json",
+      "Bytes": 8189,
+      "Sha256": "E15F9519CF6B471604FFF9CD9331FF4152053E2BEF7A6CC678A7ED20D6D949D8"
+    },
+    {
+      "Path": "replay.log",
+      "Bytes": 1847,
+      "Sha256": "D8A02C11F020E526E0E10B51975CC8FD1842441471FF39BCAE04EA80D0DAEC92"
+    },
+    {
+      "Path": "Replay.ps1",
+      "Bytes": 8012,
+      "Sha256": "EE27ED7A39791C8998E0D923EA34F4DCE31CFF602EEE3ADDCA17B8005848FE81"
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+{
+  "Implementation": "IMP-28",
+  "GeneratedAtUtc": "2026-09-10T08:34:02.5458002Z",
+  "GitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "Context": "Local working tree with uncommitted IMP-23 through IMP-28 changes; no commit, package or publication performed.",
+  "BaselineTests": 2691,
+  "AddedTests": 48,
+  "SourceManifest": "sources.json",
+  "SourceCount": 680,
+  "FixtureManifest": "fixture-hashes.json",
+  "FixtureCount": 13,
+  "Matrix": "../../IMP-28模型配置报告与CLI兼容性.md",
+  "RedRuns": [
+    {
+      "Scenario": "config",
+      "Tests": {
+        "Total": 7,
+        "Passed": 2,
+        "Failed": 5,
+        "NotExecuted": 0
+      },
+      "Trx": {
+        "Path": ".tmp.imp28-results/Debug/config-red.trx",
+        "Bytes": 27193,
+        "Sha256": "13CE59C74E02A235782360C53E7C03FF43AB854E788154D702376E0AB845AC30"
+      }
+    },
+    {
+      "Scenario": "session",
+      "Tests": {
+        "Total": 10,
+        "Passed": 0,
+        "Failed": 10,
+        "NotExecuted": 0
+      },
+      "Trx": {
+        "Path": ".tmp.imp28-results/Debug/session-red.trx",
+        "Bytes": 56068,
+        "Sha256": "CC510D4D2AD805723DB47874B9D60E46207593501321943619F1752F27ADFB86"
+      }
+    },
+    {
+      "Scenario": "session-shape",
+      "Tests": {
+        "Total": 7,
+        "Passed": 5,
+        "Failed": 2,
+        "NotExecuted": 0
+      },
+      "Trx": {
+        "Path": ".tmp.imp28-results/Debug/session-shape-red.trx",
+        "Bytes": 25917,
+        "Sha256": "0D0589A34F72198A612E310BFD8F95B888264E64299538EFEAAE79E5E9484D41"
+      }
+    }
+  ],
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLog": {
+        "Path": ".tmp.imp28-build-debug.log",
+        "Bytes": 871,
+        "Sha256": "87C3206A5FCC4D1FE36C898C85C718AAD8E9BCEC35E533FE2BE93268C77CF59B"
+      },
+      "Tests": {
+        "Total": 2739,
+        "Passed": 2739,
+        "Failed": 0,
+        "NotExecuted": 0
+      },
+      "CompatibilityTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Scan_OriginalAliasesAndArrayJsonRemainReadable(pathFlag: \"-p\", formatFlag: \"-f\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"io\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"1\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ReadOptions_UnknownFieldsFailWithUsageCodeInsteadOfSilentlyChangingBudgets",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"\\\"1.1\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"\\\"\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.EditAndSaveCopy_PreservesLegacyAliasesExtensionsAndOriginalBytes",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"null\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.JsonOutput_ExistingDestinationAndOriginalPlanRemainIntact",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"concurrent\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_PreImprovementConfigurationRetainsKnownSettings",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedVersionDoesNotReplaceActiveHistory",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Load_UnsupportedSchemaPreservesFileAndActiveConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"help\", expected: 0)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.DefaultRules_PreserveFrozenIdsVersionsAndSeverities",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"corrupt\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"unknown-option\", expected: 2)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"element\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.VersionMigration_PreservesPreviouslyAcceptedGenericSchemaVersionExtension",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_LegacyCopyCannotOverwriteTheOnlyOriginal",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"future-config\", expected: 2)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Deadlock_LegacyWrapperAndExplicitEventPreserveProcessesAndResources(wrapper: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Refactor_RetainsJsonFieldsAndExplicitCandidateOnlyOutcome",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_ActualPreUpgradeCurrentSessionPreservesSnapshotAndSelection",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Read_ExistingObjectFieldsAndInputIdentityRemainAvailable",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Plan_ExistingAndStructuredAdaptersPreserveRuleIdentitySeverityAndScope",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"99.0\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnversionedLegacySessionCanBeSavedAsCurrentCopy",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"missing-plan-reference\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.SessionCompatibilityOperations_RespectDebugReleaseLogGate",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"threshold\", expected: 1)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Report_CurrentJsonRetainsFrozenReaderFieldsAndRecognizableVersion",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"plan-text\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"cancel\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"1.0\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"\\\"2\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"pair-text\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"root\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Deadlock_LegacyWrapperAndExplicitEventPreserveProcessesAndResources(wrapper: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Scan_OriginalAliasesAndArrayJsonRemainReadable(pathFlag: \"--path\", formatFlag: \"--format\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"invalid-input\", expected: 1)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"2.2\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"duplicate-id\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"cancel\", expected: 130)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"attribute\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Trx": {
+        "Path": ".tmp.imp28-results/Debug/full.trx",
+        "Bytes": 21818332,
+        "Sha256": "2422F71A634C86CCE1AAF9B5259E58C77DA09A0A712F95D313C26A3587F58E0B"
+      },
+      "Probe": {
+        "Path": "DOCS/verification/IMP-28/latest-Debug.json",
+        "Bytes": 8028,
+        "Sha256": "60EC926CB07DE3A75A0E7252E69524909ED59DCAFC7B694C59E7FFB1433C4E3A"
+      },
+      "Checks": [
+        "scan exit 0",
+        "scan legacy array and complete cost",
+        "report and rule protocol versions",
+        "threshold exit 1",
+        "read exit 0",
+        "read model envelope",
+        "refactor exit 0",
+        "refactor candidate-only contract",
+        "future-config exit 2",
+        "future configuration recognizable rejection",
+        "unknown-option exit 2",
+        "existing-output exit 2",
+        "existing report retained",
+        "CLI original plan and SQL bytes retained",
+        "legacy session version recognized",
+        "session conversion readable as current",
+        "session comparison pair retained",
+        "session overwrite rejected and original bytes retained",
+        "future session recovery retains original",
+        "configuration conversion keeps effective settings",
+        "configuration alias and unknown rule retained",
+        "configuration source retained"
+      ],
+      "Run": "runs/Debug-20260910T082704114Z-96970a37",
+      "Assemblies": [
+        {
+          "Path": "bin/Debug/net8.0-windows/SqlXmlAnalyzer.dll",
+          "Bytes": 1109504,
+          "Sha256": "B1FB9F45A5885ECFF2EA3148388DEDF0BFBF2B9D1FA08890D7D8B62646521F78"
+        },
+        {
+          "Path": "bin/Debug/net8.0-windows/SqlXmlAnalyzer.Core.dll",
+          "Bytes": 971776,
+          "Sha256": "B2ABAEAECB98C3A2552F1DD8EE3F8D4AB00FDA4E2AF80778D93DF46412208DE4"
+        },
+        {
+          "Path": "SqlXmlAnalyzer.CLI/bin/Debug/net8.0/SqlXmlAnalyzer.CLI.dll",
+          "Bytes": 80384,
+          "Sha256": "2EB3D8A234E7F154356E31BD9FBB68869C995CB728DB956DE3A452B5BD387D7C"
+        },
+        {
+          "Path": "SqlXmlAnalyzer.Tests/bin/Debug/net8.0-windows/SqlXmlAnalyzer.Tests.dll",
+          "Bytes": 2104320,
+          "Sha256": "5D09240BD460751B7816DE3567EB313054D128E54B524BFD8BFF1EC8191547E6"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLog": {
+        "Path": ".tmp.imp28-build-release.log",
+        "Bytes": 885,
+        "Sha256": "7F2938F9A013EAB7B0662DDD33CE8846C9E09DCD5EFC458648027F2E2BF0A2D0"
+      },
+      "Tests": {
+        "Total": 2739,
+        "Passed": 2739,
+        "Failed": 0,
+        "NotExecuted": 0
+      },
+      "CompatibilityTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"cancel\", expected: 130)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"2.2\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"\\\"\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Plan_ExistingAndStructuredAdaptersPreserveRuleIdentitySeverityAndScope",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"element\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"unknown-option\", expected: 2)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"1.0\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"cancel\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"corrupt\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"io\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"plan-text\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Scan_OriginalAliasesAndArrayJsonRemainReadable(pathFlag: \"--path\", formatFlag: \"--format\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"duplicate-id\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Report_CurrentJsonRetainsFrozenReaderFieldsAndRecognizableVersion",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Read_ExistingObjectFieldsAndInputIdentityRemainAvailable",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"future-config\", expected: 2)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"1\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Scan_OriginalAliasesAndArrayJsonRemainReadable(pathFlag: \"-p\", formatFlag: \"-f\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_PreImprovementConfigurationRetainsKnownSettings",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Deadlock_LegacyWrapperAndExplicitEventPreserveProcessesAndResources(wrapper: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Load_UnsupportedSchemaPreservesFileAndActiveConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_LegacyCopyCannotOverwriteTheOnlyOriginal",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.DefaultRules_PreserveFrozenIdsVersionsAndSeverities",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"missing-plan-reference\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnversionedLegacySessionCanBeSavedAsCurrentCopy",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_ActualPreUpgradeCurrentSessionPreservesSnapshotAndSelection",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"99.0\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.VersionMigration_PreservesPreviouslyAcceptedGenericSchemaVersionExtension",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"null\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.EditAndSaveCopy_PreservesLegacyAliasesExtensionsAndOriginalBytes",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"help\", expected: 0)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"threshold\", expected: 1)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Save_FailureRetainsOriginalAndRemovesUnpublishedTemporaryData(scenario: \"concurrent\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnknownVersionFailsWithoutChangingOriginal(version: \"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"\\\"2\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ReadOptions_UnknownFieldsFailWithUsageCodeInsteadOfSilentlyChangingBudgets",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.ExitCodes_PreserveSuccessFailureUsageAndCancellation(scenario: \"invalid-input\", expected: 1)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ModelReportCompatibilityTests.Deadlock_LegacyWrapperAndExplicitEventPreserveProcessesAndResources(wrapper: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationCompatibilityTests.Parse_UnsupportedDeclaredVersionCannotExecuteAsLegacy(version: \"\\\"1.1\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"pair-text\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"root\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedVersionDoesNotReplaceActiveHistory",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.Refactor_RetainsJsonFieldsAndExplicitCandidateOnlyOutcome",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.SessionCompatibilityOperations_RespectDebugReleaseLogGate",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.SessionCompatibilityTests.Load_UnsupportedOrAmbiguousStructureCannotBecomeAnEmptyOrLossySession(kind: \"attribute\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.CliCompatibilityTests.JsonOutput_ExistingDestinationAndOriginalPlanRemainIntact",
+          "Outcome": "Passed"
+        }
+      ],
+      "Trx": {
+        "Path": ".tmp.imp28-results/Release/full.trx",
+        "Bytes": 4328573,
+        "Sha256": "F725311CD022DF6FDF867A12A2614740F359E9F258AAB368D3E70D2444FCDE6C"
+      },
+      "Probe": {
+        "Path": "DOCS/verification/IMP-28/latest-Release.json",
+        "Bytes": 8037,
+        "Sha256": "BD689E6519E4B7F4041060B04811DF3FE0EEA70A8F15A8FC8D0D5CB4E6550CE4"
+      },
+      "Checks": [
+        "scan exit 0",
+        "scan legacy array and complete cost",
+        "report and rule protocol versions",
+        "threshold exit 1",
+        "read exit 0",
+        "read model envelope",
+        "refactor exit 0",
+        "refactor candidate-only contract",
+        "future-config exit 2",
+        "future configuration recognizable rejection",
+        "unknown-option exit 2",
+        "existing-output exit 2",
+        "existing report retained",
+        "CLI original plan and SQL bytes retained",
+        "legacy session version recognized",
+        "session conversion readable as current",
+        "session comparison pair retained",
+        "session overwrite rejected and original bytes retained",
+        "future session recovery retains original",
+        "configuration conversion keeps effective settings",
+        "configuration alias and unknown rule retained",
+        "configuration source retained"
+      ],
+      "Run": "runs/Release-20260910T082940114Z-3ab92ea5",
+      "Assemblies": [
+        {
+          "Path": "bin/Release/net8.0-windows/SqlXmlAnalyzer.dll",
+          "Bytes": 1013248,
+          "Sha256": "1282EE7166B4B62316B807ACC932A987EC1D7404C1E05832F52E21B94936D2E1"
+        },
+        {
+          "Path": "bin/Release/net8.0-windows/SqlXmlAnalyzer.Core.dll",
+          "Bytes": 886272,
+          "Sha256": "A4A636671C1A40044EEEF0B26119D19EB51370A3BC09AA7FFD2112021FBB0934"
+        },
+        {
+          "Path": "SqlXmlAnalyzer.CLI/bin/Release/net8.0/SqlXmlAnalyzer.CLI.dll",
+          "Bytes": 76288,
+          "Sha256": "1BB347097F03D4A3CA7B43BE4F1F7992B8082A0853B1F8D5E6CDBACD8FD04A7C"
+        },
+        {
+          "Path": "SqlXmlAnalyzer.Tests/bin/Release/net8.0-windows/SqlXmlAnalyzer.Tests.dll",
+          "Bytes": 2060288,
+          "Sha256": "A9BE52CC435ED7A7581A160665292707817E5019A0F67B15591A228761B6DB34"
+        }
+      ]
+    }
+  ],
+  "CoverageGenerated": false,
+  "Limitations": [
+    "Synthetic offline compatibility examples only; no new SQL Server, WPF physical interaction or publication acceptance run.",
+    "Version 2.0 session is reconstructed from historical writer fields, not emitted by an old binary; version 2.1 and CLI baselines were emitted by pre-IMP28 Release binaries.",
+    "Cancellation exit 130 is tested through the CLI entry token; no new actual Ctrl+C process test.",
+    "Full tests include real minidump validation and Debug/Release log gating; temporary test dumps are cleaned up.",
+    "TRX and build logs remain local under .tmp.imp28-*; hashes identify bytes, not authenticity. IMP-29 and IMP-30 remain separate work."
+  ]
+}

@@ -15,6 +15,10 @@ namespace SqlXmlAnalyzer.Application.Services
         }
 
         public void Report(RefactorResult result, bool isDryRun, string? outputPath = null)
+            => Report(result, isDryRun, outputPath, []);
+
+        public void Report(RefactorResult result, bool isDryRun, string? outputPath,
+            IReadOnlyList<string?> inputPaths, CancellationToken cancellationToken = default)
         {
             if (result == null) return;
 
@@ -23,19 +27,19 @@ namespace SqlXmlAnalyzer.Application.Services
                 var fileContent = FormatReportText(result, isDryRun);
                 try
                 {
-                    File.WriteAllText(outputPath, fileContent, Encoding.UTF8);
+                    ReportFileWriter.WriteText(outputPath, fileContent, inputPaths, cancellationToken);
                     Console.WriteLine($"报告已写入到: {outputPath}");
                 }
                 catch (Exception ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Error.WriteLine($"[Error] 无法写入输出文件: {ex.Message}");
-                    Console.ResetColor();
+                    Core.Diagnostics.ExceptionPolicy.Describe(ex, "ConsoleResultReporter");
+                    throw;
                 }
                 return;
             }
 
             // Console output status card
+            Console.WriteLine(Core.Privacy.OutputPrivacy.RawNotice);
             Console.WriteLine("┌──────────────────────────────────────────────────────────┐");
             Console.WriteLine("│                    REFACTORING REPORT                    │");
             Console.WriteLine("├──────────────────────────────────────────────────────────┤");
@@ -65,12 +69,14 @@ namespace SqlXmlAnalyzer.Application.Services
             else
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write("Normal (Changes written to disk)".PadRight(49));
+                Console.Write("Review only (No files modified)".PadRight(49));
             }
             Console.ResetColor();
             Console.WriteLine("│");
             Console.WriteLine("└──────────────────────────────────────────────────────────┘");
+            Console.WriteLine($"结果状态：{DescribeOutcome(result.Outcome)}");
 
+            if (result.Review != null) Console.WriteLine(RewriteReviewFormatter.Format(result.Review, ShowSql));
             var context = result.Context;
             if (context != null)
             {
@@ -93,7 +99,7 @@ namespace SqlXmlAnalyzer.Application.Services
                 if (context.RefactorChanges.Count > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("\n[Applied Changes]");
+                    Console.WriteLine("\n[Candidate Changes]");
                     Console.ResetColor();
                     foreach (var change in context.RefactorChanges)
                     {
@@ -106,7 +112,7 @@ namespace SqlXmlAnalyzer.Application.Services
                 }
                 else
                 {
-                    Console.WriteLine("\nNo refactoring changes were applied.");
+                    Console.WriteLine("\nNo candidate changes were generated.");
                 }
 
                 // Rule execution failures
@@ -199,24 +205,7 @@ namespace SqlXmlAnalyzer.Application.Services
                 // SQL Comparison formatting
                 if (ShowSql)
                 {
-                    Console.WriteLine("\n────────────────────────────────────────────────────────────");
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine("┌── Original SQL ───────────────────────────────────────────");
-                    Console.ResetColor();
-                    Console.WriteLine((context.OriginalSql ?? "").Trim());
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine("└" + new string('─', 59));
-                    Console.ResetColor();
-
-                    Console.WriteLine();
-
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine("┌── Refactored SQL ─────────────────────────────────────────");
-                    Console.ResetColor();
-                    Console.WriteLine((result.OutputSql ?? "").Trim());
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine("└" + new string('─', 59));
-                    Console.ResetColor();
+                    Console.Write(FormatSqlComparison(result));
                 }
                 else if (isDryRun)
                 {
@@ -231,16 +220,45 @@ namespace SqlXmlAnalyzer.Application.Services
             Console.WriteLine("────────────────────────────────────────────────────────────");
         }
 
+        private static string DescribeOutcome(RefactorOutcome outcome) => outcome switch
+        {
+            RefactorOutcome.Failed => "失败，候选不可应用。",
+            RefactorOutcome.Applied => "SQL 已写回。",
+            RefactorOutcome.CandidateGenerated => "已生成候选 SQL，尚未应用。",
+            _ => "分析完成，未产生 SQL 改写。"
+        };
+
+        private static string FormatSqlComparison(RefactorResult result)
+        {
+            // Both text destinations must show the reviewed selection, including the exact
+            // original text for an empty selection. OutputSql is only a legacy full candidate.
+            string title = result.Review == null ? "Refactored SQL" : "Selected review preview (not applied)";
+            string preview = result.Review?.PreviewSql ?? result.OutputSql ?? "";
+            var text = new StringBuilder();
+            text.AppendLine("\n────────────────────────────────────────────────────────────");
+            text.AppendLine("┌── Original SQL " + new string('─', 43));
+            text.AppendLine(result.Context?.OriginalSql ?? "");
+            text.AppendLine("└" + new string('─', 59));
+            text.AppendLine();
+            text.AppendLine("┌── " + title + " " + new string('─', Math.Max(0, 55 - title.Length)));
+            text.AppendLine(preview);
+            text.AppendLine("└" + new string('─', 59));
+            return text.ToString();
+        }
+
         private string FormatReportText(RefactorResult result, bool isDryRun)
         {
             var sb = new StringBuilder();
+            sb.AppendLine(Core.Privacy.OutputPrivacy.RawNotice);
             sb.AppendLine("┌──────────────────────────────────────────────────────────┐");
             sb.AppendLine("│                    REFACTORING REPORT                    │");
             sb.AppendLine("├──────────────────────────────────────────────────────────┤");
             sb.AppendLine($"│ Status: {(result.IsSuccess ? "SUCCESS" : "FAILED").PadRight(49)}│");
-            sb.AppendLine($"│ Mode:   {(isDryRun ? "Dry-Run (No files modified)" : "Normal (Changes written to disk)").PadRight(49)}│");
+            sb.AppendLine($"│ Mode:   {(isDryRun ? "Dry-Run (No files modified)" : "Review only (No files modified)").PadRight(49)}│");
             sb.AppendLine("└──────────────────────────────────────────────────────────┘");
+            sb.AppendLine($"结果状态：{DescribeOutcome(result.Outcome)}");
 
+            if (result.Review != null) sb.AppendLine(RewriteReviewFormatter.Format(result.Review, ShowSql));
             var context = result.Context;
             if (context != null)
             {
@@ -256,7 +274,7 @@ namespace SqlXmlAnalyzer.Application.Services
 
                 if (context.RefactorChanges.Count > 0)
                 {
-                    sb.AppendLine("\n[Applied Changes]");
+                    sb.AppendLine("\n[Candidate Changes]");
                     foreach (var change in context.RefactorChanges)
                     {
                         sb.AppendLine($"  ● {change.RuleId,-24} : {change.Description}");
@@ -264,7 +282,7 @@ namespace SqlXmlAnalyzer.Application.Services
                 }
                 else
                 {
-                    sb.AppendLine("\nNo refactoring changes were applied.");
+                    sb.AppendLine("\nNo candidate changes were generated.");
                 }
 
                 if (context.RefactorFailures.Count > 0)
@@ -309,14 +327,7 @@ namespace SqlXmlAnalyzer.Application.Services
 
                 if (ShowSql)
                 {
-                    sb.AppendLine("\n────────────────────────────────────────────────────────────");
-                    sb.AppendLine("┌── Original SQL " + new string('─', 43));
-                    sb.AppendLine((context.OriginalSql ?? "").Trim());
-                    sb.AppendLine("└" + new string('─', 59));
-                    sb.AppendLine();
-                    sb.AppendLine("┌── Refactored SQL " + new string('─', 41));
-                    sb.AppendLine((result.OutputSql ?? "").Trim());
-                    sb.AppendLine("└" + new string('─', 59));
+                    sb.Append(FormatSqlComparison(result));
                 }
                 else if (isDryRun)
                 {

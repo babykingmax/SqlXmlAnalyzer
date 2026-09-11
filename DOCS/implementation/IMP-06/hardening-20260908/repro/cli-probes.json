@@ -1,0 +1,131 @@
+[
+  {
+    "Name": "correct-relop-namespace",
+    "ExitCode": 1,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\correct-relop-namespace.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\correct-relop-namespace.report.json"
+    ]
+  },
+  {
+    "Name": "wrong-relop-namespace",
+    "ExitCode": 1,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\wrong-relop-namespace.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\wrong-relop-namespace.report.json"
+    ]
+  },
+  {
+    "Name": "valid-utf8",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf8.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf8.report.json"
+    ]
+  },
+  {
+    "Name": "valid-utf16-no-bom",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf16-no-bom.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf16-no-bom.report.json"
+    ]
+  },
+  {
+    "Name": "valid-utf32-no-bom",
+    "ExitCode": 0,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf32-no-bom.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf32-no-bom.report.json"
+    ]
+  },
+  {
+    "Name": "invalid-utf8-byte",
+    "ExitCode": 1,
+    "Arguments": [
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\invalid-utf8-byte.sqlplan",
+      "--block-scans",
+      "--max-cost",
+      "1",
+      "--format",
+      "json",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\invalid-utf8-byte.report.json"
+    ]
+  },
+  {
+    "Name": "refactor-valid-utf8",
+    "ExitCode": 0,
+    "Arguments": [
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\input.sql",
+      "--plan",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf8.sqlplan",
+      "--dry-run",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\refactor-valid-utf8.report.json"
+    ]
+  },
+  {
+    "Name": "refactor-valid-utf16-no-bom",
+    "ExitCode": 0,
+    "Arguments": [
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\input.sql",
+      "--plan",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf16-no-bom.sqlplan",
+      "--dry-run",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\refactor-valid-utf16-no-bom.report.json"
+    ]
+  },
+  {
+    "Name": "refactor-valid-utf32-no-bom",
+    "ExitCode": 0,
+    "Arguments": [
+      "refactor",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\input.sql",
+      "--plan",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\valid-utf32-no-bom.sqlplan",
+      "--dry-run",
+      "--output",
+      "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-06\\hardening-20260908\\repro\\refactor-valid-utf32-no-bom.report.json"
+    ]
+  }
+]

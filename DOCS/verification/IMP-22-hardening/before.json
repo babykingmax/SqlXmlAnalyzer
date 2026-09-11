@@ -1,0 +1,27 @@
+{
+  "configuration": "Debug",
+  "assemblySha256": "F4A30A18F01D5DD64A3D91FDA453641F2319E4166B8998E2F0591B49FF64CF44",
+  "factoryParameterCount": 7,
+  "runtime": "10.0.11",
+  "inputCharacters": 22100,
+  "operators": 1000,
+  "reportFields": 169001,
+  "textCharacters": 8828145,
+  "factoryAllocatedBytes": 63935880,
+  "textAllocatedBytes": 35440696,
+  "cursorInputXsdErrors": [],
+  "cursorOutputs": [
+    {
+      "queryPlan": 1,
+      "xsdErrors": [
+        "The element 'StmtCursor' in namespace 'http://schemas.microsoft.com/sqlserver/2004/07/showplan' has invalid child element 'QueryPlan' in namespace 'http://schemas.microsoft.com/sqlserver/2004/07/showplan'. List of possible elements expected: 'StatementSetOptions, CursorPlan' in namespace 'http://schemas.microsoft.com/sqlserver/2004/07/showplan'."
+      ]
+    },
+    {
+      "queryPlan": 2,
+      "xsdErrors": [
+        "The element 'StmtCursor' in namespace 'http://schemas.microsoft.com/sqlserver/2004/07/showplan' has invalid child element 'QueryPlan' in namespace 'http://schemas.microsoft.com/sqlserver/2004/07/showplan'. List of possible elements expected: 'StatementSetOptions, CursorPlan' in namespace 'http://schemas.microsoft.com/sqlserver/2004/07/showplan'."
+      ]
+    }
+  ]
+}

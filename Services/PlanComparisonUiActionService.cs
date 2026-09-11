@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Xml.Linq;
+using SqlXmlAnalyzer.Core.Diagnostics;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -16,6 +17,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly TreeView _planATreeView;
         private readonly TreeView _planBTreeView;
         private readonly XNamespace _showplanNamespace;
+        private readonly IUnexpectedErrorReporter? _unexpectedErrors;
 
         public PlanComparisonUiActionService(
             Core.Services.PlanComparisonController comparisonController,
@@ -25,7 +27,8 @@ namespace SqlXmlAnalyzer.Services
             TabControl mainTabControl,
             TreeView planATreeView,
             TreeView planBTreeView,
-            XNamespace showplanNamespace)
+            XNamespace showplanNamespace,
+            IUnexpectedErrorReporter? unexpectedErrors = null)
         {
             _comparisonController = comparisonController
                 ?? throw new ArgumentNullException(nameof(comparisonController));
@@ -43,12 +46,14 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(planBTreeView));
             _showplanNamespace = showplanNamespace
                 ?? throw new ArgumentNullException(nameof(showplanNamespace));
+            _unexpectedErrors = unexpectedErrors;
         }
 
         public void HandleViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(_viewModel.PlanA)
-                && e.PropertyName != nameof(_viewModel.PlanB))
+                && e.PropertyName != nameof(_viewModel.PlanB)
+                && e.PropertyName != nameof(_viewModel.ComparisonSelectionRevision))
             {
                 return;
             }
@@ -80,27 +85,40 @@ namespace SqlXmlAnalyzer.Services
             Core.ViewModels.PlanSnapshot? planB,
             XNamespace showplanNamespace)
         {
-            _planATreeView.Items.Clear();
-            _planBTreeView.Items.Clear();
-
-            Core.Services.PlanComparisonResult comparison =
-                _comparisonController.BuildComparison(
-                    planA,
-                    planB,
-                    showplanNamespace);
-            Core.Services.PlanComparisonTreeResult displayTree =
-                _treeService.BuildTree(comparison);
-
-            if (displayTree.PlanA != null)
+            try
             {
-                _planATreeView.Items.Add(
-                    _treeViewRenderer.Render(displayTree.PlanA));
+                Core.Services.PlanComparisonResult comparison =
+                    _comparisonController.BuildComparison(
+                        planA,
+                        planB,
+                        showplanNamespace,
+                        selection: ReferenceEquals(planA, _viewModel.PlanA) && ReferenceEquals(planB, _viewModel.PlanB)
+                            ? _viewModel.ComparisonSelection : null);
+                Core.Services.PlanComparisonTreeResult displayTree =
+                    _treeService.BuildTree(comparison);
+                // Prepare both trees before publishing either side.
+                var nodesA = displayTree.StatementsA.Count > 0 ? displayTree.StatementsA
+                    : displayTree.PlanA == null ? [] : new[] { displayTree.PlanA };
+                var nodesB = displayTree.StatementsB.Count > 0 ? displayTree.StatementsB
+                    : displayTree.PlanB == null ? [] : new[] { displayTree.PlanB };
+                var treesA = nodesA.Select(_treeViewRenderer.Render).ToArray();
+                var treesB = nodesB.Select(_treeViewRenderer.Render).ToArray();
+                _planATreeView.Items.Clear();
+                _planBTreeView.Items.Clear();
+                foreach (var tree in treesA) _planATreeView.Items.Add(tree);
+                foreach (var tree in treesB) _planBTreeView.Items.Add(tree);
+                _viewModel.PublishComparison(comparison);
             }
-
-            if (displayTree.PlanB != null)
+            catch (Exception exception)
             {
-                _planBTreeView.Items.Add(
-                    _treeViewRenderer.Render(displayTree.PlanB));
+                // PropertyChanged runs after the backing field is assigned. Never let
+                // a comparison failure interrupt the second assignment in swap/load/clear.
+                string detail = ExceptionPolicy.Describe(exception, "PlanComparisonUiActionService.RefreshCompareTrees", _unexpectedErrors);
+                _viewModel.PublishComparison(null, detail);
+                _planATreeView.Items.Clear();
+                _planBTreeView.Items.Clear();
+                _planATreeView.Items.Add(new TextBlock { Text = detail, TextWrapping = System.Windows.TextWrapping.Wrap });
+                _planBTreeView.Items.Add(new TextBlock { Text = detail, TextWrapping = System.Windows.TextWrapping.Wrap });
             }
         }
     }

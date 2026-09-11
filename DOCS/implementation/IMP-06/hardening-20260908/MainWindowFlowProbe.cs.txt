@@ -1,0 +1,95 @@
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows.Controls;
+using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.ViewModels;
+
+internal static class UiProbe
+{
+    private const BindingFlags Fields = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        var app = new ProbeApp();
+        Assembly.Load("MaterialDesignThemes.Wpf");
+        Assembly.Load("MaterialDesignColors");
+        // Load the production resources without loading an App x:Class into the
+        // probe subclass or allowing production startup to show another window.
+        var appXml = SafeXmlHelper.LoadSafe(args[1]);
+        System.Xml.Linq.XNamespace presentation = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+        var dictionary = new System.Xml.Linq.XElement(appXml.Root!.Element(presentation + "Application.Resources")!.Element(presentation + "ResourceDictionary")!);
+        foreach (var declaration in appXml.Root.Attributes().Where(a => a.IsNamespaceDeclaration))
+            if (dictionary.Attribute(declaration.Name) == null) dictionary.Add(new System.Xml.Linq.XAttribute(declaration));
+        app.Resources = (System.Windows.ResourceDictionary)System.Windows.Markup.XamlReader.Parse(dictionary.ToString(),
+            new System.Windows.Markup.ParserContext { BaseUri = new Uri("pack://application:,,,/SqlXmlAnalyzer;component/") });
+        var registrations = new ServiceCollection();
+        typeof(App).GetMethod("ConfigureServices", Fields)!.Invoke(app, new object[] { registrations });
+        using var provider = registrations.BuildServiceProvider();
+        typeof(App).GetProperty("ServiceProvider")!.SetValue(null, provider);
+        var window = provider.GetRequiredService<MainWindow>();
+        var state = (MainViewModel)window.DataContext;
+        var xel = typeof(MainWindow).GetField("_xelDeadlockUiActionService", Fields)!.GetValue(window)!;
+        var selector = (ComboBox)xel.GetType().GetField("_selector", Fields)!.GetValue(xel)!;
+        var refresh = typeof(MainWindow).GetField("_documentRefreshUiActionService", Fields)!.GetValue(window)!;
+
+        _ = app.Dispatcher.InvokeAsync(async () =>
+        {
+            try
+            {
+                await window.AnalyzeFileAsync(args[0]);
+                await WaitForProcess(state, "p1");
+                string? initialPath = state.CurrentDeadlockFilePath;
+                selector.SelectedIndex = 1;
+                await WaitForProcess(state, "p3");
+                string? selectedPath = state.CurrentDeadlockFilePath;
+                refresh.GetType().GetMethod("RefreshDeadlockGraph", Type.EmptyTypes)!.Invoke(refresh, null);
+                await WaitForProcess(state, "p1");
+                bool passed = initialPath == args[0] && selectedPath == args[0] &&
+                    state.CurrentDeadlockFilePath == args[0] && selector.Items.Count == 2 && selector.SelectedIndex == 0;
+                Console.WriteLine(JsonSerializer.Serialize(new {
+                    Passed = passed,
+                    Flow = "Real MainWindow, dependency injection, document analysis, event selection and refresh; no callback substituted.",
+                    SourcePath = args[0], InitialPath = initialPath, SelectedSecondEventPath = selectedPath,
+                    RefreshedPath = state.CurrentDeadlockFilePath, EventCount = selector.Items.Count,
+                    RefreshedSelectedIndex = selector.SelectedIndex, ProcessSequence = new[] { "p1", "p3", "p1" },
+                    WindowShown = false, DatabaseExecuted = false
+                }, new JsonSerializerOptions { WriteIndented = true }));
+                Environment.ExitCode = passed ? 0 : 1;
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception);
+                Environment.ExitCode = 1;
+            }
+            finally
+            {
+                app.Shutdown(Environment.ExitCode);
+                // Dispatcher.Run is owned by this harness, not Application.Run.
+                app.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
+            }
+        });
+        Dispatcher.Run();
+    }
+
+    private static async Task WaitForProcess(MainViewModel state, string id)
+    {
+        var timer = Stopwatch.StartNew();
+        while (state.CurrentDeadlockDoc?.Descendants("process").Any(p => (string?)p.Attribute("id") == id) != true)
+        {
+            if (timer.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException("Expected deadlock process " + id);
+            await Task.Delay(25);
+        }
+    }
+
+    private sealed class ProbeApp : App
+    {
+        // The harness builds its own real MainWindow. Suppress normal startup so
+        // production OnStartup does not create and show a second window.
+        protected override void OnStartup(System.Windows.StartupEventArgs e) { }
+    }
+}

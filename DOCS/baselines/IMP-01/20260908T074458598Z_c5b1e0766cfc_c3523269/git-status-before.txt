@@ -1,0 +1,17 @@
+ M AGENTS.md
+ M MainWindow.Services.cs
+ M Views/ShellNavigationRail.xaml
+?? DOCS/README.md
+?? DOCS/UI改进和功能改善文档.md
+?? DOCS/baselines/Capture-ImplementationBaseline.ps1
+?? DOCS/baselines/IMP-01/20260908T074458598Z_c5b1e0766cfc_c3523269/git-index.txt
+?? DOCS/baselines/IMP-01/20260908T074458598Z_c5b1e0766cfc_c3523269/git-ls-files.txt
+?? DOCS/review-evidence/ReviewProbe.cs.txt
+?? DOCS/review-evidence/Run-ReviewProbe.ps1
+?? DOCS/review-evidence/baseline.json
+?? DOCS/review-evidence/probe-results.json
+?? DOCS/代码Review报告.md
+?? DOCS/检索来源与验证记录.md
+?? DOCS/软件改善实施规划.md
+?? DOCS/软件详细设计与问题分析.md
+?? MainWindow.KeyboardShortcuts.cs

@@ -1,0 +1,1 @@
+[ERROR] 2026-09-08T19:52:14.5320422+08:00 INPUT_UNRELATED_XML: 无法识别此 XML；需要 SQL Server ShowPlanXML、deadlock、deadlock-list 或 XE 死锁包装。

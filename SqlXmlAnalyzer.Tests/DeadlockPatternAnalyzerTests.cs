@@ -54,12 +54,11 @@ namespace SqlXmlAnalyzer.Tests
 
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph);
 
-            patterns.Should().ContainSingle();
-            patterns[0].TypeName.Should().Contain("Parallel Intra-Query Deadlock");
+            patterns.Should().Contain(p => p.TypeName.Contains("Parallel Intra-Query Deadlock"));
         }
 
         [Fact]
-        public void IdentifyPatterns_ParallelDeadlock_WithOriginalDoc_ReturnsPattern()
+        public void IdentifyPatterns_ForeignDocument_DoesNotEstablishParallelEvidence()
         {
             var graph = new DeadlockGraph();
             graph.Processes.Add(CreateProcess("p1", spid: "55", ecid: "0"));
@@ -67,8 +66,7 @@ namespace SqlXmlAnalyzer.Tests
             var doc = System.Xml.Linq.XDocument.Parse("<ShowPlanXML xmlns=\"http://schemas.microsoft.com/sqlserver/2004/07/showplan\"><exchange/><parallelism/></ShowPlanXML>");
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph, doc);
 
-            patterns.Should().ContainSingle();
-            patterns[0].TypeName.Should().Contain("Parallel Intra-Query Deadlock");
+            patterns.Should().NotContain(p => p.TypeName.Contains("Parallel Intra-Query Deadlock"));
         }
 
         [Fact]
@@ -107,7 +105,7 @@ namespace SqlXmlAnalyzer.Tests
 
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph);
 
-            patterns.Should().Contain(p => p.TypeName.Contains("Conversion Deadlock"));
+            patterns.Should().Contain(p => p.TypeName.Contains("Lock Conversion"));
         }
 
         [Fact]
@@ -174,13 +172,14 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void IdentifyPatterns_CyclicDeadlock_ReturnsPattern()
+        public void IdentifyPatterns_EmptyGraph_DoesNotInventCycle()
         {
             var graph = new DeadlockGraph();
 
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph);
 
-            patterns.Should().Contain(p => p.TypeName.Contains("Cyclic Deadlock"));
+            patterns.Should().Contain(p => p.TypeName.Contains("证据不足"));
+            patterns.Should().NotContain(p => p.TypeName.Contains("Cyclic Deadlock"));
         }
 
         [Fact]
@@ -196,7 +195,7 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void IdentifyPatterns_BlitzLock_ReturnsPattern()
+        public void IdentifyPatterns_LockChain_ReturnsEvidenceWithoutExternalToolAttribution()
         {
             var graph = new DeadlockGraph();
             graph.Processes.Add(CreateProcess("p1"));
@@ -218,7 +217,8 @@ namespace SqlXmlAnalyzer.Tests
 
             var patterns = DeadlockPatternAnalyzer.IdentifyPatterns(graph);
 
-            patterns.Should().Contain(p => p.TypeName.Contains("sp_BlitzLock"));
+            patterns.Should().Contain(p => p.TypeName.Contains("Lock Chain Details"));
+            patterns.Should().NotContain(p => p.TypeName.Contains("sp_BlitzLock"));
         }
     }
 }

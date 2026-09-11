@@ -1,0 +1,13 @@
+{
+  "Passed": true,
+  "BindingErrors": 0,
+  "ProductionToolbar": true,
+  "OriginalEventNavigation": true,
+  "InitializationControls": true,
+  "SyntheticSources": 3,
+  "Events": 3,
+  "Groups": 1,
+  "Duplicates": 1,
+  "FilterMatches": 2,
+  "EvidenceKind": "Off-screen WPF test host, actual production views and event handlers; not desktop input automation"
+}

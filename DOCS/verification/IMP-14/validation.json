@@ -1,0 +1,98 @@
+{
+  "RecordedUtc": "2026-09-09T02:47:37.2032303Z",
+  "Task": "IMP-14",
+  "Head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "Configurations": [
+    {
+      "Configuration": "debug",
+      "Total": 1658,
+      "Passed": 1658,
+      "Failed": 0,
+      "Skipped": 0,
+      "Imp14Cases": 79,
+      "Imp14Passed": 79,
+      "NativeDumpCases": 4,
+      "CliRelatedDiagnostics": 4,
+      "CliExpectedAndObservedExitCode": 1,
+      "CliHasRuleFailures": false,
+      "CliLogPolicyVerified": true
+    },
+    {
+      "Configuration": "release",
+      "Total": 1658,
+      "Passed": 1658,
+      "Failed": 0,
+      "Skipped": 0,
+      "Imp14Cases": 79,
+      "Imp14Passed": 79,
+      "NativeDumpCases": 4,
+      "CliRelatedDiagnostics": 4,
+      "CliExpectedAndObservedExitCode": 1,
+      "CliHasRuleFailures": false,
+      "CliLogPolicyVerified": true
+    }
+  ],
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RowEstimateMismatchRule.cs",
+      "Sha256": "3AB9E459FB6911FB06E66E4C2BB68F32E338C2B97E5E8A1709DFEC083E804B1C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/CardinalityErrorRule.cs",
+      "Sha256": "4E35A52D2D1CC11DA55B1A5A66F159A13D778E027C4054B2589CB564D2481C53"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ResidualPredicateRule.cs",
+      "Sha256": "486F4956E20A1EA94C331EA02AC1805BEF0A75CA560441E8EC45E0B4A930E478"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/ResidualPredOpRule.cs",
+      "Sha256": "C7B638D5754EF7053398245BA4FCD7B8ABACB0C0B58B1B1355F9EDB0172DB113"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RowCountRuleEvaluator.cs",
+      "Sha256": "6E654838AB4FA876F9B95BB4D919EC58E9D8FA5ED9BD08EB4D7BAEFABCD0F1B8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/PredicateFunctionEvidence.cs",
+      "Sha256": "B61AF69D7F9601528D3291C8E80F4F1F39D8EFA2350BA32908C4521A2518F2FA"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/LegacyDiagnosticAdapter.cs",
+      "Sha256": "1EE479B3F2762BC0DD52000A1DB10456DE68E285F84AB6C170F810C60F22860B"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Models/PlanOperatorFacts.cs",
+      "Sha256": "D764B89D5F5B582EA83DAD4CF073CC66109BA5F720D8F96E79D1A03824E7C9B4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanOperatorFactsService.cs",
+      "Sha256": "E28065CAE014811999F5250BFF3F507AFFF6EB4DC9AB29A87931E14F3866D11F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/CardinalityResidualRuleTests.cs",
+      "Sha256": "363FB589FAB84E2B2E911F9A57F76F952AB2897E691EB93F0532323E0386917A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/CardinalityResidualDiagnosticTests.cs",
+      "Sha256": "ADB7C2003D3CDCE515162D6983A1B3B7BEB3612A65B54DD57BAC2E8A760B5A9D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp14_cardinality_residual.sqlplan",
+      "Sha256": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RuleEngineTests.cs",
+      "Sha256": "BD0B7524E44F89CDEBEB4926E9D90760BB5B124B0197453F5264CDED6AB978EC"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolHardeningTests.cs",
+      "Sha256": "95466916C28D17991409FEBDBFD26B425A292DB9832F740D2A6440D398E59EAC"
+    }
+  ],
+  "Limitations": [
+    "Synthetic regression fixture; not a SQL Server capture.",
+    "No live SQL Server/SSMS or full-window WPF acceptance performed.",
+    "Native dump tests validate minidumps and remove their private temporary artifacts after assertions."
+  ]
+}

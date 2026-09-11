@@ -1,0 +1,1 @@
+UPDATE dbo.T SET Id=20 WHERE Id=1;

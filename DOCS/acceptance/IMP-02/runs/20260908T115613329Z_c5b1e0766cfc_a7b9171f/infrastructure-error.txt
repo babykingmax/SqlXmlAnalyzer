@@ -1,0 +1,6 @@
+OperationStopped: E:\SqlXmlAnalyzer\DOCS\acceptance\IMP-02\Run-AcceptanceMatrix.ps1:52
+Line |
+  52 |  … de -ne 0) { throw [IO.IOException]::new("$Stage failed. See captured  …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Existing suite failed. See captured stdout/stderr; acceptance checks not completed.
+

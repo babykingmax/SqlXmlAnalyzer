@@ -13,69 +13,53 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var doc = relOp.Document;
+            if (doc == null) return null;
+
+            var allRelOps = doc.Descendants(ns + "RelOp");
+            var details = new List<NodeDetail>();
+
+            foreach (var r in allRelOps)
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
+                if (r == null) continue;
+                string nodeId = r.Attribute("NodeId")?.Value ?? "?";
+                string physOp = r.Attribute("PhysicalOp")?.Value ?? "Unknown";
+                var facts = Services.PlanOperatorFactsService.Get(r, ns);
+                if (!facts.OwnCost.IsAvailable || !facts.SubtreeCost.IsAvailable) continue;
+                double subtreeCost = facts.SubtreeCost.Value!.Value;
+                double ownCost = facts.OwnCost.Value!.Value;
 
-                var allRelOps = doc.Descendants(ns + "RelOp");
-                var details = new List<NodeDetail>();
-
-                foreach (var r in allRelOps)
+                details.Add(new NodeDetail
                 {
-                    if (r == null) continue;
-                    string nodeId = r.Attribute("NodeId")?.Value ?? "?";
-                    string physOp = r.Attribute("PhysicalOp")?.Value ?? "Unknown";
-                    double subtreeCost = PlanDiagnosticAnalyzer.ParseDouble(r.Attribute("EstimatedTotalSubtreeCost")?.Value);
+                    NodeId = nodeId,
+                    PhysicalOp = physOp,
+                    OwnCost = ownCost,
+                    SubtreeCost = subtreeCost
+                });
+            }
 
-                    double ownCost = 0.0;
-                    try
-                    {
-                        var childRelOps = PlanDiagnosticAnalyzer.GetDirectChildRelOps(r, ns);
-                        double childrenCost = childRelOps.Select(c => PlanDiagnosticAnalyzer.ParseDouble(c?.Attribute("EstimatedTotalSubtreeCost")?.Value)).Sum();
-                        ownCost = Math.Max(0.0, subtreeCost - childrenCost);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Warning($"NodeId {nodeId} 计算 OwnCost 异常: {ex.Message}");
-                    }
+            var topNodes = details.OrderByDescending(n => n.OwnCost).Take(5).ToList();
+            var messages = new List<string>();
 
-                    details.Add(new NodeDetail
-                    {
-                        NodeId = nodeId,
-                        PhysicalOp = physOp,
-                        OwnCost = ownCost,
-                        SubtreeCost = subtreeCost
-                    });
-                }
-
-                var topNodes = details.OrderByDescending(n => n.OwnCost).Take(5).ToList();
-                var messages = new List<string>();
-
-                foreach (var node in topNodes)
+            foreach (var node in topNodes)
+            {
+                if (node == null) continue;
+                if (node.OwnCost > 0.005)
                 {
-                    if (node == null) continue;
-                    if (node.OwnCost > 0.005)
-                    {
-                        messages.Add($"⏱️ 算子 Node {node.NodeId} ({node.PhysicalOp}): 独占单体硬件开销预估高达 {node.OwnCost:F4} (占该算子子树开销的 {(node.OwnCost / Math.Max(node.SubtreeCost, 0.001)) * 100.0:F1}%)。建议在此算子做重点定位。");
-                    }
-                }
-
-                if (messages.Any())
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = this.RuleId,
-                        Severity = "Warning",
-                        Title = "高开销硬件算子 Top 5",
-                        Message = string.Join("|||", messages),
-                        NodeId = "0"
-                    };
+                    messages.Add($"⏱️ 算子 Node {node.NodeId} ({node.PhysicalOp}): 独占单体硬件开销预估高达 {node.OwnCost:F4} (占该算子子树开销的 {(node.OwnCost / Math.Max(node.SubtreeCost, 0.001)) * 100.0:F1}%)。建议在此算子做重点定位。");
                 }
             }
-            catch (Exception ex)
+
+            if (messages.Any())
             {
-                Logger.Warning($"HighCostOperatorRule failed: {ex.Message}");
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = "Warning",
+                    Title = "高开销硬件算子 Top 5",
+                    Message = string.Join("|||", messages),
+                    NodeId = "0"
+                };
             }
 
             return null;

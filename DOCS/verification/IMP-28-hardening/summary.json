@@ -1,0 +1,325 @@
+{
+  "Implementation": "IMP-28 review fix and hardening",
+  "GeneratedAtUtc": "2026-09-10T08:47:06.5514173Z",
+  "GitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "Context": "Local working tree with uncommitted IMP-23 through IMP-28 changes; no commit, package or publication performed.",
+  "BaselineTests": 2739,
+  "AddedRegressionTests": 15,
+  "SourceManifest": "sources.json",
+  "SourceCount": 679,
+  "UnchangedFrozenFixtureCount": 13,
+  "RedRuns": [
+    {
+      "Scenario": "indentation",
+      "Tests": {
+        "Total": 1,
+        "Passed": 0,
+        "Failed": 1,
+        "NotExecuted": 0
+      },
+      "Trx": {
+        "Path": ".tmp.imp28-hardening-results/Debug/indentation-red.trx",
+        "Bytes": 5718,
+        "Sha256": "E2A97626B52F07C9209487EABBC937C05316B3142B6FEED9A08118B457FD636F"
+      }
+    },
+    {
+      "Scenario": "escaping",
+      "Tests": {
+        "Total": 4,
+        "Passed": 0,
+        "Failed": 4,
+        "NotExecuted": 0
+      },
+      "Trx": {
+        "Path": ".tmp.imp28-hardening-results/Debug/escaping-red.trx",
+        "Bytes": 18757,
+        "Sha256": "650EAE0CCA38C6DB26D0F6A2EACFF9336F4033CBB76FADA1A239AF36C6295F9A"
+      }
+    }
+  ],
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLog": {
+        "Path": ".tmp.imp28-hardening-build-debug.log",
+        "Bytes": 871,
+        "Sha256": "DD2BB110D1DAFE8E8B9D8FBBC7B5BA8AB06CCF6209C46C9BCE9EF8CD1A859811"
+      },
+      "Tests": {
+        "Total": 2754,
+        "Passed": 2754,
+        "Failed": 0,
+        "NotExecuted": 0
+      },
+      "CompatibilityTestCount": 63,
+      "MigrationTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"unicode-value\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EmptyAndWhitespaceFormsRetainDefaultSettings(json: \"\\r\\n{ \\\"Rules\\\":null }\\t \")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_AlreadyVersionedDocumentKeepsExactInstanceAndText(json: \"{\\\"configurationschemaversion\\\":\\\"1\\\",\\\"Rules\\\":[]\"···)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EmptyAndWhitespaceFormsRetainDefaultSettings(json: \"{}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EnforcesUtf8ByteBudgetAtTheVersionFieldBoundary(inputBytes: 1048543, fits: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"unicode-name\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EnforcesUtf8ByteBudgetAtTheVersionFieldBoundary(inputBytes: 1048544, fits: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.SaveMigratedCopy_LargeExtensionRoundtripsAndOriginalSurvivesOverwriteAndCancellation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_AlreadyVersionedDocumentKeepsExactInstanceAndText(json: \"{\\\"ConfigurationSchema\\\\u0056ersion\\\":\\\"1\\\",\\\"exte\"···)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"supplementary-value\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_PreservesUnknownRawValuesNamesAndRuleAliases",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"html-characters\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.SaveMigratedCopy_WhenVersionWouldExceedBudgetPreservesSourceAndActiveConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EmptyAndWhitespaceFormsRetainDefaultSettings(json: \" \\r\\n\\t{ \\r\\n\\t}\\t\\n\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DenseUnknownArrayStillFitsConfigurationBudget",
+          "Outcome": "Passed"
+        }
+      ],
+      "DiagnosticTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"\\\\uD800\\\"}]}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":{\\\"\\\\uDC00\\\":0}}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.Logs_RespectBuildLevelsAndDoNotContainUnknownJsonPayload",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.SessionCompatibilityOperations_RespectDebugReleaseLogGate",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":[\\\"\\\\uD800\\\"]}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.ApplyCallbackFailureAndBrokenReporter_DoNotMisreportCommittedConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: True)",
+          "Outcome": "Passed"
+        }
+      ],
+      "Trx": {
+        "Path": ".tmp.imp28-hardening-results/Debug/full.trx",
+        "Bytes": 21843330,
+        "Sha256": "3BA82E45A714991202A50E2916AFED3D1B16CEB371E4A843B2B589360477675A"
+      },
+      "Assemblies": [
+        {
+          "Path": "SqlXmlAnalyzer.Core/bin/Debug/net8.0/SqlXmlAnalyzer.Core.dll",
+          "Bytes": 971776,
+          "Sha256": "946244138A977B1CB7E3008BFA6C2A8CA75E5BEA45BB15E6EFCE5A412A86C16D"
+        },
+        {
+          "Path": "SqlXmlAnalyzer.Tests/bin/Debug/net8.0-windows/SqlXmlAnalyzer.Tests.dll",
+          "Bytes": 2115072,
+          "Sha256": "F741A6E884D332005B2ED5EFCAB37AC43198CEE4D9012F13C0ADA45E1B614AB4"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLog": {
+        "Path": ".tmp.imp28-hardening-build-release.log",
+        "Bytes": 885,
+        "Sha256": "1AA05243B22CAEE789457E6C51E62A7329F4CC59E163F5A50CA74249A1F6EA80"
+      },
+      "Tests": {
+        "Total": 2754,
+        "Passed": 2754,
+        "Failed": 0,
+        "NotExecuted": 0
+      },
+      "CompatibilityTestCount": 63,
+      "MigrationTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"html-characters\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EmptyAndWhitespaceFormsRetainDefaultSettings(json: \"{}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.SaveMigratedCopy_WhenVersionWouldExceedBudgetPreservesSourceAndActiveConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_AlreadyVersionedDocumentKeepsExactInstanceAndText(json: \"{\\\"ConfigurationSchema\\\\u0056ersion\\\":\\\"1\\\",\\\"exte\"···)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EnforcesUtf8ByteBudgetAtTheVersionFieldBoundary(inputBytes: 1048544, fits: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EnforcesUtf8ByteBudgetAtTheVersionFieldBoundary(inputBytes: 1048543, fits: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DenseUnknownArrayStillFitsConfigurationBudget",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"unicode-name\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EmptyAndWhitespaceFormsRetainDefaultSettings(json: \"\\r\\n{ \\\"Rules\\\":null }\\t \")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"unicode-value\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_DoesNotExpandAcceptedExtensionCharacters(scenario: \"supplementary-value\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_AlreadyVersionedDocumentKeepsExactInstanceAndText(json: \"{\\\"configurationschemaversion\\\":\\\"1\\\",\\\"Rules\\\":[]\"···)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_EmptyAndWhitespaceFormsRetainDefaultSettings(json: \" \\r\\n\\t{ \\r\\n\\t}\\t\\n\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.SaveMigratedCopy_LargeExtensionRoundtripsAndOriginalSurvivesOverwriteAndCancellation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Compatibility.ConfigurationMigrationHardeningTests.VersionMigration_PreservesUnknownRawValuesNamesAndRuleAliases",
+          "Outcome": "Passed"
+        }
+      ],
+      "DiagnosticTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.Logs_RespectBuildLevelsAndDoNotContainUnknownJsonPayload",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.ApplyCallbackFailureAndBrokenReporter_DoNotMisreportCommittedConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":{\\\"\\\\uDC00\\\":0}}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"\\\\uD800\\\"}]}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.SessionCompatibilityOperations_RespectDebugReleaseLogGate",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":[\\\"\\\\uD800\\\"]}\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        }
+      ],
+      "Trx": {
+        "Path": ".tmp.imp28-hardening-results/Release/full.trx",
+        "Bytes": 4353193,
+        "Sha256": "8DFA6DDA245E10953A1DECDAC6A1E7F6588A78C9B2BBCEA380076F897A6B67EF"
+      },
+      "Assemblies": [
+        {
+          "Path": "SqlXmlAnalyzer.Core/bin/Release/net8.0/SqlXmlAnalyzer.Core.dll",
+          "Bytes": 886272,
+          "Sha256": "86CBE7DC0F04E2DA02CBC387D131F55FBCD9CCD03847029D6EA8EDB7F578BE50"
+        },
+        {
+          "Path": "SqlXmlAnalyzer.Tests/bin/Release/net8.0-windows/SqlXmlAnalyzer.Tests.dll",
+          "Bytes": 2070016,
+          "Sha256": "89E7D33A70817219332ABCBEE1C188E74F3E6BBF28FCBBB421D559ACB28B261D"
+        }
+      ]
+    }
+  ],
+  "CoverageGenerated": false,
+  "Limitations": [
+    "Synthetic offline configuration and file-save regressions; no new SQL Server, WPF physical interaction, independent CLI process or publication acceptance run.",
+    "Full tests include real minidump validation and Debug/Release log gating; temporary test dumps are cleaned up.",
+    "TRX and build logs remain local under .tmp.imp28-hardening-*; hashes identify bytes, not authenticity. IMP-29 and IMP-30 remain separate work."
+  ]
+}

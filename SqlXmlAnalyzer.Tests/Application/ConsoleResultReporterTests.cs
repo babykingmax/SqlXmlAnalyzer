@@ -59,7 +59,7 @@ namespace SqlXmlAnalyzer.Tests.Application
             output.Should().Contain("│                    REFACTORING REPORT                    │");
             output.Should().Contain("Status: SUCCESS");
             output.Should().Contain("Mode:   Dry-Run (No files modified)");
-            output.Should().Contain("No refactoring changes were applied.");
+            output.Should().Contain("No candidate changes were generated.");
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace SqlXmlAnalyzer.Tests.Application
 
             // Assert
             var output = stringWriter.ToString();
-            output.Should().Contain("[Applied Changes]");
+            output.Should().Contain("[Candidate Changes]");
             output.Should().Contain("SubqueryToJoinRule       : Optimized IN subquery");
             output.Should().Contain("ExistsToJoinRule         : Converted EXISTS subquery");
         }

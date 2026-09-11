@@ -1,0 +1,39 @@
+<sp:ShowPlanXML xmlns:sp="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6">
+  <sp:BatchSequence>
+    <sp:Batch>
+      <sp:Statements>
+        <sp:StmtSimple StatementId="1" QueryHash="0xSAME" StatementText="SELECT Id FROM sales.T;">
+          <sp:QueryPlan>
+            <sp:MissingIndexes><sp:MissingIndexGroup Impact="40"><sp:MissingIndex Database="[dbA]" Schema="[sales]" Table="[T]"><sp:ColumnGroup Usage="EQUALITY"><sp:Column Name="[Id]"/></sp:ColumnGroup></sp:MissingIndex></sp:MissingIndexGroup></sp:MissingIndexes>
+            <sp:RelOp NodeId="0" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="1" EstimatedTotalSubtreeCost="2">
+              <sp:NestedLoops><sp:RelOp NodeId="1" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" EstimatedTotalSubtreeCost="1">
+                <sp:TableScan><sp:Object Database="[dbA]" Schema="[sales]" Table="[T]" Alias="[s]" FutureField="retained"/></sp:TableScan>
+              </sp:RelOp></sp:NestedLoops>
+            </sp:RelOp>
+          </sp:QueryPlan>
+        </sp:StmtSimple>
+        <sp:StmtSimple StatementId="1" QueryHash="0xSAME" StatementText="SELECT Id FROM audit.T;">
+          <sp:QueryPlan>
+            <sp:MissingIndexes><sp:MissingIndexGroup Impact="60"><sp:MissingIndex Database="[dbA]" Schema="[audit]" Table="[T]"><sp:ColumnGroup Usage="EQUALITY"><sp:Column Name="[Id]"/></sp:ColumnGroup></sp:MissingIndex></sp:MissingIndexGroup></sp:MissingIndexes>
+            <sp:RelOp NodeId="0" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="1" EstimatedTotalSubtreeCost="3">
+              <sp:NestedLoops><sp:RelOp NodeId="1" PhysicalOp="Index Scan" LogicalOp="Index Scan" EstimateRows="1" EstimatedTotalSubtreeCost="2">
+                <sp:IndexScan><sp:Object Database="[dbA]" Schema="[audit]" Table="[T]" Index="[IX_T]" Alias="[a]"/></sp:IndexScan>
+              </sp:RelOp></sp:NestedLoops>
+            </sp:RelOp>
+          </sp:QueryPlan>
+        </sp:StmtSimple>
+      </sp:Statements>
+    </sp:Batch>
+    <sp:Batch>
+      <sp:Statements>
+        <sp:StmtUseDb StatementId="1" StatementText="USE dbB;" Database="[dbB]"/>
+        <sp:StmtCursor StatementId="1" StatementText="OPEN c;">
+          <sp:CursorPlan>
+            <sp:Operation><sp:QueryPlan><sp:RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" EstimatedTotalSubtreeCost="1"><sp:TableScan><sp:Object Server="[remote]" Database="[dbB]" Schema="[sales]" Table="[T]" Alias="[c]"/></sp:TableScan></sp:RelOp></sp:QueryPlan></sp:Operation>
+            <sp:Operation><sp:QueryPlan><sp:RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" EstimatedTotalSubtreeCost="1"><sp:TableScan><sp:Object Server="[remote]" Database="[dbB]" Schema="[sales]" Table="[T.part]]x]" Alias="[other]"/></sp:TableScan></sp:RelOp></sp:QueryPlan></sp:Operation>
+          </sp:CursorPlan>
+        </sp:StmtCursor>
+      </sp:Statements>
+    </sp:Batch>
+  </sp:BatchSequence>
+</sp:ShowPlanXML>

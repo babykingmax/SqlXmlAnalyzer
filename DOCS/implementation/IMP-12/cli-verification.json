@@ -1,0 +1,26 @@
+{
+  "TimestampUtc": "2026-09-09T01:04:56.7636003Z",
+  "CliAssemblySha256": "15B085E32C8EB8292B7E2DC8BD7C20E36EFAED54DE4A3C3D5408E6AF152EEE5D",
+  "Actual": {
+    "Status": "Passed",
+    "Failed": 0,
+    "InputStatus": "Success",
+    "ExitCode": 0,
+    "Hit": 5,
+    "Diagnostics": 5,
+    "NoHit": 39,
+    "Skipped": 7
+  },
+  "NoOperator": {
+    "Failed": 0,
+    "InputStatus": "Success",
+    "ExitCode": 0,
+    "Skipped": 21,
+    "Status": "Passed"
+  },
+  "JUnit": {
+    "Failures": "0",
+    "ExitCode": 0,
+    "HasRunStates": true
+  }
+}

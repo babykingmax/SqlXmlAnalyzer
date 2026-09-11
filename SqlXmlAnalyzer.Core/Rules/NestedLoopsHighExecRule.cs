@@ -14,50 +14,29 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
+            var physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "";
+
+            // Only evaluate on operators that perform loops or lookups
+            if (!physicalOp.Contains("Nested Loops") && physicalOp != "Key Lookup" && physicalOp != "Clustered Index Seek")
             {
-                var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-                var physicalOp = relOp.Attribute("PhysicalOp")?.Value ?? "";
-
-                // Only evaluate on operators that perform loops or lookups
-                if (!physicalOp.Contains("Nested Loops") && physicalOp != "Key Lookup" && physicalOp != "Clustered Index Seek")
-                {
-                    return null;
-                }
-
-                var runTimeInfo = relOp.Element(ns + "RunTimeInformation");
-                if (runTimeInfo == null) return null;
-
-                double maxExecutions = 0;
-                double totalActualRows = 0;
-
-                foreach (var counter in runTimeInfo.Elements(ns + "RunTimeCountersPerThread"))
-                {
-                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualExecutions")?.Value, out double execs))
-                    {
-                        maxExecutions = Math.Max(maxExecutions, execs);
-                    }
-                    if (NumericParser.TryParseInvariantDouble(counter.Attribute("ActualRows")?.Value, out double actualRows))
-                    {
-                        totalActualRows += actualRows;
-                    }
-                }
-
-                if (maxExecutions >= HIGH_EXEC_THRESHOLD)
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = this.RuleId,
-                        Severity = "Critical",
-                        Title = $"嵌套循环执行次数过高 ({physicalOp})",
-                        Message = $"此操作符被循环执行了 {maxExecutions:N0} 次，总计返回 {totalActualRows:N0} 行！\n极高的执行次数会消耗大量 CPU，通常是因为驱动表返回了过多数据，或缺少合适的索引导致优化器错误地选择了嵌套循环。\n建议：检查连接条件，或考虑使用 Hash Join / Merge Join 提示，并确保内部表拥有良好索引。",
-                        NodeId = nodeId
-                    };
-                }
+                return null;
             }
-            catch (Exception ex)
+
+            var facts = Services.PlanOperatorFactsService.Get(relOp, ns);
+            if (!facts.OutputRows.IsAvailable || !facts.LogicalExecutions.IsAvailable) return null;
+            double logicalExecutions = (double)facts.LogicalExecutions.Value!.Value;
+            double totalActualRows = (double)facts.OutputRows.Value!.Value;
+            if (logicalExecutions >= HIGH_EXEC_THRESHOLD)
             {
-                Logger.Warning($"NestedLoopsHighExecRule failed: {ex.Message}");
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = "Critical",
+                    Title = $"嵌套循环执行次数过高 ({physicalOp})",
+                    Message = $"此操作符被循环执行了 {logicalExecutions:N0} 次，总计返回 {totalActualRows:N0} 行！\n极高的执行次数会消耗大量 CPU，通常是因为驱动表返回了过多数据，或缺少合适的索引导致优化器错误地选择了嵌套循环。\n建议：检查连接条件，或考虑使用 Hash Join / Merge Join 提示，并确保内部表拥有良好索引。",
+                    NodeId = nodeId
+                };
             }
             return null;
         }

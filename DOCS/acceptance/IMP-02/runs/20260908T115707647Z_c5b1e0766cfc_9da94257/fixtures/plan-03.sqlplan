@@ -1,0 +1,34 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="select 1" StatementSubTreeCost="1">
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Index Seek" LogicalOp="Index Seek" Parallel="true" EstimatedExecutionMode="Batch" EstimateRows="100">
+              <RunTimeInformation>
+                <RunTimeCountersPerThread Thread="1" ActualExecutionMode="Batch" ActualRows="100" ActualRowsRead="1000" ActualExecutions="1" />
+              </RunTimeInformation>
+              <IndexScan Ordered="true">
+                <Object Table="T" />
+                <SeekPredicates>
+                  <SeekPredicateNew>
+                    <SeekKeys>
+                      <Prefix>
+                        <RangeExpressions>
+                          <ScalarOperator ScalarString="[T].[K]=(1)" />
+                        </RangeExpressions>
+                      </Prefix>
+                    </SeekKeys>
+                  </SeekPredicateNew>
+                </SeekPredicates>
+                <Predicate>
+                  <ScalarOperator ScalarString="[T].[V]=(2)" />
+                </Predicate>
+              </IndexScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

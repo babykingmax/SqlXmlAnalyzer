@@ -1,0 +1,19 @@
+<events>
+  <event name="xml_deadlock_report" timestamp="2026-09-10T00:00:00.1234567+00:00">
+    <data name="xml_report"><value><deadlock>
+      <victim-list><victimProcess id="p1"/></victim-list>
+      <process-list>
+        <process id="p1" spid="51" currentdb="7" isolationlevel="read committed (2)"><inputbuf>UPDATE Sales.dbo.Orders SET Status = 1 WHERE Id = 42 -- search-marker</inputbuf></process>
+        <process id="p2" spid="52" currentdb="7" isolationlevel="read committed (2)"><inputbuf>UPDATE Sales.dbo.Items SET Quantity = 1 WHERE Id = 9</inputbuf></process>
+      </process-list>
+      <resource-list>
+        <keylock id="lock1" dbid="7" objectname="Sales.dbo.Orders" indexname="PK_Orders" hobtid="1001">
+          <owner-list><owner id="p1" mode="X"/></owner-list><waiter-list><waiter id="p2" mode="S" requestType="wait"/></waiter-list>
+        </keylock>
+        <keylock id="lock2" dbid="7" objectname="Sales.dbo.Items" indexname="PK_Items" hobtid="1002">
+          <owner-list><owner id="p2" mode="X"/></owner-list><waiter-list><waiter id="p1" mode="S" requestType="wait"/></waiter-list>
+        </keylock>
+      </resource-list>
+    </deadlock></value></data>
+  </event>
+</events>

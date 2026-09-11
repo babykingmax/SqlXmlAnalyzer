@@ -1,0 +1,25 @@
+{
+  "TimestampUtc": "2026-09-09T00:33:55.0165854Z",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1389,
+      "Passed": 1389,
+      "Failed": 0,
+      "Trx": "debug.trx"
+    },
+    {
+      "Configuration": "Release",
+      "BuildExit": 0,
+      "TestExit": 0,
+      "Total": 1389,
+      "Passed": 1389,
+      "Failed": 0,
+      "Trx": "release.trx"
+    }
+  ],
+  "CoreAssemblySha256": "89AA375D429BD1EC1327946570B2272A3686EE2D97371144AFE4911AD6D1B0A3",
+  "FactsSourceSha256": "B9EDB550AC29E348E8CFDE4004C51334D3E5C01F5154C70F1F3C99B4736F130F"
+}

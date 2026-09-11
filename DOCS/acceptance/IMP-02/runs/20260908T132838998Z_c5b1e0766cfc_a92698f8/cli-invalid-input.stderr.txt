@@ -1,0 +1,2 @@
+[DEBUG] 2026-09-08T21:29:15.1632242+08:00 InputRecognition: 开始安全读取 XML。
+[ERROR] 2026-09-08T21:29:15.1710969+08:00 INPUT_UNRELATED_XML: 无法识别此 XML；需要 SQL Server ShowPlanXML、deadlock、deadlock-list 或 XE 死锁包装。

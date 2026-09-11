@@ -1,0 +1,6 @@
+OperationStopped: E:\SqlXmlAnalyzer\DOCS\acceptance\IMP-02\Run-AcceptanceMatrix.ps1:41
+Line |
+  41 |              throw [IO.IOException]::new("$Name did not complete: $($r …
+     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | infrastructure-tests did not complete: Process timed out; requested termination of the process tree.
+

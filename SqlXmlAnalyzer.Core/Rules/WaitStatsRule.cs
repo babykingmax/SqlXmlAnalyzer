@@ -13,41 +13,34 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var doc = relOp.Document;
+            if (doc == null) return null;
+
+            var waitStats = doc.Descendants(ns + "WaitStats").Descendants(ns + "Wait");
+            var messages = new List<string>();
+
+            foreach (var ws in waitStats)
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
+                if (ws == null) continue;
+                string wtype = ws.Attribute("WaitType")?.Value ?? "";
+                double wtime = PlanDiagnosticAnalyzer.ParseDouble(ws.Attribute("WaitTimeMs")?.Value);
 
-                var waitStats = doc.Descendants(ns + "WaitStats").Descendants(ns + "Wait");
-                var messages = new List<string>();
-
-                foreach (var ws in waitStats)
+                if (!wtype.Contains("RESOURCE_SEMAPHORE") && wtime > 100)
                 {
-                    if (ws == null) continue;
-                    string wtype = ws.Attribute("WaitType")?.Value ?? "";
-                    double wtime = PlanDiagnosticAnalyzer.ParseDouble(ws.Attribute("WaitTimeMs")?.Value);
-
-                    if (!wtype.Contains("RESOURCE_SEMAPHORE") && wtime > 100)
-                    {
-                        messages.Add($"⏱️ 发现显著资源等待 [{wtype}]: 累积耗时高达 {wtime:F0} 毫秒。");
-                    }
-                }
-
-                if (messages.Any())
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = this.RuleId,
-                        Severity = "Warning",
-                        Title = "发现显著资源等待",
-                        Message = string.Join("|||", messages),
-                        NodeId = "0"
-                    };
+                    messages.Add($"⏱️ 发现显著资源等待 [{wtype}]: 累积耗时高达 {wtime:F0} 毫秒。");
                 }
             }
-            catch (Exception ex)
+
+            if (messages.Any())
             {
-                Logger.Warning($"WaitStatsRule failed: {ex.Message}");
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = "Warning",
+                    Title = "发现显著资源等待",
+                    Message = string.Join("|||", messages),
+                    NodeId = "0"
+                };
             }
 
             return null;

@@ -1,0 +1,13 @@
+{
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2019",
+  "Scenarios": [
+    {
+      "ObserveSql": "SELECT 1/0 AS Invalid;",
+      "OrderedResults": false,
+      "SetupSql": "",
+      "Name": "observer-error"
+    }
+  ],
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "CompatibilityLevel": 150
+}

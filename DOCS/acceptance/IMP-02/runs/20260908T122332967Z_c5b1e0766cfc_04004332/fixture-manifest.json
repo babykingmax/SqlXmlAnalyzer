@@ -1,0 +1,312 @@
+[
+  {
+    "path": "fixtures/deadlock-01.xdl",
+    "sha256": "7909523AEF945DEC7626D9A383A9A4CD6F386E3B1D8519FAFABBBE220D01CF40",
+    "bytes": 751,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-02.xdl",
+    "sha256": "7909523AEF945DEC7626D9A383A9A4CD6F386E3B1D8519FAFABBBE220D01CF40",
+    "bytes": 751,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-03.xdl",
+    "sha256": "7909523AEF945DEC7626D9A383A9A4CD6F386E3B1D8519FAFABBBE220D01CF40",
+    "bytes": 751,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-04.xdl",
+    "sha256": "6FE2F0F5D40C10E81FCF5987949AD11A11CF8AEC4FA7F4C517F423B03D446136",
+    "bytes": 787,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-05.xdl",
+    "sha256": "CFD51F993E8381D9E07749FF8898B0ED53DDEC81A7DDEB2D17D8D755E2244111",
+    "bytes": 766,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-06.xdl",
+    "sha256": "12DF1C0C98716655647C37718D103EEB9AC6851418256585E67311D06842016E",
+    "bytes": 1077,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-multiple.xml",
+    "sha256": "5897ED48D967A3709FAFA5647C2C79806B43F159179E156BD09A84B4173FE976",
+    "bytes": 2119,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/deadlock-wrapper.xml",
+    "sha256": "63E9E1B7B6BE0CC313E543EF5827CFAEB4D07873BC382148970B91F0E7914175",
+    "bytes": 1076,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/not-a-plan.sqlplan",
+    "sha256": "BA3EB9138EFB8CD66D5CC1DAE60D81586BFDC1B1948777F0379DE2BE6BD62AE4",
+    "bytes": 11,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-01.sqlplan",
+    "sha256": "BAB1288C96DBD1EDFBD22F0290DC58EA35776CFA1953873DD0DC55F3B77DE9C7",
+    "bytes": 1022,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-02.sqlplan",
+    "sha256": "CDC7568B253EF85C8860C6D5BCFEC06CE7ED23E5728C507F20D2C29695C46CD4",
+    "bytes": 2073,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-03.sqlplan",
+    "sha256": "E759E9AF824EE38C5364ADA9B90CD9544D857ECE695C708549E68F14CAF5F664",
+    "bytes": 1397,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-04.sqlplan",
+    "sha256": "7ECF709D57EAA46594550EE022B91F5190E4C9384D36109DC17EF368BA1E705F",
+    "bytes": 980,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-05.sqlplan",
+    "sha256": "F3875642CD411861BB1D667AE6FB53A773B6730B5130B2AEC1E104A2F6BEE6A2",
+    "bytes": 980,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-06.sqlplan",
+    "sha256": "B1800D43D9EF4062A032C1170A68A34448497143E6E08DE8589F63E755FB6F26",
+    "bytes": 575,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-07.sqlplan",
+    "sha256": "0CB2D189F4BB0F8CA96DA19D1A68F4848A2AE0805DDD8809CCA2F3D19C7F2888",
+    "bytes": 389,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-08.sqlplan",
+    "sha256": "1FB647D373C0654DA73DF9684422564C4766D2510C90846E9AD46A9B17191391",
+    "bytes": 974,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-09.sqlplan",
+    "sha256": "69430C966E06D88B2E16A3CE662E2A27CE18CD2A35A976ACA7154996792B1C0A",
+    "bytes": 978,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/plan-10.sqlplan",
+    "sha256": "50C84FDE27AD36FE1723D256D30E1E55ECFE8AC0B836CCE29028EB67AA11D8A1",
+    "bytes": 795,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/table-collision-original.sql",
+    "sha256": "F1C22E24AFEF5BD39DF93C608A12E2B546FF1C58C1D9C688C487C469F14528C8",
+    "bytes": 70,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/table-rollback-original.sql",
+    "sha256": "C054294FE25667C9B3FA3C6867B13B4BA4E63A7C112744A1A57AE7E376D91E2A",
+    "bytes": 119,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "fixtures/trim-original.sql",
+    "sha256": "9D09F0E8762457E5ED7D42CEE75CFDDF040F4E7BD0EB39D9643A8A02D9DA02C8",
+    "bytes": 56,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "candidates/R02.sql",
+    "sha256": "9D09F0E8762457E5ED7D42CEE75CFDDF040F4E7BD0EB39D9643A8A02D9DA02C8",
+    "bytes": 56,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "candidates/R19.sql",
+    "sha256": "C054294FE25667C9B3FA3C6867B13B4BA4E63A7C112744A1A57AE7E376D91E2A",
+    "bytes": 119,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "candidates/R20.sql",
+    "sha256": "F1C22E24AFEF5BD39DF93C608A12E2B546FF1C58C1D9C688C487C469F14528C8",
+    "bytes": 70,
+    "origin": "Synthetic review probe / current engine output",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Synthetic test values only; not real production data",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+    "sha256": "25E6E2E94AD8E5245A4F62DB38049B1F3AE8DD249A610697D7F25C1422AAA740",
+    "bytes": 735,
+    "origin": "Existing repository fixture; acquisition provenance unverified",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Requires provenance/privacy review before external sharing",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+    "sha256": "2F040FAB3FB13E27C00F8CFF925A2A5D41EC6ACBD0AE85A90812197669D12131",
+    "bytes": 791,
+    "origin": "Existing repository fixture; acquisition provenance unverified",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Requires provenance/privacy review before external sharing",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/deadlock_bookmark_lookup.xdl",
+    "sha256": "163E0AE3497239125857A6E74202D64C0D21DD65F674DAE7AD2BD8EEA351745E",
+    "bytes": 1473,
+    "origin": "Existing repository fixture; acquisition provenance unverified",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Requires provenance/privacy review before external sharing",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+    "sha256": "314B6DB4C78A85C18924651998276660D6312DAA73652DED5F1A94ED62D8F660",
+    "bytes": 536,
+    "origin": "Existing repository fixture; acquisition provenance unverified",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Requires provenance/privacy review before external sharing",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+    "sha256": "A8833BEB79D709A83136B46D285BEDE354F3D5400787BA1853725F8345CB6E9C",
+    "bytes": 742,
+    "origin": "Existing repository fixture; acquisition provenance unverified",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Requires provenance/privacy review before external sharing",
+    "sqlServerExecuted": false
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+    "sha256": "6C26E57836F7FC6A57632A358F808EDDFCCDFCE358CDA51292E67D74A88BE465",
+    "bytes": 1192,
+    "origin": "Existing repository fixture; acquisition provenance unverified",
+    "sqlServerVersion": null,
+    "xsdValidated": false,
+    "privacy": "Requires provenance/privacy review before external sharing",
+    "sqlServerExecuted": false
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "SourceHash": "EFD9DEB47CA1281CB6D4645EDF4090A927F5D266E42571C94D3409120A7803EC",
+  "PreviewHash": "0741D0C232B7F9153C653C4218B3D60AA68CE0FF818587F0EA921AE9C7F40511",
+  "SelectedProposalIds": [
+    "75F14A30094661F065925EC886A7F3AB7237F5C7CB122DB4CFF7671CBD0C9FA5"
+  ],
+  "PreviewSql": "SELECT Value\r\nFROM   dbo.T\r\nWHERE  N > 40;\r\n\r\n",
+  "Validation": {
+    "Status": "Failed",
+    "SourceHash": "EFD9DEB47CA1281CB6D4645EDF4090A927F5D266E42571C94D3409120A7803EC",
+    "CandidateHash": "0741D0C232B7F9153C653C4218B3D60AA68CE0FF818587F0EA921AE9C7F40511",
+    "SuiteHash": "33972D16530A4335912FD40380BCD07B7AE9FE14A65B129190F139096DB251F5",
+    "ServerVersion": "17.0.4075.5",
+    "CompatibilityLevel": 170,
+    "Collation": "Latin1_General_100_CI_AS_SC",
+    "SessionSettings": "SET ANSI_NULLS ON; SET QUOTED_IDENTIFIER ON; SET ANSI_WARNINGS ON; SET ANSI_PADDING ON; SET CONCAT_NULL_YIELDS_NULL ON; SET ARITHABORT ON; SET NUMERIC_ROUNDABORT OFF; SET XACT_ABORT OFF; SET NOCOUNT OFF; SET LANGUAGE us_english; SET DATEFORMAT ymd; SET DATEFIRST 7; SET TRANSACTION ISOLATION LEVEL READ COMMITTED; SET LOCK_TIMEOUT 5000;",
+    "Cases": [],
+    "Errors": [
+      "UnsupportedSemanticType: sql_variant 的内部类型属性尚不能完整比较，禁止将该结果用于应用验证。"
+    ],
+    "CleanupFailures": [],
+    "Diagnostics": [],
+    "CanPrepareApply": false,
+    "Limitation": "仅在记录的数据库版本、兼容级别、排序规则、会话设置和场景数据中匹配；未证明任意输入等价，也未证明性能改善。",
+    "Isolation": "专用 LocalDB；每个场景/每侧独立新库；TRUSTWORTHY/DB_CHAINING OFF；无登录数据库用户 WITH NO REVERT；连接不复用。"
+  },
+  "CanApply": false,
+  "Error": "验证未完成、场景不匹配或证据与所选内容不一致，禁止应用。",
+  "SourceWritten": false,
+  "CommitOutcomeUnknown": false,
+  "Writeback": null,
+  "Diagnostic": null
+}

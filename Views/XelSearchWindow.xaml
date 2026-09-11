@@ -1,0 +1,71 @@
+<Window x:Class="SqlXmlAnalyzer.Views.XelSearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="XEL 搜索、聚合与事件追溯" Width="1180" Height="820" MinWidth="920" MinHeight="650"
+        WindowStartupLocation="CenterOwner" Background="{DynamicResource SurfaceBrush}" Foreground="{DynamicResource TextBrush}">
+    <Window.Resources>
+        <Style TargetType="Button"><Setter Property="Padding" Value="12,6"/><Setter Property="Margin" Value="0,0,8,0"/></Style>
+        <Style TargetType="TextBox"><Setter Property="Padding" Value="6,4"/><Setter Property="MinHeight" Value="30"/><Setter Property="Margin" Value="0,3,12,8"/></Style>
+        <Style TargetType="DataGrid"><Setter Property="AutoGenerateColumns" Value="False"/><Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="CanUserAddRows" Value="False"/><Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="EnableRowVirtualization" Value="True"/><Setter Property="EnableColumnVirtualization" Value="True"/>
+            <Setter Property="HeadersVisibility" Value="Column"/><Setter Property="RowHeight" Value="30"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="18">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="6"/><RowDefinition Height="180"/></Grid.RowDefinitions>
+        <DockPanel Margin="0,0,0,12">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Content="添加 XEL 文件…" Click="Import_Click" IsEnabled="{Binding CanImport}"/>
+                <Button Content="取消当前操作" Click="Cancel_Click" IsEnabled="{Binding IsBusy}"/>
+            </StackPanel>
+            <StackPanel><TextBlock Text="XEL 事件检索" FontSize="23" FontWeight="SemiBold"/><TextBlock Text="搜索采集快照 · 比较依赖结构 · 定位原始事件" Foreground="{DynamicResource TextBrush}"/></StackPanel>
+        </DockPanel>
+        <Border Grid.Row="1" Background="White" Padding="12" CornerRadius="6">
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="2*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="110"/></Grid.ColumnDefinitions>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <StackPanel><TextBlock Text="开始时间（含时区）"/><TextBox Text="{Binding From, UpdateSourceTrigger=PropertyChanged}" ToolTip="例如 2026-09-10T08:00:00.1234567+08:00；空白表示不限"/></StackPanel>
+                <StackPanel Grid.Column="1"><TextBlock Text="结束时间（含时区）"/><TextBox Text="{Binding To, UpdateSourceTrigger=PropertyChanged}" ToolTip="两端包含；使用 Z 或明确偏移"/></StackPanel>
+                <StackPanel Grid.Column="2"><TextBlock Text="数据库名称 / ID"/><TextBox Text="{Binding Database, UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+                <StackPanel Grid.Column="3"><TextBlock Text="对象 / 索引"/><TextBox Text="{Binding Object, UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+                <StackPanel Grid.Column="4"><TextBlock Text="显示偏移"/><TextBox x:Name="DisplayOffset" Text="{Binding Offset, UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+                <DockPanel Grid.Row="1" Grid.ColumnSpan="5"><Button x:Name="ApplyFilter" DockPanel.Dock="Right" Content="应用筛选" Click="Search_Click" IsEnabled="{Binding CanSearch}" VerticalAlignment="Bottom"/>
+                    <Button DockPanel.Dock="Right" Content="显示全部匹配事件" Click="AllEvents_Click" VerticalAlignment="Bottom"/>
+                    <StackPanel><TextBlock Text="文本（SQL、XML、采集字段和动作）"/><TextBox x:Name="FilterText" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+                </DockPanel>
+            </Grid>
+        </Border>
+        <TextBlock Grid.Row="2" Text="{Binding Scope}" TextWrapping="Wrap" Foreground="{DynamicResource TextBrush}" FontSize="11" Margin="0,8"/>
+        <StackPanel Grid.Row="3" Margin="0,0,0,8"><TextBlock Text="{Binding Status}" TextWrapping="Wrap" FontWeight="SemiBold"/>
+            <Expander Header="读取范围与未处理记录"><TextBox Text="{Binding Notices, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="90" VerticalScrollBarVisibility="Auto"/></Expander>
+        </StackPanel>
+        <Grid Grid.Row="4"><Grid.ColumnDefinitions><ColumnDefinition Width="280"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <DockPanel><TextBlock DockPanel.Dock="Top" Text="聚合组 · 点击查看成员" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                <DataGrid x:Name="SearchGroups" ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectedGroup}" CanUserSortColumns="False">
+                    <DataGrid.Columns><DataGridTextColumn Header="数量" Binding="{Binding Count}" Width="70"/>
+                        <DataGridTextColumn Header="结构依据" Binding="{Binding Description}" Width="*"><DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="ToolTip" Value="{Binding Description}"/></Style></DataGridTextColumn.ElementStyle></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+            <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch"/>
+            <DockPanel Grid.Column="2"><TextBlock DockPanel.Dock="Top" Text="原始事件 · 每个文件副本单独保留" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                <DataGrid x:Name="SearchEvents" ItemsSource="{Binding VisibleEvents}" SelectedItem="{Binding SelectedEvent}" CanUserSortColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="显示时间（带偏移）" Binding="{Binding DisplayTime}" Width="260"/>
+                        <DataGridTextColumn Header="事件 / 子事件" Binding="{Binding EventLabel}" Width="145"/>
+                        <DataGridTextColumn Header="源文件" Binding="{Binding SourcePath}" Width="220"/>
+                        <DataGridTextColumn Header="数据库" Binding="{Binding Databases}" Width="110"/>
+                        <DataGridTextColumn Header="对象" Binding="{Binding Objects}" Width="180"/>
+                        <DataGridTextColumn Header="原始时间" Binding="{Binding OriginalTime}" Width="260"/>
+                        <DataGridTextColumn Header="重复状态" Binding="{Binding DuplicateLabel}" Width="130"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
+        <GridSplitter Grid.Row="5" Height="6" HorizontalAlignment="Stretch"/>
+        <DockPanel Grid.Row="6"><Button x:Name="NavigateOriginal" DockPanel.Dock="Right" Content="回到原始事件" Click="Navigate_Click" IsEnabled="{Binding CanNavigate}" VerticalAlignment="Top" Margin="10,8,0,0"/>
+            <TextBox x:Name="EventDetails" Text="{Binding Details, Mode=OneWay}" IsReadOnly="True" FontFamily="Consolas, Microsoft YaHei" FontSize="11" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+        </DockPanel>
+    </Grid>
+</Window>

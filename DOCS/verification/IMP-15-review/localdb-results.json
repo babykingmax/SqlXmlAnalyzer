@@ -1,0 +1,18 @@
+{
+  "Configuration": "Release",
+  "SqlServerVersion": "17.0.4075.5",
+  "AvailableColumns": [
+    "[@real]",
+    "[Bmk1000]",
+    "[Expr1000]",
+    "[K]",
+    "[R]]ange]",
+    "[[literal]]]",
+    "[V]"
+  ],
+  "ParameterExcluded": true,
+  "CompleteSortCount": 1,
+  "Score": 55,
+  "CreateAndRollbackPassed": true,
+  "Passed": true
+}

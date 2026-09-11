@@ -14,6 +14,7 @@ namespace SqlXmlAnalyzer.Core.Services
             builder.AppendLine($"🔴 选中进程 (SPID {process.Spid}) 详情：");
             builder.AppendLine("----------------------------------------");
             builder.AppendLine($"标识 ID: {process.Id}");
+            builder.AppendLine($"死锁优先级: {(string.IsNullOrEmpty(process.DeadlockPriority) ? "N/A" : process.DeadlockPriority)}");
             builder.AppendLine(
                 $"当前状态: {process.Status} | 隔离级别: {process.Isolationlevel}");
             builder.AppendLine(
@@ -76,6 +77,12 @@ namespace SqlXmlAnalyzer.Core.Services
             }
 
             builder.AppendLine($"HOBT ID: {resource.Hobtid}");
+            if (!string.IsNullOrEmpty(resource.ResourceKey))
+            {
+                builder.AppendLine($"原始资源 ID: {resource.SourceId} | 资源身份: {resource.ResourceKey}");
+                builder.AppendLine($"来源: {resource.Source?.XmlPath}");
+                builder.AppendLine(resource.RawXml);
+            }
             builder.AppendLine();
             builder.AppendLine("✅ 持有该资源的进程 (Owners):");
             foreach (LockOwner owner in resource.Owners)
@@ -102,7 +109,8 @@ namespace SqlXmlAnalyzer.Core.Services
                 $"类型: {pattern.TypeName}\n\n" +
                 $"描述: {pattern.Description}\n\n" +
                 $"可能原因: {pattern.LikelyCause}\n\n" +
-                $"推荐措施: {pattern.Recommendation}";
+                $"推荐措施: {pattern.Recommendation}" +
+                (string.IsNullOrEmpty(pattern.RuleId) ? "" : "\n\n" + DeadlockDiagnosticFormatter.FormatEvidence(pattern));
         }
 
         private static void AppendSargWarnings(

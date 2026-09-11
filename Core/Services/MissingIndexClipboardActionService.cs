@@ -50,7 +50,7 @@ namespace SqlXmlAnalyzer.Core.Services
             return new MissingIndexClipboardActionResult(
                 MissingIndexClipboardActionStatus.Ready,
                 _deploymentScriptService.BuildDeploymentBundle(suggestion),
-                "Deployment bundle copied to clipboard.");
+                "Deployment bundle copied to clipboard.\n" + Privacy.OutputPrivacy.RawNotice);
         }
 
         private static MissingIndexClipboardActionResult BuildDdlResult(
@@ -65,7 +65,7 @@ namespace SqlXmlAnalyzer.Core.Services
             return new MissingIndexClipboardActionResult(
                 MissingIndexClipboardActionStatus.Ready,
                 ddl,
-                successMessage);
+                successMessage + "\n" + Privacy.OutputPrivacy.RawNotice);
         }
 
         private static MissingIndexClipboardActionResult Missing()

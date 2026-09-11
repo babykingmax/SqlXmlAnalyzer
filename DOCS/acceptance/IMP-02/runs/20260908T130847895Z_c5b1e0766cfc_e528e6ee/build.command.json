@@ -1,0 +1,19 @@
+{
+  "executable": "dotnet",
+  "arguments": [
+    "build",
+    "SqlXmlAnalyzer.sln",
+    "--configuration",
+    "Release",
+    "--no-restore",
+    "--no-incremental",
+    "--nologo"
+  ],
+  "startedUtc": "2026-09-08T13:08:54.7607563+00:00",
+  "finishedUtc": "2026-09-08T13:09:00.0476758+00:00",
+  "processId": 62456,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

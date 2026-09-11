@@ -1,0 +1,93 @@
+﻿using System.Security.Cryptography;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Refactoring;
+using AppLogger = SqlXmlAnalyzer.Logger;
+
+Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+bool writebackFault = args.Length > 1 && args[1] == "unknown-writeback";
+string evidence = Path.GetFullPath(args[0]);
+Directory.CreateDirectory(evidence);
+AppLogger.Initialize(forceVerbose: true, logLevel: SqlXmlAnalyzer.LogLevel.Debug,
+    customLogFilePath: Path.Combine(evidence, "runtime.log"));
+AppLogger.Debug("probe-debug-marker");
+AppLogger.Warning("probe-warning-marker");
+AppLogger.Error("probe-error-marker");
+AppLogger.Critical("probe-fatal-marker");
+using var factory = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Trace).AddProvider(new ApplicationLoggerProvider()));
+var diagnostics = new UnexpectedErrorReporter(new WindowsMiniDumpWriter(), Path.Combine(evidence, "dumps"));
+var engine = new SqlRefactoringEngine(new ISqlRefactorRule[] { new SyntheticUnknownRule() }, new DefaultRuleFilter(),
+    factory.CreateLogger<SqlRefactoringEngine>(), diagnostics);
+string sqlPath = Path.Combine(evidence, "source.sql");
+File.WriteAllText(sqlPath, "SELECT 1;");
+string before = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(sqlPath)));
+var orchestrator = new ApplicationOrchestrator(new EmptyAnalysis(), engine, new PhysicalFileHandler(),
+    new JsonResultReporter(), factory.CreateLogger<ApplicationOrchestrator>(), writebackService: writebackFault ? new SqlWritebackService(new LostCommitFiles(), unexpectedErrors: diagnostics) : null, unexpectedErrors: diagnostics);
+if (writebackFault)
+    orchestrator = new ApplicationOrchestrator(new EmptyAnalysis(), new FixedRewrite(), new PhysicalFileHandler(),
+        new JsonResultReporter(), factory.CreateLogger<ApplicationOrchestrator>(),
+        new SqlWritebackService(new LostCommitFiles(), unexpectedErrors: diagnostics), diagnostics);
+var result = orchestrator.Execute(sqlPath);
+string after = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(sqlPath)));
+var diagnostic = writebackFault ? result.Writeback?.Diagnostics.FirstOrDefault() : result.Result?.Diagnostic;
+string? dump = diagnostic?.DumpPath;
+uint signature = 0, streams = 0;
+if (dump != null)
+{
+    using var reader = new BinaryReader(File.OpenRead(dump));
+    signature = reader.ReadUInt32();
+    reader.ReadUInt32();
+    streams = reader.ReadUInt32();
+}
+var verification = new
+{
+    Configuration = AppLogger.IsDebugMode ? "Debug" : "Release",
+    SourceBeforeSha256 = before, SourceAfterSha256 = after,
+    IsSuccess = result.IsSuccess, SourceWritten = result.Writeback?.SourceWritten ?? false,
+    Diagnostic = diagnostic, Writeback = result.Writeback == null ? null : new { result.Writeback.SourceWritten, result.Writeback.CommitOutcomeUnknown, result.Writeback.BackupVerified, result.Writeback.BackupPath, result.Writeback.SourceSha256 }, DumpSignature = signature, DumpStreamCount = streams,
+    Passed = !result.IsSuccess && dump != null && signature == 0x504D444D && streams > 0 &&
+        (writebackFault ? before != after && result.Writeback?.SourceWritten == true && result.Writeback.BackupVerified &&
+            before == Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(result.Writeback.BackupPath!))) : before == after)
+};
+File.WriteAllText(Path.Combine(evidence, "verification.json"), JsonSerializer.Serialize(verification, new JsonSerializerOptions { WriteIndented = true }));
+AppLogger.Shutdown();
+return verification.Passed ? 1 : 2; // 1 is the deliberately failed application operation; 2 is a failed probe.
+
+sealed class SyntheticUnknownRule : ISqlRefactorRule
+{
+    public string RuleId => "TEST_UNKNOWN_EXCEPTION";
+    public string Name => "Synthetic unknown fault";
+    public string Description => Name;
+    public int Priority => 1;
+    public bool CanApply(TSqlFragment fragment, RefactorContext context) => true;
+    public RuleResult Apply(TSqlFragment fragment, RefactorContext context) => throw new InvalidOperationException("IMP-04 synthetic unknown error");
+}
+sealed class EmptyAnalysis : IAnalysisEngine
+{
+    public AnalysisReport Analyze(string content) => new(Array.Empty<IAnalysisIssue>());
+}
+
+sealed class FixedRewrite : IRefactoringEngine
+{
+    public SqlXmlAnalyzer.Core.Models.RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
+        => new("SELECT 2;", true, Array.Empty<string>(), new RefactorContext(sql));
+}
+sealed class LostCommitFiles : ISqlWritebackFileSystem
+{
+    private readonly PhysicalSqlWritebackFileSystem _physical = new();
+    public byte[] ReadAllBytes(string path) => _physical.ReadAllBytes(path);
+    public Stream CreateNew(string path, string sourcePath) => _physical.CreateNew(path, sourcePath);
+    public void FlushToDisk(Stream stream) => _physical.FlushToDisk(stream);
+    public void Delete(string path) => _physical.Delete(path);
+    public void Replace(string temporary, string source)
+    {
+        _physical.Replace(temporary, source);
+        throw new InvalidOperationException("Synthetic unknown failure after actual commit");
+    }
+}

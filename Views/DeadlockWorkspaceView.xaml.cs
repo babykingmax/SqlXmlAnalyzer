@@ -10,7 +10,34 @@ namespace SqlXmlAnalyzer.Views
         public DeadlockWorkspaceView()
         {
             InitializeComponent();
+            SizeChanged += (_, _) =>
+            {
+                bool compact = Core.Services.WorkspaceInteractionService.Layout(ActualWidth, ActualHeight).Compact;
+                if (_compact == compact) return;
+                _compact = compact;
+                DeadlockLeftColumn.Width = new GridLength(compact ? 0 : 280);
+                DeadlockRightColumn.Width = new GridLength(compact ? 0 : 320);
+                ToggleLeftBtn.Content = compact ? "▶ 侧边栏" : "◀ 侧边栏";
+                ToggleRightBtn.Content = compact ? "◀ 属性栏" : "属性栏 ▶";
+                UpdateMinimumWidth();
+            };
         }
+        private bool? _compact;
+        public void MoveWorkspaceFocus(bool reverse)
+        {
+            FrameworkElement[] groups = [DeadlockProcessesList, DeadlockResourcesList, DeadlockPatternsListBox];
+            int current = System.Array.FindIndex(groups, element => element.IsKeyboardFocusWithin);
+            int next = Core.Services.WorkspaceInteractionService.MoveSelection(groups.Length, current, reverse ? -1 : 1);
+            if (next < 2) DeadlockLeftColumn.Width = new GridLength(280);
+            else DeadlockRightColumn.Width = new GridLength(320);
+            ToggleLeftBtn.Content = DeadlockLeftColumn.Width.Value > 0 ? "◀ 侧边栏" : "▶ 侧边栏";
+            ToggleRightBtn.Content = DeadlockRightColumn.Width.Value > 0 ? "属性栏 ▶" : "◀ 属性栏";
+            UpdateMinimumWidth();
+            Services.WorkspaceAccessibility.Focus(groups[next]);
+        }
+
+        private void UpdateMinimumWidth() => ((Grid)WorkspaceScroll.Content).MinWidth =
+            System.Math.Max(520, DeadlockLeftColumn.Width.Value + DeadlockRightColumn.Width.Value + 320);
 
         public ColumnDefinition LeftColumn => DeadlockLeftColumn;
         public ColumnDefinition RightColumn => DeadlockRightColumn;
@@ -30,6 +57,7 @@ namespace SqlXmlAnalyzer.Views
         public event SelectionChangedEventHandler? ProcessesSelectionChanged;
         public event SelectionChangedEventHandler? ResourcesSelectionChanged;
         public event SelectionChangedEventHandler? XelSelectionChanged;
+        public event RoutedEventHandler? XelSearchRequested;
         public event RoutedEventHandler? ToggleLeftClicked;
         public event RoutedEventHandler? ToggleRightClicked;
         public event RoutedEventHandler? ZoomToFitClicked;
@@ -48,11 +76,19 @@ namespace SqlXmlAnalyzer.Views
         private void XelDeadlockSelector_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
             XelSelectionChanged?.Invoke(sender, e);
 
-        private void ToggleLeft_Click(object sender, RoutedEventArgs e) =>
-            ToggleLeftClicked?.Invoke(sender, e);
+        private void XelSearch_Click(object sender, RoutedEventArgs e) => XelSearchRequested?.Invoke(sender, e);
 
-        private void ToggleRight_Click(object sender, RoutedEventArgs e) =>
+        private void ToggleLeft_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleLeftClicked?.Invoke(sender, e);
+            UpdateMinimumWidth();
+        }
+
+        private void ToggleRight_Click(object sender, RoutedEventArgs e)
+        {
             ToggleRightClicked?.Invoke(sender, e);
+            UpdateMinimumWidth();
+        }
 
         private void ZoomToFitDeadlock_Click(object sender, RoutedEventArgs e) =>
             ZoomToFitClicked?.Invoke(sender, e);

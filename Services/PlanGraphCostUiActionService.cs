@@ -37,8 +37,7 @@ namespace SqlXmlAnalyzer.Services
                             return childVm.SubtreeCost;
                         }
 
-                        return SafeFloat(
-                            child.Attribute("EstimatedTotalSubtreeCost")?.Value);
+                        return Core.Services.PlanOperatorFactsService.Get(child, ns).SubtreeCost.Value ?? 0;
                     })
                     .ToList();
 
@@ -49,7 +48,7 @@ namespace SqlXmlAnalyzer.Services
                     vm.EstimatedIOCostNum,
                     vm.EstRowsNum,
                     vm.ActualRowsNum,
-                    !string.IsNullOrEmpty(vm.ActualRows)));
+                    vm.HasActualRows) { Facts = vm.Facts });
             }
 
             IReadOnlyList<Core.Services.PlanGraphNodeCostResult> results =
@@ -68,24 +67,9 @@ namespace SqlXmlAnalyzer.Services
                 vm.ViewMode = initialView;
                 vm.ColorMode = initialColor;
             }
+
+            Logger.Debug($"IMP-07: 成本重算完成；节点数={inputs.Count}，实际行数已知={inputs.Count(node => node.HasActualRows)}。");
         }
 
-        private static double SafeFloat(
-            string? value,
-            double defaultValue = 0.0)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return defaultValue;
-            }
-
-            return double.TryParse(
-                value,
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture,
-                out double parsed)
-                ? parsed
-                : defaultValue;
-        }
     }
 }

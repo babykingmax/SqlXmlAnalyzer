@@ -1,0 +1,44 @@
+{
+  "checkedUtc": "2026-09-08T08:08:33.5412455+00:00",
+  "parser": "TSql160Parser",
+  "assemblyVersion": "18.0.0.0",
+  "results": [
+    {
+      "path": "sql/00-PrepareIsolatedDatabase.sql",
+      "sha256": "E48A718F2D107C45CD779FF60911C5A0C93272C44E32A70CF161915CEB48AB0E",
+      "parserErrors": [],
+      "serverExecuted": false
+    },
+    {
+      "path": "sql/10-SemanticCounterexamples.sql",
+      "sha256": "61999FF942F9FC63659406143E52F8BB955BB1F451AED26798A1B0CC61A1024D",
+      "parserErrors": [],
+      "serverExecuted": false
+    },
+    {
+      "path": "sql/20-CaptureActualPlans.sql",
+      "sha256": "3168314B8DFA1B93B40A20E9CCA9FBD7927550A1BCA7C74CD0D4E47EAEFE07D9",
+      "parserErrors": [],
+      "serverExecuted": false
+    },
+    {
+      "path": "sql/30-DeadlockSessionA.sql",
+      "sha256": "256C1E6853463A8730437D18666B5EFB160F60A58E420251983FAFB950A7189C",
+      "parserErrors": [],
+      "serverExecuted": false
+    },
+    {
+      "path": "sql/31-DeadlockSessionB.sql",
+      "sha256": "353BD4CD5CF8F427180D01CF511AB28D57FD685B69D7DB3CFCCA39DFEBEA3581",
+      "parserErrors": [],
+      "serverExecuted": false
+    },
+    {
+      "path": "sql/90-CleanupFixtureObjects.sql",
+      "sha256": "25C686324720A152F5961D44C03887547425D845441C4D4A0CD11878B9DC659A",
+      "parserErrors": [],
+      "serverExecuted": false
+    }
+  ],
+  "limitation": "Syntax only. No database preparation, SQL execution, permissions, runtime behavior or equivalence verified."
+}

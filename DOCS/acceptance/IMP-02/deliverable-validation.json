@@ -1,0 +1,138 @@
+{
+  "step": "IMP-02",
+  "status": "PreparationComplete",
+  "milestone": "M0 complete",
+  "checkedUtc": "2026-09-08T08:18:01.6746512+00:00",
+  "runId": "20260908T080801184Z_c5b1e0766cfc_6a19a7b0",
+  "mainCases": 22,
+  "crossScenarios": 12,
+  "matchedResultIds": 22,
+  "notMet": 22,
+  "issuesClosed": 0,
+  "artifactHashesVerified": 47,
+  "protectedInputsVerified": 548,
+  "imp01ArtifactsVerified": 75,
+  "historicalReviewAttachmentsUnchanged": true,
+  "protectedInputErrors": [],
+  "artifactErrors": [],
+  "brokenLinks": [],
+  "scriptParseErrors": [],
+  "manuallyPreparedXml": [
+    {
+      "path": "wpf-collision.sqlplan",
+      "wellFormed": true,
+      "xsdValidated": false,
+      "origin": "Synthetic UI adapter fixture",
+      "sqlServerExecuted": false
+    },
+    {
+      "path": "wpf-rollback.sqlplan",
+      "wellFormed": true,
+      "xsdValidated": false,
+      "origin": "Synthetic UI adapter fixture",
+      "sqlServerExecuted": false
+    },
+    {
+      "path": "wpf-trim.sqlplan",
+      "wellFormed": true,
+      "xsdValidated": false,
+      "origin": "Synthetic UI adapter fixture",
+      "sqlServerExecuted": false
+    }
+  ],
+  "preparationFiles": [
+    {
+      "path": "acceptance-matrix.json",
+      "sha256": "0C2959447E6E53A2C03DB2207DC155853D6D71261981734F0BBBA0683FEB637D"
+    },
+    {
+      "path": "AcceptanceProbe.cs.txt",
+      "sha256": "9695FC27EA510EBF6F39B94CD51254BBD3BF4D71C356E742FBC8F248198F3772"
+    },
+    {
+      "path": "cross-scenarios.json",
+      "sha256": "76ADCE77625815D258403962E2C702364B930B3BB84F11519F86FC77FCCEBE54"
+    },
+    {
+      "path": "fixture-record-template.json",
+      "sha256": "8880F4DF49FD56C0EEB931E4EDC70CE81C8EDB2FDF23AC150D3F7D06C9B2C8F2"
+    },
+    {
+      "path": "README.md",
+      "sha256": "32DC084285C3F68B9941239A92890EBDFF33D3ECB947DE4D073859F094455A02"
+    },
+    {
+      "path": "Run-AcceptanceMatrix.ps1",
+      "sha256": "25E164EB5C9D8020E823CDD43C1587BA819BD7EF70352F9CA94FF6AC416CCB7A"
+    },
+    {
+      "path": "sql-preparation-20260908T080833545Z-01767bf0.json",
+      "sha256": "4010C02E3648A64D36E1A851DE7299A06F6E438EAE67ED1CD14E6594BB1BAF45"
+    },
+    {
+      "path": "SQL与真实夹具验证说明.md",
+      "sha256": "003FF80840F31E61E8D9E2D85C8AD2091965D74A4335ED2D4553262323F449B1"
+    },
+    {
+      "path": "Test-SqlPreparation.ps1",
+      "sha256": "AF7FA6E022CB8985A55B39BA953723D466EC5AA45EF59BE3AA4D3AA2F885C855"
+    },
+    {
+      "path": "WPF验收操作脚本.md",
+      "sha256": "CFCEB4476D219168E85AE81E6B41245923FF4BAF19F2F0E6C5EDC8B8423FE1F1"
+    },
+    {
+      "path": "sql/00-PrepareIsolatedDatabase.sql",
+      "sha256": "E48A718F2D107C45CD779FF60911C5A0C93272C44E32A70CF161915CEB48AB0E"
+    },
+    {
+      "path": "sql/10-SemanticCounterexamples.sql",
+      "sha256": "61999FF942F9FC63659406143E52F8BB955BB1F451AED26798A1B0CC61A1024D"
+    },
+    {
+      "path": "sql/20-CaptureActualPlans.sql",
+      "sha256": "3168314B8DFA1B93B40A20E9CCA9FBD7927550A1BCA7C74CD0D4E47EAEFE07D9"
+    },
+    {
+      "path": "sql/30-DeadlockSessionA.sql",
+      "sha256": "256C1E6853463A8730437D18666B5EFB160F60A58E420251983FAFB950A7189C"
+    },
+    {
+      "path": "sql/31-DeadlockSessionB.sql",
+      "sha256": "353BD4CD5CF8F427180D01CF511AB28D57FD685B69D7DB3CFCCA39DFEBEA3581"
+    },
+    {
+      "path": "sql/90-CleanupFixtureObjects.sql",
+      "sha256": "25C686324720A152F5961D44C03887547425D845441C4D4A0CD11878B9DC659A"
+    },
+    {
+      "path": "manual-fixtures/wpf-collision.sqlplan",
+      "sha256": "EC0B0BB4A02E1B5C9FBD17B12A187AFF5206275B3246380521B2E813EBF48EB9"
+    },
+    {
+      "path": "manual-fixtures/wpf-rollback.sqlplan",
+      "sha256": "66D2B41C9049A3981F321125C31E30B035FAC2B34B6F1A0036E947403E86F7B0"
+    },
+    {
+      "path": "manual-fixtures/wpf-trim.sqlplan",
+      "sha256": "0454D8D14C07AD33EA81BDCDBFEA6D2D0D3DD690B5BAA2D05F1553A25BD0152A"
+    }
+  ],
+  "summarySha256": "16F2E280E76646207D710FAD5EA913553A432DBF05E62AA2EA5342AD06BC55BC",
+  "applicationSourceModified": false,
+  "existingTestsModified": false,
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "followingFixStepsStarted": false,
+  "additionalTrackedInputsVerified": [
+    {
+      "path": "publish.bat",
+      "sha256": "924A0E2373CDEB48026F35277582388FFECF44BD151FFFECC26EC98B992BCB5B"
+    },
+    {
+      "path": "publish.ps1",
+      "sha256": "5C2370D37B31FA875C6EB546784352ED9479A0708175BD72C58C43D154B2244C"
+    }
+  ],
+  "postRunToolAdjustment": "Narrowed generated-directory filtering to retain publish.ps1 and publish.bat; validated filter, script syntax and both original hashes. Product probe conditions unchanged; historical run snapshot preserved."
+}

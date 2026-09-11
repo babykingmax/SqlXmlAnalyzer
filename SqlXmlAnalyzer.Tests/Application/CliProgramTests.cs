@@ -9,20 +9,129 @@ namespace SqlXmlAnalyzer.Tests.Application
 {
     public class CliProgramTests : IDisposable
     {
+        private readonly string _tempDirectory;
         private readonly string _tempSqlFile;
         private readonly string _tempPlanFile;
 
         public CliProgramTests()
         {
-            _tempSqlFile = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.sql");
-            _tempPlanFile = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.sqlplan");
+            _tempDirectory = Path.Combine(Path.GetTempPath(), $"SqlXmlAnalyzer-CliTests-{Guid.NewGuid():N}");
+            Directory.CreateDirectory(_tempDirectory);
+            _tempSqlFile = Path.Combine(_tempDirectory, "query.sql");
+            _tempPlanFile = Path.Combine(_tempDirectory, "plan.sqlplan");
         }
 
         public void Dispose()
         {
-            if (File.Exists(_tempSqlFile)) File.Delete(_tempSqlFile);
-            if (File.Exists(_tempPlanFile)) File.Delete(_tempPlanFile);
+            string full = Path.GetFullPath(_tempDirectory);
+            string prefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer-CliTests-");
+            if (!full.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Unexpected test cleanup path");
+            Directory.Delete(full, recursive: true);
         }
+
+        [Fact]
+        public void Main_Refactor_WhenUnsafeRulesAreDetected_ReportsSkipsAndLeavesBytesAndDirectoryUnchanged()
+        {
+            const string sql = "DECLARE @stage TABLE(Id int); SELECT LTRIM(Name) FROM Users;";
+            byte[] original = System.Text.Encoding.Unicode.GetPreamble()
+                .Concat(System.Text.Encoding.Unicode.GetBytes(sql)).ToArray();
+            File.WriteAllBytes(_tempSqlFile, original);
+            var output = new StringWriter();
+            TextWriter previous = Console.Out;
+            int code;
+            try
+            {
+                Console.SetOut(output);
+                code = Program.Main(new[] { "refactor", _tempSqlFile, "--format", "json", "--show-sql" });
+            }
+            finally { Console.SetOut(previous); }
+            code.Should().Be(0);
+            using var json = JsonDocument.Parse(output.ToString());
+            json.RootElement.GetProperty("IsSuccess").GetBoolean().Should().BeTrue();
+            json.RootElement.GetProperty("HasChanges").GetBoolean().Should().BeFalse();
+            json.RootElement.GetProperty("SourceWritten").GetBoolean().Should().BeFalse();
+            json.RootElement.GetProperty("Outcome").GetString().Should().Be("NoChanges");
+            json.RootElement.GetProperty("SafetySkips").GetArrayLength().Should().Be(2);
+            json.RootElement.GetProperty("Warnings").GetArrayLength().Should().Be(2);
+            json.RootElement.GetProperty("Warnings")[0].GetString().Should().Contain("已跳过");
+            json.RootElement.GetProperty("RefactoredSql").GetString().Should().Be(sql);
+            File.ReadAllBytes(_tempSqlFile).Should().Equal(original);
+            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
+        }
+
+        [Theory]
+        [InlineData(true, "CandidateGenerated")]
+        [InlineData(false, "CandidateGenerated")]
+        public void Main_Refactor_ProducesCandidateWithoutWritebackInEitherMode(bool dryRun, string outcome)
+        {
+            const string sql = "SELECT * FROM Users WHERE Age + 10 > 50;";
+            File.WriteAllText(_tempSqlFile, sql);
+            var arguments = new System.Collections.Generic.List<string> { "refactor", _tempSqlFile, "--format", "json" };
+            if (dryRun) arguments.Add("--dry-run");
+            var output = new StringWriter();
+            TextWriter previous = Console.Out;
+            int code;
+            try { Console.SetOut(output); code = Program.Main(arguments.ToArray()); }
+            finally { Console.SetOut(previous); }
+            code.Should().Be(0);
+            using var json = JsonDocument.Parse(output.ToString());
+            json.RootElement.GetProperty("Outcome").GetString().Should().Be(outcome);
+            json.RootElement.GetProperty("SourceWritten").GetBoolean().Should().BeFalse();
+            File.ReadAllText(_tempSqlFile).Should().Be(sql);
+            json.RootElement.GetProperty("Review").GetProperty("CanApply").GetBoolean().Should().BeFalse();
+        }
+
+        [Fact]
+        public void Main_Refactor_WhenSourceIsReadOnlyLocked_GeneratesReviewWithoutBackup()
+        {
+            byte[] original = System.Text.Encoding.UTF8.GetBytes("SELECT * FROM Users WHERE Age + 10 > 50;");
+            File.WriteAllBytes(_tempSqlFile, original);
+            using var locked = new FileStream(_tempSqlFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var output = new StringWriter();
+            TextWriter previous = Console.Out;
+            int code;
+            try
+            {
+                Console.SetOut(output);
+                code = Program.Main(new[] { "refactor", _tempSqlFile, "--format", "json" });
+            }
+            finally { Console.SetOut(previous); }
+            code.Should().Be(0);
+            using var json = JsonDocument.Parse(output.ToString());
+            json.RootElement.GetProperty("IsSuccess").GetBoolean().Should().BeTrue();
+            json.RootElement.GetProperty("SourceWritten").GetBoolean().Should().BeFalse();
+            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
+            File.ReadAllBytes(_tempSqlFile).Should().Equal(original);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void Main_Refactor_WhenReportTargetsSql_RejectsBeforeWriting(bool dryRun)
+        {
+            File.WriteAllText(_tempSqlFile, "SELECT 1;");
+            string alias = Path.Combine(_tempDirectory, ".", "query.sql");
+            var args = dryRun
+                ? new[] { "refactor", _tempSqlFile, "--dry-run", "--output", alias }
+                : new[] { "refactor", _tempSqlFile, "--output", alias };
+            Program.Main(args).Should().Be(2);
+            File.ReadAllText(_tempSqlFile).Should().Be("SELECT 1;");
+            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Main_Refactor_WhenReportIsHardLinkToSql_RejectsTheAlias()
+        {
+            File.WriteAllText(_tempSqlFile, "SELECT 1;");
+            string alias = Path.Combine(_tempDirectory, "report.json");
+            CreateHardLink(alias, _tempSqlFile, IntPtr.Zero).Should().BeTrue();
+            Program.Main(new[] { "refactor", _tempSqlFile, "--dry-run", "--output", alias }).Should().Be(2);
+            File.ReadAllText(_tempSqlFile).Should().Be("SELECT 1;");
+        }
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        private static extern bool CreateHardLink(string fileName, string existingFileName, IntPtr securityAttributes);
 
         [Fact]
         public void Main_Refactor_Help_ShouldReturnSuccess()
@@ -127,7 +236,7 @@ namespace SqlXmlAnalyzer.Tests.Application
         }
 
         [Fact]
-        public void Main_Refactor_ValidSql_WithConstantFolding_WriteBack_ShouldModifyFile()
+        public void Main_Refactor_ValidSql_WithConstantFolding_DefaultPreservesFile()
         {
             // Arrange
             string originalSql = "SELECT * FROM Users WHERE Age + 10 > 50;";
@@ -140,8 +249,8 @@ namespace SqlXmlAnalyzer.Tests.Application
             // Assert
             exitCode.Should().Be(0);
             var resultSql = File.ReadAllText(_tempSqlFile);
-            resultSql.Should().NotBe(originalSql);
-            resultSql.Should().Contain("Age > 40");
+            resultSql.Should().Be(originalSql);
+            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
         }
 
         [Fact]

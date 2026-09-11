@@ -12,7 +12,7 @@ namespace SqlXmlAnalyzer.Tests.Simulation
         private readonly XNamespace _ns = "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
 
         [Fact]
-        public void Simulate_WithValidScan_ShouldReturnPositiveReduction()
+        public void Simulate_WithUnboundScan_ShouldKeepBenefitUnknown()
         {
             // Arrange
             string xml = @"<ShowPlanXML xmlns=""http://schemas.microsoft.com/sqlserver/2004/07/showplan"">
@@ -36,13 +36,14 @@ namespace SqlXmlAnalyzer.Tests.Simulation
             var result = CostImpactSimulator.Simulate(planDoc, suggestion, _ns);
 
             // Assert
-            // 6.0 / 10.0 = 0.6. Reduction is 0.6 * 0.6 = 0.36 = 36%
-            result.ReductionPercent.Should().Be(36);
-            result.Description.Should().Contain("新索引可优化 1 个操作符");
+            result.ReductionPercent.Should().BeNull();
+            result.TotalOwnCost.Value.Should().Be(6);
+            result.RelatedOwnCost.Value.Should().BeNull();
+            result.EvidenceCode.Should().Be("SIMULATION_TARGET_UNRESOLVED");
         }
 
         [Fact]
-        public void Simulate_WithUnrelatedTable_ShouldReturnZeroReduction()
+        public void Simulate_WithUnrelatedTable_ShouldNotClaimZeroBenefit()
         {
             // Arrange
             string xml = @"<ShowPlanXML xmlns=""http://schemas.microsoft.com/sqlserver/2004/07/showplan"">
@@ -66,12 +67,13 @@ namespace SqlXmlAnalyzer.Tests.Simulation
             var result = CostImpactSimulator.Simulate(planDoc, suggestion, _ns);
 
             // Assert
-            result.ReductionPercent.Should().Be(0);
-            result.Description.Should().Contain("影响较小");
+            result.ReductionPercent.Should().BeNull();
+            result.RelatedOwnCost.Value.Should().BeNull();
+            result.EvidenceCode.Should().Be("SIMULATION_TARGET_UNRESOLVED");
         }
 
         [Fact]
-        public void Simulate_WithNullPlan_ShouldReturnZero()
+        public void Simulate_WithNullPlan_ShouldReturnMissingEvidence()
         {
             // Arrange
             var suggestion = new MissingIndexSuggestion
@@ -84,7 +86,9 @@ namespace SqlXmlAnalyzer.Tests.Simulation
             var result = CostImpactSimulator.Simulate(null, suggestion, _ns);
 
             // Assert
-            result.ReductionPercent.Should().Be(0);
+            result.ReductionPercent.Should().BeNull();
+            result.TotalOwnCost.Value.Should().BeNull();
+            result.EvidenceCode.Should().Be("SIMULATION_INPUT_MISSING");
         }
     }
 }

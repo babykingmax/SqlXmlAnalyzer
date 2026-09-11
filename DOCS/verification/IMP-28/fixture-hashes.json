@@ -1,0 +1,67 @@
+[
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/baseline-origin.json",
+    "Bytes": 971,
+    "Sha256": "D24B4EE872509CAF97ADFA4DA7ABF0FB78DF7064F24E945ACCD81FAFD8F5AAD4"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/cli-read-before.json",
+    "Bytes": 29723,
+    "Sha256": "5B38124148DD04A92E4D4A8571B229F49444692F7042B65FDB8D3A23764E8708"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/cli-refactor-before.json",
+    "Bytes": 3954,
+    "Sha256": "9E0C13186D023328CB0C78F8E5BB0E7091EFB10378B24B85C0547AA8502A2B8F"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/cli-scan-before.json",
+    "Bytes": 207228,
+    "Sha256": "B3D5C4C964B0CF64B0A3B0480335BEBD8E9CF8EE2FC02B7FDD51C3D76041111A"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/configuration-imp01.json",
+    "Bytes": 578,
+    "Sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/configuration-legacy.json",
+    "Bytes": 340,
+    "Sha256": "36BE7D25522B16887D38D93FD3D5D9BA3CF0DC36E03E7C8B146CC600BE531BCE"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/deadlock.xdl",
+    "Bytes": 482,
+    "Sha256": "3926CE40AFF459A153B357220DA4312CF272037323AB4953D5863F5259AF65B5"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/plan.sqlplan",
+    "Bytes": 710,
+    "Sha256": "A435A992A69EA53A542113080D8A32B344346C3D851F091B15246FF22AFE1542"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/query.sql",
+    "Bytes": 59,
+    "Sha256": "906BDFB3DFE62B56D5759CFE7D6344B3CF50CF30477AEA12BA332E4E3CB6C1D7"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/report-imp22-before.json",
+    "Bytes": 65980,
+    "Sha256": "C5B31FF36D1DBE3A6D0FF88B0ECAF3F544A8FA03198AF2C0F32606716A00975C"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/rules-before.json",
+    "Bytes": 3853,
+    "Sha256": "319EA9A28999FFB5EC6056AC4DB5835D8BCF9B8735E26E773FDD8EFD5B1D7C62"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/session-v2.0.pesession",
+    "Bytes": 1395,
+    "Sha256": "8121ABB32DEA9E51287C9B8E9BDC4819A151F666D48808C66D90BE499D401055"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Compatibility/session-v2.1-before.pesession",
+    "Bytes": 1653,
+    "Sha256": "CDFFDD37C919B732FDC27CD7011BF26FCF879CDC33E3F1AAA51B34A55953D784"
+  }
+]

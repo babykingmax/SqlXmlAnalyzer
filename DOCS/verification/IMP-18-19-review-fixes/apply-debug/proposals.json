@@ -1,0 +1,157 @@
+{
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "IsSuccess": true,
+  "IsDryRun": false,
+  "HasChanges": true,
+  "SourceWritten": false,
+  "Outcome": "CandidateGenerated",
+  "ProposalSchemaVersion": "1",
+  "CanApply": false,
+  "SourceHash": "98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66",
+  "Review": {
+    "SourceHash": "98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66",
+    "CanApply": false,
+    "Validation": {
+      "SyntaxValid": true,
+      "CheckedProperties": [
+        "ScriptDom TSql160 语法解析",
+        "SELECT INTO 目标、显式临时表 CREATE/DROP、表变量声明名称及批次/IF/WHILE/TRY-CATCH 分支一致性检查"
+      ],
+      "UnprovenProperties": [
+        "结果集及重复行等价性",
+        "类型、NULL、排序规则及错误行为",
+        "对象完整定义、模块/动态 SQL 作用域及完整生命周期",
+        "事务、会话设置、调用方对象与运行性能"
+      ],
+      "Errors": [],
+      "Equivalence": "Unproven",
+      "IsValid": true,
+      "CanApply": false
+    },
+    "Warnings": [],
+    "PreviewSql": "-- reviewed fixture\r\nSELECT Id FROM dbo.Users WHERE Name = N'admin' AND Age + 10 > 50;\r\n",
+    "Proposals": [
+      {
+        "Id": "D70E3901B621D2FCE67C1FBDF5806C7FF8A29E41E2804C1BECEB8D7B81F7F12E",
+        "SourceHash": "98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66",
+        "BaseSqlHash": "98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66",
+        "CandidateHash": "FE0D08027B35D5A867141E95649BC61908822C8CDC23D8745793B2459320512A",
+        "RuleId": "REF_RULE_105_IMPLICIT_CONV",
+        "RuleVersion": "2.0.0.0",
+        "Description": "Removed redundant Unicode N prefix from string literal(s) on column(s) Name",
+        "IsSelected": false,
+        "DependsOn": [],
+        "Preconditions": [
+          "确认列类型、NULL、排序规则、重复行与聚合边界。",
+          "在隔离数据库验证结果、错误、事务和对象副作用。"
+        ],
+        "Risks": [
+          "ScriptDom 解析成功仅代表语法有效。",
+          "可能改变结果、溢出/错误行为、事务或性能；等价性尚未证明。"
+        ],
+        "Evidence": [
+          "规则在所示输入 AST 上识别到匹配结构；不证明结果等价。",
+          "源 SQL SHA-256 (UTF-8 text): 98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66"
+        ],
+        "Warnings": [],
+        "Validation": {
+          "SyntaxValid": true,
+          "CheckedProperties": [
+            "ScriptDom TSql160 语法解析",
+            "SELECT INTO 目标、显式临时表 CREATE/DROP、表变量声明名称及批次/IF/WHILE/TRY-CATCH 分支一致性检查"
+          ],
+          "UnprovenProperties": [
+            "结果集及重复行等价性",
+            "类型、NULL、排序规则及错误行为",
+            "对象完整定义、模块/动态 SQL 作用域及完整生命周期",
+            "事务、会话设置、调用方对象与运行性能"
+          ],
+          "Errors": [],
+          "Equivalence": "Unproven",
+          "IsValid": true,
+          "CanApply": false
+        },
+        "Diff": {
+          "StartOffset": 0,
+          "OriginalText": "-- reviewed fixture\r\nSELECT Id FROM dbo.Users WHERE Name = N'admin' AND Age + 10 > 50;",
+          "ReplacementText": "SELECT Id\r\nFROM   dbo.Users\r\nWHERE  Name = 'admin'\r\n       AND Age + 10 > 50;\r\n"
+        }
+      },
+      {
+        "Id": "8B639C143EEB19ADA9E25769F69E8535F5EA9D330336556A592BC1995277A2DB",
+        "SourceHash": "98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66",
+        "BaseSqlHash": "FE0D08027B35D5A867141E95649BC61908822C8CDC23D8745793B2459320512A",
+        "CandidateHash": "C6D7D4A61744DA7E33E50A15E0718468C86BF6A0A797F3C202FC663BB1638DF3",
+        "RuleId": "REF_RULE_104_CONST_FOLD",
+        "RuleVersion": "2.0.0.0",
+        "Description": "Folded constant arithmetic on column Age",
+        "IsSelected": false,
+        "DependsOn": [
+          "D70E3901B621D2FCE67C1FBDF5806C7FF8A29E41E2804C1BECEB8D7B81F7F12E"
+        ],
+        "Preconditions": [
+          "确认列类型、NULL、排序规则、重复行与聚合边界。",
+          "在隔离数据库验证结果、错误、事务和对象副作用。"
+        ],
+        "Risks": [
+          "ScriptDom 解析成功仅代表语法有效。",
+          "可能改变结果、溢出/错误行为、事务或性能；等价性尚未证明。"
+        ],
+        "Evidence": [
+          "规则在所示输入 AST 上识别到匹配结构；不证明结果等价。",
+          "源 SQL SHA-256 (UTF-8 text): 98E72827D3818FD57B70206D9052B9084ECDB7F4665D3CEA341047180527ED66"
+        ],
+        "Warnings": [],
+        "Validation": {
+          "SyntaxValid": true,
+          "CheckedProperties": [
+            "ScriptDom TSql160 语法解析",
+            "SELECT INTO 目标、显式临时表 CREATE/DROP、表变量声明名称及批次/IF/WHILE/TRY-CATCH 分支一致性检查"
+          ],
+          "UnprovenProperties": [
+            "结果集及重复行等价性",
+            "类型、NULL、排序规则及错误行为",
+            "对象完整定义、模块/动态 SQL 作用域及完整生命周期",
+            "事务、会话设置、调用方对象与运行性能"
+          ],
+          "Errors": [],
+          "Equivalence": "Unproven",
+          "IsValid": true,
+          "CanApply": false
+        },
+        "Diff": {
+          "StartOffset": 67,
+          "OriginalText": "+ 10 > 5",
+          "ReplacementText": "> 4"
+        }
+      }
+    ]
+  },
+  "TimeElapsedMs": 115.6863,
+  "OriginalSqlLength": 88,
+  "RefactoredSqlLength": 76,
+  "PassesCount": 2,
+  "Changes": [
+    {
+      "RuleId": "REF_RULE_105_IMPLICIT_CONV",
+      "Description": "Removed redundant Unicode N prefix from string literal(s) on column(s) Name",
+      "Timestamp": "2026-09-09T09:56:11.3685902Z"
+    },
+    {
+      "RuleId": "REF_RULE_104_CONST_FOLD",
+      "Description": "Folded constant arithmetic on column Age",
+      "Timestamp": "2026-09-09T09:56:11.3716082Z"
+    }
+  ],
+  "Failures": [],
+  "Warnings": [
+    "已生成可审核提案，尚未应用；语义等价性未证明。选择只改变审核预览，不写回源文件。"
+  ],
+  "Errors": [],
+  "SafetySkips": [],
+  "Diagnostic": null,
+  "Diagnostics": null,
+  "ParseErrors": null,
+  "OriginalSql": "-- reviewed fixture\r\nSELECT Id FROM dbo.Users WHERE Name = N'admin' AND Age + 10 > 50;\r\n",
+  "RefactoredSql": "SELECT Id\r\nFROM   dbo.Users\r\nWHERE  Name = 'admin'\r\n       AND Age > 40;\r\n\r\n"
+}

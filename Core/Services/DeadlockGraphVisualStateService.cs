@@ -14,7 +14,10 @@ namespace SqlXmlAnalyzer.Core.Services
         double Opacity,
         bool IsVictim,
         bool IsVictimRevealed,
-        bool UseDefaultChrome);
+        bool UseDefaultChrome)
+    {
+        public bool IsInCycle { get; init; }
+    }
 
     public sealed record DeadlockGraphEdgeVisualState(
         bool IsVisible,
@@ -36,7 +39,7 @@ namespace SqlXmlAnalyzer.Core.Services
                     Opacity: 0,
                     nodeState.IsVictim,
                     nodeState.IsVictimRevealed,
-                    UseDefaultChrome: false);
+                    UseDefaultChrome: false) { IsInCycle = nodeState.IsInCycle };
             }
 
             return new DeadlockGraphNodeVisualState(
@@ -44,7 +47,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 Opacity: nodeState.IsActive ? 1.0 : 0.2,
                 nodeState.IsVictim,
                 nodeState.IsVictimRevealed,
-                UseDefaultChrome: false);
+                UseDefaultChrome: false) { IsInCycle = nodeState.IsInCycle };
         }
 
         public DeadlockGraphEdgeVisualState CreatePlaybackEdgeState(
@@ -77,14 +80,14 @@ namespace SqlXmlAnalyzer.Core.Services
                 BadgeStepNumber: null);
         }
 
-        public DeadlockGraphNodeVisualState CreateResetNodeState()
+        public DeadlockGraphNodeVisualState CreateResetNodeState(bool isVictim = false, bool isInCycle = false)
         {
             return new DeadlockGraphNodeVisualState(
                 IsVisible: true,
                 Opacity: 1.0,
-                IsVictim: false,
-                IsVictimRevealed: false,
-                UseDefaultChrome: true);
+                IsVictim: isVictim,
+                IsVictimRevealed: isVictim,
+                UseDefaultChrome: true) { IsInCycle = isInCycle };
         }
 
         public DeadlockGraphEdgeVisualState CreateResetEdgeState(bool isWaitEdge)

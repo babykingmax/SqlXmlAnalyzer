@@ -1,18 +1,57 @@
+using System.ComponentModel;
 using System.IO;
+using System.Security;
 using FluentAssertions;
+using SqlXmlAnalyzer.Core.Diagnostics;
 using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Tests
 {
-    public sealed class LogFolderActionServiceTests
+    public sealed class LogFolderActionServiceTests : IDisposable
     {
+        private readonly string _directory = Path.Combine(Path.GetTempPath(), "SqlXmlAnalyzer-LogFolderTests-" + Guid.NewGuid().ToString("N"));
+
+        public LogFolderActionServiceTests()
+        {
+            Directory.CreateDirectory(_directory);
+            Logger.Shutdown();
+            Logger.Initialize(enableFileLogging: false);
+        }
+
+        [Fact]
+        public void BuildOpenLogsFolder_WithDefaultLogger_ReturnsTheActualLogDirectory()
+        {
+            Logger.Shutdown();
+            Logger.Initialize();
+
+            var result = new LogFolderActionService().BuildOpenLogsFolder();
+
+            result.Status.Should().Be(LogFolderActionStatus.Ready);
+            result.FolderPath.Should().Be(Path.GetDirectoryName(Logger.LogFilePath));
+            result.FolderPath.Should().Be(Logger.GetDefaultLogDirectory());
+        }
+
+        [Fact]
+        public void BuildOpenLogsFolder_WithCustomLogger_ReturnsTheActualLogDirectory()
+        {
+            Logger.Shutdown();
+            string logPath = Path.Combine(_directory, "custom diagnostics", "session.log");
+            Logger.Initialize(customLogFilePath: logPath);
+
+            var result = new LogFolderActionService().BuildOpenLogsFolder();
+
+            result.Status.Should().Be(LogFolderActionStatus.Ready);
+            result.FolderPath.Should().Be(Path.GetDirectoryName(Logger.LogFilePath));
+            result.FolderPath.Should().Be(Path.GetDirectoryName(logPath));
+        }
+
         [Fact]
         public void BuildOpenLogsFolder_WhenLogDirectoryExists_ReturnsReady()
         {
             string baseDirectory = @"C:\Tools\SqlXmlAnalyzer";
             string expectedPath = Path.Combine(baseDirectory, "log");
             var service = new LogFolderActionService(
-                () => baseDirectory,
+                () => expectedPath,
                 path => path == expectedPath);
 
             LogFolderActionResult result = service.BuildOpenLogsFolder();
@@ -28,14 +67,248 @@ namespace SqlXmlAnalyzer.Tests
             string baseDirectory = @"C:\Tools\SqlXmlAnalyzer";
             string expectedPath = Path.Combine(baseDirectory, "log");
             var service = new LogFolderActionService(
-                () => baseDirectory,
+                () => expectedPath,
                 _ => false);
 
             LogFolderActionResult result = service.BuildOpenLogsFolder();
 
             result.Status.Should().Be(LogFolderActionStatus.MissingDirectory);
             result.FolderPath.Should().Be(expectedPath);
-            result.UserMessage.Should().Be("The log folder has not been created yet.");
+            result.UserMessage.Should().Contain("不存在或无法访问").And.Contain(expectedPath);
+        }
+
+        [Fact]
+        public void GetLogDirectory_BeforeInitialization_ReturnsDefaultWithoutCreatingALog()
+        {
+            Logger.Shutdown();
+
+            Logger.GetLogDirectory().Should().Be(Logger.GetDefaultLogDirectory());
+            Logger.LogFilePath.Should().BeNull();
+            Logger.FileLoggingEnabled.Should().BeFalse();
+        }
+
+        [Fact]
+        public void BuildOpenLogsFolder_AfterLoggerReinitialization_FollowsTheNewDirectory()
+        {
+            var service = new LogFolderActionService();
+            foreach (string folder in new[] { "first", "second" })
+            {
+                Logger.Shutdown();
+                string logPath = Path.Combine(_directory, folder, "session.log");
+                Logger.Initialize(customLogFilePath: logPath);
+                var result = service.BuildOpenLogsFolder();
+                result.Status.Should().Be(LogFolderActionStatus.Ready);
+                result.FolderPath.Should().Be(Path.GetDirectoryName(logPath));
+            }
+
+            Logger.Shutdown();
+            Logger.GetLogDirectory().Should().Be(Logger.GetDefaultLogDirectory());
+        }
+
+        [Fact]
+        public void OpenLogsFolder_WithRelativeCustomLogPath_PassesItsAbsoluteDirectoryToLauncher()
+        {
+            Logger.Shutdown();
+            string logPath = Path.Combine(_directory, "中文 diagnostics", "session.log");
+            Logger.Initialize(customLogFilePath: Path.GetRelativePath(Environment.CurrentDirectory, logPath));
+            string? opened = null;
+            int calls = 0;
+
+            var result = new LogFolderActionService().OpenLogsFolder(path => { opened = path; calls++; });
+
+            result.Status.Should().Be(LogFolderActionStatus.Opened);
+            opened.Should().Be(Path.GetDirectoryName(logPath));
+            calls.Should().Be(1);
+        }
+
+        [Fact]
+        public void GetLogDirectory_WhenCustomLogCreationFails_DoesNotReportANonexistentActiveFile()
+        {
+            Logger.Shutdown();
+            string blocker = Path.Combine(_directory, "blocked");
+            File.WriteAllText(blocker, "keep");
+            Logger.Initialize(customLogFilePath: Path.Combine(blocker, "session.log"));
+
+            Logger.LogFilePath.Should().BeNull();
+            Logger.FileLoggingEnabled.Should().BeFalse();
+            Logger.GetLogDirectory().Should().Be(Logger.GetDefaultLogDirectory());
+            File.ReadAllText(blocker).Should().Be("keep");
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("bad\0path")]
+        [InlineData(null)]
+        public void OpenLogsFolder_WhenDirectoryPathIsInvalid_DoesNotCheckOrLaunchOrDump(string? path)
+        {
+            var diagnostics = new RecordingDiagnostics();
+            int checks = 0, launches = 0;
+            var service = new LogFolderActionService(() => path!, _ => { checks++; return true; }, diagnostics);
+
+            var result = service.OpenLogsFolder(_ => launches++);
+
+            result.Status.Should().Be(LogFolderActionStatus.Failed);
+            checks.Should().Be(0);
+            launches.Should().Be(0);
+            diagnostics.Calls.Should().Be(0);
+        }
+
+        [Fact]
+        public void OpenLogsFolder_WhenDirectoryIsUnavailable_DoesNotLaunchOrCreateIt()
+        {
+            string missing = Path.Combine(_directory, "missing");
+            int launches = 0;
+
+            var result = new LogFolderActionService(() => missing).OpenLogsFolder(_ => launches++);
+
+            result.Status.Should().Be(LogFolderActionStatus.MissingDirectory);
+            result.UserMessage.Should().Contain(missing).And.Contain("无法访问");
+            launches.Should().Be(0);
+            Directory.Exists(missing).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData("IO")]
+        [InlineData("Access")]
+        [InlineData("Security")]
+        [InlineData("Shell")]
+        public void OpenLogsFolder_WhenEnvironmentFails_ReturnsTheErrorWithoutDump(string kind)
+        {
+            Exception error = kind switch
+            {
+                "IO" => new DirectoryNotFoundException("folder removed before launch"),
+                "Access" => new UnauthorizedAccessException("access denied"),
+                "Security" => new SecurityException("security denied"),
+                _ => new Win32Exception(5, "shell denied")
+            };
+            var diagnostics = new RecordingDiagnostics();
+            var service = new LogFolderActionService(() => _directory, diagnostics: diagnostics);
+
+            var result = service.OpenLogsFolder(_ => throw error);
+
+            result.Status.Should().Be(LogFolderActionStatus.Failed);
+            result.UserMessage.Should().Contain(error.Message);
+            result.Diagnostic.Should().BeNull();
+            diagnostics.Calls.Should().Be(0);
+        }
+
+        [Fact]
+        public void OpenLogsFolder_WhenDirectoryCheckThrowsAccessDenied_DoesNotLaunchOrDump()
+        {
+            var diagnostics = new RecordingDiagnostics();
+            int launches = 0;
+            var service = new LogFolderActionService(() => _directory,
+                _ => throw new UnauthorizedAccessException("directory access denied"), diagnostics);
+
+            var result = service.OpenLogsFolder(_ => launches++);
+
+            result.Status.Should().Be(LogFolderActionStatus.Failed);
+            result.UserMessage.Should().Contain("directory access denied");
+            launches.Should().Be(0);
+            diagnostics.Calls.Should().Be(0);
+        }
+
+        [Theory]
+        [InlineData("Resolve")]
+        [InlineData("Check")]
+        [InlineData("Open")]
+        public void OpenLogsFolder_WhenUnexpectedFailureOccurs_PreservesItsDiagnostic(string stage)
+        {
+            var error = new InvalidOperationException("synthetic unknown " + stage);
+            var diagnostics = new RecordingDiagnostics();
+            int launches = 0;
+            var service = new LogFolderActionService(
+                () => stage == "Resolve" ? throw error : _directory,
+                _ => stage == "Check" ? throw error : true, diagnostics);
+
+            var result = service.OpenLogsFolder(_ => { launches++; throw error; });
+
+            result.Status.Should().Be(LogFolderActionStatus.Failed);
+            result.UserMessage.Should().Contain(error.Message).And.Contain("DUMP");
+            result.Diagnostic.Should().BeSameAs(diagnostics.Result);
+            diagnostics.Exception.Should().BeSameAs(error);
+            diagnostics.Calls.Should().Be(1);
+            launches.Should().Be(stage == "Open" ? 1 : 0);
+        }
+
+        [Fact]
+        public void OpenLogsFolder_WhenDumpReporterFails_PreservesTheOriginalFailure()
+        {
+            var diagnostics = new RecordingDiagnostics { Fail = true };
+            var service = new LogFolderActionService(() => _directory, diagnostics: diagnostics);
+
+            var result = service.OpenLogsFolder(_ => throw new InvalidOperationException("original unknown failure"));
+
+            result.Status.Should().Be(LogFolderActionStatus.Failed);
+            result.UserMessage.Should().Contain("original unknown failure").And.Contain("DUMP 生成失败");
+            result.Diagnostic!.DumpCreated.Should().BeFalse();
+        }
+
+        [Fact]
+        public void OpenLogsFolder_WithRealDiagnostics_WritesDumpAndUsesTheBuildLoggingPolicy()
+        {
+            Logger.Shutdown();
+            string logPath = Path.Combine(_directory, "boundary.log");
+            Logger.Initialize(customLogFilePath: logPath);
+            var service = new LogFolderActionService(() => _directory,
+                diagnostics: new UnexpectedErrorReporter(new WindowsMiniDumpWriter(), _directory));
+            var previousOut = Console.Out;
+            var previousError = Console.Error;
+            var stdout = new StringWriter();
+            var stderr = new StringWriter();
+            LogFolderActionResult result;
+            try
+            {
+                Console.SetOut(stdout);
+                Console.SetError(stderr);
+                service.OpenLogsFolder(_ => { }).Status.Should().Be(LogFolderActionStatus.Opened);
+                new LogFolderActionService(() => Path.Combine(_directory, "missing")).OpenLogsFolder(_ => { });
+                service.OpenLogsFolder(_ => throw new Win32Exception(5, "synthetic shell failure"));
+                result = service.OpenLogsFolder(_ => throw new InvalidOperationException("synthetic unknown folder failure"));
+            }
+            finally { Console.SetOut(previousOut); Console.SetError(previousError); Logger.Flush(); }
+
+            result.Diagnostic!.DumpCreated.Should().BeTrue(result.Diagnostic.Failure);
+            MinidumpValidator.Validate(result.Diagnostic.DumpPath!);
+            File.ReadAllText(result.Diagnostic.MetadataPath!).Should().Contain("synthetic unknown folder failure");
+            result.UserMessage.Should().Contain(result.Diagnostic.DumpPath!);
+            stdout.ToString().Should().BeEmpty();
+            using var reader = new StreamReader(new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+            foreach (string text in new[] { reader.ReadToEnd(), stderr.ToString() })
+            {
+                text.Should().Contain("[ERROR]").And.Contain("[CRITICAL]");
+#if DEBUG
+                text.Should().Contain("[DEBUG]").And.Contain("[WARN]");
+#else
+                text.Should().NotContain("[DEBUG]").And.NotContain("[WARN]");
+#endif
+            }
+        }
+
+        private sealed class RecordingDiagnostics : IUnexpectedErrorReporter
+        {
+            public int Calls { get; private set; }
+            public Exception? Exception { get; private set; }
+            public bool Fail { get; init; }
+            public UnexpectedErrorReport Result { get; } = new("synthetic.dmp", "synthetic.json", null);
+            public UnexpectedErrorReport Report(Exception exception, string operation)
+            {
+                Calls++;
+                Exception = exception;
+                if (Fail) throw new IOException("synthetic dump storage failure");
+                return Result;
+            }
+        }
+
+        public void Dispose()
+        {
+            Logger.Shutdown();
+            string path = Path.GetFullPath(_directory);
+            string prefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer-LogFolderTests-");
+            if (!path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Unexpected test cleanup path.");
+            Directory.Delete(path, recursive: true);
         }
     }
 }

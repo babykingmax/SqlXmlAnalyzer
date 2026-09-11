@@ -1,0 +1,70 @@
+[
+  {
+    "path": "adapter-snapshot-manifest.json",
+    "sha256": "27F1F84EB8FE35689CCB7BE8702FABC6CE37E1E05BBA30EB0D851E491A6780FB"
+  },
+  {
+    "path": "adapter/acceptance-matrix.json",
+    "sha256": "076AC2742D504FA11FC0F6D62F0C8016C5D08364FC6EF6BBF802AA6B8C2CD43A"
+  },
+  {
+    "path": "adapter/AcceptanceInfrastructure.psm1",
+    "sha256": "B73ABAD547CF98EBC117946101C2F6C138548C595483B7AB87B943450C8D456E"
+  },
+  {
+    "path": "adapter/AcceptanceProbe.cs.txt",
+    "sha256": "2265D57A878D21195FE91C62E2E6F521A944B13583D4580720832DA9A9B46620"
+  },
+  {
+    "path": "adapter/PlanRowBindingInspector.cs.txt",
+    "sha256": "C6D88C08DB8A95E0ACC5545B79F0BDE24E5F96B337E4924B5BAE91C5A61375B7"
+  },
+  {
+    "path": "adapter/Run-AcceptanceMatrix.ps1",
+    "sha256": "8DF132C50118AF67E49421CDBF372D30AFA6934DC6E5C839CCB145FADDC18241"
+  },
+  {
+    "path": "adapter/Test-AcceptanceInfrastructure.ps1",
+    "sha256": "F1CA81F287D9913203B802D8B95D2C28B59352005D71BD80543CAD1B0FAE3AC2"
+  },
+  {
+    "path": "commands.json",
+    "sha256": "C0D78088AEED092C8C602959F90702ACF581C4A9277B5D33336FA582E3A2CA0C"
+  },
+  {
+    "path": "git-status-before.txt",
+    "sha256": "CB0252271B23A77BDDA60D56CEF935A025ACAE1112F1EC9495E86999335A1A13"
+  },
+  {
+    "path": "infrastructure-error.txt",
+    "sha256": "DABBFD1F275CA94D562622829F5472D0749C14FECDFF19DE63217FFAD27870EE"
+  },
+  {
+    "path": "infrastructure-failure.json",
+    "sha256": "C43E5EE34A2D4318AB32DBC8E05B0E7609D04C77CAFD14C156AB9DEBDD155DFC"
+  },
+  {
+    "path": "infrastructure-tests.command.json",
+    "sha256": "74A910618328C0C913B5291A458921B45FDB394AF7629B21D8F3A0F97477ECC3"
+  },
+  {
+    "path": "infrastructure-tests.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "infrastructure-tests.stdout.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "input-snapshot-before.json",
+    "sha256": "BCF38EBD180856C65CB56EB53566C44147285343C60087941B9661DD00C0758C"
+  },
+  {
+    "path": "protected-inputs.json",
+    "sha256": "D775246813731DCAC50D3B1EC67B2CBF99215B5FAE37E13EA9F8C0D90FFDB5F9"
+  },
+  {
+    "path": "runtime.log",
+    "sha256": "50197B87153D95D1F100C40AA0800DF95AD8D1313784DC0F833127A1762A62F6"
+  }
+]

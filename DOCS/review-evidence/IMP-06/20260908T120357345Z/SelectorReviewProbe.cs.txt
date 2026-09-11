@@ -1,0 +1,45 @@
+using System.IO;
+using System.Text.Json;
+using System.Windows.Controls;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Services;
+
+internal static class ReviewProbe
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        string source = Path.Combine(args[0], "SqlXmlAnalyzer.Tests", "TestData", "deadlock_multiple_events.xdl");
+        var input = new InputRecognitionService().Load(source);
+        var selector = new ComboBox();
+        var tabs = new TabControl();
+        tabs.Items.Add(new TabItem());
+        using var sessions = new AnalysisSessionCoordinator();
+        string? callbackLabel = null;
+        var service = new XelDeadlockUiActionService(
+            new XelReader(), sessions, selector, tabs,
+            (_, label) => { callbackLabel = label; return Task.CompletedTask; });
+        selector.SelectionChanged += (_, _) => service.HandleSelectionChangedAsync().GetAwaiter().GetResult();
+        service.ShowXmlEvents(input.Deadlocks, source);
+        selector.SelectedIndex = 1;
+        // The production DocumentAnalysisUiActionService assigns this callback label
+        // to MainViewModel.CurrentDeadlockFilePath (line 193). Exercise the actual
+        // refresh routing and shared opener using the callback value.
+        var refresh = new DocumentRefreshActionService().BuildDeadlockRefresh(callbackLabel);
+        var reopened = new DocumentOpenService().OpenAsync(refresh.FilePath).GetAwaiter().GetResult();
+        Console.WriteLine(JsonSerializer.Serialize(new {
+            OriginalPath = source,
+            OriginalExists = File.Exists(source),
+            EventCount = selector.Items.Count,
+            SelectedIndex = selector.SelectedIndex,
+            CallbackLabel = callbackLabel,
+            RefreshPath = refresh.FilePath,
+            RefreshStatus = refresh.Status.ToString(),
+            RefreshedInputStatus = reopened.Status.ToString(),
+            RefreshedInputErrorCode = reopened.ErrorCode,
+            ProbeBoundary = "Real selector callback + refresh builder + file opener; displayName assignment verified in production source, full UI analysis not invoked."
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return reopened.IsSuccess ? 0 : 1;
+    }
+}

@@ -33,7 +33,8 @@ namespace SqlXmlAnalyzer.Tests.Application
                 _refactoringEngine,
                 _fileHandler,
                 _reporter,
-                NullLogger<ApplicationOrchestrator>.Instance
+                NullLogger<ApplicationOrchestrator>.Instance,
+                new SqlWritebackService(_fileHandler)
             );
         }
 
@@ -62,11 +63,11 @@ namespace SqlXmlAnalyzer.Tests.Application
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.Result.Should().Be(expectedResult);
+            result.Result.Should().Be(expectedResult with { SourceWritten = false });
             _refactoringEngine.LastSql.Should().Be("SELECT * FROM Users");
             _refactoringEngine.LastReport.Should().NotBeNull();
             _refactoringEngine.LastReport!.Issues.Should().BeEmpty();
-            _reporter.ReportedResult.Should().Be(expectedResult);
+            _reporter.ReportedResult.Should().BeSameAs(result.Result);
         }
 
         [Fact]
@@ -74,7 +75,7 @@ namespace SqlXmlAnalyzer.Tests.Application
         {
             // Arrange
             _fileHandler.Files["query.sql"] = "SELECT * FROM Users";
-            _fileHandler.Files["plan.sqlplan"] = "<xml>plan</xml>";
+            _fileHandler.Files["plan.sqlplan"] = InputRecognitionTests.Fixture("plan_no_relop.sqlplan");
 
             var fakeIssue = new FakeAnalysisIssue();
             var expectedReport = new AnalysisReport(new List<IAnalysisIssue> { fakeIssue });
@@ -88,12 +89,14 @@ namespace SqlXmlAnalyzer.Tests.Application
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            _analysisEngine.LastXmlContent.Should().Be("<xml>plan</xml>");
-            _refactoringEngine.LastReport.Should().Be(expectedReport);
+            _analysisEngine.LastXmlContent.Should().Be(SafeXmlHelper.ParseSafe(_fileHandler.Files["plan.sqlplan"]).ToString());
+            _refactoringEngine.LastReport!.Issues.Should().BeSameAs(expectedReport.Issues);
+            _refactoringEngine.LastReport.InputEnvelope!.SourceName.Should().Be("plan.sqlplan");
+            _refactoringEngine.LastReport.InputEnvelope.SourceHash.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
-        public void Execute_WithMissingPlanFile_ShouldLogWarningAndProceedWithEmptyReport()
+        public void Execute_WithMissingExplicitPlan_ShouldFailBeforeRefactoring()
         {
             // Arrange
             _fileHandler.Files["query.sql"] = "SELECT * FROM Users";
@@ -102,14 +105,16 @@ namespace SqlXmlAnalyzer.Tests.Application
             var result = _orchestrator.Execute("query.sql", "missing.sqlplan");
 
             // Assert
-            result.IsSuccess.Should().BeTrue();
-            result.Warnings.Should().Contain(w => w.Contains("XML plan file not found"));
-            _refactoringEngine.LastReport.Should().NotBeNull();
-            _refactoringEngine.LastReport!.Issues.Should().BeEmpty();
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessage.Should().Contain("INPUT_READ_ERROR");
+            _refactoringEngine.LastReport.Should().BeNull();
+            _refactoringEngine.LastSql.Should().BeNull();
+            _fileHandler.Files.Should().ContainSingle();
+            _fileHandler.Files["query.sql"].Should().Be("SELECT * FROM Users");
         }
 
         [Fact]
-        public void Execute_WhenSuccessfulAndNotDryRun_ShouldWriteBackToFile()
+        public void Execute_WhenSuccessfulAndNotDryRun_ShouldPreserveFileUntilReviewedApply()
         {
             // Arrange
             _fileHandler.Files["query.sql"] = "SELECT * FROM Users";
@@ -121,7 +126,8 @@ namespace SqlXmlAnalyzer.Tests.Application
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            _fileHandler.Files["query.sql"].Should().Be("SELECT * FROM Users WHERE 1=1");
+            _fileHandler.Files["query.sql"].Should().Be("SELECT * FROM Users");
+            result.Writeback.Should().BeNull();
         }
 
         [Fact]
@@ -218,16 +224,34 @@ namespace SqlXmlAnalyzer.Tests.Application
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.ErrorMessage.Should().Contain("Invalid XML execution plan");
-            result.ErrorMessage.Should().Contain("valid XML document");
-            result.ErrorException.Should().BeOfType<System.Xml.XmlException>();
+            result.ErrorMessage.Should().Contain("INPUT_MALFORMED_XML").And.NotContain("not a valid xml");
+            _analysisEngine.LastXmlContent.Should().BeNull();
+            _refactoringEngine.LastSql.Should().BeNull();
+            _fileHandler.Files.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void Execute_WhenAuxiliaryPlanOpenFails_ReturnsStableReadErrorBeforeAnalysis()
+        {
+            _fileHandler.Files["query.sql"] = "SELECT 1;";
+            _fileHandler.OpenException = new IOException("synthetic plan lock");
+            var result = _orchestrator.Execute("query.sql", "plan.sqlplan", isDryRun: true);
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessage.Should().Contain("INPUT_READ_ERROR").And.NotContain("synthetic plan lock");
+            _analysisEngine.LastXmlContent.Should().BeNull();
+            _refactoringEngine.LastSql.Should().BeNull();
+            _fileHandler.Files.Should().ContainSingle();
         }
 
         // Fakes / Stubs
-        private class FakeFileHandler : IFileHandler
+        private class FakeFileHandler : IFileHandler, ISqlWritebackFileSystem
         {
             public Dictionary<string, string> Files { get; } = new(StringComparer.OrdinalIgnoreCase);
             public Exception? ThrowException { get; set; }
+
+            public Exception? OpenException { get; set; }
+            public Stream OpenRead(string path) => OpenException != null
+                ? throw OpenException : new MemoryStream(ReadAllBytes(path));
 
             public string ReadAllText(string path)
             {
@@ -244,7 +268,35 @@ namespace SqlXmlAnalyzer.Tests.Application
 
             public bool Exists(string path)
             {
-                return Files.ContainsKey(path);
+                return Files.ContainsKey(Path.GetFileName(path));
+            }
+
+            public byte[] ReadAllBytes(string path) => System.Text.Encoding.UTF8.GetBytes(ReadAllText(Path.GetFileName(path)));
+            public byte[] ReadAllBytes(string path, int maxBytes, CancellationToken cancellationToken)
+            {
+                using var stream = new MemoryStream(ReadAllBytes(path));
+                return SqlBoundedFileReader.Read(stream, maxBytes, cancellationToken);
+            }
+            public Stream CreateNew(string path, string sourcePath)
+            {
+                string key = Path.GetFileName(path);
+                if (Files.ContainsKey(key)) throw new IOException("File already exists");
+                return new StoredStream(bytes => Files[key] = System.Text.Encoding.UTF8.GetString(bytes));
+            }
+            public void FlushToDisk(Stream stream) => stream.Flush();
+            public void Replace(string temporaryPath, string sourcePath)
+            {
+                Files[Path.GetFileName(sourcePath)] = Files[Path.GetFileName(temporaryPath)];
+                Delete(temporaryPath);
+            }
+            public void Delete(string path) => Files.Remove(Path.GetFileName(path));
+            private sealed class StoredStream(Action<byte[]> store) : MemoryStream
+            {
+                protected override void Dispose(bool disposing)
+                {
+                    if (disposing) store(ToArray());
+                    base.Dispose(disposing);
+                }
             }
         }
 

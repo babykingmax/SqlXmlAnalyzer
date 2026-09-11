@@ -1,0 +1,5 @@
+{
+  "BaselineNativePartialNoticeSkipped": false,
+  "Policy": "Baseline uses its original reader and event selection pipeline while omitting the blocking native Partial notice; after uses AnalyzeFileAsync and persistent Partial state. App startup auto-open is suppressed in both hosts.",
+  "ProcessExitCode": 0
+}

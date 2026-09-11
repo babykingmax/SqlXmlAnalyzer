@@ -1,0 +1,523 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.AccessControl;
+using System.Text;
+using System.Threading;
+using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Models;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Models;
+
+namespace SqlXmlAnalyzer.Tests.Application;
+
+public sealed class SqlWritebackServiceTests : IDisposable
+{
+    private readonly string _directory = Path.Combine(Path.GetTempPath(), $"SqlXmlAnalyzer-WritebackTests-{Guid.NewGuid():N}");
+    private readonly string _source;
+    private readonly byte[] _original = new UTF8Encoding(true).GetPreamble().Concat(Encoding.UTF8.GetBytes("SELECT N'原文';\r\n")).ToArray();
+    private readonly FaultFiles _files = new();
+
+    public SqlWritebackServiceTests()
+    {
+        Directory.CreateDirectory(_directory);
+        _source = Path.Combine(_directory, "query.sql");
+        File.WriteAllBytes(_source, _original);
+    }
+
+    [Theory]
+    [InlineData("BackupCreate", SqlWritebackStage.CreateBackup, false)]
+    [InlineData("BackupWrite", SqlWritebackStage.CreateBackup, false)]
+    [InlineData("BackupFlush", SqlWritebackStage.CreateBackup, false)]
+    [InlineData("BackupRead", SqlWritebackStage.ValidateBackup, false)]
+    [InlineData("TemporaryCreate", SqlWritebackStage.WriteTemporary, true)]
+    [InlineData("TemporaryWrite", SqlWritebackStage.WriteTemporary, true)]
+    [InlineData("TemporaryFlush", SqlWritebackStage.WriteTemporary, true)]
+    [InlineData("TemporaryRead", SqlWritebackStage.ValidateTemporary, true)]
+    [InlineData("Replace", SqlWritebackStage.Replace, true)]
+    public void WriteBack_WhenIoFails_PreservesSourceBytesAndReportsStage(string failure, SqlWritebackStage stage, bool hasBackup)
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = failure;
+
+        var result = service.WriteBack(snapshot, "SELECT N'候选';");
+
+        result.IsSuccess.Should().BeFalse();
+        result.SourceWritten.Should().BeFalse();
+        result.Stage.Should().Be(stage);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+        Directory.GetFiles(_directory, "*.tmp").Should().BeEmpty();
+        if (hasBackup)
+        {
+            result.BackupPath.Should().NotBeNull();
+            File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+            result.ErrorMessage.Should().Contain(result.BackupPath!).And.Contain(snapshot.Sha256);
+        }
+        else Directory.GetFiles(_directory, "*.bak").Should().BeEmpty();
+    }
+
+    [Fact]
+    public void WriteBack_WhenBackupAccessIsDenied_DoesNotAttemptReplacement()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = "BackupDenied";
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.ErrorException.Should().BeOfType<UnauthorizedAccessException>();
+        _files.ReplaceCalls.Should().Be(0);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenSourceChangedBeforeBackup_PreservesExternalBytes()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        byte[] external = Encoding.UTF8.GetBytes("SELECT 'external';");
+        File.WriteAllBytes(_source, external);
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("外部修改");
+        File.ReadAllBytes(_source).Should().Equal(external);
+        Directory.GetFiles(_directory).Should().ContainSingle();
+    }
+
+    [Fact]
+    public void WriteBack_WhenSourceChangesDuringTemporaryWrite_RechecksBeforeCommit()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        byte[] external = Encoding.UTF8.GetBytes("SELECT 'new external';");
+        _files.AfterFlush = path => { if (path.EndsWith(".tmp")) File.WriteAllBytes(_source, external); };
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.Stage.Should().Be(SqlWritebackStage.ValidateSource);
+        _files.ReplaceCalls.Should().Be(0);
+        File.ReadAllBytes(_source).Should().Equal(external);
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+    }
+
+    [Theory]
+    [InlineData("BackupCorrupt", SqlWritebackStage.ValidateBackup)]
+    [InlineData("TemporaryCorrupt", SqlWritebackStage.ValidateTemporary)]
+    public void WriteBack_WhenStoredBytesDiffer_RejectsTheCorruptFile(string failure, SqlWritebackStage stage)
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = failure;
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.Stage.Should().Be(stage);
+        _files.ReplaceCalls.Should().Be(0);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenSourceIsLocked_LeavesOriginalAndVerifiedBackup()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        using var occupied = new FileStream(_source, FileMode.Open, FileAccess.Read, FileShare.Read);
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.Stage.Should().Be(SqlWritebackStage.Replace);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenSourceIsReadOnly_DoesNotRemoveItsProtection()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        File.SetAttributes(_source, FileAttributes.ReadOnly);
+        try
+        {
+            var result = service.WriteBack(snapshot, "SELECT 2;");
+            result.IsSuccess.Should().BeFalse();
+            File.ReadAllBytes(_source).Should().Equal(_original);
+            File.GetAttributes(_source).Should().HaveFlag(FileAttributes.ReadOnly);
+        }
+        finally { File.SetAttributes(_source, FileAttributes.Normal); }
+    }
+
+    [Fact]
+    public void WriteBack_WhenCanceledBeforeStarting_CreatesNoArtifacts()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        using var canceled = new CancellationTokenSource();
+        canceled.Cancel();
+        var result = service.WriteBack(snapshot, "SELECT 2;", canceled.Token);
+        result.IsCanceled.Should().BeTrue();
+        result.SourceWritten.Should().BeFalse();
+        Directory.GetFiles(_directory).Should().ContainSingle();
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    [Theory]
+    [InlineData(".bak")]
+    [InlineData(".tmp")]
+    public void WriteBack_WhenCanceledDuringPreparation_NeverCommits(string extension)
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        using var cancellation = new CancellationTokenSource();
+        _files.AfterFlush = path => { if (path.EndsWith(extension)) cancellation.Cancel(); };
+        var result = service.WriteBack(snapshot, "SELECT 2;", cancellation.Token);
+        result.IsCanceled.Should().BeTrue();
+        _files.ReplaceCalls.Should().Be(0);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+        Directory.GetFiles(_directory, "*.tmp").Should().BeEmpty();
+    }
+
+    [Fact]
+    public void WriteBack_WhenCanceledAfterCommit_ReportsThatTheFileWasWritten()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        using var cancellation = new CancellationTokenSource();
+        _files.AfterReplace = cancellation.Cancel;
+        var result = service.WriteBack(snapshot, "SELECT 2;", cancellation.Token);
+        result.IsSuccess.Should().BeTrue();
+        result.SourceWritten.Should().BeTrue();
+        result.IsCanceled.Should().BeFalse();
+        File.ReadAllText(_source).Should().Be("SELECT 2;");
+    }
+
+    [Fact]
+    public void WriteBack_WhenReplaceThrowsAfterCommit_ReportsTheObservedCandidateAndPreservesBackup()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = "ReplaceAfterCommit";
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.SourceWritten.Should().BeTrue();
+        result.CommitOutcomeUnknown.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("已包含候选 SQL");
+        File.ReadAllText(_source).Should().Be("SELECT 2;");
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenCommitCannotBeVerified_ReportsUnknownAndKeepsRecoveryEvidence()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = "ReplaceUncertain";
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.CommitOutcomeUnknown.Should().BeTrue();
+        result.ErrorMessage.Should().Contain("无法确认提交结果").And.NotContain("未覆盖当前源文件");
+        result.BackupVerified.Should().BeTrue();
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenReplaceFailsWithNewExternalContent_DoesNotRollbackOverIt()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = "ReplaceExternalChange";
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.CommitOutcomeUnknown.Should().BeTrue();
+        File.ReadAllText(_source).Should().Be("SELECT 'external commit';");
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenBackupNameCollides_PreservesExistingBackupAndRetries()
+    {
+        Guid collision = Guid.NewGuid();
+        string existing = _source + $".SqlXmlAnalyzer-{collision:N}.bak";
+        File.WriteAllText(existing, "older backup");
+        var ids = new Queue<Guid>(new[] { collision, Guid.NewGuid(), Guid.NewGuid() });
+        var service = new SqlWritebackService(_files, ids.Dequeue);
+        var result = service.WriteBack(service.ReadSnapshot(_source), "SELECT 2;");
+        result.IsSuccess.Should().BeTrue();
+        result.BackupPath.Should().NotBe(existing);
+        File.ReadAllText(existing).Should().Be("older backup");
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenAllBackupNamesCollide_StopsWithoutDeletingAnotherFilesBackup()
+    {
+        Guid collision = Guid.NewGuid();
+        string existing = _source + $".SqlXmlAnalyzer-{collision:N}.bak";
+        File.WriteAllText(existing, "older backup");
+        var service = new SqlWritebackService(_files, () => collision);
+        var result = service.WriteBack(service.ReadSnapshot(_source), "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        File.ReadAllText(existing).Should().Be("older backup");
+        File.ReadAllBytes(_source).Should().Equal(_original);
+        _files.ReplaceCalls.Should().Be(0);
+    }
+
+    [Fact]
+    public void WriteBack_WhenCleanupFails_KeepsPrimaryFailureAndReportsResidualPath()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = "Replace";
+        _files.FailCleanup = true;
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.Stage.Should().Be(SqlWritebackStage.Replace);
+        result.ErrorException!.Message.Should().Contain("Synthetic Replace");
+        result.TemporaryPath.Should().NotBeNull();
+        File.Exists(result.TemporaryPath).Should().BeTrue();
+        result.Warnings.Should().Contain(w => w.Contains(result.TemporaryPath!));
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void WriteBack_WhenInvalidBackupCannotBeRemoved_DoesNotAdvertiseItAsRecoverable()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        _files.Failure = "BackupCorrupt";
+        _files.FailCleanup = true;
+        var result = service.WriteBack(snapshot, "SELECT 2;");
+        result.IsSuccess.Should().BeFalse();
+        result.BackupVerified.Should().BeFalse();
+        result.BackupPath.Should().NotBeNull();
+        result.Warnings.Should().Contain(w => w.Contains("不可用于恢复"));
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    public static IEnumerable<object[]> Encodings()
+    {
+        foreach (Encoding encoding in new Encoding[] { new UTF8Encoding(false), new UTF8Encoding(true), Encoding.Unicode, Encoding.BigEndianUnicode, Encoding.UTF32, new UTF32Encoding(true, true) })
+            yield return new object[] { encoding };
+    }
+
+    [Theory]
+    [MemberData(nameof(Encodings))]
+    public void WriteBack_WhenSuccessful_PreservesEncodingBomAndExactBackup(Encoding encoding)
+    {
+        byte[] original = encoding.GetPreamble().Concat(encoding.GetBytes("SELECT N'原始';\r\n")).ToArray();
+        File.WriteAllBytes(_source, original);
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        snapshot.Text.Should().Be("SELECT N'原始';\r\n");
+        var result = service.WriteBack(snapshot, "SELECT N'更新';\n");
+        result.IsSuccess.Should().BeTrue();
+        result.SourceWritten.Should().BeTrue();
+        File.ReadAllBytes(_source).Should().Equal(encoding.GetPreamble().Concat(encoding.GetBytes("SELECT N'更新';\n")));
+        File.ReadAllBytes(result.BackupPath!).Should().Equal(original);
+        result.SourceSha256.Should().Be(SqlFileSnapshot.Hash(original));
+        Directory.GetFiles(_directory, "*.tmp").Should().BeEmpty();
+    }
+
+    [Fact]
+    public void WriteBack_WhenTextUnchanged_DoesNotCreateBackupOrReplace()
+    {
+        var service = new SqlWritebackService(_files);
+        var snapshot = service.ReadSnapshot(_source);
+        var result = service.WriteBack(snapshot, snapshot.Text);
+        result.IsSuccess.Should().BeTrue();
+        result.SourceWritten.Should().BeFalse();
+        _files.ReplaceCalls.Should().Be(0);
+        Directory.GetFiles(_directory).Should().ContainSingle();
+    }
+
+    [Fact]
+    public void ReadSnapshot_WhenBytesAreNotValidUtf8_RefusesLossyWriteback()
+    {
+        byte[] undecodable = { 0x53, 0x45, 0xFF };
+        File.WriteAllBytes(_source, undecodable);
+        var read = () => new SqlWritebackService(_files).ReadSnapshot(_source);
+        read.Should().Throw<DecoderFallbackException>();
+        File.ReadAllBytes(_source).Should().Equal(undecodable);
+    }
+
+    [Fact]
+    public void WriteBack_OnWindows_PreservesTheSourceDaclOnOutputAndBackup()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var security = new FileInfo(_source).GetAccessControl(AccessControlSections.Access);
+        security.SetAccessRuleProtection(isProtected: true, preserveInheritance: true);
+        new FileInfo(_source).SetAccessControl(security);
+        var expected = new FileInfo(_source).GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
+        static object[] DescribeRules(FileSecurity descriptor) => descriptor
+            .GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier))
+            .Cast<FileSystemAccessRule>()
+            .Select(rule => (object)new { Sid = rule.IdentityReference.Value, rule.AccessControlType, rule.FileSystemRights })
+            .ToArray();
+        var service = new SqlWritebackService(_files);
+        var result = service.WriteBack(service.ReadSnapshot(_source), "SELECT 2;");
+        result.IsSuccess.Should().BeTrue();
+        foreach (string path in new[] { _source, result.BackupPath! })
+        {
+            var actual = new FileInfo(path).GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner);
+            actual.AreAccessRulesProtected.Should().Be(expected.AreAccessRulesProtected);
+            DescribeRules(actual).Should().BeEquivalentTo(DescribeRules(expected));
+            actual.GetOwner(typeof(System.Security.Principal.SecurityIdentifier)).Should()
+                .Be(expected.GetOwner(typeof(System.Security.Principal.SecurityIdentifier)));
+        }
+    }
+
+    [Fact]
+    public void Execute_WhenBackupFails_ReportsFailureWithoutReportingSuccess()
+    {
+        _files.Failure = "BackupCreate";
+        var reporter = new Reporter();
+        var result = CreateOrchestrator(reporter).Execute(_source);
+        result.IsSuccess.Should().BeFalse();
+        result.Writeback!.Stage.Should().Be(SqlWritebackStage.CreateBackup);
+        result.ErrorMessage.Should().Contain("CreateBackup");
+        reporter.Calls.Should().Be(0);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    [Fact]
+    public void Execute_WhenDryRun_CreatesNoWritebackArtifacts()
+    {
+        _files.Failure = "BackupCreate";
+        var result = CreateOrchestrator(new Reporter()).Execute(_source, isDryRun: true);
+        result.IsSuccess.Should().BeTrue();
+        result.Writeback.Should().BeNull();
+        Directory.GetFiles(_directory).Should().ContainSingle();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Execute_WhenReporterThrowsAfterCommit_DoesNotClaimTheFileWasUnchanged(bool ioError)
+    {
+        var reporter = new Reporter { Error = ioError ? new IOException("Report write failed") : new InvalidOperationException("Report failed") };
+        var result = CreateOrchestrator(reporter).Execute(_source);
+        result.IsSuccess.Should().BeFalse();
+        result.Writeback!.SourceWritten.Should().BeTrue();
+        result.ErrorMessage.Should().Contain("SQL 已写回").And.Contain(result.Writeback.BackupPath!);
+        File.ReadAllText(_source).Should().Be("SELECT 2;");
+    }
+
+    [Fact]
+    public void Execute_WhenCanceled_DoesNotReportSuccessOrWriteFiles()
+    {
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+        var reporter = new Reporter();
+        var result = CreateOrchestrator(reporter).Execute(_source, cancellationToken: cancellation.Token);
+        result.IsSuccess.Should().BeFalse();
+        result.ErrorException.Should().BeOfType<OperationCanceledException>();
+        reporter.Calls.Should().Be(0);
+        File.ReadAllBytes(_source).Should().Equal(_original);
+    }
+
+    private ApplicationOrchestrator CreateOrchestrator(Reporter reporter) => new(
+        new EmptyAnalysis(), new FixedRewrite(), new PhysicalFileHandler(), reporter,
+        NullLogger<ApplicationOrchestrator>.Instance, new SqlWritebackService(_files));
+
+    private sealed class EmptyAnalysis : IAnalysisEngine
+    {
+        public AnalysisReport Analyze(string xmlContent) => new(Array.Empty<IAnalysisIssue>());
+    }
+    private sealed class FixedRewrite : IRefactoringEngine
+    {
+        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
+            => new("SELECT 2;", true, Array.Empty<string>(), new RefactorContext(sql));
+    }
+    private sealed class Reporter : IResultReporter
+    {
+        public int Calls { get; private set; }
+        public Exception? Error { get; init; }
+        public void Report(RefactorResult result) => Report(result, false, null);
+        public void Report(RefactorResult result, bool isDryRun, string? outputPath)
+        {
+            Calls++;
+            if (Error != null) throw Error;
+        }
+    }
+
+    private sealed class FaultFiles : ISqlWritebackFileSystem
+    {
+        private readonly PhysicalSqlWritebackFileSystem _physical = new();
+        public string Failure { get; set; } = "";
+        public bool FailCleanup { get; set; }
+        public int ReplaceCalls { get; private set; }
+        public Action<string>? AfterFlush { get; set; }
+        public Action? AfterReplace { get; set; }
+        private static string Kind(string path) => path.EndsWith(".bak") ? "Backup" : path.EndsWith(".tmp") ? "Temporary" : "Source";
+        public byte[] ReadAllBytes(string path)
+        {
+            if (Failure == "ReplaceUncertain" && ReplaceCalls > 0 && Kind(path) == "Source")
+                throw new IOException("Synthetic disconnected storage");
+            if (Failure == Kind(path) + "Read") throw new IOException("Synthetic " + Failure);
+            if (Failure == Kind(path) + "Corrupt") File.WriteAllBytes(path, new byte[] { 1, 2, 3 });
+            return _physical.ReadAllBytes(path);
+        }
+        public Stream CreateNew(string path, string sourcePath)
+        {
+            if (Failure == Kind(path) + "Create") throw new IOException("Synthetic " + Failure);
+            if (Failure == Kind(path) + "Denied") throw new UnauthorizedAccessException("Synthetic access denied");
+            return new FaultStream(_physical.CreateNew(path, sourcePath), path, this);
+        }
+        public void FlushToDisk(Stream stream)
+        {
+            var tagged = (FaultStream)stream;
+            if (Failure == Kind(tagged.Path) + "Flush") throw new IOException("Synthetic " + Failure);
+            _physical.FlushToDisk(tagged.Inner);
+            AfterFlush?.Invoke(tagged.Path);
+        }
+        public void Replace(string temporaryPath, string sourcePath)
+        {
+            ReplaceCalls++;
+            if (Failure == "Replace") throw new IOException("Synthetic Replace failure");
+            if (Failure == "ReplaceExternalChange")
+            {
+                File.WriteAllText(sourcePath, "SELECT 'external commit';");
+                throw new IOException("Synthetic concurrent replacement");
+            }
+            _physical.Replace(temporaryPath, sourcePath);
+            if (Failure is "ReplaceAfterCommit" or "ReplaceUncertain") throw new IOException("Synthetic lost commit acknowledgement");
+            AfterReplace?.Invoke();
+        }
+        public void Delete(string path)
+        {
+            if (FailCleanup) throw new IOException("Synthetic cleanup failure");
+            _physical.Delete(path);
+        }
+        private sealed class FaultStream(Stream inner, string path, FaultFiles owner) : Stream
+        {
+            public Stream Inner => inner;
+            public string Path => path;
+            public override bool CanRead => inner.CanRead;
+            public override bool CanSeek => inner.CanSeek;
+            public override bool CanWrite => inner.CanWrite;
+            public override long Length => inner.Length;
+            public override long Position { get => inner.Position; set => inner.Position = value; }
+            public override void Flush() => inner.Flush();
+            public override int Read(byte[] buffer, int offset, int count) => inner.Read(buffer, offset, count);
+            public override long Seek(long offset, SeekOrigin origin) => inner.Seek(offset, origin);
+            public override void SetLength(long value) => inner.SetLength(value);
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                if (owner.Failure == Kind(path) + "Write")
+                {
+                    inner.Write(buffer, offset, Math.Min(1, count)); // Leave a real partial file.
+                    throw new IOException("Synthetic " + owner.Failure);
+                }
+                inner.Write(buffer, offset, count);
+            }
+            protected override void Dispose(bool disposing) { if (disposing) inner.Dispose(); base.Dispose(disposing); }
+        }
+    }
+
+    public void Dispose()
+    {
+        string full = Path.GetFullPath(_directory);
+        string prefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer-WritebackTests-");
+        if (!full.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Unexpected test cleanup path");
+        Directory.Delete(full, recursive: true);
+    }
+}

@@ -32,9 +32,9 @@ namespace SqlXmlAnalyzer
                 : new Core.Services.PlanGraphConnectionNodeInfo(
                     node.PhysicalOp,
                     node.EstRowsNum,
-                    node.ActualRows,
+                    node.HasActualRows,
                     node.ActualRowsNum,
-                    node.AvgRowSizeNum);
+                    node.AvgRowSizeNum) { Facts = node.Facts };
         }
 
         private static Core.Services.PlanGraphConnectionMetricKind ToMetricKind(

@@ -104,6 +104,8 @@ namespace SqlXmlAnalyzer.Tests
         {
             private readonly Dictionary<string, string> _files = new();
 
+            public System.IO.Stream OpenRead(string path) => new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(ReadAllText(path)));
+
             public string ReadAllText(string path)
             {
                 return _files[path];

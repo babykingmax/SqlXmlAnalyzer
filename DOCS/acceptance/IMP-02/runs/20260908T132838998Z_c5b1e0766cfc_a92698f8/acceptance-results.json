@@ -1,0 +1,462 @@
+[
+  {
+    "caseId": "AC-R01-01",
+    "reviewId": "R01",
+    "priority": "P1",
+    "status": "ProbeConditionMet",
+    "reason": "Minimum synthetic XML redaction and fail-closed checks only; this does not certify arbitrary XML or raw report formats.",
+    "expected": "敏感标记全部移除；原 XML 字节/结构保持；无法处理的自由文本和未知节点明确列为未覆盖，不能宣称完整脱敏。",
+    "observed": {
+      "status": "Ready",
+      "CanExport": true,
+      "literalRetained": false,
+      "serverRetained": false,
+      "aliasRetained": false,
+      "tableMasked": true,
+      "noSentinel": true,
+      "sourceUnchanged": true,
+      "payloadWellFormed": true,
+      "unsupportedBlocked": true,
+      "unsupportedHasNoPayload": true,
+      "unsupportedSummarySafe": true
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-05 已限制未覆盖的脱敏共享输出；普通报告、复制、图像及会话明确未脱敏。实际 WPF 交互、SSMS 兼容、任意/未来 XML 和统一脱敏报告预览仍待 IMP-22 等验收。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R02-01",
+    "reviewId": "R02",
+    "priority": "P1",
+    "status": "ProbeConditionMet",
+    "reason": "Successful execution without applied changes preserves the minimum condition; this does not prove SQL equivalence.",
+    "expected": "默认不移除无法证明等价的 LTRIM/TRIM；候选未选中，前提/警告穿透 GUI/CLI；支持的候选须验证结果与副作用。",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "SELECT * FROM dbo.Users WHERE LTRIM(UserName) = 'admin';",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 0,
+      "warnings": [
+        "[REF_RULE_103_TRIM] 已跳过：保留 LTRIM/RTRIM/TRIM；移除函数可能改变包含前导空格等数据的比较结果。 验证前提：列类型、排序规则、空格/字符集合、NULL、比较运算和实际数据域的等价性尚未证明。"
+      ],
+      "safetySkips": [
+        {
+          "RuleId": "REF_RULE_103_TRIM",
+          "ReasonCode": "UnprovenTrimEquivalence",
+          "Reason": "保留 LTRIM/RTRIM/TRIM；移除函数可能改变包含前导空格等数据的比较结果。",
+          "RequiredEvidence": "列类型、排序规则、空格/字符集合、NULL、比较运算和实际数据域的等价性尚未证明。"
+        }
+      ],
+      "outcome": "NoChanges"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-04 默认保留风险写法并传递 SafetySkips、验证前提和结果状态。正式测试覆盖反例、异常、GUI 服务和 CLI；SQL Server 等价性与实际 WPF 审核应用仍待 IMP-18/19/21 验收。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R03-01",
+    "reviewId": "R03",
+    "priority": "P1",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "返回失败且原文件不写入；备份是写回前置；外部修改、替换失败或取消也不能破坏原字节。",
+    "observed": {
+      "IsSuccess": false,
+      "SourceWritten": false,
+      "BackupAttempted": true,
+      "Warnings": [],
+      "failureStage": "CreateBackup",
+      "ErrorMessage": "SQL 写回失败（CreateBackup），未覆盖当前源文件：Synthetic backup failure 未生成可验证备份。"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-03 已增加独立写回服务、文件故障测试与 CLI 失败验证；真实 GUI 应用入口的操作闭环仍归 IMP-19/21。最小探针通过不自动关闭整个 R03。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R04-01",
+    "reviewId": "R04",
+    "priority": "P1",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "明确无效/不支持，CLI 非零退出，不得 Passed/零问题健康；GUI、scan 与 refactor 辅助计划入口一致。",
+    "observed": {
+      "unrelatedXmlIssues": 1,
+      "IsSuccess": false,
+      "inputStatus": "Unrecognized",
+      "InputErrorCode": "INPUT_UNRELATED_XML"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-06 已补充一致性与 CLI 测试；审查后新增深层命名空间、坏字节和跨入口 UTF-8/16/32 编码回归，无 RelOp/前缀正向夹具经微软 XSD 验证。完整读取能力契约仍待 IMP-09。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R05-01",
+    "reviewId": "R05",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "所有支持包装形式分类为死锁并可选择每个事件；保留事件归属，不静默只取首个。",
+    "observed": {
+      "openKind": "DeadlockXml",
+      "parserAccepts": true,
+      "eventCount": 2,
+      "unselectedMultipleRejected": true,
+      "secondEventParses": true
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-06 已支持集合和事件选择，并补充第一/第二事件选择后的真实源文件刷新回归；混合或损坏集合整份拒绝，Partial 和完整捕获上下文仍待 IMP-09/20。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R06-01",
+    "reviewId": "R06",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "读取 7，并明确标准字段与兼容别名优先顺序；缺失与真实 0 分开。",
+    "observed": {
+      "xmlPriority": 7,
+      "parsedPriority": "7"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-07 当前字段与绑定已实现，真实 WPF 表格/提示验证见 DOCS/implementation/IMP-07；完整证据模型及报告出口仍待 IMP-11/20/22。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R07-01",
+    "reviewId": "R07",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "不确认为 SERIALIZABLE 范围锁死锁；范围锁结论有实际模式证据，其他原因作为假设。",
+    "observed": {
+      "actualLockModes": "S / X; no Range mode",
+      "patterns": [
+        "[sp_BlitzLock 诊断] 细粒度锁链与资源冲突轨迹 (Lock Chain Details)"
+      ]
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "本探针按诊断文字识别最低限度错误；证据模型迁移后应断言结构化类型和证据。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R08-01",
+    "reviewId": "R08",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "a/b/c 全部为循环成员；主图和推演一致，进程/资源输入重排不改变成员集合。",
+    "observed": {
+      "expectedCycleNodes": [
+        "a",
+        "b",
+        "c"
+      ],
+      "graphContainsC": true,
+      "timelineContainsC": false
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "现有简单环测试不足；当前探针只核对 c，扩展断言必须比较完整集合。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R09-01",
+    "reviewId": "R09",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "总输出 16000 与估算匹配，不因 worker 次数相加产生 16 倍误报；RULE030 与 RULE004 使用明确且一致口径。",
+    "observed": {
+      "rowMismatch": null,
+      "cardinalityError": "🚨 基数估计偏离 Node 0 (Index Scan): 预估单次行数 16000，实际单次 1000 (偏差达 16.0 倍)。"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "需要完整线程夹具；真实并行/循环计划仍待采集，最小 XML 不是 SQL Server 实际计划证明。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R10-01",
+    "reviewId": "R10",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "提取本算子残差谓词；RULE034 输出相应证据并与详情一致；不能读取子算子谓词充数。",
+    "observed": {
+      "extractedResidual": "",
+      "ruleHit": null,
+      "uiResidual": [
+        "[T].[V]=(2)"
+      ]
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "当前 UI 能读到并不意味着规则能读到；要同时断言规则与提取器。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R11-01",
+    "reviewId": "R11",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "模型与视图为 Batch/true/true；输出 100、读取 1000 分开；缺失属性为未知或注明推导。",
+    "observed": {
+      "ExecutionMode": "Batch",
+      "IsParallel": true,
+      "Ordered": "True",
+      "ActualRows": "100",
+      "ActualRowsRead": "1,000"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-07 当前字段与绑定已实现，真实 WPF 表格/提示验证见 DOCS/implementation/IMP-07；完整证据模型及报告出口仍待 IMP-11/20/22。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R12-01",
+    "reviewId": "R12",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "模拟结果和排序在容差内一致；不固定期望为当前某个百分比；自身/子树成本不重复，假设可见。",
+    "observed": {
+      "lowThenHigh": 100,
+      "highThenLow": 65
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "本项断言顺序不变性，不能将当前 65 或 100 作为正确常量。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R13-01",
+    "reviewId": "R13",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "EscapeName 保持 [Order.Detail] 为一个名称；多段对象用独立 API 组装，生成 DDL 操作正确对象。",
+    "observed": {
+      "input": "[Order.Detail]",
+      "escaped": "[Order].[Detail]"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "现有建议提取测试不证明 DDL 引用规则；实际执行环境待准备。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R14-01",
+    "reviewId": "R14",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "依据完整对象和语句身份分别关联；未知 DB/schema 时不猜测第一条，不按表名静默合并。",
+    "observed": {
+      "nodeSchemas": [
+        "sales",
+        "audit"
+      ],
+      "matched": [
+        "sales",
+        "sales"
+      ]
+    },
+    "adapterRequiresMigration": true,
+    "limitations": "旧探针节点只提供 TableName，缺 schema；当前误配可观察，完整验收必须在 IMP-10 后升级适配器。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R15-01",
+    "reviewId": "R15",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "B 显示未知，Elapsed/Logical reads 不产生数值差或改善率；不能把缺失变为 0。",
+    "observed": {
+      "estimateVsActual": [
+        {
+          "Label": "Elapsed",
+          "Value": null,
+          "Delta": null
+        },
+        {
+          "Label": "Logical reads",
+          "Value": null,
+          "Delta": null
+        }
+      ]
+    },
+    "adapterRequiresMigration": true,
+    "limitations": "当前模型用 double 的默认 0；升级可空/能力状态后需升级探针适配。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R16-01",
+    "reviewId": "R16",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "能选中/匹配第二条并显示其变化，未匹配项可见；不能只返回首条相同成本。",
+    "observed": {
+      "statement2CostA": 2,
+      "statement2CostB": 999,
+      "comparedCostA": 1,
+      "comparedCostB": 1
+    },
+    "adapterRequiresMigration": true,
+    "limitations": "旧 BuildComparison 无语句选择参数；本轮记录探针未能定位变化，完整正确值须新接口后断言。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R17-01",
+    "reviewId": "R17",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "父节点本地详情不归入 ChildTable/ChildFilter；子树汇总独立标识。",
+    "observed": {
+      "parentTable": "ChildTable",
+      "parentPredicates": [
+        "ChildFilter"
+      ]
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "现有单算子谓词测试不覆盖作用域越界。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R18-01",
+    "reviewId": "R18",
+    "priority": "P2",
+    "status": "NotMet",
+    "reason": null,
+    "expected": "同一逻辑环只计 1 次，旋转/闭合重复节点不增加数量；不同资源边仍可区分。",
+    "observed": {
+      "simpleTwoProcessCycleCount": 2,
+      "expectedUniqueCycleCount": 1
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "不能简单排序所有节点后丢掉资源身份；本探针仅覆盖二节点基本环。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R19-01",
+    "reviewId": "R19",
+    "priority": "P1",
+    "status": "ProbeConditionMet",
+    "reason": "Successful execution without applied changes preserves the minimum condition; this does not prove SQL equivalence.",
+    "expected": "无事务等价证明时默认不转临时表；候选与风险可见；实际 SQL Server 验证结果和副作用。",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "DECLARE @T TABLE (id int); BEGIN TRANSACTION; INSERT INTO @T VALUES (1); ROLLBACK TRANSACTION; SELECT COUNT(*) FROM @T;",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 0,
+      "warnings": [
+        "[REF_RULE_002_TABLE_VAR] 已跳过：保留表变量；临时表的事务回滚、作用域及同名对象行为可能不同。 验证前提：须验证事务/回滚、过程和动态 SQL 作用域、并发会话及既有同名临时表；禁止自动创建或删除可能属于其他代码的临时表。"
+      ],
+      "safetySkips": [
+        {
+          "RuleId": "REF_RULE_002_TABLE_VAR",
+          "ReasonCode": "UnprovenTableVariableEquivalence",
+          "Reason": "保留表变量；临时表的事务回滚、作用域及同名对象行为可能不同。",
+          "RequiredEvidence": "须验证事务/回滚、过程和动态 SQL 作用域、并发会话及既有同名临时表；禁止自动创建或删除可能属于其他代码的临时表。"
+        }
+      ],
+      "outcome": "NoChanges"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-04 默认保留风险写法并传递 SafetySkips、验证前提和结果状态。正式测试覆盖反例、异常、GUI 服务和 CLI；SQL Server 等价性与实际 WPF 审核应用仍待 IMP-18/19/21 验收。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R20-01",
+    "reviewId": "R20",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": "Successful execution without applied changes preserves the minimum condition; this does not prove SQL equivalence.",
+    "expected": "保留 @T 或为工具对象分配不冲突名称；不重复创建 #T，不删除原有 #T；作用域正确。",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "CREATE TABLE #T (id int); DECLARE @T TABLE (id int); SELECT * FROM @T;",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 0,
+      "warnings": [
+        "[REF_RULE_002_TABLE_VAR] 已跳过：保留表变量；临时表的事务回滚、作用域及同名对象行为可能不同。 验证前提：须验证事务/回滚、过程和动态 SQL 作用域、并发会话及既有同名临时表；禁止自动创建或删除可能属于其他代码的临时表。"
+      ],
+      "safetySkips": [
+        {
+          "RuleId": "REF_RULE_002_TABLE_VAR",
+          "ReasonCode": "UnprovenTableVariableEquivalence",
+          "Reason": "保留表变量；临时表的事务回滚、作用域及同名对象行为可能不同。",
+          "RequiredEvidence": "须验证事务/回滚、过程和动态 SQL 作用域、并发会话及既有同名临时表；禁止自动创建或删除可能属于其他代码的临时表。"
+        }
+      ],
+      "outcome": "NoChanges"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-04 默认保留风险写法并传递 SafetySkips、验证前提和结果状态。正式测试覆盖反例、异常、GUI 服务和 CLI；SQL Server 等价性与实际 WPF 审核应用仍待 IMP-18/19/21 验收。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R21-01",
+    "reviewId": "R21",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "实际输出列绑定 ActualRows；另列读取行且单位明确；图/表/详情/导出一致，缺失 N/A。",
+    "observed": {
+      "rowBindings": [
+        {
+          "Path": "Views/PlanWorkspaceView.xaml",
+          "OutputColumns": [
+            {
+              "Header": "实际输出行（行）",
+              "BindingPath": "ActualRows"
+            }
+          ],
+          "ReadColumns": [
+            {
+              "Header": "实际读取行（行）",
+              "BindingPath": "ActualRowsRead"
+            }
+          ]
+        },
+        {
+          "Path": "Views/PlanView.xaml",
+          "OutputColumns": [
+            {
+              "Header": "实际输出行（行）",
+              "BindingPath": "ActualRows"
+            }
+          ],
+          "ReadColumns": [
+            {
+              "Header": "实际读取行（行）",
+              "BindingPath": "ActualRowsRead"
+            }
+          ]
+        }
+      ]
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "IMP-07 当前字段与绑定已实现，真实 WPF 表格/提示验证见 DOCS/implementation/IMP-07；完整证据模型及报告出口仍待 IMP-11/20/22。",
+    "issueClosed": false
+  },
+  {
+    "caseId": "AC-R22-01",
+    "reviewId": "R22",
+    "priority": "P2",
+    "status": "ProbeConditionMet",
+    "reason": null,
+    "expected": "始终标为依赖推演并说明不代表真实时间顺序；开始、播放、暂停、选环后说明持续可见。",
+    "observed": {
+      "initialDescription": "依赖推演已就绪；合成步骤不代表真实事件顺序。",
+      "evidenceLevel": "ViewModel only; persistent visible explanation requires WPF acceptance"
+    },
+    "adapterRequiresMigration": false,
+    "limitations": "现有构造测试要求误导文案；在 IMP-08 同批次调整。新探针只观察初态，不证明固定说明可见。",
+    "issueClosed": false
+  }
+]

@@ -53,6 +53,7 @@ namespace SqlXmlAnalyzer.Core.Services
                   <script nonce="{{nonce}}" src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
                 </head>
                 <body>
+                  <p>{{WebUtility.HtmlEncode(Privacy.OutputPrivacy.RawNotice)}}</p>
                   <pre class="mermaid">{{encodedDiagram}}</pre>
                   <script nonce="{{nonce}}">
                     mermaid.initialize({

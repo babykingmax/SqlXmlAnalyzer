@@ -1,0 +1,20 @@
+<ShowPlanXML Version="[MASKED_OtherText]" Build="[MASKED_OtherText]" xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="-- 已脱敏 SQL --">
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1">
+              <RunTimeInformation>
+                <RunTimeCountersPerThread Thread="0" ActualRows="100" ActualRowsRead="1000" ActualExecutions="1" />
+              </RunTimeInformation>
+              <TableScan>
+                <Object Database="[Masked_Database_1]" Schema="Masked_Schema_2" Table="[Masked_Table_3]" />
+              </TableScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

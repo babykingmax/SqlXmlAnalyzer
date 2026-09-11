@@ -1,0 +1,4 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.571" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+<StmtSimple StatementText="SELECT 'OTHER_STATEMENT'"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" /></QueryPlan></StmtSimple>
+<StmtSimple StatementText="SELECT 'SECRET_IMP22_7461' FROM [SECRET_IMP22_7461_Table]"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1"><RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="100" ActualRowsRead="1000" ActualExecutions="1" /></RunTimeInformation><TableScan><Object Database="[SECRET_IMP22_7461_Db]" Schema="dbo" Table="[SECRET_IMP22_7461_Table]" /></TableScan></RelOp></QueryPlan></StmtSimple>
+</Statements></Batch></BatchSequence></ShowPlanXML>

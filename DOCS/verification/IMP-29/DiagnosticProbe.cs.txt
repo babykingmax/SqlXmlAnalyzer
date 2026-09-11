@@ -1,0 +1,16 @@
+using SqlXmlAnalyzer;
+
+internal static class Program
+{
+    private static int Main(string[] args)
+    {
+        try
+        {
+            Logger.Debug("IMP29 synthetic debug record.");
+            Logger.Warning("IMP29 synthetic warning record.");
+            Logger.Error("IMP29 synthetic error record.");
+            throw new InvalidOperationException("IMP29 synthetic unknown failure for acceptance.");
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+    }
+}

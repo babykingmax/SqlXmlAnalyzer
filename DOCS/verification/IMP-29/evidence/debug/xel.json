@@ -1,0 +1,24 @@
+{
+  "Passed": true,
+  "SourceSha256": "AF2D481E2B4BE6D71CB74E96D7FAAE4137C1F60F2D42DB5A13EA4C5C216B586B",
+  "Events": 2,
+  "Groups": 1,
+  "SkippedRecords": 4,
+  "Checks": [
+    {
+      "Index": 1,
+      "ByteOffset": 7757,
+      "ByteLength": 7772,
+      "Filtered": 1,
+      "Processes": 2
+    },
+    {
+      "Index": 4,
+      "ByteOffset": 16973,
+      "ByteLength": 7772,
+      "Filtered": 1,
+      "Processes": 2
+    }
+  ],
+  "CorruptInputStatus": "Invalid"
+}

@@ -1,0 +1,5 @@
+E:\SqlXmlAnalyzer\SqlXmlAnalyzer.Tests\bin\Release\net8.0-windows\SqlXmlAnalyzer.Tests.dll (.NETCoreApp,Version=v8.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+结果文件: E:\SqlXmlAnalyzer\DOCS\implementation\IMP-04\20260908T091503194Z_c5b1e0766cfc_52a72a38\release-final\full-release.trx
+
+已通过! - 失败:     0，通过:   886，已跳过:     0，总计:   886，持续时间: 4 s - SqlXmlAnalyzer.Tests.dll (net8.0)

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "sdk",
+    "executable": "dotnet",
+    "arguments": [
+      "--info"
+    ],
+    "startedUtc": "2026-09-08T08:04:13.1796918+00:00",
+    "finishedUtc": "2026-09-08T08:04:13.5676043+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "restore",
+    "executable": "dotnet",
+    "arguments": [
+      "restore",
+      "SqlXmlAnalyzer.sln",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T08:04:13.5756768+00:00",
+    "finishedUtc": "2026-09-08T08:04:15.1284742+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "build",
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "SqlXmlAnalyzer.sln",
+      "--no-restore",
+      "--no-incremental",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T08:04:15.1292403+00:00",
+    "finishedUtc": "2026-09-08T08:04:26.2626951+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "test",
+    "executable": "dotnet",
+    "arguments": [
+      "test",
+      "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+      "--no-build",
+      "--no-restore",
+      "--nologo",
+      "--logger",
+      "trx;LogFileName=existing-suite.trx",
+      "--results-directory",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T080412884Z_c5b1e0766cfc_be2f8496\\test-output"
+    ],
+    "startedUtc": "2026-09-08T08:04:26.2636306+00:00",
+    "finishedUtc": "2026-09-08T08:04:32.3390820+00:00",
+    "exitCode": 0
+  },
+  {
+    "name": "probe",
+    "executable": "dotnet",
+    "arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP02-f0b7f48edace4e988ea90c1afe84ccc0\\AcceptanceProbe.csproj",
+      "--nologo",
+      "--",
+      "E:\\SqlXmlAnalyzer",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T080412884Z_c5b1e0766cfc_be2f8496"
+    ],
+    "startedUtc": "2026-09-08T08:04:32.3536219+00:00",
+    "finishedUtc": "2026-09-08T08:06:26.3828213+00:00",
+    "exitCode": -532462766
+  }
+]

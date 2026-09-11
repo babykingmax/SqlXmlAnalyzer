@@ -1,0 +1,30 @@
+{
+  "WebSearch": "Connection failed; direct HTTPS fallback",
+  "GitHub": "Plugin skill loaded; no callable connector; read-only Microsoft public source via HTTPS",
+  "Sources": [
+    {
+      "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/performance/compare-execution-plans?view=sql-server-ver17",
+      "Status": 200,
+      "RetrievedAt": "2026-09-09T15:33:19.1598177+08:00",
+      "ContentSHA256": "24EF92E96D7329AFB334E73CDC3C402D9EFEE7C4E69C8E6AE52FCD82D82E0ED2"
+    },
+    {
+      "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/showplan-logical-and-physical-operators-reference?view=sql-server-ver17",
+      "Status": 200,
+      "RetrievedAt": "2026-09-09T15:33:21.7029726+08:00",
+      "ContentSHA256": "CE56A55987413514B204F113E4871F368C9C09B054034C5C88514ACE76230EA7"
+    },
+    {
+      "Url": "https://raw.githubusercontent.com/microsoft/sqltoolsservice/main/src/Microsoft.SqlTools.ServiceLayer/ExecutionPlan/ShowPlan/Comparison/SkeletonManager.cs",
+      "Status": 200,
+      "RetrievedAt": "2026-09-09T15:33:23.0835179+08:00",
+      "ContentSHA256": "46EDFC4B13E83376265AFCF263F5FD0A37C65DA92EFEEA38129862BB2F11CF58"
+    }
+  ],
+  "Schema": {
+    "SHA256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8",
+    "Path": "SqlXmlAnalyzer.Tests/TestData/Schemas/showplanxml-sql2019.xsd"
+  },
+  "Scope": "Microsoft sources answer the reviewed schema and comparison questions; no claim of exhaustive CSS/community search",
+  "SubsequentGitHubRead": "TLS EOF on an additional read; earlier successful response and hash retained"
+}

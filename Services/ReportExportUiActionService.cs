@@ -114,7 +114,10 @@ namespace SqlXmlAnalyzer.Services
                         deadlockDetailText,
                         currentPlanDocument,
                         currentPlanFilePath,
-                        showplanNamespace);
+                        showplanNamespace, ReferenceEquals(currentPlanDocument, _viewModel.CurrentPlanDoc)
+                            ? _viewModel.CurrentPlanDiagnostics : null,
+                        ReferenceEquals(currentDeadlockDocument, _viewModel.CurrentDeadlockDoc)
+                            ? _viewModel.CurrentDeadlockAnalysis : null);
 
                 if (action.Status != Core.Services.HtmlReportActionStatus.Ready
                     || action.Report == null)

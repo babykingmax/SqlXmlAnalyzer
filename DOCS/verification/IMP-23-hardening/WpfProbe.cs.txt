@@ -1,0 +1,127 @@
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Services;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        var errors = new StringWriter(); App? app = null; MainWindow? main = null; XelSearchWindow? window = null;
+        try
+        {
+            Directory.CreateDirectory(args[1]); app = new App(); app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(errors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var engine = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), engine, files, new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            main = new MainWindow(orchestrator, files) { Width = 1400, Height = 950, ShowActivated = false, Left = -20000 }; main.Show(); Pump();
+            string fixtureA = Path.Combine(args[0], "SqlXmlAnalyzer.Tests/TestData/imp23_search_a.xdl");
+            Wait(main.AnalyzeFileAsync(fixtureA)); Until(() => main.ViewModel.DeadlockWorkspace.Analysis != null);
+            var entryButton = Descendants(main).OfType<Button>().Single(b => Equals(b.Content, "XEL 搜索、聚合与追溯…"));
+            entryButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); Pump();
+            window = app.Windows.OfType<XelSearchWindow>().Single(); var seeded = (XelSearchViewModel)window.DataContext;
+            Until(() => !seeded.IsBusy); Require(seeded.Events.Count == 1, "Production toolbar seeds current document"); window.Close(); window = null;
+            var read = new InputRecognitionService();
+            var a = read.ReadFileAsync(fixtureA).GetAwaiter().GetResult();
+            var b = read.ReadFileAsync(Path.Combine(args[0], "SqlXmlAnalyzer.Tests/TestData/imp23_search_b.xdl")).GetAwaiter().GetResult();
+            var catalog = new XelSearchService().Build([new("example-a.xel", a), new("example-b.xel", b), new("example-copy.xel", a)]);
+            var xelUi = typeof(MainWindow).GetField("_xelDeadlockUiActionService", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(main)!;
+            var navigate = xelUi.GetType().GetMethod("SelectSearchEventAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var service = new CatalogService(catalog);
+            var vm = new XelSearchViewModel(entry => (Task)navigate.Invoke(xelUi, [entry])!, service);
+            window = new XelSearchWindow(vm) { Owner = main, ShowActivated = false }; window.Show();
+            var initial = vm.InitializeAsync(null); Pump();
+            Require(!((Button)window.FindName("ApplyFilter")).IsEnabled &&
+                !Descendants(window).OfType<Button>().Single(button => Equals(button.Content, "添加 XEL 文件…")).IsEnabled,
+                "Initial load disables search/import controls");
+            Click(window, "ApplyFilter"); Require(vm.IsBusy && vm.Events.Count == 0, "Initial load survives a programmatic search event");
+            Capture(window, Path.Combine(args[1], "initial-load-controls.png"));
+            service.Release.TrySetResult(); Wait(initial);
+            Require(((Button)window.FindName("ApplyFilter")).IsEnabled && vm.Events.Count == 3, "Initial catalog commits before search becomes available");
+            ((TextBox)window.FindName("DisplayOffset")).Text = "+08:00"; Click(window, "ApplyFilter"); Until(() => !vm.IsBusy);
+            var groups = (DataGrid)window.FindName("SearchGroups"); var events = (DataGrid)window.FindName("SearchEvents");
+            Require(groups.Items.Count == 1 && events.Items.Count == 3 && vm.Groups[0].DuplicateCount == 1, "Real WPF grouping and retained duplicate binding");
+            groups.SelectedIndex = 0; events.SelectedIndex = 2; Pump();
+            Require(vm.SelectedEvent?.Entry.SourcePath == "example-b.xel" && ((TextBox)window.FindName("EventDetails")).Text.Contains("-04:00"), "Original offset and source details binding");
+            Capture(window, Path.Combine(args[1], "search-group-members.png"));
+            Click(window, "NavigateOriginal"); Until(() => main.ViewModel.DeadlockWorkspace.Analysis != null && ReferenceEquals(main.ViewModel.DeadlockWorkspace.SelectedEvent, b.Deadlocks[0]));
+            Require(ReferenceEquals(main.ViewModel.CurrentDeadlockInput, b), "Production trace preserves owning input");
+            Capture(main, Path.Combine(args[1], "original-event-workspace.png"));
+            ((TextBox)window.FindName("FilterText")).Text = "search-marker"; Click(window, "ApplyFilter"); Until(() => !vm.IsBusy);
+            Require(events.Items.Count == 2 && vm.SelectedEvent == null && !((Button)window.FindName("NavigateOriginal")).IsEnabled, "Filter applies and clears stale selection");
+            Capture(window, Path.Combine(args[1], "filtered-events.png"));
+            ((TextBox)window.FindName("DisplayOffset")).Text = "+15:00"; Click(window, "ApplyFilter"); Until(() => !vm.IsBusy);
+            Require(vm.Status.Contains("操作失败") && events.Items.Count == 2, "Invalid offset visibly retains previous result");
+            Capture(window, Path.Combine(args[1], "invalid-offset-retains-results.png"));
+            Require(errors.ToString().Length == 0, "WPF binding errors: " + errors);
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new
+            {
+                Passed = true, BindingErrors = 0, ProductionToolbar = true, OriginalEventNavigation = true, InitializationControls = true,
+                SyntheticSources = 3, Events = 3, Groups = 1, Duplicates = 1, FilterMatches = 2,
+                EvidenceKind = "Off-screen WPF test host, actual production views and event handlers; not desktop input automation"
+            }, new JsonSerializerOptions { WriteIndented = true }));
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+        finally { File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), errors.ToString()); window?.Close(); main?.Close(); app?.Shutdown(); }
+    }
+    private sealed class CatalogService(XelSearchCatalog catalog) : IXelSearchService
+    {
+        public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public async Task<XelSearchCatalog> LoadAsync(IReadOnlyList<XelSearchSource> existing, IReadOnlyList<string> paths, CancellationToken token)
+        { await Release.Task; return catalog; }
+        public XelSearchResult Search(XelSearchCatalog source, XelSearchFilter filter, CancellationToken token) => new XelSearchService().Search(source, filter, token);
+    }
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject parent)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i); yield return child;
+            foreach (var descendant in Descendants(child)) yield return descendant;
+        }
+    }
+    private static void Click(Window window, string name) { ((Button)window.FindName(name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); Pump(); }
+    private static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Until(Func<bool> predicate)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!predicate()) { if (timer.Elapsed > TimeSpan.FromSeconds(45)) throw new TimeoutException("WPF operation timed out"); Pump(); Thread.Sleep(10); }
+        Pump();
+    }
+    private static void Wait(Task task) { Until(() => task.IsCompleted); task.GetAwaiter().GetResult(); }
+    private static void Capture(Window window, string path)
+    {
+        var timer = Stopwatch.StartNew(); while (timer.ElapsedMilliseconds < 250) { Pump(); Thread.Sleep(10); }
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        int width = (int)Math.Ceiling(view.ActualWidth), height = (int)Math.Ceiling(view.ActualHeight);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32); var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            drawing.DrawRectangle(window.Background, null, new Rect(0, 0, width, height));
+            drawing.DrawRectangle(new VisualBrush(view), null, new Rect(0, 0, width, height));
+        }
+        bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = new FileStream(path, FileMode.Create); encoder.Save(output);
+    }
+}

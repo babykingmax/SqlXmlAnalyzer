@@ -1,0 +1,238 @@
+[INFO] 17:01:36.103 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 2, 受害者: a
+[INFO] 17:01:36.116 DeadlockGraphBuilder.Build: 环路检测完成，共发现 2 个死锁环
+[INFO] 17:01:36.117 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=2
+[INFO] 17:01:36.129 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 4, 受害者: a
+[INFO] 17:01:36.129 DeadlockGraphBuilder.Build: 环路检测完成，共发现 5 个死锁环
+[INFO] 17:01:36.129 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=4
+[
+  {
+    "id": "R01",
+    "observed": {
+      "literalRetained": true,
+      "serverRetained": true,
+      "aliasRetained": true,
+      "tableMasked": true
+    }
+  },
+  {
+    "id": "R02",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "SELECT *\r\nFROM   dbo.Users\r\nWHERE  UserName = \u0027admin\u0027;\r\n\r\n",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 1,
+      "warnings": [
+        "Removed LTRIM on column UserName. Note: This assumes column values do not contain leading spaces."
+      ]
+    }
+  },
+  {
+    "id": "R03",
+    "observed": {
+      "IsSuccess": false,
+      "SourceWritten": false,
+      "BackupAttempted": true,
+      "Warnings": [],
+      "failureStage": "CreateBackup",
+      "ErrorMessage": "SQL \u5199\u56DE\u5931\u8D25\uFF08CreateBackup\uFF09\uFF0C\u672A\u8986\u76D6\u5F53\u524D\u6E90\u6587\u4EF6\uFF1ASynthetic backup failure \u672A\u751F\u6210\u53EF\u9A8C\u8BC1\u5907\u4EFD\u3002"
+    }
+  },
+  {
+    "id": "R04",
+    "observed": {
+      "unrelatedXmlIssues": 0
+    }
+  },
+  {
+    "id": "R05",
+    "observed": {
+      "openKind": "Unknown",
+      "parserAccepts": true
+    }
+  },
+  {
+    "id": "R06",
+    "observed": {
+      "xmlPriority": 7,
+      "parsedPriority": "0"
+    }
+  },
+  {
+    "id": "R07",
+    "observed": {
+      "actualLockModes": "S / X; no Range mode",
+      "patterns": [
+        "[\u4E13\u5BB6\u7EA7\u8BCA\u65AD] SERIALIZABLE \u8303\u56F4\u9501\u6B7B\u9501 (Range Lock Deadlock)",
+        "[sp_BlitzLock \u8BCA\u65AD] \u7EC6\u7C92\u5EA6\u9501\u94FE\u4E0E\u8D44\u6E90\u51B2\u7A81\u8F68\u8FF9 (Lock Chain Details)"
+      ]
+    }
+  },
+  {
+    "id": "R08",
+    "observed": {
+      "expectedCycleNodes": [
+        "a",
+        "b",
+        "c"
+      ],
+      "graphContainsC": true,
+      "timelineContainsC": false
+    }
+  },
+  {
+    "id": "R09",
+    "observed": {
+      "rowMismatch": null,
+      "cardinalityError": "\uD83D\uDEA8 \u57FA\u6570\u4F30\u8BA1\u504F\u79BB Node 0 (Index Scan): \u9884\u4F30\u5355\u6B21\u884C\u6570 16000\uFF0C\u5B9E\u9645\u5355\u6B21 1000 (\u504F\u5DEE\u8FBE 16.0 \u500D)\u3002"
+    }
+  },
+  {
+    "id": "R10",
+    "observed": {
+      "extractedResidual": "",
+      "ruleHit": null,
+      "uiResidual": [
+        "[T].[V]=(2)"
+      ]
+    }
+  },
+  {
+    "id": "R11",
+    "observed": {
+      "ExecutionMode": "Row",
+      "IsParallel": false,
+      "Ordered": "False",
+      "ActualRows": "100",
+      "ActualRowsRead": "1,000"
+    }
+  },
+  {
+    "id": "R12",
+    "observed": {
+      "lowThenHigh": 100,
+      "highThenLow": 65
+    }
+  },
+  {
+    "id": "R13",
+    "observed": {
+      "input": "[Order.Detail]",
+      "escaped": "[Order].[Detail]"
+    }
+  },
+  {
+    "id": "R14",
+    "observed": {
+      "nodeSchemas": [
+        "sales",
+        "audit"
+      ],
+      "matched": [
+        "sales",
+        "sales"
+      ]
+    }
+  },
+  {
+    "id": "R15",
+    "observed": {
+      "estimateVsActual": [
+        {
+          "Label": "Elapsed",
+          "Value": 0,
+          "Delta": -100
+        },
+        {
+          "Label": "Logical reads",
+          "Value": 0,
+          "Delta": -200
+        }
+      ]
+    }
+  },
+  {
+    "id": "R16",
+    "observed": {
+      "statement2CostA": 2,
+      "statement2CostB": 999,
+      "comparedCostA": 1,
+      "comparedCostB": 1
+    }
+  },
+  {
+    "id": "R17",
+    "observed": {
+      "parentTable": "ChildTable",
+      "parentPredicates": [
+        "ChildFilter"
+      ]
+    }
+  },
+  {
+    "id": "R18",
+    "observed": {
+      "simpleTwoProcessCycleCount": 2,
+      "expectedUniqueCycleCount": 1
+    }
+  },
+  {
+    "id": "R19",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "CREATE TABLE #T (\r\n    id INT\r\n);\r\n\r\nBEGIN TRANSACTION;\r\n\r\nINSERT  INTO #T\r\nVALUES (1);\r\n\r\nROLLBACK;\r\n\r\nSELECT COUNT(*)\r\nFROM   #T;\r\n\r\nIF OBJECT_ID(\u0027tempdb..#T\u0027) IS NOT NULL\r\n    DROP TABLE #T;\r\n\r\n",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 1,
+      "warnings": []
+    }
+  },
+  {
+    "id": "R20",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "CREATE TABLE #T (\r\n    id INT\r\n);\r\n\r\nCREATE TABLE #T (\r\n    id INT\r\n);\r\n\r\nSELECT *\r\nFROM   #T;\r\n\r\nIF OBJECT_ID(\u0027tempdb..#T\u0027) IS NOT NULL\r\n    DROP TABLE #T;\r\n\r\n",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 1,
+      "warnings": []
+    }
+  },
+  {
+    "id": "R21",
+    "observed": {
+      "rowBindings": [
+        {
+          "Path": "Views/PlanWorkspaceView.xaml",
+          "OutputColumns": [
+            {
+              "Header": "\u5B9E\u9645\u884C (ActRows)",
+              "BindingPath": "ActualRowsRead"
+            }
+          ],
+          "ReadColumns": []
+        },
+        {
+          "Path": "Views/PlanView.xaml",
+          "OutputColumns": [
+            {
+              "Header": "\u5B9E\u9645\u884C (ActRows)",
+              "BindingPath": "ActualRowsRead"
+            }
+          ],
+          "ReadColumns": []
+        }
+      ]
+    }
+  },
+  {
+    "id": "R22",
+    "observed": {
+      "initialDescription": "\u51C6\u5907\u5C31\u7EEA\u3002\u70B9\u51FB\u64AD\u653E\u5F00\u59CB\u56DE\u653E\u6B7B\u9501\u5F62\u6210\u8FC7\u7A0B\u3002",
+      "evidenceLevel": "ViewModel only; persistent visible explanation requires WPF acceptance"
+    }
+  }
+]

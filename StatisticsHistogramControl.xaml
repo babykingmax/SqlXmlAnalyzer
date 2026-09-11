@@ -26,7 +26,7 @@
                         <materialDesign:PackIcon Kind="ChartBar" Width="20" Height="20" Foreground="{DynamicResource MaterialDesignPrimaryBrush}" VerticalAlignment="Center"/>
                         <TextBlock Text="参数嗅探与真实统计直方图分析" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource MaterialDesignBody}" Margin="8,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <TextBlock Text="本工具提取执行计划中的编译/运行时参数值。导入真实的统计直方图可精准对比评估参数分布偏差和 Cardinality Estimation 失真。" 
+                    <TextBlock Text="导入统计直方图可辅助观察编译/运行时参数分布。图中按 EQ_ROWS 或 AVG_RANGE_ROWS 说明行数，不能替代 SQL Server 基数估算。"
                                Foreground="Gray" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
                 </StackPanel>
                 <Border Grid.Column="1" VerticalAlignment="Center" Background="#0A0078D7" BorderBrush="{DynamicResource MaterialDesignPrimaryBrush}" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="12,0,0,0">
@@ -231,7 +231,7 @@
                         <TextBlock Text="导入真实统计信息" FontWeight="Bold" FontSize="12.5" Foreground="{DynamicResource MaterialDesignBody}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                     
-                    <TextBlock Grid.Row="1" Text="在 SSMS 中执行 DBCC SHOW_STATISTICS('表名', '索引或统计名')。全选并复制结果集 3 (直方图数据格) 并粘贴到下方：" 
+                    <TextBlock Grid.Row="1" Text="在 SSMS 中执行下方生成的 DBCC SHOW_STATISTICS 命令。复制返回的直方图数据格并粘贴到下方（未加 WITH HISTOGRAM 时为结果集 3）："
                                Foreground="Gray" FontSize="10" TextWrapping="Wrap" Margin="0,4,0,8" LineHeight="14"/>
 
                     <TextBox Grid.Row="2" x:Name="TxtStatsInput" 

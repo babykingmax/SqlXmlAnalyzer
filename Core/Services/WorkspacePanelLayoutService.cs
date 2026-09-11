@@ -19,6 +19,14 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed class WorkspacePanelLayoutService
     {
+        public static double MinimumColumnWidth(GridLength width, double minimumWidth, double maximumWidth, double autoDesiredWidth)
+        {
+            // Star columns consume the remaining viewport; using ActualWidth
+            // here would make the scroll extent grow with every arrange pass.
+            double requested = width.IsAbsolute ? width.Value : width.IsAuto ? autoDesiredWidth : minimumWidth;
+            return System.Math.Max(minimumWidth, System.Math.Min(maximumWidth, requested));
+        }
+
         public SqlComparePanelLayout ToggleSqlCompare(GridLength currentOriginalSqlWidth)
         {
             bool isCollapsed = currentOriginalSqlWidth.Value == 0;

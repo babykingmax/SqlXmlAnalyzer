@@ -1,0 +1,436 @@
+{
+  "step": "IMP-02-04 hardening",
+  "timestampUtc": "2026-09-08T09:58:18.526285+00:00",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "sourceChanged": 18,
+  "unexpectedChanges": [
+    {
+      "path": "ssms_icons/死锁展示图.jpg",
+      "beforeSha256": null,
+      "afterSha256": "25039255FEB59F7307F748E6171AD00C6C36B2A2BE473D4D16AECB09C10DABC0",
+      "owner": "UNEXPECTED"
+    },
+    {
+      "path": "ssms_icons/节点属性参考.jpg",
+      "beforeSha256": null,
+      "afterSha256": "7543A79B21C5E101A8AE5AC46140057BA0ACB3E3DE58B00E3B614D24389A0061",
+      "owner": "UNEXPECTED"
+    },
+    {
+      "path": "ssms_icons/节点属性显示信息.jpg",
+      "beforeSha256": null,
+      "afterSha256": "50ABA76D4F230E41E58F161AE59B810E997912A17E3F5F74E18AB3DB197C1CB6",
+      "owner": "UNEXPECTED"
+    },
+    {
+      "path": "ssms_icons/节点提示信息文字有重叠.jpg",
+      "beforeSha256": null,
+      "afterSha256": "C0398BBBC688EFF25D5CA2E51F14F64B276100FFF7ADC0689CE5E4C413FF856B",
+      "owner": "UNEXPECTED"
+    }
+  ],
+  "retainedInputs": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "59D6BF1E1A89AE711CECDE5EE5C0448CE169C4DA89E642D04F9C4C8E08AB0ECA",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.Services.cs",
+      "sha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004",
+      "unchanged": true
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "sha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345",
+      "unchanged": true
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "sha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/ReviewProbe.cs.txt",
+      "sha256": "E0808BBAA25B331ED5AD029A3253299211F360FF37947BE4B2C35EC6D1772955",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/Run-ReviewProbe.ps1",
+      "sha256": "C712FECEF4105B8CD7F766B30D42215C95CC3079CEA75C859146CC9E7BB0F2D2",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/baseline.json",
+      "sha256": "7462B06FEA775CFEA9F068ABC5F2C1D8EFD92385B67B3F21F2808BB0B6D03930",
+      "unchanged": true
+    },
+    {
+      "path": "DOCS/review-evidence/probe-results.json",
+      "sha256": "A9A15D90FB5B0555978E34E4F76CF28F201C459A6802EA1B1E539A8676475A88",
+      "unchanged": true
+    }
+  ],
+  "inputDrift": {
+    "Debug": [],
+    "Release": []
+  },
+  "artifactChecks": [
+    {
+      "manifest": "DOCS/baselines/IMP-01/20260908T074458598Z_c5b1e0766cfc_c3523269/artifact-manifest.json",
+      "entries": 75,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T080801184Z_c5b1e0766cfc_6a19a7b0/artifact-manifest.json",
+      "entries": 47,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T083501166Z_c5b1e0766cfc_71955017/artifact-manifest.json",
+      "entries": 63,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T090642185Z_c5b1e0766cfc_c45e1ec8/artifact-manifest.json",
+      "entries": 63,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-03/20260908T085018432Z_c5b1e0766cfc_65e9ddb4/artifact-manifest.json",
+      "entries": 56,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T093220366Z_c5b1e0766cfc_0420c7c1/artifact-manifest.json",
+      "entries": 63,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-04/20260908T091503194Z_c5b1e0766cfc_52a72a38/artifact-manifest.json",
+      "entries": 114,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-04/20260908T091503194Z_c5b1e0766cfc_52a72a38/process-artifact-manifest.json",
+      "entries": 100,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T095232442Z_c5b1e0766cfc_3a4bacdf/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T095314857Z_c5b1e0766cfc_db4a0d4e/artifact-manifest.json",
+      "entries": 72,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/acceptance/IMP-02/runs/20260908T095336975Z_c5b1e0766cfc_b33f24a6/artifact-manifest.json",
+      "entries": 17,
+      "failures": []
+    },
+    {
+      "manifest": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/artifact-manifest.json",
+      "entries": 15,
+      "failures": []
+    }
+  ],
+  "debug": {
+    "schemaVersion": 2,
+    "adapterVersion": "2.3",
+    "configuration": "Debug",
+    "commandTimeoutSeconds": 900,
+    "step": "IMP-02",
+    "runId": "20260908T095232442Z_c5b1e0766cfc_3a4bacdf",
+    "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+    "runDirectory": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T095232442Z_c5b1e0766cfc_3a4bacdf",
+    "matrixCases": 22,
+    "probeConditionsMet": 4,
+    "notMet": 18,
+    "probeExecutionFailed": 0,
+    "probeConditionsAllMet": false,
+    "infrastructureTests": {
+      "total": 38,
+      "passed": 38,
+      "failed": 0
+    },
+    "issuesClosed": 0,
+    "existingSuite": {
+      "notExecuted": 0,
+      "failed": 0,
+      "total": 905,
+      "passed": 905
+    },
+    "cliInvalidInputExitCode": 0,
+    "protectedInputDrift": [],
+    "fixtureAndCandidateEntries": 28,
+    "sqlServerExecutionPerformed": false,
+    "wpfVisualTestPerformed": false,
+    "coverageGenerated": false,
+    "note": "Exit 1 means NotMet or ProbeExecutionFailed; neither is a passing condition. Full issue closure requires additional matrix scenarios."
+  },
+  "release": {
+    "schemaVersion": 2,
+    "adapterVersion": "2.3",
+    "configuration": "Release",
+    "commandTimeoutSeconds": 900,
+    "step": "IMP-02",
+    "runId": "20260908T095314857Z_c5b1e0766cfc_db4a0d4e",
+    "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+    "runDirectory": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T095314857Z_c5b1e0766cfc_db4a0d4e",
+    "matrixCases": 22,
+    "probeConditionsMet": 4,
+    "notMet": 18,
+    "probeExecutionFailed": 0,
+    "probeConditionsAllMet": false,
+    "infrastructureTests": {
+      "total": 38,
+      "passed": 38,
+      "failed": 0
+    },
+    "issuesClosed": 0,
+    "existingSuite": {
+      "total": 905,
+      "notExecuted": 0,
+      "passed": 905,
+      "failed": 0
+    },
+    "cliInvalidInputExitCode": 0,
+    "protectedInputDrift": [],
+    "fixtureAndCandidateEntries": 28,
+    "sqlServerExecutionPerformed": false,
+    "wpfVisualTestPerformed": false,
+    "coverageGenerated": false,
+    "note": "Exit 1 means NotMet or ProbeExecutionFailed; neither is a passing condition. Full issue closure requires additional matrix scenarios."
+  },
+  "processValidation": {
+    "total": 10,
+    "passed": 10,
+    "results": [
+      {
+        "configuration": "Debug",
+        "scenario": "unknown-error",
+        "passed": true,
+        "logPolicyPassed": true,
+        "verification": {
+          "Configuration": "Debug",
+          "SourceBeforeSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+          "SourceAfterSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+          "IsSuccess": false,
+          "SourceWritten": false,
+          "Diagnostic": {
+            "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-error\\dumps\\20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1\\process.dmp",
+            "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-error\\dumps\\20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1\\exception.json",
+            "Failure": null,
+            "DumpCreated": true,
+            "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-error\\dumps\\20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-error\\dumps\\20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1\\exception.json"
+          },
+          "Writeback": null,
+          "DumpSignature": 1347241037,
+          "DumpStreamCount": 14,
+          "Passed": true
+        }
+      },
+      {
+        "configuration": "Debug",
+        "scenario": "unknown-writeback",
+        "passed": true,
+        "logPolicyPassed": true,
+        "verification": {
+          "Configuration": "Debug",
+          "SourceBeforeSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+          "SourceAfterSha256": "8E7003D62F9D8CBD28DA2F243BB0D215BFD4622C716BE09BE89A8764D9F4C7CB",
+          "IsSuccess": false,
+          "SourceWritten": true,
+          "Diagnostic": {
+            "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-writeback\\dumps\\20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8\\process.dmp",
+            "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-writeback\\dumps\\20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8\\exception.json",
+            "Failure": null,
+            "DumpCreated": true,
+            "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-writeback\\dumps\\20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-writeback\\dumps\\20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8\\exception.json"
+          },
+          "Writeback": {
+            "SourceWritten": true,
+            "CommitOutcomeUnknown": false,
+            "BackupVerified": true,
+            "BackupPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\unknown-writeback\\source.sql.SqlXmlAnalyzer-5839dee7ebae4f6f84ecbf4aa9a74d9e.bak",
+            "SourceSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+          },
+          "DumpSignature": 1347241037,
+          "DumpStreamCount": 14,
+          "Passed": true
+        }
+      },
+      {
+        "configuration": "Debug",
+        "scenario": "risk-preserved",
+        "passed": true,
+        "outcome": "NoChanges",
+        "sourceBeforeSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+        "sourceAfterSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+        "logPolicyPassed": true,
+        "backupPaths": []
+      },
+      {
+        "configuration": "Debug",
+        "scenario": "candidate",
+        "passed": true,
+        "outcome": "CandidateGenerated",
+        "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+        "sourceAfterSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+        "logPolicyPassed": true,
+        "backupPaths": []
+      },
+      {
+        "configuration": "Debug",
+        "scenario": "applied",
+        "passed": true,
+        "outcome": "Applied",
+        "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+        "sourceAfterSha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E",
+        "logPolicyPassed": true,
+        "backupPaths": [
+          "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\debug\\applied.sql.SqlXmlAnalyzer-e9ce81dd87db41c5813de9f4daaa8644.bak"
+        ]
+      },
+      {
+        "configuration": "Release",
+        "scenario": "unknown-error",
+        "passed": true,
+        "logPolicyPassed": true,
+        "verification": {
+          "Configuration": "Release",
+          "SourceBeforeSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+          "SourceAfterSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+          "IsSuccess": false,
+          "SourceWritten": false,
+          "Diagnostic": {
+            "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-error\\dumps\\20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0\\process.dmp",
+            "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-error\\dumps\\20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0\\exception.json",
+            "Failure": null,
+            "DumpCreated": true,
+            "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-error\\dumps\\20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-error\\dumps\\20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0\\exception.json"
+          },
+          "Writeback": null,
+          "DumpSignature": 1347241037,
+          "DumpStreamCount": 14,
+          "Passed": true
+        }
+      },
+      {
+        "configuration": "Release",
+        "scenario": "unknown-writeback",
+        "passed": true,
+        "logPolicyPassed": true,
+        "verification": {
+          "Configuration": "Release",
+          "SourceBeforeSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A",
+          "SourceAfterSha256": "8E7003D62F9D8CBD28DA2F243BB0D215BFD4622C716BE09BE89A8764D9F4C7CB",
+          "IsSuccess": false,
+          "SourceWritten": true,
+          "Diagnostic": {
+            "DumpPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-writeback\\dumps\\20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8\\process.dmp",
+            "MetadataPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-writeback\\dumps\\20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8\\exception.json",
+            "Failure": null,
+            "DumpCreated": true,
+            "Summary": "DUMP：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-writeback\\dumps\\20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8\\process.dmp；异常记录：E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-writeback\\dumps\\20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8\\exception.json"
+          },
+          "Writeback": {
+            "SourceWritten": true,
+            "CommitOutcomeUnknown": false,
+            "BackupVerified": true,
+            "BackupPath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\unknown-writeback\\source.sql.SqlXmlAnalyzer-88353ae9284a4297ab21e94d9f31caf5.bak",
+            "SourceSha256": "17DB4FD369EDB9244B9F91D9AEED145C3D04AD8BA6E95D06247F07A63527D11A"
+          },
+          "DumpSignature": 1347241037,
+          "DumpStreamCount": 14,
+          "Passed": true
+        }
+      },
+      {
+        "configuration": "Release",
+        "scenario": "risk-preserved",
+        "passed": true,
+        "outcome": "NoChanges",
+        "sourceBeforeSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+        "sourceAfterSha256": "C1B35AE8871A76AD8D8D20D11E407B399383DCB52EFAFED0E9C17284A36BBC09",
+        "logPolicyPassed": true,
+        "backupPaths": []
+      },
+      {
+        "configuration": "Release",
+        "scenario": "candidate",
+        "passed": true,
+        "outcome": "CandidateGenerated",
+        "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+        "sourceAfterSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+        "logPolicyPassed": true,
+        "backupPaths": []
+      },
+      {
+        "configuration": "Release",
+        "scenario": "applied",
+        "passed": true,
+        "outcome": "Applied",
+        "sourceBeforeSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+        "sourceAfterSha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E",
+        "logPolicyPassed": true,
+        "backupPaths": [
+          "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\process-final-02\\release\\applied.sql.SqlXmlAnalyzer-5164dc45d8bc496a962dd9386899fbc7.bak"
+        ]
+      }
+    ],
+    "sqlServerExecutionPerformed": false,
+    "wpfVisualTestPerformed": false
+  },
+  "negativePaths": {
+    "timeout": true,
+    "hostUnknown": true
+  },
+  "dumpValidation": [
+    {
+      "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/debug/unknown-error/dumps/20260908T095419608Z_51452_8a99be4825ad49e293f18fb28dd858f1/process.dmp",
+      "bytes": 540830,
+      "sha256": "4C9E2C3D091FEEF97CBEF45F14EE09AC619E5362C396B1ED49456C0978B247DD",
+      "streamCount": 14,
+      "structureValid": true
+    },
+    {
+      "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/debug/unknown-writeback/dumps/20260908T095420223Z_59092_66a40575ccbb49d19f6e028cb99257f8/process.dmp",
+      "bytes": 519548,
+      "sha256": "9FD3746D7EE0CD37CA77B9952E593CC1D5CF4FE934F981DC2A87F0C070D29267",
+      "streamCount": 14,
+      "structureValid": true
+    },
+    {
+      "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/release/unknown-error/dumps/20260908T095423394Z_42672_362f94f7ab8a44cba328a1e1cc7beac0/process.dmp",
+      "bytes": 534431,
+      "sha256": "0416D4D883695124821A87BEC40449A5001E2AF702C5A77C88A24C7D6D3FC016",
+      "streamCount": 14,
+      "structureValid": true
+    },
+    {
+      "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/process-final-02/release/unknown-writeback/dumps/20260908T095423824Z_2312_71a20c3d51c347f1b39531e8320e3ad8/process.dmp",
+      "bytes": 514173,
+      "sha256": "59028B3DC9A4FBADBB89D08FEE22787111EDE8F075C5B98376ED4921EA0446AE",
+      "streamCount": 14,
+      "structureValid": true
+    },
+    {
+      "path": "DOCS/implementation/IMP-02-04-hardening/20260908T094301770Z_c5b1e0766cfc_b1da315a/host-fault-adapter/runs/20260908T095325626Z_c5b1e0766cfc_3cb6e8a2/diagnostics/20260908T095326021Z_62056_89c2fbc25e9842c1a200e01527019eed/process.dmp",
+      "bytes": 1362623,
+      "sha256": "6BE6FF0F3D2C4F7F509D1DDD4DB8694A1CF8FE21B82A1F09F7732176AD0EA410",
+      "streamCount": 14,
+      "structureValid": true
+    }
+  ],
+  "scopedDiffCheckExitCode": 0,
+  "linksChecked": 164,
+  "brokenLinks": [],
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "coverageGenerated": false,
+  "passed": false
+}

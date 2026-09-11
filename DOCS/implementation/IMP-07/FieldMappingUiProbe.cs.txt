@@ -1,0 +1,159 @@
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Xml.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Views;
+
+internal static class FieldMappingUiProbe
+{
+    private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+        string repository = args[0], output = args[1];
+        Directory.CreateDirectory(output);
+        var app = new ProbeApp();
+        Assembly.Load("MaterialDesignThemes.Wpf");
+        Assembly.Load("MaterialDesignColors");
+        var appXml = SafeXmlHelper.LoadSafe(Path.Combine(repository, "App.xaml"));
+        XNamespace presentation = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+        var dictionary = new XElement(appXml.Root!.Element(presentation + "Application.Resources")!.Element(presentation + "ResourceDictionary")!);
+        foreach (var declaration in appXml.Root.Attributes().Where(a => a.IsNamespaceDeclaration))
+            if (dictionary.Attribute(declaration.Name) == null) dictionary.Add(new XAttribute(declaration));
+        app.Resources = (ResourceDictionary)XamlReader.Parse(dictionary.ToString(),
+            new ParserContext { BaseUri = new Uri("pack://application:,,,/SqlXmlAnalyzer;component/") });
+        var registrations = new ServiceCollection();
+        typeof(App).GetMethod("ConfigureServices", PrivateInstance)!.Invoke(app, new object[] { registrations });
+        using var provider = registrations.BuildServiceProvider();
+        typeof(App).GetProperty("ServiceProvider")!.SetValue(null, provider);
+        var window = provider.GetRequiredService<MainWindow>();
+
+        _ = app.Dispatcher.InvokeAsync(async () =>
+        {
+            try
+            {
+                string fixture = Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan");
+                await window.AnalyzeFileAsync(fixture);
+                var workspace = (PlanWorkspaceView)typeof(MainWindow).GetProperty("PlanWorkspace", PrivateInstance)!.GetValue(window)!;
+                workspace.GraphTabControl.SelectedIndex = 2;
+                Layout(window, 2450, 950);
+                var observations = new List<object>();
+                observations.Add(CheckTable("PlanWorkspaceView", workspace.RecostDataGrid, workspace.NodifyGraph, output));
+
+                var document = SafeXmlHelper.LoadSafe(fixture);
+                var legacy = new PlanView();
+                var graph = (PlanGraphControl)legacy.FindName("PlanNodifyGraph");
+                graph.LoadFromExecutionPlan(document, document.Root!.Name.Namespace);
+                ((TabControl)legacy.FindName("PlanGraphTabControl")).SelectedIndex = 2;
+                Layout(legacy, 2450, 950);
+                observations.Add(CheckTable("PlanView", (DataGrid)legacy.FindName("RecostGrid"), graph, output));
+
+                // Load the actual graph DataTemplate, including its existing tooltip, against the parsed node.
+                var editor = (Nodify.NodifyEditor)graph.FindName("Editor");
+                var card = (FrameworkElement)editor.ItemTemplate.LoadContent();
+                var node = graph.Nodes.Single();
+                card.DataContext = node;
+                Layout(card, 450, 250);
+                var tooltip = Descendants(card).OfType<Border>().Select(border => border.ToolTip).OfType<ToolTip>().Single();
+                tooltip.DataContext = node;
+                var tooltipContent = (FrameworkElement)tooltip.Content;
+                tooltipContent.DataContext = node;
+                Layout(tooltipContent, 520, 900);
+                var tooltipValues = Descendants(tooltipContent).OfType<FrameworkElement>()
+                    .Select(element => element switch {
+                        TextBlock block => new { Path = block.GetBindingExpression(TextBlock.TextProperty)?.ParentBinding.Path?.Path, Text = block.Text },
+                        TextBox box => new { Path = box.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path?.Path, Text = box.Text },
+                        _ => new { Path = (string?)null, Text = "" }
+                    }).Where(value => value.Path is "ActualRows" or "ActualRowsRead" or "ExecutionMode" or "ParallelDisplay" or "Ordered").ToArray();
+                Require(tooltipValues.Any(value => value.Path == "ActualRows" && value.Text == "100"), "Tooltip output");
+                Require(tooltipValues.Any(value => value.Path == "ActualRowsRead" && value.Text == "1,000"), "Tooltip read");
+                Require(tooltipValues.Any(value => value.Path == "ExecutionMode" && value.Text == "Batch"), "Tooltip mode");
+                SaveImage(tooltipContent, Path.Combine(output, "graph-tooltip.png"));
+
+                var properties = new PlanPropertyService().BuildProperties(node.RawElement!);
+                Require(properties.Any(p => p.Name == "实际输出行（行）" && p.Value == "100"), "Details output");
+                Require(properties.Any(p => p.Name == "实际读取行（行）" && p.Value == "1,000"), "Details read");
+                typeof(PlanView).GetMethod("PlanNodifyGraph_NodeSelected", PrivateInstance)!.Invoke(legacy, new object?[] { graph, node });
+                var detailsGrid = (DataGrid)legacy.FindName("PlanPropertiesGrid");
+                Require(detailsGrid.Items.Cast<PlanPropertyItem>().Any(p => p.Name == "实际读取行（行）" && p.Value == "1,000"), "Legacy node selection details");
+                typeof(PlanView).GetMethod("PlanNodifyGraph_NodeDoubleClicked", PrivateInstance)!.Invoke(legacy, new object?[] { graph, null });
+                Require(detailsGrid.Items.Count == 0, "Legacy deselection clears stale details");
+                File.WriteAllText(Path.Combine(output, "observed.json"), JsonSerializer.Serialize(new { Passed = true, Tables = observations, Tooltip = tooltipValues,
+                    Details = properties.Where(p => p.Name.Contains("行（行）") || p.Name.Contains("模式")),
+                    WindowShown = false, DatabaseExecuted = false }, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            catch (Exception exception) { Console.Error.WriteLine(exception); Environment.ExitCode = 1; }
+            finally { app.Shutdown(Environment.ExitCode); app.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Background); }
+        });
+        Dispatcher.Run();
+    }
+
+    private static object CheckTable(string name, DataGrid table, PlanGraphControl graph, string output)
+    {
+        table.EnableColumnVirtualization = false;
+        Layout(table, 1950, 180);
+        var node = graph.Nodes.Single();
+        Require(table.ItemsSource == graph.Nodes, name + " production ItemsSource binding");
+        string[] paths = { "ActualRows", "ActualRowsRead", "ExecutionMode", "ParallelDisplay", "Ordered" };
+        string[] expected = { "100", "1,000", "Batch", "True", "True" };
+        var values = paths.Select((path, index) => {
+            var column = table.Columns.OfType<DataGridTextColumn>().Single(c => ((Binding)c.Binding).Path.Path == path);
+            var cell = (TextBlock)column.GetCellContent(node);
+            Require(cell != null && cell.Text == expected[index], name + " " + path);
+            Require(cell!.GetBindingExpression(TextBlock.TextProperty)!.Status == BindingStatus.Active, name + " binding status");
+            return new { Path = path, Header = column.Header, Text = cell.Text };
+        }).ToArray();
+        SaveImage(table, Path.Combine(output, name + "-table.png"));
+        return new { View = name, Values = values };
+    }
+
+    private static void Layout(FrameworkElement element, int width, int height)
+    {
+        element.Measure(new Size(width, height));
+        element.Arrange(new Rect(0, 0, width, height));
+        element.UpdateLayout();
+        Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    }
+
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject element)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+        {
+            var child = VisualTreeHelper.GetChild(element, i);
+            yield return child;
+            foreach (var descendant in Descendants(child)) yield return descendant;
+        }
+    }
+
+    private static void SaveImage(FrameworkElement element, string path)
+    {
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(element.ActualWidth), (int)Math.Ceiling(element.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(element);
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(path);
+        encoder.Save(stream);
+    }
+
+    private static void Require(bool condition, string description)
+    {
+        if (!condition) throw new InvalidOperationException("UI verification failed: " + description);
+    }
+
+    private sealed class ProbeApp : App
+    {
+        protected override void OnStartup(StartupEventArgs e) { }
+    }
+}

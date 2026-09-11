@@ -1,0 +1,118 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Privacy;
+using SqlXmlAnalyzer.Core.Reporting;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    private const string Marker = "SECRET_IMP22_7461";
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        var errors = new StringWriter(); App? app = null; MainWindow? main = null; ReportReviewWindow? window = null;
+        try
+        {
+            Directory.CreateDirectory(args[1]); app = new App(); app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(errors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var engine = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), engine, files, new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            main = new MainWindow(orchestrator, files) { Width = 1600, Height = 1000 }; main.Show(); Pump();
+            string plan = Path.Combine(args[1], "synthetic-plan.sqlplan");
+            File.WriteAllText(plan, $"""
+                <ShowPlanXML xmlns="{PlanRedactionService.ShowPlanNamespace}" Version="1.571" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+                <StmtSimple StatementText="SELECT 'OTHER_STATEMENT'"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" /></QueryPlan></StmtSimple>
+                <StmtSimple StatementText="SELECT '{Marker}' FROM [{Marker}_Table]"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1"><RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="100" ActualRowsRead="1000" ActualExecutions="1" /></RunTimeInformation><TableScan><Object Database="[{Marker}_Db]" Schema="dbo" Table="[{Marker}_Table]" /></TableScan></RelOp></QueryPlan></StmtSimple>
+                </Statements></Batch></BatchSequence></ShowPlanXML>
+                """);
+            Wait(main.AnalyzeFileAsync(plan));
+            main.ViewModel.PlanWorkspace.SelectedStatement = main.ViewModel.PlanWorkspace.Statements[1];
+            var tabs = (TabControl)typeof(MainWindow).GetProperty("MainTabControl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(main)!;
+            tabs.SelectedIndex = 1;
+            typeof(MainWindow).GetMethod("ShowDiagnosticReport", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(main, ["html"]); Pump();
+            window = app.Windows.OfType<ReportReviewWindow>().Single(); var vm = (ReportReviewViewModel)window.DataContext;
+            Require(vm.Report != null && vm.CanExport && vm.Scope.Contains("B1/S2/Q1"), "Production selection and redacted snapshot");
+            Require(((TextBox)window.FindName("ReportPreview")).Text == vm.PreviewText && !vm.PreviewText.Contains(Marker), "Real preview binding uses redacted report");
+            Capture(window, Path.Combine(args[1], "plan-redacted-preview.png"));
+            ((TabControl)window.FindName("PreviewTabs")).SelectedIndex = 1; Pump();
+            Require(((DataGrid)window.FindName("RedactionSamples")).Items.Count > 0 && vm.Redaction.Counts.Values.Sum() > 0, "Visible category counts and before/after examples");
+            Capture(window, Path.Combine(args[1], "redaction-categories-samples.png"));
+            var reportRecords = new List<object>();
+            foreach (bool redacted in new[] { true, false })
+            {
+                ((CheckBox)window.FindName("RedactReport")).IsChecked = redacted;
+                ((TabControl)window.FindName("PreviewTabs")).SelectedIndex = 0; Pump();
+                string prefix = redacted ? "redacted" : "raw";
+                var snapshot = vm.Report!;
+                Require(snapshot.Scope == "B1/S2/Q1" && !snapshot.SourceXml.Contains("OTHER_STATEMENT"), "Scope excludes other statement");
+                Require(snapshot.Facts.Single(f => f.Name == "B1/S2/Q1/O1/OutputRows/Value").Value == "100" && snapshot.Facts.Single(f => f.Name == "B1/S2/Q1/O1/RowsRead/Value").Value == "1000", "OutputRows/RowsRead remain distinct");
+                foreach (string format in vm.Formats)
+                {
+                    ((ComboBox)window.FindName("ReportFormat")).SelectedItem = format; Pump();
+                    Wait(vm.ExportAsync(Path.Combine(args[1], prefix + "." + format)));
+                    Require(vm.Status.Contains("完整保存"), "Published " + prefix + "." + format + ": " + vm.Status);
+                }
+                File.WriteAllText(Path.Combine(args[1], prefix + "-canonical.txt"), DiagnosticReportRenderer.Text(snapshot));
+                reportRecords.Add(new { Prefix = prefix, snapshot.Scope, snapshot.IssueCount, snapshot.FactCount, snapshot.HitCount, snapshot.NoHitCount, snapshot.SkippedCount, snapshot.FailedCount });
+                Capture(window, Path.Combine(args[1], prefix + "-exported.png"));
+            }
+            window.Close(); window = null;
+            var bad = SafeXmlHelper.ParseSafe(File.ReadAllText(plan)); bad.Root!.SetAttributeValue("UnsupportedPrivateField", Marker);
+            var diagnostics = PlanDiagnosticAnalyzer.AnalyzeDetailed(bad, bad.Root.Name.Namespace);
+            var blocked = new ReportReviewViewModel(DiagnosticReportFactory.Plan(bad, PlanIdentityAdapter.GetDocument(bad)!, diagnostics));
+            window = new ReportReviewWindow(blocked) { Owner = main }; window.Show(); Pump();
+            ((TabControl)window.FindName("PreviewTabs")).SelectedIndex = 1; Pump();
+            Require(!((Button)window.FindName("SaveReport")).IsEnabled && blocked.Redaction.Unsupported.Values.Sum() > 0, "Unknown fields visibly block export");
+            Capture(window, Path.Combine(args[1], "unsupported-blocked.png")); window.Close(); window = null;
+            Require(errors.ToString().Length == 0, "Binding errors: " + errors);
+            File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), errors.ToString());
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new { Passed = true, BindingErrors = 0, Marker, Reports = reportRecords }, new JsonSerializerOptions { WriteIndented = true }));
+            Console.WriteLine("PASS: production report selection, privacy previews, blocked fields, twelve exports, five screenshots, zero binding errors.");
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), errors.ToString()); return 1; }
+        finally { window?.Close(); main?.Close(); app?.Shutdown(); }
+    }
+    private static void Require(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Wait(Task task)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!task.IsCompleted) { if (timer.Elapsed > TimeSpan.FromSeconds(60)) throw new TimeoutException("Operation timed out"); Pump(); Thread.Sleep(10); }
+        task.GetAwaiter().GetResult(); Pump();
+    }
+    private static void Capture(Window window, string path)
+    {
+        var timer = Stopwatch.StartNew(); while (timer.ElapsedMilliseconds < 350) { Pump(); Thread.Sleep(10); }
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        int width = (int)Math.Ceiling(view.ActualWidth), height = (int)Math.Ceiling(view.ActualHeight);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32); var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            drawing.DrawRectangle(window.Background, null, new Rect(0, 0, width, height));
+            drawing.DrawRectangle(new VisualBrush(view) { Stretch = Stretch.None, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top }, null, new Rect(0, 0, width, height));
+        }
+        bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = new FileStream(path, FileMode.CreateNew); encoder.Save(output);
+    }
+}

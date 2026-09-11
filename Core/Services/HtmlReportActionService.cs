@@ -33,7 +33,9 @@ namespace SqlXmlAnalyzer.Core.Services
             string deadlockDetailText,
             XDocument? planDocument,
             string? planFilePath,
-            XNamespace showplanNamespace)
+            XNamespace showplanNamespace,
+            Rules.PlanDiagnosticReport? planDiagnostics = null,
+            DeadlockAnalysisOutput? deadlockAnalysis = null)
         {
             ArgumentNullException.ThrowIfNull(showplanNamespace);
 
@@ -49,7 +51,7 @@ namespace SqlXmlAnalyzer.Core.Services
                     _analysisReportController.BuildDeadlockHtmlReport(
                         deadlockDocument,
                         deadlockFilePath,
-                        deadlockDetailText),
+                        deadlockDetailText, deadlockAnalysis),
                     "");
             }
 
@@ -65,7 +67,7 @@ namespace SqlXmlAnalyzer.Core.Services
                     _analysisReportController.BuildPlanHtmlReport(
                         planDocument,
                         planFilePath,
-                        showplanNamespace),
+                        showplanNamespace, planDiagnostics),
                     "");
             }
 

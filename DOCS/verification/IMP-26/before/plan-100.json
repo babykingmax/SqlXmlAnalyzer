@@ -1,0 +1,60 @@
+{
+  "Passed": true,
+  "SourceSha256": "74F952488435603FF8BD7F61A061F9A738EED36A4BC82F53D37FD692FF2F2FAE",
+  "Runs": [
+    {
+      "Run": "process-cold",
+      "TotalMs": 1237.5132,
+      "StartupMs": 543.1163,
+      "InputLatencyP95Ms": 928.7694,
+      "InputLatencyMaxMs": 989.2748,
+      "Samples": 62,
+      "PeakWorkingSetBytes": 244125696,
+      "ManagedBytes": 71861200,
+      "VisibleGraphNodes": 100,
+      "Operators": 100,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 5.0926,
+          "Status": "Loading and identifying file: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 16.4518,
+          "Status": "Analyzing execution plan: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 299.5547,
+          "Status": "Execution plan analysis complete"
+        }
+      ]
+    },
+    {
+      "Run": "same-process-warm",
+      "TotalMs": 1167.3981,
+      "StartupMs": 543.1163,
+      "InputLatencyP95Ms": 1033.5594,
+      "InputLatencyMaxMs": 1072.9141,
+      "Samples": 58,
+      "PeakWorkingSetBytes": 285401088,
+      "ManagedBytes": 101758272,
+      "VisibleGraphNodes": 100,
+      "Operators": 100,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 8.1989,
+          "Status": "Loading and identifying file: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 11.7537,
+          "Status": "Analyzing execution plan: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 280.1914,
+          "Status": "Execution plan analysis complete"
+        }
+      ]
+    }
+  ]
+}

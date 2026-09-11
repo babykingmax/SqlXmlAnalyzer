@@ -1,0 +1,134 @@
+[
+  {
+    "id": "SC-01",
+    "related": "R09/R11/R21",
+    "title": "串行 / 并行 / 重复执行",
+    "input": "串行 100 行×1；16 worker×1000；单算子 100 行×10；带协调线程与缺失计数的独立夹具。",
+    "expected": "按指标合同分别断言；并行总行等于16000；循环次数不能当线程数；线程重排不改变结果。",
+    "ownerRole": "Core + DBA",
+    "implementation": "IMP-11/14",
+    "prerequisite": "合成输入可用；真实串行/并行/循环计划待采集",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-02",
+    "related": "R14/R16/R17",
+    "title": "语句与对象身份",
+    "input": "两语句复用 NodeId；sales.T / audit.T；不同 DB、alias；父子各有谓词。",
+    "expected": "选中第二条时 SQL/规则/详情/比较同时切换；未知 schema 不猜测。",
+    "ownerRole": "Core + WPF",
+    "implementation": "IMP-10/15/17/20",
+    "prerequisite": "当前 API 缺完整身份，完整断言需适配器迁移",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-03",
+    "related": "R08/R18/R22",
+    "title": "死锁图性质",
+    "input": "重叠环、两个 SCC、非环尾节点、资源顺序与进程顺序置换。",
+    "expected": "比较完整成员集合及资源边身份；环数不因起点改变；推演不宣称历史。",
+    "ownerRole": "Core + 测试",
+    "implementation": "IMP-13/20",
+    "prerequisite": "最小反例已准备；完整性质测试随修复加入",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-04",
+    "related": "R02/R19/R20",
+    "title": "SQL 语义与作用域",
+    "input": "字符类型/NULL/前导空格；事务提交、回滚、SAVEPOINT、TRY/CATCH；同名临时表。",
+    "expected": "逐项比对结果集、错误码、受影响行数、事务状态、对象副作用；未知前提默认不改。",
+    "ownerRole": "Refactoring + DBA",
+    "implementation": "IMP-04/18/19",
+    "prerequisite": "SQL Server 未连接；脚本仅语法检查",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-05",
+    "related": "R03",
+    "title": "失败写回矩阵",
+    "input": "fake 备份失败；独立临时目录中的占用、拒绝访问、临时写失败、替换失败、外部 hash 改变。",
+    "expected": "按故障发生阶段核对原字节、备份、残留临时文件和返回状态；不能用破坏共享目录权限模拟。",
+    "ownerRole": "Application + 测试",
+    "implementation": "IMP-03/19",
+    "prerequisite": "fake 可重复；新写回接口的故障挂点待实现",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-06",
+    "related": "R01/R21",
+    "title": "导出与隐私矩阵",
+    "input": "唯一标记分布在 SQL、常量、参数、标识符、注释和文本；图/表/HTML/PDF/Word/JSON/复制。",
+    "expected": "逐出口核对事实数量和单位、标记残留、未知字段摘要、源输入不变。",
+    "ownerRole": "报告 + 测试",
+    "implementation": "IMP-05/22",
+    "prerequisite": "IMP-05 已实现支持范围内 XML 脱敏、普通输出未脱敏标签及不支持的脱敏共享阻断，服务/CLI/实际文件自动化验证见 IMP-05；真实窗口和跨视图事实/单位验收待 IMP-22。",
+    "executionStatus": "PartiallyVerifiedByIMP05"
+  },
+  {
+    "id": "SC-07",
+    "related": "UI-08",
+    "title": "连续打开与取消",
+    "input": "A 用 TaskCompletionSource 等待，启动 B 完成后再释放 A；取消当前请求；失败后再打开 C。",
+    "expected": "仅当前请求提交；取消不显示成功；不要依靠随机延时让竞态偶然出现。",
+    "ownerRole": "WPF + 测试",
+    "implementation": "IMP-09/26",
+    "prerequisite": "现有协调器测试已运行；真实窗口和可控 UI 调度挂点待补",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-08",
+    "related": "R04/R05",
+    "title": "输入类型与有效性",
+    "input": "无关 XML、错 namespace、损坏 XML、多事件；前缀 ShowPlan、合法无 RelOp 语句。",
+    "expected": "按内容/能力识别，非法输入非成功；合法特殊结构不误拒；partial 可追溯。",
+    "ownerRole": "Core + CLI",
+    "implementation": "IMP-06/09",
+    "prerequisite": "反例可运行；正向特殊结构需真实采集或可信 XSD 验证",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-09",
+    "related": "R15/R16",
+    "title": "比较能力与缺失值",
+    "input": "双方实测/一侧估算/双方估算；真实零、单位不一致、采集环境改变。",
+    "expected": "仅双方可比指标算差；缺失 N/A、基准0不算百分比；未匹配语句显式展示。",
+    "ownerRole": "比较 + WPF",
+    "implementation": "IMP-17/21",
+    "prerequisite": "最小缺失值反例可运行；完整比较模型待迁移",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-10",
+    "related": "UI-11/UI-15",
+    "title": "XEL / 大图 / 取消",
+    "input": "多事件原始 XEL；100/1000/5000 节点，连续切换事件与取消。",
+    "expected": "记录输入hash、硬件、冷/热状态、时长/峰值内存；聚合回到原事件，超限有说明。",
+    "ownerRole": "Core + WPF + 测试",
+    "implementation": "IMP-23/26",
+    "prerequisite": "无可靠真实 XEL；未进行性能实测，不声称达到预算",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-11",
+    "related": "UI-13/UI-14",
+    "title": "主题 / DPI / 键盘",
+    "input": "1280×720、1366×768、1920×1080；125/150/200%；深浅主题。",
+    "expected": "打开→定位→证据→比较→导出可键盘完成；窄窗口关键操作可达；记录实际DIP。",
+    "ownerRole": "WPF + 测试",
+    "implementation": "IMP-25",
+    "prerequisite": "操作脚本已准备；实际窗口验证未执行",
+    "executionStatus": "PendingExpandedAcceptance"
+  },
+  {
+    "id": "SC-12",
+    "related": "UI-12/D05",
+    "title": "配置与规则状态",
+    "input": "旧配置、缺文件、坏JSON、未知ID、启用/严重度变更、规则跳过/异常。",
+    "expected": "旧配置兼容；Hit/NoHit/Skipped/Failed分开；同次分析用同一配置快照。",
+    "ownerRole": "Core + 测试",
+    "implementation": "IMP-12/24/28",
+    "prerequisite": "保留现有测试；结构化规则状态验收依赖后续合同",
+    "executionStatus": "PendingExpandedAcceptance"
+  }
+]

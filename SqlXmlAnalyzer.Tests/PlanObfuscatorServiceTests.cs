@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Xml.Linq;
 using FluentAssertions;
 using SqlXmlAnalyzer.Core.Services;
@@ -20,7 +20,7 @@ namespace SqlXmlAnalyzer.Tests
         public void ObfuscatePlan_ShouldObfuscateSensitiveFields()
         {
             // Arrange
-            var doc = XDocument.Parse(@"
+            var doc = SafeXmlHelper.ParseSafe(@"
                 <ShowPlanXML xmlns=""http://schemas.microsoft.com/sqlserver/2004/07/showplan"">
                     <BatchSequence>
                         <Batch>
@@ -65,19 +65,19 @@ namespace SqlXmlAnalyzer.Tests
             scan.Attribute("Database")!.Value.Should().NotContain("MyProductionDb");
             scan.Attribute("Table")!.Value.Should().NotContain("Employees");
             scan.Attribute("Index")!.Value.Should().NotContain("PK_Employees");
-            scan.Attribute("Schema")!.Value.Should().Be("[dbo]"); // dbo is excluded from mask in service
+            scan.Attribute("Schema")!.Value.Should().NotContain("dbo"); // Built-in names are still identifiers and are masked.
 
             var colRef = root.Descendants().First(e => e.Name.LocalName == "ColumnReference" && e.Attribute("Column") != null && e.Attribute("Column")!.Value != "@SalaryParam");
             colRef.Attribute("Column")!.Value.Should().NotContain("Salary");
 
             // ParameterCompiledValue and ParameterRuntimeValue should be masked
-            var paramRef = root.Descendants().First(e => e.Name.LocalName == "ColumnReference" && e.Attribute("Column")!.Value == "@SalaryParam");
-            paramRef.Attribute("ParameterCompiledValue")!.Value.Should().Be("[MASKED_PARAM_VAL]");
-            paramRef.Attribute("ParameterRuntimeValue")!.Value.Should().Be("[MASKED_PARAM_VAL]");
+            var paramRef = root.Descendants().First(e => e.Name.LocalName == "ColumnReference" && e.Attribute("ParameterCompiledValue") != null);
+            paramRef.Attribute("ParameterCompiledValue")!.Value.Should().Be("[MASKED_ParameterValue]");
+            paramRef.Attribute("ParameterRuntimeValue")!.Value.Should().Be("[MASKED_ParameterValue]");
 
             // ScalarString should be masked
             var scalarOp = root.Descendants().First(e => e.Name.LocalName == "ScalarOperator");
-            scalarOp.Attribute("ScalarString")!.Value.Should().Be("[Masked Formula / Predicate Expression]");
+            scalarOp.Attribute("ScalarString")!.Value.Should().Be("[MASKED_Expression]");
         }
     }
 }

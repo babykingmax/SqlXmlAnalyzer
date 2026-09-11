@@ -1,0 +1,484 @@
+{
+  "Implementation": "IMP-29",
+  "Revision": "Review hardening",
+  "GeneratedAtUtc": "2026-09-10T10:35:44.5666980Z",
+  "GitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "WorkingTree": "Uncommitted cumulative IMP23-29 work",
+  "BaselineTests": 2754,
+  "AddedTests": 37,
+  "HardeningTests": 25,
+  "BuildEvidenceSha256": "389C4966BACC82BE6B7760753669836DC3A2BB8A1EAED26EEC94C45CD3F3C3BF",
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Passed": 2791,
+        "Failed": 0,
+        "NotExecuted": 0,
+        "Total": 2791
+      },
+      "AddedTests": [
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 0, passed: True)",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Deadlock_OpenMultipleEventsAnalyzeAndPackage_UsesOnlySelectedEvent(index: 0, victim: \"p1\", otherVictim: \"p3\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 7, passed: False)",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.UnknownFailure_WritesRealDumpAndCannotBeReportedAsSuccess",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExpectedCancellationAndFailure_RespectBuildLoggingGateAndDoNotCreateDump",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Plan_OpenSelectEvidenceSaveReopenCompareAndPackage_PreservesScope(index: 1, selected: \"U\", other: \"T\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Plan_OpenSelectEvidenceSaveReopenCompareAndPackage_PreservesScope(index: 0, selected: \"T\", other: \"U\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Package_CancelledOrExistingDestination_CanRetryWithoutLosingReviewedBytes(existing: False)",
+        "SqlXmlAnalyzer.Tests.ReportReviewLayoutAcceptanceTests.LongReport_KeepsPreviewBoundedAndSaveReachable(compact: True)",
+        "SqlXmlAnalyzer.Tests.ReportReviewLayoutAcceptanceTests.LongReport_KeepsPreviewBoundedAndSaveReachable(compact: False)",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Deadlock_OpenMultipleEventsAnalyzeAndPackage_UsesOnlySelectedEvent(index: 1, victim: \"p3\", otherVictim: \"p1\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Package_CancelledOrExistingDestination_CanRetryWithoutLosingReviewedBytes(existing: True)"
+      ],
+      "HardeningTests": [
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-20-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"stage-different-build\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"binary-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-0-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-changed-during-stage\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-1-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"git-evidence-visible\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-1-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"duplicate-records\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-10-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-incremental\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"path-escape\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"unchanged\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-added\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-10-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"dump-load-context\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"stage-result-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-20-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"build-changed-during-stage\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"stage-unbound-result\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"build-result-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-0-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"preserve-existing-evidence\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-deleted\")"
+      ],
+      "DiagnosticTests": [
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_EnforcesBuildPolicyForFileAndStderrWithoutPollutingStdout",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 0, passed: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Provider_WhenFormatterThrows_CapturesDiagnosticAndKeepsOriginalError",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 7, passed: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Reporter_WhenCaptureFailsOrHeaderIsInvalid_DoesNotClaimDumpWasCreated(invalidHeader: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 12, value: 49)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_LegacyThresholdCannotSuppressRequiredLevels(requested: None)",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.UnknownFailure_WritesRealDumpAndCannotBeReportedAsSuccess",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"\\\\uD800\\\"}]}\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExpectedCancellationAndFailure_RespectBuildLoggingGateAndDoNotCreateDump",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Reporter_CreatesSidecarAndDeduplicatesSameExceptionAcrossBoundaries",
+        "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":[\\\"\\\\uD800\\\"]}\")",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_WhenFileSinkCannotBeCreated_ReportsErrorWithoutThrowing",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.NativeWriter_OnWindows_CreatesReadableMinidumpHeaderAndPrivateIncidentDirectory",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.Logs_RespectBuildLevelsAndDoNotContainUnknownJsonPayload",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.NativeWriter_WhenTimedOut_DoesNotQueueAnotherWorkerOrPublishLateDump",
+        "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.ApplyCallbackFailureAndBrokenReporter_DoNotMisreportCommittedConfiguration",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":{\\\"\\\\uDC00\\\":0}}\")",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 8, value: 4294967295)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_WhenExceptionFormattingThrows_KeepsOriginalErrorWithoutThrowing",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 40, value: 48)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.SessionCompatibilityOperations_RespectDebugReleaseLogGate",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Reporter_WhenCaptureFailsOrHeaderIsInvalid_DoesNotClaimDumpWasCreated(invalidHeader: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_LegacyThresholdCannotSuppressRequiredLevels(requested: Critical)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 8, value: 0)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Provider_UsesSameFilePolicyForLayeredLogs",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 36, value: 4294967295)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.ExceptionPolicy_DoesNotDumpExpectedFailures"
+      ],
+      "Diagnostics": {
+        "LogPolicyVerified": true,
+        "Passed": true,
+        "ValidatedNativeDumps": 1,
+        "ExpectedFailureObserved": true,
+        "Configuration": "Debug"
+      },
+      "Wpf": [
+        {
+          "Probe": "20",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/debug/wpf-20.json"
+        },
+        {
+          "Probe": "21",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/debug/wpf-21.json"
+        },
+        {
+          "Probe": "22",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/debug/wpf-22.json"
+        },
+        {
+          "Probe": "23",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/debug/wpf-23.json"
+        },
+        {
+          "Probe": "24",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/debug/wpf-24.json"
+        },
+        {
+          "Probe": "25",
+          "Passed": true,
+          "Checks": 334,
+          "Evidence": "evidence/debug/wpf-25.json"
+        },
+        {
+          "Probe": "26",
+          "Passed": true,
+          "Checks": 365,
+          "Evidence": "evidence/debug/wpf-26.json"
+        },
+        {
+          "Probe": "27",
+          "Passed": true,
+          "Checks": 59,
+          "Evidence": "evidence/debug/wpf-27.json"
+        }
+      ],
+      "SqlChecks": 100,
+      "IndexTargets": 10,
+      "CliCompatibilityChecks": 22,
+      "CliInvalidChecks": 3,
+      "Xel": {
+        "Passed": true,
+        "SourceSha256": "AF2D481E2B4BE6D71CB74E96D7FAAE4137C1F60F2D42DB5A13EA4C5C216B586B",
+        "Events": 2,
+        "Groups": 1,
+        "SkippedRecords": 4,
+        "Checks": [
+          {
+            "Index": 1,
+            "ByteOffset": 7757,
+            "ByteLength": 7772,
+            "Filtered": 1,
+            "Processes": 2
+          },
+          {
+            "Index": 4,
+            "ByteOffset": 16973,
+            "ByteLength": 7772,
+            "Filtered": 1,
+            "Processes": 2
+          }
+        ],
+        "CorruptInputStatus": "Invalid"
+      }
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Passed": 2791,
+        "Failed": 0,
+        "NotExecuted": 0,
+        "Total": 2791
+      },
+      "AddedTests": [
+        "SqlXmlAnalyzer.Tests.ReportReviewLayoutAcceptanceTests.LongReport_KeepsPreviewBoundedAndSaveReachable(compact: True)",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Deadlock_OpenMultipleEventsAnalyzeAndPackage_UsesOnlySelectedEvent(index: 0, victim: \"p1\", otherVictim: \"p3\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Plan_OpenSelectEvidenceSaveReopenCompareAndPackage_PreservesScope(index: 0, selected: \"T\", other: \"U\")",
+        "SqlXmlAnalyzer.Tests.ReportReviewLayoutAcceptanceTests.LongReport_KeepsPreviewBoundedAndSaveReachable(compact: False)",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExpectedCancellationAndFailure_RespectBuildLoggingGateAndDoNotCreateDump",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 0, passed: True)",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 7, passed: False)",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Package_CancelledOrExistingDestination_CanRetryWithoutLosingReviewedBytes(existing: True)",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Deadlock_OpenMultipleEventsAnalyzeAndPackage_UsesOnlySelectedEvent(index: 1, victim: \"p3\", otherVictim: \"p1\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Package_CancelledOrExistingDestination_CanRetryWithoutLosingReviewedBytes(existing: False)",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.UnknownFailure_WritesRealDumpAndCannotBeReportedAsSuccess",
+        "SqlXmlAnalyzer.Tests.AcceptanceUserScenarioTests.Plan_OpenSelectEvidenceSaveReopenCompareAndPackage_PreservesScope(index: 1, selected: \"U\", other: \"T\")"
+      ],
+      "HardeningTests": [
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"duplicate-records\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"stage-result-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-20-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"path-escape\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-10-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"preserve-existing-evidence\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-1-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"build-result-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"git-evidence-visible\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-incremental\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-deleted\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-20-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"stage-different-build\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"binary-changed\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-0-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-added\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"unchanged\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"source-changed-during-stage\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-10-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"stage-unbound-result\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-1-en-US\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"build-changed-during-stage\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"warnings-0-zh-CN\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceEvidenceScriptTests.EvidenceGuard_RejectsStaleOrUnpublishableAcceptance(scenario: \"dump-load-context\")"
+      ],
+      "DiagnosticTests": [
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_WhenFileSinkCannotBeCreated_ReportsErrorWithoutThrowing",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Reporter_WhenCaptureFailsOrHeaderIsInvalid_DoesNotClaimDumpWasCreated(invalidHeader: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 8, value: 4294967295)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Reporter_CreatesSidecarAndDeduplicatesSameExceptionAcrossBoundaries",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Provider_WhenFormatterThrows_CapturesDiagnosticAndKeepsOriginalError",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 40, value: 48)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_LegacyThresholdCannotSuppressRequiredLevels(requested: Critical)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.NativeWriter_WhenTimedOut_DoesNotQueueAnotherWorkerOrPublishLateDump",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_WhenExceptionFormattingThrows_KeepsOriginalErrorWithoutThrowing",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_LegacyThresholdCannotSuppressRequiredLevels(requested: None)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.ExceptionPolicy_DoesNotDumpExpectedFailures",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExpectedCancellationAndFailure_RespectBuildLoggingGateAndDoNotCreateDump",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":[\\\"\\\\uD800\\\"]}\")",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 0, passed: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"\\\\uD800\\\"}]}\")",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.ApplyCallbackFailureAndBrokenReporter_DoNotMisreportCommittedConfiguration",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.ExitCode_ControlsPersistedAcceptanceResult(code: 7, passed: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Logger_EnforcesBuildPolicyForFileAndStderrWithoutPollutingStdout",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 36, value: 4294967295)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.SessionCompatibilityOperations_RespectDebugReleaseLogGate",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.Logs_RespectBuildLevelsAndDoNotContainUnknownJsonPayload",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.InvalidUnicode_LoadAndEditorRejectWithoutDumpOrChangingDraft(json: \"{\\\"extensions\\\":{\\\"\\\\uDC00\\\":0}}\")",
+        "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: False)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.CompatibilityDiagnosticTests.UnknownSessionWriteFailure_CapturesRealDumpOrReportsCaptureFailure(dumpFails: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Reporter_WhenCaptureFailsOrHeaderIsInvalid_DoesNotClaimDumpWasCreated(invalidHeader: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 8, value: 0)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: True)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Validator_RejectsEmptyOrOutOfBoundsStreams(offset: 12, value: 49)",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.Provider_UsesSameFilePolicyForLayeredLogs",
+        "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticLoggingTests.NativeWriter_OnWindows_CreatesReadableMinidumpHeaderAndPrivateIncidentDirectory",
+        "SqlXmlAnalyzer.Tests.AcceptanceProbeBoundaryTests.UnknownFailure_WritesRealDumpAndCannotBeReportedAsSuccess"
+      ],
+      "Diagnostics": {
+        "LogPolicyVerified": true,
+        "Passed": true,
+        "ValidatedNativeDumps": 1,
+        "ExpectedFailureObserved": true,
+        "Configuration": "Release"
+      },
+      "Wpf": [
+        {
+          "Probe": "20",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/release/wpf-20.json"
+        },
+        {
+          "Probe": "21",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/release/wpf-21.json"
+        },
+        {
+          "Probe": "22",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/release/wpf-22.json"
+        },
+        {
+          "Probe": "23",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/release/wpf-23.json"
+        },
+        {
+          "Probe": "24",
+          "Passed": true,
+          "Checks": 1,
+          "Evidence": "evidence/release/wpf-24.json"
+        },
+        {
+          "Probe": "25",
+          "Passed": true,
+          "Checks": 334,
+          "Evidence": "evidence/release/wpf-25.json"
+        },
+        {
+          "Probe": "26",
+          "Passed": true,
+          "Checks": 365,
+          "Evidence": "evidence/release/wpf-26.json"
+        },
+        {
+          "Probe": "27",
+          "Passed": true,
+          "Checks": 59,
+          "Evidence": "evidence/release/wpf-27.json"
+        }
+      ],
+      "SqlChecks": 100,
+      "IndexTargets": 10,
+      "CliCompatibilityChecks": 22,
+      "CliInvalidChecks": 3,
+      "Xel": {
+        "Passed": true,
+        "SourceSha256": "AF2D481E2B4BE6D71CB74E96D7FAAE4137C1F60F2D42DB5A13EA4C5C216B586B",
+        "Events": 2,
+        "Groups": 1,
+        "SkippedRecords": 4,
+        "Checks": [
+          {
+            "Index": 1,
+            "ByteOffset": 7757,
+            "ByteLength": 7772,
+            "Filtered": 1,
+            "Processes": 2
+          },
+          {
+            "Index": 4,
+            "ByteOffset": 16973,
+            "ByteLength": 7772,
+            "Filtered": 1,
+            "Processes": 2
+          }
+        ],
+        "CorruptInputStatus": "Invalid"
+      }
+    }
+  ],
+  "Performance": [
+    {
+      "Input": "100",
+      "SourceSha256": "74F952488435603FF8BD7F61A061F9A738EED36A4BC82F53D37FD692FF2F2FAE",
+      "Runs": [
+        {
+          "Run": "process-cold",
+          "TotalMs": 1804.5791,
+          "InputLatencyP95Ms": 149.8261,
+          "InputLatencyMaxMs": 229.4065,
+          "Samples": 90,
+          "PeakWorkingSetBytes": 227270656,
+          "VisibleGraphNodes": 64,
+          "Operators": 100,
+          "XelEvents": 0,
+          "State": "Ready"
+        },
+        {
+          "Run": "same-process-warm",
+          "TotalMs": 1668.213,
+          "InputLatencyP95Ms": 59.4823,
+          "InputLatencyMaxMs": 139.2475,
+          "Samples": 84,
+          "PeakWorkingSetBytes": 249765888,
+          "VisibleGraphNodes": 64,
+          "Operators": 100,
+          "XelEvents": 0,
+          "State": "Ready"
+        }
+      ]
+    },
+    {
+      "Input": "1000",
+      "SourceSha256": "52017CE964A0FDDEC1D82DBEA14EB15568398B7CD583F7EB1DFD82CDDF389B20",
+      "Runs": [
+        {
+          "Run": "process-cold",
+          "TotalMs": 1883.7047,
+          "InputLatencyP95Ms": 221.6027,
+          "InputLatencyMaxMs": 247.5816,
+          "Samples": 94,
+          "PeakWorkingSetBytes": 261693440,
+          "VisibleGraphNodes": 64,
+          "Operators": 1000,
+          "XelEvents": 0,
+          "State": "Ready"
+        },
+        {
+          "Run": "same-process-warm",
+          "TotalMs": 1947.4784,
+          "InputLatencyP95Ms": 83.5205,
+          "InputLatencyMaxMs": 163.2807,
+          "Samples": 98,
+          "PeakWorkingSetBytes": 327299072,
+          "VisibleGraphNodes": 64,
+          "Operators": 1000,
+          "XelEvents": 0,
+          "State": "Ready"
+        }
+      ]
+    },
+    {
+      "Input": "5000",
+      "SourceSha256": "7E0DB938A8CF769FDCA0253BDDEEE2D03EC17B82942C56A5C67014C53E796674",
+      "Runs": [
+        {
+          "Run": "process-cold",
+          "TotalMs": 2567.418,
+          "InputLatencyP95Ms": 147.8328,
+          "InputLatencyMaxMs": 257.0383,
+          "Samples": 129,
+          "PeakWorkingSetBytes": 407908352,
+          "VisibleGraphNodes": 64,
+          "Operators": 5000,
+          "XelEvents": 0,
+          "State": "Ready"
+        },
+        {
+          "Run": "same-process-warm",
+          "TotalMs": 2453.2654,
+          "InputLatencyP95Ms": 39.8562,
+          "InputLatencyMaxMs": 133.2124,
+          "Samples": 123,
+          "PeakWorkingSetBytes": 610799616,
+          "VisibleGraphNodes": 64,
+          "Operators": 5000,
+          "XelEvents": 0,
+          "State": "Ready"
+        }
+      ]
+    },
+    {
+      "Input": "xel",
+      "SourceSha256": "AF2D481E2B4BE6D71CB74E96D7FAAE4137C1F60F2D42DB5A13EA4C5C216B586B",
+      "Runs": [
+        {
+          "Run": "process-cold",
+          "TotalMs": 320.3642,
+          "InputLatencyP95Ms": 61.9185,
+          "InputLatencyMaxMs": 61.9185,
+          "Samples": 16,
+          "PeakWorkingSetBytes": 177377280,
+          "VisibleGraphNodes": 0,
+          "Operators": 0,
+          "XelEvents": 2,
+          "State": "Partial"
+        },
+        {
+          "Run": "same-process-warm",
+          "TotalMs": 63.7518,
+          "InputLatencyP95Ms": 40.3799,
+          "InputLatencyMaxMs": 40.3799,
+          "Samples": 4,
+          "PeakWorkingSetBytes": 180133888,
+          "VisibleGraphNodes": 0,
+          "Operators": 0,
+          "XelEvents": 2,
+          "State": "Partial"
+        }
+      ]
+    }
+  ],
+  "SourceCount": 810,
+  "FrozenFixturesUnchanged": 13,
+  "CoverageGenerated": false,
+  "AutomatedAcceptancePassed": true,
+  "OverallAcceptance": "Conditional: see acceptance-matrix.md for unaccepted physical DPI, assistive technology, external viewers and performance goals",
+  "ReleaseGate": "NotGranted; IMP30 is separate",
+  "ValidatedNativeDumps": 2
+}

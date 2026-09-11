@@ -1,0 +1,45 @@
+using System.Diagnostics;
+using System.Text.Json;
+using System.Xml.Linq;
+using SqlXmlAnalyzer.Core.Services;
+
+var service = new XelSearchService();
+var measurements = new List<object>();
+foreach (int length in new[] { 50, 384, 2048 })
+{
+    const int count = 7;
+    var root = new XElement("deadlock", new XElement("victim-list", new XElement("victimProcess", new XAttribute("id", "p0"))),
+        new XElement("process-list", Enumerable.Range(0, count).Select(i => new XElement("process", new XAttribute("id", "p" + i), new XAttribute("spid", 50 + i), new XAttribute("currentdb", 7)))),
+        new XElement("resource-list", Enumerable.Range(0, count).Select(i => new XElement("keylock", new XAttribute("dbid", 7), new XAttribute("objectname", new string('x', length)), new XAttribute("id", "r" + i),
+            new XElement("owner-list", new XElement("owner", new XAttribute("id", "p" + i), new XAttribute("mode", "X"))),
+            new XElement("waiter-list", new XElement("waiter", new XAttribute("id", "p" + ((i + 1) % count)), new XAttribute("mode", "X")))))));
+    string xml = root.ToString();
+    var input = new InputRecognitionService().Parse(xml);
+    service.Build([new("warmup.xel", input)]);
+    long before = GC.GetAllocatedBytesForCurrentThread(); var timer = Stopwatch.StartNew();
+    var catalog = service.Build([new("allocation.xel", input)]);
+    long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+    if (allocated >= 8L * 1024 * 1024 || !catalog.Events[0].StructureKey.StartsWith("structure-v2:"))
+        throw new InvalidOperationException("Small symmetric graph exceeded its allocation regression threshold.");
+    measurements.Add(new { NameLength = length, InputCharacters = xml.Length, AllocatedBytes = allocated, ElapsedMs = timer.ElapsedMilliseconds });
+}
+
+string largeXml = "<deadlock><victim-list><victimProcess id='p1'/></victim-list><process-list><process id='p1' spid='51'/><process id='p2' spid='52'/></process-list><resource-list><keylock dbid='7' objectname='T' extension='" + new string('x', 8 * 1024 * 1024) + "'><owner-list><owner id='p1' mode='X'/></owner-list><waiter-list><waiter id='p2' mode='X'/></waiter-list></keylock></resource-list></deadlock>";
+var largeInput = new InputRecognitionService().Parse(largeXml);
+if (!largeInput.HasUsableContent) throw new InvalidOperationException("Large regression input was not accepted by the bounded reader.");
+var largeCatalog = service.Build([new("bounded.xel", largeInput)]);
+var largeResult = service.Search(largeCatalog, new(Text: "extension"));
+if (largeResult.Events.Count != 1 || !largeCatalog.Events[0].StructureDescription.Contains("结构标签超过"))
+    throw new InvalidOperationException("Over-budget graph must remain searchable as an isolated event.");
+largeCatalog.Events[0].ValidateSource();
+long heapLimit = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
+if (heapLimit > 256L * 1024 * 1024) throw new InvalidOperationException("Probe must run with a 256 MiB managed heap limit.");
+await File.WriteAllTextAsync(args[0], JsonSerializer.Serialize(new
+{
+    Passed = true, ManagedHeapLimitBytes = heapLimit, Measurements = measurements,
+    LargeInputCharacters = largeXml.Length, LargeInputStatus = largeInput.Status.ToString(),
+    LargeInputBuildSucceeded = true, LargeInputSearchMatches = largeResult.Events.Count,
+    LargeInputIsolated = true, OriginalTraceValidated = true,
+    Scope = "Synthetic allocation regression, not a general large-catalog performance benchmark"
+}, new JsonSerializerOptions { WriteIndented = true }));
+Console.WriteLine("PASS: bounded allocation, 8 Mi-character label isolated, search and trace retained.");

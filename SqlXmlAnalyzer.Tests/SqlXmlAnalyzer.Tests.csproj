@@ -12,6 +12,8 @@
     <EmbeddedResource Include="TestData\*.sqlplan" />
     <EmbeddedResource Include="TestData\*.xdl" />
     <EmbeddedResource Include="Resources\*.sqlplan" />
+    <EmbeddedResource Include="TestData\Schemas\*.xsd" />
+    <EmbeddedResource Include="TestData\Compatibility\*" />
   </ItemGroup>
 
   <ItemGroup>

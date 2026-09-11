@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="SqlXmlAnalyzer.Tests" />
     <ProjectReference Include="..\SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj" />
     <ProjectReference Include="..\src\SqlXmlAnalyzer.Application\SqlXmlAnalyzer.Application.csproj" />
     <ProjectReference Include="..\src\SqlXmlAnalyzer.Analysis\SqlXmlAnalyzer.Analysis.csproj" />

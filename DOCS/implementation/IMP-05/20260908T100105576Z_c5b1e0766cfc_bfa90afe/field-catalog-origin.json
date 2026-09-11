@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.571",
+  "schemaSha256": "BAFD9C633F872B6BFD6E0C6198CF8F1CD6981B7A599564ABD9F1E63BBC069E81",
+  "elements": 213,
+  "attributes": 302,
+  "policy": "Known free strings are masked; unknown fields block redacted export; number/boolean/enum payloads are validated."
+}

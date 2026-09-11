@@ -8,7 +8,10 @@ namespace SqlXmlAnalyzer.Core.Services
         XDocument Document,
         string FilePath,
         XNamespace ShowplanNamespace,
-        PlanAnalysisOutput Analysis);
+        PlanAnalysisOutput Analysis)
+    {
+        public InputRecognitionResult? Input { get; init; }
+    }
 
     public sealed class PlanDocumentController
     {
@@ -23,8 +26,10 @@ namespace SqlXmlAnalyzer.Core.Services
             XDocument document,
             string filePath,
             XNamespace showplanNamespace,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            InputRecognitionResult? input = null)
         {
+            var source = new PlanAnalysisSource(document, filePath, input);
             return Task.Run(
                 () =>
                 {
@@ -33,12 +38,12 @@ namespace SqlXmlAnalyzer.Core.Services
                         document,
                         showplanNamespace,
                         filePath,
-                        cancellationToken);
+                        cancellationToken, source.Input);
                     return new PlanDocumentResult(
                         document,
                         filePath,
                         showplanNamespace,
-                        analysis);
+                        analysis) { Input = source.Input };
                 },
                 cancellationToken);
         }

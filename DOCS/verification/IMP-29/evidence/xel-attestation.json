@@ -1,0 +1,29 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "389C4966BACC82BE6B7760753669836DC3A2BB8A1EAED26EEC94C45CD3F3C3BF",
+  "StartedAtUtc": "2026-09-10T10:33:46.1617226Z",
+  "CompletedAtUtc": "2026-09-10T10:33:58.0716213Z",
+  "Results": [
+    {
+      "Path": "Capture.ps1",
+      "Bytes": 3654,
+      "Sha256": "3BB226BC4D321C9EBDC95EE91E9B890001D235E9E7E92DAA0A2EF3E28C67571F"
+    },
+    {
+      "Path": "multiple.xel",
+      "Bytes": 26112,
+      "Sha256": "AF2D481E2B4BE6D71CB74E96D7FAAE4137C1F60F2D42DB5A13EA4C5C216B586B"
+    },
+    {
+      "Path": "run.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "xel-fixture.json",
+      "Bytes": 261,
+      "Sha256": "D5D23D80B66D12C40B71B53B4CAEB4A2CC58AD9B3BF826F7EB1A53171635A429"
+    }
+  ]
+}

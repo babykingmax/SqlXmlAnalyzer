@@ -1,0 +1,14 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "006B6B39219CCD52C1F9809F8D831F19BA529F9805E53B6D9344F9F249EA00F6",
+  "StartedAtUtc": "2026-09-10T11:09:53.0781328Z",
+  "CompletedAtUtc": "2026-09-10T11:10:02.1575549Z",
+  "Results": [
+    {
+      "Path": "verification.json",
+      "Bytes": 414,
+      "Sha256": "264CAE077EA30E0698B1ACC5673BD9230DE4AF3D5B15057BBC223854535BB9A1"
+    }
+  ]
+}

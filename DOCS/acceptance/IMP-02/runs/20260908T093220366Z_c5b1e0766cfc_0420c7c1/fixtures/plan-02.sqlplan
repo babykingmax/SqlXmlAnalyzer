@@ -1,0 +1,32 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="select 1" StatementSubTreeCost="1">
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Index Scan" Parallel="true" EstimateRows="16000">
+              <RunTimeInformation>
+                <RunTimeCountersPerThread Thread="1" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="2" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="3" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="4" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="5" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="6" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="7" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="8" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="9" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="10" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="11" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="12" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="13" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="14" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="15" ActualRows="1000" ActualExecutions="1" />
+                <RunTimeCountersPerThread Thread="16" ActualRows="1000" ActualExecutions="1" />
+              </RunTimeInformation>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

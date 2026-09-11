@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -61,6 +63,35 @@ namespace SqlXmlAnalyzer.Services
             _invokeWhenLoaded(_zoomToFit);
         }
 
+        private long _renderRevision;
+        public async Task RenderAsync(DeadlockGraph graph, CancellationToken token)
+        {
+            long revision = ++_renderRevision;
+            double width = GetCanvasWidth(), height = GetCanvasHeight();
+            var prepared = await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+                var layout = _layoutService.BuildLayout(graph);
+                var placement = _placementService.PlaceNodes(layout, graph.VictimProcessId, width, height);
+                var edges = _edgeService.BuildEdges(layout.Resources);
+                token.ThrowIfCancellationRequested();
+                return (Layout: layout, Placement: placement, Edges: edges);
+            }, token);
+            if (revision != _renderRevision) throw new OperationCanceledException(token);
+            ClearGraphState(); ResetViewport();
+            foreach (var detail in prepared.Layout.ResourceGroupDetails) _graphState.ResourceGroupDetails[detail.Key] = detail.Value;
+            try
+            {
+                await UiBatchScheduler.ApplyAsync(prepared.Placement.Processes, _drawProcessNode, token, () => revision == _renderRevision);
+                await UiBatchScheduler.ApplyAsync(prepared.Placement.Resources, _drawResourceNode, token, () => revision == _renderRevision);
+                await UiBatchScheduler.ApplyAsync(prepared.Edges, _drawEdge, token, () => revision == _renderRevision);
+                if (prepared.Layout.Processes.Count == 0) _graphCanvas.Children.Add(CreateNoDataMessage());
+                else AddGraphTip(prepared.Placement.TipPosition, graph.CycleAnalysis.Summary);
+                _invokeWhenLoaded(() => { if (revision == _renderRevision && !token.IsCancellationRequested) _zoomToFit(); });
+            }
+            catch { if (revision == _renderRevision) ClearGraphState(); throw; }
+        }
+
         public void Render(DeadlockGraph graph)
         {
             ClearGraphState();
@@ -101,7 +132,7 @@ namespace SqlXmlAnalyzer.Services
                 _drawEdge(edge);
             }
 
-            AddGraphTip(placement.TipPosition);
+            AddGraphTip(placement.TipPosition, graph.CycleAnalysis.Summary);
         }
 
         private void ClearGraphState()
@@ -111,6 +142,7 @@ namespace SqlXmlAnalyzer.Services
             _graphState.NodeElements.Clear();
             _graphState.EdgesForDrawing.Clear();
             _graphState.ArrowCache.Clear();
+            _graphState.StepBadges.Clear();
             _graphState.ResourceGroupDetails.Clear();
         }
 
@@ -143,11 +175,11 @@ namespace SqlXmlAnalyzer.Services
             };
         }
 
-        private void AddGraphTip(Point tipPosition)
+        private void AddGraphTip(Point tipPosition, string cycleSummary)
         {
             var tip = new TextBlock
             {
-                Text = "Full graph mode: all parallel threads and lock resources are shown.",
+                Text = "全部线程与资源。" + cycleSummary,
                 FontSize = 10,
                 FontWeight = FontWeights.SemiBold,
                 Foreground = Brushes.SlateGray,

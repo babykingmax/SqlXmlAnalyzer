@@ -1,0 +1,121 @@
+{
+  "reviewDate": "2026-09-08",
+  "timezone": "Asia/Taipei",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "existingChanges": [
+    " M AGENTS.md",
+    " M MainWindow.Services.cs",
+    " M Views/ShellNavigationRail.xaml",
+    "?? MainWindow.KeyboardShortcuts.cs"
+  ],
+  "sdk": "10.0.400",
+  "trackedCsXamlCsprojCount": 415,
+  "build": {
+    "succeeded": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "tests": {
+    "coverageGenerated": false,
+    "failed": 0,
+    "skipped": 0,
+    "passed": 807
+  },
+  "probeRecords": 20,
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "fingerprints": [
+    {
+      "path": "MainWindow.Services.cs",
+      "sha256": "307EBEAD645D99AE459CE00242491D9E4892A6A37002B3D38D2DE14128550004"
+    },
+    {
+      "path": "Views/ShellNavigationRail.xaml",
+      "sha256": "CACF36B9B54436C69A732D68A048ECCD685C11ABE279E14D47A66DE5A20C795A"
+    },
+    {
+      "path": "MainWindow.KeyboardShortcuts.cs",
+      "sha256": "D3C6F1AB69F9A1138F9A45812DA594AB55F6333CC1D1209D1512680ABEBDA345"
+    },
+    {
+      "path": "App.xaml.cs",
+      "sha256": "29B092C9AE611A68C43DBF1366C695BDD11443A1568BA436593E4CEE8A27BDB9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "sha256": "1581C016044317A2555555BC72F03FF23FCA4F743BC446398DCD491CF21334A2"
+    },
+    {
+      "path": "Core/Services/PlanObfuscatorService.cs",
+      "sha256": "04BF1BFF81138E892CFED88CEBB8227EC5B30DB10424B26AAD0B28A591B36DF0"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs",
+      "sha256": "43D78D68DE6BCE001A8BFF4B93D5752673365FB35C2572E2E1844F4CAE03967A"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableVisitor.cs",
+      "sha256": "724EE263A4E8AB2372223F0D0752F3AB2E7C087098792C5623D263050AB0DCB2"
+    },
+    {
+      "path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+      "sha256": "00F2A4ACB5DE1BDB694E6CA83C8CB981FC4E051C1E6C4C67ECCF620B5B1BEF42"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Services/DocumentOpenService.cs",
+      "sha256": "17F6B58FD380D0485B884A94348D87F549442F210AFA16B50B3E4E3CD36A60C9"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/DeadlockXmlParser.cs",
+      "sha256": "F39FB690326BE550DAC2E113D3C9AB955C692AB054554B47FBF8C234472D3130"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/DeadlockGraph.cs",
+      "sha256": "59867DFA3A7BD4EC6D8083FF8D48DD192D0C61E62879A785D97C435FA98FF35D"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Parsers/DeadlockTimelineParser.cs",
+      "sha256": "B39650BC9BD559B669924F8474708BF12B09FEC59F9CD5B2321DD8BE34EE2775"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Rules/CardinalityErrorRule.cs",
+      "sha256": "5104016BD9AE1ECA48C3074A68F1B647BEB55648A88B939E5BDC6C9ABE183196"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+      "sha256": "3F2B8F15795EC3E2D2B80544880227598DD778A389F365B2C01FF6517F0FAE51"
+    },
+    {
+      "path": "Core/Services/PlanGraphNodeBuilderService.cs",
+      "sha256": "BB1B45ABD6AA5B5F0081BD990031D2EA2F7D91EE958652D350C1049A34179018"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Simulation/CostImpactSimulator.cs",
+      "sha256": "70A507BFF0B347A6B47E94645A5745111F0AA647488385F19E4587828089B8AD"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+      "sha256": "73F4D06BA62A0EA4BA1868676B8AAC3D34C97CB2EBAC5F2CCC9FB889737514DE"
+    },
+    {
+      "path": "Core/Services/PlanGraphMissingIndexAssociationService.cs",
+      "sha256": "9866D8257F20E3D720BD2561328EB5E252062100F2CE396F1CC4B5C4B853921B"
+    },
+    {
+      "path": "Core/Services/PlanComparisonController.cs",
+      "sha256": "6927F81192D88DFAE74B39462BABC05F02556AD22DB1B904BE351D39742467B4"
+    },
+    {
+      "path": "Core/Services/PlanGraphRelOpDetailsService.cs",
+      "sha256": "8DA08545C2A74DBCC29911C21D4697B6FED0ABE78B50D0CA75E699047F297316"
+    },
+    {
+      "path": "Views/PlanWorkspaceView.xaml",
+      "sha256": "F7D09CDBCF3878C0442AD7180D86F2369C61C56B1F7EA0A9D027FA96DFC84F37"
+    },
+    {
+      "path": "ViewModels/DeadlockPlaybackViewModel.cs",
+      "sha256": "6F3E0C1B68F880C6C4AB823A254088C55B323A28B39732F70A5043F0D8B9355E"
+    }
+  ]
+}

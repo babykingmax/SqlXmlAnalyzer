@@ -7,6 +7,34 @@ namespace SqlXmlAnalyzer.Tests
 {
     public sealed class PlanGraphCollapseUiActionServiceTests
     {
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ToggleNode_WhenDiagnosticSinkFails_StillUpdatesGraph(bool accessDenied)
+        {
+            int logAttempts = 0;
+            var service = new PlanGraphCollapseUiActionService(_ =>
+            {
+                logAttempts++;
+                if (accessDenied) throw new UnauthorizedAccessException("Read-only diagnostic directory.");
+                throw new System.IO.IOException("Diagnostic file is unavailable.");
+            });
+            XElement root = new("RelOp", new XAttribute("NodeId", "0"),
+                new XElement("RelOp", new XAttribute("NodeId", "1")));
+            var node = new PlanNodeViewModel { RawElement = root, HasChildren = true, NodeId = "0" };
+            var child = new PlanNodeViewModel { RawElement = root.Element("RelOp"), NodeId = "1" };
+            int layouts = 0, visibilityUpdates = 0;
+
+            service.ToggleNode(node, [node, child], [], () => layouts++, () => visibilityUpdates++);
+            node.IsCollapsed.Should().BeTrue();
+            service.ToggleNode(node, [node, child], [], () => layouts++, () => visibilityUpdates++);
+
+            node.IsCollapsed.Should().BeFalse();
+            layouts.Should().Be(2);
+            visibilityUpdates.Should().Be(2);
+            logAttempts.Should().BeGreaterThan(0);
+        }
+
         [Fact]
         public void ApplyCollapseStates_WhenStateExists_UpdatesMatchingNodes()
         {

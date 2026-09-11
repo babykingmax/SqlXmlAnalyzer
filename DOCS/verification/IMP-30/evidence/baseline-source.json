@@ -1,0 +1,7 @@
+{
+  "Commit": "2f50216d58d57f2546c8316dac508fdbcce2637b",
+  "Tree": "03d1277034bdb01fa981e38ca818bee06186aec3",
+  "Reconstructed": true,
+  "PublishedReleaseClaim": false,
+  "Description": "Rebuilt previous verified IMP-20-22 source; self-contained win-x64 GUI and CLI, not a pre-existing signed release."
+}

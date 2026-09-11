@@ -73,12 +73,13 @@ namespace SqlXmlAnalyzer.Services
                 if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
                 {
                     Clipboard.SetText(result.Text);
-                    MessageBox.Show("Diagnostic results copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Diagnostic results copied to clipboard.\n" + Core.Privacy.OutputPrivacy.RawNotice, "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Copy failed:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                string detail = Core.Diagnostics.ExceptionPolicy.Describe(ex, "CopyAnalysisResult");
+                MessageBox.Show($"Copy failed:\n{detail}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -90,7 +91,7 @@ namespace SqlXmlAnalyzer.Services
             if (result.Status == Core.Services.AnalysisClipboardStatus.Ready)
             {
                 Clipboard.SetText(result.Text);
-                MessageBox.Show("Refactored SQL copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Refactored SQL copied to clipboard.\n" + Core.Privacy.OutputPrivacy.RawNotice, "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (result.Status == Core.Services.AnalysisClipboardStatus.Empty)
             {
@@ -101,23 +102,16 @@ namespace SqlXmlAnalyzer.Services
         public void OpenLogsFolder()
         {
             Core.Services.LogFolderActionResult result =
-                _logFolderActionService.BuildOpenLogsFolder();
+                _logFolderActionService.OpenLogsFolder(_browserLauncher.OpenFolder);
 
-            if (result.Status == Core.Services.LogFolderActionStatus.MissingDirectory)
+            if (result.Status == Core.Services.LogFolderActionStatus.Opened)
             {
-                MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            try
-            {
-                _browserLauncher.OpenFolder(result.FolderPath);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("OpenLogsFolder_Click", ex);
-                MessageBox.Show($"Unable to open the log folder: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            bool failed = result.Status == Core.Services.LogFolderActionStatus.Failed;
+            MessageBox.Show(result.UserMessage, failed ? "Error" : "Information", MessageBoxButton.OK,
+                failed ? MessageBoxImage.Error : MessageBoxImage.Information);
         }
 
         public void ShowAboutAndRegisterAssociations()
@@ -212,6 +206,7 @@ namespace SqlXmlAnalyzer.Services
             var theme = paletteHelper.GetTheme();
             theme.SetBaseTheme(useDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
             paletteHelper.SetTheme(theme);
+            Core.Services.WorkspaceThemeService.Apply(global::System.Windows.Application.Current.Resources, useDarkTheme);
         }
 
         private void RegisterAssociations()

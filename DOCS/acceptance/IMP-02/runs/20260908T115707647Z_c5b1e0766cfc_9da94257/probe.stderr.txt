@@ -1,0 +1,45 @@
+[DEBUG] 2026-09-08T19:57:35.5102404+08:00 PlanRedaction started.
+[DEBUG] 2026-09-08T19:57:35.5242184+08:00 PlanRedaction completed: 11 masked items.
+[DEBUG] 2026-09-08T19:57:35.5245561+08:00 PlanRedaction started.
+[WARN] 2026-09-08T19:57:35.5246657+08:00 PlanRedaction blocked: 1 unsupported items.
+[DEBUG] 2026-09-08T19:57:35.6938904+08:00 SQL 写回开始：校验源文件及候选字节。
+[ERROR] 2026-09-08T19:57:35.6970864+08:00 SQL 写回失败：SqlWriteback.CreateBackup
+System.IO.IOException: Synthetic backup failure
+   at Program.FailingBackupFiles.CreateNew(String p, String sourcePath) in C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-1015fee9155e4abe96617804f809905b\Program.cs:line 194
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.CreateOwnedFile(String sourcePath, String extension, CancellationToken token, String& ownedPath) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 149
+   at SqlXmlAnalyzer.Application.Services.SqlWritebackService.WriteBack(SqlFileSnapshot snapshot, String sql, CancellationToken cancellationToken) in E:\SqlXmlAnalyzer\src\SqlXmlAnalyzer.Application\Services\SqlWritebackService.cs:line 61
+[DEBUG] 2026-09-08T19:57:35.7143635+08:00 InputRecognition: 开始安全读取 XML。
+[ERROR] 2026-09-08T19:57:35.7154864+08:00 INPUT_UNRELATED_XML: 无法识别此 XML；需要 SQL Server ShowPlanXML、deadlock、deadlock-list 或 XE 死锁包装。
+[DEBUG] 2026-09-08T19:57:35.7191551+08:00 InputRecognition: 已识别 2 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7192616+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7199663+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7219190+08:00 InputRecognition: 已识别 2 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7219879+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7224390+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7231368+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7231665+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7237470+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 2, 受害者: a
+[DEBUG] 2026-09-08T19:57:35.7244200+08:00 BuildWaitForEdges: 共构建 2 条等待边
+[DEBUG] 2026-09-08T19:57:35.7244415+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 2 条边
+[DEBUG] 2026-09-08T19:57:35.7250714+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 2
+[DEBUG] 2026-09-08T19:57:35.7263304+08:00 DetectCycles: 共发现 2 个原始环，去重后 2 个唐一环
+[DEBUG] 2026-09-08T19:57:35.7263631+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 2 个死锁环
+[DEBUG] 2026-09-08T19:57:35.7271092+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=2
+[DEBUG] 2026-09-08T19:57:35.7870235+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 2, 环: 2
+[DEBUG] 2026-09-08T19:57:35.7939525+08:00 GenerateMermaid: Mermaid 代码生成完成，共 737 字符
+[DEBUG] 2026-09-08T19:57:35.7944565+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7945057+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7978606+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7978936+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7979242+08:00 DeadlockGraphBuilder.Build: 开始构建 Wait-For Graph | 进程数: 3, 资源数: 4, 受害者: a
+[DEBUG] 2026-09-08T19:57:35.7979423+08:00 BuildWaitForEdges: 共构建 4 条等待边
+[DEBUG] 2026-09-08T19:57:35.7979488+08:00 DeadlockGraphBuilder.Build: 等待边构建完成，共 4 条边
+[DEBUG] 2026-09-08T19:57:35.7979568+08:00 DetectCycles: 开始 DFS 环路检测 | 节点数: 3, 邻接表大小: 3
+[DEBUG] 2026-09-08T19:57:35.7980233+08:00 DetectCycles: 共发现 6 个原始环，去重后 5 个唐一环
+[DEBUG] 2026-09-08T19:57:35.7980336+08:00 DeadlockGraphBuilder.Build: 环路检测完成，共发现 5 个死锁环
+[DEBUG] 2026-09-08T19:57:35.7980396+08:00 IdentifyPatterns: 开始分析死锁模式 | 进程数=3, 边数=4
+[DEBUG] 2026-09-08T19:57:35.7980841+08:00 GenerateMermaid: 开始生成 Mermaid 图 | 进程: 3, 边: 4, 环: 5
+[DEBUG] 2026-09-08T19:57:35.7981301+08:00 GenerateMermaid: Mermaid 代码生成完成，共 931 字符
+[DEBUG] 2026-09-08T19:57:35.7982153+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.7982358+08:00 InputRecognition: 已识别 1 个死锁事件。
+[DEBUG] 2026-09-08T19:57:35.8225504+08:00 [RuleEngine] Rule 'Scan with Residual Predicate' hit in Operator scope on Node 0. Time: 0ms

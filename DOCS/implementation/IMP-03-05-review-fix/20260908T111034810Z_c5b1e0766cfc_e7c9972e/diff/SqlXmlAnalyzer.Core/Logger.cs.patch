@@ -1,0 +1,22 @@
+diff --git "a/E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03-05-review-fix\\20260908T111034810Z_c5b1e0766cfc_e7c9972e\\before\\SqlXmlAnalyzer.Core\\Logger.cs.snapshot" b/SqlXmlAnalyzer.Core/Logger.cs
+index a0e20e5..f2463bd 100644
+--- "a/E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03-05-review-fix\\20260908T111034810Z_c5b1e0766cfc_e7c9972e\\before\\SqlXmlAnalyzer.Core\\Logger.cs.snapshot"
++++ b/SqlXmlAnalyzer.Core/Logger.cs
+@@ -30,6 +30,17 @@ namespace SqlXmlAnalyzer
+         public static string GetDefaultLogDirectory() => Path.Combine(
+             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SqlXmlAnalyzer", "log");
+ 
++        /// <summary>Returns the active file's directory, or the default before a file is available. Does not initialize logging.</summary>
++        public static string GetLogDirectory()
++        {
++            lock (_lock)
++            {
++                return LogFilePath is { } path
++                    ? Path.GetDirectoryName(path)!
++                    : GetDefaultLogDirectory();
++            }
++        }
++
+         public static void Initialize(bool forceVerbose = false, LogLevel? logLevel = null,
+             string? customLogFilePath = null, bool enableFileLogging = true)
+         {

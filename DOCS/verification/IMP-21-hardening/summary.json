@@ -1,0 +1,472 @@
+{
+  "Step": "IMP-21 review fixes and hardening",
+  "VerifiedAt": "2026-09-09T23:06:43.6822888+08:00",
+  "BaseCommit": "6737ecb791636ee71c9d0b31eda831773a43ab5d",
+  "Scope": "Three IMP-21 review fixes on the uncommitted IMP-20/21 worktree. Existing staged AGENTS.md excluded; historical evidence unchanged.",
+  "BeforeFix": {
+    "Tests": 15,
+    "Failed": 15,
+    "Passed": 0,
+    "Trx": {
+      "Path": ".tmp.imp21-hardening-red/imp21-hardening-red.trx",
+      "Bytes": 89330,
+      "Sha256": "20D5D7290A30CEC5B8E788CEE9A8DF8732721E713565B57B537CD97B1D9AF423"
+    }
+  },
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2311,
+        "Passed": 2311,
+        "Failed": 0,
+        "Skipped": 0,
+        "Added": 15,
+        "Cases": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: True, save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"CurrentScore\", subscribeFirst: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"MaxDop\", subscribeFirst: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.RewriteExport_LeavesSqlExactAndShowsRawPrivacyNotice(save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.RewriteExport_LeavesSqlExactAndShowsRawPrivacyNotice(save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: True, unknown: False, save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"MaxDop\", subscribeFirst: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.IndexCopy_LeavesExecutableDdlExactAndShowsRawPrivacyNotice",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: True, save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: True, unknown: False, save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: False, save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"CurrentScore\", subscribeFirst: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: False, save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"Error\", subscribeFirst: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"Error\", subscribeFirst: True)",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "BuildLog": {
+        "Path": ".tmp.imp21-hardening-build-debug.log",
+        "Bytes": 957,
+        "Sha256": "D943472687219E9ACCAECEA9A4E8E58042F68FBBA736302EF6C416911CF44E4F"
+      },
+      "TestLog": {
+        "Path": ".tmp.imp21-hardening-tests-debug.log",
+        "Bytes": 415,
+        "Sha256": "3E4E45EF37DA331D02859E1A74D53A6CA07AE5D6628B44F8410BFED605D70B1D"
+      },
+      "Trx": {
+        "Path": ".tmp.imp21-hardening-tests-debug/imp21-hardening-debug.trx",
+        "Bytes": 7998474,
+        "Sha256": "69A9AB3DEB20AD8440A09DF3EDA18369799C12DBCB4EABDFF498AF3E2697A60A"
+      },
+      "Wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "Result": {
+          "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/verification.json",
+          "Bytes": 10852,
+          "Sha256": "67842241C668D978900393CBBF8D00B5B36C52E886B1430BDDA900F2AE8CBEFB"
+        },
+        "Screenshots": [
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/ab-empty.png",
+            "Bytes": 70320,
+            "Sha256": "0484F3ADA69418F6B07A4732C86E641CFBDAB107C203126E4E69BC875F4E97F2"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/ab-comparison.png",
+            "Bytes": 266784,
+            "Sha256": "115A1E3BAB7553BBE0B19B455D5E5D1D5F3B17B3CCA34C4F39FC3D358A096532"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/ab-unmatched.png",
+            "Bytes": 201522,
+            "Sha256": "253D9CE041FBB16D3EDDE54AE630C79254DC9274EEEC9840F57A9B1C70A0F332"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/rewrite-unselected.png",
+            "Bytes": 114726,
+            "Sha256": "E54330A632F8643F1E08CEFBE559C8D3FEE6EBAC4DDDAD25A042B2EFF17E16F2"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/rewrite-selected.png",
+            "Bytes": 121301,
+            "Sha256": "6040B1EAA90F6B97CA031877FC20C0FC8F307535DD09BB2E9FF7B13CC687F402"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/rewrite-sql-comparison.png",
+            "Bytes": 64636,
+            "Sha256": "0E4C28ED690A6D27905E117EA2806E998F18EFA17EE5B79A5C63E314F6FBF3EC"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/index-dbo.png",
+            "Bytes": 153952,
+            "Sha256": "5CF07AA6736309BC79C5851FD55C665C55D51EA4008BCFF40D47C3B3FB4AE104"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/index-sales.png",
+            "Bytes": 154325,
+            "Sha256": "4933A1203C74F6C0A0DEC5F2086BF11D1865D76E7E09A63468061137817CE736"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/index-invalid.png",
+            "Bytes": 124793,
+            "Sha256": "FC14EA8C16030A8CD045785A6F448029ABAED2A9125D3BD0D599F4C2165172B0"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/index-notification-failed.png",
+            "Bytes": 128742,
+            "Sha256": "4F21B8583FC92AAE4D6F43BAD97B52C62F589A714553410E50B614C1355E8ED3"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/index-recovered.png",
+            "Bytes": 149513,
+            "Sha256": "ABB98D17DAC535C628F81A674F129A9F4708AB12C9CF2B0BA6096B86B4777069"
+          }
+        ],
+        "FixturesAndExport": [
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/plan-a.sqlplan",
+            "Bytes": 1174,
+            "Sha256": "C4CEB2820803187318E7B2A2E6BBFC423C906890B50F6B393F93DD730025625A"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/plan-b.sqlplan",
+            "Bytes": 1176,
+            "Sha256": "6B5C8FFC3EE9E5B9EAB2FE73F5E65B09F38E8126799C84ED4000B2214DA6F121"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Debug-81b3501abd284583bce6b3e333e5c4f2/candidate.sql",
+            "Bytes": 66,
+            "Sha256": "D36C4413BDD4228CE614E8AD6F62F0C61156A0443ED967BFC2D8C7C3014D5E35"
+          }
+        ]
+      }
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "Total": 2311,
+        "Passed": 2311,
+        "Failed": 0,
+        "Skipped": 0,
+        "Added": 15,
+        "Cases": [
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"MaxDop\", subscribeFirst: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"CurrentScore\", subscribeFirst: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"Error\", subscribeFirst: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"MaxDop\", subscribeFirst: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.RewriteExport_LeavesSqlExactAndShowsRawPrivacyNotice(save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: True, unknown: False, save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: False, save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: False, save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.IndexCopy_LeavesExecutableDdlExactAndShowsRawPrivacyNotice",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"CurrentScore\", subscribeFirst: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: True, unknown: False, save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: True, save: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.RewriteReviewValidationTests.ExportAfterApply_PreservesCommitStateAndOriginalFailure(written: False, unknown: True, save: True)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.FailedSubscriber_DoesNotLeaveWpfBindingsWithOldScriptsOrExportEnabled(failingProperty: \"Error\", subscribeFirst: False)",
+            "Outcome": "Passed"
+          },
+          {
+            "Name": "SqlXmlAnalyzer.Tests.ReviewWorkspaceHardeningTests.RewriteExport_LeavesSqlExactAndShowsRawPrivacyNotice(save: False)",
+            "Outcome": "Passed"
+          }
+        ]
+      },
+      "BuildLog": {
+        "Path": ".tmp.imp21-hardening-build-release.log",
+        "Bytes": 971,
+        "Sha256": "F3249F1D2B0C4987CF0D512328E036D77B87CEA35A6961E0FEC9AA60C366E4F4"
+      },
+      "TestLog": {
+        "Path": ".tmp.imp21-hardening-tests-release.log",
+        "Bytes": 421,
+        "Sha256": "2D14ECB680BF871C9BBC2772FD30CDB43D034125C10542BB15222694626F1D2D"
+      },
+      "Trx": {
+        "Path": ".tmp.imp21-hardening-tests-release/imp21-hardening-release.trx",
+        "Bytes": 3605299,
+        "Sha256": "B64931BD203653978553C6F783A951438FA606625B9C643AC72B2318D8BC938B"
+      },
+      "Wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "Result": {
+          "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/verification.json",
+          "Bytes": 10852,
+          "Sha256": "67842241C668D978900393CBBF8D00B5B36C52E886B1430BDDA900F2AE8CBEFB"
+        },
+        "Screenshots": [
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/ab-empty.png",
+            "Bytes": 70320,
+            "Sha256": "0484F3ADA69418F6B07A4732C86E641CFBDAB107C203126E4E69BC875F4E97F2"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/ab-comparison.png",
+            "Bytes": 266784,
+            "Sha256": "115A1E3BAB7553BBE0B19B455D5E5D1D5F3B17B3CCA34C4F39FC3D358A096532"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/ab-unmatched.png",
+            "Bytes": 201522,
+            "Sha256": "253D9CE041FBB16D3EDDE54AE630C79254DC9274EEEC9840F57A9B1C70A0F332"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/rewrite-unselected.png",
+            "Bytes": 114726,
+            "Sha256": "E54330A632F8643F1E08CEFBE559C8D3FEE6EBAC4DDDAD25A042B2EFF17E16F2"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/rewrite-selected.png",
+            "Bytes": 121301,
+            "Sha256": "6040B1EAA90F6B97CA031877FC20C0FC8F307535DD09BB2E9FF7B13CC687F402"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/rewrite-sql-comparison.png",
+            "Bytes": 64636,
+            "Sha256": "0E4C28ED690A6D27905E117EA2806E998F18EFA17EE5B79A5C63E314F6FBF3EC"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/index-dbo.png",
+            "Bytes": 153952,
+            "Sha256": "5CF07AA6736309BC79C5851FD55C665C55D51EA4008BCFF40D47C3B3FB4AE104"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/index-sales.png",
+            "Bytes": 154325,
+            "Sha256": "4933A1203C74F6C0A0DEC5F2086BF11D1865D76E7E09A63468061137817CE736"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/index-invalid.png",
+            "Bytes": 124793,
+            "Sha256": "FC14EA8C16030A8CD045785A6F448029ABAED2A9125D3BD0D599F4C2165172B0"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/index-notification-failed.png",
+            "Bytes": 128742,
+            "Sha256": "4F21B8583FC92AAE4D6F43BAD97B52C62F589A714553410E50B614C1355E8ED3"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/index-recovered.png",
+            "Bytes": 149513,
+            "Sha256": "ABB98D17DAC535C628F81A674F129A9F4708AB12C9CF2B0BA6096B86B4777069"
+          }
+        ],
+        "FixturesAndExport": [
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/plan-a.sqlplan",
+            "Bytes": 1174,
+            "Sha256": "C4CEB2820803187318E7B2A2E6BBFC423C906890B50F6B393F93DD730025625A"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/plan-b.sqlplan",
+            "Bytes": 1176,
+            "Sha256": "6B5C8FFC3EE9E5B9EAB2FE73F5E65B09F38E8126799C84ED4000B2214DA6F121"
+          },
+          {
+            "Path": "DOCS/verification/IMP-21-hardening/wpf-Release-a788045b00c742cba04cf4897d4ea1e1/candidate.sql",
+            "Bytes": 66,
+            "Sha256": "D36C4413BDD4228CE614E8AD6F62F0C61156A0443ED967BFC2D8C7C3014D5E35"
+          }
+        ]
+      }
+    }
+  ],
+  "SourceFiles": [
+    {
+      "Path": "Core/ViewModels/MainViewModel.cs",
+      "Bytes": 12008,
+      "Sha256": "1B8D9F57B1D1838C1FA4C42A37488E102DC45A3FFB4360D60E6C49E7392F7A98"
+    },
+    {
+      "Path": "Core/ViewModels/MainViewModel.Comparison.cs",
+      "Bytes": 4783,
+      "Sha256": "945E3D40A344C9463D0711E4D21DFE180832AAECF8EDD7D2B7F27E6ECAD3EECF"
+    },
+    {
+      "Path": "Services/PlanComparisonUiActionService.cs",
+      "Bytes": 5984,
+      "Sha256": "40569CD76B7B591C9FB5737BA6E72485953385242C6AF1AC8687D15D6CE9E5CC"
+    },
+    {
+      "Path": "ViewModels/RewriteReviewViewModel.cs",
+      "Bytes": 10898,
+      "Sha256": "2FABD400A74896A699BC6EFD2CEE49AE7DE02901F88E66AFBDA1CBCFA1E36FFF"
+    },
+    {
+      "Path": "ViewModels/IndexSandboxViewModel.cs",
+      "Bytes": 23108,
+      "Sha256": "99890AF111CF5317DF580A6941232F7911AC4421E3F49DC9E2F48FCFC8E989BA"
+    },
+    {
+      "Path": "Views/PlanComparisonWorkspaceView.xaml",
+      "Bytes": 23259,
+      "Sha256": "85FB75B606F6CEB7E7C598319CB6A50761856F5B4234E46C5EF272E7FE443ED6"
+    },
+    {
+      "Path": "Views/RewriteReviewWindow.xaml",
+      "Bytes": 7654,
+      "Sha256": "F366F755EB9ADD931DA1FC90BEFEFDAE1DD4DC2DF621B330DB6DF5318AB5D3B9"
+    },
+    {
+      "Path": "Views/RewriteReviewWindow.xaml.cs",
+      "Bytes": 2543,
+      "Sha256": "F48F75961D24A414861C0244E64051470B3E69EBB3B2214203D15C3D8D849B48"
+    },
+    {
+      "Path": "Views/IndexSandboxWindow.xaml",
+      "Bytes": 26250,
+      "Sha256": "BFED136B4D3D0B1FB00FCC0B21904F5417CF9CBF7FDCA0DFF16DC9ED15A61AD1"
+    },
+    {
+      "Path": "Views/IndexSandboxWindow.xaml.cs",
+      "Bytes": 837,
+      "Sha256": "F1B2FFD8B4DAA650A8CDFC362830F933C031DC163E666C4B0A5E676578A0E8B0"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/ReviewOutputService.cs",
+      "Bytes": 2903,
+      "Sha256": "83E262E068ED644364D72E19A5E67AD49C679B8478D11263E48E9D218A69A73C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+      "Bytes": 8353,
+      "Sha256": "977C4F37EA3CA946623450BBF9563669C03FDAD5BD74A8600087F8B4DEC05E3E"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlOptions.cs",
+      "Bytes": 463,
+      "Sha256": "4779265EE2FBF02DCF42E83F394F10BEDAF5FF7BDBD64F19F38114440246D98A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/ReviewWorkspaceTests.cs",
+      "Bytes": 12045,
+      "Sha256": "7CB30243A9D8AE8C97936C6FCF5AA606E7EC516A1A34ECA9D1472ECC8A93A79D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/ReviewWorkspaceDiagnosticTests.cs",
+      "Bytes": 6240,
+      "Sha256": "6F9F61011A73B2028565246C2512E297335E5489B39CF3A8DB95D0CE0C381E6B"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/ReviewWorkspaceHardeningTests.cs",
+      "Bytes": 5317,
+      "Sha256": "1FA0DDC6ABDB86E9F8E705BDE082760AC255BCF155FE61D5CF3DBDF0A1BE5029"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/RewriteReviewValidationTests.cs",
+      "Bytes": 8543,
+      "Sha256": "22B9E355BE4C7BEED33D074053ABA48A0833DAD7946192D79E5E4C54183A82DF"
+    }
+  ],
+  "VerificationScripts": [
+    {
+      "Path": "DOCS/verification/IMP-21-hardening/Run-WpfVerification.ps1",
+      "Bytes": 1839,
+      "Sha256": "3A165CDBB1350876928C877013D05C46FFFA3C5E0C156FE1F4806335244A82D1"
+    },
+    {
+      "Path": "DOCS/verification/IMP-21-hardening/WpfProbe.cs.txt",
+      "Bytes": 16035,
+      "Sha256": "AE6C269E4CEACDEC8B4F71A87FFAF46F5A28E1CF9F1630BDCE3C35737A516CE9"
+    },
+    {
+      "Path": "DOCS/verification/IMP-21-hardening/Write-VerificationSummary.ps1",
+      "Bytes": 5612,
+      "Sha256": "798B14EF5B80E5A541A2FE9C3213780C3FD6CBD63F6E5BBCD67E2010F91F23E3"
+    }
+  ],
+  "Limits": [
+    "Synthetic ShowPlan and SQL fixtures; no new live-server DDL or performance measurement.",
+    "Candidate exports do not authorize source writeback. Existing reviewed semantic validation remains mandatory.",
+    "Version/edition, existing indexes, locks, space and compression support require target-environment review.",
+    "Unknown-error tests create and validate real minidumps; raw DUMP/log/TRX artifacts are local only."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "CompatibilityLevel": 170,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "OrderedResults": false,
+      "ObserveSql": "",
+      "SetupSql": "",
+      "Name": "ordinary-unicode"
+    }
+  ]
+}

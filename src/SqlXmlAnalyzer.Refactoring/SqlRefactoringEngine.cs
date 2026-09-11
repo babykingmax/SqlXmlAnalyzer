@@ -1,148 +1,166 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlXmlAnalyzer.Core;
 using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Diagnostics;
 using SqlXmlAnalyzer.Core.Models;
 
-namespace SqlXmlAnalyzer.Refactoring
-{
-    public class SqlRefactoringEngine : IRefactoringEngine
-    {
-        private readonly IEnumerable<ISqlRefactorRule> _rules;
-        private readonly IRuleFilter _ruleFilter;
-        private readonly ILogger<SqlRefactoringEngine> _logger;
+namespace SqlXmlAnalyzer.Refactoring;
 
-        public SqlRefactoringEngine(
-            IEnumerable<ISqlRefactorRule> rules,
-            IRuleFilter ruleFilter,
-            ILogger<SqlRefactoringEngine> logger)
+public class SqlRefactoringEngine : IRefactoringEngine
+{
+    private readonly IEnumerable<ISqlRefactorRule> _rules;
+    private readonly IRuleFilter _ruleFilter;
+    private readonly ILogger<SqlRefactoringEngine> _logger;
+    private readonly IUnexpectedErrorReporter _unexpectedErrors;
+
+    public SqlRefactoringEngine(IEnumerable<ISqlRefactorRule> rules, IRuleFilter ruleFilter,
+        ILogger<SqlRefactoringEngine> logger, IUnexpectedErrorReporter? unexpectedErrors = null)
+    {
+        _rules = rules;
+        _ruleFilter = ruleFilter;
+        _logger = logger;
+        _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
+    }
+
+    public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun) =>
+        Run(sql, report, options, isDryRun, System.Threading.CancellationToken.None);
+
+    public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun, System.Threading.CancellationToken cancellationToken)
+    {
+        var timer = Stopwatch.StartNew();
+        var context = new RefactorContext(sql, report, isDryRun);
+        var errors = new List<string>();
+        var proposals = new List<RewriteProposal>();
+        var proposalService = new RewriteProposalService(_unexpectedErrors);
+        string proposalSql = sql;
+        int passCount = 0;
+        RefactorResult Failure(string message, IReadOnlyList<ParseError>? parseErrors = null,
+            UnexpectedErrorReport? diagnostic = null)
         {
-            _rules = rules;
-            _ruleFilter = ruleFilter;
-            _logger = logger;
+            context.DiscardChanges();
+            errors.Add(message);
+            return new RefactorResult(sql, false, errors, context, parseErrors)
+            {
+                TimeElapsedMs = timer.Elapsed.TotalMilliseconds, PassesCount = passCount, Diagnostic = diagnostic
+            };
+        }
+        RefactorResult ExceptionFailure(Exception exception, string operation)
+        {
+            if (exception is OperationCanceledException)
+            {
+                _logger.LogWarning("RefactorCanceled: Operation={Operation}", operation);
+                return Failure("重构已取消，保留原 SQL。");
+            }
+            if (ExceptionPolicy.IsExpected(exception))
+            {
+                _logger.LogError(exception, "RefactorFailed: Operation={Operation}", operation);
+                return Failure($"重构失败，保留原 SQL：{ExceptionPolicy.Message(exception)}");
+            }
+            var diagnostic = ExceptionPolicy.Capture(exception, operation, _unexpectedErrors);
+            _logger.LogCritical(exception, "UnexpectedRefactorFailure: Operation={Operation}, Dump={Dump}", operation, diagnostic.DumpPath);
+            return Failure($"重构发生未知错误，保留原 SQL：{ExceptionPolicy.Message(exception)}；{diagnostic.Summary}", diagnostic: diagnostic);
         }
 
-        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
+        try
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            var context = new RefactorContext(sql, report, isDryRun);
-            var errors = new List<string>();
-
-            if (string.IsNullOrWhiteSpace(sql))
+            cancellationToken.ThrowIfCancellationRequested();
+            if (options.MaxPasses < 1)
             {
-                sw.Stop();
-                return new RefactorResult(sql, true, errors, context) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = 0 };
+                _logger.LogError("Invalid refactoring pass limit.");
+                return Failure("MaxPasses 必须大于 0。");
             }
-
-            _logger.LogInformation("RefactorStarted: DryRun={DryRun}", isDryRun);
-
+            _logger.LogDebug("RefactorStarted: DryRun={DryRun}, SqlLength={SqlLength}", isDryRun, sql.Length);
             var parser = new TSql160Parser(true);
-            TSqlFragment fragment;
-            using (var reader = new StringReader(sql))
+            using var reader = new StringReader(sql);
+            var fragment = parser.Parse(reader, out var parseErrors);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (parseErrors.Count > 0)
             {
-                fragment = parser.Parse(reader, out var parseErrors);
-                if (parseErrors != null && parseErrors.Count > 0)
-                {
-                    foreach (var err in parseErrors)
-                    {
-                        errors.Add($"Line {err.Line}, Col {err.Column}: {err.Message}");
-                    }
-                    _logger.LogError("ParserFailed: Errors={Errors}", string.Join("; ", errors));
-                    sw.Stop();
-                    return new RefactorResult(sql, false, errors, context, parseErrors != null ? new List<ParseError>(parseErrors) : null) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = 0 };
-                }
+                _logger.LogError("ParserFailed: Count={Count}", parseErrors.Count);
+                errors.AddRange(parseErrors.Select(error => $"Line {error.Line}, Col {error.Column}: {error.Message}"));
+                return Failure("输入 SQL 语法错误，保留原 SQL。", parseErrors.ToList());
             }
 
             var activeRules = _ruleFilter.Filter(_rules, options).ToList();
             var currentFragment = Rules.SqlNodeCloner.Clone(fragment) ?? fragment;
-            int passCount = 0;
-
             for (int pass = 1; pass <= options.MaxPasses; pass++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 passCount = pass;
                 bool passChanged = false;
-                var rulesAppliedThisPass = new List<string>();
-
                 foreach (var rule in activeRules)
                 {
                     try
                     {
-                        if (rule.CanApply(currentFragment, context))
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (!rule.CanApply(currentFragment, context)) continue;
+                        int skipsBefore = context.SafetySkips.Count;
+                        var result = rule.Apply(currentFragment, context);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (context.SafetySkips.Count > skipsBefore)
+                            _logger.LogWarning("UnsafeRewriteSkipped: RuleId={RuleId}, Reason={Reason}",
+                                rule.RuleId, context.SafetySkips[^1].ReasonCode);
+                        if (result.IsApplied)
                         {
-                            var result = rule.Apply(currentFragment, context);
-                            if (result.IsApplied)
+                            currentFragment = result.Fragment;
+                            string nextSql = GenerateSql(currentFragment);
+                            if (string.Equals(nextSql, proposalSql, StringComparison.Ordinal)) continue;
+                            var proposal = proposalService.Propose(sql, proposalSql, nextSql, rule.RuleId, rule.RuleVersion,
+                                result.ChangeDescription ?? rule.Description, proposals.Select(p => p.Id), context);
+                            if (!proposal.Validation.IsValid)
                             {
-                                currentFragment = result.Fragment;
-                                var description = result.ChangeDescription ?? $"Applied rule {rule.Name} ({rule.RuleId})";
-                                context.RecordChange(rule.RuleId, description);
-                                rulesAppliedThisPass.Add(rule.RuleId);
-                                passChanged = true;
-
-                                _logger.LogInformation("RuleApplied: RuleId={RuleId}, Description={Description}", rule.RuleId, description);
+                                _logger.LogError("RewriteProposalValidationFailed: Rule={RuleId}", rule.RuleId);
+                                return Failure("提案校验失败，保留原 SQL：" + string.Join("; ", proposal.Validation.Errors));
                             }
-                            else
-                            {
-                                _logger.LogInformation("RuleSkipped: RuleId={RuleId}, Reason=Apply returned not applied", rule.RuleId);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogInformation("RuleSkipped: RuleId={RuleId}, Reason=CanApply returned false", rule.RuleId);
+                            proposals.Add(proposal);
+                            proposalSql = nextSql;
+                            context.RecordChange(rule.RuleId, result.ChangeDescription ?? $"Applied rule {rule.RuleId}");
+                            passChanged = true;
+                            _logger.LogDebug("RuleApplied: RuleId={RuleId}, Pass={Pass}", rule.RuleId, pass);
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception exception)
                     {
-                        context.RecordFailure(rule.RuleId, ex.GetType().Name, ex.StackTrace ?? ex.Message);
-                        _logger.LogError(ex, "RuleFailed: RuleId={RuleId}, Error={ErrorMessage}", rule.RuleId, ex.Message);
+                        context.RecordFailure(rule.RuleId, exception.GetType().Name, ExceptionPolicy.Details(exception));
+                        // A rule can mutate its AST before throwing. Never return a partial candidate.
+                        return ExceptionFailure(exception, $"RefactorRule:{rule.RuleId}");
                     }
                 }
-
-                if (rulesAppliedThisPass.Count > 0)
-                {
-                    _logger.LogInformation("PassCompleted: Pass={Pass}, RulesApplied={RulesApplied}", pass, string.Join(", ", rulesAppliedThisPass));
-                }
-
-                if (!passChanged)
-                {
-                    break; // Fixed point reached
-                }
+                if (!passChanged) break;
             }
 
-            string finalSql = GenerateSql(currentFragment);
-
-            // Validation pass: ensure refactored SQL parses without error
-            using (var validationReader = new StringReader(finalSql))
+            // Safety-only observations must not trigger formatting-only file writes or backups.
+            string finalSql = proposalSql;
+            using var validationReader = new StringReader(finalSql);
+            parser.Parse(validationReader, out var validationErrors);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (validationErrors.Count > 0)
             {
-                parser.Parse(validationReader, out var validationErrors);
-                if (validationErrors != null && validationErrors.Count > 0)
-                {
-                    var validationMsg = "Refactored SQL has syntax errors. Reverting changes.";
-                    errors.Add(validationMsg);
-                    _logger.LogError("ValidationFailed: Message={Message}", validationMsg);
-                    sw.Stop();
-                    return new RefactorResult(sql, false, errors, context, validationErrors != null ? new List<ParseError>(validationErrors) : null) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = passCount };
-                }
+                _logger.LogError("RefactorValidationFailed: Count={Count}", validationErrors.Count);
+                return Failure("候选 SQL 存在语法错误，已丢弃候选并保留原 SQL。", validationErrors.ToList());
             }
-
-            sw.Stop();
-            _logger.LogInformation("RefactorFinished: ChangesCount={ChangesCount}", context.RefactorChanges.Count);
-            return new RefactorResult(finalSql, true, errors, context) { TimeElapsedMs = sw.Elapsed.TotalMilliseconds, PassesCount = passCount };
+            _logger.LogDebug("RefactorFinished: Changes={Changes}, SafetySkips={SafetySkips}", context.RefactorChanges.Count, context.SafetySkips.Count);
+            return new RefactorResult(finalSql, true, errors, context)
+            {
+                TimeElapsedMs = timer.Elapsed.TotalMilliseconds, PassesCount = passCount,
+                Review = proposalService.Review(sql, proposals, options.SelectedProposalIds, context.Warnings)
+            };
         }
-
-        private string GenerateSql(TSqlFragment fragment)
+        catch (Exception exception)
         {
-            var generator = new Sql160ScriptGenerator(new SqlScriptGeneratorOptions
-            {
-                KeywordCasing = KeywordCasing.Uppercase,
-                MultilineSelectElementsList = false
-            });
-
-            generator.GenerateScript(fragment, out string script);
-            return script;
+            return ExceptionFailure(exception, "RefactoringPipeline");
         }
+    }
+
+    private static string GenerateSql(TSqlFragment fragment)
+    {
+        var generator = new Sql160ScriptGenerator(new SqlScriptGeneratorOptions
+        {
+            KeywordCasing = KeywordCasing.Uppercase, MultilineSelectElementsList = false
+        });
+        generator.GenerateScript(fragment, out string script);
+        return script;
     }
 }

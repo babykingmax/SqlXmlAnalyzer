@@ -13,20 +13,30 @@ namespace SqlXmlAnalyzer.Core.Services
 
             var stackPanel = new StackPanel
             {
-                Orientation = Orientation.Horizontal,
+                Orientation = Orientation.Vertical,
                 Margin = new Thickness(0, 2, 0, 2)
             };
 
             var operatorText = new TextBlock
             {
                 Text = node.OperatorText,
-                FontWeight = FontWeights.SemiBold
+                FontWeight = FontWeights.SemiBold,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 480
             };
             var costText = new TextBlock
             {
                 Text = node.CostText,
-                Foreground = GetCostBrush(node.CostTrend)
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 480
             };
+            costText.SetResourceReference(TextBlock.ForegroundProperty, node.CostTrend switch
+            {
+                PlanComparisonCostTrend.Higher => "CriticalBrush",
+                PlanComparisonCostTrend.Lower => "GoodBrush",
+                _ => "SecondaryTextBrush"
+            });
+            operatorText.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
 
             var border = new Border
             {
@@ -45,10 +55,12 @@ namespace SqlXmlAnalyzer.Core.Services
                 var runtimeText = new TextBlock
                 {
                     Text = " | " + string.Join(", ", node.RuntimeDeltaTexts),
-                    Foreground = node.IsPlanB ? Brushes.Purple : Brushes.Teal,
                     FontWeight = FontWeights.Medium,
+                    TextWrapping = TextWrapping.Wrap,
+                    MaxWidth = 480,
                     Margin = new Thickness(4, 0, 0, 0)
                 };
+                runtimeText.SetResourceReference(TextBlock.ForegroundProperty, "InfoBrush");
                 stackPanel.Children.Add(runtimeText);
             }
 
@@ -58,6 +70,8 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 Header = border,
                 Tag = node.Source,
+                ToolTip = string.IsNullOrEmpty(node.EvidenceText) ? null : new TextBlock
+                    { Text = node.EvidenceText, TextWrapping = TextWrapping.Wrap, MaxWidth = 650 },
                 IsExpanded = true
             };
 
@@ -78,30 +92,19 @@ namespace SqlXmlAnalyzer.Core.Services
             {
                 case PlanComparisonNodeState.Added:
                 case PlanComparisonNodeState.Removed:
-                    border.Background = node.IsPlanB
-                        ? new SolidColorBrush(Color.FromArgb(40, 76, 175, 80))
-                        : new SolidColorBrush(Color.FromArgb(40, 244, 67, 54));
-                    border.BorderBrush = node.IsPlanB ? Brushes.Green : Brushes.Red;
+                    border.SetResourceReference(Border.BackgroundProperty, "SurfaceBrush");
+                    border.SetResourceReference(Border.BorderBrushProperty, node.IsPlanB ? "GoodBrush" : "CriticalBrush");
                     border.BorderThickness = new Thickness(1);
-                    operatorText.Foreground = node.IsPlanB ? Brushes.DarkGreen : Brushes.DarkRed;
+                    operatorText.SetResourceReference(TextBlock.ForegroundProperty, node.IsPlanB ? "GoodBrush" : "CriticalBrush");
                     break;
                 case PlanComparisonNodeState.OperatorChanged:
-                    border.Background = new SolidColorBrush(Color.FromArgb(40, 255, 152, 0));
-                    border.BorderBrush = Brushes.Orange;
+                    border.SetResourceReference(Border.BackgroundProperty, "WarningSurfaceBrush");
+                    border.SetResourceReference(Border.BorderBrushProperty, "WarningBrush");
                     border.BorderThickness = new Thickness(1);
-                    operatorText.Foreground = Brushes.DarkOrange;
+                    operatorText.SetResourceReference(TextBlock.ForegroundProperty, "WarningBrush");
                     break;
             }
         }
 
-        private static Brush GetCostBrush(PlanComparisonCostTrend costTrend)
-        {
-            return costTrend switch
-            {
-                PlanComparisonCostTrend.Higher => Brushes.Red,
-                PlanComparisonCostTrend.Lower => Brushes.Green,
-                _ => Brushes.Gray
-            };
-        }
     }
 }

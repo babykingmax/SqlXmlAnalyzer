@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "CompatibilityLevel": 170,
+  "Scenarios": [
+    {
+      "ObserveSql": "",
+      "SetupSql": "CREATE TABLE dbo.InputText(Id int, Value nvarchar(20)); INSERT dbo.InputText VALUES(1,NULL),(2,N'x'),(3,N'x ');",
+      "OrderedResults": false,
+      "Name": "null-and-trailing-control"
+    }
+  ],
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025"
+}

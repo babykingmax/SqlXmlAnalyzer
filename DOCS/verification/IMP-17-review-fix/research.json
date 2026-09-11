@@ -1,0 +1,68 @@
+{
+  "Date": "2026-09-09",
+  "PreferredSourceOrder": [
+    "Microsoft official",
+    "SQL Server CSS blogs",
+    "Microsoft CSS cases",
+    "SQL Server community",
+    "GitHub mature implementations"
+  ],
+  "Method": "Microsoft official documentation and Microsoft GitHub implementation references were sufficient for these fixes; no exhaustive CSS/community survey is claimed.",
+  "AccessLimits": [
+    "web search connection failed",
+    "GitHub connector had no callable interface; used read-only HTTPS",
+    "Showplan XSD direct URL TLS failure",
+    "SkeletonNode.cs raw URL TLS failure; not relied upon"
+  ],
+  "Sources": [
+    {
+      "Title": "Microsoft Learn - Compare execution plans",
+      "Status": "HTTP 200 via read-only HTTPS",
+      "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/performance/compare-execution-plans?view=sql-server-ver17",
+      "Snapshot": {
+        "Path": "DOCS/verification/IMP-17-review-fix/microsoft-compare-plans.txt",
+        "Length": 57682,
+        "SHA256": "AA472816ABFF5311F6C6FC3E12BB4EFF0E3A60AA358D4342540DAE245E3D51E5"
+      }
+    },
+    {
+      "Title": "Microsoft SQL Server 2019 Showplan XSD",
+      "Status": "Direct HTTPS TLS failure; existing repository official-schema copy inspected",
+      "Url": "https://schemas.microsoft.com/sqlserver/2004/07/showplan/sql2019/showplanxml.xsd",
+      "Snapshot": {
+        "Path": "SqlXmlAnalyzer.Tests/TestData/Schemas/showplanxml-sql2019.xsd",
+        "Length": 116135,
+        "SHA256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8"
+      }
+    },
+    {
+      "Title": "Microsoft sqltoolsservice - ObjectWrapperTypeConverter.cs",
+      "Status": "HTTP 200 via read-only HTTPS",
+      "Url": "https://github.com/microsoft/sqltoolsservice/blob/main/src/Microsoft.SqlTools.ServiceLayer/ExecutionPlan/ShowPlan/ObjectWrapperTypeConverter.cs",
+      "BlobSHA": "4b7c807961996fe7e0319898a60f0d93ae5ff86b",
+      "GitHubTreeSHA": "2cdf45000e655ba7833a707b6fee22653e63502e",
+      "Snapshot": {
+        "Path": "DOCS/verification/IMP-17-review-fix/github-ObjectWrapperTypeConverter.cs.txt",
+        "Length": 44370,
+        "SHA256": "F329CAC82333EA2050344935B2BB0B00A48BBD0E9FEB775AF9D9F36EED8817BF"
+      }
+    },
+    {
+      "Title": "Microsoft sqltoolsservice - SkeletonManager.cs",
+      "Status": "HTTP 200 via read-only HTTPS",
+      "Url": "https://github.com/microsoft/sqltoolsservice/blob/main/src/Microsoft.SqlTools.ServiceLayer/ExecutionPlan/ShowPlan/Comparison/SkeletonManager.cs",
+      "BlobSHA": "274800c78c67ae9b9b260454951a6d49fd9734bd",
+      "GitHubTreeSHA": "2cdf45000e655ba7833a707b6fee22653e63502e",
+      "Snapshot": {
+        "Path": "DOCS/verification/IMP-17-review-fix/github-SkeletonManager.cs.txt",
+        "Length": 9526,
+        "SHA256": "46EDFC4B13E83376265AFCF263F5FD0A37C65DA92EFEEA38129862BB2F11CF58"
+      }
+    }
+  ],
+  "GitHubTreeSnapshot": {
+    "Path": "DOCS/verification/IMP-17-review-fix/github-sqltools-showplan.txt",
+    "Length": 987309,
+    "SHA256": "80550AE188D319566B59682815560C2DD304975383F3AF915927234B6EEC6164"
+  }
+}

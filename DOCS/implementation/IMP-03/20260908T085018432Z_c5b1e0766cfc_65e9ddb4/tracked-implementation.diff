@@ -1,0 +1,415 @@
+diff --git a/App.xaml.cs b/App.xaml.cs
+index ea188d4..314fc2a 100644
+--- a/App.xaml.cs
++++ b/App.xaml.cs
+@@ -137,6 +137,8 @@ namespace SqlXmlAnalyzer
+         {
+             services.AddLogging();
+             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
++            services.AddSingleton<ISqlWritebackFileSystem, PhysicalSqlWritebackFileSystem>();
++            services.AddSingleton<ISqlWritebackService, SqlWritebackService>();
+             services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = false });
+             services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine());
+             services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
+diff --git a/Core/Services/PlanAnalysisService.cs b/Core/Services/PlanAnalysisService.cs
+index 18d49bd..c3aba7e 100644
+--- a/Core/Services/PlanAnalysisService.cs
++++ b/Core/Services/PlanAnalysisService.cs
+@@ -98,7 +98,8 @@ namespace SqlXmlAnalyzer.Core.Services
+                         temporarySqlPath,
+                         planPath: planPath,
+                         isDryRun: true,
+-                        options: options);
++                        options: options,
++                        cancellationToken: cancellationToken);
+                     cancellationToken.ThrowIfCancellationRequested();
+ 
+                     if (!result.IsSuccess || result.Result == null)
+diff --git a/SqlXmlAnalyzer.CLI/Program.cs b/SqlXmlAnalyzer.CLI/Program.cs
+index 4ca9b02..81b20f2 100644
+--- a/SqlXmlAnalyzer.CLI/Program.cs
++++ b/SqlXmlAnalyzer.CLI/Program.cs
+@@ -682,6 +682,15 @@ namespace SqlXmlAnalyzer.CLI
+             }
+ 
+             // Setup services
++            try
++            {
++                SqlReportPathGuard.Validate(sqlPath, outputPath);
++            }
++            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
++            {
++                Console.Error.WriteLine($"[Error] 不安全的报告输出路径：{ex.Message}");
++                return 2; // Never write an error report over the SQL input either.
++            }
+             var services = new ServiceCollection();
+             services.AddLogging(configure =>
+             {
+@@ -693,6 +702,8 @@ namespace SqlXmlAnalyzer.CLI
+             });
+ 
+             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
++            services.AddSingleton<ISqlWritebackFileSystem, PhysicalSqlWritebackFileSystem>();
++            services.AddSingleton<ISqlWritebackService, SqlWritebackService>();
+ 
+             bool isJson = format.Equals("json", StringComparison.OrdinalIgnoreCase) ||
+                           (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase));
+@@ -732,13 +743,22 @@ namespace SqlXmlAnalyzer.CLI
+                 refactorOptions = refactorOptions with { MaxPasses = maxPasses.Value };
+             }
+ 
++            using var cancellation = new System.Threading.CancellationTokenSource();
++            ConsoleCancelEventHandler cancelHandler = (_, e) =>
++            {
++                e.Cancel = true;
++                try { cancellation.Cancel(); } catch (ObjectDisposedException) { }
++            };
++            Console.CancelKeyPress += cancelHandler;
+             try
+             {
+-                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath);
++                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath, cancellation.Token);
+ 
+                 if (orchestratorResult.Result == null)
+                 {
+-                    // Handle failure before refactoring engine ran
++                    // Revalidate before writing a failure report: an alias may have appeared
++                    // during analysis or writeback. Never use the SQL source as an error log.
++                    SqlReportPathGuard.Validate(sqlPath, outputPath);
+                     if (isJson)
+                     {
+                         var jsonResult = new
+@@ -746,6 +766,17 @@ namespace SqlXmlAnalyzer.CLI
+                             IsSuccess = false,
+                             ErrorMessage = orchestratorResult.ErrorMessage,
+                             Warnings = orchestratorResult.Warnings,
++                            Writeback = orchestratorResult.Writeback == null ? null : new
++                            {
++                                Stage = orchestratorResult.Writeback.Stage.ToString(),
++                                orchestratorResult.Writeback.SourceWritten,
++                                orchestratorResult.Writeback.CommitOutcomeUnknown,
++                                orchestratorResult.Writeback.IsCanceled,
++                                orchestratorResult.Writeback.BackupVerified,
++                                orchestratorResult.Writeback.BackupPath,
++                                orchestratorResult.Writeback.TemporaryPath,
++                                orchestratorResult.Writeback.SourceSha256
++                            },
+                             HasChanges = false,
+                             Changes = new List<object>(),
+                             Failures = new List<object>(),
+@@ -819,6 +850,10 @@ namespace SqlXmlAnalyzer.CLI
+                 Console.ResetColor();
+                 return 1;
+             }
++            finally
++            {
++                Console.CancelKeyPress -= cancelHandler;
++            }
+         }
+ 
+         private static void PrintRefactorUsage()
+diff --git a/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs b/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
+index adb708c..e5f5553 100644
+--- a/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
++++ b/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
+@@ -33,7 +33,8 @@ namespace SqlXmlAnalyzer.Tests.Application
+                 _refactoringEngine,
+                 _fileHandler,
+                 _reporter,
+-                NullLogger<ApplicationOrchestrator>.Instance
++                NullLogger<ApplicationOrchestrator>.Instance,
++                new SqlWritebackService(_fileHandler)
+             );
+         }
+ 
+@@ -224,7 +225,7 @@ namespace SqlXmlAnalyzer.Tests.Application
+         }
+ 
+         // Fakes / Stubs
+-        private class FakeFileHandler : IFileHandler
++        private class FakeFileHandler : IFileHandler, ISqlWritebackFileSystem
+         {
+             public Dictionary<string, string> Files { get; } = new(StringComparer.OrdinalIgnoreCase);
+             public Exception? ThrowException { get; set; }
+@@ -244,7 +245,30 @@ namespace SqlXmlAnalyzer.Tests.Application
+ 
+             public bool Exists(string path)
+             {
+-                return Files.ContainsKey(path);
++                return Files.ContainsKey(Path.GetFileName(path));
++            }
++
++            public byte[] ReadAllBytes(string path) => System.Text.Encoding.UTF8.GetBytes(ReadAllText(Path.GetFileName(path)));
++            public Stream CreateNew(string path, string sourcePath)
++            {
++                string key = Path.GetFileName(path);
++                if (Files.ContainsKey(key)) throw new IOException("File already exists");
++                return new StoredStream(bytes => Files[key] = System.Text.Encoding.UTF8.GetString(bytes));
++            }
++            public void FlushToDisk(Stream stream) => stream.Flush();
++            public void Replace(string temporaryPath, string sourcePath)
++            {
++                Files[Path.GetFileName(sourcePath)] = Files[Path.GetFileName(temporaryPath)];
++                Delete(temporaryPath);
++            }
++            public void Delete(string path) => Files.Remove(Path.GetFileName(path));
++            private sealed class StoredStream(Action<byte[]> store) : MemoryStream
++            {
++                protected override void Dispose(bool disposing)
++                {
++                    if (disposing) store(ToArray());
++                    base.Dispose(disposing);
++                }
+             }
+         }
+ 
+diff --git a/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs b/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
+index de2a118..9548827 100644
+--- a/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
++++ b/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
+@@ -9,21 +9,80 @@ namespace SqlXmlAnalyzer.Tests.Application
+ {
+     public class CliProgramTests : IDisposable
+     {
++        private readonly string _tempDirectory;
+         private readonly string _tempSqlFile;
+         private readonly string _tempPlanFile;
+ 
+         public CliProgramTests()
+         {
+-            _tempSqlFile = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.sql");
+-            _tempPlanFile = Path.Combine(Path.GetTempPath(), $"test_{Guid.NewGuid()}.sqlplan");
++            _tempDirectory = Path.Combine(Path.GetTempPath(), $"SqlXmlAnalyzer-CliTests-{Guid.NewGuid():N}");
++            Directory.CreateDirectory(_tempDirectory);
++            _tempSqlFile = Path.Combine(_tempDirectory, "query.sql");
++            _tempPlanFile = Path.Combine(_tempDirectory, "plan.sqlplan");
+         }
+ 
+         public void Dispose()
+         {
+-            if (File.Exists(_tempSqlFile)) File.Delete(_tempSqlFile);
+-            if (File.Exists(_tempPlanFile)) File.Delete(_tempPlanFile);
++            string full = Path.GetFullPath(_tempDirectory);
++            string prefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer-CliTests-");
++            if (!full.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Unexpected test cleanup path");
++            Directory.Delete(full, recursive: true);
+         }
+ 
++        [Fact]
++        public void Main_Refactor_WhenSourceIsLocked_ReturnsJsonFailureAndRetainsBackup()
++        {
++            byte[] original = System.Text.Encoding.UTF8.GetBytes("SELECT * FROM Users WHERE Age + 10 > 50;");
++            File.WriteAllBytes(_tempSqlFile, original);
++            using var locked = new FileStream(_tempSqlFile, FileMode.Open, FileAccess.Read, FileShare.Read);
++            var output = new StringWriter();
++            TextWriter previous = Console.Out;
++            int code;
++            try
++            {
++                Console.SetOut(output);
++                code = Program.Main(new[] { "refactor", _tempSqlFile, "--format", "json" });
++            }
++            finally { Console.SetOut(previous); }
++            code.Should().Be(1);
++            using var json = JsonDocument.Parse(output.ToString());
++            json.RootElement.GetProperty("IsSuccess").GetBoolean().Should().BeFalse();
++            var writeback = json.RootElement.GetProperty("Writeback");
++            writeback.GetProperty("Stage").GetString().Should().Be("Replace");
++            writeback.GetProperty("SourceWritten").GetBoolean().Should().BeFalse();
++            File.ReadAllBytes(writeback.GetProperty("BackupPath").GetString()!).Should().Equal(original);
++            File.ReadAllBytes(_tempSqlFile).Should().Equal(original);
++        }
++
++        [Theory]
++        [InlineData(false)]
++        [InlineData(true)]
++        public void Main_Refactor_WhenReportTargetsSql_RejectsBeforeWriting(bool dryRun)
++        {
++            File.WriteAllText(_tempSqlFile, "SELECT 1;");
++            string alias = Path.Combine(_tempDirectory, ".", "query.sql");
++            var args = dryRun
++                ? new[] { "refactor", _tempSqlFile, "--dry-run", "--output", alias }
++                : new[] { "refactor", _tempSqlFile, "--output", alias };
++            Program.Main(args).Should().Be(2);
++            File.ReadAllText(_tempSqlFile).Should().Be("SELECT 1;");
++            Directory.GetFiles(_tempDirectory).Should().ContainSingle();
++        }
++
++        [Fact]
++        public void Main_Refactor_WhenReportIsHardLinkToSql_RejectsTheAlias()
++        {
++            File.WriteAllText(_tempSqlFile, "SELECT 1;");
++            string alias = Path.Combine(_tempDirectory, "report.json");
++            CreateHardLink(alias, _tempSqlFile, IntPtr.Zero).Should().BeTrue();
++            Program.Main(new[] { "refactor", _tempSqlFile, "--dry-run", "--output", alias }).Should().Be(2);
++            File.ReadAllText(_tempSqlFile).Should().Be("SELECT 1;");
++        }
++
++        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
++        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
++        private static extern bool CreateHardLink(string fileName, string existingFileName, IntPtr securityAttributes);
++
+         [Fact]
+         public void Main_Refactor_Help_ShouldReturnSuccess()
+         {
+diff --git a/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs b/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
+index 401dc62..4fdec7f 100644
+--- a/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
++++ b/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
+@@ -19,19 +19,22 @@ namespace SqlXmlAnalyzer.Application
+         private readonly IFileHandler _fileHandler;
+         private readonly IResultReporter _reporter;
+         private readonly ILogger<ApplicationOrchestrator> _logger;
++        private readonly ISqlWritebackService _writebackService;
+ 
+         public ApplicationOrchestrator(
+             IAnalysisEngine analysisEngine,
+             IRefactoringEngine refactoringEngine,
+             IFileHandler fileHandler,
+             IResultReporter reporter,
+-            ILogger<ApplicationOrchestrator> logger)
++            ILogger<ApplicationOrchestrator> logger,
++            ISqlWritebackService? writebackService = null)
+         {
+             _analysisEngine = analysisEngine;
+             _refactoringEngine = refactoringEngine;
+             _fileHandler = fileHandler;
+             _reporter = reporter;
+             _logger = logger;
++            _writebackService = writebackService ?? new SqlWritebackService(new PhysicalSqlWritebackFileSystem());
+         }
+ 
+         public OrchestratorResult Execute(
+@@ -39,18 +42,23 @@ namespace SqlXmlAnalyzer.Application
+             string? planPath = null,
+             bool isDryRun = false,
+             RefactorOptions? options = null,
+-            string? outputPath = null)
++            string? outputPath = null,
++            System.Threading.CancellationToken cancellationToken = default)
+         {
+             var warnings = new List<string>();
++            SqlWritebackResult? writeback = null;
+             _logger.LogInformation("OrchestrationStarted: SQL file: {SqlPath}, Execution Plan: {PlanPath}, DryRun: {DryRun}", sqlPath, planPath, isDryRun);
+             try
+             {
++                cancellationToken.ThrowIfCancellationRequested();
++                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                 if (!_fileHandler.Exists(sqlPath))
+                 {
+                     throw new FileNotFoundException($"SQL file not found: {sqlPath}", sqlPath);
+                 }
+ 
+-                var sql = _fileHandler.ReadAllText(sqlPath);
++                SqlFileSnapshot? snapshot = isDryRun ? null : _writebackService.ReadSnapshot(sqlPath, cancellationToken);
++                var sql = snapshot?.Text ?? _fileHandler.ReadAllText(sqlPath);
+                 var report = new AnalysisReport(ImmutableList<IAnalysisIssue>.Empty);
+ 
+                 if (planPath != null)
+@@ -77,20 +85,25 @@ namespace SqlXmlAnalyzer.Application
+                 }
+ 
+                 var opt = options ?? new RefactorOptions();
++                cancellationToken.ThrowIfCancellationRequested();
+                 var result = _refactoringEngine.Run(sql, report, opt, isDryRun);
++                cancellationToken.ThrowIfCancellationRequested();
++                if (result.IsSuccess && (result.Errors.Count > 0 || result.ParseErrors?.Count > 0 ||
++                    result.Context.RefactorFailures.Count > 0))
++                {
++                    var errors = new List<string>(result.Errors) { "重构记录了执行错误，禁止写回 SQL。" };
++                    result = result with { IsSuccess = false, Errors = errors };
++                }
+ 
+                 if (result.IsSuccess && !isDryRun)
+                 {
+-                    string backupPath = sqlPath + ".bak";
+-                    try
+-                    {
+-                        _fileHandler.WriteAllText(backupPath, sql);
+-                    }
+-                    catch (Exception ex)
+-                    {
+-                        _logger.LogWarning(ex, "Failed to create backup file: {BackupPath}", backupPath);
+-                    }
+-                    _fileHandler.WriteAllText(sqlPath, result.OutputSql);
++                    writeback = _writebackService.WriteBack(snapshot!, result.OutputSql, cancellationToken);
++                    warnings.AddRange(writeback.Warnings);
++                    if (!writeback.IsSuccess)
++                        return new OrchestratorResult(null, false, writeback.ErrorMessage,
++                            writeback.ErrorException, warnings) { Writeback = writeback };
++                    if (writeback.SourceWritten)
++                        warnings.Add($"SQL 已写回。备份：{writeback.BackupPath}；原始 SHA-256：{writeback.SourceSha256}。恢复前先另存当前文件，再校验备份并复制恢复。");
+                 }
+ 
+                 if (result.Context != null)
+@@ -101,9 +114,24 @@ namespace SqlXmlAnalyzer.Application
+                     }
+                 }
+ 
++                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                 _reporter.Report(result, isDryRun, outputPath);
+                 _logger.LogInformation("OrchestrationCompleted: Success={IsSuccess}", result.IsSuccess);
+-                return new OrchestratorResult(result, result.IsSuccess, null, null, warnings);
++                return new OrchestratorResult(result, result.IsSuccess, null, null, warnings) { Writeback = writeback };
++            }
++            catch (Exception ex) when (writeback?.SourceWritten == true)
++            {
++                string message = $"SQL 已写回，但后续报告失败：{ex.Message}。备份：{writeback.BackupPath}；请勿将此状态当作未写入。";
++                return new OrchestratorResult(null, false, message, ex, warnings) { Writeback = writeback };
++            }
++            catch (OperationCanceledException ex)
++            {
++                return new OrchestratorResult(null, false, "操作已取消，未执行 SQL 写回。", ex, warnings);
++            }
++            catch (System.Text.DecoderFallbackException ex)
++            {
++                return new OrchestratorResult(null, false,
++                    "SQL 文件编码无法安全解码，未写回。请使用 UTF-8 或带 BOM 的 UTF-16/UTF-32 副本后重试。", ex, warnings);
+             }
+             catch (FileNotFoundException ex)
+             {
+@@ -140,7 +168,7 @@ namespace SqlXmlAnalyzer.Application
+                 var errMsg = $"[ERROR] Orchestration pipeline crashed: {ex.Message}";
+                 _logger.LogCritical(ex, errMsg);
+                 _logger.LogInformation("OrchestrationCompleted: Success=False");
+-                return new OrchestratorResult(null, false, errMsg, ex, warnings);
++                return new OrchestratorResult(null, false, errMsg, ex, warnings) { Writeback = writeback };
+             }
+         }
+     }
+diff --git a/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs b/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
+index 99953e4..3a48577 100644
+--- a/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
++++ b/src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
+@@ -10,5 +10,8 @@ namespace SqlXmlAnalyzer.Application.Models
+         string? ErrorMessage,
+         Exception? ErrorException,
+         IReadOnlyList<string> Warnings
+-    );
++    )
++    {
++        public SqlWritebackResult? Writeback { get; init; }
++    }
+ }
+diff --git a/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs b/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
+index 9de24f3..072d504 100644
+--- a/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
++++ b/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs
+@@ -65,7 +65,7 @@ namespace SqlXmlAnalyzer.Application.Services
+             else
+             {
+                 Console.ForegroundColor = ConsoleColor.Cyan;
+-                Console.Write("Normal (Changes written to disk)".PadRight(49));
++                Console.Write("Normal (Writeback enabled)".PadRight(49));
+             }
+             Console.ResetColor();
+             Console.WriteLine("│");
+@@ -238,7 +238,7 @@ namespace SqlXmlAnalyzer.Application.Services
+             sb.AppendLine("│                    REFACTORING REPORT                    │");
+             sb.AppendLine("├──────────────────────────────────────────────────────────┤");
+             sb.AppendLine($"│ Status: {(result.IsSuccess ? "SUCCESS" : "FAILED").PadRight(49)}│");
+-            sb.AppendLine($"│ Mode:   {(isDryRun ? "Dry-Run (No files modified)" : "Normal (Changes written to disk)").PadRight(49)}│");
++            sb.AppendLine($"│ Mode:   {(isDryRun ? "Dry-Run (No files modified)" : "Normal (Writeback enabled)").PadRight(49)}│");
+             sb.AppendLine("└──────────────────────────────────────────────────────────┘");
+ 
+             var context = result.Context;

@@ -1,0 +1,2498 @@
+[
+  {
+    "path": "AccessiblePlanNode.cs",
+    "sha256": "BF3DF02D84CABB37649865C198B7DD84FB89636B952507967DFE1A08EE283862"
+  },
+  {
+    "path": "App.xaml",
+    "sha256": "52B262E2C714135EC888EE735A1FC15D90493243E49FC261AB1EFAABF11245D3"
+  },
+  {
+    "path": "App.xaml.cs",
+    "sha256": "7E455005A3722A87AA0DED16C564DD9882F3D8E722E4BB1A0017956DEDC9D2DF"
+  },
+  {
+    "path": "Converters/BoolToVisibilityConverter.cs",
+    "sha256": "4B1001EECE2AD86817910CDE6799748BAD9388A0985DF45E6F34D406D02089EF"
+  },
+  {
+    "path": "Converters/ConnectionThicknessConverter.cs",
+    "sha256": "51D8992A97A0893F0942E844ED040FE090C5379D3FB0AB045CAF18DA0B8E1A76"
+  },
+  {
+    "path": "Converters/ScoreToColorConverter.cs",
+    "sha256": "85D289187D75A1328A1B80F52D56DF3C055370FE68DE986AC0C7A2BB02C5E8AE"
+  },
+  {
+    "path": "Converters/StepToVisibilityConverter.cs",
+    "sha256": "3B937376F406E7D5F6751DC35AC61EEEFF959982AF139278C9D67BD2BDEF4692"
+  },
+  {
+    "path": "Core/Mvvm/ObservableObject.cs",
+    "sha256": "AC22209C0ED37836BD4CE6BAEF6D45B300345AAD04CE507F51F4C9F86838869A"
+  },
+  {
+    "path": "Core/Mvvm/RelayCommand.cs",
+    "sha256": "23F62F9B245A918A811BDB6551DC47442622139D84E07F33F1885773F6DC96E0"
+  },
+  {
+    "path": "Core/Services/AnalysisClipboardService.cs",
+    "sha256": "451A6C109D69FF2D429AF713B948FF81E3912815AEBC20FD332A9A272C874630"
+  },
+  {
+    "path": "Core/Services/AnalysisReportController.cs",
+    "sha256": "412BFBE1B1D2E99C099637ABFD81DDE462D6F00174E037B7145E29DDC3C7826C"
+  },
+  {
+    "path": "Core/Services/AnalysisSessionCoordinator.cs",
+    "sha256": "41E941F196FF86970D730ABFAA5F6A1C810F3E1B5B73484EFC080B9C4D4808C9"
+  },
+  {
+    "path": "Core/Services/BrowserLauncher.cs",
+    "sha256": "72325DD41908291AFB3593303D02691D66A3ADDE79B985A949B4D7C2D2D1F07A"
+  },
+  {
+    "path": "Core/Services/CliService.cs",
+    "sha256": "2A011081628416DA1473CD833E41B3F7EA6A0A3D904441DC1507E42D57A3A305"
+  },
+  {
+    "path": "Core/Services/DeadlockCanvasInteractionService.cs",
+    "sha256": "E44107C71A4B4835284BE06753A2849739732F004B70A17C15E48B7C99E0FD80"
+  },
+  {
+    "path": "Core/Services/DeadlockDocumentController.cs",
+    "sha256": "E99473DFFA2EAED6E7717AB732E42D5E63AE79BDA20D56F95B3C1F55DC556ABE"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphEdgeRegistryService.cs",
+    "sha256": "6078F87B41009A7B6B0CD5814B36EDB78FC6504313C161478A949607DD9043B9"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphEdgeService.cs",
+    "sha256": "8F09679528E3D1DD837C97D97B92F8BBE959637D6D74A82B1CE1FD3232CBE788"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphGeometryService.cs",
+    "sha256": "DE7B9838EB816F3A2FB58B4042B3644EE199F5971C7837CFE1E39F7C639F7503"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphLayoutService.cs",
+    "sha256": "06BB6CF6AE82B97CA6A35D16557929F03A95F3C5C8B49ECF59C9951EBC217B6D"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphPlacementService.cs",
+    "sha256": "A14E1D7C812D8E229CD2E486C5782835A16DE02F16B82FAF50FDB812E53F93E7"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphSelectionService.cs",
+    "sha256": "04F7EB7677FD788BE2DA7A74909B053359A99C220FA273DD7302780B56210260"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphViewportService.cs",
+    "sha256": "855CCB7EDFB2E2FE8D0F6DEED880EB15609FB6CFF781DCAC4FE2994A81F1F9D5"
+  },
+  {
+    "path": "Core/Services/DeadlockGraphVisualStateService.cs",
+    "sha256": "A478CD937797139DFC19433127B8103C22824B7078B5FC07F0C5B9D1F92AADC9"
+  },
+  {
+    "path": "Core/Services/DeadlockNodeDragService.cs",
+    "sha256": "4CEAA49B8A4C071F5880B85211482D46DF09F095DA2B45CC96E57118DECB049B"
+  },
+  {
+    "path": "Core/Services/DeadlockPlaybackStateService.cs",
+    "sha256": "08464FFE61D37F55208FE5127C7E867BF4B579A727DB0C59301CEA1B477042A9"
+  },
+  {
+    "path": "Core/Services/DeadlockSelectionDetailService.cs",
+    "sha256": "40D97FDC808168F06B8256B57A37C3C2D5213144AC770CBC1BD30F85B1F8D5B0"
+  },
+  {
+    "path": "Core/Services/DeadlockStepBadgeService.cs",
+    "sha256": "43FA6599074862B6791AFAF01FB576A9488D0CBD30FA5EA690C8E15BB483D02E"
+  },
+  {
+    "path": "Core/Services/DiagnosticReportExportService.cs",
+    "sha256": "7371FA78ECC749ED62D243E6025D6DDD40786D972D8B2320536DA88134A2C5D2"
+  },
+  {
+    "path": "Core/Services/DocumentRefreshActionService.cs",
+    "sha256": "A0E9EDA7F92238B7E363D3EE9A1AD2EAEC3E67F8933E604B596266BC0E561CBC"
+  },
+  {
+    "path": "Core/Services/FileAssociationRegistrationService.cs",
+    "sha256": "1D4B7ABD869A5050D97C4E434923F3F4E84C7B3FA9C62CF961F5785E337B9C03"
+  },
+  {
+    "path": "Core/Services/FileDialogService.cs",
+    "sha256": "C5B6C072BD1BE44A7FC4492D3036DDC71093D587FEDCDE8A3D2665520F9A43D7"
+  },
+  {
+    "path": "Core/Services/HtmlReportActionService.cs",
+    "sha256": "C9A744F9C644DB6F800354B1166E89F913933F63465D765C8CF5887BCDD4BA14"
+  },
+  {
+    "path": "Core/Services/HtmlReportExportService.cs",
+    "sha256": "7BB16BA7878C0A100244FC5BD6DCEDF2E9CC41A417C0B774CDEBCB25834C7C00"
+  },
+  {
+    "path": "Core/Services/LogFolderActionService.cs",
+    "sha256": "F2E1C00DE45550E3A2E2D8D663BB9021C821F4BC166C7019599A9C92121ED6FB"
+  },
+  {
+    "path": "Core/Services/MermaidDiagramActionService.cs",
+    "sha256": "F4001391A5092EFE098D0CEB57004A728E4AAD94F3D4DD8CBE3E0640A2B38B1A"
+  },
+  {
+    "path": "Core/Services/MermaidDiagramService.cs",
+    "sha256": "8326D6C564A2081FDC1CC6A59E6BBB310C32B01F60392A15CDF0C72B8F94E103"
+  },
+  {
+    "path": "Core/Services/MissingIndexClipboardActionService.cs",
+    "sha256": "F8D34857E19FB16E19F3F1F1E003A97E9B1B2171052EC59624540DD0C37D0334"
+  },
+  {
+    "path": "Core/Services/MissingIndexDeploymentScriptService.cs",
+    "sha256": "4B71EEA5F7F8AE52F917FA436A79E4327546FB201EAEA242CA6755835F6D673E"
+  },
+  {
+    "path": "Core/Services/PdfWordReportService.cs",
+    "sha256": "E3D23634D21B9F591969F1256896423319CC1EEEF806B7377B98C657E1C0C861"
+  },
+  {
+    "path": "Core/Services/PlanAnalysisService.cs",
+    "sha256": "786D18D56AB75F27825256193897D0AFA179BC96B275C42EBB4182C92A4EE257"
+  },
+  {
+    "path": "Core/Services/PlanAnalysisSource.cs",
+    "sha256": "1006CBD06ABDCF125797278B9A3FD8A75E3584CAD97CF15CCCE166DA55C20FF5"
+  },
+  {
+    "path": "Core/Services/PlanComparisonController.cs",
+    "sha256": "F08C9E47959C28BB154B01A10E9A9383F379DBB8830BEE32B8123258F354A362"
+  },
+  {
+    "path": "Core/Services/PlanComparisonRuntimeMetricsService.cs",
+    "sha256": "483795BD026903A36D0575AC9FB95AE59B9BA45C4384F308C01188FFED002F22"
+  },
+  {
+    "path": "Core/Services/PlanComparisonTreeService.cs",
+    "sha256": "8E4B48990B476505E3B7A57090850BBEB88898311226051F679FA93D623EF8AB"
+  },
+  {
+    "path": "Core/Services/PlanComparisonTreeViewRenderer.cs",
+    "sha256": "D27C5A7963224B5238891374D46B52C7EE0A2F86FCFAE4F0C7731BD629CC9530"
+  },
+  {
+    "path": "Core/Services/PlanDocumentController.cs",
+    "sha256": "BDE3D2053893DA2F460B2AF084DB14C66C820FAC4109B69FA0D9F6329C75C8D3"
+  },
+  {
+    "path": "Core/Services/PlanGraphCollapseLogService.cs",
+    "sha256": "4E251526D3624A35C4AADF702F570783FBD9F3FA89AB2B8FF2A2A4735DC7E37C"
+  },
+  {
+    "path": "Core/Services/PlanGraphCollapseStateService.cs",
+    "sha256": "8EB786EF978557B81055E14208E251A0B55DA10CCEE776D090FB1DE584429698"
+  },
+  {
+    "path": "Core/Services/PlanGraphConnectionBuilderService.cs",
+    "sha256": "580481BC03DC569F509837F4B510F5150DD3602F424D5F952330049E5C5935E2"
+  },
+  {
+    "path": "Core/Services/PlanGraphConnectionDisplayService.cs",
+    "sha256": "2B4EC94AA2854742C4C0068694F447095EBAF5D6CE8B24581F36DF6FCE170C0E"
+  },
+  {
+    "path": "Core/Services/PlanGraphConnectionGeometryService.cs",
+    "sha256": "8AF883E3B64ABE36ECD801D60C6B095F3EC0B1C32DFBE6043E2134A56ECB4108"
+  },
+  {
+    "path": "Core/Services/PlanGraphConnectionHighlightService.cs",
+    "sha256": "6F7D9738465EE58C6B6FE98A81090B56DAA9374A76AB2042D2B8179466468982"
+  },
+  {
+    "path": "Core/Services/PlanGraphCostCalculationService.cs",
+    "sha256": "A07F54ACA60DEF107020A3EC9CEADA0B4D25936ADD72C6D3809261C08183B3E1"
+  },
+  {
+    "path": "Core/Services/PlanGraphCostVisualService.cs",
+    "sha256": "EB4FC355A2CF3DF94E10317633E93981003579CEACA942676B704C8123180B53"
+  },
+  {
+    "path": "Core/Services/PlanGraphLayoutRefreshService.cs",
+    "sha256": "8B99532C2C1B018E4BA540BE1933AE9019ED1B863EAC03C39D87FFFD726652C8"
+  },
+  {
+    "path": "Core/Services/PlanGraphLayoutService.cs",
+    "sha256": "C2950338CCA8C8567476860C7CF5CC299FCE10BF7EE1A046625D281381A4FF15"
+  },
+  {
+    "path": "Core/Services/PlanGraphMetricService.cs",
+    "sha256": "EC92F0105CFF64DA29D8632A1B9686B0542D8A92420F62E1C49173F27FC9200B"
+  },
+  {
+    "path": "Core/Services/PlanGraphMissingIndexAssociationService.cs",
+    "sha256": "EFECEF86F216A86D8680F19F4C21D4CF323BB0E10EF67415D7E447E4C99788AF"
+  },
+  {
+    "path": "Core/Services/PlanGraphNodeBuilderService.cs",
+    "sha256": "9045A598B5B155255218673B8AFF934AC3303EE09B8C80AA725F3908F43B7BCA"
+  },
+  {
+    "path": "Core/Services/PlanGraphNodeClipboardService.cs",
+    "sha256": "F4E384D8A3F3B6F49C049F1D4FC005E0CE93C8CCB593FF0B5A7149CBA77A000A"
+  },
+  {
+    "path": "Core/Services/PlanGraphNodeDisplayService.cs",
+    "sha256": "E8F23C737949B94F319F4C807938CFAA00B7046C2850BB0E19AD2A6A48F03B9C"
+  },
+  {
+    "path": "Core/Services/PlanGraphOperatorTypeService.cs",
+    "sha256": "B295C8193FED3D844F53D5BAA3B784462A162594796D1D3912FF7AE0F7206B93"
+  },
+  {
+    "path": "Core/Services/PlanGraphOperatorVisualService.cs",
+    "sha256": "169A657551E8936D4248B5B6B504CF363C8440CDD04422B682C0E2BD9C753177"
+  },
+  {
+    "path": "Core/Services/PlanGraphPanInteractionService.cs",
+    "sha256": "2DC3EC17175D4D2D62DDE893435A36D1DD6D7CF81AC9FF5D68CCED0BA880C0D7"
+  },
+  {
+    "path": "Core/Services/PlanGraphRelOpDetailsService.cs",
+    "sha256": "7395F92034D99519A39E971A001CB56216D77149751A5DFD658EAC94429F6340"
+  },
+  {
+    "path": "Core/Services/PlanGraphRowSkewService.cs",
+    "sha256": "535CFDB7F51B070772A266500AC804B39CC769A5310DF3FC045CAFB4672DAE82"
+  },
+  {
+    "path": "Core/Services/PlanGraphRuntimeCountersService.cs",
+    "sha256": "7563F87B265C4A3AA48DFB73FC244A1B87EF926E21C6875E3501C25BF00E073B"
+  },
+  {
+    "path": "Core/Services/PlanGraphSmartCollapseService.cs",
+    "sha256": "923F71B94DBBED003D6C34A22AE0383023165823D489C6F71074B9CC14EB8B4F"
+  },
+  {
+    "path": "Core/Services/PlanGraphVisibilityService.cs",
+    "sha256": "32A92ABDB8CACC20622FFDC83800BE41FE9E147216A8F52AA55FDEC33E356484"
+  },
+  {
+    "path": "Core/Services/PlanGraphVisibilityStateService.cs",
+    "sha256": "151CC6BF5C1907685FB1AE6A7E0238BE2BD8A4D2D922E89206AB31A98870CA67"
+  },
+  {
+    "path": "Core/Services/PlanGraphWarningService.cs",
+    "sha256": "F298955DD5681EA8570C1A64CB67E5696F2B6B3818A854E44DA602E887F21BEB"
+  },
+  {
+    "path": "Core/Services/PlanIconManager.cs",
+    "sha256": "2B8CB5A3F9C1B9B8AC76CB64526459AE0B18D5C1DCAA874D475353B7733710E2"
+  },
+  {
+    "path": "Core/Services/PlanObfuscatorService.cs",
+    "sha256": "1C1C01D0B39795A019F4469F423D865C87F62FF620AE6AA8E92DD64DAFFC8D0B"
+  },
+  {
+    "path": "Core/Services/PlanOperatorTreeViewRenderer.cs",
+    "sha256": "BA895E89484EE8B63232B5484F1BF35E6CB69F21C34418219671FB74326625DD"
+  },
+  {
+    "path": "Core/Services/PlanPropertyService.cs",
+    "sha256": "89FFEC8763791D9D6F243EEA145BB036D170DCA4784746B41FAEEF74FA48EE23"
+  },
+  {
+    "path": "Core/Services/PlanSelectionActionService.cs",
+    "sha256": "32F3BA14B55A9D500E58AF877080A6274B565BE262DE61D7A4C4A905D2CADA97"
+  },
+  {
+    "path": "Core/Services/PlanTreeService.cs",
+    "sha256": "ECDE229228CFF926C658C2B995D3C503753A7AEFEB8EACF6049D1EB8AADE3262"
+  },
+  {
+    "path": "Core/Services/PortableReportActionService.cs",
+    "sha256": "C022A22FD2E7DC9B5EBC1594100E5391D21942BF602C81B24732195073BB38FE"
+  },
+  {
+    "path": "Core/Services/PortableReportExportService.cs",
+    "sha256": "119FA56D9F40D3AF965D848FAB07C19CC4514A4F41DA6D15C23E246EC9FCFDF7"
+  },
+  {
+    "path": "Core/Services/ReportExportService.cs",
+    "sha256": "4F2F86E64B48290FF2099AC3F7764E03067B1D748DA7710E9C328E18E6DAC017"
+  },
+  {
+    "path": "Core/Services/RuleConfigurationStore.cs",
+    "sha256": "5D4A8D63C55462308600A8B88A4A3C102FDD16F32E7628EE17FDA70F45F6EE7B"
+  },
+  {
+    "path": "Core/Services/SqlDiffDocumentRenderer.cs",
+    "sha256": "2D70ED4CDBBCB62BB8CEFCEE045479D485DCFDD07A88716FA0C31A78C3D509A3"
+  },
+  {
+    "path": "Core/Services/SqlDiffService.cs",
+    "sha256": "B88165F97C1ECBB31B2BFBAE4D4011395179C6D3BF13E33962FB4BB2CF66481D"
+  },
+  {
+    "path": "Core/Services/SqlQuickFixService.cs",
+    "sha256": "DDCFA46CE08C04EF2D9D6339E7493989619BB880F19A7E167F2646658843F7E8"
+  },
+  {
+    "path": "Core/Services/TuningSessionActionService.cs",
+    "sha256": "1E70143F02D682E7E99EC07B55C58A4A67C167477B90D97942BBDEA52FC7DA86"
+  },
+  {
+    "path": "Core/Services/TuningSessionService.cs",
+    "sha256": "75F6C8C73F62B061B022A43724BE467F5BE0433AA9B063743B43C29ADB61D476"
+  },
+  {
+    "path": "Core/Services/WorkspaceCommands.cs",
+    "sha256": "06F6B44CCC9368FDDE67E870700BE4DB3666D9C4DB8B4EF4161ECA99FF74FEA2"
+  },
+  {
+    "path": "Core/Services/WorkspaceInteractionService.cs",
+    "sha256": "1969C7527571BEE470BD0D81382EA6BC6DFBB1D8520F22320F3EF590BF3FC29D"
+  },
+  {
+    "path": "Core/Services/WorkspacePanelLayoutService.cs",
+    "sha256": "F481596DD0DB7939468D2FD356817AFD03739214F8E33F91D206CC0CE3F4C82A"
+  },
+  {
+    "path": "Core/Services/WorkspaceSourceFormatter.cs",
+    "sha256": "BA4DE05E78CE8F1B59BD67FC7C37CCFAC5A95E14365A942CEAAAFE8A698EED93"
+  },
+  {
+    "path": "Core/Services/WorkspaceThemeService.cs",
+    "sha256": "5828D2201021DA2CAC7995E13CD3EE62E5B6F2A68E01300FF29DAB16D2F11BBC"
+  },
+  {
+    "path": "Core/ViewModels/DeadlockTabViewModel.cs",
+    "sha256": "ADB3DD60ED87522A8D3C0651C6A9CAAE27550E45B1B8665EED6FFF604304E3FB"
+  },
+  {
+    "path": "Core/ViewModels/DeadlockWorkspaceViewModel.cs",
+    "sha256": "B018DDBDFE96098A4EA6CA36547EAAA871B5D37B069175E6C6B05582349AC078"
+  },
+  {
+    "path": "Core/ViewModels/DocumentTabViewModel.cs",
+    "sha256": "0B55B97190FBF8382436E1346767FE508EAEE33552512542AD0008B746755DE5"
+  },
+  {
+    "path": "Core/ViewModels/MainViewModel.Comparison.cs",
+    "sha256": "945E3D40A344C9463D0711E4D21DFE180832AAECF8EDD7D2B7F27E6ECAD3EECF"
+  },
+  {
+    "path": "Core/ViewModels/MainViewModel.cs",
+    "sha256": "17E5D8BD9C13F6497CBC3331ACE3D2AA847D1639DAB234F9278B27616929C5C7"
+  },
+  {
+    "path": "Core/ViewModels/PlanSnapshot.cs",
+    "sha256": "2BB7D0BBB77B12708BDBC4EB76D907F1B939FC1148A73883AB274BE405328F5C"
+  },
+  {
+    "path": "Core/ViewModels/PlanTabViewModel.cs",
+    "sha256": "492CDC8CE28D04E837461FEA5757ABA1B969051DC14EC0BCA61B355E13A4D5C8"
+  },
+  {
+    "path": "Core/ViewModels/PlanWorkspaceViewModel.cs",
+    "sha256": "6B2C48F15DDC9C0FEC483286131630C778D394A9A14EA9BF151752FC745EC21F"
+  },
+  {
+    "path": "Directory.Build.props",
+    "sha256": "EC73F922F75E20CCB4192D7D850AD2D135B50CA4F839117D013287570D3B9688"
+  },
+  {
+    "path": "Directory.Packages.props",
+    "sha256": "C3E5E0D6BD573F321FDEAEE120D274FC4DE5C01999DA67C6435DE61083801BB0"
+  },
+  {
+    "path": "ExecutionPlanVisualizer.cs",
+    "sha256": "62908437D2E2D550E97CE79AF4D7D994D10328FE3DA7A2EF54A58C11D03D9D49"
+  },
+  {
+    "path": "MainWindow.DeadlockGraphEvents.cs",
+    "sha256": "E900A3C6C9145801753E1D1CBC00DD60E43B2493ED99123E9A12CC92FE954F7E"
+  },
+  {
+    "path": "MainWindow.Documents.cs",
+    "sha256": "585DE63FBB5C5738D22DE347D570BAECB8EFCF0014A9966ACC9F084CC1030B2A"
+  },
+  {
+    "path": "MainWindow.Fields.cs",
+    "sha256": "378A371BC095715A5EA1E54C7A9CD332123876F4F9150AC3590F7C67AE021AC2"
+  },
+  {
+    "path": "MainWindow.KeyboardShortcuts.cs",
+    "sha256": "5BFD735D49B760140F450E86AC0F6666FB6E5AF1FBC367DCADA87CAE20C0FA9D"
+  },
+  {
+    "path": "MainWindow.MissingIndexEvents.cs",
+    "sha256": "F1FA9688C4F54BEF0161ED9417D8E8D87E34ED8BF0C5A96B7B21DE35BA7EE673"
+  },
+  {
+    "path": "MainWindow.ReportEvents.cs",
+    "sha256": "1EC6C7636CBB100995AF80FBDCB8E9EB4C09A8A6DB562E3130374FCC7EDDB369"
+  },
+  {
+    "path": "MainWindow.RuleConfiguration.cs",
+    "sha256": "0C15C655339B16B22D8B02A95CEA025582562983BE8B387B86873538EC563CFC"
+  },
+  {
+    "path": "MainWindow.Services.cs",
+    "sha256": "D891E6BF6B6E87B711BFA89684E61B75B54607549205D3DD6FB1FB873C80026A"
+  },
+  {
+    "path": "MainWindow.ShellEvents.cs",
+    "sha256": "3F3D41CCA61D666F9C872AF286C15F148AA800546ECE7363EDAC32DFA6148E3A"
+  },
+  {
+    "path": "MainWindow.ShellWiring.cs",
+    "sha256": "602FE62F868CEA949D6085F30CC48884A540E16B0EB48E7CB432FCBDA47B04BA"
+  },
+  {
+    "path": "MainWindow.TuningEvents.cs",
+    "sha256": "25A8641773E2C46CC84DA1295956C6D5EA51BEEF212F9DC53C44A4D4102AF4F5"
+  },
+  {
+    "path": "MainWindow.WorkspaceEvents.cs",
+    "sha256": "F8125CB7227E33586EFA64EC44756777475561F25CECB49462953723A4BB2A6B"
+  },
+  {
+    "path": "MainWindow.Workspaces.cs",
+    "sha256": "D1E74A46A99296670DD6CB763E75FC4A173F61BB8FEA7CA6CDBC986904956A4B"
+  },
+  {
+    "path": "MainWindow.xaml",
+    "sha256": "4AC5064F615E865FD5BDD2D731DFE7D3E491240D01B23C298CD8E0AB5F50FA38"
+  },
+  {
+    "path": "MainWindow.xaml.cs",
+    "sha256": "8482339E164ED9AE8AF22762BB3D386C2B434E3176A98AADCC2802B807C8ED9E"
+  },
+  {
+    "path": "PhysicalOpToIconMapper.cs",
+    "sha256": "B1F7EEF9EDAA8A26DC901A10A033C0231D4639BEBC9DC2E6180A38D9C1696785"
+  },
+  {
+    "path": "PlanGraphControl.xaml",
+    "sha256": "696A71A01EAA3E78F53FBB7675EF2111500230CBF297371DF1DFBEAEEA2E8D13"
+  },
+  {
+    "path": "PlanGraphControl.xaml.cs",
+    "sha256": "90B04636660C6AE63B2C5B75535885EB7C08A9DA910A004ADDA93F8DF3261A33"
+  },
+  {
+    "path": "Properties/AssemblyInfo.cs",
+    "sha256": "90D0B92E10D011E05CF3D684B973ECEB8C9C224719FA74C687A8204C6B479363"
+  },
+  {
+    "path": "RuleConfiguration.json",
+    "sha256": "13F16FDA311BED91456807A09EE8ED13E612613BA9A6F644086F0030CCB98D4B"
+  },
+  {
+    "path": "Services/AnalysisResultsUiActionService.cs",
+    "sha256": "BDF0BE3FEA946624475EF89754508E7E88292C63D0032497A72C8D8F9A4934EA"
+  },
+  {
+    "path": "Services/DeadlockAnalysisUiActionService.cs",
+    "sha256": "268C553B8C7523045EDDC92205940DFC3270BCDFF2BDB8EB6DA3FE46DAF04422"
+  },
+  {
+    "path": "Services/DeadlockCanvasInteractionBinder.cs",
+    "sha256": "B3BF54CD56A313402185FA27F59D892FD085E3C4EA22DB23325B3C14868C4528"
+  },
+  {
+    "path": "Services/DeadlockGraphEdgeElementFactory.cs",
+    "sha256": "0AC210996D6A2171A47C20CD88F709A25AD1E5B2EBC78767D245211F91797B78"
+  },
+  {
+    "path": "Services/DeadlockGraphElementUiActionService.cs",
+    "sha256": "A51EA5867D03A689DA070123713F83E8E6E14E610A6802D018E84D033A3929AB"
+  },
+  {
+    "path": "Services/DeadlockGraphNodeElementFactory.cs",
+    "sha256": "FAFCD96EBF10D91429B42DE4A7C3520439D85AF48304B3BB5F3CA992D174C880"
+  },
+  {
+    "path": "Services/DeadlockGraphPlaybackVisualService.cs",
+    "sha256": "5BA0B06AF809A87A69D93EA4056FD5AB16DADA1A30DEB5ADDD66F4D4E703A430"
+  },
+  {
+    "path": "Services/DeadlockGraphRenderUiActionService.cs",
+    "sha256": "B1725094C4245960FB4311D2EA89ADEB758F09BE250EB0A32419EDFD24D2CA7F"
+  },
+  {
+    "path": "Services/DeadlockGraphUiState.cs",
+    "sha256": "0EEF6366D58327366A66B82B2EAFFF84A1CF6BE426CE1B68A5876015C7699956"
+  },
+  {
+    "path": "Services/DeadlockNodeInteractionBinder.cs",
+    "sha256": "EDC24FC62716AFB1A564D6D229369958D4B49E8A68642CDCDC011AEFE5BE320D"
+  },
+  {
+    "path": "Services/DeadlockPlaybackUiActionService.cs",
+    "sha256": "AEDE21741B70A23B7D28542D94E7C739434A6501EEE5DA38A430143D3F3FF146"
+  },
+  {
+    "path": "Services/DeadlockSelectionUiActionService.cs",
+    "sha256": "599C609E6AFA1F0FFEC163C41F3F32BB90D4C6D0D33AC81AF67767D14B4E9A90"
+  },
+  {
+    "path": "Services/DeadlockViewportUiActionService.cs",
+    "sha256": "B7E8088A8DB7E0552F68E290F29DBBEF28C19646637ADD6767409DFE844D704A"
+  },
+  {
+    "path": "Services/DeadlockWorkspaceUiActionService.cs",
+    "sha256": "CC9F656C1CC866A61E3A25D64ED057A306B80A6B6C9F5144F38AAF0520E6A980"
+  },
+  {
+    "path": "Services/DocumentAnalysisUiActionService.cs",
+    "sha256": "1767D1672411B1A8BE78A78F04AE34C94D74D60E8C07643787D22B1935F37B27"
+  },
+  {
+    "path": "Services/DocumentRefreshUiActionService.cs",
+    "sha256": "D4BCB436A9818186F9A1A0853C486476ABBA09A2F38232237ADA45BA797FFCCD"
+  },
+  {
+    "path": "Services/FileOpenUiActionService.cs",
+    "sha256": "36B97A599DA7C378DB21C084FCD2133EF1687A93346BDC32FDCFAF5333DAD5AC"
+  },
+  {
+    "path": "Services/MainWindowShellActionService.cs",
+    "sha256": "4C2AB1BA1BE1A38155335B968455DF9A0B7357E26D3215C576B9469CDD611A1D"
+  },
+  {
+    "path": "Services/MermaidDiagramUiActionService.cs",
+    "sha256": "67639B21FE5343A056A78326A9DB5825D209DFAAC5133FF0742286E4B0E348F8"
+  },
+  {
+    "path": "Services/MissingIndexClipboardUiActionService.cs",
+    "sha256": "B865C596C892481D6F14978EFEBCB131BFDC533470C01464EBD6D2C34A180B9D"
+  },
+  {
+    "path": "Services/PlanAnalysisUiActionService.cs",
+    "sha256": "AD44B041EA63D6A08CA6D784643AC8C7459B899E87879B878217B52A5691C087"
+  },
+  {
+    "path": "Services/PlanComparisonUiActionService.cs",
+    "sha256": "40569CD76B7B591C9FB5737BA6E72485953385242C6AF1AC8687D15D6CE9E5CC"
+  },
+  {
+    "path": "Services/PlanGraphCollapseUiActionService.cs",
+    "sha256": "B3997D50C9AA438F47BF96720478FA4B65C2DA852BC88DF7034F570E85274E5E"
+  },
+  {
+    "path": "Services/PlanGraphConnectionUiActionService.cs",
+    "sha256": "D9464B9B1B80190721D40D0126791509137FDB396A61C0A230B674A69594B8A1"
+  },
+  {
+    "path": "Services/PlanGraphCostUiActionService.cs",
+    "sha256": "882620B573F783AFA6060C578801B8C09687FF4BCF1BCF73E146A7D96DD11D04"
+  },
+  {
+    "path": "Services/PlanGraphLayoutUiActionService.cs",
+    "sha256": "4E09672DC0C12538960FC4095B5838580F9F0F540B5FFE320BC334B212766084"
+  },
+  {
+    "path": "Services/PlanGraphLoadUiActionService.cs",
+    "sha256": "D8BD6234022E879F59155D9824B23C92065CF612BB16300F3FFAAEDB1AE8678D"
+  },
+  {
+    "path": "Services/PlanGraphModeUiActionService.cs",
+    "sha256": "5798AA94D884650DF753F210217CF34AABB37D70285A12A1DBFDE24A5342EBD1"
+  },
+  {
+    "path": "Services/PlanGraphNodeClipboardUiActionService.cs",
+    "sha256": "8F95F61FC269DD686176BC1E1D6A41DD0333F3518CB21CE8F61DBADD924AA9FD"
+  },
+  {
+    "path": "Services/PlanGraphNodeUiActionService.cs",
+    "sha256": "F1239F2946A22E8EB9E71FE582EC90E18899C51BC664B92FB8645A8812C552D1"
+  },
+  {
+    "path": "Services/PlanGraphPanUiActionService.cs",
+    "sha256": "866679EBFCEC6E9B36C74BC97A78A9523BA7BD2877E19B110CD7AED24C662042"
+  },
+  {
+    "path": "Services/PlanGraphViewportUiActionService.cs",
+    "sha256": "77753E7298E8B8804596C50D16405CAF1CB24F0A9EB167C270E69E549022F6FC"
+  },
+  {
+    "path": "Services/PlanObfuscationExportUiActionService.cs",
+    "sha256": "877611F7D4FD723B418FDB55ADD700C8035D7364E3B0C6A7436456E8BD03F1AD"
+  },
+  {
+    "path": "Services/PlanSelectionUiActionService.cs",
+    "sha256": "9C2084872BC7140BDC6B4239B745E1A28A937B5EC1CB450FF07AA9CA9A63344E"
+  },
+  {
+    "path": "Services/PlanStatisticsUiActionService.cs",
+    "sha256": "0F8345628C48CB7E588B5D9A7158D84BC3DA4E503B5AE769C86941138E53D123"
+  },
+  {
+    "path": "Services/PlanWorkspaceUiActionService.cs",
+    "sha256": "FCF9729FE903851AC2FDA02D5527931D466C004C78219CDD0C5416A8C21E8571"
+  },
+  {
+    "path": "Services/ReportExportUiActionService.cs",
+    "sha256": "52C24390A99FDC73FDB2147169B7E3A7A7DB1AB21ECB4E5039D32E45B7C8637E"
+  },
+  {
+    "path": "Services/SqlDiffScrollSyncService.cs",
+    "sha256": "02F0E149734A0CDA0ABE1C3782B35164A98919358DF59A7E4459E9CC0491F8CE"
+  },
+  {
+    "path": "Services/SqlDiffUiActionService.cs",
+    "sha256": "2C6962F4114890CCA5B83B934A424DBA211C6E1779AB68E723647D0EF81CB8F5"
+  },
+  {
+    "path": "Services/SqlQuickFixUiActionService.cs",
+    "sha256": "1DBDA313701FA5CE18CCDDBE44DE83BE1F879D2CE0445216A082E7F738D980B0"
+  },
+  {
+    "path": "Services/TuningSessionUiActionService.cs",
+    "sha256": "DFD01E3C1D5B5EE036B27A0B21FBD23D0066457A39A3BC84B7744EA5C93AA2FE"
+  },
+  {
+    "path": "Services/WindowChromeInterop.cs",
+    "sha256": "C32118C5F44A4482189B14870C05DDAB2F0E309A03180E7FE294C2EB3657BC8D"
+  },
+  {
+    "path": "Services/WorkspaceAccessibility.cs",
+    "sha256": "7F185EA0F949F9619D69145270424287C36DE100A749292F250DADDBD281B2C2"
+  },
+  {
+    "path": "Services/WorkspacePanelUiActionService.cs",
+    "sha256": "40FFFA051789ED4E8E10D8EFBB40C9A41A73E40CB31515E96F5CC81FF672030E"
+  },
+  {
+    "path": "Services/XelDeadlockUiActionService.cs",
+    "sha256": "5AE5495F1ABC86A2987C3E575D9B97B29769678254DD3D9FDCB9BD66E15EDC50"
+  },
+  {
+    "path": "SqlXmlAnalyzer.CLI/Program.cs",
+    "sha256": "5CE3173F109A99E04A2C7D08CBBADA05E3E56BDEAB3D85E54B45887F080E8414"
+  },
+  {
+    "path": "SqlXmlAnalyzer.CLI/SqlSemanticCommand.cs",
+    "sha256": "7DF545020E49ECC36179E106A10023A7D3D36E91A5D8CE5B921912BA711680F7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.CLI/SqlXmlAnalyzer.CLI.csproj",
+    "sha256": "534B057FE819633F66AD5C4DFDBDE0AD4A3F3B3B108D2BFDDD8C0B900FC8CFDD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisEngine.cs",
+    "sha256": "B9BEAE836B91DBF57CBB62D6A5476E3E49B50E3C11A488758FF656B2FF6B44D6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Abstractions/IAnalysisIssue.cs",
+    "sha256": "556A1EA68F6958305DD2B96D16561E95B8668B85C1D72208FE5598709AD6FC78"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Abstractions/IRefactoringEngine.cs",
+    "sha256": "EBA24FAD9CD8080EF414FA0725B31B4FCBBFAEDA3A96B8AAC0AAC25A36A15732"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Abstractions/IRuleFilter.cs",
+    "sha256": "35DC8F410750BD8D1737EA90EF578C88A266368DEA42AABBE2DBE13DF29EF1FF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Abstractions/ISqlRefactorRule.cs",
+    "sha256": "1E5C57DBAA7CE30670B621A2FB05F4F9C0550186245B6305836C4E534E653AEF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Abstractions/IssueSeverity.cs",
+    "sha256": "FBE19500994D14F3F03D31463D0FF3E0466C5480B4B5E2A6ED971C8747351361"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/AnalysisReport.cs",
+    "sha256": "4A771CC69317C98D1E999061A0851C2958D23252B03A04FAA295376313DB10B7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/AssemblyInfo.cs",
+    "sha256": "ED2EBF5C67396BE77A87AA5D0F90FE6098F5F24D6D2AE8345FE3CBD4072D4BD5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonEvidence.cs",
+    "sha256": "D6919ECFB1C69758AE329F9B25C3B193FF2ADFE11BD405C02C7985EA2641E522"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonObjectEvidence.cs",
+    "sha256": "B859577E332B9E23EA8B32099C7245BB834CF8CA7BC63B6EEFCE336C7709BDC7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonPredicateEvidence.cs",
+    "sha256": "5CCEFB9D5AF1EC7463B50F8D7FB6F195C07A8E627A7F0E9F6A29666F590C566A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Comparison/PlanComparisonSortEvidence.cs",
+    "sha256": "E95D8774B5211024A850F10C0EB31CC4FF1F43D99610CD10841FD5FA4FFAFB12"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Configuration/RuleConfigurationDocument.cs",
+    "sha256": "59BE2104557889243CA6AA7DBBA22168B266C913B3EC16D83617BA61D5992877"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Configuration/RuleConfigurationLoader.cs",
+    "sha256": "EE735497442BD8174F592FD78B156D0E17158E265A1159B93D41DF4B22E760D9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Configuration/RuleConfigurationSession.cs",
+    "sha256": "4415054AAB206AC2CF443E9928C3142D22F45ACDD17AECDC136B2C6C0F466BA1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/DeadlockAnalysisService.cs",
+    "sha256": "B1B6ED4C229F4BAAE5767A28C86E0AFE03BF60183CDD789F31865159BB0101DB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/DeadlockCycleAnalysis.cs",
+    "sha256": "F61A7FF530CFB00C7EEBCD49B410F9BC24DE03832E45197A1A24820AE3A68904"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/DeadlockDiagnostics.cs",
+    "sha256": "50B949C7AAD721D62265843A0A2D0C9567B6D6175CCA6E0D1A535E390090E2E5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/DeadlockGraph.cs",
+    "sha256": "BF19F2C4E466A31E670D5F10CF266627C997A9753300F27F90C7CE495626D430"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/DeadlockXmlParser.cs",
+    "sha256": "FDF598BAB40BD4ECBB1AC7C3D1E00A0612B9C689170192F55FE4FC782B5CBF30"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Diagnostics/DiagnosticFileAccess.cs",
+    "sha256": "504FF541A023CACC9C77529F08990E44A597EEE1FBEC890FF34C279D7778E594"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+    "sha256": "EDBB5538C5A99864F1203B17762ADD7007D7A2ABAA8B9872C36CDD29E260E279"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Diagnostics/GlobalExceptionHandlers.cs",
+    "sha256": "D272A3B7562BE533CB1F128CABC7A9630BE3409A6AADEF8541C358AE5259D7E1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Diagnostics/MinidumpValidator.cs",
+    "sha256": "4614C552DCF6B15F4057F15EBD2F7C2C3F6A553E87026636B2BE026B9CBA1DDA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+    "sha256": "3BDA8B6130B0B9252C0846B462705F736CB2B6EE5736D5338B8CA6BDE6D676AD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+    "sha256": "C9A218DBD11A9D392CFAEF19607BC8EAE56BE9A4A8FA6CAFEFD8DB61E18321F4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/HtmlReportGenerator.cs",
+    "sha256": "8CE08BC4152A086374EF7EA24EDD12EE6586B75BCAE0410CB5715FFD427E9B6A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Logger.cs",
+    "sha256": "9BDC93CE515AE8A4F76FAC0FC9B486213FE27DE5E52926EB7E418AF295D621C7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/DeadlockEvent.cs",
+    "sha256": "4712301C3D1D357C36F604E2C9EBA87FDD6FD81A9C7C6849F3A382BD8F5A1DA9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/DeadlockParseResult.cs",
+    "sha256": "246FAE68A4FB66138CECF2D9C7F406A1FA8C525BFC9A7ADF787E86C330AF6E3A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/HistogramStep.cs",
+    "sha256": "0D5E3F1B00407E15A3429F79C0AA10D8FD4442B8276C5C420B8BAB9C33D31D24"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/IndexColumn.cs",
+    "sha256": "FD86D92FCBB4821C91197CC645D07887B365D64CB27CDAFEBD043B7AED5E172C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/MissingIndexSuggestion.cs",
+    "sha256": "4E82428776F77F3876ECD59DFBB78ECA05A2096DE0327E6BA811950D33AA4243"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/PlanDocument.cs",
+    "sha256": "3B990BD8A0B36387B90CBE97A73ED303D02A3DE93A0939B342BFF61B7639257D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/PlanOperatorFacts.cs",
+    "sha256": "885DAF347C3B3C9F075B51CA3EBD8038E86D1AC11389164A1529E984BB18E865"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/RefactorOptions.cs",
+    "sha256": "69B39ED8E2F3EF69BE66BD0ECD32A22DF4E0AEDECB9B22778BBC9C9E6624B026"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/RefactorResult.cs",
+    "sha256": "4B234BCE5C9CA54A91D290A62C211C4AAF617626C504F18F0B79EFE697EED85F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs",
+    "sha256": "63F9798828DA025493460690014CAF34D4BF35C66070D323B383B8A40F4F1880"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/RewriteProposal.cs",
+    "sha256": "CC2CDA30DB0D8EDD287BB2396740602ED710AB85AED666DEAF201CFBEC26153D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Models/StatisticsInfo.cs",
+    "sha256": "A848F778A60AF6995FD7C547946032603E5973C494C8D55538E75264C44D7DD6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/NumericParser.cs",
+    "sha256": "0C75285C5B3127BA127BC2D82435AC6DB45B408CC1AA4F09F709D05C228FD051"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Parsers/DeadlockTimelineParser.cs",
+    "sha256": "6ED74C8A8F95CE3394C49B356EFC4C46D4C7648585D9EB5C65C638F2F502F9A7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Parsers/SafeXmlHelper.cs",
+    "sha256": "10C53F1345E413F652D874C8A13DB19E103A154890BFD17DA807B60F2AC836B3"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Parsers/StatisticsHistogramParser.cs",
+    "sha256": "594C7D974A1BACA84EB6E7B3EF08A748DB8A4A9308B1A87695E82914B294CC67"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Parsers/StatisticsUsageParser.cs",
+    "sha256": "1B15799984309F8A51BEF119808AE271D76C653804847012FC53CB05F79B6BF5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/PlanDiagnosticAnalyzer.cs",
+    "sha256": "FD3F306A3F095C938922B344C8C5E73BDB91F0AF96C8ACB17A66D31BAD9D29AC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Privacy/OutputPrivacy.cs",
+    "sha256": "ED8E806A2328DFDDCE8539D803F00F41351777846C0980A75B0F0648B14BD853"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionResult.cs",
+    "sha256": "AFA865344C432507A8C4CE0A0836F3C3EFE7968AFAD274610540706A6B83A8DA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Privacy/PlanRedactionService.cs",
+    "sha256": "1C2A62836722C47184BB27CB173ED2A5AC0D6C4B6FAB178B1B77916AF89BDEA7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Privacy/ShowPlanFieldCatalog.cs",
+    "sha256": "A84F81FD26ACDD0ECAEF55ACB7E0F0253E3B2B8202797B6B688EE3962E23A4C2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/ProductInfo.cs",
+    "sha256": "AF8606FC4C7412B322F9DEC8BC87A3F6C101F5A8892ACFAA53254D3B22495F4E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/RefactorContext.cs",
+    "sha256": "4AAA21F9E34693C324E67E52A51B29C3485EE0B8F392FF59AB0D378695AFC304"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/BooleanExpressionReplacementVisitor.cs",
+    "sha256": "196753638B37714CD2036765AFB831E4C7CB71A9519037BC311888EF2F914E0C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlCompiler.cs",
+    "sha256": "977C4F37EA3CA946623450BBF9563669C03FDAD5BD74A8600087F8B4DEC05E3E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/IndexDdlOptions.cs",
+    "sha256": "4779265EE2FBF02DCF42E83F394F10BEDAF5FF7BDBD64F19F38114440246D98A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/ISqlRefactorRule.cs",
+    "sha256": "4EC4A2192DAF4C49F2A1C86C362771CF4328CDF29DD6FE0141610CDE3B9C24E2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/MissingIndexSuggester.cs",
+    "sha256": "0C8A1B4F2507F290A40C3DE8F75CB3302BC5E5D5AB5813C94B46A4A22C2BA039"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/NonSargableDetector.cs",
+    "sha256": "0B9401A518790E63E258341ED559CE2D7ED2CA282282B67530F2E2A4453E4B61"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/RuleRegistry.cs",
+    "sha256": "57210D887E47878A925AAA71D65A1E3D48A61E381B092703C9736A2296F57217"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/Rules/SargableRefactorRule.cs",
+    "sha256": "B9210F2A5C8D520F249EC6AE84BBECA19D50981B9BB067D2FF12C0DAAC2304E8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/SqlRefactorEngine.cs",
+    "sha256": "5AA7B028295E9100FA081E582CB16A34220099F5EEF1AF9B3816B2658CE2B50D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Refactoring/Visitors/SargableVisitor.cs",
+    "sha256": "46AF7BF54E4929365AB16FA6A06CB0E1F6C47AABF5A9D0D3B1D1EDE0ACE1919E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReport.cs",
+    "sha256": "07DD0FF31581A1A9351584C984D1620FB3A1AFB38834243058D1EB2D62440138"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportFactory.cs",
+    "sha256": "F97E62177B65E1AAB2B4576E1676329EC3571A26A5C798B33A457AB41B9C4EE6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportRenderer.cs",
+    "sha256": "CE4B1162C67254601CE553C90B9CA98BCA576D96CBA56B42135FD06AFD70C84C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Reporting/PlanReportXml.cs",
+    "sha256": "EBEA2BE9B79282945EA8F09CFAABF9A12BDF549E64EF31CF8681229E217F21D2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Reporting/ReportRedactionService.cs",
+    "sha256": "4247ABCA86F7ADB69A93764C838C7BF4EE3A11F752191DBBB5AEA59FBACA1715"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Reporting/ReportSizeBudget.cs",
+    "sha256": "8BC57EA235889B132CD625627B89E67AD89A66D74ADFBD4481FFDF8A70A82ACA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/AnalysisResult.cs",
+    "sha256": "1E9B6919A627241F5B137D20A2D3D5C3AC39F3F2DD39B8DAC33D69963A2193A2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/AntiPatternRule.cs",
+    "sha256": "7CFAB1226D37ACD878EAF4BAFD2E03F3B92501DD189E238505507F7D9D9D2756"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/CacheAndRecompileRule.cs",
+    "sha256": "33D497278F7C110D81F1E2F5920624FE97E7EF36AA71B1A2CE5EEBA9150BCA75"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/CardinalityErrorRule.cs",
+    "sha256": "4E35A52D2D1CC11DA55B1A5A66F159A13D778E027C4054B2589CB564D2481C53"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/DiagnosticProtocol.cs",
+    "sha256": "2B9E3D27AD8388433FF502808ACE3E5EB667236E9A7944321920862DD3D6923F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/DiagnosticTextFormatter.cs",
+    "sha256": "0C36C00EE738FA1912F7F5B61A1ECD172372D206F3D27A34C0B4FCB075D0060E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/HighCostOperatorRule.cs",
+    "sha256": "F5B6F8EEE562AB17C7AC01FD4367D5EF9A4A4D8FB163BBD12487D923C005363D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ImplicitConversionDocRule.cs",
+    "sha256": "00E347040977A6C2FEBFB89E482011B5C57B323230300B2D35D848231CA66E9D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ImplicitConversionRule.cs",
+    "sha256": "D349806483CEC72A072BA7CD795DF3EFF37B3E04654896295F5DB876EEFE2848"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/IPlanAnalyzerRule.cs",
+    "sha256": "70ED51DEFA352C75EE7C7AB77942DD7DD447B12D71EEF734BBF28A78D03FAF6C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/KeyLookupOpRule.cs",
+    "sha256": "E39935597CA0D2FB3B01EDD57B02F623A92A345B608114236EAC20F0CE06A352"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/KeyLookupRule.cs",
+    "sha256": "E9199DCD18506C1380797BE5B35C5159EE8CA7BB29E237103954712963258C07"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/LargeMemoryGrantRule.cs",
+    "sha256": "43A1B6399FC6F78F3C4673DB03AE250FA2780D40281E35176F0E7D6664D503E3"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/LegacyDiagnosticAdapter.cs",
+    "sha256": "1EE479B3F2762BC0DD52000A1DB10456DE68E285F84AB6C170F810C60F22860B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/LocalVariablesRule.cs",
+    "sha256": "4113B21CBF3AB86B44840F5E035DB242153F07814AB93DC524F19B5CE8D45C46"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/MemoryGrantDocRule.cs",
+    "sha256": "BFDD3FEB1E2CA6C2BE4F92F6E91C6429788C413E40C32042DA423C91E3F81871"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/MemorySpillRule.cs",
+    "sha256": "69195F72FA7E3629B01DBDD35AA508D2512DC3732341671E44A7F2A12992F70B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/MissingIndexRule.cs",
+    "sha256": "5B6206246ADE05ED562D13C23B684C5B15519BB71360C64AE771D0300739C1C4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/MultipleScalarSubqueriesRule.cs",
+    "sha256": "4DA33AECA8C8EDD9B2E2128BE49FC8C0D45910611C007ED735707F3716F690B8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/NestedLoopsHighExecRule.cs",
+    "sha256": "E30FE79D202254AC6A1C3A76FA99AC9D66726AA3561C137B9DFFC0BA5B1D11FE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/NestedLoopsRunningTotalRule.cs",
+    "sha256": "8659B2A5B4992C3277F78E5C2E3344AED92BA1A03E3C8C30E42DF6DFA4CFD8D0"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/OptimizerAbortRule.cs",
+    "sha256": "DD5A0124CD3C7ACE1B39FF83935FFE776C3F3428E74E7D900ABC31C0014C463D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ParallelSkewRule.cs",
+    "sha256": "2C4E38B74CEA6BFFDF5AE42F97D428097E00E2EB18EFA020186B49535A24A9E8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ParameterSniffingDocRule.cs",
+    "sha256": "7F8F36290771EFA5F59ECA46D3EB98D20073649B52B4AF85C9F27D06F62C2C74"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ParameterSniffingRule.cs",
+    "sha256": "2281BE1B9C88866F35BC59EC7A0016CBC16055F6641067CD14208D57DAE95067"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/PredicateFunctionEvidence.cs",
+    "sha256": "B61AF69D7F9601528D3291C8E80F4F1F39D8EFA2350BA32908C4521A2518F2FA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/QueryRewriteRule.cs",
+    "sha256": "530DB71DEC8FC68D49DF52FD4A03AB95BBA89672AB1A60735A6B61BD9DAA3380"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ResidualPredicateRule.cs",
+    "sha256": "486F4956E20A1EA94C331EA02AC1805BEF0A75CA560441E8EC45E0B4A930E478"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ResidualPredOpRule.cs",
+    "sha256": "C7B638D5754EF7053398245BA4FCD7B8ABACB0C0B58B1B1355F9EDB0172DB113"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ResourceSemaphoreRule.cs",
+    "sha256": "92CE95124FA3B23DD9DB01223D806F53BF4BD5489B3ECA98FB82010976B79E60"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/RowCountRuleEvaluator.cs",
+    "sha256": "6E654838AB4FA876F9B95BB4D919EC58E9D8FA5ED9BD08EB4D7BAEFABCD0F1B8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/RowEstimateMismatchRule.cs",
+    "sha256": "3AB9E459FB6911FB06E66E4C2BB68F32E338C2B97E5E8A1709DFEC083E804B1C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.cs",
+    "sha256": "A4C9F24FFC7376CB8E3F7B591454B3A3C01084BC91102251CBAC5CB22851D066"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.Execution.cs",
+    "sha256": "5531DDF10D2FD89B4FF3FEE001F6A8F67638AB5E3AF45EFCC176A1FD2ECA3B88"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/RuleMetadata.cs",
+    "sha256": "19693175B1A63590C901DFAA61D9691A348908FC2F3BFDFC64571547CB4D023F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+    "sha256": "3246811AECAA5678EBA074D89D928F5AE66C1A364C2621C84A6A016D79477ECE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/SerialPlanReasonRule.cs",
+    "sha256": "BE08EEDC4A85972A7D6478B19A2C7565943B40810C32F04043BDF7E58F7C46CF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/SpillDetectionRule.cs",
+    "sha256": "8ABD866E3705C91D8CEAB2D173B99BCCFF233894E48A501AF2A588745D6251AC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/StatsUsageRule.cs",
+    "sha256": "EC6918550C73B4A85BC045DFAFDDD30E3D12913A5E749AEE8C94A7973141FF33"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/TableScanRule.cs",
+    "sha256": "3870D739ACD13A8ED471DCC948C55F6573779473ECFEAE8D60091AAA3F860D06"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ThreadSkewRule.cs",
+    "sha256": "682469E75D4F96E6FA6412313544FC98A949B65CBA425B96483CD451A1EEBF17"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/UdfAndTableVariableRule.cs",
+    "sha256": "020F687C8AEC65A79B60FDFA63FBD23F8C3B165FE92B62DA9434B3B956C505C9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/WaitStatsRule.cs",
+    "sha256": "5715EA16FE3D7AB050EA9DA3969C5ACA44447BA56AA8019E5C06CF0FFCEBABEB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Rules/ZeroRowActualsRule.cs",
+    "sha256": "6F31CACB3F60D301BDBB1C31762A4FB866831549884544A06DD9C1980832D0E5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Scoring/IndexPredicateEvidence.cs",
+    "sha256": "FFC15783F8CDD4718E9BB827FBA6874EC239391ABA504C1C30874386551C4AFF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Scoring/IndexScoreResult.cs",
+    "sha256": "E922B303408BB831E6D34070622F5209A652A942B1DBC620496F7347E0084E35"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+    "sha256": "5796FA9CC2CC114E8825CF156BFF8068D9AF56C6F129D3AB3738BAB1ED2297EA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/AnalysisDisplayText.cs",
+    "sha256": "DC99B60783E9BD725FF2A71333F6B31E38266F8F1B6E133CAFD3EA2FF235CD49"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/DocumentOpenService.cs",
+    "sha256": "5F26414576FC35955A1467A3F0DBAE34C3BB2CDBF5008C429BECFFD068B9CF23"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/DocumentReadContract.cs",
+    "sha256": "F7ACAC0746170ADC137642D92DEE48E784C7040EB086DD4FBE846DED9EA9D7B5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/IndexTargetResolver.cs",
+    "sha256": "C1E041240D39A1EF8AA42A31FC2C74072F194B7D92EDEFC93EBE0AC1D53605CD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/InputReadPresentation.cs",
+    "sha256": "B1D0077CFAE990F7F6E78D1914A57818469C0B64EFEC4C9247A203E0DF30AF7F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/InputRecognitionService.cs",
+    "sha256": "EE0A8B4A5D211BD525D67923906F745FF8706704AF1F390DC3DF8F5A9B81B2D0"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/PlanCapabilityService.cs",
+    "sha256": "517B033AC35AB9FDEBB36669C8691B62BC1985A12787AEBCC1904F24C78B6DFE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/PlanDocumentBuilder.cs",
+    "sha256": "297CEE17A9D57B29307CB05EB6973F1957BA2198E228257C2694372F117C9B87"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/PlanExecutionFactsService.cs",
+    "sha256": "05FF33D7AFFD93C056E8357F8EF1091F5B3064E179693CCF923A2AB3DC134916"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/PlanIdentityAdapter.cs",
+    "sha256": "C15A8D80CE4625FF8F40AB823E8593D6D9E6A4E602DED0E2BA1165E8F0A838A2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/PlanOperatorFactsService.cs",
+    "sha256": "CB5376E39A26DF3F0CD24FFA519DCE11D3CFC291C480AECC58BCB0F1836766CB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/ReviewOutputService.cs",
+    "sha256": "83E262E068ED644364D72E19A5E67AD49C679B8478D11263E48E9D218A69A73C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/XelSearchModels.cs",
+    "sha256": "98ADC96D2AA383EB3FF42AAE515EEE5FEB41A1CB89A344A3855EA00E37A6901F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/XelSearchService.cs",
+    "sha256": "28C197B514B7BA31550D5D2FD2336F61B0E2E708AC531026B6EF9B3E2949C249"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Services/XelStructureKey.cs",
+    "sha256": "3268010BD98C31057C005CAEE646C122710508899BAA88C84C6C9DDFCDD14DE0"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Simulation/CostImpactResult.cs",
+    "sha256": "45A8E8994BC2E0F7F9E3214B44D8BB90220C7E516CD8CD2984ECD5B5664A55D1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Simulation/CostImpactSimulator.cs",
+    "sha256": "AC98E287BF4CC690F08193CB953D9278760D7393BF8C2E5ACA3B736B9EED384C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/Simulation/SandboxInputSnapshot.cs",
+    "sha256": "11C3E01547086104059BA9A8D7E8B9A1771D9226C750FC04BC3D7C1B430D47D8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/SqlXmlAnalyzer.Core.csproj",
+    "sha256": "FCF48DAE44FB6C08BE5CA8CE407336F646D5268AA2E1154EDA153687D489ED8F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/TemporaryFileManager.cs",
+    "sha256": "B20257E75E608418D9F611AB7E954E3D22322F3C4F024DE07C94446E87F42D27"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Core/XelReader.cs",
+    "sha256": "79980112DE122137603B49005AF0422FCE48D3404C81A23C5DFC4A8BFC559A16"
+  },
+  {
+    "path": "SqlXmlAnalyzer.csproj",
+    "sha256": "FB447C3543EF04CFBA73AF1BC1FD0B53A2C8CA0D3BB53FC18A5EBC2DDBDA48B8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.sln",
+    "sha256": "9004CEAC6F6B801B9C0D72263EE657D012811BB6ADF524CA7FDECBC215A37599"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/AnalysisClipboardServiceTests.cs",
+    "sha256": "9D68F9A6192D6B1B413C7A7178F93CF657B89FF69D65B5CBDF07D8F645DEE127"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/AnalysisDisplayThemeTests.cs",
+    "sha256": "3B890D04CDE4CAA1258D3DFDD5DDAA61940A204E32545AE14F788A729A12A1A1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/AnalysisInputLifetimeTests.cs",
+    "sha256": "40BC90BDAC9FF26078D0F883C32DEB3DFACB547AD792C23946EBC5193D8C74A1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/AnalysisReportControllerTests.cs",
+    "sha256": "6FD7DB55F98D01F08943AAA224F02F52F3272BBA38CE5D3CCA55D78D4A582E5F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/AnalysisSessionCoordinatorTests.cs",
+    "sha256": "F21DE1CDCF41E0105CF0E639B35AAC1EEBF7575D38A56F43F2DD153C16C492A3"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+    "sha256": "46C45C49505E1DF3D34DFF42D24A9A82E8CAD7A0EC7536B1AB254B657CA49AFB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+    "sha256": "430C44CAC0CFE00AA134A3D50181D4DBCC18018EEDE45DD7C64777B476F617C2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/CliScanFileCollectionTests.cs",
+    "sha256": "715783CD3528D0D1FFD6076A28283933155DC004F36EFFC4B62C4DB564FAC418"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/CliScanHardeningTests.cs",
+    "sha256": "2DAE21913DD3BC9E3D55DC0D29DFD4B92748A48674ED72C1FDDB678E0201BCC7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/ConsoleResultReporterTests.cs",
+    "sha256": "BAA2503E3F24D3E9A1FEBB9889FFD086F7673FE19CCD2FB3377A84EE0A412ABC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/JsonResultReporterTests.cs",
+    "sha256": "D97F47E708E4513CF2A08981CD4CC061C222427542D42D29DA26D99E3653B4AB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+    "sha256": "D2F156AB801EE9F3D0D0A942C01B1D0A3AD075F8AAEE17540A1438E03332EE3D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/ReviewedSqlApplyServiceTests.cs",
+    "sha256": "331A0214794C499E01F612529DA85B4C1DE1E9CF90745A604AF9D3C9DCB2A16F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/RewriteProposalCliTests.cs",
+    "sha256": "1DCE12FE04217A04817835327926AB8B1A72B5882D855ADA839426F130F30FC4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlBoundedFileReaderTests.cs",
+    "sha256": "F9AB678813245E5E7E291B51229C1B7BCD6BBF5CE11608B6C162B9861DD4350B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticAffectedRowsTests.cs",
+    "sha256": "89BB2889A199F03B9FAB28E6BA975F4095E548A281386F98DC21E09D96B331F9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticCliTests.cs",
+    "sha256": "A4D901E7669381676BDE9C8CC70FB5BD9E0273ED94F520A1CD6E4D31518DDD6A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticDatabaseLifetimeTests.cs",
+    "sha256": "B86479D281CD238C2401379D37C0342FDE937D5B04A8BD363ECA0FC885A785C0"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticObserverPolicyTests.cs",
+    "sha256": "D3D18D255C5BE112C846287968EDEE5F6A42CE5EEA16AFFBE7A265C7D61A896D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticValidationTests.cs",
+    "sha256": "207C209EA0B49ADD0F666B52BFE9C5115E71558191E261EF8A5A1F1C5E86DFB4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticValueFidelityTests.cs",
+    "sha256": "F0E3ECC36F210AFE0A116E09FC428D3BC7E248FF96CBC2082064CE24ED4C226D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+    "sha256": "AFC63440789E51C54837E274ADA14A220ACA43B88E25275E71A3EE032D785840"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockAnalysisServiceTests.cs",
+    "sha256": "A924985D0B5A0B9FE4BFCFB3CEE5212D64D0EAC3F0DD9BADE7FC13824EBAD613"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockCanvasInteractionServiceTests.cs",
+    "sha256": "34856AAF3060F551505DE599FA407B14DB99D6F304B4A15777BCAB3FD40D1F30"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockEventSelectionTests.cs",
+    "sha256": "D5B4942CCF579F8DFE24889D3CDCA25476788180CBBBADF554A24731F9E751A8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphEdgeRegistryServiceTests.cs",
+    "sha256": "6E883F69BC8D27322D52ADA2B918C1AE489A229547BF6F4B4D52FB075F9D9528"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphEdgeServiceTests.cs",
+    "sha256": "88C37ED8C9AB9101B2E08C0216A6ADB49B09C7611597EE1B76140EABF99D9AAF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphGeometryServiceTests.cs",
+    "sha256": "C7623ADAC7A7C2EAFC90848D7DE591CD562AF3B306178CA7C16095C8E3FEFC24"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphLayoutServiceTests.cs",
+    "sha256": "62E4550A93F26039B1D8102A84E682A93F9F82EF3A04D0E7211D48AB4855E125"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphPlacementServiceTests.cs",
+    "sha256": "D09DE11481AC9879B0DE68996D928B5F96F72EFB93689EA5FA3D894C232360BD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphSelectionServiceTests.cs",
+    "sha256": "1D67B56EE9AE0E66EEE618655E659D65B9AE9D1515FBB64797FEDCB0EB72D279"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphTests.cs",
+    "sha256": "F813B9E8D8D9FD4A8F6712CD0F6F74F4D53CB28E71737C3CD547731DA7EF3727"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphViewportServiceTests.cs",
+    "sha256": "01F63A8DF9A8AE87986DF3C1F8CD3B8AF46DD24C7AC10296F6DBE9C34C12F321"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockGraphVisualStateServiceTests.cs",
+    "sha256": "2F52F07F78B697C520A26C51668D43386B7857D1D822D59E599FB543DEA14B52"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockNodeDragServiceTests.cs",
+    "sha256": "762AAF415DD8EB9C67E2EF82E0B20DB29C2C38CE1735DCA25FB2342138D06A27"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockParallelGeometryTests.cs",
+    "sha256": "DE081E0C2EE6D5C44F6A9D4B883CC785558FC38F7DBF5A6F98E8C569F1E4F60C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockParseContractTests.cs",
+    "sha256": "888986B361089C11AC3F5345A9A16D504E2DA9893CBFBE402A2B73A397A42FDF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockPatternAnalyzerTests.cs",
+    "sha256": "FB397E6320ABBB51795359B718DE094F7B6BC520DFB3D981BC154BEB3180E07C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockPlaybackStateServiceTests.cs",
+    "sha256": "AC48C380654F2D5F562C232B65EB30979CA0F2524C6D698F210818E738BCB626"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockPlaybackViewModelTests.cs",
+    "sha256": "C6A7E9762436C564CD36A812719B03F51CB7E40ED9E633B53D3FF208861263F5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockSelectionDetailServiceTests.cs",
+    "sha256": "89F26EF7CC96440A373487B8DF9E81C0CD2C40AED96C247E8A10510B0F0512B6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockStepBadgeServiceTests.cs",
+    "sha256": "2AD1B036CCF157C803C72864CD42CBE65BC85C0E5F4B0014F3943212B0EDA8FB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockTimelineParserTests.cs",
+    "sha256": "263226B534D6FADBBBC1AC4D01BDA74AEE05942480A97224D2FFD96DD6794018"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedGraphTests.cs",
+    "sha256": "C623319C0DBF1464BF5B8EF5AE0084256238828D761349A2AA523DE9E1E3A0B7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedHardeningTests.cs",
+    "sha256": "8FD8D9707620F0A0F755181389AC1FDC8E96AF4B9DAF7BDF469675DB3FDDA362"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedHardeningViewTests.cs",
+    "sha256": "AB0C38E14813E22C0E5CD994BE077146326D0E6D37FB5743E82E715F3F8D0216"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DeadlockUnifiedViewTests.cs",
+    "sha256": "12D4D335A1B8623A9B0C758152339890FBC83FA439D91882E68E43CD5BFFA1A5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolFlowTests.cs",
+    "sha256": "8B5881016400912BA864BBB93758993D6CF5F894D43E7A9768E251E0AAC6135F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolHardeningFlowTests.cs",
+    "sha256": "74E746FF6DCD2803C2169ACEDCDD0DA260847E047AA4DBC730CE27F9A9ACCC00"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DiagnosticProtocolStatusViewTests.cs",
+    "sha256": "EA68C203AEA9E81733CF1DAB8B50432F4D02A90C40BCA86B626B96EE912A2BAD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DiagnosticReportBudgetAndScopeTests.cs",
+    "sha256": "A9BE3854A33E8BF8BB2A58AFA59DC9829DC853F416906EB9F8F6C887727C70E5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DiagnosticReportHardeningTests.cs",
+    "sha256": "58425F1001909E8F168CBFD16A97F6AA07509D8851F2785E065923D225B9DBAC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DiagnosticReportTests.cs",
+    "sha256": "083A3D98307167E2B4BB63ED9A783D227588A83B5F72ADB6F1D327E88397D20A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/CardinalityResidualDiagnosticTests.cs",
+    "sha256": "BDF01E1BAD88C3C92937D14F82B4BB53ECE5BDE8656790DC35263CBC53B698CB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/DeadlockUnifiedDiagnosticTests.cs",
+    "sha256": "3426CF18B8C9E029C6018EC1E930AE3203CC3800368E5C2293746EF1B3F77EF8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs",
+    "sha256": "FA9D5F5CE65EBB8D85C8656BF713388E63A4F2943E85047EC3C3AE32D662CC9A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/IndexDdlDiagnosticTests.cs",
+    "sha256": "CBE1883DB1D48A9541D841464647E4F935598F9AB9A6B84842CC9170349703CF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/InputFieldMappingDiagnosticTests.cs",
+    "sha256": "9128F3675562D735C398BB06DEAC176848FE8B238BE4EEDFAD2EC95BA55F3BAA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/MisleadingDisplayDiagnosticTests.cs",
+    "sha256": "71B5B7AC9B261B6A99527F35C10210AF33F9763DB9641BDE880715863EC9BA97"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/PlanComparisonDiagnosticTests.cs",
+    "sha256": "59AB62AB70DBCD283C4DF9D93377C9F2987D4109DE4419D1CA7D062149D7B8BC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/PlanOperatorFactsDiagnosticTests.cs",
+    "sha256": "FAFA4AD391964083A1EA220C125EEC661D300B9B5EF2AC731229F6D34B49B810"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/ReviewWorkspaceDiagnosticTests.cs",
+    "sha256": "6F9F61011A73B2028565246C2512E297335E5489B39CF3A8DB95D0CE0C381E6B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/RewriteProposalDiagnosticTests.cs",
+    "sha256": "5AA152A48D61C22DEE829A4404B985E24CE92725A67CE66B97A9C68FCEDEB0AE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/RuleConfigurationDiagnosticTests.cs",
+    "sha256": "4114A6BD071FEAAE34047F6287D58F20EE4A33BC5B998F38822DC539041AED8D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/SimulationDiagnosticTests.cs",
+    "sha256": "7219746E3934D2A40BC46A74343378F0FA5B0D071214A9169F8473AE555922D7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/SqlSemanticDiagnosticTests.cs",
+    "sha256": "8E08DCF6037E61F12D23E58B8DFCBA88F66157F61F78E7A200F470EF21ED1F25"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/UnifiedReportDiagnosticTests.cs",
+    "sha256": "A71A3E07BD0E449060B6EF4950C50BEF0268ECCD6DE52C3BF2AF56959680B354"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/WorkspaceInteractionDiagnosticTests.cs",
+    "sha256": "88DA8CBDDF8F9654DB68347B1553A4ED41B0865B4456CC5EE9EECD3456F16F6B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/WorkspaceSelectionDiagnosticTests.cs",
+    "sha256": "0D0BD79A281ACB5870ADFAB3BE33FED930D5C0281C389A6C84CCDABC36A6AE81"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Diagnostics/XelSearchDiagnosticTests.cs",
+    "sha256": "8135C950650A30E595A6D999089E8D1404D92FFC15743936BC1CF4879D38A969"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DocumentControllerTests.cs",
+    "sha256": "F69ABB708D6DC8C68451AF7898EDC2D435BE4DD91EB62ADCF8E30837BA9CF3FC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DocumentOpenServiceTests.cs",
+    "sha256": "2E5B15E84ECE30170E5BA70E68964BEC3BB776F30B9E3F8C18A50641B352E06D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DocumentReadContractTests.cs",
+    "sha256": "F44468992466C50688EAF23345B68AC248B4C488511C61CF6A1AD3D2C060E67E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DocumentReadHardeningTests.cs",
+    "sha256": "B9EF0936C15DE7AC8B8E6B6AC5B382942FD1BBB64F49EE323672C8CE98C074E2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DocumentRefreshActionServiceTests.cs",
+    "sha256": "0ED0AF6F8E4F5938225363422F64CF01A8F4BD7D4C3EB6AF4AB599C8F8809905"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/DocumentTabTests.cs",
+    "sha256": "7B0504192ACAD39FB173CF64B27C6839D412CC6D844A6E89470038ACAFC88DC7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/EmbeddedResourceHelper.cs",
+    "sha256": "6B21A2A8999FB390C4E9BE0566F1B6FEE1F34CB8CA44792CDCD8E988364D3262"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/EngineeringGovernanceTests.cs",
+    "sha256": "E81F0C5BF681DA7F4CBFE42136833172E3615373B040C9EF2E1BBBB2B095F9BA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/FileAssociationRegistrationServiceTests.cs",
+    "sha256": "592911267A47E1EA09195458D2AA601A86BCAFBE9CCE4424899CE7ED8C052FDF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/HtmlReportActionServiceTests.cs",
+    "sha256": "50014E1696699FF657801230D61CA326FDCCF9A76494612069F2E28DD27FC052"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/HtmlReportExportServiceTests.cs",
+    "sha256": "0E014BFC93B04AFDC0AE50E740FC8FC1A41D6A49521646FB623AC8A4CD49280B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/HtmlReportGeneratorTests.cs",
+    "sha256": "29FE0F979C68B2CCFB2A8C7AB21844B503394D6A2F3C2161C2D9600D24FBC69B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/IndexEvidenceHardeningTests.cs",
+    "sha256": "4E026093A629D8EC9340D58B75259C6E8EE00208F38EBABC113AA34A373B38DC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/IndexTargetIdentityTests.cs",
+    "sha256": "05332413171B1250956F375E58EAC2FAE537EBD9E63F4637D3A5886679C0B2C4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/InputFieldMappingTests.cs",
+    "sha256": "62C460C11C7DD2914B87765CD19A94D2FFBFD7F6DDBB5A7F9C6133D2690EB3D4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/InputRecognitionHardeningTests.cs",
+    "sha256": "67751B4F89BA7D8C3356A23AC95189D99DC98E7F99A222FF263F2D6F30FFB5D1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/InputRecognitionTests.cs",
+    "sha256": "813AF934667CDAA2D819E85D9EDFC33D9CAEE634B407FE34CB48C003C46F2F2D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/LogFolderActionServiceTests.cs",
+    "sha256": "EEAE73D62FA57463B5A088AC87A641333E4D640C70B0E7859B5B1A4E4260E17D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/MermaidDiagramActionServiceTests.cs",
+    "sha256": "C6CFAEEB99F23FE4C3957E7E0C2021E9DE4CF2338599634D94E2F50C75AF9F81"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/MermaidDiagramServiceTests.cs",
+    "sha256": "0CB88A47D5FA4FA23F19935D843F9BD0120E5BB312BDCE6DA0395B178BA629F6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/MisleadingDisplayStateTests.cs",
+    "sha256": "41429CE876D7415BF4AE249572BE058A3424F53B27FA41B999172430DA359AB4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/MisleadingDisplayTests.cs",
+    "sha256": "A001C95AC1C7EF9AA2B1BCF8D607B95C93ED5D1238E4B9E24E42265C9BF64FE3"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/MissingIndexClipboardActionServiceTests.cs",
+    "sha256": "9D00ACBD34E7485EEBE4F55579239DB96A89F208C70458A092007BBC1C307AB9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/MissingIndexDeploymentScriptServiceTests.cs",
+    "sha256": "AD446608E4B49483F5CC8CFAB0FECBAE8AAC8017A57F8960DF20F358FC8B65C5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Models/MissingIndexSuggestionTests.cs",
+    "sha256": "A51CEB65CD1DAF280B56ED55A8A696A822CAB653DC0562D8C120DB1A21C9F386"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanAnalysisSourceTests.cs",
+    "sha256": "FF52535AAB0307F62C8FB7D099099693A0F9EF45208136971A6A537DE37846D5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanCapabilityConsistencyTests.cs",
+    "sha256": "E9B6087212782F34E0D3BA47C66403E02C1F9330902F67FC382DDEBFC354D238"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonControllerTests.cs",
+    "sha256": "F540B42C082B06C46F9450925EDE13D922744FBBBD89E085275BB0C962404821"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonEvidenceHardeningTests.cs",
+    "sha256": "D020C36E813517BDE8DFE0D0A7AA1C7A32091ECBE8749F77A9DC117594C8957C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonMultiStatementTests.cs",
+    "sha256": "84A194C407D0CC2C45526ACFC715194952382E050D41820BA0E7BEEF4D1A7F74"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonPredicateIdentityTests.cs",
+    "sha256": "42051DC9F4651D029D18291DC1E2996105A5E91F70F0ABCAAC906A81663CB632"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonSelectionIsolationTests.cs",
+    "sha256": "28B0866A8EF49FECB95EA65CC70EBF2E5CBDA394EADC10F04563CABC68CCA152"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonSourceHashTests.cs",
+    "sha256": "B2D3FD489154781B94A9AD9613ACE8ED19090418134FB0BE45CB441E3D5A544E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonTreeServiceTests.cs",
+    "sha256": "433904D54330ABCF35A95765DA8EE61292029EDCF1E5C713C3EA85B2F93E1A3B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonTreeViewRendererTests.cs",
+    "sha256": "6D94E5D8D92078298A1C57CEB7DD7F49B23B569A35FE1631E5D3FE959431CF20"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanComparisonWorkspaceTests.cs",
+    "sha256": "E2B1DDB8985501F06A0A0CD95BB6698E8DC3A07E954CD9EA245B58059A968AE6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanDiagnosticAnalyzerTests.cs",
+    "sha256": "B3CC76E635F78C294C0E44F0646494A798B9DA157D3260413962FC5430902580"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanFieldBindingTests.cs",
+    "sha256": "211BD375F01909F235CA3C09439B40C7688A905926DD43F16C4B9733DBB71644"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseLogServiceTests.cs",
+    "sha256": "9852037C349C10B3B50236BF697FA5AA32FD2BA73A9A67080A3D382EFF62D709"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseStateServiceTests.cs",
+    "sha256": "0FA00793DEDFC0AC17FB837CD0DA59A2817630173C169C9C3766FCF1819947FE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphCollapseUiActionServiceTests.cs",
+    "sha256": "007577F3B2366A37AD10BF73EA17CE29CEC0D5B02548499A1B6D6ABDC417066F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionBuilderServiceTests.cs",
+    "sha256": "880AEB065FF5FCBACB873778DC7F40D041E85EE0F896184713A8766B55D81A0C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionDisplayServiceTests.cs",
+    "sha256": "14F4C54A1E5ED172E7263A7D9FD1CE7BABA693C94C110B286E21B43FD1C0B1B8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionGeometryServiceTests.cs",
+    "sha256": "1986E5DBEEF87365FCDE13C1B69E811DB845BBFC1F10B38CF7020518FFD0A82F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionHighlightServiceTests.cs",
+    "sha256": "C186ABA19264691BBA36B68CF7F927899C944D20564C13B14923028830F02E98"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphConnectionUiActionServiceTests.cs",
+    "sha256": "D955B50E0B88087D3A4A4A05765C5F6E0F19A891F06E35093D8340D1702914C4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphCostCalculationServiceTests.cs",
+    "sha256": "830DB649C663B92354F7D9E31ADCEAA9901BF738B62C7848A756505FD15B420B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphCostUiActionServiceTests.cs",
+    "sha256": "3141A9B8BF3705E4F9550ECFE129BFD7BF262930B5B075CAE25B824FA9C47E57"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphCostVisualServiceTests.cs",
+    "sha256": "9BAF0E909AF44CD90652B181CAC16067424806DCE1FE216A4A4986FA30557AF4"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutRefreshServiceTests.cs",
+    "sha256": "C4B46A6E76E1587D1BBEC7117CB549EC1550850DEF77F0BF3410C3945C172504"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutServiceTests.cs",
+    "sha256": "AD2E99C2C85A3116F795C9FC317715D388B15613E59AE016BBA436A92929D97B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphLayoutUiActionServiceTests.cs",
+    "sha256": "D1135B32CC7E2773AAFB1E831E24881F6E94E761FD865E0C96629D79AC4ABCA6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphLoadUiActionServiceTests.cs",
+    "sha256": "68E9DB2D0580B0E9B090AF985CC89C7D75ED9B46E4078F199F87C95833142D2A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphMetricServiceTests.cs",
+    "sha256": "97C16C88744F417F79563AB47EBA7D6387F5D006CF6383A2CED4D13B50D4580E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphMissingIndexAssociationServiceTests.cs",
+    "sha256": "EBA02149AFAAAE3F472C2FCB7B8B676B6F573008AB06DE008842AFEEF30731E5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphModeUiActionServiceTests.cs",
+    "sha256": "AA00490F7B6C75427B259EECADEB0A2AD5DDC4EE7381C420867E325003AA5C23"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeBuilderServiceTests.cs",
+    "sha256": "D135E6B8CEF66F4B406BFA41B06750CC7B8767D4D06242F124F86DCF35F7EB35"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeClipboardServiceTests.cs",
+    "sha256": "A85EE15FD62CB78DDEBD35E32556D681FFA777E7B91349A4AEDF374FC761BD6A"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeClipboardUiActionServiceTests.cs",
+    "sha256": "ECE382A7D50E96FDF738BD135E928D3185A9D8D613C6FFABB80DB31A13B2F2D9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeDisplayServiceTests.cs",
+    "sha256": "B4E8D5B5496EBA2DD6A45D21100E343E72A9D806601749239B0E887CBA23D12B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphNodeUiActionServiceTests.cs",
+    "sha256": "9FCF63AD275C5EC2E2B2661147259F7B952E004F7E19B9E85C9FDF67694D0A6E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphOperatorTypeServiceTests.cs",
+    "sha256": "9CF7D7CED8DF523F21C06401E6795DD2839C83200226E3DB4B068352252513E5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphOperatorVisualServiceTests.cs",
+    "sha256": "22B5480C3EE90EBE3FD5DD7BD95C227136D7C47303FE060A6CEEE41E03AEF825"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphPanInteractionServiceTests.cs",
+    "sha256": "F821CBC622D7793B39D15F129FDB0EB6BA7F2BB8F4859C16D917D22A78D272D6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphPanUiActionServiceTests.cs",
+    "sha256": "6F651D55A8FEE092EA848652811AF0BD72AD46B3D0FFECB2A30578C2E51FB482"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphRelOpDetailsServiceTests.cs",
+    "sha256": "77CF2CAA6D823C9F91D0C2736B4CD4D77568180B74AE2BB277117C85C6FCBB6B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphRowSkewServiceTests.cs",
+    "sha256": "FA7A6A58F5B6DFFDF696E538956D1B25EC7EAE1317D73D318E373089C8EF08C9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphRuntimeCountersServiceTests.cs",
+    "sha256": "17A95724474B713DBB8770246F442FA35B0B07245BE2E226CC634FED7C407336"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphSmartCollapseServiceTests.cs",
+    "sha256": "8082C74B21AB2B883230C8E7063E3386EEEFA0F94E512CE4B756E2B4431C7AFA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphViewportUiActionServiceTests.cs",
+    "sha256": "1B55E4A80A8DD4EA7193AA501736377B71C0B11A753C6AE34D25B3A66DED565D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphVisibilityServiceTests.cs",
+    "sha256": "44D3DB98FA17DFA946ED99DE8E7933BC097072B5847141D7C9DCB9A37C8CC5BA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphVisibilityStateServiceTests.cs",
+    "sha256": "0B0ADCE0D59B16F8FE8F7DDD31328F6FDED2EF43A7D96D62FCC9884490E1CACD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanGraphWarningServiceTests.cs",
+    "sha256": "74970679E4453893F38F9BAE1C8C2916D25072D939F678A1C0E09162850165A7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanIconManagerTests.cs",
+    "sha256": "58F0D8086E8BF82EB18E9C6EC847AA1BE341635560E5E93426935AB64E992DA2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanIdentityErrorContractTests.cs",
+    "sha256": "DD22F9B435EEAA85991E6FE2D6373ABD041D47F641487D8BD62AE880CCCA548F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanIdentityFlowTests.cs",
+    "sha256": "25EB1CA0AE8C2F45BA609FE226AF793D06473D313CAC9A7DB381DE0587CDBF03"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanIdentityHardeningTests.cs",
+    "sha256": "50D61E067554E21E7CBFBAD0589705CEDC99217B0EA26816E910932020FBC151"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanIdentityModelTests.cs",
+    "sha256": "AD897032778121435127F247CCA506A83CEB025154225919D84FA04F93B92D83"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanObfuscatorServiceTests.cs",
+    "sha256": "0803AFD9C591E74B9224669CFF046CE82066BC2CC4AC0597C0C6FEEE8761BC24"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanOperatorFactsHardeningTests.cs",
+    "sha256": "0E0E61D94FE002E50BE67AB4FC5EE3E1BC4079A054ECE12F41017EFCB7283B2D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanOperatorFactsServiceTests.cs",
+    "sha256": "688DC7805B95F3E70AE43FEFB8AD56E4C352D2C7F0F4429F4863DFB665BF88BA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanOperatorTreeViewRendererTests.cs",
+    "sha256": "C61CB0BB5F51B574C3C18C7F7E7AB0BB5BCDFCDDD6D81B86439A413098031771"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanPropertyServiceTests.cs",
+    "sha256": "0BC6F2DC3C9FE3531A846FE641E375F2F0329AE00EF1155DD13C2230CC107B37"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanRuntimeObservationFlowTests.cs",
+    "sha256": "E6A9557B29153B21C4F73F4938B20CD344D36EAC15A67D673EEF047584D6B7CA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanSelectionActionServiceTests.cs",
+    "sha256": "07179343FE5DB1A8E83A4438012399048D4F63E2D058FD3ED97456BD00FAEAC6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PlanTreeServiceTests.cs",
+    "sha256": "D2D93AE5F1CB5A460B1D458468742ABAF64F67E3AD80444D9981B788613AA012"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PortableReportActionServiceTests.cs",
+    "sha256": "D9AF43C3AEE8AB03C12D965A7CB05D4811DD1B3DFB29C7B9CF6B37674569199F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/PortableReportExportServiceTests.cs",
+    "sha256": "25DA1736825CFD6D7A11B8A479802A928B169E13C90F71FCDB3284FFAC3DF12F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Privacy/OutputEntryPrivacyTests.cs",
+    "sha256": "26B6D0A8E48E0E43E2D4363A5E9518CCB7ACBFA17D1C6E8A0FD11DB890F217C6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Privacy/PlanRedactionServiceTests.cs",
+    "sha256": "4D635F80B73CCC2380CB460887876869B963C6C8C2E30165BEE8C510B15183FA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Privacy/RedactedPlanExportServiceTests.cs",
+    "sha256": "B3A8690ED4FFD68BD827A9DED88EEE8767CAB8CA32D9CA4C08EA7A39F995C4D8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Privacy/RedactionCliTests.cs",
+    "sha256": "7BA1682F1A8EDE3CA02594AC585864F09C20CAEC61DBA9276979C2C75E059124"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/IndexDdlIdentityTests.cs",
+    "sha256": "2C108B3D8C99638B6EAC4C327CBE48D25AF2157C3ABADB15A96138332F941503"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/MissingIndexSuggesterTests.cs",
+    "sha256": "124BFFA8FF924486B5B2474E45CC9AD3B2B1FF7AD14B8EC4B2ECE7C20B355D03"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/NonSargableDetectorTests.cs",
+    "sha256": "26BABC8B97D381251249082FCD6324C4EDD4FC4A728DD76B2967C220521AE4E8"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/RewriteProposalHardeningTests.cs",
+    "sha256": "A1B2AF8FB826B78AA28BADC3ECC0DA4C7785F1939F741387FFEE9D02042A6EB5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/RewriteProposalTests.cs",
+    "sha256": "16FFB8B72C4B56FAAC2F8CCAE5AE606BA2E6D8B11EF5AD9CDA29977864487C3D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/ScalarSubqueryQuickFixTests.cs",
+    "sha256": "CAC088035B9A002607BEC75A69A0AA48F6A5992CB5318EA79B22EC2D9D897D44"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactorEngineTests.cs",
+    "sha256": "5F4DF5959C088D61C99868EFEA0A158A7EDB56954C469A18B9E8CDA1194FF3C0"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs",
+    "sha256": "EDEDE05FCE09587C25F0E03BBAEB5C6826932E96EDCCB191E4C66EF884716F0E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs",
+    "sha256": "36691F788B76BB2144631348EF8041A51EAA7EB1002FAC8DDC01536F88A1AD7E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/ReviewWorkspaceHardeningTests.cs",
+    "sha256": "1FA0DDC6ABDB86E9F8E705BDE082760AC255BCF155FE61D5CF3DBDF0A1BE5029"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/ReviewWorkspaceTests.cs",
+    "sha256": "7CB30243A9D8AE8C97936C6FCF5AA606E7EC516A1A34ECA9D1472ECC8A93A79D"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RewriteReviewValidationTests.cs",
+    "sha256": "22B9E355BE4C7BEED33D074053ABA48A0833DAD7946192D79E5E4C54183A82DF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RewriteReviewViewTests.cs",
+    "sha256": "CCCAA219470C8E6777FEBE1E2916A5964B1FEE2A9BCA978D7B6AC87D925212A5"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleConfigurationDocumentTests.cs",
+    "sha256": "35B6E69257E67DA0CC6743AD96924A3C7C22FF0ABD1C719459F1CA3834EA9E10"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleConfigurationFlowTests.cs",
+    "sha256": "7CB459A00FCB0D1CF8EE4929289B0C0C6169066D13938EF8758CE88A5444F9BF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleConfigurationHardeningTests.cs",
+    "sha256": "0A1F2D4F440113BC2C15FA1CC0F12949F40AA279A85135F75150EA973C44A669"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleConfigurationLoaderTests.cs",
+    "sha256": "3EDADD75133323997B1711EE300913D3C50AD1FD5A11BD27942E899D77DCFFDF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleConfigurationStoreTests.cs",
+    "sha256": "A489753FA42BEB1ECECF502F17FB5D40F6CAF552BA731FEF6BA1EF036A2A8B23"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleConfigurationViewModelTests.cs",
+    "sha256": "B598AA0C9702C5262A5F0A281B100FCF5AF357D297A7334421181280210D0C40"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleEngineTests.cs",
+    "sha256": "BD0B7524E44F89CDEBEB4926E9D90760BB5B124B0197453F5264CDED6AB978EC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/RuleMetadataAndScopeTests.cs",
+    "sha256": "3CFBB965CEC4347233D0A3C02D18ECC28C1B992991B967C2F4AA5A538237A5D6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/CardinalityResidualRuleTests.cs",
+    "sha256": "78BA9678535724B09726012C8486426507338E725129D80ADFDBA307013C5778"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/DetachedNodeIdentityTests.cs",
+    "sha256": "1F0A7F89D02AD8D346B112EE5AB90DA8C918CBD3869419D55E10C12408B2F446"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolHardeningTests.cs",
+    "sha256": "95466916C28D17991409FEBDBFD26B425A292DB9832F740D2A6440D398E59EAC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/DiagnosticProtocolTests.cs",
+    "sha256": "770A1A84D55B5CF19020794B9480C4A5AFF22E87ED6838B82C3343F68822F594"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/LargeMemoryGrantRuleTests.cs",
+    "sha256": "6E03F8D2E3D1110AE1B97BD07266BD05BBFB6DFE4D4B0F6A9AE5FDE5AFBE71FC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/ParameterSensitivityRuleTests.cs",
+    "sha256": "6F615D97929FED7989E6400D585DA804E15EEB3594AD2E1741B0E71CE6E05F44"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/RowEstimateMismatchRuleTests.cs",
+    "sha256": "349B4F0700867C9B8C626C937507978C3E988FD304813BA3B7CCA898F5DC7E8E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Rules/SargableIndexRecommendationRuleTests.cs",
+    "sha256": "0B50E6F6D587C0ECA51807C802621C0BF5C8A3491084F527F2BD5497C4EBEF62"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Scoring/IndexPredicateHardeningTests.cs",
+    "sha256": "BA24246D0C197B29DAE85F91A8A7C0E336DCDF0FEABA97DD0C1D544FA71C5D89"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoreModelTests.cs",
+    "sha256": "1C848321D6D67F98BA086D59EE7142CCCB1D5AF9450A625C73724E901ADB4107"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs",
+    "sha256": "69231D358A31022AC9FE50FBB519D056679E3C311A40C6FF113B326173AF9206"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactModelTests.cs",
+    "sha256": "75FE21E703EB67699CBAEDD0EB6394969FB2A03B02F338AC3BA4769F30B7C6FF"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Simulation/CostImpactSimulatorTests.cs",
+    "sha256": "7835D77832D0CB1599F8E3A358B7220C7D186BC781F2F3377537156CF9DE918F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Simulation/SimulationOrderRegressionTests.cs",
+    "sha256": "CDC6E6D36726B7F12287192C4A04D7EF4F0BFF750557B7128C43BD8EE89824EA"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/SqlDiffDocumentRendererTests.cs",
+    "sha256": "6590CBE5E1BB0D5EDC2BD3E564874F4670A542B3604C678DCBAA0A9D3EFAB8A9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/SqlDiffServiceTests.cs",
+    "sha256": "1FD2211FC2F40F72DB655977F4B5F71B799B8CDBCFFAF6E99FE5166B284A45CC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/SqlQuickFixServiceTests.cs",
+    "sha256": "73351D9331413233C8EDE3F74C5121955BA5A16EE8B3ADE9A6C609D1C8E303EB"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+    "sha256": "495409E798C2580BDD8993877D5783D8536E04313638B91786DF7722ED7C724B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/StatisticsHistogramParserTests.cs",
+    "sha256": "1AEDC0B39839445C2839ED4DA64025AD16C079D3DB0EA6D2D6398328D9F4BBC7"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/StatisticsUsageParserTests.cs",
+    "sha256": "0CC139EE333487F48BF7D4B3B0727C0E31AAB06C7B6EA19E7F82E95DD9F3ABAE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TemporaryFileManagerTests.cs",
+    "sha256": "FAB254C5FC3BBC638C29F210745E031DB899D81119BBC2223BB0B0A27CB6DFBD"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TuningSessionActionServiceTests.cs",
+    "sha256": "71D49CB1EE14C8A53BF28D486C00A2D7A6FD0A012FA1504A1AFB69B4C6C83821"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TuningSessionServiceTests.cs",
+    "sha256": "7CBFB513D2508CEB18D5536016B151CE1B7C86C14DF3345A1D33B3ADE2228E6B"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/TuningSessionUiActionServiceTests.cs",
+    "sha256": "42FA31863AF885C7DB5FDC76024EA3E9C893C5D67C1B620A2BF2EA0676FB27EE"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/UnitTest1.cs",
+    "sha256": "A8D6C2039666EAA54B6AE33D1614E990AC04DD6E79415B536BA05B8BCD8FD1B6"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/Utilities/EmbeddedResourceHelper.cs",
+    "sha256": "BEA271F88C39990DA2AA82BB02C8FD4EC2EB75706883551975060448D9594CAC"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/ViewModels/IndexSandboxViewModelTests.cs",
+    "sha256": "ED06F86228DF36BD06D12524509FFEE9F54E527F0DE81749E9B85FFA3D191DC1"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/ViewModels/TuningHistorySessionTests.cs",
+    "sha256": "0DE0FF85B6B4FD22D5F6485BD6BE72FFFBADF762B4869533A857120967E34B25"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/WorkspaceAccessibilityTests.cs",
+    "sha256": "9DF97F034146CEA48FA16B19EE7618D872CF35E78070B511B6300973A9BE421F"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/WorkspaceInteractionTests.cs",
+    "sha256": "D3611803E10BCF4B555FB3853E05CA65A5CADDABDDBF51421B7A64832595DD63"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/WorkspacePanelLayoutServiceTests.cs",
+    "sha256": "8D508895A252600060F17A47D08785B802828E2D51CA0110026F1C66B94FB87C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/WorkspaceSelectionHardeningTests.cs",
+    "sha256": "FB8AE133361078231AB4111A3CC7C990058B2DEE2CFEB055C124760267A34D6C"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/WorkspaceSelectionTests.cs",
+    "sha256": "83A9D84362CF6F42A02C912C197C0E17DB8103D0ECA8C1F92E8BAC34E074B359"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/XelDocumentReadTests.cs",
+    "sha256": "7C71750F5B6A9C9B07FFD4108B9E3344A8A3030C624A3C87AC36994A608BC54E"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/XelSearchHardeningTests.cs",
+    "sha256": "D88DDFD5B152E02CD44C4851E713142BA9976D10E694B99140732CBF38C072E9"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/XelSearchServiceTests.cs",
+    "sha256": "2A50B6D1406C7B8303F5441045626B848B82E8EDA93BD78808B270EE8F07C7A2"
+  },
+  {
+    "path": "SqlXmlAnalyzer.Tests/XelSearchViewModelTests.cs",
+    "sha256": "CDE4D966B595BCA864BB6E78B189FD386B30251430DB95D569B1C48984F1A63D"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Analysis/SqlPlanAnalysisIssue.cs",
+    "sha256": "22B778D3F0CC2ECDE0CAFF8E6640096307A20B6E5FAC8C7179A5711611B00078"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalysisEngine.cs",
+    "sha256": "02BE95EAF3F3186FF28B5A141F486CC30E170209A711615CDF6D3B6890EE681C"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Analysis/SqlXmlAnalyzer.Analysis.csproj",
+    "sha256": "F6F99C72C27E3325C93610E39F64DBF4963EE74455815204F29A58BF4DB2BABE"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+    "sha256": "CB24BEA30F7598BFD96EEA608D5B28BAD33AE4A5A9622A1FECBAFBE5FD352653"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs",
+    "sha256": "4B589176086881A536F8B8C2CDBD63B18D1DA3278CDBAF661BD329867911EB23"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+    "sha256": "7EC4A1A7267CE35C1A2D1DA0CB77D745046279BB3F76ADA21DAD3194313D6F93"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs",
+    "sha256": "CE896F87574170F08D5BDCC428B931DBA69E661EF070717C184C4B31C919081F"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Models/SqlSemanticValidation.cs",
+    "sha256": "236B5007B6564CD808F6A28913E226798A32F357836D4CD7ED9EFB55CF03B0D4"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs",
+    "sha256": "FA5332DDA2FEEE6C7D36658473A9C277698CC09D49C0E8666AD5EFF7B6096FF6"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs",
+    "sha256": "6092DAA9683C2297ED1A0C67E5E21FBC156435095B144990EC824031C1A742C3"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+    "sha256": "8BC77CBA0BEDAE242A0A92000BD7D22C29618DC9883C1CA5A246235B72E881FC"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/IFileHandler.cs",
+    "sha256": "C840AC7A05379A731D043E6D75D49AE41487AC3B33C08DB8A5E75AC728F5B742"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/IResultReporter.cs",
+    "sha256": "5EAA037FC4D1FFBBEA0AFA23D5A94CB049006BA75F63821624B2205149276FF8"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs",
+    "sha256": "9FF69B59A9A400A73ED070CF8FBE86B3D54A88A68E7648C90B97A9B0338CBB8F"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs",
+    "sha256": "148DB0BAF6CD5901E31B93EB34F1980709EB01C4905A3C4F69121EB9BF2A216B"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/LocalDbSqlSemanticRunner.cs",
+    "sha256": "7CB622CFFE67E6A5810833133475149E887B9205817543031B2812B79892161F"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/PhysicalFileHandler.cs",
+    "sha256": "9D85EF256BDA6790C6080A0881DAC71E8FE2135DE638AE4F32D8A9AE42CF7F90"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs",
+    "sha256": "0605BAF9EEBA8D1115E6CA23A545096AF60742EDB915E1421F199D7FEC301599"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/RedactedPlanExportService.cs",
+    "sha256": "A18C9AB47528DE9B9F09D2CB432161BABD34731503CFFC5D8021512C4469FFAF"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs",
+    "sha256": "A2F6F42D8FA006B6DF4554DD28486E05387C6340035E239D9082F7B8964CF3BD"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/ReviewedSqlApplyService.cs",
+    "sha256": "5466845CC808B7D9FB0729AC49982DA8C96CDCBA25D75D59FF3EF063C7F5855D"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/RewriteReviewFormatter.cs",
+    "sha256": "C47EBD122FB302BAF9E706BBE315CB707A0BF01EF8B6215BDDEE9514555EC645"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlBoundedFileReader.cs",
+    "sha256": "C362D00A23253F9EAF2E4E55ECAB6491D689BB83A7663A1D63DA1378D2801645"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs",
+    "sha256": "D6757DE1C9A9227E1298EEBFE94F78BBAD61E55339E27AE2B2F77AE665D9140A"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticAffectedRows.cs",
+    "sha256": "9D08032C15937D3C97416EBE229C731D78F10CCC945ACFA5BBC57CF2F80BE314"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticComparison.cs",
+    "sha256": "E4A503E9A2508A968A8C4BC6AA795DA3AD792C11E7EBC7B4DE37B532EA1F3F0B"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticDatabaseLifetime.cs",
+    "sha256": "76532E94DD814C7556B7D7563421F33BA515BE73E90C9BDE47B7A27671BB0D32"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticSandboxPolicy.cs",
+    "sha256": "DC766066B033301B5652F8D7244A00C8C90E94F5A6763822522512ED769D676D"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticValueReader.cs",
+    "sha256": "03DAA8CCC66566E1E22C04521CDC6DED93DE6A40842970A0203F1B75EA9FA3E2"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+    "sha256": "6D7DDCF1C4F328503CBEB4840017DD280DAB700D4F99A26D8462F535FF5DF8C5"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Application/SqlXmlAnalyzer.Application.csproj",
+    "sha256": "5C46ED7851D244E01574DD8027E5618536505F38E44C3D74F5FDDD8DBF8CC6CF"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/DefaultRuleFilter.cs",
+    "sha256": "ADE8421B3DF4C1FD0453ECDEB692849F3FF312FBEDF0B782AF3DF956891F930B"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/RewriteProposalService.cs",
+    "sha256": "ADD0EB0BEC135A3CB6BC548AA764FD4DF715CB1296E405600B3F97C5C3743D77"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ConstantFoldingRefactorRule.cs",
+    "sha256": "38EAE3A8F26EF4F08ECA0A9F062630FA0E256D210C6AB556D8CB14ED7160986C"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ExistsToJoinRule.cs",
+    "sha256": "86EDE9A74CDF490E09F9ED278FE662CE1D6CB454497B80B9B0C82DE4231F55C5"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ImplicitConversionRefactorRule.cs",
+    "sha256": "A148353298FB4E1FA75E3927AFC09F056E3E0D05041B6FEEF3BECFC3E1AE1985"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/IsNullComparisonRefactorRule.cs",
+    "sha256": "8AA9545035C7A3D62038330563A9778B3C66CBFA20397C028932FEC93457BCC4"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/LeftOrSubstringRefactorRule.cs",
+    "sha256": "42BC5A7022A44921A11C25626292A38434EAAE57E20C6EDC8E5220794AEAA83A"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/ScalarSubqueryToJoinRule.cs",
+    "sha256": "DFDCD281A1A80933206E9189E8EE75349C88AE3892D97F7E80464FD48FA91265"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/SubqueryToJoinRule.cs",
+    "sha256": "7E2240E28787DD0EFBF0F98E01A5BC91A13D2C343A4591BCE89B9EC1D2934964"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs",
+    "sha256": "B05FFEFCF9F02E0D988CA8C3EBE4FE7D15F8B7DFC8DD8A22DCA591D2DDCD4979"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableVisitor.cs",
+    "sha256": "15CA5A92D348341596606B4AB5E6DB6D90E0740EF11AA413B4F78C0B301EC7EA"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs",
+    "sha256": "A117E0A74DA2E9925AC000992FE81E3265CF85E4D2CF199BA5F99704A6D08D4C"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/SqlNodeCloner.cs",
+    "sha256": "3449BB5C248E6DB3D8821ED383FA33A8B4E396B86E5C458B0C85D781E356FDD4"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs",
+    "sha256": "2D9E5BB50E353F11246717B7D6FED17A3E031059DEECB6991E50B99349A6B306"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/SqlRewriteScope.cs",
+    "sha256": "1072343C5E22A83D5FCCBBC7AED2A67FBD6F44CD255F39EBCC63BE021C445F9E"
+  },
+  {
+    "path": "src/SqlXmlAnalyzer.Refactoring/SqlXmlAnalyzer.Refactoring.csproj",
+    "sha256": "C8A3125D99112F18E71E3A36651047AD1E7F184AFF2278B161749886C6B5C19C"
+  },
+  {
+    "path": "StatisticsHistogramControl.xaml",
+    "sha256": "02D80FAACFDE0DF22B94528F1C236F3234BD1B30BC606170D382998F29A6DF75"
+  },
+  {
+    "path": "StatisticsHistogramControl.xaml.cs",
+    "sha256": "E50F4780DD82C8CEA190A546B0D515E903E05CADA331F6EE4179CC712BC00F7A"
+  },
+  {
+    "path": "ThemeColors.xaml",
+    "sha256": "FD4A59F7E0F8AEB41FA8AB545D526A5D2E952245F5AE2EE9FC7B06286C76E021"
+  },
+  {
+    "path": "ViewModels/ConnectionViewModel.cs",
+    "sha256": "D46B7909D7681258276FDA56C347F54DE435CFE9B41C824C73C2F239D2246CA5"
+  },
+  {
+    "path": "ViewModels/DeadlockPlaybackViewModel.cs",
+    "sha256": "506D2456298073D7FDFC8156B8C35760A726553373C76239CA24F139FA4D7204"
+  },
+  {
+    "path": "ViewModels/IndexSandboxViewModel.cs",
+    "sha256": "99890AF111CF5317DF580A6941232F7911AC4421E3F49DC9E2F48FCFC8E989BA"
+  },
+  {
+    "path": "ViewModels/PlanNodeViewModel.cs",
+    "sha256": "C295DFE0353F6C35FB445D3F27D619C4911F1570C6CAA75B43196AFB7FE8A227"
+  },
+  {
+    "path": "ViewModels/ReportReviewViewModel.cs",
+    "sha256": "03D7F985E95AE180BA1E88645C43F9709729E489D203FB6C71F81522756575DE"
+  },
+  {
+    "path": "ViewModels/RewriteReviewViewModel.cs",
+    "sha256": "2FABD400A74896A699BC6EFD2CEE49AE7DE02901F88E66AFBDA1CBCFA1E36FFF"
+  },
+  {
+    "path": "ViewModels/RuleConfigurationViewModel.cs",
+    "sha256": "ABB412B0002C0BA2678143ED8F0964FBC6E09CE69A50446F9B0C902FADA72DC9"
+  },
+  {
+    "path": "ViewModels/XelSearchViewModel.cs",
+    "sha256": "D595713F97D86F119170F884C8CC4E32BF55B22CC001A399D60D13F04ECCC90C"
+  },
+  {
+    "path": "Views/DeadlockPlaybackControl.xaml",
+    "sha256": "2FC3016357B2720BF83E558C539A7981FB9DEA74EF74F4117421850D93769BE3"
+  },
+  {
+    "path": "Views/DeadlockPlaybackControl.xaml.cs",
+    "sha256": "D3A80A7B6B950A060208AEC8BE9A9D23E3A305F075593EEF9051886F9C894308"
+  },
+  {
+    "path": "Views/DeadlockView.xaml",
+    "sha256": "3C866458217129AE87B283E58AE60F41992B445EFBC795FF11615DD95D6E9B41"
+  },
+  {
+    "path": "Views/DeadlockView.xaml.cs",
+    "sha256": "C3A219E85E5FFC89F1B0037C40713FC0937A4166F003D7F320ED457675FA4C8A"
+  },
+  {
+    "path": "Views/DeadlockWorkspaceView.xaml",
+    "sha256": "C9EBF5DC37AA3F7CB3150353C3374E628983DAAE919CFCCD734C5E41564B11FD"
+  },
+  {
+    "path": "Views/DeadlockWorkspaceView.xaml.cs",
+    "sha256": "601F4A2637A981C7EF6713F7464A07838EAB8EE6B68FBC7FB5E10F08BE57AF95"
+  },
+  {
+    "path": "Views/IndexSandboxWindow.xaml",
+    "sha256": "BFED136B4D3D0B1FB00FCC0B21904F5417CF9CBF7FDCA0DFF16DC9ED15A61AD1"
+  },
+  {
+    "path": "Views/IndexSandboxWindow.xaml.cs",
+    "sha256": "EE832D12ECC73EA9D08A51B0F214CB442768E3F29DBAAF855C66C1025EB39093"
+  },
+  {
+    "path": "Views/InteractionHelpWindow.xaml",
+    "sha256": "1AB38C23B9E91C2155C1A0322DD07DB4541607E8407D31A013AA4781F2896F6E"
+  },
+  {
+    "path": "Views/InteractionHelpWindow.xaml.cs",
+    "sha256": "516F6231768C1988BFAFAFF038C7261352FF61F94AF00245F12FD76CC52378E8"
+  },
+  {
+    "path": "Views/MainShellView.xaml",
+    "sha256": "D275CDADC549718920D16595A9DB39BE2A6270F9CAA794B1A9464200007F215F"
+  },
+  {
+    "path": "Views/MainShellView.xaml.cs",
+    "sha256": "E358DF1D1331B5756F718AC1E11B47A9966B05E3D0B72CADF9631EDDD91B8303"
+  },
+  {
+    "path": "Views/MainWindowResources.xaml",
+    "sha256": "021B169F31E3F72608735EADB57463A8C8859FAC3BE2006C7EC0ED2EE71B54E6"
+  },
+  {
+    "path": "Views/MainWorkspaceView.xaml",
+    "sha256": "57A9803F75EBB9F993410D643E33704CE394C3C75CE396D995DEA5BC5F6A4DC3"
+  },
+  {
+    "path": "Views/MainWorkspaceView.xaml.cs",
+    "sha256": "734129BAD26076AEADA1854F0E11E1FE9DC5E4A7E81AA71938426EB482E50DE2"
+  },
+  {
+    "path": "Views/PlanComparisonWorkspaceView.xaml",
+    "sha256": "5172D672465BECCBB1ED981BC8DE118D8A1F486711AD8A183DB50FAAE238E5A9"
+  },
+  {
+    "path": "Views/PlanComparisonWorkspaceView.xaml.cs",
+    "sha256": "31D790BDFC7CBDE17DE080C9D49C7B9622831B04A6C8FC414B47514D422880A1"
+  },
+  {
+    "path": "Views/PlanView.xaml",
+    "sha256": "52205A68238A81F36DF82E9C87BB0544976F738A52722526A0B20F15144FEAC5"
+  },
+  {
+    "path": "Views/PlanView.xaml.cs",
+    "sha256": "44B000855F086F88444252FBD4E5AB6035014441683EE1D9791D6053271443BB"
+  },
+  {
+    "path": "Views/PlanWorkspaceView.xaml",
+    "sha256": "2425200E3105B28EEA80557B9BE0EE161B71FEF2E837FD8327E0A9F821510073"
+  },
+  {
+    "path": "Views/PlanWorkspaceView.xaml.cs",
+    "sha256": "EDEBC3146EE138A7F63CBC015AE2930D1475DE2CC6DD148D94EB6B00D612A173"
+  },
+  {
+    "path": "Views/QuickFixWindow.xaml",
+    "sha256": "4C28CE412F61A89DEAA2F043AA689F4697606A6181936CA1ADF3BCAF8E4A3D2A"
+  },
+  {
+    "path": "Views/QuickFixWindow.xaml.cs",
+    "sha256": "73F1C066F0ECCBA2C292F9C263CA048F14C7B1E791F4348C16019CB3BEE30C0B"
+  },
+  {
+    "path": "Views/ReportReviewWindow.xaml",
+    "sha256": "C60CC7B27EAC2E395B6DA75684D04BCAF0ABB6DCEAE67A77164DFF24C50D5CE6"
+  },
+  {
+    "path": "Views/ReportReviewWindow.xaml.cs",
+    "sha256": "BC879E07B2CCEEA13238EEBCBC13ED485D1AEE521272BDE8579FC31AAF2B1B8D"
+  },
+  {
+    "path": "Views/RewriteReviewWindow.xaml",
+    "sha256": "F463DF9BE6E1A2A207311C876EB36B0D57A674780B98AF3D4FD180FB2388F459"
+  },
+  {
+    "path": "Views/RewriteReviewWindow.xaml.cs",
+    "sha256": "D1FEE5104BBFCAE8A4FCB4B4A9FC188018D4560A680F4B23EA995591D3F736A5"
+  },
+  {
+    "path": "Views/RuleConfigurationWindow.xaml",
+    "sha256": "1963DBBA818A467FB1E0B962FA1F81DF83D172D7D1F69CEA2406CD9A4E2CA48D"
+  },
+  {
+    "path": "Views/RuleConfigurationWindow.xaml.cs",
+    "sha256": "604E6B5616B99358CE4D4576C225E1DF5D37129F4663AE1E56445D35581C6C9B"
+  },
+  {
+    "path": "Views/ShellNavigationRail.xaml",
+    "sha256": "883215C12CFE453662046EB0321F90B2973B3D47A460A38D7150981B8D4D34C2"
+  },
+  {
+    "path": "Views/ShellNavigationRail.xaml.cs",
+    "sha256": "68B5AA2F97A95DE1E06EF9C38637F60C011EB8A864D48F3E345B2F5D066F3D22"
+  },
+  {
+    "path": "Views/ShellStatusBar.xaml",
+    "sha256": "B2ADBF564B5091F2C1AF093108F00CFA64DD995AE89CB4155D502BD23CB0559F"
+  },
+  {
+    "path": "Views/ShellStatusBar.xaml.cs",
+    "sha256": "C2916743A6148D55D121F0F0B92CE0FA2DEABBE1DBF3C4D35E7437F229A52947"
+  },
+  {
+    "path": "Views/ShellTitleBar.xaml",
+    "sha256": "25B8ED977FFEB71BFBB4CCF221A238092FD53C8336CD6220EBD42067B840822C"
+  },
+  {
+    "path": "Views/ShellTitleBar.xaml.cs",
+    "sha256": "F8CAE881A6919939FC939DE01A01EF7BB52583A3C47CB6D21D49FB6DC49A4592"
+  },
+  {
+    "path": "Views/XelSearchWindow.xaml",
+    "sha256": "2A778B183A5D9B2B3F70EB77118A1FF7CED3CA955D37A2FD86CAA4A6334735D0"
+  },
+  {
+    "path": "Views/XelSearchWindow.xaml.cs",
+    "sha256": "B1C87222693FA828EC80C87EB3D12F19DE00A8EAC7E5EA5D4B9BB73545850A28"
+  }
+]

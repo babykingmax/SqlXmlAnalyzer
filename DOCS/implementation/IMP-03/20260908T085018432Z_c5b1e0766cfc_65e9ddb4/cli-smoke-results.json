@@ -1,0 +1,86 @@
+{
+  "timestampUtc": "2026-09-08T09:09:34.3197874Z",
+  "sqlServerExecutionPerformed": false,
+  "total": 3,
+  "passed": 3,
+  "results": [
+    {
+      "scenario": "success",
+      "executable": "dotnet",
+      "arguments": [
+        "run",
+        "--project",
+        "SqlXmlAnalyzer.CLI",
+        "--no-build",
+        "--no-restore",
+        "--",
+        "refactor",
+        "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\success.sql",
+        "--format",
+        "json"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "sourcePath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\success.sql",
+      "originalSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "afterSha256": "6FA0141C0287D8313F2F6EB2A359277BC1E6CE8EFC7669B5CC7B2D25E6B8910E",
+      "backups": [
+        {
+          "path": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\success.sql.SqlXmlAnalyzer-a3b4d274745d40b99c6fdc2b1516d01a.bak",
+          "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+        }
+      ]
+    },
+    {
+      "scenario": "locked",
+      "executable": "dotnet",
+      "arguments": [
+        "run",
+        "--project",
+        "SqlXmlAnalyzer.CLI",
+        "--no-build",
+        "--no-restore",
+        "--",
+        "refactor",
+        "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\locked.sql",
+        "--format",
+        "json"
+      ],
+      "exitCode": 1,
+      "passed": true,
+      "sourcePath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\locked.sql",
+      "originalSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "afterSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "backups": [
+        {
+          "path": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\locked.sql.SqlXmlAnalyzer-c216245a808c42e7969437338f8e1a0e.bak",
+          "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+        }
+      ]
+    },
+    {
+      "scenario": "same-report-path",
+      "executable": "dotnet",
+      "arguments": [
+        "run",
+        "--project",
+        "SqlXmlAnalyzer.CLI",
+        "--no-build",
+        "--no-restore",
+        "--",
+        "refactor",
+        "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\same-report-path.sql",
+        "--format",
+        "json",
+        "--output",
+        "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\same-report-path.sql"
+      ],
+      "exitCode": 2,
+      "passed": true,
+      "sourcePath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03\\20260908T085018432Z_c5b1e0766cfc_65e9ddb4\\cli-smoke\\same-report-path.sql",
+      "originalSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "afterSha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD",
+      "backups": []
+    }
+  ]
+}

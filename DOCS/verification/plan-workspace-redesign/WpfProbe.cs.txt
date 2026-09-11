@@ -1,0 +1,337 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Services;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    private static readonly List<string> Checks = [];
+    private static readonly List<object> Matrix = [];
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        App? app = null;
+        MainWindow? main = null;
+        var errors = new StringWriter();
+        try
+        {
+            Console.SetError(new StreamWriter(Console.OpenStandardError(), new System.Text.UTF8Encoding(false)) { AutoFlush = true });
+            AppContext.SetSwitch("Switch.System.Windows.Media.ShouldRenderEvenWhenNoDisplayDevicesAreAvailable", true);
+            var posted = new List<DispatcherOperation>();
+            DispatcherHookEventHandler capture = (_, e) => posted.Add(e.Operation);
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += capture;
+            try { app = new App(); }
+            finally { Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= capture; }
+            Require(posted.Count == 1 && posted[0].Abort(), "Probe isolates application startup callback");
+            app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(errors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var engine = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), engine, files,
+                new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            main = new MainWindow(orchestrator, files)
+            {
+                Width = 1920, Height = 1080, Left = -20000, Top = 0, WindowStartupLocation = WindowStartupLocation.Manual
+            };
+            var workspace = ((MainShellView)main.FindName("MainShell")).Workspace.Plan;
+            workspace.PreferencesStore = new PlanWorkspacePreferencesStore(Path.Combine(args[1], "preferences.json"));
+            main.Show(); Pump();
+            string demo = Path.Combine(args[1], "demo.sqlplan");
+            File.WriteAllText(demo, Demo());
+            Wait(main.AnalyzeFileAsync(demo));
+            var graph = workspace.NodifyGraph;
+            Until(() => graph.AllNodes.Count == 4 && graph.PendingPage.IsCompleted);
+            workspace.FocusGraph(); Pump(); graph.FitCurrentGraph(); Pump();
+            if (args.Contains("--tooltips"))
+            {
+                CaptureNodeTooltips(main, graph, args[1]);
+                Require(string.IsNullOrWhiteSpace(errors.ToString()), "No tooltip binding errors: " + errors);
+                File.WriteAllText(Path.Combine(args[1], "tooltip-verification.json"), JsonSerializer.Serialize(new
+                {
+                    Passed = true, Checks,
+                    EvidenceKind = "Production node ToolTip template rendered off-screen with the owning node DataContext; no physical display certification."
+                }, new JsonSerializerOptions { WriteIndented = true }));
+                return 0;
+            }
+            Require(main.ViewModel.PlanWorkspace.Findings.Count > 0, "Demo exposes real findings");
+            Require(main.ViewModel.PlanWorkspace.CheckRuns.Count > 0, "Checks are retained separately");
+            Require(main.ViewModel.PlanWorkspace.Findings.All(f => f.Diagnostic != null), "Problem navigation excludes rule run records");
+            Require(main.ViewModel.PlanWorkspace.CheckRuns.All(f => f.Diagnostic == null), "Check view contains execution records only");
+            var columns = workspace.RecostDataGrid.Columns;
+            Require(columns.Single(c => Equals(c.Header, "物理操作")).DisplayIndex < columns.Single(c => Equals(c.Header, "估算成本")).DisplayIndex
+                && columns.Single(c => Equals(c.Header, "对象")).DisplayIndex < columns.Single(c => Equals(c.Header, "估算偏差")).DisplayIndex,
+                "Default hotspot column order keeps operators and objects before metrics");
+            var finding = main.ViewModel.PlanWorkspace.Findings.First(f => f.Location.Operator != null);
+            main.ViewModel.PlanWorkspace.SelectedIssue = finding;
+            Wait(graph.PendingPage); Pump();
+            Require(graph.SelectedNode?.Identity == finding.Location.Operator, "Selecting a finding selects the same scoped node");
+            int findings = main.ViewModel.PlanWorkspace.Findings.Count;
+            graph.SelectOperator(graph.AllNodes.Last().Identity!);
+            Wait(graph.PendingPage); Pump();
+            Require(main.ViewModel.PlanWorkspace.Findings.Count == findings, "Selecting a node retains the complete findings list");
+
+            var layoutFailures = new List<string>();
+            foreach (bool dark in new[] { false, true })
+            foreach (var resolution in new[] { (1280,720), (1366,768), (1920,1080) })
+            foreach (double scale in new[] { 1.0,1.25,1.5,2.0 })
+            {
+                ChangeTheme(main, dark);
+                main.Width = resolution.Item1 / scale;
+                main.Height = resolution.Item2 / scale;
+                workspace.FocusGraph(); Settle(); graph.FitCurrentGraph(); Settle();
+                VerifyFit(graph, $"{resolution} at {scale:P0}");
+                Require(graph.IsVisible && graph.ActualHeight > 0 && graph.ActualWidth > 0, "Graph remains visible in matrix");
+                double ratio = graph.ActualHeight / workspace.ActualHeight;
+                if (ratio < .65) layoutFailures.Add($"{resolution}, scale={scale}, ratio={ratio:F3}");
+                Require(graph.ActualWidth <= workspace.ActualWidth + 1, "Graph fits workspace width");
+                var name = $"{(dark ? "dark" : "light")}-{resolution.Item1}x{resolution.Item2}-{scale * 100:0}";
+                Matrix.Add(new { name, WorkspaceWidth = workspace.ActualWidth, WorkspaceHeight = workspace.ActualHeight,
+                    GraphWidth = graph.ActualWidth, GraphHeight = graph.ActualHeight, GraphHeightRatio = ratio,
+                    ActualMonitorDpi = VisualTreeHelper.GetDpi(main).DpiScaleX });
+                Capture(main, Path.Combine(args[1], name + ".png"), scale);
+            }
+            File.WriteAllText(Path.Combine(args[1], "layout-matrix.json"), JsonSerializer.Serialize(Matrix, new JsonSerializerOptions { WriteIndented = true }));
+            Require(layoutFailures.Count == 0, "Default graph height >=65%: " + string.Join("; ", layoutFailures));
+            ChangeTheme(main, false); main.Width = 1920; main.Height = 1080; workspace.FocusGraph(); Pump();
+            main.ViewModel.PlanWorkspace.SelectedIssue = finding; Wait(graph.PendingPage); Pump();
+            workspace.OpenEvidence(); Pump();
+            Require(((TextBox)workspace.FindName("EvidenceSql")).IsVisible, "Evidence command opens auxiliary source view");
+            Capture(main, Path.Combine(args[1], "evidence.png"), 1);
+            workspace.FocusGraph(); Pump();
+            workspace.GraphTabControl.SelectedIndex = 1; Pump();
+            Require(workspace.RecostDataGrid.IsVisible, "Hotspots are a primary view");
+            Capture(main, Path.Combine(args[1], "hotspots.png"), 1);
+
+            ((Expander)workspace.FindName("AuxiliaryPanel")).IsExpanded = false;
+            foreach (string shape in new[] { "balanced", "uneven" })
+            {
+                string file = Path.Combine(args[1], $"layout-{shape}.sqlplan");
+                File.WriteAllText(file, BranchingPlan(shape == "balanced"));
+                Wait(main.AnalyzeFileAsync(file));
+                workspace.ApplyPreferences(new PlanWorkspacePreferences { LeftOpen = false, RightOpen = false });
+                workspace.FocusGraph(); Settle();
+                foreach (var direction in new[] { PlanLayoutMode.Horizontal, PlanLayoutMode.Vertical })
+                {
+                    graph.LayoutMode = direction; Wait(graph.PendingPage);
+                    graph.FitCurrentGraph(); Settle();
+                    VerifyFit(graph, $"{shape} {direction}");
+                    VerifyCardSeparation(graph);
+                    foreach (bool dark in new[] { false, true })
+                    {
+                        ChangeTheme(main, dark); Settle();
+                        Capture(main, Path.Combine(args[1], $"layout-{shape}-{direction.ToString().ToLowerInvariant()}-{(dark ? "dark" : "light")}.png"), 1);
+                    }
+                }
+            }
+            workspace.ApplyPreferences(new());
+
+            foreach (int count in new[] { 100, 1000, 5000 })
+            {
+                string file = Path.Combine(args[1], $"plan-{count}.sqlplan");
+                File.WriteAllText(file, LargePlan(count));
+                var timer = Stopwatch.StartNew();
+                Wait(main.AnalyzeFileAsync(file));
+                workspace.FocusGraph(); Pump();
+                Require(graph.AllNodes.Count == count && graph.Nodes.Count <= 64, $"Bounded page for {count} nodes");
+                graph.FitCurrentGraph(); Settle(); VerifyFit(graph, $"first page of {count}");
+                if (count == 100)
+                {
+                    main.Width = 640; main.Height = 360;
+                    workspace.FocusGraph(); Settle(); graph.FitCurrentGraph(); Settle();
+                    VerifyFit(graph, "64-node page at 1280x720 / 200% equivalent viewport");
+                    Capture(main, Path.Combine(args[1], "large-plan-small-viewport.png"), 2);
+                    main.Width = 1920; main.Height = 1080;
+                    workspace.FocusGraph(); Settle(); graph.FitCurrentGraph(); Settle();
+                }
+                var target = graph.AllNodes.Last();
+                graph.SelectOperator(target.Identity!); Wait(graph.PendingPage); Pump();
+                Require(ReferenceEquals(graph.SelectedNode, target) && graph.Nodes.Contains(target), $"Cross-page navigation reaches target for {count} nodes");
+                graph.LocateSelectedNode(); Pump();
+                Require(graph.SearchNodes(target.NodeId).Any(n => ReferenceEquals(n, target)), $"Search reaches last page for {count} nodes");
+                Matrix.Add(new { Nodes = count, ElapsedMs = timer.ElapsedMilliseconds, VisibleNodes = graph.Nodes.Count });
+                if (count == 1000) Capture(main, Path.Combine(args[1], "large-plan-boundary.png"), 1);
+            }
+            Wait(main.AnalyzeFileAsync(Path.Combine(args[0], "SqlXmlAnalyzer.Tests/TestData/imp10_scoped_identities.sqlplan")));
+            if (main.ViewModel.PlanWorkspace.Statements.Count > 1)
+            {
+                var statements = main.ViewModel.PlanWorkspace.Statements;
+                main.ViewModel.PlanWorkspace.SelectedStatement = statements.Last();
+                main.ViewModel.PlanWorkspace.SelectedStatement = statements.First();
+                Until(() => graph.AllNodes.All(n => main.ViewModel.PlanWorkspace.Selection!.Operators.Contains(n.RawElement!)));
+                Require(graph.AllNodes.Count > 0, "Rapid statement switching leaves the latest selection visible");
+            }
+            Require(string.IsNullOrWhiteSpace(errors.ToString()), "No WPF data binding errors: " + errors);
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new
+            {
+                Passed = true, Checks, Matrix, BindingErrors = 0,
+                EvidenceKind = "Production WPF controls rendered off-screen using software rendering. Matrix uses DIP sizes and scaled bitmaps; physical display DPI, hardware keyboard and screen readers are not certified."
+            }, new JsonSerializerOptions { WriteIndented = true }));
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+        finally
+        {
+            File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), errors.ToString());
+            main?.Close(); app?.Shutdown();
+        }
+    }
+    private static void VerifyFit(PlanGraphControl graph, string context)
+    {
+        var editor = (Nodify.NodifyEditor)graph.FindName("Editor");
+        var viewport = new Rect(-1, -1, editor.ActualWidth + 2, editor.ActualHeight + 2);
+        foreach (var node in graph.Nodes.Where(node => node.IsVisible))
+        {
+            var container = (FrameworkElement)editor.ItemContainerGenerator.ContainerFromItem(node);
+            Require(container != null, "Visible node has a measured container");
+            var visibleBounds = container!.TransformToAncestor(editor).TransformBounds(new Rect(container.RenderSize));
+            Require(viewport.Contains(visibleBounds), $"One fit contains node {node.NodeId}: {context}; bounds={visibleBounds}; viewport={viewport}");
+        }
+        double firstZoom = editor.ViewportZoom;
+        Point firstLocation = editor.ViewportLocation;
+        graph.FitCurrentGraph(); Settle();
+        Require(Math.Abs(editor.ViewportZoom - firstZoom) < 0.000001
+            && (editor.ViewportLocation - firstLocation).Length < 0.01, $"Second fit does not change the first result: {context}");
+    }
+    private static void VerifyCardSeparation(PlanGraphControl graph)
+    {
+        var nodes = graph.Nodes.Where(node => node.IsVisible).ToArray();
+        for (int first = 0; first < nodes.Length; first++)
+        for (int second = first + 1; second < nodes.Length; second++)
+        {
+            var a = new Rect(nodes[first].Location, new Size(PlanGraphNodeMetrics.Width, PlanGraphNodeMetrics.Height));
+            var b = new Rect(nodes[second].Location, new Size(PlanGraphNodeMetrics.Width, PlanGraphNodeMetrics.Height));
+            Require(!a.IntersectsWith(b), "Branching plan cards do not overlap");
+        }
+    }
+    private static string BranchingPlan(bool balanced)
+    {
+        int next = 0;
+        (string Xml, double Cost) Node(string physical, params (string Xml, double Cost)[] children)
+        {
+            int id = next++;
+            string operation = children.Length == 0 ? $"<IndexScan><Object Schema='[sales]' Table='[Orders_{id}]' Index='[IX_Date]'/></IndexScan>"
+                : $"<NestedLoops>{string.Concat(children.Select(child => child.Xml))}</NestedLoops>";
+            double subtreeCost = 0.3 + children.Sum(child => child.Cost);
+            return (FormattableString.Invariant($"<RelOp NodeId='{id}' PhysicalOp='{physical}' EstimateRows='100' EstimateCPU='0.1' EstimateIO='0.2' EstimatedTotalSubtreeCost='{subtreeCost:G5}'>{operation}</RelOp>"), subtreeCost);
+        }
+        (string Xml, double Cost) Tree(int depth) => depth == 0 ? Node("Index Seek") : Node("Nested Loops", Tree(depth - 1), Tree(depth - 1));
+        var root = balanced ? Tree(3)
+            : Node("Nested Loops", Node("Sort", Tree(2)), Node("Nested Loops", Node("Index Seek"), Node("Compute Scalar", Node("Index Scan"))));
+        return "<ShowPlanXML xmlns='http://schemas.microsoft.com/sqlserver/2004/07/showplan'><BatchSequence><Batch><Statements>"
+            + $"<StmtSimple StatementText='SELECT /* synthetic { (balanced ? "balanced" : "uneven") } plan */ 1'><QueryPlan>{root.Xml}</QueryPlan></StmtSimple>"
+            + "</Statements></Batch></BatchSequence></ShowPlanXML>";
+    }
+    private static void CaptureNodeTooltips(MainWindow main, PlanGraphControl graph, string output)
+    {
+        var node = graph.AllNodes.Single(node => node.NodeId == "2");
+        var owner = WorkspaceAccessibility.Descendants(graph).OfType<Border>()
+            .Single(border => border.ToolTip is ToolTip && ReferenceEquals(border.DataContext, node));
+        var tooltip = (ToolTip)owner.ToolTip;
+        tooltip.DataContext = owner.DataContext;
+        tooltip.PlacementTarget = owner;
+        foreach (bool dark in new[] { false, true, false })
+        {
+            ChangeTheme(main, dark);
+            tooltip.IsOpen = true;
+            Settle();
+            tooltip.Measure(new Size(430, double.PositiveInfinity));
+            tooltip.Arrange(new Rect(tooltip.DesiredSize));
+            tooltip.UpdateLayout(); Settle();
+            var palette = WorkspaceThemeService.Palette(dark);
+            var surface = (Border)tooltip.Template.FindName("TooltipSurface", tooltip);
+            Require(((SolidColorBrush)surface.Background).Color == palette["PlanTooltipSurfaceBrush"], "Tooltip uses its current theme surface");
+            Require(((SolidColorBrush)tooltip.Foreground).Color == palette["TextBrush"], "Tooltip foreground follows its theme");
+            Require(surface.BorderThickness == new Thickness(1), "Tooltip retains its readable outline");
+            Require(WorkspaceAccessibility.Descendants(tooltip).OfType<TextBlock>().Any(text => text.Text == "Index Scan"), "Tooltip keeps the node title");
+            foreach (var text in WorkspaceAccessibility.Descendants(tooltip).OfType<TextBox>())
+                Require(((SolidColorBrush)text.Foreground).Color == palette["TextBrush"], "Diagnostic text matches tooltip foreground");
+            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(tooltip.ActualWidth * 2),
+                (int)Math.Ceiling(tooltip.ActualHeight * 2), 192, 192, PixelFormats.Pbgra32);
+            var background = new DrawingVisual();
+            using (var drawing = background.RenderOpen())
+                drawing.DrawRectangle((Brush)main.FindResource("SurfaceBrush"), null, new Rect(0, 0, tooltip.ActualWidth, tooltip.ActualHeight));
+            bitmap.Render(background); bitmap.Render(tooltip);
+            var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using var file = File.Create(Path.Combine(output, $"tooltip-{(dark ? "dark" : "light")}.png"));
+            encoder.Save(file);
+            tooltip.IsOpen = false;
+        }
+    }
+
+    private static string Demo() => """
+        <ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+        <StmtSimple StatementId="1" StatementText="SELECT c.CustomerName, SUM(o.TotalAmount) FROM sales.Orders o JOIN sales.Customers c ON c.CustomerId = o.CustomerId WHERE o.OrderDate &gt;= @StartDate GROUP BY c.CustomerName" StatementType="SELECT" StatementSubTreeCost="23.8" StatementEstRows="100"><QueryPlan DegreeOfParallelism="1">
+        <RelOp NodeId="0" PhysicalOp="Stream Aggregate" LogicalOp="Aggregate" EstimateRows="100" EstimatedTotalSubtreeCost="23.8" EstimateCPU="0.1" EstimateIO="0">
+          <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="800" ActualExecutions="1" ActualElapsedms="165" /></RunTimeInformation><StreamAggregate>
+          <RelOp NodeId="1" PhysicalOp="Hash Match" LogicalOp="Inner Join" EstimateRows="100" EstimatedTotalSubtreeCost="23.7" EstimateCPU="0.7" EstimateIO="0">
+          <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="25000" ActualExecutions="1" ActualElapsedms="152" /></RunTimeInformation><Hash>
+            <RelOp NodeId="2" PhysicalOp="Index Scan" LogicalOp="Index Scan" EstimateRows="100" EstimatedTotalSubtreeCost="20" EstimateCPU="2" EstimateIO="18">
+            <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="25000" ActualRowsRead="1250000" ActualExecutions="1" ActualElapsedms="142" /></RunTimeInformation><IndexScan Ordered="false"><Object Database="[Demo]" Schema="[sales]" Table="[Orders]" Index="[IX_Orders_OrderDate]" /></IndexScan></RelOp>
+            <RelOp NodeId="3" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="800" EstimatedTotalSubtreeCost="3" EstimateCPU="1" EstimateIO="2">
+            <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="800" ActualRowsRead="800" ActualExecutions="1" ActualElapsedms="8" /></RunTimeInformation><IndexScan Ordered="true"><Object Database="[Demo]" Schema="[sales]" Table="[Customers]" Index="[PK_Customers]" /></IndexScan></RelOp>
+          </Hash></RelOp></StreamAggregate></RelOp></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>
+        """;
+    private static string LargePlan(int count) =>
+        "<ShowPlanXML xmlns='http://schemas.microsoft.com/sqlserver/2004/07/showplan'><BatchSequence><Batch><Statements><StmtSimple StatementText='SELECT 1'><QueryPlan><RelOp NodeId='0' PhysicalOp='Concatenation' EstimateRows='1'><Concat>"
+        + string.Concat(Enumerable.Range(1, count - 1).Select(n => $"<RelOp NodeId='{n}' PhysicalOp='Constant Scan' EstimateRows='1'/>"))
+        + "</Concat></RelOp></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>";
+    private static void ChangeTheme(MainWindow main, bool dark)
+    {
+        var rail = WorkspaceAccessibility.Descendants(main).OfType<ShellNavigationRail>().First();
+        var toggle = (System.Windows.Controls.Primitives.ToggleButton)rail.FindName("ThemeToggle");
+        toggle.IsChecked = dark; toggle.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent)); Pump();
+    }
+    private static void Require(bool condition, string message)
+    {
+        if (!condition) throw new InvalidOperationException(message);
+        Checks.Add(message);
+    }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Settle()
+    {
+        var timer = Stopwatch.StartNew();
+        while (timer.ElapsedMilliseconds < 250) { Pump(); Thread.Sleep(10); }
+    }
+    private static void Until(Func<bool> predicate)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!predicate())
+        {
+            if (timer.Elapsed > TimeSpan.FromSeconds(180)) throw new TimeoutException("WPF operation timed out.");
+            Pump(); Thread.Sleep(5);
+        }
+        Pump();
+    }
+    private static void Wait(Task task) { Until(() => task.IsCompleted); task.GetAwaiter().GetResult(); }
+    private static void Capture(Window window, string path, double scale)
+    {
+        window.UpdateLayout(); Settle();
+        var view = (FrameworkElement)window.Content;
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(view.ActualWidth * scale), (int)Math.Ceiling(view.ActualHeight * scale),
+            96 * scale, 96 * scale, PixelFormats.Pbgra32);
+        var background = new DrawingVisual();
+        using (var drawing = background.RenderOpen())
+            drawing.DrawRectangle((Brush)window.FindResource("BackgroundBrush"), null, new Rect(0, 0, view.ActualWidth, view.ActualHeight));
+        bitmap.Render(background);
+        bitmap.Render(view);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = File.Create(path); encoder.Save(output);
+    }
+}

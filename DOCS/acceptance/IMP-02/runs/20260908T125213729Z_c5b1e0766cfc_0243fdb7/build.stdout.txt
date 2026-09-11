@@ -1,0 +1,13 @@
+  SqlXmlAnalyzer.Core -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer.Core\release\SqlXmlAnalyzer.Core.dll
+  SqlXmlAnalyzer.Analysis -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer.Analysis\release\SqlXmlAnalyzer.Analysis.dll
+  SqlXmlAnalyzer.Refactoring -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer.Refactoring\release\SqlXmlAnalyzer.Refactoring.dll
+  SqlXmlAnalyzer.Application -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer.Application\release\SqlXmlAnalyzer.Application.dll
+  SqlXmlAnalyzer.CLI -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer.CLI\release\SqlXmlAnalyzer.CLI.dll
+  SqlXmlAnalyzer -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer\release\SqlXmlAnalyzer.dll
+  SqlXmlAnalyzer.Tests -> E:\SqlXmlAnalyzer\bin\imp07-20260908\bin\SqlXmlAnalyzer.Tests\release\SqlXmlAnalyzer.Tests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.89

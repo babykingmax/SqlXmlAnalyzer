@@ -1,0 +1,26 @@
+<events xmlns="urn:imp06:xe">
+  <event name="xml_deadlock_report" timestamp="2026-09-08T08:00:00+08:00">
+    <data name="xml_report"><value>
+      <deadlock>
+        <victim-list><victimProcess id="p1" /></victim-list>
+        <process-list><process id="p1" spid="51" /><process id="p2" spid="52" /></process-list>
+        <resource-list>
+          <keylock><owner-list><owner id="p1" mode="X" /></owner-list><waiter-list><waiter id="p2" mode="S" /></waiter-list></keylock>
+          <keylock><owner-list><owner id="p2" mode="X" /></owner-list><waiter-list><waiter id="p1" mode="S" /></waiter-list></keylock>
+        </resource-list>
+      </deadlock>
+    </value></data>
+  </event>
+  <event name="xml_deadlock_report" timestamp="2026-09-08T08:01:00+08:00">
+    <data name="xml_report"><value>
+      <deadlock>
+        <victim-list><victimProcess id="p3" /></victim-list>
+        <process-list><process id="p3" spid="53" /><process id="p4" spid="54" /></process-list>
+        <resource-list>
+          <keylock><owner-list><owner id="p3" mode="X" /></owner-list><waiter-list><waiter id="p4" mode="S" /></waiter-list></keylock>
+          <keylock><owner-list><owner id="p4" mode="X" /></owner-list><waiter-list><waiter id="p3" mode="S" /></waiter-list></keylock>
+        </resource-list>
+      </deadlock>
+    </value></data>
+  </event>
+</events>

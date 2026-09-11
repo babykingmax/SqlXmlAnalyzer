@@ -31,7 +31,9 @@ namespace SqlXmlAnalyzer
                 sb.AppendLine("    %% 推荐复制到 https://mermaid.live 查看");
 
                 // 找到所有 QueryPlan（可能有多个语句）
-                var queryPlans = doc.Descendants(ns + "QueryPlan").ToList();
+                var identities = Core.Services.PlanIdentityAdapter.GetDocument(doc);
+                var queryPlans = identities == null ? doc.Descendants(ns + "QueryPlan").ToList()
+                    : identities.QueryPlans.Select(q => identities.GetQueryPlanSource(q.Key)).ToList();
 
                 if (queryPlans.Count == 0)
                 {
@@ -42,18 +44,19 @@ namespace SqlXmlAnalyzer
                 int nodeCounter = 0;
                 var nodeIdMap = new Dictionary<XElement, string>(); // RelOp -> Mermaid ID
 
-                // 取第一个 QueryPlan 作为主展示（可扩展支持多个）
-                var mainPlan = queryPlans.First();
-                var rootRelOp = mainPlan.Element(ns + "RelOp") ?? mainPlan.Descendants(ns + "RelOp").FirstOrDefault();
-
-                if (rootRelOp == null)
+                int queryOrdinal = 0;
+                foreach (var queryPlan in queryPlans)
                 {
-                    sb.AppendLine("    A[未找到根 RelOp]");
-                    return sb.ToString();
+                    queryOrdinal++;
+                    var roots = queryPlan.Elements(ns + "RelOp").ToList();
+                    if (roots.Count == 0) continue;
+                    var scope = identities?.FindLocation(queryPlan);
+                    if (queryPlans.Count > 1)
+                        sb.AppendLine($"    subgraph qp{queryOrdinal}[\"Batch {scope?.Batch?.BatchOrdinal} / Statement {scope?.Statement?.StatementOrdinal} / QueryPlan {scope?.QueryPlan?.QueryPlanOrdinal}\"]");
+                    foreach (var rootRelOp in roots)
+                        BuildOperatorTree(rootRelOp, ns, sb, ref nodeCounter, nodeIdMap, "", true);
+                    if (queryPlans.Count > 1) sb.AppendLine("    end");
                 }
-
-                // 递归构建树
-                BuildOperatorTree(rootRelOp, ns, sb, ref nodeCounter, nodeIdMap, "", true);
 
                 // 添加样式定义
                 sb.AppendLine();
@@ -113,7 +116,13 @@ namespace SqlXmlAnalyzer
 
                 // 对象信息（表/索引）- Plan Explorer 经典显示
                 var obj = relOp.Descendants(ns + "Object").FirstOrDefault();
-                if (obj != null)
+                var identity = Core.Services.PlanIdentityAdapter.GetOperator(relOp);
+                if (identity != null)
+                {
+                    sb.AppendLine($"    %% Source: {identity.Key}");
+                    foreach (var reference in identity.Objects) label += $"\\n{reference.DisplayName}";
+                }
+                else if (obj != null)
                 {
                     string table = obj.Attribute("Table")?.Value?.Trim('[', ']') ?? "";
                     string index = obj.Attribute("Index")?.Value?.Trim('[', ']') ?? "";
@@ -158,7 +167,7 @@ namespace SqlXmlAnalyzer
             }
             catch (Exception ex)
             {
-                Logger.Warning($"BuildOperatorTree 节点 {nodeId} 构建失败: {ex.Message}");
+                Logger.LogException("ExecutionPlanVisualizer.BuildOperatorTree", ex);
                 sb.AppendLine($"    {nodeId}[\"Error: {EscapeMermaidLabel(ex.Message)}\"]:::expensive");
                 if (!string.IsNullOrEmpty(parentId))
                 {
@@ -181,14 +190,14 @@ namespace SqlXmlAnalyzer
                         }
                         catch (Exception ex)
                         {
-                            Logger.Warning($"BuildOperatorTree 递归子节点失败: {ex.Message}");
+                            Logger.LogException("ExecutionPlanVisualizer.BuildOperatorTree.Child", ex);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Warning($"获取节点 {nodeId} 的子节点失败: {ex.Message}");
+                Logger.LogException("ExecutionPlanVisualizer.BuildOperatorTree.Children", ex);
             }
 
             return nodeId;
@@ -238,15 +247,17 @@ namespace SqlXmlAnalyzer
             try
             {
                 var sb = new StringBuilder();
-                var queryPlans = doc.Descendants(ns + "QueryPlan").ToList();
+                var identities = Core.Services.PlanIdentityAdapter.GetDocument(doc);
+                var queryPlans = identities == null ? doc.Descendants(ns + "QueryPlan").ToList()
+                    : identities.QueryPlans.Select(q => identities.GetQueryPlanSource(q.Key)).ToList();
 
                 if (queryPlans.Count == 0) return "未找到执行计划";
 
-                foreach (var qp in queryPlans.Take(1))
+                foreach (var qp in queryPlans)
                 {
                     if (qp == null) continue;
-                    var root = qp.Element(ns + "RelOp") ?? qp.Descendants(ns + "RelOp").FirstOrDefault();
-                    if (root != null)
+                    if (queryPlans.Count > 1) sb.AppendLine(identities?.FindLocation(qp)?.DisplayScope ?? "QueryPlan");
+                    foreach (var root in qp.Elements(ns + "RelOp"))
                     {
                         PrintRelOpTree(root, ns, sb, 0);
                     }
@@ -271,7 +282,7 @@ namespace SqlXmlAnalyzer
                 string phys = relOp.Attribute("PhysicalOp")?.Value ?? "?";
                 string cost = relOp.Attribute("EstimatedTotalSubtreeCost")?.Value ?? "0";
 
-                sb.AppendLine($"{indent}- {phys} (Cost: {cost})");
+                sb.AppendLine($"{indent}- {phys} (Cost: {cost}) [{Core.Services.PlanIdentityAdapter.GetOperator(relOp)?.Key}]");
 
                 var children = PlanDiagnosticAnalyzer.GetDirectChildRelOps(relOp, ns);
                 if (children != null)
@@ -285,14 +296,14 @@ namespace SqlXmlAnalyzer
                         }
                         catch (Exception ex)
                         {
-                            Logger.Warning($"PrintRelOpTree 递归子节点失败: {ex.Message}");
+                            Logger.LogException("ExecutionPlanVisualizer.PrintRelOpTree.Child", ex);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Warning($"PrintRelOpTree 遍历节点失败: {ex.Message}");
+                Logger.LogException("ExecutionPlanVisualizer.PrintRelOpTree", ex);
             }
         }
     }

@@ -1,0 +1,13 @@
+{
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "Scenarios": [
+    {
+      "OrderedResults": false,
+      "Name": "observer-erases-data",
+      "ObserveSql": "DELETE FROM dbo.T;",
+      "SetupSql": "CREATE TABLE dbo.T(Id int); INSERT dbo.T VALUES(1),(2),(3);"
+    }
+  ],
+  "CompatibilityLevel": 170
+}

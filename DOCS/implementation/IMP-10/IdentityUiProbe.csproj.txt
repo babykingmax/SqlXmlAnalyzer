@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SqlXmlAnalyzer"><HintPath>APP_OUTPUT/SqlXmlAnalyzer.dll</HintPath></Reference>
+    <Reference Include="SqlXmlAnalyzer.Core"><HintPath>APP_OUTPUT/SqlXmlAnalyzer.Core.dll</HintPath></Reference>
+    <Reference Include="Nodify"><HintPath>APP_OUTPUT/Nodify.dll</HintPath></Reference>
+    <Reference Include="System.Text.Json"><HintPath>APP_OUTPUT/System.Text.Json.dll</HintPath></Reference>
+    <Reference Include="System.Text.Encodings.Web"><HintPath>APP_OUTPUT/System.Text.Encodings.Web.dll</HintPath></Reference>
+    <Reference Include="System.IO.Pipelines"><HintPath>APP_OUTPUT/System.IO.Pipelines.dll</HintPath></Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource"><HintPath>APP_OUTPUT/System.Diagnostics.DiagnosticSource.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

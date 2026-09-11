@@ -68,7 +68,7 @@
                 <Button x:Name="ToggleLeftBtn" Content="◀ 侧边栏" Click="ToggleLeft_Click" Margin="4,0,4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC"/>
                 <Button x:Name="ToggleRightBtn" Content="属性栏 ▶" Click="ToggleRight_Click" Margin="4,0" Padding="8,2" Background="#EEEEEE" BorderBrush="#CCCCCC"/>
                 <Button Content="🔍 适屏" Click="ZoomToFitDeadlock_Click" Margin="4,0,8,0" Padding="8,2"/>
-                <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 回放模式" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
+                <ToggleButton x:Name="PlaybackModeToggle" Content="🎬 依赖推演" Margin="4,0" Padding="8,2" FontWeight="SemiBold" Foreground="#1976D2"/>
                 <Button Content="复制 Mermaid" Click="CopyDeadlockMermaid_Click" Margin="4,0" Padding="6,2"/>
                 <Button Content="浏览器大图" Click="OpenDeadlockMermaidInBrowser_Click" Margin="4,0" Padding="6,2"/>
             </StackPanel>
@@ -96,7 +96,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="死锁类型诊断 ( 专家级诊断启发式 )" FontWeight="SemiBold" Margin="0,0,0,4"/>
+            <TextBlock Text="诊断模式：除标明观测的锁模式外，均为待验证假设，不代表已证明根因。" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,4"/>
             <ListBox Grid.Row="1" Name="DeadlockPatternsListBox" Margin="0,0,0,4"
                      SelectionChanged="DeadlockPatternsListBox_SelectionChanged"/>
 

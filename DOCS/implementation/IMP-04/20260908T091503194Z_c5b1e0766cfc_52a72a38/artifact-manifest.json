@@ -1,0 +1,458 @@
+[
+  {
+    "path": "build-development-01.log",
+    "sha256": "E8C3941B2BDE0FC8179AF7B3A40A391AB69220B96108875404C49873CBBDDDF9"
+  },
+  {
+    "path": "change-ownership.json",
+    "sha256": "22CD1FFF9250FD82AD794383716C7EB5711F0E04801CFC47460641C124DE7543"
+  },
+  {
+    "path": "deliverable-validation.json",
+    "sha256": "72A40739F0528D1150CBEDB6A17281D616AA7DF878B0B6E44925AD737294756C"
+  },
+  {
+    "path": "DiagnosticProbe.cs.txt",
+    "sha256": "E213BB739F7FE67E2E0D6B2E02E42F85715162105F39FA2DBEBC6FAD6763BB48"
+  },
+  {
+    "path": "diff-check.stderr.txt",
+    "sha256": "2F159CDB8A19B56FA0A02DC0EE311EC30A6D243709CD87A74C83EC6E237AE5C1"
+  },
+  {
+    "path": "diff-check.stdout.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "dump-manifest.json",
+    "sha256": "89267A25AB97FE41D1AA75E984494E6441AC281ED11D10FF9F1F7C6B31652BB2"
+  },
+  {
+    "path": "full-debug-development-01.log",
+    "sha256": "1C5D50CFADC1558EC564305F088DE2A3C7BAC8334D3839A4D8E1CCEFB91B785E"
+  },
+  {
+    "path": "full-debug-development-01.trx",
+    "sha256": "D83E3F349201CD00C6D8BE02FCC32C6EE848F44A27CE8840E1B8AE533129476E"
+  },
+  {
+    "path": "git-ls-files.txt",
+    "sha256": "CB041C6507A526772968D6EC5D12FF33B822B9E15EC016E1D7172B1DD2F45D12"
+  },
+  {
+    "path": "git-status-before.txt",
+    "sha256": "838DC704092D21962492F3F0A15DE6CF2C8CE819DCC4510DCC5D2170E44BA546"
+  },
+  {
+    "path": "git-status-final.txt",
+    "sha256": "15C3B34668FFE44661A693F37922CF76C1F1DC507CF9EEB245CE2A95BA5F0AB8"
+  },
+  {
+    "path": "input-snapshot-before.json",
+    "sha256": "5DC15CC69A2DE2FB88836870D4F94AED2267B64941F1EB8AFC56C5C2527E6C8B"
+  },
+  {
+    "path": "input-snapshot-final.json",
+    "sha256": "4E7C68B464EACE680BC22C575E9546C5F91BFF1A7E28DE39D09895CAD7332E2F"
+  },
+  {
+    "path": "intermediate-results.json",
+    "sha256": "AE3D0CF4CEDDA666DE641EDA7AF9EE0A850EDFE3567E08AEBEE023CB1FD15593"
+  },
+  {
+    "path": "process-final-02/commands.json",
+    "sha256": "779083424DA78B0E9B1D8F1E337A1AC23B1B5517CB9DD5381BE763289E2FD9DB"
+  },
+  {
+    "path": "process-final-02/debug/applied.runtime.log",
+    "sha256": "32CB430227D02C001767199A9FA33956F621E57671E7B1AB69853691AEC0A582"
+  },
+  {
+    "path": "process-final-02/debug/applied.sql.SqlXmlAnalyzer-e07f2749209740db81a997c53caadf7e.bak",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/debug/candidate.runtime.log",
+    "sha256": "8DF62F6238249DAE559FC0FBC2CC6C3C2A0DF764DC248C9EEEE7A9DFF203EAC0"
+  },
+  {
+    "path": "process-final-02/debug/risk-preserved.runtime.log",
+    "sha256": "7F84981E07CD0B4A92F2A43A6DB5ABD3A352C1B20E6B07BA325AC1FDFB69669C"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/dumps/20260908T093331748Z_56552_e468a0eb495240acac506d908d588869/process.dmp",
+    "sha256": "E5D4B34B5B9272C46380DD5AA5C289015EB83BD8699E08E6E9C0FB1F30BC1E90"
+  },
+  {
+    "path": "process-final-02/debug/unknown-error/runtime.log",
+    "sha256": "DD49FD2B312AA2FEDB98328AF4C977C29FE3AEC75A9F6BBBB99E6B51BF749E07"
+  },
+  {
+    "path": "process-final-02/DiagnosticProbe.csproj.snapshot",
+    "sha256": "508A935EF7511072AA847F64366982B17F2E63BDDCCF19D732FC4491F5F3934F"
+  },
+  {
+    "path": "process-final-02/probe-restore.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/probe-restore.stdout.txt",
+    "sha256": "C95F2E6FB5C29B33B1381E7146156D3932F4171EFDB07CEF2B4FD35C27BEAE62"
+  },
+  {
+    "path": "process-final-02/release/applied.runtime.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/applied.sql.SqlXmlAnalyzer-0ecdcec869ea4108a11672b2452f3e02.bak",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final-02/release/candidate.runtime.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/risk-preserved.runtime.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/dumps/20260908T093334517Z_59384_7e4e89f2935a4c27b3f4fbe4ed295987/process.dmp",
+    "sha256": "5A31630899F4F8884AC31E28A3DD7F8F3E625528B753C179FFCE5E1FACD7F054"
+  },
+  {
+    "path": "process-final-02/release/unknown-error/runtime.log",
+    "sha256": "FB7554D21375F56D53CE48015C016BA14B22364AB582A85A8580D86836B38610"
+  },
+  {
+    "path": "process-final-02/summary.json",
+    "sha256": "605F0A887BDE8A51D70D48028A439D8EC673F81EC7F1FC3626FA02CAD68D07D9"
+  },
+  {
+    "path": "process-final/commands.json",
+    "sha256": "F1C750708320F61D34BC3292FC1568C4FCF9ABE5B37649A307B9EA2D1C923D44"
+  },
+  {
+    "path": "process-final/debug/applied.runtime.log",
+    "sha256": "FBE16FB2E590BD3B3E7888BD76A662292681B8BF00EC05E1A169258C0DA45EDD"
+  },
+  {
+    "path": "process-final/debug/applied.sql.SqlXmlAnalyzer-1d0a709c99f14d309017aee8a47704bd.bak",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final/debug/candidate.runtime.log",
+    "sha256": "AC86327BBBADD8AA4AD109DF64EB4ACD68F8CB875535C042606155EFA8E55D20"
+  },
+  {
+    "path": "process-final/debug/risk-preserved.runtime.log",
+    "sha256": "29D874097756BEA583474592376FEAFDD7AC022BEB5A60A48F0C982701705570"
+  },
+  {
+    "path": "process-final/debug/unknown-error/dumps/20260908T093050556Z_62732_76cddba75e404313983ddca46c2a0059/process.dmp",
+    "sha256": "7C638CB0DCDEDC7EF0476193C9A054021C2327A5E77F5ADC9A59861529419D51"
+  },
+  {
+    "path": "process-final/debug/unknown-error/runtime.log",
+    "sha256": "5B7BC363DEAD1E656FC9105DC7177C96D1621EA283E839210059A9795060D0F0"
+  },
+  {
+    "path": "process-final/DiagnosticProbe.csproj.snapshot",
+    "sha256": "508A935EF7511072AA847F64366982B17F2E63BDDCCF19D732FC4491F5F3934F"
+  },
+  {
+    "path": "process-final/probe-restore.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final/probe-restore.stdout.txt",
+    "sha256": "8453F800BB33AC50C05A97EA38D3E62556B678B4D022774B45BF0EE9229AD6BB"
+  },
+  {
+    "path": "process-final/release/applied.runtime.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final/release/applied.sql.SqlXmlAnalyzer-8e742a8d44d245a98b930a04dcb425ad.bak",
+    "sha256": "64FB84AB7684E9335FC6700D60B5DD0746DD510E4ECC595CA4788F775F1249BD"
+  },
+  {
+    "path": "process-final/release/candidate.runtime.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final/release/risk-preserved.runtime.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "process-final/release/unknown-error/dumps/20260908T093053504Z_62848_2c95900905a64d67a55c23fbe3a2d8b0/process.dmp",
+    "sha256": "B0522B93045CAE529BEDF97E825D657CB2C1188726161EA2321B103C1B22A5BC"
+  },
+  {
+    "path": "process-final/release/unknown-error/runtime.log",
+    "sha256": "05B49800FC18F9A1FB52CF45936FDF398AD5ABC7207CE45EE5BE1729EAD413C2"
+  },
+  {
+    "path": "process-final/summary.json",
+    "sha256": "2468B71BB3534548239FB73A2409B8CA2B76887A0BD34BCE17FDB12FD40EFCB1"
+  },
+  {
+    "path": "release-final-02/build.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "release-final-02/build.stdout.txt",
+    "sha256": "C3C1C128AE4D73DFCA8EE29CB7E901FB3F60E33CEF6413EC7B1D06B4A1541408"
+  },
+  {
+    "path": "release-final-02/commands.json",
+    "sha256": "DE3873B8B6A77A827F87C6704BFC2C02EAA8FB4D94901057983AEF9500E7B57F"
+  },
+  {
+    "path": "release-final-02/full-release.trx",
+    "sha256": "43010C0372C635B5817FD49441D73577118F33575EA9A38706F9CF799DD3773B"
+  },
+  {
+    "path": "release-final-02/input-after.json",
+    "sha256": "F5A1CC90A42F8715591C024508AFE9DA33A844CBC6C71ED907C0708EC6414DAB"
+  },
+  {
+    "path": "release-final-02/input-before.json",
+    "sha256": "F5A1CC90A42F8715591C024508AFE9DA33A844CBC6C71ED907C0708EC6414DAB"
+  },
+  {
+    "path": "release-final-02/protected-input-drift.json",
+    "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+  },
+  {
+    "path": "release-final-02/summary.json",
+    "sha256": "59CF87FDC39FE05DA5378C91C8658EE0451ABB508F8CE31D954891D0DCE728D7"
+  },
+  {
+    "path": "release-final-02/test.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "release-final-02/test.stdout.txt",
+    "sha256": "3F0DDF2C96CD6A1342543140D1007E954AD6E84AA3B41DA7111114CFA10A9275"
+  },
+  {
+    "path": "release-final/build.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "release-final/build.stdout.txt",
+    "sha256": "4794C06AE7978ADFA361A44398CE8ECA312DF2D33C7CB2600DDF8C93A7F8B53F"
+  },
+  {
+    "path": "release-final/commands.json",
+    "sha256": "40DB0BCA314C54CA01F9C7B8346518562E50982F0684E89887A4EB1A0E23F3CF"
+  },
+  {
+    "path": "release-final/full-release.trx",
+    "sha256": "068F72C22F766B13F2AE27833B457FF3491F8440115C51C7804CBA0285B9A987"
+  },
+  {
+    "path": "release-final/input-after.json",
+    "sha256": "C95E90F9BFB16D4C0932E8EB0476186FFA666BA7ECF3CA3FC69276882F21DA8D"
+  },
+  {
+    "path": "release-final/input-before.json",
+    "sha256": "C95E90F9BFB16D4C0932E8EB0476186FFA666BA7ECF3CA3FC69276882F21DA8D"
+  },
+  {
+    "path": "release-final/protected-input-drift.json",
+    "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+  },
+  {
+    "path": "release-final/summary.json",
+    "sha256": "59CF87FDC39FE05DA5378C91C8658EE0451ABB508F8CE31D954891D0DCE728D7"
+  },
+  {
+    "path": "release-final/test.stderr.txt",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "release-final/test.stdout.txt",
+    "sha256": "751856A7E2C764A0F19CE38C43FA5363B3E173AE88E10FE3BF2078B6D87E4A2A"
+  },
+  {
+    "path": "Run-ProcessValidation.ps1",
+    "sha256": "633D85EE428BDFA8D1C4578C818C7FD62723B76DF63BD34CF12E4113C2E1B103"
+  },
+  {
+    "path": "Run-ReleaseValidation.ps1",
+    "sha256": "7D90543A32EE5AEBED91BFACBE139E492350834CD92908E1F1547EB89A2D1F6E"
+  },
+  {
+    "path": "source-snapshot-manifest.json",
+    "sha256": "B8E3D39D18FC72F8E1476220EB8B931D2C52AE45661B3E4BDBF97A5D248228DB"
+  },
+  {
+    "path": "source-snapshots/.gitignore.snapshot",
+    "sha256": "47D488D965B19511D0B48732B2891D3710D77C5274AA83597D72A24C4199BC90"
+  },
+  {
+    "path": "source-snapshots/App.xaml.cs.snapshot",
+    "sha256": "642658C9A70DBEB24E7AF14982DE270DC964A5BF7CCFE751F10A75301689BCB4"
+  },
+  {
+    "path": "source-snapshots/Core/Services/PlanAnalysisService.cs.snapshot",
+    "sha256": "B6A7A9F540BBB0D1AC40CBD972E2440F234B4B1E6490299F4482EEE468B9802E"
+  },
+  {
+    "path": "source-snapshots/DOCS/软件改善实施规划.md.snapshot",
+    "sha256": "3069C65EDB76427A7EAADC957ACA4CD968E1D95F982347AC5C0CAC4790C2C6F9"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/acceptance-matrix.json.snapshot",
+    "sha256": "076AC2742D504FA11FC0F6D62F0C8016C5D08364FC6EF6BBF802AA6B8C2CD43A"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt.snapshot",
+    "sha256": "82B473E5A70C8482C01B78897104DFA84C63C68735FFE3D077CF6216FAAB3725"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/README.md.snapshot",
+    "sha256": "F7A614F6BE92938E0772F96113882B9948C29ACE7CD2B281EC61C3BAAFF96F80"
+  },
+  {
+    "path": "source-snapshots/DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1.snapshot",
+    "sha256": "12294C5C2574AB7A5239DB31BECC399381B491D2EB2DAFFC36CFA12A5DF79C2F"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-02审查反例验收矩阵.md.snapshot",
+    "sha256": "C0CDB906CA698776326B341C811D03A579AA4DB0F61C150FD63F24F583F9DABF"
+  },
+  {
+    "path": "source-snapshots/DOCS/IMP-04高风险改写限制与诊断说明.md.snapshot",
+    "sha256": "09B819698BDA4A74D656F9F223D721B935F86FAFCC1DAA41824D93E3A7291BAB"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.CLI/Program.cs.snapshot",
+    "sha256": "728807BBAA8E57DE93A4EEE8E54C283557DF95608DA49E11866513C6C99B4F0A"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/DiagnosticFileAccess.cs.snapshot",
+    "sha256": "504FF541A023CACC9C77529F08990E44A597EEE1FBEC890FF34C279D7778E594"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs.snapshot",
+    "sha256": "B6089E605FEDF38E21B6A92F326A026D00FCC6B06764CE4D6B027F7BA4F9EA18"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/GlobalExceptionHandlers.cs.snapshot",
+    "sha256": "D272A3B7562BE533CB1F128CABC7A9630BE3409A6AADEF8541C358AE5259D7E1"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs.snapshot",
+    "sha256": "8ACE45DA547E24F8A11A33BCDA2ECE20E0B99C402B9733192E05487DE27CE13A"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs.snapshot",
+    "sha256": "7301BD57F57F53FB60AD9A7D79326FF01FF3B0DB574DC3173E971C23C62FF374"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Logger.cs.snapshot",
+    "sha256": "CEF550CD56CE010EB3DF96A8406E06975BBF3388862FA095A65D82E836478630"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Models/RefactorResult.cs.snapshot",
+    "sha256": "26460CA1F991CF232EE18AEDA69476722BBA7824471EC23E4FDB433307FF3FD8"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs.snapshot",
+    "sha256": "63F9798828DA025493460690014CAF34D4BF35C66070D323B383B8A40F4F1880"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Core/RefactorContext.cs.snapshot",
+    "sha256": "4AAA21F9E34693C324E67E52A51B29C3485EE0B8F392FF59AB0D378695AFC304"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs.snapshot",
+    "sha256": "6C826DF5F8390DB5BA576714D82A1FC1D07B44DB15F9471ACF5CC9A890F2CF79"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs.snapshot",
+    "sha256": "8EC9F788D64F758415F01360D6240DD244462E8B28A69DE2EC4E196EDD51086F"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs.snapshot",
+    "sha256": "EA4F56CE1E6CEB425C7C4ABA9A21F0096DB80999DDA84D8D818BBA25A955D9EC"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs.snapshot",
+    "sha256": "780659EB28C4CD6FA26861C6F6BA717DCADB25B0AA8D2D14CEEB2AFAA2EE92D8"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs.snapshot",
+    "sha256": "EDEDE05FCE09587C25F0E03BBAEB5C6826932E96EDCCB191E4C66EF884716F0E"
+  },
+  {
+    "path": "source-snapshots/SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs.snapshot",
+    "sha256": "17AE3BE6691C528CDB5A6D66B0F73EA31C02CA1B082116A405B5FDE54DD9925E"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs.snapshot",
+    "sha256": "9B67F5A3D973C13FB5820083FD61D4A7C78DD8C141E69D27C90822D2632C9CB9"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs.snapshot",
+    "sha256": "6B82B2A29E15728DE03A751124EF9474B528B273A8FBB6F01F06C2AEC5D3B118"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs.snapshot",
+    "sha256": "3656B6EAF10A98743609D3AE1ADFFCD5FE98C68A0798FE93FFF22ECD6E2EB738"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs.snapshot",
+    "sha256": "818D5B87EF25D7E862B679232081311C05A4B149ADE89221C3F42E6A3527BE93"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs.snapshot",
+    "sha256": "46A4B423F9B9F76CA92C5A894F4D0F283C74BFEC3DE20022D38E2BED1530BA32"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs.snapshot",
+    "sha256": "ACC708C8E091231CB92E13A203A885898C6BCE292D333FD4126B997D880A122B"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs.snapshot",
+    "sha256": "A3763249EF66589EA885447C406BC853298C28B290AAEDC2A3FFAAC95E8F01F0"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs.snapshot",
+    "sha256": "A117E0A74DA2E9925AC000992FE81E3265CF85E4D2CF199BA5F99704A6D08D4C"
+  },
+  {
+    "path": "source-snapshots/src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs.snapshot",
+    "sha256": "36DA1B63B8726742977AD89677882AFC420156AE0D513F1D79561E8CDCD94D4E"
+  },
+  {
+    "path": "targeted-debug-01.log",
+    "sha256": "964819D4B8B811176B888BCC7936FD8FEEE1EC55F906063ED5D57A7DF848009B"
+  },
+  {
+    "path": "targeted-debug-01.trx",
+    "sha256": "E96A3085EA2C219DFE0C06B8F2329F0F739209C13CF2D8450C7C5805DD184F69"
+  },
+  {
+    "path": "targeted-debug-02.log",
+    "sha256": "5A5F56F7A9932D45D6BC510BB2CD48CACB2E62C805B83EE50A2831BB449D280F"
+  },
+  {
+    "path": "targeted-debug-02.trx",
+    "sha256": "9B3923A535FCC683086896949BF37D2751EEB74B9ECACF0E164C96DC90D80008"
+  },
+  {
+    "path": "tracked-diff.stderr.txt",
+    "sha256": "2F159CDB8A19B56FA0A02DC0EE311EC30A6D243709CD87A74C83EC6E237AE5C1"
+  },
+  {
+    "path": "tracked-scope.diff",
+    "sha256": "4E7B51B65DC9BDBD36EC910F787E06F633F4F0609F7A22A5C89FA4409E5D2BF5"
+  },
+  {
+    "path": "Verify-Deliverable.ps1",
+    "sha256": "E466592F40D456506DCFF2A45B86F0D8E7F31E3532527CA9322F6D04FAF51EFD"
+  }
+]

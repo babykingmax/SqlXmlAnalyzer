@@ -17,27 +17,27 @@ namespace SqlXmlAnalyzer.Core.Services
             double t = Math.Clamp(activePercent, 0, 100) / 100.0;
 
             return new PlanGraphCostVisualStyle(
-                LerpHex(255, 255, 255, 255, 230, 230, Math.Pow(t, 0.8)),
-                LerpHex(245, 247, 250, 255, 190, 190, Math.Pow(t, 0.6)),
-                LerpHex(176, 190, 197, 211, 47, 47, Math.Pow(t, 0.7)),
-                activePercent >= 30 ? 2.0 : 1.0,
+                LerpHex(230, 240, 250, 75, 142, 198, Math.Pow(t, 0.8)),
+                LerpHex(205, 224, 242, 36, 99, 151, Math.Pow(t, 0.6)),
+                LerpHex(155, 183, 207, 36, 99, 151, Math.Pow(t, 0.7)),
+                1.0,
                 GetBadgeBackgroundColorHex(activePercent),
-                activePercent >= 15 ? "#FFFFFF" : "#000000");
+                activePercent >= 15 ? "#FFFFFF" : "#172D40");
         }
 
         private static string GetBadgeBackgroundColorHex(double activePercent)
         {
             if (activePercent >= 40)
             {
-                return "#EF5350";
+                return "#246397";
             }
 
             if (activePercent >= 15)
             {
-                return "#FFB300";
+                return "#356FA1";
             }
 
-            return "#CFD8DC";
+            return "#CDE0F2";
         }
 
         private static string LerpHex(

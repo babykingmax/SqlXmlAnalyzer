@@ -1,0 +1,19 @@
+ M AGENTS.md
+ M App.xaml.cs
+ M Core/Services/PlanAnalysisService.cs
+ M MainWindow.Services.cs
+ M SqlXmlAnalyzer.CLI/Program.cs
+ M SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs
+ M SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs
+ M Views/ShellNavigationRail.xaml
+ M src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs
+ M src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs
+?? DOCS/
+?? MainWindow.KeyboardShortcuts.cs
+?? SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs
+?? src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs
+?? src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs
+?? src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs
+?? src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs
+?? src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs
+?? src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs

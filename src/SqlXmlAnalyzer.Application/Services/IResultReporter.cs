@@ -6,5 +6,12 @@ namespace SqlXmlAnalyzer.Application.Services
     {
         void Report(RefactorResult result);
         void Report(RefactorResult result, bool isDryRun, string? outputPath = null);
+        void Report(RefactorResult result, bool isDryRun, string? outputPath,
+            IReadOnlyList<string?> inputPaths, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            SqlReportPathGuard.ValidateInputs(inputPaths, outputPath);
+            Report(result, isDryRun, outputPath);
+        }
     }
 }

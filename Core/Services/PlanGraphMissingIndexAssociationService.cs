@@ -6,7 +6,11 @@ using SqlXmlAnalyzer.Core.Models;
 namespace SqlXmlAnalyzer.Core.Services
 {
     public sealed record PlanGraphMissingIndexNodeInfo(
-        string TableName);
+        string TableName)
+    {
+        public SqlObjectIdentity? ObjectIdentity { get; init; }
+        public PlanQueryPlanKey? QueryPlan { get; init; }
+    }
 
     public sealed class PlanGraphMissingIndexAssociationService
     {
@@ -26,22 +30,18 @@ namespace SqlXmlAnalyzer.Core.Services
             PlanGraphMissingIndexNodeInfo node,
             IReadOnlyList<MissingIndexSuggestion> suggestions)
         {
-            if (string.IsNullOrEmpty(node.TableName))
+            var identity = node.ObjectIdentity;
+            if (node.QueryPlan == null || identity?.Database == null || identity.Schema == null || identity.Object == null)
             {
                 return null;
             }
 
-            string cleanNodeTable = CleanTableName(node.TableName);
-            return suggestions.FirstOrDefault(suggestion =>
-                string.Equals(
-                    CleanTableName(suggestion.Table),
-                    cleanNodeTable,
-                    StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static string CleanTableName(string tableName)
-        {
-            return tableName.Trim('[', ']');
+            // This is a reference association inside the exact captured QueryPlan,
+            // not global object deduplication. Missing Server matches only another
+            // locally unspecified Server; it never acts as a wildcard.
+            var matches = suggestions.Where(suggestion => suggestion.Location?.QueryPlan == node.QueryPlan &&
+                suggestion.ObjectIdentity == identity).Take(2).ToArray();
+            return matches.Length == 1 ? matches[0] : null;
         }
     }
 }

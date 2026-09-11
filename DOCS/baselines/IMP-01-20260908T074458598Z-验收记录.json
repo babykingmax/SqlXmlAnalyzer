@@ -1,0 +1,37 @@
+{
+  "step": "IMP-01",
+  "status": "complete",
+  "runId": "20260908T074458598Z_c5b1e0766cfc_c3523269",
+  "verifiedUtc": "2026-09-08T07:50:11.0114815+00:00",
+  "artifactCountVerified": 75,
+  "artifactErrors": [],
+  "protectedInputCount": 553,
+  "protectedInputErrors": [],
+  "applicationCsXamlCsprojCountUnchanged": 416,
+  "snapshotCountVerified": 36,
+  "snapshotErrors": [],
+  "priorReviewAttachmentsUnchanged": 4,
+  "observedTestResults": 807,
+  "nonPassedTestResults": 0,
+  "failedCapturedCommands": [],
+  "artifactManifestSha256": "B7C975DE76DBA770838CDF8F09174032E855FC9B61B9DEFE634830AD71E2585B",
+  "intentionalPostCaptureUpdates": [
+    "DOCS/README.md",
+    "DOCS/软件改善实施规划.md"
+  ],
+  "newDeliverables": [
+    "DOCS/IMP-01基线冻结与模块边界.md",
+    "DOCS/baselines/README.md",
+    "DOCS/baselines/IMP-01-20260908T074458598Z-验收记录.json"
+  ],
+  "applicationSourceModified": false,
+  "ruleConfigurationModified": false,
+  "testsModified": false,
+  "followingStepsStarted": false,
+  "limitations": [
+    "No SQL Server execution",
+    "No live WPF verification",
+    "No coverage report",
+    "No CI or Release equivalence claim"
+  ]
+}

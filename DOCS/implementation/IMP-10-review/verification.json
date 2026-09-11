@@ -1,0 +1,116 @@
+{
+  "Implementation": "IMP-10 review fixes",
+  "VerifiedAt": "2026-09-08T23:55:05.4465903+08:00",
+  "BaseHead": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "Sdk": "10.0.400",
+  "AddedTestCases": 22,
+  "PreviousFullSuiteCount": 1290,
+  "Tests": [
+    {
+      "Configuration": "Debug",
+      "Total": 1312,
+      "Passed": 1312,
+      "Failed": 0,
+      "Skipped": 0,
+      "Trx": "debug-verified.trx"
+    },
+    {
+      "Configuration": "Release",
+      "Total": 1312,
+      "Passed": 1312,
+      "Failed": 0,
+      "Skipped": 0,
+      "Trx": "release-verified.trx"
+    }
+  ],
+  "Builds": [
+    {
+      "Configuration": "Debug",
+      "Log": "build-debug.log",
+      "Errors": 0,
+      "Warnings": 0
+    },
+    {
+      "Configuration": "Release",
+      "Log": "build-release.log",
+      "Errors": 0,
+      "Warnings": 0
+    }
+  ],
+  "IntermediateOutputPath": "obj/imp10-review-final/<Configuration>/",
+  "FocusedTests": {
+    "Log": "focused-debug.log",
+    "Passed": 69,
+    "Failed": 0
+  },
+  "BeforeFixRegression": {
+    "Log": "regression-before.log",
+    "Passed": 2,
+    "Failed": 12
+  },
+  "RuleDifference": {
+    "ExpectedGlobalSummaryNodeIdChange": 1,
+    "Fixtures": 8,
+    "Before": "../IMP-10/rule-current-complete.json",
+    "After": "rule-current.json",
+    "UnexpectedDifferences": 0,
+    "LegacyFieldsUnchanged": 7,
+    "Evidence": "rule-differences.json"
+  },
+  "Cli": {
+    "Read": "cli-read.json",
+    "FixtureReadExit": 0,
+    "Scan": "cli-scan.json",
+    "Evidence": "cli-measurement.json",
+    "FixtureScanExit": 0
+  },
+  "NativeDump": "Validated Windows minidump and managed-exception sidecar; same exception captured once across controller/UI; storage-failure behavior verified; temporary memory files cleaned by tests.",
+  "Logs": "Debug: DEBUG/WARN/ERROR/CRITICAL. Release: ERROR/CRITICAL only. Both configurations tested.",
+  "Limits": [
+    "Synthetic inputs and real WPF services on STA; no full-window automation or SQL Server/SSMS execution.",
+    "Synchronous JSON serialization checks cancellation after completion, before stdout publication.",
+    "No production capacity benchmark; full selection UI and semantic plan matching remain deferred."
+  ],
+  "SourceHashes": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/AnalysisResult.cs",
+      "Sha256": "17BC0AF802FB0427A97F0AE9A9CC3957770A1A5316DB9F10F1D2A93D739B1C8F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/RuleEngine.cs",
+      "Sha256": "52EA881E7899A81633393C398369FCF0FACCBE179D234F84F58E74DCC30923A8"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Rules/SargableIndexRecommendationRule.cs",
+      "Sha256": "64AF8F012B760CCF3324119A0BFEA4C9816AFFF04EB6D76D9775DA7022202344"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/PlanDocumentBuilder.cs",
+      "Sha256": "24586D925B89867F329AD2F58F418C58509C4903BE560CBC09BB61CB17A3CDCD"
+    },
+    {
+      "Path": "Services/PlanComparisonUiActionService.cs",
+      "Sha256": "E0DDCCB94F2411A5B34D919030A97E9132D50852ACDF917D5BFF970BFA5D6535"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "Sha256": "73B5522EFDB977FE7D92783937EBF672946A55BF698B3E79C361B0E17AD88231"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.CLI/SqlXmlAnalyzer.CLI.csproj",
+      "Sha256": "534B057FE819633F66AD5C4DFDBDE0AD4A3F3B3B108D2BFDDD8C0B900FC8CFDD"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityHardeningTests.cs",
+      "Sha256": "C6F25B10152C2DCCBE9E630AE1E23CF219219356079C4A302A9C7C3FEF9075A9"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/PlanIdentityErrorContractTests.cs",
+      "Sha256": "DD22F9B435EEAA85991E6FE2D6373ABD041D47F641487D8BD62AE880CCCA548F"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Rules/SargableIndexRecommendationRuleTests.cs",
+      "Sha256": "8389208D71437E71F876B020D927887C319AAC25DAF7553B76C4D9A87F9960EF"
+    }
+  ]
+}

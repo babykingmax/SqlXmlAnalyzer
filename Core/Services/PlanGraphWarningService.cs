@@ -21,7 +21,10 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed record PlanGraphWarningResult(
         string WarningsText,
-        string HighestSeverity);
+        string HighestSeverity)
+    {
+        public string DiagnosticStatusText { get; init; } = string.Empty;
+    }
 
     public sealed class PlanGraphWarningService
     {
@@ -29,7 +32,8 @@ namespace SqlXmlAnalyzer.Core.Services
             XElement relOp,
             XNamespace ns,
             PlanGraphWarningContext context,
-            IEnumerable<AnalysisResult> ruleResults)
+            IEnumerable<AnalysisResult> ruleResults,
+            PlanDiagnosticReport? diagnostics = null)
         {
             ArgumentNullException.ThrowIfNull(relOp);
             ArgumentNullException.ThrowIfNull(ruleResults);
@@ -37,8 +41,9 @@ namespace SqlXmlAnalyzer.Core.Services
             var warnings = new List<string>();
             AddRelOpWarnings(relOp, ns, warnings);
             AddImplicitConversionWarnings(relOp, ns, warnings);
-            AddGlobalMemoryWarnings(relOp, ns, context.NodeId, warnings);
+            AddQueryPlanMemoryWarnings(relOp, ns, warnings);
             AddRuntimeWarnings(relOp, ns, context, warnings);
+            if (warnings.Count > 0) warnings.Insert(0, "原始采集与展示提示（不受规则配置开关控制）：");
             string highestSeverity = AddRuleWarnings(ruleResults, warnings);
 
             string warningsText = string.Join("\n• ", warnings);
@@ -49,7 +54,10 @@ namespace SqlXmlAnalyzer.Core.Services
 
             return new PlanGraphWarningResult(
                 warningsText,
-                highestSeverity);
+                highestSeverity)
+            {
+                DiagnosticStatusText = diagnostics == null ? string.Empty : DiagnosticTextFormatter.FormatExecutionStatus(diagnostics)
+            };
         }
 
         private static void AddRelOpWarnings(
@@ -95,11 +103,8 @@ namespace SqlXmlAnalyzer.Core.Services
             XNamespace ns,
             ICollection<string> warnings)
         {
-            List<string> implicitConverts = relOp.Descendants(ns + "ScalarOperator")
-                .Where(op => op.Attribute("ScalarString")?.Value?.Contains("CONVERT_IMPLICIT") == true)
-                .Select(op => op.Attribute("ScalarString")?.Value)
-                .Where(value => !string.IsNullOrEmpty(value))
-                .Select(value => value!)
+            List<string> implicitConverts = PlanOperatorFactsService.Get(relOp, ns).ScalarExpressions
+                .Where(value => value.Contains("CONVERT_IMPLICIT", StringComparison.Ordinal))
                 .ToList();
 
             if (implicitConverts.Count > 0)
@@ -110,19 +115,21 @@ namespace SqlXmlAnalyzer.Core.Services
             }
         }
 
-        private static void AddGlobalMemoryWarnings(
+        private static void AddQueryPlanMemoryWarnings(
             XElement relOp,
             XNamespace ns,
-            string nodeId,
             ICollection<string> warnings)
         {
-            if (nodeId != "0" && nodeId != "1")
+            XElement? queryPlan = relOp.Ancestors(ns + "QueryPlan").FirstOrDefault();
+            if (queryPlan == null || relOp.Ancestors().TakeWhile(ancestor => ancestor != queryPlan)
+                .Any(ancestor => ancestor.Name == ns + "RelOp"))
             {
                 return;
             }
 
-            XElement? memoryGrantInfo =
-                relOp.Document?.Descendants(ns + "MemoryGrantInfo").FirstOrDefault();
+            // QueryPlan metrics belong to its root operators. NodeId is local
+            // to a plan and does not identify either a root or a statement.
+            XElement? memoryGrantInfo = queryPlan.Element(ns + "MemoryGrantInfo");
             if (memoryGrantInfo != null)
             {
                 double granted =
@@ -142,8 +149,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 }
             }
 
-            XElement? globalWarnings =
-                relOp.Document?.Descendants(ns + "Warnings").FirstOrDefault();
+            XElement? globalWarnings = queryPlan.Element(ns + "Warnings");
             XElement? memoryGrantWarning =
                 globalWarnings?.Element(ns + "MemoryGrantWarning");
             if (memoryGrantWarning != null)
@@ -246,7 +252,9 @@ namespace SqlXmlAnalyzer.Core.Services
             string highestSeverity = "Info";
             foreach (AnalysisResult result in ruleResults)
             {
-                warnings.Add($"[{result.Severity}] {result.Title}: {result.Message}");
+                warnings.Add(result.Diagnostic is { } diagnostic
+                    ? DiagnosticTextFormatter.FormatDiagnostic(diagnostic)
+                    : $"[{result.Severity}] {result.Title}: {result.Message}");
                 if (result.Severity == "Critical")
                 {
                     highestSeverity = "Critical";
@@ -269,7 +277,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 value,
                 NumberStyles.Any,
                 CultureInfo.InvariantCulture,
-                out double parsed)
+                out double parsed) && double.IsFinite(parsed) && parsed >= 0
                 ? parsed
                 : defaultValue;
         }

@@ -13,53 +13,43 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            try
+            var queryPlan = Services.QueryPlanXml.Find(relOp, ns);
+            if (queryPlan == null) return null;
+
+            var messages = new List<string>();
+
+            double compileTime = PlanDiagnosticAnalyzer.ParseDouble(queryPlan.Attribute("CompileTime")?.Value);
+            double compileCPU = PlanDiagnosticAnalyzer.ParseDouble(queryPlan.Attribute("CompileCPU")?.Value);
+            if (compileTime > 500)
             {
-                var doc = relOp.Document;
-                if (doc == null) return null;
+                string cpu = queryPlan.Attribute("CompileCPU") == null ? "N/A" : compileCPU.ToString("F0");
+                messages.Add($"编译开销较高：编译时间 {compileTime:F0} 毫秒 (CPU: {cpu} 毫秒)。这是计划记录的编译指标，不能据此认定本次执行缓存未命中或发生重编译；请结合编译频率和运行时采集验证。");
+            }
 
-                var messages = new List<string>();
-
-                var queryTimeStats = doc.Descendants(ns + "QueryTimeStats").FirstOrDefault();
-                if (queryTimeStats != null)
+            var stmtSimple = queryPlan.Ancestors(ns + "StmtSimple").FirstOrDefault();
+            if (stmtSimple != null)
+            {
+                string reason = stmtSimple.Attribute("StatementOptmLevel")?.Value ?? "";
+                if (reason == "FULL")
                 {
-                    double compileTime = PlanDiagnosticAnalyzer.ParseDouble(queryTimeStats.Attribute("CompileTime")?.Value);
-                    double compileCPU = PlanDiagnosticAnalyzer.ParseDouble(queryTimeStats.Attribute("CompileCPU")?.Value);
-                    if (compileTime > 500)
+                    double cost = PlanDiagnosticAnalyzer.ParseDouble(stmtSimple.Attribute("StatementSubTreeCost")?.Value);
+                    if (cost > 50)
                     {
-                        messages.Add($"♻️ 重编译高开销: 编译时间 {compileTime:F0} 毫秒 (CPU: {compileCPU:F0} 毫秒)。这表明查询未能命中计划缓存 (Cache Miss) 或发生了重编译 (Recompile)，建议检查统计信息更新频率或使用参数化查询。");
+                        messages.Add($"复杂计划编译：优化器采用 FULL 级别优化，计划估算成本为 {cost:F1}。该成本不是编译 CPU 用量；请结合实际编译时间和执行频率评估影响。");
                     }
-                }
-
-                var stmtSimple = doc.Descendants(ns + "StmtSimple").FirstOrDefault();
-                if (stmtSimple != null)
-                {
-                    string reason = stmtSimple.Attribute("StatementOptmLevel")?.Value ?? "";
-                    if (reason == "FULL")
-                    {
-                        double cost = PlanDiagnosticAnalyzer.ParseDouble(stmtSimple.Attribute("StatementSubTreeCost")?.Value);
-                        if (cost > 50)
-                        {
-                            messages.Add($"⚠️ 复杂计划编译: 优化器进行了 FULL 级别的深度编译，计划预估开销高达 {cost:F1}。如果此查询高频执行，CPU 会被彻底耗尽。");
-                        }
-                    }
-                }
-
-                if (messages.Any())
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = this.RuleId,
-                        Severity = "Warning",
-                        Title = "缓存命中与重编译开销",
-                        Message = string.Join("|||", messages),
-                        NodeId = "0"
-                    };
                 }
             }
-            catch (Exception ex)
+
+            if (messages.Any())
             {
-                Logger.Warning($"CacheAndRecompileRule failed: {ex.Message}");
+                return new AnalysisResult
+                {
+                    RuleId = this.RuleId,
+                    Severity = "Warning",
+                    Title = "缓存命中与重编译开销",
+                    Message = string.Join("|||", messages),
+                    NodeId = "0"
+                };
             }
 
             return null;

@@ -1,0 +1,4 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+<StmtSimple StatementId="1" StatementText="SELECT 'IMP27_SECRET_MARKER'" StatementType="SELECT"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" /></QueryPlan></StmtSimple>
+<StmtSimple StatementId="2" StatementText="SELECT 'OTHER_STATEMENT'" StatementType="SELECT"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" /></QueryPlan></StmtSimple>
+</Statements></Batch></BatchSequence></ShowPlanXML>

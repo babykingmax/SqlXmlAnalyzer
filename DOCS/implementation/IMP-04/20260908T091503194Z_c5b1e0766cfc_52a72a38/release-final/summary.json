@@ -1,0 +1,11 @@
+{
+  "configuration": "Release",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "total": 886,
+  "passed": 886,
+  "failed": 0,
+  "notExecuted": 0,
+  "inputDrift": [],
+  "buildExitCode": 0,
+  "testExitCode": 0
+}

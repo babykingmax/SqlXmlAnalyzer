@@ -1,0 +1,67 @@
+{
+  "Head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "CompletedUtc": "2026-09-08T11:18:23.1101137Z",
+  "ConfirmedReviewFinding": "P2 log folder action targets the obsolete application/log directory",
+  "Status": "Fixed",
+  "Tests": [
+    {
+      "Trx": "regression-before/regression-before.trx",
+      "Total": 4,
+      "Passed": 2,
+      "Failed": 2,
+      "NotExecuted": 0,
+      "LogFolderTests": 4,
+      "LogFolderFailures": 2
+    },
+    {
+      "Trx": "targeted-debug-01/targeted-debug-01.trx",
+      "Total": 23,
+      "Passed": 23,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "LogFolderTests": 23,
+      "LogFolderFailures": 0
+    },
+    {
+      "Trx": "full-debug/full-debug.trx",
+      "Total": 965,
+      "Passed": 965,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "LogFolderTests": 23,
+      "LogFolderFailures": 0
+    },
+    {
+      "Trx": "full-release/full-release.trx",
+      "Total": 965,
+      "Passed": 965,
+      "Failed": 0,
+      "NotExecuted": 0,
+      "LogFolderTests": 23,
+      "LogFolderFailures": 0
+    }
+  ],
+  "DebugBuild": {
+    "Warnings": 0,
+    "Errors": 0,
+    "Log": "debug-build-01.log",
+    "ExitCode": 0
+  },
+  "ReleaseBuild": {
+    "Warnings": 0,
+    "Errors": 0,
+    "Log": "release-build-01.log",
+    "ExitCode": 0
+  },
+  "ProtectedFilesUnchanged": true,
+  "ProductionFilesChanged": 4,
+  "TestFilesChanged": 1,
+  "TestCasesAdded": 21,
+  "ActualUiVerified": false,
+  "StandaloneMatrixRerun": false,
+  "Notes": [
+    "Both full suites include a real native dump and build-mode logging test for the log-folder boundary. Temporary dumps are validated and then cleaned by the tests.",
+    "No commit was created. Earlier test records remain historical."
+  ],
+  "VerificationScriptSyntaxErrors": 0
+}

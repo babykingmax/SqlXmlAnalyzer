@@ -13,7 +13,7 @@ namespace SqlXmlAnalyzer
         private async void OpenDeadlockFile_Click(object sender, RoutedEventArgs e)
         {
             await _fileOpenUiActionService.OpenDeadlockAsync(
-                _xelDeadlockUiActionService.AnalyzeXelFileAsync,
+                AnalyzeFileAsync,
                 AnalyzeDeadlockFile);
         }
 
@@ -36,7 +36,7 @@ namespace SqlXmlAnalyzer
         {
             await _fileOpenUiActionService.HandleDropAsync(
                 e,
-                _xelDeadlockUiActionService.AnalyzeXelFileAsync,
+                AnalyzeFileAsync,
                 AnalyzeDeadlockFile,
                 AnalyzeExecutionPlanFile);
         }
@@ -61,9 +61,9 @@ namespace SqlXmlAnalyzer
             await _documentAnalysisUiActionService.AnalyzeFileAsync(filePath);
         }
 
-        private async Task AnalyzeDeadlockXmlAsync(string xml, string displayName)
+        private async Task AnalyzeDeadlockXmlAsync(string xml, string sourceFilePath, string displayName)
         {
-            await _documentAnalysisUiActionService.AnalyzeDeadlockXmlAsync(xml, displayName);
+            await _documentAnalysisUiActionService.AnalyzeDeadlockXmlAsync(xml, sourceFilePath, displayName);
         }
 
         private async Task AnalyzeDeadlockDocumentAsync(

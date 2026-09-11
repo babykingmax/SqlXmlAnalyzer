@@ -1,0 +1,104 @@
+﻿{
+  "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+  "IsSuccess": true,
+  "IsDryRun": false,
+  "HasChanges": true,
+  "SourceWritten": false,
+  "Outcome": "CandidateGenerated",
+  "ProposalSchemaVersion": "1",
+  "CanApply": false,
+  "SourceHash": "A839C491DC266A73F24D100A4C6308C9E76509E8DD7109A6D8908A05990FE08A",
+  "Review": {
+    "SourceHash": "A839C491DC266A73F24D100A4C6308C9E76509E8DD7109A6D8908A05990FE08A",
+    "CanApply": false,
+    "Validation": {
+      "SyntaxValid": true,
+      "CheckedProperties": [
+        "ScriptDom TSql160 语法解析",
+        "SELECT INTO 目标、显式临时表 CREATE/DROP、表变量声明名称及批次/IF/WHILE/TRY-CATCH 分支一致性检查"
+      ],
+      "UnprovenProperties": [
+        "结果集及重复行等价性",
+        "类型、NULL、排序规则及错误行为",
+        "对象完整定义、模块/动态 SQL 作用域及完整生命周期",
+        "事务、会话设置、调用方对象与运行性能"
+      ],
+      "Errors": [],
+      "Equivalence": "Unproven",
+      "IsValid": true,
+      "CanApply": false
+    },
+    "Warnings": [],
+    "PreviewSql": "UPDATE dbo.T SET Mark=CASE WHEN Value + 1 > 16777216 THEN 1 ELSE 0 END;",
+    "Proposals": [
+      {
+        "Id": "46499D21D0187FBD1DAADD4FC818F2913985348B6397935AFC274EF69B8F2CB5",
+        "SourceHash": "A839C491DC266A73F24D100A4C6308C9E76509E8DD7109A6D8908A05990FE08A",
+        "BaseSqlHash": "A839C491DC266A73F24D100A4C6308C9E76509E8DD7109A6D8908A05990FE08A",
+        "CandidateHash": "25F5928E2D85A839DD91BC8C7A259E68880DB5A31BE0C263F519A27CC65A034F",
+        "RuleId": "REF_RULE_104_CONST_FOLD",
+        "RuleVersion": "2.0.0.0",
+        "Description": "Folded constant arithmetic on column Value",
+        "IsSelected": false,
+        "DependsOn": [],
+        "Preconditions": [
+          "确认列类型、NULL、排序规则、重复行与聚合边界。",
+          "在隔离数据库验证结果、错误、事务和对象副作用。"
+        ],
+        "Risks": [
+          "ScriptDom 解析成功仅代表语法有效。",
+          "可能改变结果、溢出/错误行为、事务或性能；等价性尚未证明。"
+        ],
+        "Evidence": [
+          "规则在所示输入 AST 上识别到匹配结构；不证明结果等价。",
+          "源 SQL SHA-256 (UTF-8 text): A839C491DC266A73F24D100A4C6308C9E76509E8DD7109A6D8908A05990FE08A"
+        ],
+        "Warnings": [],
+        "Validation": {
+          "SyntaxValid": true,
+          "CheckedProperties": [
+            "ScriptDom TSql160 语法解析",
+            "SELECT INTO 目标、显式临时表 CREATE/DROP、表变量声明名称及批次/IF/WHILE/TRY-CATCH 分支一致性检查"
+          ],
+          "UnprovenProperties": [
+            "结果集及重复行等价性",
+            "类型、NULL、排序规则及错误行为",
+            "对象完整定义、模块/动态 SQL 作用域及完整生命周期",
+            "事务、会话设置、调用方对象与运行性能"
+          ],
+          "Errors": [],
+          "Equivalence": "Unproven",
+          "IsValid": true,
+          "CanApply": false
+        },
+        "Diff": {
+          "StartOffset": 12,
+          "OriginalText": " SET Mark=CASE WHEN Value + 1 > 16777216 THEN 1 ELSE 0 END;",
+          "ReplacementText": "\r\nSET    Mark = CASE WHEN Value > 16777215 THEN 1 ELSE 0 END;\r\n\r\n"
+        }
+      }
+    ]
+  },
+  "TimeElapsedMs": 110.466,
+  "OriginalSqlLength": 71,
+  "RefactoredSqlLength": 77,
+  "PassesCount": 2,
+  "Changes": [
+    {
+      "RuleId": "REF_RULE_104_CONST_FOLD",
+      "Description": "Folded constant arithmetic on column Value",
+      "Timestamp": "2026-09-09T09:19:37.97665Z"
+    }
+  ],
+  "Failures": [],
+  "Warnings": [
+    "已生成可审核提案，尚未应用；语义等价性未证明。选择只改变审核预览，不写回源文件。"
+  ],
+  "Errors": [],
+  "SafetySkips": [],
+  "Diagnostic": null,
+  "Diagnostics": null,
+  "ParseErrors": null,
+  "OriginalSql": "UPDATE dbo.T SET Mark=CASE WHEN Value + 1 > 16777216 THEN 1 ELSE 0 END;",
+  "RefactoredSql": "UPDATE dbo.T\r\nSET    Mark = CASE WHEN Value > 16777215 THEN 1 ELSE 0 END;\r\n\r\n"
+}

@@ -1,0 +1,72 @@
+{
+  "Passed": true,
+  "ServerVersion": "17.00.4075",
+  "Configuration": "Debug",
+  "Plans": [
+    {
+      "Case": 1,
+      "Equality": 30,
+      "Range": 0,
+      "Score": 70,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "CAPTURED_PREDICATES"
+    },
+    {
+      "Case": 2,
+      "Equality": 30,
+      "Range": 0,
+      "Score": 70,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "CAPTURED_PREDICATES"
+    },
+    {
+      "Case": 3,
+      "Equality": 0,
+      "Range": 15,
+      "Score": 55,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "CAPTURED_PREDICATES"
+    },
+    {
+      "Case": 4,
+      "Equality": 0,
+      "Range": 0,
+      "Score": 40,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "MISSING_PREDICATE_EVIDENCE"
+    },
+    {
+      "Case": 5,
+      "Equality": 30,
+      "Range": 0,
+      "Score": 70,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "CAPTURED_PREDICATES"
+    },
+    {
+      "Case": 6,
+      "Equality": 30,
+      "Range": 0,
+      "Score": 70,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "CAPTURED_PREDICATES"
+    },
+    {
+      "Case": 7,
+      "Equality": 0,
+      "Range": 0,
+      "Score": 40,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "MISSING_PREDICATE_EVIDENCE"
+    },
+    {
+      "Case": 8,
+      "Equality": 0,
+      "Range": 0,
+      "Score": 40,
+      "ModelVersion": "index-evidence-score/2.0.1",
+      "EvidenceSource": "MISSING_PREDICATE_EVIDENCE"
+    }
+  ],
+  "Scope": "Dedicated LocalDB synthetic table, optimizer plans; no performance calibration."
+}

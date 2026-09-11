@@ -1,0 +1,1 @@
+SELECT CAST(N'not-int' AS int);

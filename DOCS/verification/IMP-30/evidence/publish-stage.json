@@ -1,0 +1,44 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "006B6B39219CCD52C1F9809F8D831F19BA529F9805E53B6D9344F9F249EA00F6",
+  "StartedAtUtc": "2026-09-10T11:06:44.9435795Z",
+  "CompletedAtUtc": "2026-09-10T11:07:44.0056861Z",
+  "Results": [
+    {
+      "Path": "candidate/bundle-manifest.json",
+      "Bytes": 6662,
+      "Sha256": "63CD4E762C4C5181209F9CB1EAE9A2B3D169A8EFBD87510509807C3C4C652954"
+    },
+    {
+      "Path": "cli.command.json",
+      "Bytes": 646,
+      "Sha256": "F86055BC8EE96425080ECF4D8FD2AC9A83346DD32454BCBCC84BE3728BFF7737"
+    },
+    {
+      "Path": "cli.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "cli.stdout.txt",
+      "Bytes": 908,
+      "Sha256": "D0B676A995D13F032001D04A856DE2DFF30E0A16077D42F5B3B336BAB924890D"
+    },
+    {
+      "Path": "gui.command.json",
+      "Bytes": 622,
+      "Sha256": "39CECC485EE828DDE6D84ED88E896DC851A66DD56B43039E0AAF470E84CA69F7"
+    },
+    {
+      "Path": "gui.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "gui.stdout.txt",
+      "Bytes": 1258,
+      "Sha256": "D11524E59C6A110B47C7C2136BEA5839BDA4D897A502E8C719100BE2B230589C"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"futureRoot":{"keep":true},"Rules":[{"RuleId":"FUTURE_RULE","Enabled":"future-mode"},{"RuleId":"RULE_004_ESTIMATE_MISMATCH","Enabled":false},{"RuleId":"RULE_030_CARDINALITY_ERROR","Enabled":false}]}

@@ -16,21 +16,21 @@
                    SnapsToDevicePixels="True"/>
             <TextBlock Text="{Binding PhysicalOp}"
                        FontWeight="SemiBold"
-                       Foreground="{Binding CostColor}"/>
+                       Foreground="{DynamicResource InfoBrush}"/>
             <TextBlock Text=" ("
-                       Foreground="Gray"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock Text="{Binding LogicalOp}"
-                       Foreground="Gray"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock Text=")"
-                       Foreground="Gray"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock Text="  Cost: "
-                       Foreground="#666"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock Text="{Binding Cost, StringFormat={}{0:F2}}"
-                       Foreground="{Binding CostColor}"/>
+                       Foreground="{DynamicResource InfoBrush}"/>
             <TextBlock Text="  Rows: "
-                       Foreground="#666"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock Text="{Binding EstRows}"
-                       Foreground="#666"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
         </StackPanel>
     </HierarchicalDataTemplate>
 
@@ -42,10 +42,10 @@
                        FontWeight="SemiBold"/>
             <TextBlock Text=" held by "/>
             <TextBlock Text="{Binding Holder}"
-                       Foreground="#0066CC"/>
+                       Foreground="{DynamicResource InfoBrush}"/>
             <TextBlock Text=", waiters: "/>
             <TextBlock Text="{Binding WaiterCount}"
-                       Foreground="Red"/>
+                       Foreground="{DynamicResource CriticalBrush}"/>
         </StackPanel>
     </HierarchicalDataTemplate>
 </ResourceDictionary>

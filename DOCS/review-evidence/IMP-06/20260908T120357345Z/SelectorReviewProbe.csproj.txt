@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>SqlXmlAnalyzer.Tests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Diagnostics.DiagnosticSource">
+      <HintPath>E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\release\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json">
+      <HintPath>E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\release\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web">
+      <HintPath>E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\release\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Pipelines">
+      <HintPath>E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\release\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlXmlAnalyzer">
+      <HintPath>E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\release\SqlXmlAnalyzer.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlXmlAnalyzer.Core">
+      <HintPath>E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Core\release\SqlXmlAnalyzer.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

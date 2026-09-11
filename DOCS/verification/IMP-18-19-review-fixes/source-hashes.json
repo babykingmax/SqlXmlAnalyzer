@@ -1,0 +1,98 @@
+[
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticComparison.cs",
+    "SHA256": "E4A503E9A2508A968A8C4BC6AA795DA3AD792C11E7EBC7B4DE37B532EA1F3F0B"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticValueReader.cs",
+    "SHA256": "03DAA8CCC66566E1E22C04521CDC6DED93DE6A40842970A0203F1B75EA9FA3E2"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/LocalDbSqlSemanticRunner.cs",
+    "SHA256": "7CB622CFFE67E6A5810833133475149E887B9205817543031B2812B79892161F"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlSemanticDatabaseLifetime.cs",
+    "SHA256": "76532E94DD814C7556B7D7563421F33BA515BE73E90C9BDE47B7A27671BB0D32"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlBoundedFileReader.cs",
+    "SHA256": "C362D00A23253F9EAF2E4E55ECAB6491D689BB83A7663A1D63DA1378D2801645"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs",
+    "SHA256": "9FF69B59A9A400A73ED070CF8FBE86B3D54A88A68E7648C90B97A9B0338CBB8F"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs",
+    "SHA256": "0605BAF9EEBA8D1115E6CA23A545096AF60742EDB915E1421F199D7FEC301599"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+    "SHA256": "6D7DDCF1C4F328503CBEB4840017DD280DAB700D4F99A26D8462F535FF5DF8C5"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs",
+    "SHA256": "CE896F87574170F08D5BDCC428B931DBA69E661EF070717C184C4B31C919081F"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/ReviewedSqlApplyService.cs",
+    "SHA256": "5466845CC808B7D9FB0729AC49982DA8C96CDCBA25D75D59FF3EF063C7F5855D"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/Services/RewriteReviewFormatter.cs",
+    "SHA256": "C47EBD122FB302BAF9E706BBE315CB707A0BF01EF8B6215BDDEE9514555EC645"
+  },
+  {
+    "Path": "src/SqlXmlAnalyzer.Application/SqlXmlAnalyzer.Application.csproj",
+    "SHA256": "5C46ED7851D244E01574DD8027E5618536505F38E44C3D74F5FDDD8DBF8CC6CF"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.CLI/SqlSemanticCommand.cs",
+    "SHA256": "7DF545020E49ECC36179E106A10023A7D3D36E91A5D8CE5B921912BA711680F7"
+  },
+  {
+    "Path": "ViewModels/RewriteReviewViewModel.cs",
+    "SHA256": "36A8B35E6AC23469EC409C4A79232A5A0B73F92D7EB3B78D57C4B24AC500266A"
+  },
+  {
+    "Path": "Views/RewriteReviewWindow.xaml",
+    "SHA256": "36FC28A9059410566138C74BD16AEE1A83F6AEEABAE607B8A1F5B0C04D49B8B2"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticValueFidelityTests.cs",
+    "SHA256": "F0E3ECC36F210AFE0A116E09FC428D3BC7E248FF96CBC2082064CE24ED4C226D"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlBoundedFileReaderTests.cs",
+    "SHA256": "F9AB678813245E5E7E291B51229C1B7BCD6BBF5CE11608B6C162B9861DD4350B"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticDatabaseLifetimeTests.cs",
+    "SHA256": "B86479D281CD238C2401379D37C0342FDE937D5B04A8BD363ECA0FC885A785C0"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlSemanticCliTests.cs",
+    "SHA256": "A4D901E7669381676BDE9C8CC70FB5BD9E0273ED94F520A1CD6E4D31518DDD6A"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/ReviewedSqlApplyServiceTests.cs",
+    "SHA256": "331A0214794C499E01F612529DA85B4C1DE1E9CF90745A604AF9D3C9DCB2A16F"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+    "SHA256": "AFC63440789E51C54837E274ADA14A220ACA43B88E25275E71A3EE032D785840"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+    "SHA256": "46C45C49505E1DF3D34DFF42D24A9A82E8CAD7A0EC7536B1AB254B657CA49AFB"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/RewriteReviewValidationTests.cs",
+    "SHA256": "D045AD12AEDA12BFC4B0EC42CBA9267A6A933CB003F95B689F7111CD15D158D0"
+  },
+  {
+    "Path": "SqlXmlAnalyzer.Tests/RewriteReviewViewTests.cs",
+    "SHA256": "CCCAA219470C8E6777FEBE1E2916A5964B1FEE2A9BCA978D7B6AC87D925212A5"
+  }
+]

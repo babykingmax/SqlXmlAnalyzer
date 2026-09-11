@@ -10,5 +10,9 @@ namespace SqlXmlAnalyzer.Application.Models
         string? ErrorMessage,
         Exception? ErrorException,
         IReadOnlyList<string> Warnings
-    );
+    )
+    {
+        public SqlWritebackResult? Writeback { get; init; }
+        public Core.Rules.PlanDiagnosticReport? Diagnostics { get; init; }
+    }
 }

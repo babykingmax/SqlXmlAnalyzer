@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SqlXmlAnalyzer.Core\SqlXmlAnalyzer.Core.csproj" />
+    <ProjectReference Include="..\SqlXmlAnalyzer.Analysis\SqlXmlAnalyzer.Analysis.csproj" />
+    <ProjectReference Include="..\SqlXmlAnalyzer.Refactoring\SqlXmlAnalyzer.Refactoring.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

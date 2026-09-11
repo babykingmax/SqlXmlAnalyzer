@@ -1,0 +1,328 @@
+{
+  "Step": "IMP-07 review hardening",
+  "Date": "2026-09-08",
+  "Scope": "Explicit actual-output observation across node construction, graph loading, recosting, connection metrics and node row display.",
+  "UnitTestsAdded": 29,
+  "Red": {
+    "Total": 25,
+    "Failed": 17,
+    "Passed": 8,
+    "Trx": "tests/hardening-red.trx"
+  },
+  "Focused": {
+    "Total": 335,
+    "Failed": 0,
+    "Passed": 335,
+    "Trx": "tests/hardening-focused-final.trx"
+  },
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "RunId": "20260908T130755683Z_c5b1e0766cfc_a4518124",
+      "Summary": "../../../acceptance/IMP-02/runs/20260908T130755683Z_c5b1e0766cfc_a4518124/summary.json",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "failed": 0,
+        "total": 1135,
+        "passed": 1135,
+        "notExecuted": 0
+      },
+      "Infrastructure": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "NecessaryConditionsMet": 10,
+      "NotMet": 12,
+      "ProbeExecutionFailed": 0,
+      "MatrixExitCode": 1,
+      "ProtectedInputDriftDuringRun": [],
+      "VerifiedCodeFiles": 455,
+      "CodeDriftAfterDocumentationUpdates": [],
+      "Diagnostics": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.UnknownMappingFailure_GeneratesValidatedDumpAndPreservesOriginalException",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.MappingLogs_RespectBuildConfigurationAndDoNotContainInputValues",
+          "Outcome": "Passed"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "RunId": "20260908T130847895Z_c5b1e0766cfc_e528e6ee",
+      "Summary": "../../../acceptance/IMP-02/runs/20260908T130847895Z_c5b1e0766cfc_e528e6ee/summary.json",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Tests": {
+        "total": 1135,
+        "notExecuted": 0,
+        "failed": 0,
+        "passed": 1135
+      },
+      "Infrastructure": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "NecessaryConditionsMet": 10,
+      "NotMet": 12,
+      "ProbeExecutionFailed": 0,
+      "MatrixExitCode": 1,
+      "ProtectedInputDriftDuringRun": [],
+      "VerifiedCodeFiles": 455,
+      "CodeDriftAfterDocumentationUpdates": [],
+      "Diagnostics": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.UnknownMappingFailure_GeneratesValidatedDumpAndPreservesOriginalException",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.InputFieldMappingDiagnosticTests.MappingLogs_RespectBuildConfigurationAndDoNotContainInputValues",
+          "Outcome": "Passed"
+        }
+      ]
+    }
+  ],
+  "Wpf": {
+    "Passed": true,
+    "RuntimeScenarios": 5,
+    "Views": 2,
+    "Observations": [
+      {
+        "View": "PlanWorkspaceView",
+        "Scenario": "estimated",
+        "HasActualRows": false,
+        "OwnCost": 1,
+        "ActualRecost": 1,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "N/A"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "1.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanView",
+        "Scenario": "estimated",
+        "HasActualRows": false,
+        "OwnCost": 1,
+        "ActualRecost": 1,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "N/A"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "1.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanWorkspaceView",
+        "Scenario": "zero",
+        "HasActualRows": true,
+        "OwnCost": 1,
+        "ActualRecost": 0,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "0"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "0.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanView",
+        "Scenario": "zero",
+        "HasActualRows": true,
+        "OwnCost": 1,
+        "ActualRecost": 0,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "0"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "0.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanWorkspaceView",
+        "Scenario": "partial",
+        "HasActualRows": false,
+        "OwnCost": 1,
+        "ActualRecost": 1,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "N/A"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "1.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanView",
+        "Scenario": "partial",
+        "HasActualRows": false,
+        "OwnCost": 1,
+        "ActualRecost": 1,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "N/A"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "1.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanWorkspaceView",
+        "Scenario": "scaled",
+        "HasActualRows": true,
+        "OwnCost": 1,
+        "ActualRecost": 2.5,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "250"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "2.500000"
+          }
+        ]
+      },
+      {
+        "View": "PlanView",
+        "Scenario": "scaled",
+        "HasActualRows": true,
+        "OwnCost": 1,
+        "ActualRecost": 2.5,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "250"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "2.500000"
+          }
+        ]
+      },
+      {
+        "View": "PlanWorkspaceView",
+        "Scenario": "estimated-again",
+        "HasActualRows": false,
+        "OwnCost": 1,
+        "ActualRecost": 1,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "N/A"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "1.000000"
+          }
+        ]
+      },
+      {
+        "View": "PlanView",
+        "Scenario": "estimated-again",
+        "HasActualRows": false,
+        "OwnCost": 1,
+        "ActualRecost": 1,
+        "Values": [
+          {
+            "Path": "ActualRows",
+            "Text": "N/A"
+          },
+          {
+            "Path": "OwnCost",
+            "Text": "1.000000"
+          },
+          {
+            "Path": "ActualRecost",
+            "Text": "1.000000"
+          }
+        ]
+      }
+    ],
+    "Process": {
+      "Completed": true,
+      "ExitCode": 0,
+      "ProbeSourceSha256": "AECC2E874D356D7AD22F74ABB9DF78E182F90289449F6C856BDB16342E96F00D",
+      "ApplicationSha256": "4F088B9E7AE158105DE2D372085CFDE342EC5F4F1D1C520F36C94203DBB65DC3",
+      "CoreSha256": "1145553C5CF316A591FEB80F78B2D5B6C37A3E7C7C09AF97912311D6C0726D87",
+      "WindowShown": false
+    },
+    "Evidence": "ui/observed.json"
+  },
+  "Research": {
+    "AccessDate": "2026-09-08",
+    "Method": "Direct HTTPS to Microsoft Learn and MicrosoftDocs GitHub sources after web search connection failure.",
+    "EstimatedPlan": "https://learn.microsoft.com/en-us/sql/relational-databases/performance/display-the-estimated-execution-plan",
+    "ActualPlan": "https://learn.microsoft.com/en-us/sql/relational-databases/performance/display-an-actual-execution-plan",
+    "EstimatedPlanSource": "https://github.com/MicrosoftDocs/sql-docs/blob/live/docs/relational-databases/performance/display-the-estimated-execution-plan.md",
+    "ActualPlanSource": "https://github.com/MicrosoftDocs/sql-docs/blob/live/docs/relational-databases/performance/display-an-actual-execution-plan.md",
+    "ShowplanSchemaSha256": "845B3FAA55748D442DFC71071315FF1EBB611E4E298E8D06A21EBF946B8C93A8"
+  },
+  "SqlServerExecutionPerformed": false,
+  "CoverageGenerated": false,
+  "Note": "Recost remains an application estimate, not measured SQL Server cost. Existing matrix has 12 NotMet cases for later IMP steps. Original IMP-07 evidence is preserved."
+}

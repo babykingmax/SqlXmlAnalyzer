@@ -1,0 +1,31 @@
+namespace SqlXmlAnalyzer.Application.Models;
+
+public enum SqlWritebackStage
+{
+    ValidateSource,
+    CreateBackup,
+    ValidateBackup,
+    WriteTemporary,
+    ValidateTemporary,
+    Replace,
+    Completed
+}
+
+public sealed record SqlWritebackResult(
+    bool IsSuccess,
+    bool SourceWritten,
+    bool CommitOutcomeUnknown,
+    bool IsCanceled,
+    SqlWritebackStage Stage,
+    bool BackupVerified,
+    string? BackupPath,
+    string? TemporaryPath,
+    string SourceSha256,
+    string? OutputSha256,
+    string? ErrorMessage,
+    Exception? ErrorException,
+    IReadOnlyList<string> Warnings)
+{
+    public IReadOnlyList<SqlXmlAnalyzer.Core.Diagnostics.UnexpectedErrorReport> Diagnostics { get; init; }
+        = Array.Empty<SqlXmlAnalyzer.Core.Diagnostics.UnexpectedErrorReport>();
+}

@@ -35,7 +35,7 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public async Task OpenSelectedHistorySnapshotAsync_WhenSelectionIsSnapshot_UpdatesPathAndAnalyzes()
+        public async Task OpenSelectedHistorySnapshotAsync_WhenSelectionIsSnapshot_PassesPathWithoutCommittingPendingInput()
         {
             var viewModel = new MainViewModel();
             using var sessions = new AnalysisSessionCoordinator();
@@ -66,7 +66,7 @@ namespace SqlXmlAnalyzer.Tests
                     return Task.CompletedTask;
                 });
 
-            viewModel.CurrentPlanFilePath.Should().Be(snapshot.FilePath);
+            viewModel.CurrentPlanFilePath.Should().BeNull("only a successful analysis may commit the source");
             analyzedDocument.Should().BeSameAs(document);
             analyzedPath.Should().Be(snapshot.FilePath);
             requestId.Should().Be(1);

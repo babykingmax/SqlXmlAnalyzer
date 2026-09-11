@@ -1,0 +1,12 @@
+{
+  "OriginalPath": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl",
+  "OriginalExists": true,
+  "EventCount": 2,
+  "SelectedIndex": 1,
+  "CallbackLabel": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl \u00B7 \u6B7B\u9501\u4E8B\u4EF6 2 \u00B7 2026-09-08T08:01:00\u002B08:00",
+  "RefreshPath": "E:\\SqlXmlAnalyzer\\SqlXmlAnalyzer.Tests\\TestData\\deadlock_multiple_events.xdl \u00B7 \u6B7B\u9501\u4E8B\u4EF6 2 \u00B7 2026-09-08T08:01:00\u002B08:00",
+  "RefreshStatus": "Ready",
+  "RefreshedInputStatus": "ReadError",
+  "RefreshedInputErrorCode": "INPUT_READ_ERROR",
+  "ProbeBoundary": "Real selector callback \u002B refresh builder \u002B file opener; displayName assignment verified in production source, full UI analysis not invoked."
+}

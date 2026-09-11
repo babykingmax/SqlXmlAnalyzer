@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Tests
@@ -17,7 +17,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Ready);
             result.Text.Should().Be(
-                "=== SQL Server Deadlock Diagnostic Report ===\r\n\r\nDeadlock details");
+                SqlXmlAnalyzer.Core.Privacy.OutputPrivacy.MarkRaw("=== SQL Server Deadlock Diagnostic Report ===\r\n\r\nDeadlock details"));
             result.UserMessage.Should().BeNull();
         }
 
@@ -33,7 +33,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.Status.Should().Be(AnalysisClipboardStatus.Ready);
             result.Text.Should().Be(
-                "=== SQL Server Execution Plan Diagnostic Report ===\r\n\r\nPlan details");
+                SqlXmlAnalyzer.Core.Privacy.OutputPrivacy.MarkRaw("=== SQL Server Execution Plan Diagnostic Report ===\r\n\r\nPlan details"));
             result.UserMessage.Should().BeNull();
         }
 

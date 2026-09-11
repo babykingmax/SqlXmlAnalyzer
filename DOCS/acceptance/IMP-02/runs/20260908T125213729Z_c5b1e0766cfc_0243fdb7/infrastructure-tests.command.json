@@ -1,0 +1,17 @@
+{
+  "executable": "pwsh",
+  "arguments": [
+    "-NoProfile",
+    "-File",
+    "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T125213729Z_c5b1e0766cfc_0243fdb7\\adapter\\Test-AcceptanceInfrastructure.ps1",
+    "-OutputPath",
+    "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T125213729Z_c5b1e0766cfc_0243fdb7\\infrastructure-tests.json"
+  ],
+  "startedUtc": "2026-09-08T12:52:14.3649848+00:00",
+  "finishedUtc": "2026-09-08T12:52:19.1156423+00:00",
+  "processId": 52404,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

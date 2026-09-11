@@ -1,0 +1,33 @@
+diff --git "a/E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03-05-review-fix\\20260908T111034810Z_c5b1e0766cfc_e7c9972e\\before\\Services\\MainWindowShellActionService.cs.snapshot" b/Services/MainWindowShellActionService.cs
+index a5cc5ae..4daa8cc 100644
+--- "a/E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-03-05-review-fix\\20260908T111034810Z_c5b1e0766cfc_e7c9972e\\before\\Services\\MainWindowShellActionService.cs.snapshot"
++++ b/Services/MainWindowShellActionService.cs
+@@ -102,23 +102,16 @@ namespace SqlXmlAnalyzer.Services
+         public void OpenLogsFolder()
+         {
+             Core.Services.LogFolderActionResult result =
+-                _logFolderActionService.BuildOpenLogsFolder();
++                _logFolderActionService.OpenLogsFolder(_browserLauncher.OpenFolder);
+ 
+-            if (result.Status == Core.Services.LogFolderActionStatus.MissingDirectory)
++            if (result.Status == Core.Services.LogFolderActionStatus.Opened)
+             {
+-                MessageBox.Show(result.UserMessage, "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                 return;
+             }
+ 
+-            try
+-            {
+-                _browserLauncher.OpenFolder(result.FolderPath);
+-            }
+-            catch (Exception ex)
+-            {
+-                Logger.LogException("OpenLogsFolder_Click", ex);
+-                MessageBox.Show($"Unable to open the log folder: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+-            }
++            bool failed = result.Status == Core.Services.LogFolderActionStatus.Failed;
++            MessageBox.Show(result.UserMessage, failed ? "Error" : "Information", MessageBoxButton.OK,
++                failed ? MessageBoxImage.Error : MessageBoxImage.Information);
+         }
+ 
+         public void ShowAboutAndRegisterAssociations()

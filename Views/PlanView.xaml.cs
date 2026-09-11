@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Views
 {
@@ -19,15 +20,21 @@ namespace SqlXmlAnalyzer.Views
         private void RightPanel_Expanded(object sender, System.Windows.RoutedEventArgs e) { }
         private void RightPanel_Collapsed(object sender, System.Windows.RoutedEventArgs e) { }
 
+        private void PlanNodifyGraph_NodeSelected(object? sender, PlanNodeViewModel? node)
+        {
+            PlanPropertiesGrid.ItemsSource = null;
+            if (node?.RawElement == null) return;
+            try
+            {
+                PlanPropertiesGrid.ItemsSource = new PlanPropertyService().BuildProperties(node.RawElement);
+            }
+            catch (Exception exception)
+            {
+                Logger.LogException("PlanView.NodeSelected", exception);
+            }
+        }
 
-
-
-
-
-
-
-
-
-
+        private void PlanNodifyGraph_NodeDoubleClicked(object? sender, PlanNodeViewModel? node) =>
+            PlanNodifyGraph_NodeSelected(sender, node);
     }
 }

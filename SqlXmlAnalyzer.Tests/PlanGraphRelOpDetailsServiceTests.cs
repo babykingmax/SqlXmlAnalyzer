@@ -29,13 +29,13 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void Parse_WhenScanHasNoObject_ReturnsHeapFallbackText()
+        public void Parse_WhenScanHasNoObject_DoesNotInferHeap()
         {
             XElement relOp = new(Ns + "RelOp");
 
             PlanGraphRelOpDetails result = _service.Parse(relOp, Ns, "Table Scan");
 
-            result.ObjectDetails.Should().Be("(堆表或堆索引)");
+            result.ObjectDetails.Should().BeEmpty();
         }
 
         [Fact]
@@ -121,11 +121,11 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Theory]
-        [InlineData("true")]
-        [InlineData("True")]
-        [InlineData("1")]
+        [InlineData("true", true)]
+        [InlineData("True", false)]
+        [InlineData("1", true)]
         public void Parse_WhenPartitionedAttributeExists_ReturnsPartitioned(
-            string partitioned)
+            string partitioned, bool expected)
         {
             XElement relOp = XElement.Parse($"""
                 <RelOp xmlns="{Ns}">
@@ -135,7 +135,7 @@ namespace SqlXmlAnalyzer.Tests
 
             PlanGraphRelOpDetails result = _service.Parse(relOp, Ns, "Index Scan");
 
-            result.IsPartitioned.Should().BeTrue();
+            result.IsPartitioned.Should().Be(expected);
         }
 
         [Fact]

@@ -1,0 +1,48 @@
+{
+  "MeasuredAt": "2026-09-08T23:55:05.3076788+08:00",
+  "Configuration": "Release",
+  "CliAssemblyHash": "87B6DD1E0FE24C5326A7E45A01EE9791A2EE3B8AB5E145B9CEA875C9ADE0FDC5",
+  "NodeIdMeasurements": [
+    {
+      "Variant": "Normal",
+      "InputCharacters": 21146,
+      "SourceNodeIdCharacters": 1,
+      "CanonicalNodeId": "0",
+      "Operators": 1001,
+      "CompactPlanJsonCharacters": 1814249,
+      "CliJsonCharacters": 4202242,
+      "ExitCode": 0,
+      "Status": "Success",
+      "Diagnostics": []
+    },
+    {
+      "Variant": "InvalidLong",
+      "InputCharacters": 29337,
+      "SourceNodeIdCharacters": 8192,
+      "CanonicalNodeId": null,
+      "Operators": 1001,
+      "CompactPlanJsonCharacters": 1816496,
+      "CliJsonCharacters": 4204642,
+      "ExitCode": 0,
+      "Status": "Success",
+      "Diagnostics": [
+        "PLAN_NODE_ID_INVALID"
+      ]
+    },
+    {
+      "Variant": "ZeroPaddedLong",
+      "InputCharacters": 29337,
+      "SourceNodeIdCharacters": 8192,
+      "CanonicalNodeId": "0",
+      "Operators": 1001,
+      "CompactPlanJsonCharacters": 1814683,
+      "CliJsonCharacters": 4202692,
+      "ExitCode": 0,
+      "Status": "Success",
+      "Diagnostics": []
+    }
+  ],
+  "FixtureReadExit": 0,
+  "FixtureScanExit": 0,
+  "Scope": "Synthetic bounded-input measurement and native CLI smoke; not a production capacity benchmark."
+}

@@ -21,6 +21,9 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+# Versioned IMP-29 summaries are evidence, not compiler output.
+!DOCS/verification/IMP-29/evidence/debug/
+!DOCS/verification/IMP-29/evidence/release/
 x64/
 x86/
 [Ww][Ii][Nn]32/
@@ -91,6 +94,17 @@ StyleCopReport.xml
 *.tmp_proj
 *_wpftmp.csproj
 *.log
+# Raw logs are kept out of source submissions, including compatibility probe runs.
+DOCS/verification/**/build-*.txt
+DOCS/verification/**/tests-*.txt
+DOCS/verification/**/*stdout.txt
+DOCS/verification/**/*stderr.txt
+DOCS/verification/**/*-probe-*.txt
+DOCS/verification/**/binding-errors.txt
+DOCS/verification/**/host-path.txt
+*.trx
+*.dmp
+*.dmp.partial
 *.vspscc
 *.vssscc
 .builds
@@ -183,6 +197,7 @@ publish-wpf*/
 *.bak
 backups/
 .tmp.*
+.tmp-*
 
 # Publish Web Output
 *.[Pp]ublish.xml

@@ -1,0 +1,15 @@
+{
+  "executable": "dotnet",
+  "arguments": [
+    "restore",
+    "SqlXmlAnalyzer.sln",
+    "--nologo"
+  ],
+  "startedUtc": "2026-09-08T12:22:30.4929400+00:00",
+  "finishedUtc": "2026-09-08T12:22:32.2057366+00:00",
+  "processId": 68516,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

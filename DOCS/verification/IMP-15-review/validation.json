@@ -1,0 +1,121 @@
+{
+  "RecordedUtc": "2026-09-09T03:52:55.5504533Z",
+  "Task": "IMP-15 review hardening",
+  "Head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "InitialRegression": {
+    "Passed": 17,
+    "Total": 34,
+    "Failed": 17
+  },
+  "Configurations": [
+    {
+      "Configuration": "debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Passed": 1766,
+      "Failed": 0,
+      "Skipped": 0,
+      "NewRegressionCases": 46,
+      "NativeDumpAndCaptureFailureVerified": true,
+      "BuildLogPolicyVerified": true
+    },
+    {
+      "Configuration": "release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "Passed": 1766,
+      "Failed": 0,
+      "Skipped": 0,
+      "NewRegressionCases": 46,
+      "NativeDumpAndCaptureFailureVerified": true,
+      "BuildLogPolicyVerified": true
+    }
+  ],
+  "Cli": [
+    {
+      "Configuration": "debug",
+      "ExitCode": 0,
+      "BoundCandidates": 4,
+      "HasFailures": false,
+      "LogPolicyVerified": true
+    },
+    {
+      "Configuration": "release",
+      "ExitCode": 0,
+      "BoundCandidates": 4,
+      "HasFailures": false,
+      "LogPolicyVerified": true
+    }
+  ],
+  "LocalDb": {
+    "Configuration": "Release",
+    "SqlServerVersion": "17.0.4075.5",
+    "AvailableColumns": [
+      "[@real]",
+      "[Bmk1000]",
+      "[Expr1000]",
+      "[K]",
+      "[R]]ange]",
+      "[[literal]]]",
+      "[V]"
+    ],
+    "ParameterExcluded": true,
+    "CompleteSortCount": 1,
+    "Score": 55,
+    "CreateAndRollbackPassed": true,
+    "Passed": true
+  },
+  "DedicatedInstanceCleanupVerified": true,
+  "Sources": [
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/IndexTargetResolver.cs",
+      "Sha256": "A7D50D471CBF920AD3234798D4BD207FF8725AE40784BA58C261ECD3B0943A95"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Scoring/IndexScoringCalculator.cs",
+      "Sha256": "E5591C1A2B00F4EE288BBBD2370DFAA922B9B6FBDB70BE58C6301FD041FF1D8A"
+    },
+    {
+      "Path": "ViewModels/IndexSandboxViewModel.cs",
+      "Sha256": "0C2693138226F0535486C1B1EBE02939D05768EA90BD9E41D9D2535FB44B4009"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/IndexEvidenceHardeningTests.cs",
+      "Sha256": "4E026093A629D8EC9340D58B75259C6E8EE00208F38EBABC113AA34A373B38DC"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/IndexDdlDiagnosticTests.cs",
+      "Sha256": "CBE1883DB1D48A9541D841464647E4F935598F9AB9A6B84842CC9170349703CF"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Scoring/IndexScoringCalculatorTests.cs",
+      "Sha256": "0C3A07457326C49C355D954944136052265C8D8733D079699EAB2338C417086D"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/ViewModels/IndexSandboxViewModelTests.cs",
+      "Sha256": "ED06F86228DF36BD06D12524509FFEE9F54E527F0DE81749E9B85FFA3D191DC1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/MisleadingDisplayStateTests.cs",
+      "Sha256": "41429CE876D7415BF4AE249572BE058A3424F53B27FA41B999172430DA359AB4"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_index_targets.sqlplan",
+      "Sha256": "DEB64E773ADF3A0D1DA4B94EDD25F68CC0168660E5248B4EC20A836120374D6C"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp15_review_actual.sqlplan",
+      "Sha256": "2130CC78A67B66C44C6E215F597FA8DFE7B6B2EE8FF309CAED0C5427F60B66B5"
+    },
+    {
+      "Path": "DOCS/verification/IMP-15-review/verify-localdb.ps1",
+      "Sha256": "00665F6CF597E28493F5F24E7A0FD3905DFA69F39C6009D5ED469F99251DF544"
+    }
+  ],
+  "Research": {
+    "GitHubRepository": "microsoft/sql-server-samples",
+    "PrimarySources": "Microsoft Showplan XSD, Microsoft Learn operator and index design references",
+    "Transport": "Read-only HTTPS; web search connection failed",
+    "GitHubBlob": "bdd4b9679a8761a1253facfc100ddd0211aa4307"
+  }
+}

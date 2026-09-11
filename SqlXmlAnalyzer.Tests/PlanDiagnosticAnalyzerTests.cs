@@ -52,7 +52,7 @@ namespace SqlXmlAnalyzer.Tests
             var suggestions = PlanDiagnosticAnalyzer.ExtractMissingIndexes(doc, ns);
 
             // Assert Text Report
-            report.Should().Contain("Missing Indexes");
+            report.Should().Contain("RULE_020_MISSING_INDEX").And.Contain("兼容说明");
             report.Should().Contain("[dbo].[Orders]");
             report.Should().Contain("CREATE NONCLUSTERED INDEX");
 
@@ -62,7 +62,12 @@ namespace SqlXmlAnalyzer.Tests
             mi.Table.Should().Be("[Orders]");
             mi.Schema.Should().Be("[dbo]");
             mi.KeyColumns.Should().NotBeEmpty();
-            mi.Score.Should().BeGreaterThan(0);
+            // The fixture declares a missing index but captures no predicate/output columns.
+            // Optimizer Impact is retained separately; missing scoring evidence is not free points.
+            mi.Score.Should().Be(0);
+            mi.ScoreAssessment!.KnownOutputCoverage.Should().BeNull();
+            mi.ScoreAssessment.EvidenceSource.Should().Be("MISSING_PREDICATE_EVIDENCE");
+            mi.CapturedImpact.Should().Be(89);
             mi.CreateIndexStatement.Should().Contain("CREATE NONCLUSTERED INDEX");
         }
 
@@ -81,7 +86,7 @@ namespace SqlXmlAnalyzer.Tests
             // Assert
             ruleResults.Should().BeEmpty();
             report.Should().NotContain("CONVERT_IMPLICIT");
-            report.Should().NotContain("Missing Indexes");
+            PlanDiagnosticAnalyzer.AnalyzeDetailed(doc, ns).Diagnostics.Should().NotContain(d => d.RuleId == "RULE_020_MISSING_INDEX");
         }
 
         [Fact]
@@ -105,7 +110,7 @@ namespace SqlXmlAnalyzer.Tests
             // Assert
             keyLookupResult.Should().NotBeNull();
             keyLookupResult!.Message.Should().Contain("Key Lookup");
-            keyLookupResult.Message.Should().Contain("Users.PK_Users");
+            keyLookupResult.Message.Should().Contain("[Users].[PK_Users]");
             keyLookupResult.Severity.Should().Be("Warning");
         }
 
@@ -114,11 +119,14 @@ namespace SqlXmlAnalyzer.Tests
         {
             // Arrange
             string xmlContent = @"<ShowPlanXML xmlns=""http://schemas.microsoft.com/sqlserver/2004/07/showplan"">
-                                    <RelOp NodeId=""0"" PhysicalOp=""Nested Loops"">
+                                    <BatchSequence><Batch><Statements><StmtSimple StatementText=""SELECT @p1"">
+                                    <QueryPlan>
                                       <ParameterList>
                                         <ColumnReference Column=""@p1"" ParameterCompiledValue=""(1)"" ParameterRuntimeValue=""(2)"" />
                                       </ParameterList>
-                                    </RelOp>
+                                      <RelOp NodeId=""0"" PhysicalOp=""Nested Loops"" />
+                                    </QueryPlan>
+                                    </StmtSimple></Statements></Batch></BatchSequence>
                                   </ShowPlanXML>";
             var doc = XDocument.Parse(xmlContent);
             var rootRelOp = doc.Descendants(ns + "RelOp").First();
@@ -132,7 +140,9 @@ namespace SqlXmlAnalyzer.Tests
             paramResult!.Message.Should().Contain("@p1");
             paramResult.Message.Should().Contain("编译值: (1)");
             paramResult.Message.Should().Contain("运行值: (2)");
-            // Expect Info because the ratio is 1 (no ActualRows provided, defaults to Info)
+            paramResult.Location!.QueryPlan.Should().NotBeNull();
+            paramResult.Message.Should().Contain("N/A（缺少可比指标）");
+            // Different parameter values without comparable runtime rows are informational.
             paramResult.Severity.Should().Be("Info");
         }
 
@@ -206,14 +216,14 @@ namespace SqlXmlAnalyzer.Tests
                                         <!-- UDF Bomb -->
                                         <RelOp NodeId=""7"" PhysicalOp=""Table Valued Function"" LogicalOp=""Table Valued Function"" EstimateRows=""10"">
                                             <RunTimeInformation>
-                                                <RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" />
+                                                <RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" ActualExecutions=""1"" />
                                             </RunTimeInformation>
                                         </RelOp>
                                         
                                         <!-- Card error with AND -->
                                         <RelOp NodeId=""8"" PhysicalOp=""Table Scan"" EstimateRows=""1"">
                                             <Predicate><ScalarOperator ScalarString=""[A] = 1 AND [B] = 2"" /></Predicate>
-                                            <RunTimeInformation><RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" /></RunTimeInformation>
+                                            <RunTimeInformation><RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" ActualExecutions=""1"" /></RunTimeInformation>
                                         </RelOp>
 
                                         <!-- Key Lookup -->
@@ -226,7 +236,7 @@ namespace SqlXmlAnalyzer.Tests
                                         <!-- Card error with Function -->
                                         <RelOp NodeId=""10"" PhysicalOp=""Table Scan"" EstimateRows=""1"">
                                             <Predicate><ScalarOperator ScalarString=""UPPER([A]) = 'A'"" /></Predicate>
-                                            <RunTimeInformation><RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" /></RunTimeInformation>
+                                            <RunTimeInformation><RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" ActualExecutions=""1"" /></RunTimeInformation>
                                         </RelOp>
                                         
                                         <!-- Index Seek without RunTimeInformation -->
@@ -242,7 +252,7 @@ namespace SqlXmlAnalyzer.Tests
             var doc = XDocument.Parse(xmlContent);
             string report = PlanDiagnosticAnalyzer.GenerateDiagnosticReport(doc, ns);
 
-            report.Should().Contain("基数估计偏离");
+            report.Should().Contain("RowsPerExecution").And.Contain("现有证据不能确定根因");
         }
 
 
@@ -253,12 +263,12 @@ namespace SqlXmlAnalyzer.Tests
             string xmlContent = @"<ShowPlanXML xmlns=""http://schemas.microsoft.com/sqlserver/2004/07/showplan"">
                                     <BatchSequence><Batch><Statements>
                                     <StmtSimple StatementOptmEarlyAbortReason=""TimeOut"" StatementOptmLevel=""FULL"" StatementSubTreeCost=""60.5"">
-                                    <QueryPlan>
+                                    <QueryPlan CompileTime=""600"" CompileCPU=""550"">
                                         <WaitStats>
                                             <Wait WaitType=""CXPACKET"" WaitTimeMs=""200"" />
                                             <Wait WaitType=""RESOURCE_SEMAPHORE"" WaitTimeMs=""1200"" />
                                         </WaitStats>
-                                        <QueryTimeStats CompileTime=""600"" CompileCPU=""550"" />
+                                        <QueryTimeStats CpuTime=""40"" ElapsedTime=""100"" />
                                     </QueryPlan>
                                     </StmtSimple>
                                     </Statements></Batch></BatchSequence>
@@ -270,7 +280,8 @@ namespace SqlXmlAnalyzer.Tests
             report.Should().Contain("CXPACKET");
             report.Should().Contain("内存准入排队");
             report.Should().Contain("SQL 优化器因 [TimeOut] 提前中止");
-            report.Should().Contain("重编译高开销");
+            report.Should().Contain("编译开销较高").And.Contain("编译时间 600 毫秒 (CPU: 550 毫秒)")
+                .And.Contain("不能据此认定本次执行缓存未命中或发生重编译");
             report.Should().Contain("复杂计划编译");
         }
         [Fact]
@@ -336,7 +347,7 @@ namespace SqlXmlAnalyzer.Tests
                                         <!-- UDF Bomb -->
                                         <RelOp NodeId=""7"" PhysicalOp=""Table Valued Function"" LogicalOp=""Table Valued Function"" EstimateRows=""10"">
                                             <RunTimeInformation>
-                                                <RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" />
+                                                <RunTimeCountersPerThread Thread=""0"" ActualRows=""2000"" ActualExecutions=""1"" />
                                             </RunTimeInformation>
                                         </RelOp>
                                         

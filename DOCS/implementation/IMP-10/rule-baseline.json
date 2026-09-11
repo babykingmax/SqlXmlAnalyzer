@@ -1,0 +1,108 @@
+{
+  "AssemblyHash": "2F009715B7AEF821D7D7D881FA05A2A6A426603E31F7770796538B6875B5D17A",
+  "MeasuredAt": "2026-09-08T23:10:17.1693162+08:00",
+  "Fixtures": [
+    {
+      "SourceHash": "25E6E2E94AD8E5245A4F62DB38049B1F3AE8DD249A610697D7F25C1422AAA740",
+      "Path": "SqlXmlAnalyzer.Tests/Resources/plan_critical_mismatch.sqlplan",
+      "Findings": [
+        {
+          "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+          "Severity": "Critical",
+          "Title": "基数估计严重偏差 (预估极高, 实际极低)",
+          "Message": "优化器预估会返回 1,000 行，但实际只返回了 1 行。这种过高的预估会导致优化器错选 Hash Join 或请求极大的内存（导致内存浪费）。建议检查过滤条件或更新统计信息。",
+          "NodeId": "0"
+        }
+      ]
+    },
+    {
+      "SourceHash": "2F040FAB3FB13E27C00F8CFF925A2A5D41EC6ACBD0AE85A90812197669D12131",
+      "Path": "SqlXmlAnalyzer.Tests/Resources/plan_large_memory_grant.sqlplan",
+      "Findings": [
+        {
+          "RuleId": "RULE_017_LARGE_MEMORY_GRANT",
+          "Severity": "Critical",
+          "Title": "TempDB 内存溢出 (Spill To TempDb)",
+          "Message": "内存溢出 (Spill Level 1)：数据写入 TempDB，严重影响性能。\n建议：增加服务器内存或优化查询（如减少不必要排序和哈希运算）。",
+          "NodeId": "0"
+        },
+        {
+          "RuleId": "RULE_029_MEMORY_GRANT_DOC",
+          "Severity": "Warning",
+          "Title": "内存预估与溢出落盘",
+          "Message": "💾 [资源空置浪费]: 内存预估过度！本查询总共申请排队并占用了 19.5 MB 内存，但实际运行中仅最大消耗了 1.0 MB (内存利用率低于 10%)。并发极易导致 RESOURCE_SEMAPHORE 锁等待，建议更新涉及表的统计信息。",
+          "NodeId": "0"
+        }
+      ]
+    },
+    {
+      "SourceHash": "B8A7B77BEBA0762AEA7E916D2EB302BC3E7E709E588AC18859ACC146E439934F",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp07_field_mapping.sqlplan",
+      "Findings": [
+        {
+          "RuleId": "RULE_022_HIGH_COST_OP",
+          "Severity": "Warning",
+          "Title": "高开销硬件算子 Top 5",
+          "Message": "⏱️ 算子 Node 0 (Index Scan): 独占单体硬件开销预估高达 1.0000 (占该算子子树开销的 100.0%)。建议在此算子做重点定位。",
+          "NodeId": "0"
+        }
+      ]
+    },
+    {
+      "SourceHash": "314B6DB4C78A85C18924651998276660D6312DAA73652DED5F1A94ED62D8F660",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_clean.sqlplan",
+      "Findings": []
+    },
+    {
+      "SourceHash": "A8833BEB79D709A83136B46D285BEDE354F3D5400787BA1853725F8345CB6E9C",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_implicit_conversion.sqlplan",
+      "Findings": [
+        {
+          "RuleId": "RULE_001_IMPLICIT_CONV",
+          "Severity": "Critical",
+          "Title": "隐式转换风险 (Implicit Conversion)",
+          "Message": "检测到 1 处隐式转换。\n隐式转换会导致索引失效，引发全表扫描。\n示例代码: CONVERT_IMPLICIT(nvarchar(50), [TestDB].[dbo].[Users].[Account], 0)",
+          "NodeId": "0"
+        },
+        {
+          "RuleId": "RULE_025_QUERY_REWRITE",
+          "Severity": "Warning",
+          "Title": "Query Rewrite Blocks",
+          "Message": "💡 [隐式转换修复]\n-- ❌ 原写法 (导致全表扫描):\nSELECT * FROM Table WHERE VarcharCol = N'123' \n-- ✅ 优化 (恢复 Index Seek):\nSELECT * FROM Table WHERE VarcharCol = CAST('123' AS VARCHAR(100))",
+          "NodeId": "0"
+        },
+        {
+          "RuleId": "RULE_026_IMPLICIT_CONV_DOC",
+          "Severity": "Warning",
+          "Title": "隐式转换风险",
+          "Message": "⚠️ 隐式转换风险: SQL 引擎执行了 CONVERT_IMPLICIT。这通常由于字段类型不匹配引起，极易导致索引扫描失效（Index Scan）：\n   👉 表达式: CONVERT_IMPLICIT(nvarchar(50), [TestDB].[dbo].[Users].[Account], 0)",
+          "NodeId": "0"
+        }
+      ]
+    },
+    {
+      "SourceHash": "6C26E57836F7FC6A57632A358F808EDDFCCDFCE358CDA51292E67D74A88BE465",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_missing_index.sqlplan",
+      "Findings": [
+        {
+          "RuleId": "RULE_020_MISSING_INDEX",
+          "Severity": "Warning",
+          "Title": "缺失索引建议与 DDL",
+          "Message": "⭐ 评分: 40/100 | 预估提升: 89.0% | 推荐覆盖索引建表 DDL:\n   👉 CREATE NONCLUSTERED INDEX [IX_Orders_CustomerID]\nON [dbo].[Orders] ([CustomerID])\nINCLUDE ([OrderDate], [Amount])\nWITH (ONLINE = ON, DATA_COMPRESSION = PAGE, SORT_IN_TEMPDB = ON);\n   [DBA 提示] 包含 (INCLUDE) 列的总长度在某些 SQL Server 版本中受 1023 字节或 32 个列的限制，请视情况裁剪。",
+          "NodeId": "0"
+        }
+      ]
+    },
+    {
+      "SourceHash": "3BE3532D3A6009A02C6231C0C8673C95596FA5B9BE4E6507296F2E23179FF4D1",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_no_relop.sqlplan",
+      "Findings": []
+    },
+    {
+      "SourceHash": "5B031657765E063C6E7FA80AE7DCFD2B84BEA320400357FD491CD9AC89CD2502",
+      "Path": "SqlXmlAnalyzer.Tests/TestData/plan_prefixed_no_relop.sqlplan",
+      "Findings": []
+    }
+  ],
+  "Configuration": "Release"
+}

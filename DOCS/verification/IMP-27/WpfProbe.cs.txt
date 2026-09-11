@@ -1,0 +1,185 @@
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Services;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    private static readonly List<string> Checks = [];
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        App? app = null; MainWindow? main = null;
+        var bindingErrors = new StringWriter();
+        try
+        {
+            AppContext.SetSwitch("Switch.System.Windows.Media.ShouldRenderEvenWhenNoDisplayDevicesAreAvailable", true);
+            var posted = new List<DispatcherOperation>();
+            DispatcherHookEventHandler capture = (_, e) => posted.Add(e.Operation);
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += capture;
+            try { app = new App(); }
+            finally { Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= capture; }
+            Require(posted.Count == 1 && posted[0].Abort(), "Isolated automatic app startup");
+            app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(bindingErrors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var refactor = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), refactor, files, new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            var dialogs = new Dialogs();
+            main = new MainWindow(orchestrator, files, fileDialogService: dialogs)
+                { Width = 1280, Height = 900, Left = -20000, Top = 0, WindowStartupLocation = WindowStartupLocation.Manual, ShowInTaskbar = false };
+            main.Show(); Pump();
+            Require(WorkspaceCommands.DiagnosticPackage.CanExecute(null, main), "Package entry available without analysis");
+            var empty = Open(main, app); var emptyModel = (DiagnosticPackageViewModel)empty.DataContext;
+            Require(!emptyModel.HasReport && !emptyModel.CanSave, "Empty workspace opens metadata-only review; cannot save before preview");
+            Invoke((Button)empty.FindName("PreparePackage")); Until(() => !emptyModel.IsBusy);
+            Require(emptyModel.Entries.Count == 6 && emptyModel.CanSave, "Metadata-only package has actual mandatory inventory");
+            empty.Close(); Pump();
+            string fixture = Path.Combine(args[1], "synthetic.sqlplan");
+            File.WriteAllText(fixture, """
+                <ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+                <StmtSimple StatementId="1" StatementText="SELECT 'IMP27_SECRET_MARKER'" StatementType="SELECT"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" /></QueryPlan></StmtSimple>
+                <StmtSimple StatementId="2" StatementText="SELECT 'OTHER_STATEMENT'" StatementType="SELECT"><QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="1" /></QueryPlan></StmtSimple>
+                </Statements></Batch></BatchSequence></ShowPlanXML>
+                """);
+            Wait(main.AnalyzeFileAsync(fixture));
+            Run(WorkspaceCommands.Plan, main);
+            var review = Open(main, app); var model = (DiagnosticPackageViewModel)review.DataContext;
+            Require(model.HasReport && model.IncludeReport && !model.IncludeRawSelection && model.LogPath == null && model.DumpPath == null, "Default options exclude raw input/log/dump");
+            main.ViewModel.PlanWorkspace.SelectedStatement = main.ViewModel.PlanWorkspace.Statements[1];
+            Invoke((Button)review.FindName("PreparePackage")); Until(() => !model.IsBusy);
+            Require(model.CanSave, "Prepare enables saving reviewed snapshot");
+            Require(model.Scope.Contains("B1/S1"), "Changing live statement does not replace captured selection");
+            foreach (var entry in model.Entries) Require(!entry.Preview.Contains("IMP27_SECRET_MARKER"), "Sensitive marker excluded from " + entry.Name);
+            var grid = (DataGrid)review.FindName("PackageFiles");
+            grid.SelectedItem = model.Entries.Single(e => e.Name == "configuration.json"); Pump();
+            Require(((TextBox)review.FindName("PackagePreview")).Text == model.SelectedEntry!.Preview, "Selecting inventory displays exact reviewed file content");
+            Require(grid.ActualWidth <= 1000 && ((TextBox)review.FindName("PackagePreview")).ActualHeight < 400,
+                "Long JSON does not expand inventory or preview beyond review bounds");
+            Require(((ScrollViewer)review.Content).ScrollableWidth == 0 && ((ScrollViewer)review.Content).ScrollableHeight == 0,
+                "Normal review shows complete controls without outer scrolling");
+            foreach (bool dark in new[] { false, true })
+            {
+                WorkspaceThemeService.Apply(app.Resources, dark); Pump();
+                var title = WorkspaceAccessibility.Descendants(review).OfType<TextBlock>().Single(t => t.Text == "本地诊断数据包");
+                Require(Contrast(title.Foreground, review.Background) >= 4.5, "Review title contrast passes: dark=" + dark);
+                foreach (var header in WorkspaceAccessibility.Descendants(grid).OfType<System.Windows.Controls.Primitives.DataGridColumnHeader>().Where(h => h.Content != null))
+                    Require(Contrast(header.Foreground, header.Background) >= 4.5, "Inventory header contrast passes: dark=" + dark);
+                foreach (var cell in WorkspaceAccessibility.Descendants(grid).OfType<DataGridCell>().Where(c => c.IsSelected))
+                    Require(Contrast(cell.Foreground, cell.Background) >= 4.5, "Selected inventory cell contrast passes: dark=" + dark);
+                Capture(review, Path.Combine(args[1], dark ? "review-dark.png" : "review-light.png"));
+            }
+            review.Width = 780; review.Height = 600; Pump();
+            var scroll = (ScrollViewer)review.Content;
+            Require(scroll.ScrollableWidth > 0 && scroll.ScrollableHeight > 0, "Compact review exposes scrollable content");
+            ((Button)review.FindName("SavePackage")).BringIntoView(); Pump();
+            Capture(review, Path.Combine(args[1], "review-compact.png"));
+            dialogs.SavePath = Path.Combine(args[1], "default-package.zip");
+            Invoke((Button)review.FindName("SavePackage")); Until(() => !model.IsBusy);
+            Require(File.Exists(dialogs.SavePath), "Save button writes actual ZIP");
+            DiagnosticPackageValidator.Validate(dialogs.SavePath);
+            using (var archive = ZipFile.OpenRead(dialogs.SavePath))
+            {
+                Require(archive.Entries.Count == model.Entries.Count, "Saved inventory matches displayed inventory");
+                foreach (var entry in model.Entries)
+                {
+                    using var input = archive.GetEntry(entry.Name)!.Open();
+                    Require(Convert.ToHexString(SHA256.HashData(input)) == entry.Sha256, "Saved bytes match preview: " + entry.Name);
+                }
+            }
+            var raw = WorkspaceAccessibility.Descendants(review).OfType<CheckBox>().Single(c => c.Content?.ToString()?.StartsWith("附带原始") == true);
+            raw.IsChecked = true; Pump();
+            Require(model.IncludeRawSelection && !model.CanSave && model.Entries.Count == 0, "Raw option invalidates previous review");
+            Invoke((Button)review.FindName("PreparePackage")); Until(() => !model.IsBusy);
+            var rawEntry = model.Entries.Single(e => e.Name == "selection.xml");
+            Require(rawEntry.Privacy == "RawSensitive" && rawEntry.Preview.Contains("IMP27_SECRET_MARKER") && !rawEntry.Preview.Contains("OTHER_STATEMENT"), "Explicit raw XML is sensitive and scoped to captured statement");
+            review.Close(); Pump();
+            main.ViewModel.PlanWorkspace.Document!.Root!.SetAttributeValue("Build", "17.0.1");
+            var stale = Open(main, app); var staleModel = (DiagnosticPackageViewModel)stale.DataContext;
+            Require(!staleModel.HasReport && staleModel.SourceNotice.Contains("快照创建失败"), "Stale report still opens metadata-only diagnostic review");
+            Invoke((Button)stale.FindName("PreparePackage")); Until(() => !staleModel.IsBusy);
+            Require(staleModel.CanSave, "Stale report does not block metadata-only package");
+            stale.Close(); Pump();
+            Wait(main.AnalyzeFileAsync(Path.Combine(args[0], "SqlXmlAnalyzer.Tests/TestData/imp23_search_a.xdl")));
+            Run(WorkspaceCommands.Deadlock, main);
+            var deadlock = Open(main, app); var deadlockModel = (DiagnosticPackageViewModel)deadlock.DataContext;
+            Invoke((Button)deadlock.FindName("PreparePackage")); Until(() => !deadlockModel.IsBusy);
+            Require(deadlockModel.CanSave && deadlockModel.Scope.Contains("Event"), "Selected deadlock event supports default diagnostic package");
+            deadlock.Close(); Pump();
+            Require(bindingErrors.ToString().Length == 0, "No WPF data-binding errors");
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new { Configuration = Logger.IsDebugMode ? "Debug" : "Release", Checks, BindingErrors = bindingErrors.ToString(), EvidenceMode = "Offscreen WPF; injected dialogs, real command routing and ZIP writer; not physical keyboard/DPI testing" }, new JsonSerializerOptions { WriteIndented = true }));
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+        finally
+        {
+            if (app != null) foreach (Window window in app.Windows.Cast<Window>().ToArray()) window.Close();
+            Logger.Shutdown(); app?.Shutdown();
+        }
+    }
+    private sealed class Dialogs : IFileDialogService
+    {
+        public string? SavePath;
+        public string? ShowOpenFile(FileDialogRequest request) => null;
+        public string? ShowSaveFile(FileDialogRequest request) => SavePath;
+    }
+    private static DiagnosticPackageWindow Open(MainWindow main, App app) { Run(WorkspaceCommands.DiagnosticPackage, main); return app.Windows.OfType<DiagnosticPackageWindow>().Single(); }
+    private static void Run(System.Windows.Input.RoutedUICommand command, MainWindow main) { command.Execute(null, main); Pump(); }
+    private static void Invoke(Button button) { Require(button.IsEnabled, button.Name + " enabled"); ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(button)!.GetPattern(PatternInterface.Invoke)).Invoke(); Pump(); }
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); Checks.Add(message); }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Until(Func<bool> condition)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!condition()) { if (timer.Elapsed > TimeSpan.FromSeconds(30)) throw new TimeoutException("WPF probe timed out"); Pump(); Thread.Sleep(10); }
+        Pump();
+    }
+    private static void Wait(Task task) { Until(() => task.IsCompleted); task.GetAwaiter().GetResult(); }
+    private static void Capture(Window window, string path)
+    {
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(view.ActualWidth), (int)Math.Ceiling(view.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+        var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            drawing.DrawRectangle((Brush)window.FindResource("BackgroundBrush"), null, new Rect(0, 0, view.ActualWidth, view.ActualHeight));
+            drawing.DrawRectangle(new VisualBrush(view), null, new Rect(0, 0, view.ActualWidth, view.ActualHeight));
+        }
+        bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = File.Create(path); encoder.Save(output);
+    }
+    private static double Contrast(Brush foreground, Brush background)
+    {
+        double Luminance(Brush brush)
+        {
+            var c = ((SolidColorBrush)brush).Color;
+            double Channel(byte v) { double x = v / 255.0; return x <= 0.04045 ? x / 12.92 : Math.Pow((x + 0.055) / 1.055, 2.4); }
+            return 0.2126 * Channel(c.R) + 0.7152 * Channel(c.G) + 0.0722 * Channel(c.B);
+        }
+        double a = Luminance(foreground), b = Luminance(background);
+        return (Math.Max(a, b) + 0.05) / (Math.Min(a, b) + 0.05);
+    }
+}

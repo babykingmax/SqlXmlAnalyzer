@@ -1,0 +1,100 @@
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+
+namespace SqlXmlAnalyzer.Core.Diagnostics;
+
+public sealed record UnexpectedErrorReport(string? DumpPath, string? MetadataPath, string? Failure)
+{
+    public bool DumpCreated => DumpPath != null;
+    public string Summary => DumpCreated ? $"DUMP：{DumpPath}；异常记录：{MetadataPath ?? "未生成"}" + (Failure == null ? "" : $"；{Failure}")
+        : $"DUMP 生成失败：{Failure}";
+}
+
+public interface IUnexpectedErrorReporter
+{
+    UnexpectedErrorReport Report(Exception exception, string operation);
+}
+
+public interface ICrashDumpWriter
+{
+    void Write(string path);
+}
+
+/// <summary>Captures unexpected failures once per exception instance without hiding the original failure.</summary>
+public sealed class UnexpectedErrorReporter : IUnexpectedErrorReporter
+{
+    public static IUnexpectedErrorReporter Shared { get; } = new UnexpectedErrorReporter(new WindowsMiniDumpWriter());
+    private readonly ICrashDumpWriter _writer;
+    private readonly string[] _directories;
+    private readonly ConditionalWeakTable<Exception, UnexpectedErrorReport> _reports = new();
+    private readonly object _gate = new();
+
+    public UnexpectedErrorReporter(ICrashDumpWriter writer, string? directory = null)
+    {
+        _writer = writer;
+        _directories = directory != null ? new[] { Path.GetFullPath(directory) } : new[]
+        {
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SqlXmlAnalyzer", "dumps"),
+            Path.Combine(Path.GetTempPath(), "SqlXmlAnalyzer", "dumps")
+        };
+    }
+
+    public UnexpectedErrorReport Report(Exception exception, string operation)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+        lock (_gate)
+        {
+            if (_reports.TryGetValue(exception, out var existing)) return existing;
+            Logger.Critical($"未知异常：{operation}", exception);
+            var errors = new List<string>();
+            foreach (string directory in _directories)
+            {
+                string? dump = null;
+                try
+                {
+                    string incident = Path.Combine(directory,
+                        $"{DateTime.UtcNow:yyyyMMddTHHmmssfffZ}_{Environment.ProcessId}_{Guid.NewGuid():N}");
+                    DiagnosticFileAccess.CreatePrivateDirectory(incident);
+                    string path = Path.Combine(incident, "process.dmp");
+                    _writer.Write(path);
+                    using (var check = File.OpenRead(path))
+                    {
+                        Span<byte> signature = new byte[4];
+                        if (check.Length < 32 || check.Read(signature) != 4 || !signature.SequenceEqual("MDMP"u8))
+                            throw new IOException("Dump writer did not produce a valid minidump header.");
+                    }
+                    dump = path;
+                    string metadata = Path.Combine(incident, "exception.json");
+                    using (var stream = new FileStream(metadata, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
+                    {
+                        JsonSerializer.Serialize(stream, new
+                        {
+                            TimestampUtc = DateTime.UtcNow, ProcessId = Environment.ProcessId,
+                            Operation = operation, Exception = exception.ToString(), DumpPath = dump,
+                            DumpKind = "Windows minidump with thread information; managed exception stack is in this sidecar"
+                        }, new JsonSerializerOptions { WriteIndented = true });
+                        stream.Flush(flushToDisk: true);
+                    }
+                    return Remember(exception, new(dump, metadata, null));
+                }
+                catch (Exception captureError)
+                {
+                    // Diagnostics must never replace the application's original failure.
+                    errors.Add($"{captureError.GetType().Name}: {captureError.Message}");
+                    if (dump != null)
+                        return Remember(exception, new(dump, null, $"异常记录保存失败：{errors[^1]}"));
+                }
+            }
+            return Remember(exception, new(null, null, string.Join("; ", errors)));
+        }
+    }
+
+    private UnexpectedErrorReport Remember(Exception exception, UnexpectedErrorReport report)
+    {
+        _reports.Add(exception, report);
+        if (report.Failure != null) Logger.Error(report.Summary + "；" + report.Failure);
+        else Logger.Critical(report.Summary);
+        Logger.Flush();
+        return report;
+    }
+}

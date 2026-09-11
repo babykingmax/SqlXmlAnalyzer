@@ -1,0 +1,187 @@
+using System.Diagnostics;
+using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Privacy;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Core.ViewModels;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Refactoring.Rules;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        App? app = null; MainWindow? main = null; Window? child = null;
+        var bindingErrors = new StringWriter(); var records = new List<object>();
+        try
+        {
+            Directory.CreateDirectory(args[1]);
+            app = new App(); app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(bindingErrors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var refactoring = new SqlRefactoringEngine([new ConstantFoldingRefactorRule()], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), refactoring, files,
+                new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            main = new MainWindow(orchestrator, files) { Width = 1680, Height = 1050 };
+            main.Show(); Pump();
+            var comparison = (PlanComparisonWorkspaceView)typeof(MainWindow).GetProperty("PlanComparisonWorkspace", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(main)!;
+            var setA = (Button)comparison.FindName("SetSelectedPlanA"); var setB = (Button)comparison.FindName("SetSelectedPlanB");
+            ((TabControl)typeof(MainWindow).GetProperty("MainTabControl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(main)!).SelectedIndex = 2; Pump();
+            Require(!setA.IsEnabled && !setB.IsEnabled, "Empty history disables both visible selection buttons");
+            Capture(main, Path.Combine(args[1], "ab-empty.png"));
+            string planA = Path.Combine(args[1], "plan-a.sqlplan"), planB = Path.Combine(args[1], "plan-b.sqlplan");
+            File.WriteAllText(planA, Plan(Statement("SELECT 1", "1") + Statement("SELECT 2", "2"), "16.0.1000.6"));
+            File.WriteAllText(planB, Plan(Statement("SELECT 1", "0.5") + Statement("SELECT 3", "3"), "17.0.1000.7"));
+            Wait(main.AnalyzeFileAsync(planA)); main.ViewModel.CaptureCurrentPlanCommand.Execute(null);
+            Wait(main.AnalyzeFileAsync(planB)); main.ViewModel.CaptureCurrentPlanCommand.Execute(null);
+            ((TabControl)typeof(MainWindow).GetProperty("MainTabControl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(main)!).SelectedIndex = 2;
+            comparison.TuningHistoryList.SelectedIndex = 0; Pump();
+            Require(setA.IsVisible && setA.IsEnabled, "Visible Set A action"); setA.Command.Execute(setA.CommandParameter);
+            comparison.TuningHistoryList.SelectedIndex = 1; Pump(); setB.Command.Execute(setB.CommandParameter); Pump();
+            Require(main.ViewModel.ComparisonSummary.Contains("配对 1") && main.ViewModel.ComparisonSummary.Contains("A 未匹配 1"), "Pair/unmatched counts");
+            ((Expander)comparison.FindName("UnmatchedPlans")).IsExpanded = true;
+            Descendants(comparison).OfType<Expander>().Single(e => Equals(e.Header, "匹配依据与可比性")).IsExpanded = true;
+            Pump();
+            Require(((TextBox)comparison.FindName("UnmatchedPlanA")).Text.Contains("B: 未匹配"), "A unmatched binding");
+            Require(((TextBox)comparison.FindName("UnmatchedPlanB")).Text.Contains("A: 未匹配"), "B unmatched binding");
+            Require(main.ViewModel.ComparisonConditions.Contains("17.0.1000.7"), "Build difference visible");
+            Require(main.ViewModel.CostDeltaText.Contains("N/A") && main.ViewModel.Comparison!.Statements.SelectMany(s => s.RootsB).All(n => n.CostPercentDelta == null), "No improvement with incompatible captures");
+            records.Add(new { State = "ab-pair", main.ViewModel.ComparisonSummary, main.ViewModel.ComparisonUnmatchedA, main.ViewModel.ComparisonUnmatchedB, main.ViewModel.ComparisonConditions });
+            Capture(main, Path.Combine(args[1], "ab-comparison.png"));
+            Descendants(comparison).OfType<Expander>().Single(e => Equals(e.Header, "匹配依据与可比性")).IsExpanded = false; Pump();
+            Capture(main, Path.Combine(args[1], "ab-unmatched.png"));
+
+            const string sql = "-- IMP-21 审核演示，合成 SQL\r\nSELECT OrderId, Amount FROM dbo.Orders\r\nWHERE Amount + 10 > 50;\r\n";
+            var result = refactoring.Run(sql, new AnalysisReport([]), new(), false);
+            var rewrite = new RewriteReviewWindow(sql, result.Review!) { Owner = main, Width = 1280, Height = 950 };
+            child = rewrite; rewrite.Show(); Pump();
+            var review = (RewriteReviewViewModel)rewrite.DataContext;
+            Require(!((Button)rewrite.FindName("CopyCandidateSql")).IsEnabled && !((Button)rewrite.FindName("ApplyReviewedSql")).IsEnabled, "Unselected actions disabled");
+            Capture(rewrite, Path.Combine(args[1], "rewrite-unselected.png"));
+            var checkbox = Descendants(rewrite).OfType<CheckBox>().First(c => c.DataContext is RewriteProposalItem);
+            checkbox.IsChecked = true; Pump();
+            Require(review.PreviewSql != sql && ((TextBox)rewrite.FindName("ReviewPreviewSql")).Text == review.PreviewSql, "Checklist updates real SQL preview");
+            Require(((Button)rewrite.FindName("CopyCandidateSql")).IsEnabled && !((Button)rewrite.FindName("ApplyReviewedSql")).IsEnabled, "Export never authorizes apply");
+            string? copied = null; review.CopyCandidate(text => copied = text); review.SaveCandidateNew(Path.Combine(args[1], "candidate.sql")); Pump();
+            Require(copied == review.PreviewSql && File.ReadAllText(Path.Combine(args[1], "candidate.sql")) == review.PreviewSql && !review.CanApply, "Exact candidate export and apply gate");
+            Require(Descendants(rewrite).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains(OutputPrivacy.RawNotice)), "Visible unredacted rewrite output notice");
+            Require(!review.OutputStatus.Contains("尚未应用"), "Output message does not claim source commit state");
+            records.Add(new { State = "rewrite-selected", review.OriginalSql, review.PreviewSql, review.CanApply, review.OutputStatus, review.Items[0].Preconditions, review.Items[0].Warnings });
+            Capture(rewrite, Path.Combine(args[1], "rewrite-selected.png"));
+            ((TabControl)rewrite.FindName("ReviewTabs")).SelectedIndex = 2; Pump();
+            Capture(rewrite, Path.Combine(args[1], "rewrite-sql-comparison.png"));
+            rewrite.Close(); child = null;
+
+            foreach (string schema in new[] { "dbo", "sales" })
+            {
+                var model = new IndexSandboxViewModel(new MissingIndexSuggestion
+                {
+                    Server = "demo", Database = "Commerce", Schema = schema, Table = "Orders",
+                    KeyColumns = [new() { Name = "CustomerId", Usage = "EQUALITY" }, new() { Name = "OrderDate", Usage = "INEQUALITY" }],
+                    IncludeColumns = [new() { Name = "Amount", Usage = "INCLUDE" }],
+                    Source = IndexSuggestionSource.CapturedMissingIndex, CapturedImpact = 72
+                }, unexpectedErrors: new ProbeReporter());
+                var index = new IndexSandboxWindow { DataContext = model, Owner = main }; child = index; index.Show(); Pump();
+                var nameEditor = (TextBox)index.FindName("IndexNameEditor"); nameEditor.Text = "IX_Orders_Review";
+                nameEditor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+                model.Online = false; model.SortInTempDb = false; model.MaxDop = "2"; model.DataCompression = "ROW";
+                model.MoveKeyColumnDownCommand.Execute(model.KeyColumns[0]); Pump();
+                Require(model.FullObject == $"[demo].[Commerce].[{schema}].[Orders]", "Full object identity");
+                Require(((TextBox)index.FindName("IndexCreateSql")).Text.Contains($"[Commerce].[{schema}].[Orders]"), "DDL target matches reviewed schema");
+                Require(((Button)index.FindName("CopyIndexScript")).IsEnabled && model.CreateIndexStatement.Contains("([OrderDate], [CustomerId])"), "Key order and copy binding");
+                string? copiedDdl = null; model.CopyScript(text => copiedDdl = text); Pump();
+                Require(copiedDdl == model.CreateIndexStatement && Descendants(index).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains(OutputPrivacy.RawNotice)), "Exact DDL and visible unredacted index output notice");
+                Capture(index, Path.Combine(args[1], "index-" + schema + ".png"));
+                records.Add(new { State = "index-" + schema, model.FullObject, model.CreateIndexStatement, model.RollbackStatement, model.ImpactSummary, model.InputAssumptionsNotice, model.OutputStatus });
+                if (schema == "sales")
+                {
+                    PropertyChangedEventHandler failing = (_, e) => { if (e.PropertyName == nameof(model.CurrentScore)) throw new InvalidOperationException("synthetic IMP21 binding failure"); };
+                    model.PropertyChanged += failing;
+                    model.MaxDop = "3"; Pump();
+                    Require(!((Button)index.FindName("CopyIndexScript")).IsEnabled && ((TextBox)index.FindName("IndexCreateSql")).Text == "", "Failure clears actual creation binding and disables export");
+                    Require(Descendants(index).OfType<TextBox>().Any(t => t.IsVisible && t.Text.Contains("DUMP 生成失败")), "Failure and diagnostic status visible despite broken subscriber");
+                    records.Add(new { State = "index-notification-failed", model.Error, model.CanExport, model.RollbackStatement, model.CompiledIndexName, model.OutputStatus });
+                    Capture(index, Path.Combine(args[1], "index-notification-failed.png"));
+                    model.PropertyChanged -= failing;
+                    model.MaxDop = "4"; Pump();
+                    Require(((Button)index.FindName("CopyIndexScript")).IsEnabled && ((TextBox)index.FindName("IndexCreateSql")).Text.Contains("MAXDOP = 4") && model.Error == "", "Bindings recover after subscriber repaired");
+                    Capture(index, Path.Combine(args[1], "index-recovered.png"));
+                    var maxDop = (TextBox)index.FindName("IndexMaxDopEditor"); maxDop.Text = "65"; maxDop.GetBindingExpression(TextBox.TextProperty)!.UpdateSource(); Pump();
+                    Require(!((Button)index.FindName("CopyIndexScript")).IsEnabled && ((TextBox)index.FindName("IndexCreateSql")).Text == "" && model.RollbackStatement == "", "Invalid options clear all scripts and disable copy");
+                    Capture(index, Path.Combine(args[1], "index-invalid.png"));
+                }
+                index.Close(); child = null;
+            }
+            File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), bindingErrors.ToString());
+            Require(bindingErrors.ToString().Length == 0, "Production binding errors: " + bindingErrors);
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new { Passed = true, BindingErrors = 0, Records = records }, new JsonSerializerOptions { WriteIndented = true }));
+            Console.WriteLine("PASS: IMP-21 hardening; production bindings, failed notification recovery, raw output notice; eleven screenshots; zero binding errors.");
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), bindingErrors.ToString()); return 1; }
+        finally { child?.Close(); main?.Close(); app?.Shutdown(); }
+    }
+
+    private static string Plan(string statements, string build) => $"<ShowPlanXML xmlns='http://schemas.microsoft.com/sqlserver/2004/07/showplan' Version='1.6' Build='{build}'><BatchSequence><Batch><Statements>{statements}</Statements></Batch></BatchSequence></ShowPlanXML>";
+    private static string Statement(string sql, string cost) => $"<StmtSimple StatementText='{sql}' CardinalityEstimationModelVersion='160'><StatementSetOptions ANSI_NULLS='true' ANSI_PADDING='true' ANSI_WARNINGS='true' ARITHABORT='true' CONCAT_NULL_YIELDS_NULL='true' NUMERIC_ROUNDABORT='false' QUOTED_IDENTIFIER='true'/><QueryPlan DegreeOfParallelism='1'><ParameterList/><RelOp NodeId='0' PhysicalOp='Constant Scan' LogicalOp='Constant Scan' Parallel='false' EstimatedTotalSubtreeCost='{cost}'><OutputList/><ConstantScan/></RelOp></QueryPlan></StmtSimple>";
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Wait(Task task)
+    {
+        var timer = Stopwatch.StartNew();
+        while (!task.IsCompleted) { if (timer.Elapsed > TimeSpan.FromSeconds(45)) throw new TimeoutException("Analysis timed out"); Pump(); Thread.Sleep(10); }
+        task.GetAwaiter().GetResult(); Pump();
+    }
+    private static IEnumerable<FrameworkElement> Descendants(DependencyObject root)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is FrameworkElement element) yield return element;
+            foreach (var nested in Descendants(child)) yield return nested;
+        }
+    }
+    private sealed class ProbeReporter : IUnexpectedErrorReporter
+    {
+        public UnexpectedErrorReport Report(Exception exception, string operation) => new(null, null, "synthetic diagnostic provider failure for visible-state verification");
+    }
+
+    private static void Capture(Window window, string path)
+    {
+        // Allow production MaterialDesign expansion animations to finish before recording actual pixels.
+        var settle = Stopwatch.StartNew();
+        while (settle.Elapsed < TimeSpan.FromMilliseconds(350)) { Pump(); Thread.Sleep(10); }
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        int width = (int)Math.Ceiling(view.ActualWidth), height = (int)Math.Ceiling(view.ActualHeight);
+        var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+        var drawing = new DrawingVisual();
+        using (var context = drawing.RenderOpen())
+        {
+            context.DrawRectangle(window.Background, null, new Rect(0, 0, width, height));
+            context.DrawRectangle(new VisualBrush(view) { Stretch = Stretch.None, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top }, null, new Rect(0, 0, width, height));
+        }
+        bitmap.Render(drawing);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var output = new FileStream(path, FileMode.CreateNew); encoder.Save(output);
+    }
+}

@@ -1,0 +1,44 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A",
+  "StartedAtUtc": "2026-09-10T11:33:09.9697029Z",
+  "CompletedAtUtc": "2026-09-10T11:33:11.1510027Z",
+  "Results": [
+    {
+      "Path": "probe.command.json",
+      "Bytes": 582,
+      "Sha256": "02F1BE56BEB54DACFC435EC9547BF50AF2C1381B99BBFE9F6455F73AF587F9E3"
+    },
+    {
+      "Path": "probe.stderr.txt",
+      "Bytes": 736,
+      "Sha256": "0CDEEE492DE80FB7B850FD1A86B11F3BE5CFE8E310320DAA235A04291C2877CA"
+    },
+    {
+      "Path": "probe.stdout.txt",
+      "Bytes": 31,
+      "Sha256": "A71D92C2BBDF533C839B7010C1C8FD9F8EF2F7CA307D6CC1EC9FFCE07722D03F"
+    },
+    {
+      "Path": "test/diagnostics/dumps/20260910T113310353Z_32912_c38af4c174784cb297f37ebe15968c6e/exception.json",
+      "Bytes": 520,
+      "Sha256": "D4850BADB463A162794150E965DF35AFE35B0696135C215CEE49D0F549514CC6"
+    },
+    {
+      "Path": "test/diagnostics/dumps/20260910T113310353Z_32912_c38af4c174784cb297f37ebe15968c6e/process.dmp",
+      "Bytes": 1082252,
+      "Sha256": "EC089498E293A1172B312E3C000D4D69D861F301DCDAB9B74B3CBF071198C28C"
+    },
+    {
+      "Path": "test/diagnostics/release.log",
+      "Bytes": 748,
+      "Sha256": "7A2C2AEFB931D156834806C78BA7979116C007904913342C894444E7250E2AF3"
+    },
+    {
+      "Path": "verification.json",
+      "Bytes": 222,
+      "Sha256": "AA541359B1B002AF4BD24317C9D4343160CB1BC11AF67B2484C26538C763EEB0"
+    }
+  ]
+}

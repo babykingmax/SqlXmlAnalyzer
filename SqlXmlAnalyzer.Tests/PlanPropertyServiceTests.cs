@@ -69,7 +69,7 @@ namespace SqlXmlAnalyzer.Tests
 
             PlanPropertyItem[] properties = service.BuildProperties(relOp).ToArray();
 
-            properties.Should().Contain(new PlanPropertyItem("Runtime", "Actual Rows", "100"));
+            properties.Should().Contain(new PlanPropertyItem("Runtime", "实际输出行（行）", "100"));
             properties.Should().Contain(new PlanPropertyItem("Runtime", "Actual Logical Reads", "250"));
         }
 

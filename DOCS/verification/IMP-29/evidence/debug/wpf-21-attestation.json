@@ -1,0 +1,84 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "389C4966BACC82BE6B7760753669836DC3A2BB8A1EAED26EEC94C45CD3F3C3BF",
+  "StartedAtUtc": "2026-09-10T10:27:00.3535098Z",
+  "CompletedAtUtc": "2026-09-10T10:27:11.9786726Z",
+  "Results": [
+    {
+      "Path": "boundary.json",
+      "Bytes": 89,
+      "Sha256": "496799631E6309C604652857656DB37DE4802E02D939E1599B29166DD3C70CE6"
+    },
+    {
+      "Path": "build.log",
+      "Bytes": 190,
+      "Sha256": "D927913BC4A018DCC8FA7419C3F3F69DF13C2F5E68ABF0FC5622D01C26E8636C"
+    },
+    {
+      "Path": "build.log.json",
+      "Bytes": 391,
+      "Sha256": "1764C0D2C6B818796F38579C936F6E0A264EFA0A76684B4B294737AEBD44D301"
+    },
+    {
+      "Path": "host/AcceptanceProbeBoundary.cs",
+      "Bytes": 1908,
+      "Sha256": "1195EC06EDF4AF10478D9518240371552F6A0F5C36876562FD7B808C411E9202"
+    },
+    {
+      "Path": "host/bin/Debug/net8.0-windows/Probe.dll",
+      "Bytes": 46592,
+      "Sha256": "435D1EDF981A098DD1840DA88C59645114AAF40CFD092EA8BE7DA7DB74C60540"
+    },
+    {
+      "Path": "host/Directory.Packages.props",
+      "Bytes": 1740,
+      "Sha256": "C3E5E0D6BD573F321FDEAEE120D274FC4DE5C01999DA67C6435DE61083801BB0"
+    },
+    {
+      "Path": "host/EntryPoint.cs",
+      "Bytes": 261,
+      "Sha256": "63430AB46C26C2635692FC5ADEA666EE75AAFE58C4B1B15F8C80C97FACECD2EB"
+    },
+    {
+      "Path": "host/Probe.csproj",
+      "Bytes": 438,
+      "Sha256": "45FEC5DB218EEEE64B291349D25B9C9B25B741085EA09D5C3546DDD20315E88C"
+    },
+    {
+      "Path": "host/Program.cs",
+      "Bytes": 16101,
+      "Sha256": "9FEF0A15883094BD07F27CBAE4667B43DF4A0502D3C15E5931D063B253564F38"
+    },
+    {
+      "Path": "probe.log",
+      "Bytes": 48406,
+      "Sha256": "EA4A724CC012FFB23F7F70660B844B21FFED6330F1883A3B5E8ED122474CDD58"
+    },
+    {
+      "Path": "restore.log",
+      "Bytes": 201,
+      "Sha256": "70F33A94065AFCE8A0024D19CC8FB0E77AF679367708200DAF84CEA44A966B3A"
+    },
+    {
+      "Path": "run.json",
+      "Bytes": 407,
+      "Sha256": "8C7860DFBF45E6881424C2020E3E0FE9A0C44591DD09C1EC916FCF85031387E6"
+    },
+    {
+      "Path": "stderr.log",
+      "Bytes": 55255,
+      "Sha256": "0D8C7711CE7A61E9DCA983290985AAF9E0CFE9D6F5054CC527F8EE2359D89636"
+    },
+    {
+      "Path": "stdout.log",
+      "Bytes": 136,
+      "Sha256": "7EAC168CE2278C4033B716D2A935F00AEC80CC1EE6658C023CCA6C4A85E1EB95"
+    },
+    {
+      "Path": "verification.json",
+      "Bytes": 10852,
+      "Sha256": "67842241C668D978900393CBBF8D00B5B36C52E886B1430BDDA900F2AE8CBEFB"
+    }
+  ]
+}

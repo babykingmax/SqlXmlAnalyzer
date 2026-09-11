@@ -1,0 +1,17 @@
+{
+  "CandidateId": "2.0.0-imp30-20260910T113215Z-0f3c050f",
+  "ApplicationVersion": "2.0.0",
+  "Runtime": "win-x64",
+  "SelfContained": true,
+  "Signed": false,
+  "ApprovedForDistribution": false,
+  "Gate": "CandidateOnly",
+  "BuildSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A",
+  "Limitations": [
+    "UI-10 external readers",
+    "UI-13 OS DPI/multi-monitor",
+    "UI-14 physical keyboard/screen reader",
+    "UI-15 performance budget",
+    "R02/R19/R20/D06 constrained SQL rewrites"
+  ]
+}

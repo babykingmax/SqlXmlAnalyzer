@@ -26,7 +26,7 @@ namespace SqlXmlAnalyzer
 
         private void ThemeToggle_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _shellActionService.SetTheme();
+            _interaction.Run("Theme", () => true, () => _shellActionService.SetTheme(), detail => ShellStatus.StatusTextBlock.Text = detail);
         }
     }
 }

@@ -1,0 +1,5 @@
+{
+  "timestampUtc": "2026-09-08T09:53:25.9921616+00:00",
+  "exception": "System.Management.Automation.RuntimeException: The property 'reviewId' cannot be found on this object. Verify that the property exists.\r\n   at System.Management.Automation.ExceptionHandlingOps.CheckActionPreference(FunctionContext funcContext, Exception exception)\r\n   at System.Management.Automation.Interpreter.ActionCallInstruction`2.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)",
+  "scriptStackTrace": "at <ScriptBlock>, E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-02-04-hardening\\20260908T094301770Z_c5b1e0766cfc_b1da315a\\host-fault-adapter\\Run-AcceptanceMatrix.ps1: line 86"
+}

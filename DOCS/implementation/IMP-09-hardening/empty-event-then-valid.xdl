@@ -1,0 +1,1 @@
+<events><event name='xml_deadlock_report'><data name='xml_report'><value><deadlock-list/></value></data></event><event name='xml_deadlock_report'><data name='xml_report'><value><deadlock><process-list><process id='p1'/></process-list><resource-list><keylock/></resource-list></deadlock></value></data></event></events>

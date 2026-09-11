@@ -1,0 +1,112 @@
+[
+  {
+    "source": "App.xaml.cs",
+    "snapshot": "source-snapshots\\App.xaml.cs.snapshot",
+    "sha256": "C8A7442681C976DFC549D02FB3647663F8A5672AF3610E2368E4FBD2235C34FF"
+  },
+  {
+    "source": "Core/Services/PlanAnalysisService.cs",
+    "snapshot": "source-snapshots\\Core\\Services\\PlanAnalysisService.cs.snapshot",
+    "sha256": "3D72C2FA1AF6787C28F47366DD9F6942577C3A0137A6926DCDC4907520ABA1F6"
+  },
+  {
+    "source": "SqlXmlAnalyzer.CLI/Program.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.CLI\\Program.cs.snapshot",
+    "sha256": "C9CE09DE417A39F1B045A53E391CEDAF87E863A8C24524134E493F9F87AAEAAA"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Application\\ApplicationOrchestratorTests.cs.snapshot",
+    "sha256": "1865D77A64CF475B5112E40967960444771004B4DCEA90EC1A101EC6A37CECCD"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Application\\CliProgramTests.cs.snapshot",
+    "sha256": "9C7BC90D194B0FD3E41ED57C7788B14F8C1CD506EA812C5D758C655DB4F442E0"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Application/SqlWritebackServiceTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Application\\SqlWritebackServiceTests.cs.snapshot",
+    "sha256": "D0BBE90EDB0356D5F89E8375BE304AC99647080D0038DDBC0392F14BB0237C99"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\ApplicationOrchestrator.cs.snapshot",
+    "sha256": "DF44844D9D77C628046A5F136A5D8DA3B5568805957D21E805431924DE57E019"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Models/OrchestratorResult.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Models\\OrchestratorResult.cs.snapshot",
+    "sha256": "55EFFBC9E0231C903CECF4D7CF1CA691F24E405DEF8BED660BABBC5B62F6296D"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Models/SqlFileSnapshot.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Models\\SqlFileSnapshot.cs.snapshot",
+    "sha256": "A533CD51CB98553A4F7D8B99CD6E4B0359D4EB4BA142984E00324DEEEF9490C2"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Models/SqlWritebackResult.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Models\\SqlWritebackResult.cs.snapshot",
+    "sha256": "A75238F528E25BE81E5929DF41955EEA00B988A65F751DE1C8A766F161E4C043"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\ConsoleResultReporter.cs.snapshot",
+    "sha256": "9BAC9B2C31CDC932DC71789E48A1A401E72744556163D0750857B966AC368AF4"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/ISqlWritebackService.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\ISqlWritebackService.cs.snapshot",
+    "sha256": "D326A090CE1C7B5C5695E260C5B58C59C276586ECEB60D7B7586E71C7A60E7DF"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/PhysicalSqlWritebackFileSystem.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\PhysicalSqlWritebackFileSystem.cs.snapshot",
+    "sha256": "F6DCFD0F657F87C1CF53662E3E5A5153CC0D5253F3565527CAFD2223E31F011F"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/SqlReportPathGuard.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\SqlReportPathGuard.cs.snapshot",
+    "sha256": "D6757DE1C9A9227E1298EEBFE94F78BBAD61E55339E27AE2B2F77AE665D9140A"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/SqlWritebackService.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\SqlWritebackService.cs.snapshot",
+    "sha256": "114664AD54A574242658791837AF3491D8E09D699937BBE4CA38AA35437310EC"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\AcceptanceProbe.cs.txt.snapshot",
+    "sha256": "70C8DB267EA34D46CD2427BAD77B31A751DE50F7F15C6CF0436FC3766BACC8FE"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\Run-AcceptanceMatrix.ps1.snapshot",
+    "sha256": "8B73B28F931CA2C90437D016B55ECB5CE29C90E9350826DE30FC9475401E1A0C"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/acceptance-matrix.json",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\acceptance-matrix.json.snapshot",
+    "sha256": "0D3E4D5EA1546B3D729AF65E504E90BFB57ACD47ECF3B003E1A463F1D1F2A472"
+  },
+  {
+    "source": "DOCS/IMP-03安全写回与恢复说明.md",
+    "snapshot": "source-snapshots\\DOCS\\IMP-03安全写回与恢复说明.md.snapshot",
+    "sha256": "8012075B89DEEAA4E221D736B240764364933568BA85F6DEF8B5EAF12DC83933"
+  },
+  {
+    "source": "DOCS/软件改善实施规划.md",
+    "snapshot": "source-snapshots\\DOCS\\软件改善实施规划.md.snapshot",
+    "sha256": "25674E0E65E5E0DAE9D2F912ADEEA817B5B5533355BAACFD87CE9F10D40B0026"
+  },
+  {
+    "source": "DOCS/IMP-02审查反例验收矩阵.md",
+    "snapshot": "source-snapshots\\DOCS\\IMP-02审查反例验收矩阵.md.snapshot",
+    "sha256": "73F0C9CE205565B23483499F6B5820F53F4C2386C22B05143D957718518FEA6E"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/README.md",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\README.md.snapshot",
+    "sha256": "C2762AD06748B7A105F6F277106EEA8A0BC4BC23C68CB226A9540057DC77EB0E"
+  }
+]

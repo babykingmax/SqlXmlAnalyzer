@@ -1,0 +1,26 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="select 1" StatementSubTreeCost="1">
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="16000" EstimatedTotalSubtreeCost="1">
+              <TableScan>
+                <Object Table="A" />
+              </TableScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+        <StmtSimple StatementText="select 2" StatementSubTreeCost="2">
+          <QueryPlan>
+            <RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="16000" EstimatedTotalSubtreeCost="2">
+              <TableScan>
+                <Object Table="B" />
+              </TableScan>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

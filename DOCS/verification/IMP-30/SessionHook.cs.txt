@@ -1,0 +1,56 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+
+// Test-only .NET startup hook: reads the session through the actual single-file GUI bundle.
+// It exits before App.Main and therefore does not constitute interactive WPF acceptance.
+public static class StartupHook
+{
+    public static void Initialize()
+    {
+        string? sessionPath = Environment.GetEnvironmentVariable("IMP30_SESSION");
+        if (sessionPath == null) return;
+        try
+        {
+            var app = Assembly.Load("SqlXmlAnalyzer");
+            var type = app.GetType("SqlXmlAnalyzer.Core.Services.TuningSessionService", true)!;
+            object service = Activator.CreateInstance(type)!;
+            object result = type.GetMethod("Load", new[] { typeof(string) })!.Invoke(service, new object[] { sessionPath })!;
+            object? Get(object value, string property) => value.GetType().GetProperty(property)!.GetValue(value);
+            int snapshots = ((IEnumerable)Get(result, "Snapshots")!).Cast<object>().Count();
+            string planA = (string)Get(Get(result, "PlanA")!, "StatementText")!;
+            string planB = (string)Get(Get(result, "PlanB")!, "StatementText")!;
+            if (snapshots != 2 || planA != "SELECT 1" || planB != "SELECT 2")
+                throw new InvalidDataException("Recovered session content mismatch.");
+            string output = Environment.GetEnvironmentVariable("IMP30_SESSION_RESULT")!;
+            using var input = File.OpenRead(sessionPath);
+            using var stream = new FileStream(output, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            JsonSerializer.Serialize(stream, new
+            {
+                Passed = true, Snapshots = snapshots, PlanA = planA, PlanB = planB,
+                SessionSha256 = Convert.ToHexString(SHA256.HashData(input)),
+                AppAssembly = app.FullName, Executable = Environment.ProcessPath,
+                Scope = "Actual single-file GUI process with test-only startup hook; no window interaction."
+            }, new JsonSerializerOptions { WriteIndented = true });
+            stream.Flush(true);
+        }
+        catch (Exception exception)
+        {
+            while (exception is TargetInvocationException && exception.InnerException != null) exception = exception.InnerException;
+            try
+            {
+                var core = Assembly.Load("SqlXmlAnalyzer.Core");
+                var policy = core.GetType("SqlXmlAnalyzer.Core.Diagnostics.ExceptionPolicy", true)!;
+                var method = policy.GetMethod("Describe", BindingFlags.Public | BindingFlags.Static)!;
+                Console.Error.WriteLine(method.Invoke(null, new object?[] { exception, "IMP30.SessionHook", null }));
+            }
+            catch (Exception failure) { Console.Error.WriteLine(exception); Console.Error.WriteLine(failure); }
+            Environment.Exit(1);
+        }
+        Environment.Exit(0);
+    }
+}

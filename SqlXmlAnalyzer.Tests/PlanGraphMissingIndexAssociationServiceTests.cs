@@ -9,7 +9,7 @@ namespace SqlXmlAnalyzer.Tests
         private readonly PlanGraphMissingIndexAssociationService _service = new();
 
         [Fact]
-        public void MatchSuggestions_MatchesTablesIgnoringBracketsAndCase()
+        public void MatchSuggestions_LegacyTableOnlyIdentityDoesNotGuessAMatch()
         {
             MissingIndexSuggestion suggestion = new()
             {
@@ -22,7 +22,7 @@ namespace SqlXmlAnalyzer.Tests
                     new[] { suggestion });
 
             result.Should().ContainSingle()
-                .Which.Should().BeSameAs(suggestion);
+                .Which.Should().BeNull("table-only names do not establish database, schema or statement ownership");
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void MatchSuggestions_PreservesNodeOrderAndFirstMatch()
+        public void MatchSuggestions_LegacyNamesPreserveOrderWithoutChoosingTheFirstCandidate()
         {
             MissingIndexSuggestion firstOrdersSuggestion = new()
             {
@@ -79,7 +79,7 @@ namespace SqlXmlAnalyzer.Tests
                         customerSuggestion
                     });
 
-            result.Should().Equal(customerSuggestion, firstOrdersSuggestion);
+            result.Should().Equal(new MissingIndexSuggestion?[] { null, null });
         }
     }
 }

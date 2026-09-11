@@ -1,0 +1,15 @@
+  正在确定要还原的项目…
+  已还原 C:\Users\Administrator\AppData\Local\Temp\SqlXmlAnalyzer-IMP02-74bce5a5aa304d7ca7bfe7ceee7e5e53\AcceptanceProbe.csproj (用时 294 毫秒)。
+  5 个项目(共 6 个)是最新的，无法还原。
+  SqlXmlAnalyzer.Core -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Core\release\SqlXmlAnalyzer.Core.dll
+  SqlXmlAnalyzer.Refactoring -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Refactoring\release\SqlXmlAnalyzer.Refactoring.dll
+  SqlXmlAnalyzer.Analysis -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Analysis\release\SqlXmlAnalyzer.Analysis.dll
+  SqlXmlAnalyzer.Application -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer.Application\release\SqlXmlAnalyzer.Application.dll
+  SqlXmlAnalyzer -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\SqlXmlAnalyzer\release\SqlXmlAnalyzer.dll
+  AcceptanceProbe -> E:\SqlXmlAnalyzer\bin\imp06-verification-d9988486ac9f45e48dae67fb2fb2a747\bin\AcceptanceProbe\release\AcceptanceProbe.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.48

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "adapterVersion": "2.3",
+  "configuration": "Release",
+  "commandTimeoutSeconds": 900,
+  "step": "IMP-02",
+  "runId": "20260908T095124823Z_c5b1e0766cfc_64086a07",
+  "head": "c5b1e0766cfcdf28f0d3a27d3238f5f0d6ae1a15",
+  "runDirectory": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T095124823Z_c5b1e0766cfc_64086a07",
+  "matrixCases": 22,
+  "probeConditionsMet": 4,
+  "notMet": 18,
+  "probeExecutionFailed": 0,
+  "probeConditionsAllMet": false,
+  "infrastructureTests": {
+    "total": 38,
+    "passed": 38,
+    "failed": 0
+  },
+  "issuesClosed": 0,
+  "existingSuite": {
+    "failed": 0,
+    "notExecuted": 0,
+    "passed": 903,
+    "total": 903
+  },
+  "cliInvalidInputExitCode": 0,
+  "protectedInputDrift": [],
+  "fixtureAndCandidateEntries": 28,
+  "sqlServerExecutionPerformed": false,
+  "wpfVisualTestPerformed": false,
+  "coverageGenerated": false,
+  "note": "Exit 1 means NotMet or ProbeExecutionFailed; neither is a passing condition. Full issue closure requires additional matrix scenarios."
+}

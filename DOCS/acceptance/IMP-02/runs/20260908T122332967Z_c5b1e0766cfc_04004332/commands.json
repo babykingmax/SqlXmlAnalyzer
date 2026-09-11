@@ -1,0 +1,160 @@
+[
+  {
+    "executable": "pwsh",
+    "arguments": [
+      "-NoProfile",
+      "-File",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T122332967Z_c5b1e0766cfc_04004332\\adapter\\Test-AcceptanceInfrastructure.ps1",
+      "-OutputPath",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T122332967Z_c5b1e0766cfc_04004332\\infrastructure-tests.json"
+    ],
+    "startedUtc": "2026-09-08T12:23:33.5889678+00:00",
+    "finishedUtc": "2026-09-08T12:23:38.4151640+00:00",
+    "processId": 60808,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "infrastructure-tests"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "--info"
+    ],
+    "startedUtc": "2026-09-08T12:23:38.4459206+00:00",
+    "finishedUtc": "2026-09-08T12:23:38.7453032+00:00",
+    "processId": 38296,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "sdk"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "restore",
+      "SqlXmlAnalyzer.sln",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T12:23:38.7501390+00:00",
+    "finishedUtc": "2026-09-08T12:23:39.7425510+00:00",
+    "processId": 69000,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "restore"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "SqlXmlAnalyzer.sln",
+      "--configuration",
+      "Release",
+      "--no-restore",
+      "--no-incremental",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T12:23:39.7484311+00:00",
+    "finishedUtc": "2026-09-08T12:23:44.9726823+00:00",
+    "processId": 44928,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "build"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "test",
+      "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+      "--configuration",
+      "Release",
+      "--no-build",
+      "--no-restore",
+      "--nologo",
+      "--logger",
+      "trx;LogFileName=existing-suite.trx",
+      "--results-directory",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T122332967Z_c5b1e0766cfc_04004332\\test-output"
+    ],
+    "startedUtc": "2026-09-08T12:23:45.3540302+00:00",
+    "finishedUtc": "2026-09-08T12:23:56.3509004+00:00",
+    "processId": 63500,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "test"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP02-38f02849384a47259978ff48c1486f81\\AcceptanceProbe.csproj",
+      "--configuration",
+      "Release",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T12:23:56.6557516+00:00",
+    "finishedUtc": "2026-09-08T12:23:59.1902834+00:00",
+    "processId": 17456,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "probe-build"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP02-38f02849384a47259978ff48c1486f81\\AcceptanceProbe.csproj",
+      "--configuration",
+      "Release",
+      "--no-build",
+      "--no-restore",
+      "--",
+      "E:\\SqlXmlAnalyzer",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T122332967Z_c5b1e0766cfc_04004332"
+    ],
+    "startedUtc": "2026-09-08T12:23:59.5019447+00:00",
+    "finishedUtc": "2026-09-08T12:24:01.6541585+00:00",
+    "processId": 68136,
+    "exitCode": 0,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "probe"
+  },
+  {
+    "executable": "dotnet",
+    "arguments": [
+      "run",
+      "--project",
+      "SqlXmlAnalyzer.CLI",
+      "--configuration",
+      "Release",
+      "--no-build",
+      "--no-restore",
+      "--",
+      "--path",
+      "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T122332967Z_c5b1e0766cfc_04004332\\fixtures\\not-a-plan.sqlplan",
+      "--format",
+      "json"
+    ],
+    "startedUtc": "2026-09-08T12:24:01.6649592+00:00",
+    "finishedUtc": "2026-09-08T12:24:02.7212644+00:00",
+    "processId": 69448,
+    "exitCode": 1,
+    "timedOut": false,
+    "outputComplete": true,
+    "failure": null,
+    "name": "cli-invalid-input"
+  }
+]

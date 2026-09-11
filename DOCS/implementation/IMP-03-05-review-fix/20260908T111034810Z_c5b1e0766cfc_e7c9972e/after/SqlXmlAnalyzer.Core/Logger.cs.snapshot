@@ -1,0 +1,240 @@
+using System;
+using System.IO;
+using System.Text;
+using System.Xml.Linq;
+
+namespace SqlXmlAnalyzer
+{
+    public enum LogLevel { Debug = 0, Verbose = 1, Info = 2, Warning = 3, Error = 4, Critical = 5, None = 6 }
+
+    /// <summary>Shared file/stderr logger. Release builds cannot enable diagnostics below Error.</summary>
+    public static class Logger
+    {
+        public static bool IsDebugMode { get; } =
+#if DEBUG
+            true;
+#else
+            false;
+#endif
+        public static bool IsReleaseMode => !IsDebugMode;
+        public static LogLevel MinimumLogLevel { get; private set; } = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
+        public static bool VerboseMode => IsEnabled(LogLevel.Debug);
+        public static bool FileLoggingEnabled { get; private set; }
+        public static string? LogFilePath { get; private set; }
+        public static string? CustomLogFilePath { get; private set; }
+        private static StreamWriter? _fileWriter;
+        private static readonly object _lock = new();
+        private static bool _initialized;
+        private static bool _sinkFailureReported;
+
+        public static string GetDefaultLogDirectory() => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SqlXmlAnalyzer", "log");
+
+        /// <summary>Returns the active file's directory, or the default before a file is available. Does not initialize logging.</summary>
+        public static string GetLogDirectory()
+        {
+            lock (_lock)
+            {
+                return LogFilePath is { } path
+                    ? Path.GetDirectoryName(path)!
+                    : GetDefaultLogDirectory();
+            }
+        }
+
+        public static void Initialize(bool forceVerbose = false, LogLevel? logLevel = null,
+            string? customLogFilePath = null, bool enableFileLogging = true)
+        {
+            lock (_lock)
+            {
+                if (_initialized) return;
+                // Legacy verbose/info calls are diagnostic information and use the DEBUG tag.
+                // Retain the legacy arguments for source compatibility. They cannot suppress
+                // required errors/fatal events or enable Debug/Warning in a Release build.
+                MinimumLogLevel = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
+                CustomLogFilePath = customLogFilePath;
+                if (enableFileLogging)
+                {
+                    try
+                    {
+                        string path = customLogFilePath ?? Path.Combine(GetDefaultLogDirectory(),
+                            $"SqlXmlAnalyzer_{DateTime.UtcNow:yyyyMMddTHHmmssfffZ}_{Environment.ProcessId}_{Guid.NewGuid():N}.log");
+                        path = Path.GetFullPath(path);
+                        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                        var stream = new FileStream(path, customLogFilePath == null ? FileMode.CreateNew : FileMode.Append,
+                            FileAccess.Write, FileShare.Read);
+                        _fileWriter = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = true };
+                        LogFilePath = path;
+                        FileLoggingEnabled = true;
+                    }
+                    catch (Exception exception)
+                    {
+                        FileLoggingEnabled = false;
+                        ReportSinkFailure(exception);
+                    }
+                }
+                _initialized = true;
+            }
+        }
+
+        private static LogLevel Normalize(LogLevel level) => level is LogLevel.Info or LogLevel.Verbose ? LogLevel.Debug : level;
+        public static bool IsEnabled(LogLevel level)
+        {
+            level = Normalize(level);
+            return level != LogLevel.None && level >= MinimumLogLevel && (IsDebugMode || level >= LogLevel.Error);
+        }
+        private static bool ShouldLog(LogLevel level) => IsEnabled(level);
+
+        private static void Write(LogLevel level, string message, Exception? exception = null)
+        {
+            if (!IsEnabled(level)) return;
+            lock (_lock)
+            {
+                if (!_initialized) Initialize();
+                if (!IsEnabled(level)) return;
+                string tag = level == LogLevel.Warning ? "WARN" : level.ToString().ToUpperInvariant();
+                string line = $"[{tag}] {DateTimeOffset.Now:O} {message}";
+                if (exception != null) line += Environment.NewLine + Core.Diagnostics.ExceptionPolicy.Details(exception);
+                // Stdout remains exclusively available for CLI result documents, including JSON.
+                try { Console.Error.WriteLine(line); } catch (Exception outputError) { ReportSinkFailure(outputError); }
+                try { _fileWriter?.WriteLine(line); } catch (Exception fileError) { ReportSinkFailure(fileError); }
+            }
+        }
+
+        private static void ReportSinkFailure(Exception exception)
+        {
+            if (_sinkFailureReported) return;
+            _sinkFailureReported = true;
+            try { Console.Error.WriteLine($"[ERROR] 日志写入失败：{exception.GetType().Name}: {exception.Message}"); }
+            catch { /* An unavailable diagnostic sink must not replace the original failure. */ }
+        }
+
+        public static void Debug(string message) => Write(LogLevel.Debug, message);
+        public static void Verbose(string message) => Debug(message);
+        public static void Info(string message) => Debug(message);
+        public static void Warning(string message) => Write(LogLevel.Warning, message);
+        public static void Error(string message) => Write(LogLevel.Error, message);
+        public static void Error(string message, Exception exception) => Write(LogLevel.Error, message, exception);
+        public static void Critical(string message, Exception? exception = null) => Write(LogLevel.Critical, message, exception);
+        public static void LogException(string context, Exception exception)
+        {
+            Core.Diagnostics.ExceptionPolicy.Describe(exception, context);
+        }
+
+        public static void LogXmlElement(XElement element, string context = "", int maxDepth = 2)
+        {
+            if (!ShouldLog(LogLevel.Debug) || element == null) return;
+
+            try
+            {
+                Debug($"[XML] {context} | <{element.Name.LocalName}> (ns: {element.Name.NamespaceName})");
+
+                if (element.HasAttributes)
+                {
+                    foreach (var attr in element.Attributes())
+                        Debug($"[XML]   @{attr.Name.LocalName} = \"{attr.Value}\"");
+                }
+
+                string? text = element.Value?.Trim();
+                if (!string.IsNullOrEmpty(text))
+                {
+                    string display = text.Length > 180 ? text.Substring(0, 180) + "..." : text;
+                    Debug($"[XML]   文本: {display}");
+                }
+
+                if (maxDepth > 0 && element.HasElements)
+                {
+                    foreach (var child in element.Elements())
+                        LogXmlElement(child, $"{context}/{element.Name.LocalName}", maxDepth - 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug($"[XML] 解析出错: {ex.Message}");
+            }
+        }
+
+        public static void LogRelOpDetails(XElement relOp, string title = "RelOp 详情")
+        {
+            if (!ShouldLog(LogLevel.Debug) || relOp == null) return;
+
+            Debug($"[XML] ========== {title} ==========");
+            foreach (var attr in relOp.Attributes())
+                Debug($"[XML]   {attr.Name.LocalName}: {attr.Value}");
+
+            var obj = relOp.Descendants().FirstOrDefault(e => e.Name.LocalName == "Object");
+            if (obj != null)
+            {
+                Debug("[XML]   关联对象:");
+                foreach (var attr in obj.Attributes())
+                    Debug($"[XML]     {attr.Name.LocalName}: {attr.Value}");
+            }
+            Debug("[XML] ========================================");
+        }
+
+        public static void LogMissingIndex(XElement missingIndexGroup, string context = "")
+        {
+            if (!ShouldLog(LogLevel.Debug) || missingIndexGroup == null) return;
+
+            Debug($"[XML] {context} MissingIndexGroup Impact={missingIndexGroup.Attribute("Impact")?.Value}");
+
+            var ns = missingIndexGroup.GetDefaultNamespace();
+            var mi = missingIndexGroup.Element(ns + "MissingIndex") ?? missingIndexGroup.Element("MissingIndex");
+            if (mi != null)
+            {
+                Debug($"[XML]   表: {mi.Attribute("Database")?.Value}.{mi.Attribute("Schema")?.Value}.{mi.Attribute("Table")?.Value}");
+
+                foreach (var cg in mi.Elements())
+                {
+                    if (cg.Name.LocalName == "ColumnGroup")
+                    {
+                        var usage = cg.Attribute("Usage")?.Value;
+                        var cols = string.Join(", ", cg.Elements().Select(c => c.Attribute("Name")?.Value));
+                        Debug($"[XML]   {usage} 列: {cols}");
+                    }
+                }
+            }
+        }
+
+        // ==================== 工具方法 ====================
+
+        public static void DebugSection(string title)
+        {
+            if (!ShouldLog(LogLevel.Debug)) return;
+            Debug($"──────────────────── [ {title} ] ────────────────────");
+        }
+
+        public static void Flush()
+        {
+            lock (_lock)
+            {
+                try { _fileWriter?.Flush(); } catch (Exception exception) { ReportSinkFailure(exception); }
+            }
+        }
+
+        public static void Shutdown()
+        {
+            lock (_lock)
+            {
+                try { _fileWriter?.Dispose(); } catch (Exception exception) { ReportSinkFailure(exception); }
+                _fileWriter = null;
+                FileLoggingEnabled = false;
+                LogFilePath = null;
+                CustomLogFilePath = null;
+                MinimumLogLevel = IsDebugMode ? LogLevel.Debug : LogLevel.Error;
+                _initialized = false;
+                _sinkFailureReported = false;
+            }
+        }
+
+        public static LogLevel ParseLogLevel(string? value) => value?.Trim().ToLowerInvariant() switch
+        {
+            "debug" or "d" => LogLevel.Debug,
+            "verbose" or "v" => LogLevel.Verbose,
+            "warning" or "warn" or "w" => LogLevel.Warning,
+            "error" or "err" or "e" => LogLevel.Error,
+            "critical" or "crit" or "fatal" or "c" => LogLevel.Critical,
+            "none" or "off" => LogLevel.None,
+            _ => LogLevel.Info
+        };
+    }
+}

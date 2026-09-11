@@ -50,15 +50,14 @@ namespace SqlXmlAnalyzer.Tests
         public void ParameterSniffingRule_ShouldDetectMismatch()
         {
             var rule = new ParameterSniffingRule();
-            var xml = $@"<RelOp xmlns=""{ns}"" NodeId=""0"">
-                            <QueryPlan>
+            var xml = $@"<QueryPlan xmlns=""{ns}"">
                                 <ParameterList>
                                     <ColumnReference Column=""@p1"" ParameterCompiledValue=""'A'"" ParameterRuntimeValue=""'B'"" />
                                 </ParameterList>
-                            </QueryPlan>
-                         </RelOp>";
+                            <RelOp NodeId=""0""/>
+                         </QueryPlan>";
             var doc = XDocument.Parse(xml);
-            var element = doc.Root!;
+            var element = doc.Descendants(ns + "RelOp").Single();
 
             var result = rule.Analyze(element, ns);
 
@@ -85,16 +84,18 @@ namespace SqlXmlAnalyzer.Tests
             Assert.NotNull(result);
             Assert.Equal("RULE_004_ESTIMATE_MISMATCH", result.RuleId);
             Assert.Equal("Critical", result.Severity);
-            Assert.Contains("偏差 > 100倍", result.Title);
+            Assert.Equal("基数估计偏差", result.Title);
+            Assert.Contains("偏差指标 200 倍", result.Message);
         }
 
         [Fact]
         public void MemoryGrantRule_ShouldDetectExcessiveGrant()
         {
             var rule = new LargeMemoryGrantRule();
-            var xml = $@"<ShowPlanXML xmlns=""{ns}""><RelOp NodeId=""0"">
+            var xml = $@"<QueryPlan xmlns=""{ns}"">
                             <MemoryGrantInfo GrantedMemory=""102400"" MaxUsedMemory=""1024"" />
-                         </RelOp></ShowPlanXML>";
+                            <RelOp NodeId=""0""/>
+                         </QueryPlan>";
             var doc = XDocument.Parse(xml);
             var result = rule.Analyze(doc.Descendants(ns + "RelOp").First(), ns);
             Assert.NotNull(result);
@@ -171,7 +172,7 @@ namespace SqlXmlAnalyzer.Tests
             var rule = new UdfAndTableVariableRule();
             var xml = $@"<RelOp xmlns=""{ns}"" NodeId=""7"" PhysicalOp=""Table Valued Function"" EstimateRows=""1"">
                             <RunTimeInformation>
-                                <RunTimeCountersPerThread ActualRows=""500"" />
+                                <RunTimeCountersPerThread ActualRows=""500"" ActualExecutions=""1"" />
                             </RunTimeInformation>
                          </RelOp>";
             var element = XElement.Parse(xml);

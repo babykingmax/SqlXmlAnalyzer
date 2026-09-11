@@ -1,0 +1,127 @@
+using System.IO;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Xml.Linq;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Core.Services;
+
+internal static class FactsUiProbe
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+        string repository = args[0], output = args[1];
+        string assemblies = Path.Combine(repository, "bin/Release/net8.0-windows");
+        AssemblyLoadContext.Default.Resolving += (_, name) => File.Exists(Path.Combine(assemblies, name.Name + ".dll"))
+            ? AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(assemblies, name.Name + ".dll")) : null;
+        var app = new Application();
+        try
+        {
+            Assembly.Load("MaterialDesignThemes.Wpf");
+            Assembly.Load("MaterialDesignColors");
+            XNamespace presentation = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
+            var appXml = SafeXmlHelper.LoadSafe(Path.Combine(repository, "App.xaml"));
+            var dictionary = new XElement(appXml.Root!.Element(presentation + "Application.Resources")!.Element(presentation + "ResourceDictionary")!);
+            foreach (var declaration in appXml.Root.Attributes().Where(a => a.IsNamespaceDeclaration))
+                if (dictionary.Attribute(declaration.Name) == null) dictionary.Add(new XAttribute(declaration));
+            app.Resources = (ResourceDictionary)XamlReader.Parse(dictionary.ToString(),
+                new ParserContext { BaseUri = new Uri("pack://application:,,,/SqlXmlAnalyzer;component/") });
+            var input = new InputRecognitionService().Load(Path.Combine(repository, "SqlXmlAnalyzer.Tests/TestData/imp11_operator_facts.sqlplan"));
+            var graph = new PlanGraphControl();
+            graph.LoadFromExecutionPlan(input.Document!, input.Document!.Root!.Name.Namespace);
+            var emptyDocument = SafeXmlHelper.ParseSafe("<ShowPlanXML xmlns='http://schemas.microsoft.com/sqlserver/2004/07/showplan'><BatchSequence><Batch><Statements><StmtSimple><QueryPlan><RelOp NodeId='9' PhysicalOp='Index Scan'/></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>");
+            var emptyGraph = new PlanGraphControl();
+            emptyGraph.LoadFromExecutionPlan(emptyDocument, emptyDocument.Root!.Name.Namespace);
+            var nodes = new[] { graph.Nodes.Single(n => n.NodeId == "0"), graph.Nodes.Single(n => n.NodeId == "1"), emptyGraph.Nodes.Single() };
+            var editor = (Nodify.NodifyEditor)graph.FindName("Editor");
+            var canvas = new Grid { Background = Brushes.White, Margin = new Thickness(12) };
+            var tooltipPanels = new List<FrameworkElement>();
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodes[i].ViewMode = DiagramViewMode.Rows;
+                canvas.ColumnDefinitions.Add(new ColumnDefinition());
+                var panel = new StackPanel { Margin = new Thickness(12), VerticalAlignment = VerticalAlignment.Top };
+                Grid.SetColumn(panel, i);
+                canvas.Children.Add(panel);
+                var card = (FrameworkElement)editor.ItemTemplate.LoadContent();
+                card.DataContext = nodes[i];
+                panel.Children.Add(card);
+                card.Measure(new Size(340, double.PositiveInfinity));
+                card.Arrange(new Rect(0, 0, 340, card.DesiredSize.Height));
+                card.UpdateLayout();
+                var owner = Descendants(card).OfType<Border>().First(b => b.ToolTip is ToolTip);
+                var tooltip = (ToolTip)owner.ToolTip;
+                var content = (FrameworkElement)tooltip.Content;
+                tooltip.Content = null;
+                content.DataContext = nodes[i];
+                panel.Children.Add(content);
+                tooltipPanels.Add(content);
+            }
+            canvas.Measure(new Size(1120, double.PositiveInfinity));
+            int height = (int)Math.Ceiling(canvas.DesiredSize.Height) + 24;
+            canvas.Arrange(new Rect(0, 0, 1120, height));
+            canvas.UpdateLayout();
+            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+            canvas.UpdateLayout();
+            string BoundText(FrameworkElement panel, string path) => string.Join("|", Descendants(panel).OfType<FrameworkElement>().Select(e => e switch
+            {
+                TextBlock b when b.GetBindingExpression(TextBlock.TextProperty)?.ParentBinding.Path?.Path == path => b.Text,
+                TextBox b when b.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path?.Path == path => b.Text,
+                _ => null
+            }).OfType<string>());
+            if (nodes[0].ObjectDetails != "" || nodes[0].Predicate != "" || nodes[0].OwnCost != 6
+                || BoundText(tooltipPanels[1], "ActualRows") != "100" || BoundText(tooltipPanels[1], "ActualRowsRead") != "1,000"
+                || BoundText(tooltipPanels[1], "ExecutionMode") != "Batch" || nodes[2].EstimatedOperatorCost != "N/A"
+                || BoundText(tooltipPanels[2], "ActualRows") != "N/A")
+                throw new InvalidOperationException("Production WPF facts bindings did not match the shared metric contract.");
+            var bitmap = new RenderTargetBitmap(1120, height, 96, 96, PixelFormats.Pbgra32);
+            var drawing = new DrawingVisual();
+            using (var context = drawing.RenderOpen())
+            {
+                context.DrawRectangle(Brushes.White, null, new Rect(0, 0, 1120, height));
+                context.DrawRectangle(new VisualBrush(canvas), null, new Rect(0, 0, 1120, height));
+            }
+            bitmap.Render(drawing);
+            var pixels = new byte[1120 * height * 4];
+            bitmap.CopyPixels(pixels, 1120 * 4, 0);
+            Console.WriteLine($"Render pixels: nontransparent={pixels.Where((value, index) => index % 4 == 3 && value > 0).Count()}, color={pixels.Where((value, index) => index % 4 != 3 && value is > 0 and < 250).Count()}; canvas={canvas.RenderSize}");
+            bool screenshotCreated = pixels.Where((value, index) => index % 4 == 3 && value > 0).Count() >= 1000
+                && pixels.Where((value, index) => index % 4 != 3 && value is > 0 and < 250).Count() >= 1000;
+            if (screenshotCreated)
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                using var stream = File.Create(Path.Combine(output, "operator-facts.png"));
+                encoder.Save(stream);
+            }
+            else if (File.Exists(Path.Combine(output, "operator-facts.png"))) File.Delete(Path.Combine(output, "operator-facts.png"));
+            File.WriteAllText(Path.Combine(output, "ui-observed.json"), JsonSerializer.Serialize(new
+            {
+                BindingsPassed = true, ScreenshotCreated = screenshotCreated,
+                ScreenshotFailure = screenshotCreated ? null : "RenderTargetBitmap produced zero meaningful pixels in this environment, including SoftwareOnly and DrawingVisual attempts. No screenshot accepted.",
+                WindowShown = false, Width = 1120, Height = height,
+                Scope = "Production WPF graph cards and tooltip bindings on STA; not full-window interaction",
+                Nodes = nodes.Select(n => new { n.NodeId, n.ObjectDetails, n.Predicate, n.ActualRows, n.ActualRowsRead, n.ExecutionMode,
+                    n.Ordered, n.ActualExecutions, n.EstimatedOperatorCost, n.EstRows })
+            }, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        finally { app.Shutdown(); }
+    }
+    private static IEnumerable<DependencyObject> Descendants(DependencyObject element)
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+        {
+            var child = VisualTreeHelper.GetChild(element, i);
+            yield return child;
+            foreach (var item in Descendants(child)) yield return item;
+        }
+    }
+}

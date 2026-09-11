@@ -1,0 +1,17 @@
+{
+  "CapturedAtUtc": "2026-09-10T10:21:55.5471144Z",
+  "OperatingSystem": {
+    "Caption": "Microsoft Windows 11 专业工作站版",
+    "Version": "10.0.26200",
+    "TotalVisibleMemorySize": 98205304
+  },
+  "Processor": [
+    {
+      "Name": "AMD Ryzen 9 9900X 12-Core Processor            ",
+      "NumberOfCores": 12,
+      "NumberOfLogicalProcessors": 24
+    }
+  ],
+  "DotnetSdk": "10.0.400",
+  "PowerShell": "7.6.5"
+}

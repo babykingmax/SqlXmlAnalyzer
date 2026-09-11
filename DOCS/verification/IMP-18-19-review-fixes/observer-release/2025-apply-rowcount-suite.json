@@ -1,0 +1,13 @@
+{
+  "CompatibilityLevel": 170,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "ObserveSql": "SELECT @@ROWCOUNT AS LastAffected;",
+      "SetupSql": "CREATE TABLE dbo.T(Value real, Mark int); INSERT dbo.T VALUES(16777215,0),(16777216,0),(16777218,0);",
+      "OrderedResults": false,
+      "Name": "rowcount"
+    }
+  ]
+}

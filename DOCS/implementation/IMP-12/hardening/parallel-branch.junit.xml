@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+  <testsuite name="SqlXmlAnalyzer.CLI" tests="1" failures="0" errors="0" time="0.083">
+    <properties><property name="Privacy" value="未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。" /></properties>
+    <testcase name="parallel-branch.sqlplan" classname="SqlXmlAnalyzer.CLI.PlanScan" time="0.000">
+      <system-out>执行计划诊断协议 v1.0
+规则执行：Hit 1 / NoHit 32 / Skipped 1 / Failed 0。
+
+[Info] 低效的并行执行 (Parallelism)
+诊断 ID：227EC7D640D08CEC6C3B9D7C8C0A3287B1A72D2DC83BA10E2FBD17BED662B855
+来源：074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1；置信度：Unspecified
+规则：RULE_009_PARALLEL_SKEW v1.0.0
+结果规则：RULE_010_INEFFECTIVE_PARALLELISM
+兼容规则报告了一个候选诊断。
+证据 SourceScope：/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]；XML scope；074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1
+适用条件：当前规则已实现的 XML 检查与配置。
+限制：此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。
+兼容说明（包含待核验推断与建议）：使用了较高的并行度 (DOP=8)，但每个线程分配到的行数极少 (平均: 50 行)。
+线程调度开销可能大于并行收益，建议适当调低 MAXDOP (最大并行度)。
+
+[Skipped] RULE_012_NESTED_LOOPS_HIGH_EXEC v1.0.0 [074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1]：RULE_NOT_APPLICABLE — 算子不属于本规则支持的循环或查找类型。</system-out>
+    </testcase>
+  </testsuite>
+</testsuites>

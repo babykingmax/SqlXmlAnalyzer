@@ -1,0 +1,3648 @@
+﻿[
+  {
+    "Diagnostics": {
+      "ProtocolVersion": "1.0",
+      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+      "EngineVersion": null,
+      "SchemaVersion": null,
+      "Capabilities": "PlanStatements, PlanOperators, RuntimeCounters, PreservedSource",
+      "Configuration": {
+        "RULE_001_IMPLICIT_CONV": {
+          "RuleId": "RULE_001_IMPLICIT_CONV",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_002_KEY_LOOKUP": {
+          "RuleId": "RULE_002_KEY_LOOKUP",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_003_PARAM_SNIFFING": {
+          "RuleId": "RULE_003_PARAM_SNIFFING",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_004_ESTIMATE_MISMATCH": {
+          "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_017_LARGE_MEMORY_GRANT": {
+          "RuleId": "RULE_017_LARGE_MEMORY_GRANT",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_006_RESIDUAL_PREDICATE": {
+          "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_008_SPILL_DETECTION": {
+          "RuleId": "RULE_008_SPILL_DETECTION",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_009_PARALLEL_SKEW": {
+          "RuleId": "RULE_009_PARALLEL_SKEW",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_011_UDF_TVF": {
+          "RuleId": "RULE_011_UDF_TVF",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_012_NESTED_LOOPS_HIGH_EXEC": {
+          "RuleId": "RULE_012_NESTED_LOOPS_HIGH_EXEC",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_013_ANTI_PATTERN": {
+          "RuleId": "RULE_013_ANTI_PATTERN",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_014_SERIAL_PLAN_REASON": {
+          "RuleId": "RULE_014_SERIAL_PLAN_REASON",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_015_LOCAL_VARIABLES": {
+          "RuleId": "RULE_015_LOCAL_VARIABLES",
+          "Enabled": true,
+          "SeverityOverride": "Warning"
+        },
+        "RULE_016_ZERO_ROW_ACTUALS": {
+          "RuleId": "RULE_016_ZERO_ROW_ACTUALS",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_036_WAIT_STATS": {
+          "RuleId": "RULE_036_WAIT_STATS",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_037_RESOURCE_SEMAPHORE": {
+          "RuleId": "RULE_037_RESOURCE_SEMAPHORE",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_018_OPTIMIZER_ABORT": {
+          "RuleId": "RULE_018_OPTIMIZER_ABORT",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_019_CACHE_RECOMPILE": {
+          "RuleId": "RULE_019_CACHE_RECOMPILE",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_020_MISSING_INDEX": {
+          "RuleId": "RULE_020_MISSING_INDEX",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_021_TABLE_SCAN": {
+          "RuleId": "RULE_021_TABLE_SCAN",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_022_HIGH_COST_OP": {
+          "RuleId": "RULE_022_HIGH_COST_OP",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_023_RUNNING_TOTAL_PATTERN": {
+          "RuleId": "RULE_023_RUNNING_TOTAL_PATTERN",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_024_SCALAR_SUBQUERY_PATTERN": {
+          "RuleId": "RULE_024_SCALAR_SUBQUERY_PATTERN",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_025_QUERY_REWRITE": {
+          "RuleId": "RULE_025_QUERY_REWRITE",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_026_IMPLICIT_CONV_DOC": {
+          "RuleId": "RULE_026_IMPLICIT_CONV_DOC",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_027_PARAM_SNIFFING_DOC": {
+          "RuleId": "RULE_027_PARAM_SNIFFING_DOC",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_028_STATS_USAGE": {
+          "RuleId": "RULE_028_STATS_USAGE",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_029_MEMORY_GRANT_DOC": {
+          "RuleId": "RULE_029_MEMORY_GRANT_DOC",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_030_CARDINALITY_ERROR": {
+          "RuleId": "RULE_030_CARDINALITY_ERROR",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_031_KEY_LOOKUP_OP": {
+          "RuleId": "RULE_031_KEY_LOOKUP_OP",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_032_MEMORY_SPILL": {
+          "RuleId": "RULE_032_MEMORY_SPILL",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_033_THREAD_SKEW": {
+          "RuleId": "RULE_033_THREAD_SKEW",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_034_RESIDUAL_PRED_OP": {
+          "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+          "Enabled": true,
+          "SeverityOverride": null
+        },
+        "RULE_035_SARGABLE_INDEX_RECOMMENDATION": {
+          "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+          "Enabled": true,
+          "SeverityOverride": null
+        }
+      },
+      "Runs": [
+        {
+          "RunId": "CBF7D4950D885B0BEBE3FAC025D9B6008C00FA88B48020DF23A80D2D5565A47F",
+          "RuleId": "RULE_001_IMPLICIT_CONV",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_001_IMPLICIT_CONV",
+            "Category": 2,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects CONVERT_IMPLICIT operations which can prevent index seeks and degrade performance.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.9362,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "7006C8AD82E114BF60B3AA59F0A4500EAB3B0F78299486D099FF7E61E68AB500",
+          "RuleId": "RULE_002_KEY_LOOKUP",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_002_KEY_LOOKUP",
+            "Category": 4,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects high-cost Key or RID lookups that can be optimized using covering indexes.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.0811,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "8B7E1F30B72CBC41A66DA9F53994E5B5D7D6E38D9824B8D88A3162E9825049B0",
+          "RuleId": "RULE_003_PARAM_SNIFFING",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_003_PARAM_SNIFFING",
+            "Category": 8,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects parameter sniffing by comparing compiled and runtime parameter values.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 1.3758,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "43DC0C3C9C043C1E961BEA497706D5F02581FF0B8447E88BB2DB5DFB7C53C203",
+          "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects if actual rows deviate significantly from estimated rows.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.2285,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "47B010F47A304BE7983D541B1E848AAF1173646F75981B76CDB796B0FFEEECD6",
+          "RuleId": "RULE_017_LARGE_MEMORY_GRANT",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_017_LARGE_MEMORY_GRANT",
+            "Category": 5,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects excessive memory grants or tempdb spills.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.173,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "5D1971E02345A704145CE640955D9FA963BD3941797E756DB0CA5C621910D82B",
+          "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+            "Category": 7,
+            "Scope": 2,
+            "DefaultSeverity": "Info",
+            "Description": "Detects if a Scan or Seek operator has residual predicates that cannot use an index seek.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.0744,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "9F26970D246E44D4B2A979B97ACBD69E3B56AF542A5CF20B8E5110A29BD5719A",
+          "RuleId": "RULE_008_SPILL_DETECTION",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_008_SPILL_DETECTION",
+            "Category": 5,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects operations that spilled to TempDB due to insufficient memory grants, categorized by severity.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1404,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "5748CE0856523FC5D34DEFE9182E1E99438E6FEDF38B5AC84AFC2AE89E39D5AC",
+          "RuleId": "RULE_009_PARALLEL_SKEW",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_009_PARALLEL_SKEW",
+            "Category": 6,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects unbalanced parallel execution (thread skew) or ineffective parallelism where thread overhead outweighs benefits.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "Hit",
+          "ReasonCode": "RULE_HIT",
+          "Reason": "检测到符合条件的诊断。",
+          "ElapsedMilliseconds": 28.7797,
+          "DiagnosticIds": [
+            "227EC7D640D08CEC6C3B9D7C8C0A3287B1A72D2DC83BA10E2FBD17BED662B855"
+          ],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "CB19D5BC8C3E1B693AC4F375FAF051C146BC72245F1F3EC1F80030CBA741919D",
+          "RuleId": "RULE_011_UDF_TVF",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_011_UDF_TVF",
+            "Category": 10,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects the use of Scalar UDFs, Table-Valued Functions (TVF), or Table Variables which can cause cardinality estimation issues or row-by-row execution.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.2412,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "D2B5A04FC953735B03C7F3C5CD290117F6F658D2320E481E5FFD283E35C35690",
+          "RuleId": "RULE_012_NESTED_LOOPS_HIGH_EXEC",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_012_NESTED_LOOPS_HIGH_EXEC",
+            "Category": 13,
+            "Scope": 2,
+            "DefaultSeverity": "Critical",
+            "Description": "Detects Nested Loops operators with an extremely high number of executions, indicating a potential missing index or bad join choice.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "Skipped",
+          "ReasonCode": "RULE_NOT_APPLICABLE",
+          "Reason": "算子不属于本规则支持的循环或查找类型。",
+          "ElapsedMilliseconds": 0.0244,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "51E93D612B073985D97DFA5532575AFCA9EF7C11082C6AAFA367C8F2C485582B",
+          "RuleId": "RULE_013_ANTI_PATTERN",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_013_ANTI_PATTERN",
+            "Category": 13,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects SQL anti-patterns like leading wildcards (LIKE '%...') or NOT IN which can cause performance issues.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.3389,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "6A77103CB382CAFFDBC9E2FDCC65CB92459EE04EAE431613C9E657BDB6EA403A",
+          "RuleId": "RULE_014_SERIAL_PLAN_REASON",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_014_SERIAL_PLAN_REASON",
+            "Category": 13,
+            "Scope": 0,
+            "DefaultSeverity": "Info",
+            "Description": "Detects the reason why a plan was executed serially when it could have been parallel.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1308,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "8668ED4C7F7D7EAE04E5C2B3E8C05255C8A1B824491868EAA1AE15012AA71FC0",
+          "RuleId": "RULE_015_LOCAL_VARIABLES",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_015_LOCAL_VARIABLES",
+            "Category": 13,
+            "Scope": 1,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects use of local variables in predicates which can lead to poor cardinality estimates.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+              "Line": 2,
+              "Column": 38,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.2186,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "31F859CF5DB910B5C32452F2B33262278D97CE16C1BB42F08292B6F04192CFEB",
+          "RuleId": "RULE_016_ZERO_ROW_ACTUALS",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_016_ZERO_ROW_ACTUALS",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects when a node estimated significant rows but actually returned zero.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1467,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "7189DC452B1792CFEE9AB19FAD851D8C6DA1BCCDFBD49EDF7FF4DA6C4F1A7084",
+          "RuleId": "RULE_036_WAIT_STATS",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_036_WAIT_STATS",
+            "Category": 11,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects significant resource wait stats.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.2285,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "B2A9E0E181F08AFFF57593764D49F3BE9AE9337FB3D07F6E40EB744AB77BA9F6",
+          "RuleId": "RULE_037_RESOURCE_SEMAPHORE",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_037_RESOURCE_SEMAPHORE",
+            "Category": 15,
+            "Scope": 0,
+            "DefaultSeverity": "Critical",
+            "Description": "Detects memory grant resource semaphore waits.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1649,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "822BBB4BCA054D11A405DC40785ADE59DF2224E51328E9D01DCBDE2B2860B55E",
+          "RuleId": "RULE_018_OPTIMIZER_ABORT",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_018_OPTIMIZER_ABORT",
+            "Category": 12,
+            "Scope": 1,
+            "DefaultSeverity": "Critical",
+            "Description": "Detects optimizer early abort reasons.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+              "Line": 2,
+              "Column": 38,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1271,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "D1B7043F88E7A4BA80EF2A5EC215B498C0D144801FE807C5E5E6B1D251E3439C",
+          "RuleId": "RULE_019_CACHE_RECOMPILE",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_019_CACHE_RECOMPILE",
+            "Category": 16,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects compile time overhead and full level optimization compile overhead.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1286,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "76262C0B25A4C9425454052E01FB89D636A09CFF9D7278A1D7267E9DD1A1F844",
+          "RuleId": "RULE_020_MISSING_INDEX",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_020_MISSING_INDEX",
+            "Category": 0,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Extracts and scores missing indexes.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 1.3204,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "1394BA9A8989648278D40E398618DBD51F07560C201840511F19103E15ECED17",
+          "RuleId": "RULE_021_TABLE_SCAN",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_021_TABLE_SCAN",
+            "Category": 9,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects high-cost table scan operations without search predicates.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1289,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "3FCF1A628AA6CA1B1E59B32122672FB34A20ABF41A2310CD647DCD264AEF3F86",
+          "RuleId": "RULE_022_HIGH_COST_OP",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_022_HIGH_COST_OP",
+            "Category": 3,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects the top 5 operators with high individual resource costs.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.6179,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "4C8EF615632D5C41E565B0DFBDBE220227AA5DB72784B098C9EE31D4D292DFF6",
+          "RuleId": "RULE_023_RUNNING_TOTAL_PATTERN",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_023_RUNNING_TOTAL_PATTERN",
+            "Category": 13,
+            "Scope": 1,
+            "DefaultSeverity": "Critical",
+            "Description": "Detects Nested Loops with Inequality Seek Predicates indicative of a running total pattern.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+              "Line": 2,
+              "Column": 38,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.2768,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "B05A46F717D07B7E57376682BFE4EE5E10BFBB375D5B36C7B7CA2504D699E9C0",
+          "RuleId": "RULE_024_SCALAR_SUBQUERY_PATTERN",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_024_SCALAR_SUBQUERY_PATTERN",
+            "Category": 13,
+            "Scope": 1,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects multiple scalar subqueries in the SELECT clause.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+              "Line": 2,
+              "Column": 38,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1803,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "51834A5641B261CA51723FC82B7022B9E5248A08ECFE28D95EC198B8EBB923CE",
+          "RuleId": "RULE_025_QUERY_REWRITE",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_025_QUERY_REWRITE",
+            "Category": 14,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Generates SQL rewrite suggestions based on query structure.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1935,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "A611EC74BE6CBA65D777FE39B2661CDD1C5C6C69FC73202A0CE2685D5AD03B6C",
+          "RuleId": "RULE_026_IMPLICIT_CONV_DOC",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_026_IMPLICIT_CONV_DOC",
+            "Category": 2,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects CONVERT_IMPLICIT across the entire document.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.2736,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "B8972AE9EB38131B80D016C25636840D1515D1217AE3D7AED9C431117EF8BE2D",
+          "RuleId": "RULE_027_PARAM_SNIFFING_DOC",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_027_PARAM_SNIFFING_DOC",
+            "Category": 8,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects compile vs runtime parameter value differences across the document.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1701,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "B77256FDCA36DEAA4F6FD9BD06FB4FC85985A82585D49BEA15213B937F07080D",
+          "RuleId": "RULE_028_STATS_USAGE",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_028_STATS_USAGE",
+            "Category": 8,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Analyzes optimizer statistics usage status and warns of stale or low-sampling statistics.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.6349,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "4AEBDFD02027A72A03E7D34F41FC49200686478B15FD66A34C311D40854A16C6",
+          "RuleId": "RULE_029_MEMORY_GRANT_DOC",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_029_MEMORY_GRANT_DOC",
+            "Category": 5,
+            "Scope": 0,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects memory grant overestimation with low memory utilization.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": null,
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]",
+              "Line": 1,
+              "Column": 2,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1048,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "AF7494FE79A94214A4A2275A07C5DAEA251BAF9DA8DABB14B0D0FFE4526E6673",
+          "RuleId": "RULE_030_CARDINALITY_ERROR",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_030_CARDINALITY_ERROR",
+            "Category": 1,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects significant mismatch between estimated and actual row counts with root causes.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.144,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "43F535D458D4D599474FD8DF473650462FF6FD16797B739BCA3DE1D267E1A4B4",
+          "RuleId": "RULE_031_KEY_LOOKUP_OP",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_031_KEY_LOOKUP_OP",
+            "Category": 4,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects Key/RID lookup operations and suggests covering indexes and avoiding SELECT *.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.0546,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "7060B131A6189EC5CEBE71ABC253133E68351EE0247F33C0482EE2DE07A216EC",
+          "RuleId": "RULE_032_MEMORY_SPILL",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_032_MEMORY_SPILL",
+            "Category": 5,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects memory spills to TempDB in sort or hash operations.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1134,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "5EAB2C084F1C5D7ACB878F5D4643BEF434C609EFE0F382690E91A4F3AEFA113F",
+          "RuleId": "RULE_033_THREAD_SKEW",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_033_THREAD_SKEW",
+            "Category": 6,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects parallel data distribution skew among execution threads.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.0994,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "23E98784B5B8FF36DF3B82719E10908360B2DA55DF24911C633DD15C266C81B8",
+          "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+            "Category": 7,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Detects residual predicates on Index Seek operators that cause excess IO overhead.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 0.1183,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        },
+        {
+          "RunId": "500AE12ADE8C0D558A3C962CF6643FFDB3802ADB672A17E9245ECDC58851CB1B",
+          "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+          "RuleVersion": "1.0.0",
+          "Metadata": {
+            "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+            "Category": 0,
+            "Scope": 2,
+            "DefaultSeverity": "Warning",
+            "Description": "Correlates execution plan scan nodes with high-performance index suggestions and non-SARGable warnings from refactored T-SQL.",
+            "Version": "1.0.0"
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Status": "NoHit",
+          "ReasonCode": "RULE_NO_HIT",
+          "Reason": "兼容规则已执行，未返回匹配结果；不表示未实现的检查也已通过。",
+          "ElapsedMilliseconds": 1.8583,
+          "DiagnosticIds": [],
+          "ExceptionType": null,
+          "FailureDiagnostic": null
+        }
+      ],
+      "Diagnostics": [
+        {
+          "DiagnosticId": "227EC7D640D08CEC6C3B9D7C8C0A3287B1A72D2DC83BA10E2FBD17BED662B855",
+          "SemanticCode": "RULE_010_INEFFECTIVE_PARALLELISM",
+          "RuleId": "RULE_010_INEFFECTIVE_PARALLELISM",
+          "RuleVersion": "1.0.0",
+          "Title": "低效的并行执行 (Parallelism)",
+          "Summary": "兼容规则报告了一个候选诊断。",
+          "Severity": "Info",
+          "Confidence": "Unspecified",
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Scope": "Operator",
+          "Evidence": [
+            {
+              "Name": "SourceScope",
+              "Value": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Source": "XML scope",
+              "Location": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Operator": {
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "NodeId": "0",
+                  "OperatorOrdinal": 1
+                },
+                "Source": {
+                  "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                  "Line": 3,
+                  "Column": 17,
+                  "EventIndex": null,
+                  "ByteOffset": null,
+                  "ByteLength": null
+                },
+                "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+              },
+              "Unit": null,
+              "State": null,
+              "Kind": null,
+              "Aggregation": null
+            }
+          ],
+          "Hypotheses": [],
+          "Recommendations": [],
+          "Applicability": [
+            "当前规则已实现的 XML 检查与配置。"
+          ],
+          "Limitations": [
+            "此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。"
+          ],
+          "Origins": [
+            {
+              "RuleId": "RULE_009_PARALLEL_SKEW",
+              "RuleVersion": "1.0.0",
+              "Metadata": {
+                "RuleId": "RULE_009_PARALLEL_SKEW",
+                "Category": 6,
+                "Scope": 2,
+                "DefaultSeverity": "Warning",
+                "Description": "Detects unbalanced parallel execution (thread skew) or ineffective parallelism where thread overhead outweighs benefits.",
+                "Version": "1.0.0"
+              },
+              "RunId": "5748CE0856523FC5D34DEFE9182E1E99438E6FEDF38B5AC84AFC2AE89E39D5AC",
+              "InvocationLocation": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Operator": {
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "NodeId": "0",
+                  "OperatorOrdinal": 1
+                },
+                "Source": {
+                  "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                  "Line": 3,
+                  "Column": 17,
+                  "EventIndex": null,
+                  "ByteOffset": null,
+                  "ByteLength": null
+                },
+                "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+              }
+            }
+          ],
+          "Objects": [],
+          "LegacyExplanation": "使用了较高的并行度 (DOP=8)，但每个线程分配到的行数极少 (平均: 50 行)。\n线程调度开销可能大于并行收益，建议适当调低 MAXDOP (最大并行度)。"
+        }
+      ],
+      "HasFailures": false,
+      "HasMissingEvidence": false,
+      "HitCount": 1,
+      "NoHitCount": 32,
+      "SkippedCount": 1,
+      "FailedCount": 0
+    },
+    "Privacy": "未脱敏：此输出可能包含 SQL、参数、对象名称、文件路径或图像中的敏感信息，仅供本地诊断；不能作为脱敏材料共享。",
+    "FilePath": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-12\\hardening\\parallel-branch.sqlplan",
+    "FileName": "parallel-branch.sqlplan",
+    "Status": "Passed",
+    "InputStatus": "Success",
+    "InputKind": "ExecutionPlanXml",
+    "InputErrorCode": null,
+    "InputEnvelope": {
+      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+      "SourceHash": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+      "SourceName": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-12\\hardening\\parallel-branch.sqlplan",
+      "DetectedKind": 2,
+      "CapturedAt": null,
+      "EngineBuild": null,
+      "SchemaVersion": null,
+      "SourceBytes": 1092
+    },
+    "Plan": {
+      "Envelope": {
+        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+        "SourceHash": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+        "SourceName": "E:\\SqlXmlAnalyzer\\DOCS\\implementation\\IMP-12\\hardening\\parallel-branch.sqlplan",
+        "DetectedKind": 2,
+        "CapturedAt": null,
+        "EngineBuild": null,
+        "SchemaVersion": null,
+        "SourceBytes": 1092
+      },
+      "Batches": [
+        {
+          "Key": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "BatchOrdinal": 1
+          },
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": null,
+            "QueryPlan": null,
+            "Operator": null,
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]",
+              "Line": 2,
+              "Column": 19,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1"
+          },
+          "Statements": [
+            {
+              "Key": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "Parent": null,
+              "Kind": "StmtSimple",
+              "StatementId": "1",
+              "QueryHash": null,
+              "QueryPlanHash": null,
+              "Text": null,
+              "Location": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlan": null,
+                "Operator": null,
+                "Source": {
+                  "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]",
+                  "Line": 2,
+                  "Column": 38,
+                  "EventIndex": null,
+                  "ByteOffset": null,
+                  "ByteLength": null
+                },
+                "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1"
+              },
+              "QueryPlans": [
+                {
+                  "Key": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "Location": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "Batch": {
+                      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                      "BatchOrdinal": 1
+                    },
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlan": {
+                      "Statement": {
+                        "Batch": {
+                          "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                          "BatchOrdinal": 1
+                        },
+                        "StatementOrdinal": 1
+                      },
+                      "QueryPlanOrdinal": 1
+                    },
+                    "Operator": null,
+                    "Source": {
+                      "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]",
+                      "Line": 3,
+                      "Column": 6,
+                      "EventIndex": null,
+                      "ByteOffset": null,
+                      "ByteLength": null
+                    },
+                    "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1"
+                  },
+                  "Operators": [
+                    {
+                      "Key": {
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "NodeId": "0",
+                        "OperatorOrdinal": 1
+                      },
+                      "Parent": null,
+                      "PhysicalOp": "Parallelism",
+                      "LogicalOp": "Gather Streams",
+                      "Location": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "Batch": {
+                          "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                          "BatchOrdinal": 1
+                        },
+                        "Statement": {
+                          "Batch": {
+                            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                            "BatchOrdinal": 1
+                          },
+                          "StatementOrdinal": 1
+                        },
+                        "QueryPlan": {
+                          "Statement": {
+                            "Batch": {
+                              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                              "BatchOrdinal": 1
+                            },
+                            "StatementOrdinal": 1
+                          },
+                          "QueryPlanOrdinal": 1
+                        },
+                        "Operator": {
+                          "QueryPlan": {
+                            "Statement": {
+                              "Batch": {
+                                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                                "BatchOrdinal": 1
+                              },
+                              "StatementOrdinal": 1
+                            },
+                            "QueryPlanOrdinal": 1
+                          },
+                          "NodeId": "0",
+                          "OperatorOrdinal": 1
+                        },
+                        "Source": {
+                          "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                          "Line": 3,
+                          "Column": 17,
+                          "EventIndex": null,
+                          "ByteOffset": null,
+                          "ByteLength": null
+                        },
+                        "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+                      },
+                      "Objects": [],
+                      "Facts": {
+                        "Objects": [],
+                        "Predicates": [],
+                        "SeekPredicates": [],
+                        "OutputColumns": [],
+                        "Partitioned": null,
+                        "PartitionCount": null,
+                        "PartitionRange": null,
+                        "Execution": {
+                          "ActualExecutionMode": null,
+                          "EstimatedExecutionMode": null,
+                          "Parallel": true,
+                          "Ordered": null,
+                          "ExecutionMode": "N/A",
+                          "ParallelDisplay": "True",
+                          "OrderedDisplay": "N/A"
+                        },
+                        "Threads": [
+                          {
+                            "ThreadId": 1,
+                            "SourceAttributes": {
+                              "Thread": "1",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 2,
+                            "SourceAttributes": {
+                              "Thread": "2",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 3,
+                            "SourceAttributes": {
+                              "Thread": "3",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 4,
+                            "SourceAttributes": {
+                              "Thread": "4",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 5,
+                            "SourceAttributes": {
+                              "Thread": "5",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 6,
+                            "SourceAttributes": {
+                              "Thread": "6",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 7,
+                            "SourceAttributes": {
+                              "Thread": "7",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          },
+                          {
+                            "ThreadId": 8,
+                            "SourceAttributes": {
+                              "Thread": "8",
+                              "ActualRows": "50",
+                              "ActualExecutions": "1"
+                            },
+                            "OutputRows": {
+                              "Value": 50,
+                              "State": "Available",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "RowsRead": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rows",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Executions": {
+                              "Value": 1,
+                              "State": "Available",
+                              "Unit": "executions",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": true,
+                              "IsAvailable": true
+                            },
+                            "Rebinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rebinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "Rewinds": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "rewinds",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "ElapsedTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "CpuTime": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "ms",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "LogicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            },
+                            "PhysicalReads": {
+                              "Value": null,
+                              "State": "Missing",
+                              "Unit": "pages",
+                              "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                              "Kind": "Actual",
+                              "Aggregation": "Attribute",
+                              "IsPresent": false,
+                              "IsAvailable": false
+                            }
+                          }
+                        ],
+                        "EstimatedRows": {
+                          "Value": 400,
+                          "State": "Available",
+                          "Unit": "rows/execution",
+                          "Source": "RelOp/@EstimateRows",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "EstimatedRowsRead": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rows/execution",
+                          "Source": "RelOp/@EstimatedRowsRead",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "EstimatedCpuCost": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimateCPU",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "EstimatedIoCost": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimateIO",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "AverageRowSize": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "bytes/row",
+                          "Source": "RelOp/@AvgRowSize",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "EstimatedExecutions": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "executions",
+                          "Source": "EstimateRebinds + EstimateRewinds + 1",
+                          "Kind": "Estimated",
+                          "Aggregation": "RebindsPlusRewindsPlusOne",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "SubtreeCost": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "optimizer-cost",
+                          "Source": "RelOp/@EstimatedTotalSubtreeCost",
+                          "Kind": "Estimated",
+                          "Aggregation": "Attribute",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "OwnCost": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "optimizer-cost",
+                          "Source": "EstimatedTotalSubtreeCost - direct child subtree costs",
+                          "Kind": "Estimated",
+                          "Aggregation": "SubtreeMinusChildren",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "OutputRows": {
+                          "Value": 400,
+                          "State": "Available",
+                          "Unit": "rows",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRows",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "RowsRead": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rows",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRowsRead",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ThreadExecutions": {
+                          "Value": 8,
+                          "State": "Available",
+                          "Unit": "executions",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualExecutions",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "LogicalExecutions": {
+                          "Value": 1,
+                          "State": "Available",
+                          "Unit": "executions",
+                          "Source": "serial counter or common active worker executions",
+                          "Kind": "Actual",
+                          "Aggregation": "CommonWorkerExecutions",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "RowsPerExecution": {
+                          "Value": 400,
+                          "State": "Available",
+                          "Unit": "rows/execution",
+                          "Source": "ActualRows / logical executions",
+                          "Kind": "Actual",
+                          "Aggregation": "RowsPerExecution",
+                          "IsPresent": true,
+                          "IsAvailable": true
+                        },
+                        "Rebinds": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rebinds",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRebinds",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "Rewinds": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "rewinds",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualRewinds",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ElapsedTime": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "ms",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualElapsedms",
+                          "Kind": "Actual",
+                          "Aggregation": "MaxThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "CpuTime": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "ms",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualCPUms",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "LogicalReads": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "pages",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualLogicalReads",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "PhysicalReads": {
+                          "Value": null,
+                          "State": "Missing",
+                          "Unit": "pages",
+                          "Source": "RunTimeInformation/RunTimeCountersPerThread/@ActualPhysicalReads",
+                          "Kind": "Actual",
+                          "Aggregation": "SumThreads",
+                          "IsPresent": false,
+                          "IsAvailable": false
+                        },
+                        "ScalarExpressions": [],
+                        "WorkerRows": {
+                          "Count": 8,
+                          "Total": 400,
+                          "Maximum": 50,
+                          "Average": 50
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "Diagnostics": []
+    },
+    "Capabilities": "PlanStatements, PlanOperators, RuntimeCounters, PreservedSource",
+    "InputDiagnostics": [],
+    "FailureMessage": null,
+    "MaxSubtreeCost": 0,
+    "ContainsScans": false,
+    "ScannedOperators": [],
+    "Issues": [
+      {
+        "RuleId": "RULE_010_INEFFECTIVE_PARALLELISM",
+        "Severity": "Info",
+        "Title": "低效的并行执行 (Parallelism)",
+        "Message": "使用了较高的并行度 (DOP=8)，但每个线程分配到的行数极少 (平均: 50 行)。\n线程调度开销可能大于并行收益，建议适当调低 MAXDOP (最大并行度)。",
+        "NodeId": "0",
+        "ResultScope": 2,
+        "Location": {
+          "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+          "Batch": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "BatchOrdinal": 1
+          },
+          "Statement": {
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "StatementOrdinal": 1
+          },
+          "QueryPlan": {
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlanOrdinal": 1
+          },
+          "Operator": {
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "NodeId": "0",
+            "OperatorOrdinal": 1
+          },
+          "Source": {
+            "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+            "Line": 3,
+            "Column": 17,
+            "EventIndex": null,
+            "ByteOffset": null,
+            "ByteLength": null
+          },
+          "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+        },
+        "Objects": [],
+        "Metadata": {
+          "RuleId": "RULE_009_PARALLEL_SKEW",
+          "Category": 6,
+          "Scope": 2,
+          "DefaultSeverity": "Warning",
+          "Description": "Detects unbalanced parallel execution (thread skew) or ineffective parallelism where thread overhead outweighs benefits.",
+          "Version": "1.0.0"
+        },
+        "Diagnostic": {
+          "DiagnosticId": "227EC7D640D08CEC6C3B9D7C8C0A3287B1A72D2DC83BA10E2FBD17BED662B855",
+          "SemanticCode": "RULE_010_INEFFECTIVE_PARALLELISM",
+          "RuleId": "RULE_010_INEFFECTIVE_PARALLELISM",
+          "RuleVersion": "1.0.0",
+          "Title": "低效的并行执行 (Parallelism)",
+          "Summary": "兼容规则报告了一个候选诊断。",
+          "Severity": "Info",
+          "Confidence": "Unspecified",
+          "Location": {
+            "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+            "Batch": {
+              "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+              "BatchOrdinal": 1
+            },
+            "Statement": {
+              "Batch": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "BatchOrdinal": 1
+              },
+              "StatementOrdinal": 1
+            },
+            "QueryPlan": {
+              "Statement": {
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "StatementOrdinal": 1
+              },
+              "QueryPlanOrdinal": 1
+            },
+            "Operator": {
+              "QueryPlan": {
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlanOrdinal": 1
+              },
+              "NodeId": "0",
+              "OperatorOrdinal": 1
+            },
+            "Source": {
+              "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Line": 3,
+              "Column": 17,
+              "EventIndex": null,
+              "ByteOffset": null,
+              "ByteLength": null
+            },
+            "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+          },
+          "Scope": "Operator",
+          "Evidence": [
+            {
+              "Name": "SourceScope",
+              "Value": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+              "Source": "XML scope",
+              "Location": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Operator": {
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "NodeId": "0",
+                  "OperatorOrdinal": 1
+                },
+                "Source": {
+                  "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                  "Line": 3,
+                  "Column": 17,
+                  "EventIndex": null,
+                  "ByteOffset": null,
+                  "ByteLength": null
+                },
+                "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+              },
+              "Unit": null,
+              "State": null,
+              "Kind": null,
+              "Aggregation": null
+            }
+          ],
+          "Hypotheses": [],
+          "Recommendations": [],
+          "Applicability": [
+            "当前规则已实现的 XML 检查与配置。"
+          ],
+          "Limitations": [
+            "此规则仍使用旧 XML 适配；所列证据定位调用范围，兼容说明中的根因及建议尚未逐项结构化核验。"
+          ],
+          "Origins": [
+            {
+              "RuleId": "RULE_009_PARALLEL_SKEW",
+              "RuleVersion": "1.0.0",
+              "Metadata": {
+                "RuleId": "RULE_009_PARALLEL_SKEW",
+                "Category": 6,
+                "Scope": 2,
+                "DefaultSeverity": "Warning",
+                "Description": "Detects unbalanced parallel execution (thread skew) or ineffective parallelism where thread overhead outweighs benefits.",
+                "Version": "1.0.0"
+              },
+              "RunId": "5748CE0856523FC5D34DEFE9182E1E99438E6FEDF38B5AC84AFC2AE89E39D5AC",
+              "InvocationLocation": {
+                "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                "Batch": {
+                  "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                  "BatchOrdinal": 1
+                },
+                "Statement": {
+                  "Batch": {
+                    "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                    "BatchOrdinal": 1
+                  },
+                  "StatementOrdinal": 1
+                },
+                "QueryPlan": {
+                  "Statement": {
+                    "Batch": {
+                      "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                      "BatchOrdinal": 1
+                    },
+                    "StatementOrdinal": 1
+                  },
+                  "QueryPlanOrdinal": 1
+                },
+                "Operator": {
+                  "QueryPlan": {
+                    "Statement": {
+                      "Batch": {
+                        "DocumentId": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6",
+                        "BatchOrdinal": 1
+                      },
+                      "StatementOrdinal": 1
+                    },
+                    "QueryPlanOrdinal": 1
+                  },
+                  "NodeId": "0",
+                  "OperatorOrdinal": 1
+                },
+                "Source": {
+                  "XmlPath": "/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]",
+                  "Line": 3,
+                  "Column": 17,
+                  "EventIndex": null,
+                  "ByteOffset": null,
+                  "ByteLength": null
+                },
+                "DisplayScope": "074C31D2981F10AA3EF673459800245C15400DDE56790AE77FF5111260C902C6/B1/S1/Q1/N0/O1"
+              }
+            }
+          ],
+          "Objects": [],
+          "LegacyExplanation": "使用了较高的并行度 (DOP=8)，但每个线程分配到的行数极少 (平均: 50 行)。\n线程调度开销可能大于并行收益，建议适当调低 MAXDOP (最大并行度)。"
+        },
+        "Run": null
+      }
+    ]
+  }
+]

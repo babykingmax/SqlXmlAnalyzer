@@ -1,0 +1,277 @@
+[
+  {
+    "id": "R01",
+    "observed": {
+      "status": "Ready",
+      "CanExport": true,
+      "literalRetained": false,
+      "serverRetained": false,
+      "aliasRetained": false,
+      "tableMasked": true,
+      "noSentinel": true,
+      "sourceUnchanged": true,
+      "payloadWellFormed": true,
+      "unsupportedBlocked": true,
+      "unsupportedHasNoPayload": true,
+      "unsupportedSummarySafe": true
+    }
+  },
+  {
+    "id": "R02",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "SELECT * FROM dbo.Users WHERE LTRIM(UserName) = \u0027admin\u0027;",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 0,
+      "warnings": [
+        "[REF_RULE_103_TRIM] \u5DF2\u8DF3\u8FC7\uFF1A\u4FDD\u7559 LTRIM/RTRIM/TRIM\uFF1B\u79FB\u9664\u51FD\u6570\u53EF\u80FD\u6539\u53D8\u5305\u542B\u524D\u5BFC\u7A7A\u683C\u7B49\u6570\u636E\u7684\u6BD4\u8F83\u7ED3\u679C\u3002 \u9A8C\u8BC1\u524D\u63D0\uFF1A\u5217\u7C7B\u578B\u3001\u6392\u5E8F\u89C4\u5219\u3001\u7A7A\u683C/\u5B57\u7B26\u96C6\u5408\u3001NULL\u3001\u6BD4\u8F83\u8FD0\u7B97\u548C\u5B9E\u9645\u6570\u636E\u57DF\u7684\u7B49\u4EF7\u6027\u5C1A\u672A\u8BC1\u660E\u3002"
+      ],
+      "safetySkips": [
+        {
+          "RuleId": "REF_RULE_103_TRIM",
+          "ReasonCode": "UnprovenTrimEquivalence",
+          "Reason": "\u4FDD\u7559 LTRIM/RTRIM/TRIM\uFF1B\u79FB\u9664\u51FD\u6570\u53EF\u80FD\u6539\u53D8\u5305\u542B\u524D\u5BFC\u7A7A\u683C\u7B49\u6570\u636E\u7684\u6BD4\u8F83\u7ED3\u679C\u3002",
+          "RequiredEvidence": "\u5217\u7C7B\u578B\u3001\u6392\u5E8F\u89C4\u5219\u3001\u7A7A\u683C/\u5B57\u7B26\u96C6\u5408\u3001NULL\u3001\u6BD4\u8F83\u8FD0\u7B97\u548C\u5B9E\u9645\u6570\u636E\u57DF\u7684\u7B49\u4EF7\u6027\u5C1A\u672A\u8BC1\u660E\u3002"
+        }
+      ],
+      "outcome": "NoChanges"
+    }
+  },
+  {
+    "id": "R03",
+    "observed": {
+      "IsSuccess": false,
+      "SourceWritten": false,
+      "BackupAttempted": true,
+      "Warnings": [],
+      "failureStage": "CreateBackup",
+      "ErrorMessage": "SQL \u5199\u56DE\u5931\u8D25\uFF08CreateBackup\uFF09\uFF0C\u672A\u8986\u76D6\u5F53\u524D\u6E90\u6587\u4EF6\uFF1ASynthetic backup failure \u672A\u751F\u6210\u53EF\u9A8C\u8BC1\u5907\u4EFD\u3002"
+    }
+  },
+  {
+    "id": "R04",
+    "observed": {
+      "unrelatedXmlIssues": 1,
+      "IsSuccess": false,
+      "inputStatus": "Unrecognized",
+      "InputErrorCode": "INPUT_UNRELATED_XML"
+    }
+  },
+  {
+    "id": "R05",
+    "observed": {
+      "openKind": "DeadlockXml",
+      "parserAccepts": true,
+      "eventCount": 2,
+      "unselectedMultipleRejected": true,
+      "secondEventParses": true
+    }
+  },
+  {
+    "id": "R06",
+    "observed": {
+      "xmlPriority": 7,
+      "parsedPriority": "0"
+    }
+  },
+  {
+    "id": "R07",
+    "observed": {
+      "actualLockModes": "S / X; no Range mode",
+      "patterns": [
+        "[\u4E13\u5BB6\u7EA7\u8BCA\u65AD] SERIALIZABLE \u8303\u56F4\u9501\u6B7B\u9501 (Range Lock Deadlock)",
+        "[sp_BlitzLock \u8BCA\u65AD] \u7EC6\u7C92\u5EA6\u9501\u94FE\u4E0E\u8D44\u6E90\u51B2\u7A81\u8F68\u8FF9 (Lock Chain Details)"
+      ]
+    }
+  },
+  {
+    "id": "R08",
+    "observed": {
+      "expectedCycleNodes": [
+        "a",
+        "b",
+        "c"
+      ],
+      "graphContainsC": true,
+      "timelineContainsC": false
+    }
+  },
+  {
+    "id": "R09",
+    "observed": {
+      "rowMismatch": null,
+      "cardinalityError": "\uD83D\uDEA8 \u57FA\u6570\u4F30\u8BA1\u504F\u79BB Node 0 (Index Scan): \u9884\u4F30\u5355\u6B21\u884C\u6570 16000\uFF0C\u5B9E\u9645\u5355\u6B21 1000 (\u504F\u5DEE\u8FBE 16.0 \u500D)\u3002"
+    }
+  },
+  {
+    "id": "R10",
+    "observed": {
+      "extractedResidual": "",
+      "ruleHit": null,
+      "uiResidual": [
+        "[T].[V]=(2)"
+      ]
+    }
+  },
+  {
+    "id": "R11",
+    "observed": {
+      "ExecutionMode": "Row",
+      "IsParallel": false,
+      "Ordered": "False",
+      "ActualRows": "100",
+      "ActualRowsRead": "1,000"
+    }
+  },
+  {
+    "id": "R12",
+    "observed": {
+      "lowThenHigh": 100,
+      "highThenLow": 65
+    }
+  },
+  {
+    "id": "R13",
+    "observed": {
+      "input": "[Order.Detail]",
+      "escaped": "[Order].[Detail]"
+    }
+  },
+  {
+    "id": "R14",
+    "observed": {
+      "nodeSchemas": [
+        "sales",
+        "audit"
+      ],
+      "matched": [
+        "sales",
+        "sales"
+      ]
+    }
+  },
+  {
+    "id": "R15",
+    "observed": {
+      "estimateVsActual": [
+        {
+          "Label": "Elapsed",
+          "Value": 0,
+          "Delta": -100
+        },
+        {
+          "Label": "Logical reads",
+          "Value": 0,
+          "Delta": -200
+        }
+      ]
+    }
+  },
+  {
+    "id": "R16",
+    "observed": {
+      "statement2CostA": 2,
+      "statement2CostB": 999,
+      "comparedCostA": 1,
+      "comparedCostB": 1
+    }
+  },
+  {
+    "id": "R17",
+    "observed": {
+      "parentTable": "ChildTable",
+      "parentPredicates": [
+        "ChildFilter"
+      ]
+    }
+  },
+  {
+    "id": "R18",
+    "observed": {
+      "simpleTwoProcessCycleCount": 2,
+      "expectedUniqueCycleCount": 1
+    }
+  },
+  {
+    "id": "R19",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "DECLARE @T TABLE (id int); BEGIN TRANSACTION; INSERT INTO @T VALUES (1); ROLLBACK TRANSACTION; SELECT COUNT(*) FROM @T;",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 0,
+      "warnings": [
+        "[REF_RULE_002_TABLE_VAR] \u5DF2\u8DF3\u8FC7\uFF1A\u4FDD\u7559\u8868\u53D8\u91CF\uFF1B\u4E34\u65F6\u8868\u7684\u4E8B\u52A1\u56DE\u6EDA\u3001\u4F5C\u7528\u57DF\u53CA\u540C\u540D\u5BF9\u8C61\u884C\u4E3A\u53EF\u80FD\u4E0D\u540C\u3002 \u9A8C\u8BC1\u524D\u63D0\uFF1A\u987B\u9A8C\u8BC1\u4E8B\u52A1/\u56DE\u6EDA\u3001\u8FC7\u7A0B\u548C\u52A8\u6001 SQL \u4F5C\u7528\u57DF\u3001\u5E76\u53D1\u4F1A\u8BDD\u53CA\u65E2\u6709\u540C\u540D\u4E34\u65F6\u8868\uFF1B\u7981\u6B62\u81EA\u52A8\u521B\u5EFA\u6216\u5220\u9664\u53EF\u80FD\u5C5E\u4E8E\u5176\u4ED6\u4EE3\u7801\u7684\u4E34\u65F6\u8868\u3002"
+      ],
+      "safetySkips": [
+        {
+          "RuleId": "REF_RULE_002_TABLE_VAR",
+          "ReasonCode": "UnprovenTableVariableEquivalence",
+          "Reason": "\u4FDD\u7559\u8868\u53D8\u91CF\uFF1B\u4E34\u65F6\u8868\u7684\u4E8B\u52A1\u56DE\u6EDA\u3001\u4F5C\u7528\u57DF\u53CA\u540C\u540D\u5BF9\u8C61\u884C\u4E3A\u53EF\u80FD\u4E0D\u540C\u3002",
+          "RequiredEvidence": "\u987B\u9A8C\u8BC1\u4E8B\u52A1/\u56DE\u6EDA\u3001\u8FC7\u7A0B\u548C\u52A8\u6001 SQL \u4F5C\u7528\u57DF\u3001\u5E76\u53D1\u4F1A\u8BDD\u53CA\u65E2\u6709\u540C\u540D\u4E34\u65F6\u8868\uFF1B\u7981\u6B62\u81EA\u52A8\u521B\u5EFA\u6216\u5220\u9664\u53EF\u80FD\u5C5E\u4E8E\u5176\u4ED6\u4EE3\u7801\u7684\u4E34\u65F6\u8868\u3002"
+        }
+      ],
+      "outcome": "NoChanges"
+    }
+  },
+  {
+    "id": "R20",
+    "observed": {
+      "IsSuccess": true,
+      "OutputSql": "CREATE TABLE #T (id int); DECLARE @T TABLE (id int); SELECT * FROM @T;",
+      "Errors": [],
+      "parseErrorCount": 0,
+      "ruleFailures": [],
+      "changeCount": 0,
+      "warnings": [
+        "[REF_RULE_002_TABLE_VAR] \u5DF2\u8DF3\u8FC7\uFF1A\u4FDD\u7559\u8868\u53D8\u91CF\uFF1B\u4E34\u65F6\u8868\u7684\u4E8B\u52A1\u56DE\u6EDA\u3001\u4F5C\u7528\u57DF\u53CA\u540C\u540D\u5BF9\u8C61\u884C\u4E3A\u53EF\u80FD\u4E0D\u540C\u3002 \u9A8C\u8BC1\u524D\u63D0\uFF1A\u987B\u9A8C\u8BC1\u4E8B\u52A1/\u56DE\u6EDA\u3001\u8FC7\u7A0B\u548C\u52A8\u6001 SQL \u4F5C\u7528\u57DF\u3001\u5E76\u53D1\u4F1A\u8BDD\u53CA\u65E2\u6709\u540C\u540D\u4E34\u65F6\u8868\uFF1B\u7981\u6B62\u81EA\u52A8\u521B\u5EFA\u6216\u5220\u9664\u53EF\u80FD\u5C5E\u4E8E\u5176\u4ED6\u4EE3\u7801\u7684\u4E34\u65F6\u8868\u3002"
+      ],
+      "safetySkips": [
+        {
+          "RuleId": "REF_RULE_002_TABLE_VAR",
+          "ReasonCode": "UnprovenTableVariableEquivalence",
+          "Reason": "\u4FDD\u7559\u8868\u53D8\u91CF\uFF1B\u4E34\u65F6\u8868\u7684\u4E8B\u52A1\u56DE\u6EDA\u3001\u4F5C\u7528\u57DF\u53CA\u540C\u540D\u5BF9\u8C61\u884C\u4E3A\u53EF\u80FD\u4E0D\u540C\u3002",
+          "RequiredEvidence": "\u987B\u9A8C\u8BC1\u4E8B\u52A1/\u56DE\u6EDA\u3001\u8FC7\u7A0B\u548C\u52A8\u6001 SQL \u4F5C\u7528\u57DF\u3001\u5E76\u53D1\u4F1A\u8BDD\u53CA\u65E2\u6709\u540C\u540D\u4E34\u65F6\u8868\uFF1B\u7981\u6B62\u81EA\u52A8\u521B\u5EFA\u6216\u5220\u9664\u53EF\u80FD\u5C5E\u4E8E\u5176\u4ED6\u4EE3\u7801\u7684\u4E34\u65F6\u8868\u3002"
+        }
+      ],
+      "outcome": "NoChanges"
+    }
+  },
+  {
+    "id": "R21",
+    "observed": {
+      "rowBindings": [
+        {
+          "Path": "Views/PlanWorkspaceView.xaml",
+          "OutputColumns": [
+            {
+              "Header": "\u5B9E\u9645\u884C (ActRows)",
+              "BindingPath": "ActualRowsRead"
+            }
+          ],
+          "ReadColumns": []
+        },
+        {
+          "Path": "Views/PlanView.xaml",
+          "OutputColumns": [
+            {
+              "Header": "\u5B9E\u9645\u884C (ActRows)",
+              "BindingPath": "ActualRowsRead"
+            }
+          ],
+          "ReadColumns": []
+        }
+      ]
+    }
+  },
+  {
+    "id": "R22",
+    "observed": {
+      "initialDescription": "\u51C6\u5907\u5C31\u7EEA\u3002\u70B9\u51FB\u64AD\u653E\u5F00\u59CB\u56DE\u653E\u6B7B\u9501\u5F62\u6210\u8FC7\u7A0B\u3002",
+      "evidenceLevel": "ViewModel only; persistent visible explanation requires WPF acceptance"
+    }
+  }
+]

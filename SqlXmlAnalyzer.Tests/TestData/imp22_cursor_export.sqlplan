@@ -1,0 +1,15 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="15.0.2000.5">
+  <BatchSequence><Batch><Statements>
+    <StmtCursor StatementText="DECLARE c CURSOR FOR SELECT 1">
+      <StatementSetOptions QUOTED_IDENTIFIER="true" ARITHABORT="true" CONCAT_NULL_YIELDS_NULL="true" ANSI_NULLS="true" ANSI_PADDING="true" ANSI_WARNINGS="true" NUMERIC_ROUNDABORT="false" />
+      <CursorPlan CursorName="c" CursorActualType="SnapShot" ForwardOnly="true">
+        <Operation OperationType="PopulateQuery"><QueryPlan>
+          <RelOp NodeId="0" PhysicalOp="Constant Scan" LogicalOp="Constant Scan" AvgRowSize="4" EstimateCPU="0" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimateRows="1" Parallel="false" EstimatedTotalSubtreeCost="0"><OutputList/><ConstantScan/></RelOp>
+        </QueryPlan></Operation>
+        <Operation OperationType="FetchQuery"><QueryPlan>
+          <RelOp NodeId="0" PhysicalOp="Constant Scan" LogicalOp="Constant Scan" AvgRowSize="8" EstimateCPU="0" EstimateIO="0" EstimateRebinds="0" EstimateRewinds="0" EstimateRows="2" Parallel="false" EstimatedTotalSubtreeCost="0"><OutputList/><ConstantScan/></RelOp>
+        </QueryPlan></Operation>
+      </CursorPlan>
+    </StmtCursor>
+  </Statements></Batch></BatchSequence>
+</ShowPlanXML>

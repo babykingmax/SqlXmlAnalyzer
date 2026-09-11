@@ -1,0 +1,37 @@
+<deadlock>
+  <victim-list>
+    <victimProcess id="process1" />
+  </victim-list>
+  <process-list>
+    <process id="process1" taskpriority="0" logused="100" waitresource="KEY: 5:72057594041991168 (1a2b3c4d5e6f)" status="suspended">
+      <executionStack>
+        <frame procname="TestDB.dbo.ProcA" line="10">UPDATE TableA SET Col = 1 WHERE Id = 1;</frame>
+      </executionStack>
+      <inputbuf>EXEC ProcA</inputbuf>
+    </process>
+    <process id="process2" taskpriority="0" logused="5000" waitresource="KEY: 5:72057594041991168 (9f8e7d6c5b4a)" status="suspended">
+      <executionStack>
+        <frame procname="TestDB.dbo.ProcB" line="20">UPDATE TableA SET Col = 2 WHERE Id = 2;</frame>
+      </executionStack>
+      <inputbuf>EXEC ProcB</inputbuf>
+    </process>
+  </process-list>
+  <resource-list>
+    <keylock hobtid="72057594041991168" dbid="5" objectname="TestDB.dbo.TableA" indexname="IX_TableA" id="lock1" mode="X">
+      <owner-list>
+        <owner id="process2" mode="X" />
+      </owner-list>
+      <waiter-list>
+        <waiter id="process1" mode="U" requestType="wait" />
+      </waiter-list>
+    </keylock>
+    <keylock hobtid="72057594041991168" dbid="5" objectname="TestDB.dbo.TableA" indexname="PK_TableA" id="lock2" mode="X">
+      <owner-list>
+        <owner id="process1" mode="X" />
+      </owner-list>
+      <waiter-list>
+        <waiter id="process2" mode="U" requestType="wait" />
+      </waiter-list>
+    </keylock>
+  </resource-list>
+</deadlock>

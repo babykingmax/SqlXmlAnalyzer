@@ -1,0 +1,177 @@
+[
+  {
+    "source": ".gitignore",
+    "snapshot": "source-snapshots\\.gitignore.snapshot",
+    "sha256": "47D488D965B19511D0B48732B2891D3710D77C5274AA83597D72A24C4199BC90"
+  },
+  {
+    "source": "App.xaml.cs",
+    "snapshot": "source-snapshots\\App.xaml.cs.snapshot",
+    "sha256": "642658C9A70DBEB24E7AF14982DE270DC964A5BF7CCFE751F10A75301689BCB4"
+  },
+  {
+    "source": "Core/Services/PlanAnalysisService.cs",
+    "snapshot": "source-snapshots\\Core\\Services\\PlanAnalysisService.cs.snapshot",
+    "sha256": "B6A7A9F540BBB0D1AC40CBD972E2440F234B4B1E6490299F4482EEE468B9802E"
+  },
+  {
+    "source": "SqlXmlAnalyzer.CLI/Program.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.CLI\\Program.cs.snapshot",
+    "sha256": "728807BBAA8E57DE93A4EEE8E54C283557DF95608DA49E11866513C6C99B4F0A"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Logger.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Logger.cs.snapshot",
+    "sha256": "CEF550CD56CE010EB3DF96A8406E06975BBF3388862FA095A65D82E836478630"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Models/RefactorResult.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Models\\RefactorResult.cs.snapshot",
+    "sha256": "26460CA1F991CF232EE18AEDA69476722BBA7824471EC23E4FDB433307FF3FD8"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/RefactorContext.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\RefactorContext.cs.snapshot",
+    "sha256": "4AAA21F9E34693C324E67E52A51B29C3485EE0B8F392FF59AB0D378695AFC304"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Models/RefactorSafetySkip.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Models\\RefactorSafetySkip.cs.snapshot",
+    "sha256": "63F9798828DA025493460690014CAF34D4BF35C66070D323B383B8A40F4F1880"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Diagnostics/DiagnosticFileAccess.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Diagnostics\\DiagnosticFileAccess.cs.snapshot",
+    "sha256": "504FF541A023CACC9C77529F08990E44A597EEE1FBEC890FF34C279D7778E594"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Diagnostics/ExceptionPolicy.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Diagnostics\\ExceptionPolicy.cs.snapshot",
+    "sha256": "B6089E605FEDF38E21B6A92F326A026D00FCC6B06764CE4D6B027F7BA4F9EA18"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Diagnostics/GlobalExceptionHandlers.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Diagnostics\\GlobalExceptionHandlers.cs.snapshot",
+    "sha256": "D272A3B7562BE533CB1F128CABC7A9630BE3409A6AADEF8541C358AE5259D7E1"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Diagnostics/UnexpectedErrorReporter.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Diagnostics\\UnexpectedErrorReporter.cs.snapshot",
+    "sha256": "8ACE45DA547E24F8A11A33BCDA2ECE20E0B99C402B9733192E05487DE27CE13A"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Core/Diagnostics/WindowsMiniDumpWriter.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Core\\Diagnostics\\WindowsMiniDumpWriter.cs.snapshot",
+    "sha256": "7301BD57F57F53FB60AD9A7D79326FF01FF3B0DB574DC3173E971C23C62FF374"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Application/ApplicationOrchestratorTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Application\\ApplicationOrchestratorTests.cs.snapshot",
+    "sha256": "6C826DF5F8390DB5BA576714D82A1FC1D07B44DB15F9471ACF5CC9A890F2CF79"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Application/CliProgramTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Application\\CliProgramTests.cs.snapshot",
+    "sha256": "8EC9F788D64F758415F01360D6240DD244462E8B28A69DE2EC4E196EDD51086F"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Application/RefactorSafetyIntegrationTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Application\\RefactorSafetyIntegrationTests.cs.snapshot",
+    "sha256": "EA4F56CE1E6CEB425C7C4ABA9A21F0096DB80999DDA84D8D818BBA25A955D9EC"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Diagnostics/DiagnosticLoggingTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Diagnostics\\DiagnosticLoggingTests.cs.snapshot",
+    "sha256": "780659EB28C4CD6FA26861C6F6BA717DCADB25B0AA8D2D14CEEB2AFAA2EE92D8"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Refactoring/SqlRefactoringEngineTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Refactoring\\SqlRefactoringEngineTests.cs.snapshot",
+    "sha256": "EDEDE05FCE09587C25F0E03BBAEB5C6826932E96EDCCB191E4C66EF884716F0E"
+  },
+  {
+    "source": "SqlXmlAnalyzer.Tests/Refactoring/UnsafeRewriteProtectionTests.cs",
+    "snapshot": "source-snapshots\\SqlXmlAnalyzer.Tests\\Refactoring\\UnsafeRewriteProtectionTests.cs.snapshot",
+    "sha256": "17AE3BE6691C528CDB5A6D66B0F73EA31C02CA1B082116A405B5FDE54DD9925E"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/ApplicationOrchestrator.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\ApplicationOrchestrator.cs.snapshot",
+    "sha256": "9B67F5A3D973C13FB5820083FD61D4A7C78DD8C141E69D27C90822D2632C9CB9"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Models/RefactorReportDto.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Models\\RefactorReportDto.cs.snapshot",
+    "sha256": "6B82B2A29E15728DE03A751124EF9474B528B273A8FBB6F01F06C2AEC5D3B118"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/ApplicationLoggerProvider.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\ApplicationLoggerProvider.cs.snapshot",
+    "sha256": "3656B6EAF10A98743609D3AE1ADFFCD5FE98C68A0798FE93FFF22ECD6E2EB738"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/ConsoleResultReporter.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\ConsoleResultReporter.cs.snapshot",
+    "sha256": "818D5B87EF25D7E862B679232081311C05A4B149ADE89221C3F42E6A3527BE93"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/JsonResultReporter.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\JsonResultReporter.cs.snapshot",
+    "sha256": "46A4B423F9B9F76CA92C5A894F4D0F283C74BFEC3DE20022D38E2BED1530BA32"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Application/Services/RefactorPresentation.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Application\\Services\\RefactorPresentation.cs.snapshot",
+    "sha256": "ACC708C8E091231CB92E13A203A885898C6BCE292D333FD4126B997D880A122B"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Refactoring/Rules/TableVariableRefactorRule.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Refactoring\\Rules\\TableVariableRefactorRule.cs.snapshot",
+    "sha256": "A3763249EF66589EA885447C406BC853298C28B290AAEDC2A3FFAAC95E8F01F0"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Refactoring/Rules/TrimRefactorRule.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Refactoring\\Rules\\TrimRefactorRule.cs.snapshot",
+    "sha256": "A117E0A74DA2E9925AC000992FE81E3265CF85E4D2CF199BA5F99704A6D08D4C"
+  },
+  {
+    "source": "src/SqlXmlAnalyzer.Refactoring/SqlRefactoringEngine.cs",
+    "snapshot": "source-snapshots\\src\\SqlXmlAnalyzer.Refactoring\\SqlRefactoringEngine.cs.snapshot",
+    "sha256": "36DA1B63B8726742977AD89677882AFC420156AE0D513F1D79561E8CDCD94D4E"
+  },
+  {
+    "source": "DOCS/IMP-04高风险改写限制与诊断说明.md",
+    "snapshot": "source-snapshots\\DOCS\\IMP-04高风险改写限制与诊断说明.md.snapshot",
+    "sha256": "09B819698BDA4A74D656F9F223D721B935F86FAFCC1DAA41824D93E3A7291BAB"
+  },
+  {
+    "source": "DOCS/软件改善实施规划.md",
+    "snapshot": "source-snapshots\\DOCS\\软件改善实施规划.md.snapshot",
+    "sha256": "3069C65EDB76427A7EAADC957ACA4CD968E1D95F982347AC5C0CAC4790C2C6F9"
+  },
+  {
+    "source": "DOCS/IMP-02审查反例验收矩阵.md",
+    "snapshot": "source-snapshots\\DOCS\\IMP-02审查反例验收矩阵.md.snapshot",
+    "sha256": "C0CDB906CA698776326B341C811D03A579AA4DB0F61C150FD63F24F583F9DABF"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/README.md",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\README.md.snapshot",
+    "sha256": "F7A614F6BE92938E0772F96113882B9948C29ACE7CD2B281EC61C3BAAFF96F80"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\AcceptanceProbe.cs.txt.snapshot",
+    "sha256": "82B473E5A70C8482C01B78897104DFA84C63C68735FFE3D077CF6216FAAB3725"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\Run-AcceptanceMatrix.ps1.snapshot",
+    "sha256": "12294C5C2574AB7A5239DB31BECC399381B491D2EB2DAFFC36CFA12A5DF79C2F"
+  },
+  {
+    "source": "DOCS/acceptance/IMP-02/acceptance-matrix.json",
+    "snapshot": "source-snapshots\\DOCS\\acceptance\\IMP-02\\acceptance-matrix.json.snapshot",
+    "sha256": "076AC2742D504FA11FC0F6D62F0C8016C5D08364FC6EF6BBF802AA6B8C2CD43A"
+  }
+]

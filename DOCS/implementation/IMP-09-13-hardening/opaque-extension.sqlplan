@@ -1,0 +1,1 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan"><BatchSequence><Batch><Statements><StmtSimple><QueryPlan><InternalInfo><RelOp><RunTimeInformation><RunTimeCountersPerThread/></RunTimeInformation></RelOp></InternalInfo></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>

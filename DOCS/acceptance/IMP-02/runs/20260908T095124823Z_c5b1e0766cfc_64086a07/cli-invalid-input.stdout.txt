@@ -1,0 +1,12 @@
+[
+  {
+    "FilePath": "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T095124823Z_c5b1e0766cfc_64086a07\\fixtures\\not-a-plan.sqlplan",
+    "FileName": "not-a-plan.sqlplan",
+    "Status": "Passed",
+    "FailureMessage": null,
+    "MaxSubtreeCost": 0,
+    "ContainsScans": false,
+    "ScannedOperators": [],
+    "Issues": []
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "adapterVersion": "2.0",
+  "checkedUtc": "2026-09-08T08:38:24.9369060+00:00",
+  "runId": "20260908T083501166Z_c5b1e0766cfc_71955017",
+  "status": "Verified",
+  "reviewFindingsFixed": 4,
+  "productReviewIssuesClosed": 0,
+  "existingSuite": {
+    "notExecuted": 0,
+    "passed": 807,
+    "failed": 0,
+    "total": 807
+  },
+  "infrastructureTests": {
+    "total": 32,
+    "passed": 32,
+    "failed": 0
+  },
+  "matrixNotMet": 22,
+  "probeExecutionFailed": 0,
+  "artifactManifestsVerified": [
+    {
+      "directory": "DOCS/baselines/IMP-01/20260908T074458598Z_c5b1e0766cfc_c3523269",
+      "artifacts": 75
+    },
+    {
+      "directory": "DOCS/acceptance/IMP-02/runs/20260908T080801184Z_c5b1e0766cfc_6a19a7b0",
+      "artifacts": 47
+    },
+    {
+      "directory": "DOCS/acceptance/IMP-02/runs/20260908T083501166Z_c5b1e0766cfc_71955017",
+      "artifacts": 63
+    }
+  ],
+  "protectedInputsVerified": 548,
+  "historicalReviewAttachmentsVerified": 4,
+  "liveAdapterFilesMatchSnapshots": 6,
+  "compiledInputsMatchSnapshots": 2,
+  "changedFiles": [
+    {
+      "path": "DOCS/acceptance/IMP-02/AcceptanceInfrastructure.psm1",
+      "sha256": "F3657EB0285BD45538386159822D27BB9C9A09533E69BFDC610B5D6ED85C6FBD"
+    },
+    {
+      "path": "DOCS/acceptance/IMP-02/AcceptanceProbe.cs.txt",
+      "sha256": "081BA3B0BD40EB2067BD54E28047F56B4F22FA3344B98CC8CA1035D665709247"
+    },
+    {
+      "path": "DOCS/acceptance/IMP-02/PlanRowBindingInspector.cs.txt",
+      "sha256": "C6D88C08DB8A95E0ACC5545B79F0BDE24E5F96B337E4924B5BAE91C5A61375B7"
+    },
+    {
+      "path": "DOCS/acceptance/IMP-02/Run-AcceptanceMatrix.ps1",
+      "sha256": "18F126901B42D3E67E16095BB135655B78339A35DC2C08C3A77C441A24547014"
+    },
+    {
+      "path": "DOCS/acceptance/IMP-02/Test-AcceptanceInfrastructure.ps1",
+      "sha256": "D030EB5885A16C552D29F03523AAD8D893B400DC8E1B27106DC2A6A7C6AA8BCA"
+    }
+  ],
+  "sqlServerExecuted": false,
+  "wpfVisualTestPerformed": false,
+  "coverageGenerated": false,
+  "errors": []
+}

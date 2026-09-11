@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": null,
+  "originKind": "ActualCapturePending",
+  "status": "PendingCapture",
+  "path": null,
+  "sha256": null,
+  "bytes": null,
+  "sourceOwner": null,
+  "capturedAtUtc": null,
+  "sqlServerVersion": null,
+  "compatibilityLevel": null,
+  "databaseCollation": null,
+  "sessionOptions": null,
+  "captureMethod": null,
+  "captureScriptHash": null,
+  "actualPlanCapabilities": [],
+  "observedOperatorShape": null,
+  "originalEventId": null,
+  "timeZone": null,
+  "privacyReviewStatus": "NotReviewed",
+  "redactionDescription": null,
+  "xsdValidation": {
+    "performed": false,
+    "schemaVersion": null,
+    "result": null
+  },
+  "notes": "Fill from actual collection evidence. XML Build attributes alone are not provenance; do not invent unknown values."
+}

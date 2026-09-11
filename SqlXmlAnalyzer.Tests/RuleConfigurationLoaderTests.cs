@@ -80,7 +80,7 @@ namespace SqlXmlAnalyzer.Tests
         }
 
         [Fact]
-        public void Load_UnknownRuleId_ReturnsValidationError()
+        public void Load_UnknownRuleId_PreservesEntryAndWarns()
         {
             string path = Path.Combine(_tempDirectory, "unknown-rule.json");
             File.WriteAllText(path, """
@@ -93,8 +93,10 @@ namespace SqlXmlAnalyzer.Tests
 
             RuleConfigurationLoadResult result = RuleConfigurationLoader.Load(path);
 
-            result.IsSuccess.Should().BeFalse();
-            result.Errors.Should().ContainSingle(message =>
+            result.IsSuccess.Should().BeTrue();
+            result.Document!.UnknownRules.Should().ContainSingle().Which.RuleId.Should().Be("RULE_DOES_NOT_EXIST");
+            result.Configuration.Rules.Should().BeEmpty();
+            result.Warnings.Should().ContainSingle(message =>
                 message.Contains("Unknown RuleId") &&
                 message.Contains("RULE_DOES_NOT_EXIST"));
         }

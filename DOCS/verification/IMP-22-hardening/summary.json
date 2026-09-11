@@ -1,0 +1,115 @@
+{
+  "date": "2026-09-10",
+  "baselineTests": 2388,
+  "newRegressionTests": 26,
+  "validation": [
+    {
+      "configuration": "debug",
+      "total": 2414,
+      "passed": 2414,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "errors": 0,
+      "trx": ".tmp.imp22-fix-results/debug.trx",
+      "trxSha256": "8D3A7BC68284C20F5C5CAF3F9BE8EAD22AE7EF9F8BCC5176034FD291C09C1159",
+      "buildLog": ".tmp.imp22-fix-build-debug.log",
+      "buildLogSha256": "F632D053533F6773B3C9335CE56EB669E4538E1069FF460B084E0E2A6C3639C9"
+    },
+    {
+      "configuration": "release",
+      "total": 2414,
+      "passed": 2414,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "errors": 0,
+      "trx": ".tmp.imp22-fix-results/release.trx",
+      "trxSha256": "4E0A8B43E1D00FE1C3BDC67910F8FE81ACE2D4963793A01F727889E479158580",
+      "buildLog": ".tmp.imp22-fix-build-release.log",
+      "buildLogSha256": "41F1B347051FBE06F9C1D91AB46BA976DF7040FAB84DAEF5177358DBCDF9FAA4"
+    }
+  ],
+  "sources": [
+    {
+      "path": "Core/Services/DiagnosticReportExportService.cs",
+      "sha256": "7371FA78ECC749ED62D243E6025D6DDD40786D972D8B2320536DA88134A2C5D2"
+    },
+    {
+      "path": "ViewModels/ReportReviewViewModel.cs",
+      "sha256": "03D7F985E95AE180BA1E88645C43F9709729E489D203FB6C71F81522756575DE"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReport.cs",
+      "sha256": "07DD0FF31581A1A9351584C984D1620FB3A1AFB38834243058D1EB2D62440138"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportFactory.cs",
+      "sha256": "F97E62177B65E1AAB2B4576E1676329EC3571A26A5C798B33A457AB41B9C4EE6"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/DiagnosticReportRenderer.cs",
+      "sha256": "CE4B1162C67254601CE553C90B9CA98BCA576D96CBA56B42135FD06AFD70C84C"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/ReportRedactionService.cs",
+      "sha256": "4247ABCA86F7ADB69A93764C838C7BF4EE3A11F752191DBBB5AEA59FBACA1715"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/ReportSizeBudget.cs",
+      "sha256": "8BC57EA235889B132CD625627B89E67AD89A66D74ADFBD4481FFDF8A70A82ACA"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Core/Reporting/PlanReportXml.cs",
+      "sha256": "EBEA2BE9B79282945EA8F09CFAABF9A12BDF549E64EF31CF8681229E217F21D2"
+    },
+    {
+      "path": "SqlXmlAnalyzer.CLI/Program.cs",
+      "sha256": "5CE3173F109A99E04A2C7D08CBBADA05E3E56BDEAB3D85E54B45887F080E8414"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/DiagnosticReportBudgetAndScopeTests.cs",
+      "sha256": "A9BE3854A33E8BF8BB2A58AFA59DC9829DC853F416906EB9F8F6C887727C70E5"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/Application/CliScanHardeningTests.cs",
+      "sha256": "2DAE21913DD3BC9E3D55DC0D29DFD4B92748A48674ED72C1FDDB678E0201BCC7"
+    },
+    {
+      "path": "SqlXmlAnalyzer.Tests/TestData/imp22_cursor_export.sqlplan",
+      "sha256": "63B7FA50EECED9B559385553ECD7587EA622F42D92E2E989A7EF44BEC04501CF"
+    },
+    {
+      "path": "DOCS/verification/IMP-22-hardening/Measure-ReportBudget.ps1",
+      "sha256": "9399B103ABFFC2E3689D2F8BDD780A99B72B3FED9B20F3ABC0752311351B7EC0"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "DOCS\\verification\\IMP-22-hardening\\before.json",
+      "sha256": "B05E492A34540DAD4E6DC36C416B7C8EB84F8CFB00BECCE87D5449B44A1A9581"
+    },
+    {
+      "path": "DOCS\\verification\\IMP-22-hardening\\after-debug.json",
+      "sha256": "63186E4CB4A37BDC4EC521BD309DAB914B2B5A8DFC5DCA106E092F72ACF59749"
+    },
+    {
+      "path": "DOCS\\verification\\IMP-22-hardening\\after-release.json",
+      "sha256": "F4D98986BB143B27877B2FDE1FF80242FAF04C92A701D29078F7A60273D9A1C2"
+    },
+    {
+      "path": "DOCS\\verification\\IMP-22-hardening\\cli-sample.json",
+      "sha256": "97A9907AC80ACFDDE15AFECDD50FD470822079653EBD577D7C50E418E4B81C36"
+    }
+  ],
+  "limits": {
+    "contentCharacters": 8000000,
+    "totalRecords": 100000,
+    "encodedLength": 64000000
+  },
+  "limitations": [
+    "Allocation measurements are not peak process memory or a statistical benchmark.",
+    "Single-operation RECEIVE selections are explicitly rejected; complete statement/document scopes remain supported.",
+    "No SSMS or full manual WPF acceptance was performed in this turn."
+  ]
+}

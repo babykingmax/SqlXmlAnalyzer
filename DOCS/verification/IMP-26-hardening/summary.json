@@ -1,0 +1,87 @@
+{
+  "task": "IMP-26 review fixes and asynchronous interaction hardening",
+  "capturedAtUtc": "2026-09-10T07:19:40.8922912Z",
+  "gitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "workspace": "Uncommitted changes include prerequisite IMP-23/24/25 and IMP-26 implementation; no commit or push performed.",
+  "sourceInputs": {
+    "path": "source-inputs.json",
+    "count": 635,
+    "sha256": "E25263E8602126109249C37DC76D1CD050E8580FC1FFAB1E5ABF73DBD295092E",
+    "matchesCurrent": true
+  },
+  "newUnitTestCases": 16,
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "build": {
+        "warnings": 0,
+        "errors": 0,
+        "log": "build-Debug.log",
+        "sha256": "49EBC7884616E0E3EE6D6456BE04C9D578C88509959DC80DB90F2D3BDD9A60E1"
+      },
+      "tests": {
+        "passed": 2645,
+        "failed": 0,
+        "skipped": 0,
+        "trx": ".tmp.imp26-hardening-results/IMP26-hardening-Debug.trx",
+        "sha256": "C80806F6B9DA9A4588DBCEF80D671F5F31FE37D8AFE95B4B390FB3B63603754F",
+        "log": "tests-Debug.log",
+        "logSha256": "BA5F242BA41467144D7952343BBBA5C2A70D324ADCECBF9526D280977BFC96E2"
+      },
+      "wpf": {
+        "passed": true,
+        "checks": 365,
+        "matrixCombinations": 54,
+        "bindingErrors": 0,
+        "result": "wpf-Debug/verification.json",
+        "sha256": "1A33172DD7A4A9B97B90E743A4C525FB3FF9A78C4F504B99495F9310E9823C1C",
+        "productionBinaries": "wpf-Debug/production-binaries.json",
+        "productionBinariesSha256": "770D75AC1C52B14FB970C1362A41772E0890EF408233FBB32E468C549AC14354"
+      }
+    },
+    {
+      "configuration": "Release",
+      "build": {
+        "warnings": 0,
+        "errors": 0,
+        "log": "build-Release.log",
+        "sha256": "31626E4D8456A7858395512122BE9559AA505DB629C9A5FAB1582DD0D1FD0DB3"
+      },
+      "tests": {
+        "passed": 2645,
+        "failed": 0,
+        "skipped": 0,
+        "trx": ".tmp.imp26-hardening-results/IMP26-hardening-Release.trx",
+        "sha256": "28CA3F5739BD9F2087D99BF034CA40BE52A2CC96BBE24579F2A5334D6EF15969",
+        "log": "tests-Release.log",
+        "logSha256": "F52A136CBE76F97D5E3CB6105C7EF2D540EB98CEEF0AD7B8B3B6D8F9ECDFFB62"
+      },
+      "wpf": {
+        "passed": true,
+        "checks": 365,
+        "matrixCombinations": 54,
+        "bindingErrors": 0,
+        "result": "wpf-Release/verification.json",
+        "sha256": "1A33172DD7A4A9B97B90E743A4C525FB3FF9A78C4F504B99495F9310E9823C1C",
+        "productionBinaries": "wpf-Release/production-binaries.json",
+        "productionBinariesSha256": "14A8D0AA0948353C8241D132F64F5D2E1877C497EB669DF5E0F166B70ED8B658"
+      }
+    }
+  ],
+  "diagnostics": "Full suites include actual Windows MiniDump validation, writer failure, exception deduplication, cancellation callback diagnostics, and Debug/Release log gates.",
+  "research": {
+    "microsoft": [
+      "https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model",
+      "https://learn.microsoft.com/en-us/dotnet/standard/threading/how-to-listen-for-multiple-cancellation-requests"
+    ],
+    "github": "https://github.com/CommunityToolkit/dotnet/blob/225436753b179be40ccce22af658835afa46a0ba/src/CommunityToolkit.Mvvm/Input/AsyncRelayCommand.cs",
+    "method": "Official pages and repository source fetched directly over HTTPS after web search transport failed; no GitHub connector tools were callable."
+  },
+  "coverageCollected": false,
+  "performanceRemeasured": false,
+  "limitations": [
+    "Off-screen WPF, software rendering; no physical monitor DPI or screen-reader certification.",
+    "Original cold/warm performance data remains historical; this run validates interaction correctness.",
+    "Workspace control unit tests use minimal named button styles; separate WPF probes exercise production App resources."
+  ]
+}

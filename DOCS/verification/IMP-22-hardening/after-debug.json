@@ -1,0 +1,23 @@
+{
+  "configuration": "Debug",
+  "assemblySha256": "3533DE694B02EDF3B44963718A7D1D155CF0A649F9C24786DC3DF23A01C1B167",
+  "factoryParameterCount": 8,
+  "runtime": "10.0.11",
+  "inputCharacters": 22100,
+  "operators": 1000,
+  "reportFields": 6001,
+  "textCharacters": 824584,
+  "factoryAllocatedBytes": 8242000,
+  "textAllocatedBytes": 3325680,
+  "cursorInputXsdErrors": [],
+  "cursorOutputs": [
+    {
+      "queryPlan": 1,
+      "xsdErrors": []
+    },
+    {
+      "queryPlan": 2,
+      "xsdErrors": []
+    }
+  ]
+}

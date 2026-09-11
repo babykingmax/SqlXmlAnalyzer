@@ -16,7 +16,17 @@ namespace SqlXmlAnalyzer
 
     public static class PlanDiagnosticAnalyzer
     {
-        public static List<SqlXmlAnalyzer.Core.Rules.AnalysisResult> AnalyzePlan(XDocument doc, XNamespace ns, string? configPath = null)
+        public static Core.Rules.PlanDiagnosticReport AnalyzeDetailed(XDocument doc, XNamespace ns, string? configPath = null,
+            Core.Models.PlanDocument? identities = null, Core.Services.DocumentCapabilities? capabilities = null,
+            System.Threading.CancellationToken cancellationToken = default, Core.Diagnostics.IUnexpectedErrorReporter? unexpectedErrors = null)
+        {
+            var engine = new Core.Rules.RuleEngine(configPath, unexpectedErrors);
+            engine.RegisterDefaultRules();
+            return engine.AnalyzePlanDetailed(doc, ns, identities, capabilities, cancellationToken);
+        }
+
+        public static List<SqlXmlAnalyzer.Core.Rules.AnalysisResult> AnalyzePlan(XDocument doc, XNamespace ns, string? configPath = null,
+            Core.Models.PlanDocument? identities = null)
         {
             if (doc?.Root == null)
             {
@@ -25,91 +35,20 @@ namespace SqlXmlAnalyzer
 
             var ruleEngine = new SqlXmlAnalyzer.Core.Rules.RuleEngine(configPath);
             ruleEngine.RegisterDefaultRules();
-            return ruleEngine.AnalyzePlan(doc, ns);
+            return ruleEngine.AnalyzePlan(doc, ns, identities);
         }
 
         public static string GenerateDiagnosticReport(XDocument doc, XNamespace ns)
         {
             if (doc?.Root == null) return "⚠️ 无效的执行计划 XML 结构。";
-
-            Logger.Info($"GenerateDiagnosticReport: 开始执行计划深度诊断 | Root={doc.Root.Name}");
-
-            try
+            try { return Core.Rules.DiagnosticTextFormatter.Format(AnalyzeDetailed(doc, ns)); }
+            catch (OperationCanceledException) { throw; }
+            catch (Exception exception)
             {
-                var reports = Enum.GetValues<SqlXmlAnalyzer.Core.Rules.RuleCategory>()
-                    .ToDictionary(
-                        category => category,
-                        _ => new List<string>());
-
-                var ruleResults = AnalyzePlan(doc, ns);
-
-                foreach (var result in ruleResults)
-                {
-                    var metadata = result.Metadata
-                        ?? throw new InvalidOperationException(
-                            $"Rule result '{result.RuleId}' is missing metadata.");
-                    if (metadata.Scope == SqlXmlAnalyzer.Core.Rules.RuleScope.Operator)
-                    {
-                        string prefix = result.Severity == "Critical" ? "❌ 严重:" : "⚠️ 警告:";
-                        string msg = $"{prefix} [Node {result.NodeId}] {result.Title}\n{result.Message}";
-                        reports[metadata.Category].Add(msg);
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(result.Message))
-                        {
-                            var parts = result.Message.Split(new[] { "|||" }, StringSplitOptions.RemoveEmptyEntries);
-                            foreach (var part in parts)
-                            {
-                                reports[metadata.Category].Add(part);
-                            }
-                        }
-                    }
-                }
-
-                // 汇总输出 Markdown 格式
-                var sb = new StringBuilder();
-                sb.AppendLine("========================================================================");
-                sb.AppendLine("★ SQL Server 专家级执行计划深度诊断报告（Plan Explorer 推荐）★");
-                sb.AppendLine("========================================================================");
-                sb.AppendLine();
-
-                int totalIssues = 0;
-                foreach (var kv in reports)
-                {
-                    if (kv.Value.Count > 0)
-                    {
-                        totalIssues += kv.Value.Count;
-                        sb.AppendLine(
-                            $"【{SqlXmlAnalyzer.Core.Rules.RuleMetadataCatalog.GetCategoryTitle(kv.Key)}】");
-                        sb.AppendLine("------------------------------------------------------------------------");
-                        foreach (var issue in kv.Value)
-                        {
-                            sb.AppendLine(issue);
-                            sb.AppendLine();
-                        }
-                    }
-                }
-
-                if (totalIssues == 0)
-                {
-                    sb.AppendLine("💚 恭喜！当前执行计划在 17 项核心健康度诊断中完美通过，未检测到任何反模式或硬伤隐患。");
-                }
-                else
-                {
-                    sb.Insert(0, $"💡 针对当前计划共扫描出 {totalIssues} 个核心性能隐患/优化点。请查看以下各项深度建议，对症下药：\n\n");
-                }
-
-                Logger.Info($"GenerateDiagnosticReport: 诊断完成 | 共发现 {totalIssues} 个隐患/优化点");
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException("PlanDiagnosticAnalyzer.GenerateDiagnosticReport", ex);
-                return $"⚠️ 执行计划分析诊断过程中发生错误: {ex.Message}";
+                string detail = Core.Diagnostics.ExceptionPolicy.Describe(exception, "PlanDiagnosticAnalyzer.GenerateDiagnosticReport");
+                return "执行计划诊断未完成：" + detail;
             }
         }
-
         public static List<XElement> GetDirectChildRelOps(XElement element, XNamespace ns)
         {
             var children = new List<XElement>();
@@ -129,7 +68,8 @@ namespace SqlXmlAnalyzer
                 while (stack.Count > 0)
                 {
                     var child = stack.Pop();
-                    if (child == null) continue;
+                    if (child == null || child.Name.Namespace != ns ||
+                        child.Name.LocalName is "InternalInfo" or "Statements" or "QueryPlan") continue;
 
                     if (child.Name == ns + "RelOp")
                     {
@@ -148,7 +88,7 @@ namespace SqlXmlAnalyzer
             }
             catch (Exception ex)
             {
-                Logger.Warning($"GetDirectChildRelOps 遍历异常: {ex.Message}");
+                Logger.LogException("PlanDiagnosticAnalyzer.GetDirectChildRelOps", ex);
             }
             return children;
         }
@@ -162,13 +102,31 @@ namespace SqlXmlAnalyzer
 
         public static List<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion> ExtractMissingIndexes(XDocument doc, XNamespace ns)
         {
+            ArgumentNullException.ThrowIfNull(doc);
+            ArgumentNullException.ThrowIfNull(ns);
+            try { return ExtractMissingIndexesCore(doc, ns); }
+            catch (Exception exception)
+            {
+                Core.Diagnostics.ExceptionPolicy.Describe(exception, "PlanDiagnosticAnalyzer.ExtractMissingIndexes");
+                throw;
+            }
+        }
+
+        private static List<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion> ExtractMissingIndexesCore(XDocument doc, XNamespace ns)
+        {
             var results = new List<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>();
-            var missingIndexGroups = doc.Descendants(ns + "MissingIndexGroup");
+            var identities = Core.Services.PlanIdentityAdapter.GetDocument(doc);
+            var queryPlans = identities == null ? Enumerable.Empty<XElement>()
+                : identities.QueryPlans.Select(plan => identities.GetQueryPlanSource(plan.Key)!);
+            var missingIndexGroups = queryPlans.SelectMany(plan => plan.Elements(ns + "MissingIndexes")
+                .Elements(ns + "MissingIndexGroup"));
             foreach (var mig in missingIndexGroups)
             {
                 if (mig == null) continue;
                 double impact = ParseDouble(mig.Attribute("Impact")?.Value);
-                var mis = mig.Descendants(ns + "MissingIndex");
+                double? capturedImpact = Core.NumericParser.TryParseInvariantDouble((string?)mig.Attribute("Impact"), out double value)
+                    && double.IsFinite(value) && value is >= 0 and <= 100 ? value : null;
+                var mis = mig.Elements(ns + "MissingIndex");
                 foreach (var mi in mis)
                 {
                     if (mi == null) continue;
@@ -176,14 +134,25 @@ namespace SqlXmlAnalyzer
                     {
                         Schema = mi.Attribute("Schema")?.Value ?? "",
                         Table = mi.Attribute("Table")?.Value ?? "",
-                        Impact = impact
+                        Server = (string?)mi.Attribute("Server"),
+                        Database = (string?)mi.Attribute("Database"),
+                        ObjectIdentity = new(Core.Models.SqlObjectIdentity.DecodeIdentifier((string?)mi.Attribute("Server")),
+                            Core.Models.SqlObjectIdentity.DecodeIdentifier((string?)mi.Attribute("Database")),
+                            Core.Models.SqlObjectIdentity.DecodeIdentifier((string?)mi.Attribute("Schema")),
+                            Core.Models.SqlObjectIdentity.DecodeIdentifier((string?)mi.Attribute("Table"))),
+                        Location = identities?.FindLocation(mi),
+                        Source = Core.Models.IndexSuggestionSource.CapturedMissingIndex,
+                        Impact = impact,
+                        CapturedImpact = capturedImpact
                     };
 
-                    foreach (var cg in mi.Descendants(ns + "ColumnGroup"))
+                    foreach (var cg in mi.Elements(ns + "ColumnGroup"))
                     {
                         if (cg == null) continue;
                         string usage = cg.Attribute("Usage")?.Value ?? "";
-                        var cols = cg.Descendants(ns + "Column")
+                        if (usage is not ("EQUALITY" or "INEQUALITY" or "INCLUDE"))
+                            throw new System.IO.InvalidDataException("INDEX_COLUMN_ROLE_INVALID: 缺失索引列角色无效。");
+                        var cols = cg.Elements(ns + "Column")
                             .Select(c => c.Attribute("Name")?.Value ?? "")
                             .Where(n => n != "")
                             .Select(n => new SqlXmlAnalyzer.Core.Models.IndexColumn { Name = n, Usage = usage })
@@ -201,67 +170,26 @@ namespace SqlXmlAnalyzer
 
                     if (suggestion.KeyColumns.Count > 0)
                     {
+                        // Preserve order within each role, regardless of XML group order.
+                        suggestion.KeyColumns = suggestion.KeyColumns.OrderBy(c => c.Usage == "EQUALITY" ? 0 : 1).ToList();
                         SqlXmlAnalyzer.Core.Scoring.IndexScoringCalculator.CalculateScore(suggestion, doc, ns);
                         results.Add(suggestion);
                     }
                 }
             }
+            Logger.Debug($"IMP-15: 缺失索引提取完成；候选数 {results.Count}；既有索引目录未核验。");
             return results;
         }
 
         public static string ExtractObjectName(XElement relOp, XNamespace ns)
         {
             if (relOp == null) return "(未知表)";
-            try
-            {
-                var objEl = relOp.Descendants(ns + "Object").FirstOrDefault();
-                if (objEl != null)
-                {
-                    string table = objEl.Attribute("Table")?.Value?.Trim('[', ']') ?? "";
-                    string index = objEl.Attribute("Index")?.Value?.Trim('[', ']') ?? "";
-                    return string.IsNullOrEmpty(index) ? $"[{table}]" : $"[{table}].[{index}]";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"ExtractObjectName 提取异常: {ex.Message}");
-            }
-            return "(未知表)";
+            string name = string.Join("; ", Core.Services.PlanOperatorFactsService.Get(relOp, ns).Objects.Select(o => o.DisplayName));
+            return name.Length == 0 ? "(未知表)" : name;
         }
 
-        public static string ExtractPredicates(XElement relOp, XNamespace ns)
-        {
-            if (relOp == null) return "";
-            var preds = new List<string>();
-            try
-            {
-                foreach (var elem in relOp.Elements())
-                {
-                    if (elem == null) continue;
-                    if (elem.Name.LocalName != "OutputList" &&
-                        elem.Name.LocalName != "Warnings" &&
-                        elem.Name.LocalName != "RunTimeInformation" &&
-                        elem.Name.LocalName != "RelOp")
-                    {
-                        var scalarOps = elem.Descendants(ns + "ScalarOperator");
-                        foreach (var op in scalarOps)
-                        {
-                            if (op == null) continue;
-                            string? s = op.Attribute("ScalarString")?.Value;
-                            if (!string.IsNullOrEmpty(s) && !preds.Contains(s))
-                            {
-                                preds.Add(s);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"ExtractPredicates 提取异常: {ex.Message}");
-            }
-            return string.Join(" AND ", preds);
-        }
+        public static string ExtractPredicates(XElement relOp, XNamespace ns) => relOp == null ? "" :
+            string.Join(" AND ", Core.Services.PlanOperatorFactsService.Get(relOp, ns).Predicates);
 
         public static bool HasFunctionWrapper(string pred)
         {
@@ -276,48 +204,10 @@ namespace SqlXmlAnalyzer
             }
         }
 
-        public static string ExtractSeekPredicate(XElement relOp, XNamespace ns)
-        {
-            if (relOp == null) return "";
-            var preds = new List<string>();
-            try
-            {
-                var seekPreds = relOp.Descendants(ns + "SeekPredicates").Descendants(ns + "ScalarOperator")
-                    .Concat(relOp.Descendants(ns + "SeekPredicateNew").Descendants(ns + "ScalarOperator"));
-                foreach (var op in seekPreds)
-                {
-                    if (op == null) continue;
-                    string? s = op.Attribute("ScalarString")?.Value;
-                    if (!string.IsNullOrEmpty(s) && !preds.Contains(s))
-                    {
-                        preds.Add(s);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"ExtractSeekPredicate 提取异常: {ex.Message}");
-            }
-            return string.Join(" AND ", preds);
-        }
+        public static string ExtractSeekPredicate(XElement relOp, XNamespace ns) => relOp == null ? "" :
+            string.Join(" AND ", Core.Services.PlanOperatorFactsService.Get(relOp, ns).SeekPredicates);
 
-        public static string ExtractResidualPredicate(XElement relOp, XNamespace ns)
-        {
-            if (relOp == null) return "";
-            try
-            {
-                var predEl = relOp.Element(ns + "Predicate");
-                if (predEl != null)
-                {
-                    return predEl.Descendants(ns + "ScalarOperator").FirstOrDefault()?.Attribute("ScalarString")?.Value ?? "";
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"ExtractResidualPredicate 提取异常: {ex.Message}");
-            }
-            return "";
-        }
+        public static string ExtractResidualPredicate(XElement relOp, XNamespace ns) => ExtractPredicates(relOp, ns);
     }
 }
 

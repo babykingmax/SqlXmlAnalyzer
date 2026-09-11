@@ -1,0 +1,22 @@
+{
+  "Passed": true,
+  "WindowShown": false,
+  "Scope": "Production WPF graph node DataTemplate rendered on STA; not full-window automation",
+  "Nodes": [
+    {
+      "NodeId": "0",
+      "SelectionKey": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1/Q1/N0/O1",
+      "ObjectDetails": ""
+    },
+    {
+      "NodeId": "1",
+      "SelectionKey": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S1/Q1/N1/O2",
+      "ObjectDetails": "?.[dbA].[sales].[T] AS [s]"
+    },
+    {
+      "NodeId": "1",
+      "SelectionKey": "5CC46EB60C690CCE4774EFBE93CF94FDB7B4D4516DA493E5B8F9A36BF2E33861/B1/S2/Q1/N1/O2",
+      "ObjectDetails": "?.[dbA].[audit].[T] / Index [IX_T] AS [a]"
+    }
+  ]
+}

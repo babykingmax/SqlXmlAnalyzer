@@ -1,0 +1,184 @@
+[
+  {
+    "Case": "rowcount",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Actual": "Different"
+  },
+  {
+    "Case": "rowcount-big",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Actual": "Different"
+  },
+  {
+    "Case": "sequential-observer",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Actual": "Different"
+  },
+  {
+    "Case": "sentinel",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Actual": "Different"
+  },
+  {
+    "Case": "select-batch-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "mixed-batch-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "zero-dml",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "15.0.4382.1",
+    "Actual": "Different"
+  },
+  {
+    "Case": "transaction-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "observer-error",
+    "Passed": true,
+    "Expected": "Inconclusive",
+    "Version": "15.0.4382.1",
+    "Actual": "Inconclusive"
+  },
+  {
+    "Case": "keyword-literal-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "15.0.4382.1",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "apply-rowcount",
+    "Passed": true,
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2019",
+    "Actual": "validate=1,apply=1"
+  },
+  {
+    "Case": "apply-mutating-observer",
+    "Passed": true,
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2019",
+    "Actual": "validate=2,apply=2"
+  },
+  {
+    "Case": "apply-readonly-difference",
+    "Passed": true,
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2019",
+    "Actual": "validate=1,apply=1"
+  },
+  {
+    "Case": "rowcount",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Actual": "Different"
+  },
+  {
+    "Case": "rowcount-big",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Actual": "Different"
+  },
+  {
+    "Case": "sequential-observer",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Actual": "Different"
+  },
+  {
+    "Case": "sentinel",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Actual": "Different"
+  },
+  {
+    "Case": "select-batch-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "mixed-batch-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "zero-dml",
+    "Passed": true,
+    "Expected": "Different",
+    "Version": "17.0.4075.5",
+    "Actual": "Different"
+  },
+  {
+    "Case": "transaction-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "observer-error",
+    "Passed": true,
+    "Expected": "Inconclusive",
+    "Version": "17.0.4075.5",
+    "Actual": "Inconclusive"
+  },
+  {
+    "Case": "keyword-literal-control",
+    "Passed": true,
+    "Expected": "PassedForScenarios",
+    "Version": "17.0.4075.5",
+    "Actual": "PassedForScenarios"
+  },
+  {
+    "Case": "apply-rowcount",
+    "Passed": true,
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2025",
+    "Actual": "validate=1,apply=1"
+  },
+  {
+    "Case": "apply-mutating-observer",
+    "Passed": true,
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2025",
+    "Actual": "validate=2,apply=2"
+  },
+  {
+    "Case": "apply-readonly-difference",
+    "Passed": true,
+    "Expected": "BlockedWithoutWrite",
+    "Version": "2025",
+    "Actual": "validate=1,apply=1"
+  }
+]

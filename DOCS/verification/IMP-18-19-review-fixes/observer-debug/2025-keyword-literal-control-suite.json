@@ -1,0 +1,13 @@
+{
+  "CompatibilityLevel": 170,
+  "InstanceName": "SqlXmlAnalyzer_IMP19_2025",
+  "Collation": "Latin1_General_100_CI_AS_SC",
+  "Scenarios": [
+    {
+      "ObserveSql": "SELECT N'DELETE; SELECT INTO; ROLLBACK' AS Text; -- UPDATE dbo.T",
+      "SetupSql": "",
+      "OrderedResults": false,
+      "Name": "keyword-literal-control"
+    }
+  ]
+}

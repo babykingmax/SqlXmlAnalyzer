@@ -1,0 +1,148 @@
+// Synthetic, local-only IMP-05 process checks. Compile outside the repository.
+using System.IO;
+using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text.Json;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Diagnostics;
+using SqlXmlAnalyzer.Core.Privacy;
+using SqlXmlAnalyzer.Core.Services;
+
+internal static class PrivacyVerification
+{
+    internal const string Marker = "SECRET_IMP05_PROCESS_7238";
+    private static readonly List<object> Results = new();
+    private static int Failures;
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+    private static void Check(string name, Action action)
+    {
+        try { action(); Results.Add(new { name, passed = true, error = (string?)null }); }
+        catch (Exception exception) { Failures++; Results.Add(new { name, passed = false, error = exception.ToString() }); }
+    }
+    private static string Hash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        string root = Path.GetFullPath(args[0]);
+        Directory.CreateDirectory(root);
+        string log = Path.Combine(root, "application.log");
+        Logger.Initialize(customLogFilePath: log);
+        string input = Path.Combine(root, Marker + ".sqlplan");
+        string xml = $"""
+            <ShowPlanXML xmlns="{PlanRedactionService.ShowPlanNamespace}" Version="1.571" Build="16.0.1000">
+              <!-- SECRET_IMP05_PROCESS_7238 -->
+              <BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT '{Marker}'" StatementId="1" StatementType="SELECT" StatementSubTreeCost="1">
+                <QueryPlan><RelOp NodeId="0" PhysicalOp="Table Scan" LogicalOp="Table Scan" EstimateRows="42" EstimatedTotalSubtreeCost="1" Parallel="false">
+                  <TableScan><Object Server="{Marker}" Database="{Marker}" Schema="{Marker}" Table="{Marker}" Column="{Marker}" Alias="{Marker}" />
+                  <Predicate><ScalarOperator ScalarString="{Marker}"><Const ConstValue="'{Marker}'" /></ScalarOperator></Predicate>
+                  <ColumnReference Column="@{Marker}" ParameterCompiledValue="'{Marker}'" ParameterRuntimeValue="'{Marker}'" />
+                  </TableScan></RelOp><ScalarOperator><![CDATA[{Marker}]]></ScalarOperator>
+                </QueryPlan></StmtSimple></Statements></Batch></BatchSequence>
+            </ShowPlanXML>
+            """;
+        File.WriteAllText(input, xml);
+        string before = Hash(input);
+        var redaction = new PlanRedactionService().Redact(SafeXmlHelper.LoadSafe(input));
+        var exporter = new RedactedPlanExportService();
+        Check("Supported fields removed from actual new XML file", () =>
+        {
+            var result = exporter.ExportFile(input, Path.Combine(root, "redacted.sqlplan"));
+            Require(result.IsSuccess && result.Redaction?.CanExport == true, result.Message);
+            string output = File.ReadAllText(Path.Combine(root, "redacted.sqlplan"));
+            Require(!output.Contains(Marker) && !JsonSerializer.Serialize(result).Contains(Marker), "Leaked marker");
+            Require(SafeXmlHelper.ParseSafe(output).Root != null && Hash(input) == before, "Invalid payload or modified source");
+        });
+        Check("Unknown field blocks export with no partial payload", () =>
+        {
+            var document = SafeXmlHelper.ParseSafe(xml);
+            document.Root!.SetAttributeValue(Marker, Marker);
+            string path = Path.Combine(root, "unknown.sqlplan"); document.Save(path);
+            var result = exporter.ExportFile(path, Path.Combine(root, "blocked.sqlplan"));
+            Require(!result.IsSuccess && result.Redaction?.Status == PlanRedactionStatus.Blocked && result.Redaction.Xml == null, "Unsupported input accepted");
+            Require(!File.Exists(Path.Combine(root, "blocked.sqlplan")) && !JsonSerializer.Serialize(result).Contains(Marker), "Unsupported payload or summary leaked");
+        });
+        Check("Existing source cannot be selected as output", () =>
+        {
+            Require(!exporter.ExportFile(input, input).IsSuccess && Hash(input) == before, "Original was overwritten");
+        });
+        Check("Expected IO failure has no DUMP or public sensitive message", () =>
+        {
+            var result = new RedactedPlanExportService(new FaultWriter(false)).Export(redaction, Path.Combine(root, "io.sqlplan"));
+            Require(!result.IsSuccess && result.Diagnostic == null && !result.Message.Contains(Marker), "IO classification failure");
+        });
+        Check("Unknown writer exception creates a real Windows minidump and managed sidecar", () =>
+        {
+            var reporter = new UnexpectedErrorReporter(new WindowsMiniDumpWriter(), Path.Combine(root, "private-dumps"));
+            var result = new RedactedPlanExportService(new FaultWriter(true), reporter).Export(redaction, Path.Combine(root, "fault.sqlplan"));
+            File.WriteAllText(Path.Combine(root, "unknown-error.json"), JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }));
+            Require(!result.IsSuccess && result.Diagnostic?.DumpCreated == true, result.Message);
+            // Production reporter validates the complete header/stream directory before publishing DumpCreated.
+            byte[] bytes = File.ReadAllBytes(result.Diagnostic!.DumpPath!);
+            Require(bytes.Length > 32 && BitConverter.ToUInt32(bytes, 0) == 0x504d444d, "Missing MDMP signature");
+            Require(File.ReadAllText(result.Diagnostic.MetadataPath!).Contains("synthetic unknown export fault"), "Missing managed exception details");
+            Require(Hash(input) == before && !File.Exists(Path.Combine(root, "fault.sqlplan")), "Unknown failure changed source or claimed output");
+        });
+        Check("Cancellation leaves no output", () =>
+        {
+            using var cts = new CancellationTokenSource(); cts.Cancel();
+            Require(!exporter.Export(redaction, Path.Combine(root, "cancelled.sqlplan"), cts.Token).IsSuccess && !File.Exists(Path.Combine(root, "cancelled.sqlplan")), "Cancellation wrote output");
+        });
+        Check("Legacy desktop CLI single-file route bypasses raw analysis", () =>
+        {
+            var old = Console.Out; int oldCode = Environment.ExitCode;
+            var capture = new StringWriter();
+            try
+            {
+                Environment.ExitCode = 0; Console.SetOut(capture);
+                Require(CliService.HandleCommandLineArgs(new[] { "--analyze", input, "--export", "obfuscated", "--out", Path.Combine(root, "desktop-redacted.sqlplan") }), "Desktop CLI not handled");
+                Require(Environment.ExitCode == 0, "Desktop CLI failed");
+            }
+            finally { Console.SetOut(old); Environment.ExitCode = oldCode; }
+            File.WriteAllText(Path.Combine(root, "desktop-cli.txt"), capture.ToString());
+            Require(!capture.ToString().Contains(Marker) && !File.ReadAllText(Path.Combine(root, "desktop-redacted.sqlplan")).Contains(Marker), "Desktop route leaked");
+        });
+        Check("Raw HTML contains explicit notice", () =>
+        {
+            string html = HtmlReportGenerator.GenerateReport("raw.sqlplan", "ExecutionPlan", Marker, "flowchart TD\n A[" + Marker + "]");
+            File.WriteAllText(Path.Combine(root, "raw.html"), html);
+            Require(html.Contains(Marker) && html.Contains(OutputPrivacy.RawNotice), "Missing raw HTML marker/notice");
+        });
+        Check("Raw Word actual archive contains notice", () =>
+        {
+            string path = Path.Combine(root, "raw.docx"); ReportExportService.ExportToWord(path, "IMP05 raw report", Marker);
+            using var archive = ZipFile.OpenRead(path); using var reader = new StreamReader(archive.GetEntry("word/document.xml")!.Open());
+            string text = string.Concat(SafeXmlHelper.ParseSafe(reader.ReadToEnd()).Descendants().Where(e => e.Name.LocalName == "t").Select(e => e.Value));
+            Require(text.Contains(Marker) && text.Contains(OutputPrivacy.RawNotice), "Missing raw Word marker/notice");
+        });
+        Check("Raw PDF file produced for independent text inspection", () =>
+        {
+            string path = Path.Combine(root, "raw.pdf"); ReportExportService.ExportToPdf(path, "IMP05 raw report", Marker);
+            Require(File.ReadAllBytes(path).AsSpan(0, 4).SequenceEqual("%PDF"u8), "Invalid PDF header");
+        });
+        Logger.Flush();
+        Check("Build mode log policy and absence of raw input in redaction logs", () =>
+        {
+            string text = File.ReadAllText(log);
+            Require(text.Contains("[ERROR]") && text.Contains("[CRITICAL]"), "Error/fatal logs missing");
+            Require(text.Contains("[DEBUG]") == Logger.IsDebugMode && text.Contains("[WARN]") == Logger.IsDebugMode, "Wrong diagnostic log levels");
+            Require(!text.Contains(Marker), "Sensitive input reached redaction log");
+        });
+        Logger.Shutdown();
+        File.WriteAllText(Path.Combine(root, "process-results.json"), JsonSerializer.Serialize(new {
+            configuration = Logger.IsDebugMode ? "Debug" : "Release", tests = Results,
+            total = Results.Count, failed = Failures, passed = Results.Count - Failures,
+            inputSha256 = before, sourceUnchanged = Hash(input) == before, marker = Marker,
+            sqlServerExecuted = false, wpfVisualTestPerformed = false, pdfTextInspectionSeparate = true
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return Failures == 0 ? 0 : 1;
+    }
+
+    private sealed class FaultWriter(bool unknown) : IRedactedPlanWriter
+    {
+        public void WriteNew(string path, byte[] bytes, CancellationToken cancellationToken) =>
+            throw (unknown ? new InvalidOperationException("synthetic unknown export fault") : new IOException(Marker));
+    }
+}

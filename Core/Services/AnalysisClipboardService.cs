@@ -67,7 +67,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
             return new AnalysisClipboardResult(
                 AnalysisClipboardStatus.Ready,
-                $"{header}\r\n\r\n{diagnostics}",
+                Privacy.OutputPrivacy.MarkRaw($"{header}\r\n\r\n{diagnostics}"),
                 null);
         }
     }

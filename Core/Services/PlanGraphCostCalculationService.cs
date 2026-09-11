@@ -11,7 +11,10 @@ namespace SqlXmlAnalyzer.Core.Services
         double EstimatedIoCost,
         double EstimatedRows,
         double ActualRows,
-        bool HasActualRows);
+        bool HasActualRows)
+    {
+        public Models.PlanOperatorFacts? Facts { get; init; }
+    }
 
     public sealed record PlanGraphNodeCostResult(
         double OwnCost,
@@ -52,7 +55,7 @@ namespace SqlXmlAnalyzer.Core.Services
             double maxCpuCost,
             double maxIoCost)
         {
-            double ownCost = Math.Max(
+            double ownCost = node.Facts != null ? node.Facts.OwnCost.Value ?? 0 : Math.Max(
                 0.0,
                 node.SubtreeCost - node.ChildSubtreeCosts.Sum());
             double actualRecost = CalculateActualRecost(node, ownCost);

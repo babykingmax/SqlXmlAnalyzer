@@ -6,14 +6,17 @@ using SqlXmlAnalyzer.Core.Parsers;
 
 namespace SqlXmlAnalyzer.Core.Services
 {
-    public sealed record DeadlockPlaybackEdgeKey(string FromId, string ToId);
+    public sealed record DeadlockPlaybackEdgeKey(string FromId, string ToId, string EvidenceId = "");
 
     public sealed record DeadlockPlaybackNodeState(
         string NodeId,
         bool IsCollapsed,
         bool IsActive,
         bool IsVictim,
-        bool IsVictimRevealed);
+        bool IsVictimRevealed)
+    {
+        public bool IsInCycle { get; init; }
+    }
 
     public sealed record DeadlockPlaybackEdgeState(
         DeadlockPlaybackEdgeKey Edge,
@@ -39,37 +42,46 @@ namespace SqlXmlAnalyzer.Core.Services
             ArgumentNullException.ThrowIfNull(edges);
 
             HashSet<string> visibleNodes = new(StringComparer.Ordinal);
-            HashSet<DeadlockPlaybackEdgeKey> visibleEdges = new();
+            var observations = new Dictionary<DeadlockPlaybackEdgeKey, EdgeObservation>();
+            var victimSteps = new Dictionary<string, int>(StringComparer.Ordinal);
 
             foreach (DeadlockEvent ev in timeline.Events)
             {
-                if (ev.StepNumber > currentStep)
+                if (ev.Type == "Victim")
                 {
-                    continue;
+                    if (!victimSteps.TryGetValue(ev.ProcessId, out int previous) || ev.StepNumber < previous)
+                        victimSteps[ev.ProcessId] = ev.StepNumber;
                 }
-
-                if (focusCriticalPath && !ev.IsInCycle)
-                {
-                    continue;
-                }
-
+                bool active = ev.StepNumber <= currentStep && (!focusCriticalPath || ev.IsInCycle);
                 string processNodeId = ToProcessNodeId(ev.ProcessId);
                 string resourceNodeId = ToResourceNodeId(ev.ResourceId);
-
-                visibleNodes.Add(processNodeId);
-                visibleNodes.Add(resourceNodeId);
-
-                if (ev.Type == "Request")
+                if (active)
                 {
-                    visibleEdges.Add(new DeadlockPlaybackEdgeKey(processNodeId, resourceNodeId));
+                    visibleNodes.Add(processNodeId);
+                    if (!string.IsNullOrEmpty(ev.ResourceId)) visibleNodes.Add(resourceNodeId);
                 }
-                else if (ev.Type == "Grant")
+                DeadlockPlaybackEdgeKey? key = ev.Type switch
                 {
-                    visibleEdges.Add(new DeadlockPlaybackEdgeKey(resourceNodeId, processNodeId));
+                    "Request" => new(processNodeId, resourceNodeId, ev.EvidenceId),
+                    "Grant" => new(resourceNodeId, processNodeId, ev.EvidenceId),
+                    _ => null
+                };
+                if (key != null)
+                {
+                    Observe(key, ev, active);
+                    // Keep endpoint-only API callers working; identified edges never fall back
+                    // to this aggregate and cannot accidentally reveal a sibling relationship.
+                    if (!string.IsNullOrEmpty(key.EvidenceId)) Observe(key with { EvidenceId = "" }, ev, active);
                 }
             }
 
-            int? victimStep = timeline.Events.FirstOrDefault(ev => ev.Type == "Victim")?.StepNumber;
+            void Observe(DeadlockPlaybackEdgeKey key, DeadlockEvent ev, bool active)
+            {
+                observations.TryGetValue(key, out EdgeObservation previous);
+                int? step = active ? ev.StepNumber : null;
+                if (previous.FirstActiveStep.HasValue && (!step.HasValue || previous.FirstActiveStep < step)) step = previous.FirstActiveStep;
+                observations[key] = new(previous.IsInCycle || ev.IsInCycle, step);
+            }
 
             Dictionary<string, DeadlockPlaybackNodeState> nodeStates = nodeIds
                 .Distinct(StringComparer.Ordinal)
@@ -79,7 +91,7 @@ namespace SqlXmlAnalyzer.Core.Services
                         timeline,
                         nodeId,
                         visibleNodes,
-                        victimStep,
+                        victimSteps,
                         currentStep,
                         focusCriticalPath),
                     StringComparer.Ordinal);
@@ -89,9 +101,8 @@ namespace SqlXmlAnalyzer.Core.Services
                 .ToDictionary(
                     edge => edge,
                     edge => CreateEdgeState(
-                        timeline,
                         edge,
-                        visibleEdges,
+                        observations.GetValueOrDefault(edge),
                         focusCriticalPath));
 
             return new DeadlockPlaybackGraphState(nodeStates, edgeStates);
@@ -101,11 +112,12 @@ namespace SqlXmlAnalyzer.Core.Services
             DeadlockTimelineParser.ParsedDeadlock timeline,
             string nodeId,
             IReadOnlySet<string> visibleNodes,
-            int? victimStep,
+            IReadOnlyDictionary<string, int> victimSteps,
             int currentStep,
             bool focusCriticalPath)
         {
             string rawId = ToTimelineNodeId(nodeId);
+            int? victimStep = victimSteps.TryGetValue(rawId, out int step) ? step : null;
             bool isProcess = nodeId.StartsWith("proc_id_", StringComparison.Ordinal);
             bool inCycle = isProcess
                 ? timeline.Processes.TryGetValue(rawId, out DeadlockNodeInfo? process) && process.IsInCycle
@@ -121,38 +133,21 @@ namespace SqlXmlAnalyzer.Core.Services
                 IsCollapsed: focusCriticalPath && !inCycle,
                 IsActive: visibleNodes.Contains(nodeId),
                 IsVictim: isVictim,
-                IsVictimRevealed: isVictim && victimStep.HasValue && currentStep >= victimStep.Value);
+                IsVictimRevealed: isVictim && victimStep.HasValue && currentStep >= victimStep.Value) { IsInCycle = inCycle };
         }
+
+        private readonly record struct EdgeObservation(bool IsInCycle, int? FirstActiveStep);
 
         private static DeadlockPlaybackEdgeState CreateEdgeState(
-            DeadlockTimelineParser.ParsedDeadlock timeline,
             DeadlockPlaybackEdgeKey edge,
-            IReadOnlySet<DeadlockPlaybackEdgeKey> visibleEdges,
+            EdgeObservation observation,
             bool focusCriticalPath)
         {
-            DeadlockEvent? relatedEvent = FindRelatedEvent(timeline.Events, edge);
-            bool inCycle = relatedEvent != null && relatedEvent.IsInCycle;
-            bool isActive = visibleEdges.Contains(edge);
-
             return new DeadlockPlaybackEdgeState(
                 edge,
-                IsCollapsed: focusCriticalPath && !inCycle,
-                IsActive: isActive,
-                BadgeStepNumber: isActive ? relatedEvent?.StepNumber : null);
-        }
-
-        private static DeadlockEvent? FindRelatedEvent(
-            IEnumerable<DeadlockEvent> events,
-            DeadlockPlaybackEdgeKey edge)
-        {
-            return events.FirstOrDefault(ev =>
-                ev.Type == "Request" &&
-                ToProcessNodeId(ev.ProcessId) == edge.FromId &&
-                ToResourceNodeId(ev.ResourceId) == edge.ToId)
-                ?? events.FirstOrDefault(ev =>
-                    ev.Type == "Grant" &&
-                    ToResourceNodeId(ev.ResourceId) == edge.FromId &&
-                    ToProcessNodeId(ev.ProcessId) == edge.ToId);
+                IsCollapsed: focusCriticalPath && !observation.IsInCycle,
+                IsActive: observation.FirstActiveStep.HasValue,
+                BadgeStepNumber: observation.FirstActiveStep);
         }
 
         private static string ToProcessNodeId(string processId)

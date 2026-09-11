@@ -1,0 +1,5 @@
+{
+  "Configuration": "Debug",
+  "ExitCode": 0,
+  "Command": "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Debug --no-build --no-restore"
+}

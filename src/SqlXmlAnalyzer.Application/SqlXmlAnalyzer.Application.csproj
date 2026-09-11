@@ -12,4 +12,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <InternalsVisibleTo Include="SqlXmlAnalyzer.Tests" />
+  </ItemGroup>
+
 </Project>

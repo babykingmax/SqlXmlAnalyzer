@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "BindingErrors": 0,
+  "Records": [
+    {
+      "State": "statement-2",
+      "DisplayName": "Statement 2 \u00B7 StmtSimple \u00B7 ID 2 \u00B7 QueryPlan 1",
+      "Key": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1",
+      "Description": "XML\uFF1A/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}ShowPlanXML[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}BatchSequence[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Batch[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}Statements[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}StmtSimple[2]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}QueryPlan[1]/{http://schemas.microsoft.com/sqlserver/2004/07/showplan}RelOp[1]\uFF1B\u884C\uFF1A16\uFF1B\u5217\uFF1A22\r\n5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61/B1/S2/Q1/N0/O1",
+      "Sql": "SELECT V FROM U WHERE V=2",
+      "ActualRows": "10,000",
+      "ActualRowsRead": "100,000"
+    },
+    {
+      "State": "event-2",
+      "Event": "\u6B7B\u9501\u4E8B\u4EF6 2 \u00B7 2026-09-08T08:01:00\u002B08:00",
+      "Description": "XML\uFF1A/{urn:imp06:xe}events[1]/{urn:imp06:xe}event[2]/{urn:imp06:xe}data[1]/{urn:imp06:xe}value[1]/{urn:imp06:xe}deadlock[1]/{urn:imp06:xe}resource-list[1]/{urn:imp06:xe}keylock[1]\uFF1B\u884C\uFF1A20\uFF1B\u5217\uFF1A12\uFF1B\u6E90\u4E8B\u4EF6\uFF1A2",
+      "ProcessIds": [
+        "p3",
+        "p4"
+      ],
+      "Nature": "\u4F9D\u8D56\u63A8\u6F14\uFF1A\u6B7B\u9501\u5FEB\u7167\u4E0D\u5305\u542B\u539F\u59CB\u65F6\u95F4\u5E8F\u5217\uFF1B\u6B65\u9AA4\u53EA\u89E3\u91CA\u4F9D\u8D56\u5173\u7CFB\uFF0C\u4E0D\u662F\u771F\u5B9E\u56DE\u653E\u3002"
+    }
+  ]
+}

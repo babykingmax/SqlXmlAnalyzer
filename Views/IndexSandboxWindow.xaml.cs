@@ -7,6 +7,7 @@ namespace SqlXmlAnalyzer.Views
         public IndexSandboxWindow()
         {
             InitializeComponent();
+            Services.WorkspaceAccessibility.PrepareDialog(this);
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -24,9 +25,7 @@ namespace SqlXmlAnalyzer.Views
         {
             if (DataContext is ViewModels.IndexSandboxViewModel vm)
             {
-                Clipboard.SetText(vm.CreateIndexStatement);
-                MessageBox.Show("脚本已复制到剪贴板！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.Close();
+                vm.CopyScript(Clipboard.SetText);
             }
         }
     }

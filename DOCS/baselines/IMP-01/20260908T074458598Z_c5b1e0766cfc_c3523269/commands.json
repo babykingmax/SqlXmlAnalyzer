@@ -1,0 +1,149 @@
+[
+  {
+    "name": "sdk-version",
+    "executable": "dotnet",
+    "arguments": [
+      "--version"
+    ],
+    "startedUtc": "2026-09-08T07:44:59.6770981+00:00",
+    "finishedUtc": "2026-09-08T07:44:59.8229551+00:00",
+    "exitCode": 0,
+    "stdout": "sdk-version.stdout.txt",
+    "stderr": "sdk-version.stderr.txt"
+  },
+  {
+    "name": "sdk-info",
+    "executable": "dotnet",
+    "arguments": [
+      "--info"
+    ],
+    "startedUtc": "2026-09-08T07:44:59.8319553+00:00",
+    "finishedUtc": "2026-09-08T07:45:00.2149361+00:00",
+    "exitCode": 0,
+    "stdout": "sdk-info.stdout.txt",
+    "stderr": "sdk-info.stderr.txt"
+  },
+  {
+    "name": "sdk-list",
+    "executable": "dotnet",
+    "arguments": [
+      "--list-sdks"
+    ],
+    "startedUtc": "2026-09-08T07:45:00.2183061+00:00",
+    "finishedUtc": "2026-09-08T07:45:00.2481218+00:00",
+    "exitCode": 0,
+    "stdout": "sdk-list.stdout.txt",
+    "stderr": "sdk-list.stderr.txt"
+  },
+  {
+    "name": "runtime-list",
+    "executable": "dotnet",
+    "arguments": [
+      "--list-runtimes"
+    ],
+    "startedUtc": "2026-09-08T07:45:00.2501767+00:00",
+    "finishedUtc": "2026-09-08T07:45:00.2756135+00:00",
+    "exitCode": 0,
+    "stdout": "runtime-list.stdout.txt",
+    "stderr": "runtime-list.stderr.txt"
+  },
+  {
+    "name": "git-version",
+    "executable": "git",
+    "arguments": [
+      "--version"
+    ],
+    "startedUtc": "2026-09-08T07:45:00.2774782+00:00",
+    "finishedUtc": "2026-09-08T07:45:00.3184012+00:00",
+    "exitCode": 0,
+    "stdout": "git-version.stdout.txt",
+    "stderr": "git-version.stderr.txt"
+  },
+  {
+    "name": "evaluated-properties",
+    "executable": "dotnet",
+    "arguments": [
+      "msbuild",
+      "SqlXmlAnalyzer.csproj",
+      "-nologo",
+      "-p:Configuration=Debug",
+      "-getProperty:Version,AssemblyVersion,InformationalVersion,TargetFramework,Configuration"
+    ],
+    "startedUtc": "2026-09-08T07:45:00.3204325+00:00",
+    "finishedUtc": "2026-09-08T07:45:01.1473353+00:00",
+    "exitCode": 0,
+    "stdout": "evaluated-properties.stdout.txt",
+    "stderr": "evaluated-properties.stderr.txt"
+  },
+  {
+    "name": "restore",
+    "executable": "dotnet",
+    "arguments": [
+      "restore",
+      "SqlXmlAnalyzer.sln",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T07:45:01.1583947+00:00",
+    "finishedUtc": "2026-09-08T07:45:02.8234165+00:00",
+    "exitCode": 0,
+    "stdout": "restore.stdout.txt",
+    "stderr": "restore.stderr.txt"
+  },
+  {
+    "name": "build",
+    "executable": "dotnet",
+    "arguments": [
+      "build",
+      "SqlXmlAnalyzer.sln",
+      "--no-restore",
+      "--no-incremental",
+      "--configuration",
+      "Debug",
+      "--nologo"
+    ],
+    "startedUtc": "2026-09-08T07:45:02.8262037+00:00",
+    "finishedUtc": "2026-09-08T07:45:15.0999940+00:00",
+    "exitCode": 0,
+    "stdout": "build.stdout.txt",
+    "stderr": "build.stderr.txt"
+  },
+  {
+    "name": "test",
+    "executable": "dotnet",
+    "arguments": [
+      "test",
+      "SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj",
+      "--no-build",
+      "--no-restore",
+      "--configuration",
+      "Debug",
+      "--nologo",
+      "--logger",
+      "trx;LogFileName=baseline.trx",
+      "--results-directory",
+      "E:\\SqlXmlAnalyzer\\DOCS\\baselines\\IMP-01\\20260908T074458598Z_c5b1e0766cfc_c3523269\\test-output"
+    ],
+    "startedUtc": "2026-09-08T07:45:15.1032055+00:00",
+    "finishedUtc": "2026-09-08T07:45:21.7626705+00:00",
+    "exitCode": 0,
+    "stdout": "test.stdout.txt",
+    "stderr": "test.stderr.txt"
+  },
+  {
+    "name": "resolved-packages",
+    "executable": "dotnet",
+    "arguments": [
+      "list",
+      "SqlXmlAnalyzer.sln",
+      "package",
+      "--include-transitive",
+      "--format",
+      "json"
+    ],
+    "startedUtc": "2026-09-08T07:45:21.7647530+00:00",
+    "finishedUtc": "2026-09-08T07:45:24.4647892+00:00",
+    "exitCode": 0,
+    "stdout": "resolved-packages.stdout.txt",
+    "stderr": "resolved-packages.stderr.txt"
+  }
+]

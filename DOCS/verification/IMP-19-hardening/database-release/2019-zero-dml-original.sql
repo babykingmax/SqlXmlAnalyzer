@@ -1,0 +1,1 @@
+UPDATE dbo.T SET Id=Id WHERE 1=0; SELECT 1 AS N;

@@ -1,0 +1,438 @@
+{
+  "Implementation": "IMP-27",
+  "GeneratedAtUtc": "2026-09-10T07:40:32.0145492Z",
+  "GitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "Context": "Current working tree includes preceding uncommitted IMP-23 through IMP-26 work; no commit or publication performed.",
+  "SourceManifest": "sources.json",
+  "SourceCount": 647,
+  "CoverageGenerated": false,
+  "Configurations": [
+    {
+      "Configuration": "Debug",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLog": {
+        "Path": ".tmp.imp27-build-debug.log",
+        "Sha256": "F265AC8058655D379D739B91639E506586221194314ED3C3DC0733DE98E3210C"
+      },
+      "Tests": {
+        "Total": 2684,
+        "Passed": 2684,
+        "Failed": 0,
+        "NotExecuted": 0
+      },
+      "NewTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"missing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.PreviouslyRedactedReport_DoesNotMisrepresentCurrentConfigAsAnalysisConfig",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.PartialIoFailure_RemovesUnpublishedSensitiveArchive",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Review_ChangedOptionsInvalidatePreviewAndCancelledPrepareCannotEnableSave",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.EstimateOnlyPlan_RecordsMissingRuntimeEvidence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"cancel\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.MissingRawSelection_FailsInsteadOfSilentlyOmittingChosenContent",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"duplicate\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"version\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"payload\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.PackageOperations_RespectBuildLogLevelsIncludingForcedVerbose",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_InvalidOrSubstitutedOutputCannotReplaceReviewedPackage(kind: \"substitute\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"directory\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"unicode\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.UnknownSaveFailure_CreatesRealDumpOnceOrReportsDumpFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.ExplicitSelection_IncludesRawXmlAndLogWithFixedNamesAndVisibleSensitiveStatus",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"extra\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.DefaultPackage_ExcludesSensitiveMarkersAcrossEveryPayloadAndManifest",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"traversal\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"extension\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"dump-header\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.ErrorAndMissingEvidenceSummaries_PreserveFailedAndSkippedLocationsWithoutExceptionText",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"dump\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"missing-parent\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Review_BusySaveFreezesOptionsAndPreventsDuplicateWrites",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Configuration_UsesReportSnapshotAndDistinguishesChangedActiveSession",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"manifest-size\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.WithoutReport_RecordsUnavailableEvidenceAndNeverInventsAnalysisConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.UnknownXml_BlocksSelectedReportButAllowsMetadataOnlyPackage",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_UsesReviewedBytesEvenWhenSelectedLogChangesOrDisappears",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"extension\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"existing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.UnknownSaveFailure_CreatesRealDumpOnceOrReportsDumpFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"oversize\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_WhenDestinationAppearsDuringWrite_PreservesIt",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.BrokenDiagnosticReporter_DoesNotHidePrimaryErrorOrPublishArchive",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_CancelAfterArchiveWriteDoesNotPublish",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_InvalidOrSubstitutedOutputCannotReplaceReviewedPackage(kind: \"corrupt\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"empty\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Trx": {
+        "Path": ".tmp.imp27-results/Debug/full.trx",
+        "Sha256": "D595D02D3CC524323A5D0AD1CADD3D916825DAC2AB61771E43AC2584EFAA579A"
+      },
+      "WpfChecks": 59,
+      "WpfBindingErrors": 0,
+      "Artifacts": [
+        {
+          "Path": "wpf-Debug/verification.json",
+          "Bytes": 3297,
+          "Sha256": "34D94313F41272B743E1FC769C9607C85AAB6A0AE3698068823182C07662758E"
+        },
+        {
+          "Path": "wpf-Debug/review-light.png",
+          "Bytes": 100810,
+          "Sha256": "49169BE366C58E68120A51458794DA6F0C760B5B3F52A9ED418414C4D878C65A"
+        },
+        {
+          "Path": "wpf-Debug/review-dark.png",
+          "Bytes": 103536,
+          "Sha256": "49D3F630D5098C2D38DA481DDC0CED8061C75C87F84C24B6F7B1EEA40767F13B"
+        },
+        {
+          "Path": "wpf-Debug/review-compact.png",
+          "Bytes": 52601,
+          "Sha256": "EF9B033480E0928EB47021B991EE188022BA9A2442A7C3784B467CF137073246"
+        },
+        {
+          "Path": "wpf-Debug/synthetic.sqlplan",
+          "Bytes": 629,
+          "Sha256": "6D32A6A4B9D163A8E38378C9579DA1E182998D4238A0C25D1C7B8B354E225FE5"
+        },
+        {
+          "Path": "wpf-Debug/default-package.zip",
+          "Bytes": 9744,
+          "Sha256": "BE1244BBA1523AEE58A098BD3BB69C3AF128285D5633F31BFB317C47F056E55B"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "BuildLog": {
+        "Path": ".tmp.imp27-build-release.log",
+        "Sha256": "1F21E1F155BDB5FCF54E0CBC790E8115E59F1CFE47F1D0F34EC1DD85FAC84BFB"
+      },
+      "Tests": {
+        "Total": 2684,
+        "Passed": 2684,
+        "Failed": 0,
+        "NotExecuted": 0
+      },
+      "NewTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"existing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.UnknownXml_BlocksSelectedReportButAllowsMetadataOnlyPackage",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"duplicate\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"dump\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_UsesReviewedBytesEvenWhenSelectedLogChangesOrDisappears",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"payload\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"missing-parent\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_WhenDestinationAppearsDuringWrite_PreservesIt",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.ExplicitSelection_IncludesRawXmlAndLogWithFixedNamesAndVisibleSensitiveStatus",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Review_BusySaveFreezesOptionsAndPreventsDuplicateWrites",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"missing\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.PartialIoFailure_RemovesUnpublishedSensitiveArchive",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"directory\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"traversal\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"dump-header\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"unicode\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.UnknownSaveFailure_CreatesRealDumpOnceOrReportsDumpFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"oversize\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"cancel\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.EstimateOnlyPlan_RecordsMissingRuntimeEvidence",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_InvalidOrSubstitutedOutputCannotReplaceReviewedPackage(kind: \"corrupt\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.ErrorAndMissingEvidenceSummaries_PreserveFailedAndSkippedLocationsWithoutExceptionText",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_CancelAfterArchiveWriteDoesNotPublish",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"empty\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.UnknownSaveFailure_CreatesRealDumpOnceOrReportsDumpFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.WithoutReport_RecordsUnavailableEvidenceAndNeverInventsAnalysisConfiguration",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Configuration_UsesReportSnapshotAndDistinguishesChangedActiveSession",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.MissingRawSelection_FailsInsteadOfSilentlyOmittingChosenContent",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.PreviouslyRedactedReport_DoesNotMisrepresentCurrentConfigAsAnalysisConfig",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"manifest-size\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_ExpectedFailurePreservesExistingFilesAndLeavesNoTemporaryData(kind: \"extension\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.DefaultPackage_ExcludesSensitiveMarkersAcrossEveryPayloadAndManifest",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.BrokenDiagnosticReporter_DoesNotHidePrimaryErrorOrPublishArchive",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.InvalidAttachment_ReturnsNoPackageWithoutDump(kind: \"extension\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Save_InvalidOrSubstitutedOutputCannotReplaceReviewedPackage(kind: \"substitute\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"extra\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Review_ChangedOptionsInvalidatePreviewAndCancelledPrepareCannotEnableSave",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.DiagnosticPackageDiagnosticTests.PackageOperations_RespectBuildLogLevelsIncludingForcedVerbose",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.DiagnosticPackageTests.Validate_RejectsCorruptionOrInvalidManifest(kind: \"version\")",
+          "Outcome": "Passed"
+        }
+      ],
+      "Trx": {
+        "Path": ".tmp.imp27-results/Release/full.trx",
+        "Sha256": "32695BFB3BD022FC58E5358600B7ABE57BA91D1D113306250022AF56A7B270AC"
+      },
+      "WpfChecks": 59,
+      "WpfBindingErrors": 0,
+      "Artifacts": [
+        {
+          "Path": "wpf-Release/verification.json",
+          "Bytes": 3299,
+          "Sha256": "B6C49D5E28BCCC29EE259BDDF77C7BA594EEDD4D630FDA38ACA0556AA073FB4D"
+        },
+        {
+          "Path": "wpf-Release/review-light.png",
+          "Bytes": 101386,
+          "Sha256": "59DF8F4ADFC5547A9C62F9D76229B537EF5A1B4EB67EC0F060DEB773959CC2F2"
+        },
+        {
+          "Path": "wpf-Release/review-dark.png",
+          "Bytes": 103965,
+          "Sha256": "31053F571D0A5F92E43517453ECE37E47C8877E6EBCE637E6BA4427A979FAE0B"
+        },
+        {
+          "Path": "wpf-Release/review-compact.png",
+          "Bytes": 52854,
+          "Sha256": "DBED851EC76B0954A92DAE27E4FE1EEC3AD2FF363586C50BD157E6C1935FE210"
+        },
+        {
+          "Path": "wpf-Release/synthetic.sqlplan",
+          "Bytes": 629,
+          "Sha256": "6D32A6A4B9D163A8E38378C9579DA1E182998D4238A0C25D1C7B8B354E225FE5"
+        },
+        {
+          "Path": "wpf-Release/default-package.zip",
+          "Bytes": 9735,
+          "Sha256": "659109934B858683AD85F56E29D1E5ED1A8580F1EA3EA9F14E6C13D142C50301"
+        }
+      ]
+    }
+  ],
+  "Limitations": [
+    "Offscreen WPF with injected file dialogs; not physical keyboard, screen reader or display DPI acceptance.",
+    "Checksums prove byte identity, not authenticity or anonymous content.",
+    "Raw TRX, logs, ZIP and test DUMPs are local-only evidence; DUMPs are cleaned by tests."
+  ]
+}

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Rules;
 
 namespace SqlXmlAnalyzer.Core.Services
 {
@@ -38,30 +39,22 @@ namespace SqlXmlAnalyzer.Core.Services
         public HtmlAnalysisReport BuildDeadlockHtmlReport(
             XDocument document,
             string filePath,
-            string selectedDetailText)
+            string selectedDetailText,
+            DeadlockAnalysisOutput? completedAnalysis = null)
         {
-            var parseResult = DeadlockXmlParser.TryParseDeadlockXml(document);
-            if (!parseResult.IsSuccess || parseResult.Value == null)
-            {
-                throw new InvalidDataException(string.Join(Environment.NewLine, parseResult.Errors));
-            }
-
-            var parsed = parseResult.Value;
-            var graph = DeadlockGraphBuilder.Build(
-                parsed.Processes,
-                parsed.Resources,
-                parsed.VictimId);
-            string mermaid = _mermaidDiagramService.BuildDeadlockDiagram(graph);
+            var analysis = completedAnalysis ?? new DeadlockAnalysisService().Analyze(document);
+            var graph = analysis.Graph;
+            string mermaid = analysis.Mermaid;
             string summaryText =
                 $"Deadlock file: {Path.GetFileName(filePath)}{Environment.NewLine}" +
-                $"Victim process: {parsed.VictimId}{Environment.NewLine}" +
-                $"SPIDs: {string.Join(", ", parsed.Processes.Select(process => process.Spid).Distinct())}";
+                $"Victim process: {string.Join(", ", graph.VictimProcessIds.Order(StringComparer.Ordinal))}{Environment.NewLine}" +
+                $"SPIDs: {string.Join(", ", graph.Processes.Select(process => process.Spid).Distinct())}{Environment.NewLine}" +
+                graph.CycleAnalysis.Summary + Environment.NewLine + string.Join(Environment.NewLine, analysis.Warnings);
 
-            List<HtmlReportItem> reportItems = DeadlockPatternAnalyzer
-                .IdentifyPatterns(graph, document)
+            List<HtmlReportItem> reportItems = analysis.Patterns
                 .Select(pattern => new HtmlReportItem(
                     pattern.TypeName,
-                    pattern.Description,
+                    pattern.Description + Environment.NewLine + DeadlockDiagnosticFormatter.FormatEvidence(pattern),
                     pattern.LikelyCause,
                     pattern.Recommendation,
                     pattern.Severity))
@@ -90,32 +83,42 @@ namespace SqlXmlAnalyzer.Core.Services
         public HtmlAnalysisReport BuildPlanHtmlReport(
             XDocument document,
             string filePath,
-            XNamespace showplanNamespace)
+            XNamespace showplanNamespace,
+            PlanDiagnosticReport? diagnostics = null)
         {
             string mermaid = _mermaidDiagramService.BuildPlanDiagram(
                 document,
                 showplanNamespace);
-            List<HtmlReportItem> reportItems = PlanDiagnosticAnalyzer
-                .AnalyzePlan(document, showplanNamespace)
+            if (diagnostics != null && PlanIdentityAdapter.GetDocument(document) is { } model
+                && diagnostics.DocumentId != model.Envelope.DocumentId)
+                throw new InvalidDataException("RULE_REPORT_SOURCE_MISMATCH: 诊断记录不属于当前文档版本。");
+            diagnostics ??= PlanDiagnosticAnalyzer.AnalyzeDetailed(document, showplanNamespace);
+            List<HtmlReportItem> reportItems = diagnostics.ToLegacyResults()
                 .Select(result => new HtmlReportItem(
                     result.Title,
-                    result.Message,
+                    result.Diagnostic is { } diagnostic ? DiagnosticTextFormatter.FormatDiagnostic(diagnostic) : result.Message,
                     string.Empty,
                     string.Empty,
                     result.Severity))
                 .ToList();
+            reportItems.AddRange(diagnostics.Runs.Where(r => r.Status == RuleRunStatus.Skipped)
+                .Select(r => new HtmlReportItem($"Skipped: {r.RuleId}", DiagnosticTextFormatter.FormatRun(r),
+                    string.Empty, string.Empty, "Info")));
 
             if (reportItems.Count == 0)
             {
                 reportItems.Add(new HtmlReportItem(
                     "No diagnostic rule matched",
-                    "The current execution plan did not match any enabled diagnostic rule.",
+                    "已执行规则未命中诊断；这不构成计划完全健康的证明。",
                     string.Empty,
                     string.Empty,
                     "Info"));
             }
 
             string summaryText = $"Execution plan file: {Path.GetFileName(filePath)}{Environment.NewLine}";
+            summaryText += DiagnosticTextFormatter.Summary(diagnostics) + Environment.NewLine;
+            if (diagnostics.HasFailures) summaryText += "诊断未完成，不能据此判断计划健康。" + Environment.NewLine;
+            else if (diagnostics.HasMissingEvidence) summaryText += "部分规则缺少证据，详见 Skipped 记录。" + Environment.NewLine;
             XElement? queryPlan = document.Descendants(showplanNamespace + "QueryPlan").FirstOrDefault();
             if (queryPlan != null)
             {
@@ -151,6 +154,7 @@ namespace SqlXmlAnalyzer.Core.Services
                     builder.AppendLine($"Description: {pattern.Description}");
                     builder.AppendLine($"Likely cause: {pattern.LikelyCause}");
                     builder.AppendLine($"Recommendation: {pattern.Recommendation}");
+                    if (!string.IsNullOrEmpty(pattern.RuleId)) builder.AppendLine(DeadlockDiagnosticFormatter.FormatEvidence(pattern));
                     builder.AppendLine();
                     hasPatterns = true;
                 }

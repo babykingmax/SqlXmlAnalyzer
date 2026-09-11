@@ -1,0 +1,22 @@
+{
+  "executable": "dotnet",
+  "arguments": [
+    "run",
+    "--project",
+    "C:\\Users\\Administrator\\AppData\\Local\\Temp\\SqlXmlAnalyzer-IMP02-a96dd7ec16784a5fbb076b88fff9957e\\AcceptanceProbe.csproj",
+    "--configuration",
+    "Debug",
+    "--no-build",
+    "--no-restore",
+    "--",
+    "E:\\SqlXmlAnalyzer",
+    "E:\\SqlXmlAnalyzer\\DOCS\\acceptance\\IMP-02\\runs\\20260908T125119934Z_c5b1e0766cfc_2d768643"
+  ],
+  "startedUtc": "2026-09-08T12:51:51.2646176+00:00",
+  "finishedUtc": "2026-09-08T12:51:53.3204166+00:00",
+  "processId": 67488,
+  "exitCode": 0,
+  "timedOut": false,
+  "outputComplete": true,
+  "failure": null
+}

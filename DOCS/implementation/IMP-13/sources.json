@@ -1,0 +1,20 @@
+[
+  {
+    "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-deadlocks-guide?view=sql-server-ver17",
+    "StatusCode": 200,
+    "RetrievedAtUtc": "2026-09-09T01:44:30.7299067Z",
+    "Title": "Deadlocks Guide - SQL Server | Microsoft Learn"
+  },
+  {
+    "Url": "https://learn.microsoft.com/en-us/sql/relational-databases/sql-server-transaction-locking-and-row-versioning-guide?view=sql-server-ver17",
+    "StatusCode": 200,
+    "RetrievedAtUtc": "2026-09-09T01:44:34.4524703Z",
+    "Title": "Transaction Locking and Row Versioning Guide - SQL Server | Microsoft Learn"
+  },
+  {
+    "Url": "https://learn.microsoft.com/en-us/windows/win32/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump",
+    "StatusCode": 200,
+    "RetrievedAtUtc": "2026-09-09T01:44:36.8611616Z",
+    "Title": "MiniDumpWriteDump function (minidumpapiset.h) - Win32 apps | Microsoft Learn"
+  }
+]

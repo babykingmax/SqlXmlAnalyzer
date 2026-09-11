@@ -1,0 +1,125 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 82dea7eaf69fc00bf3049b310c6bb36a64f6ecf4..7d4e0f24b80536bdc937b4403bb28bf49bdb7399 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -57,3 +57,7 @@ Pull requests should include a concise problem statement, implementation summary
+ ## Security & Configuration
+ 
+ Treat `.sqlplan`, `.xdl`, `.xel`, and SQL text as untrusted input. Avoid logging sensitive SQL or identifiers unnecessarily. Keep `RuleConfiguration.json` changes backward-compatible and document any new rule IDs or severity defaults.
++
++
++
++ 
+diff --git a/MainWindow.Services.cs b/MainWindow.Services.cs
+index cb25b833472ffc2272a78a5e803e015ddad4cefd..fd7844cc8c934550b786e7ca29e5a529b35ff9f3 100644
+--- a/MainWindow.Services.cs
++++ b/MainWindow.Services.cs
+@@ -66,6 +66,7 @@ namespace SqlXmlAnalyzer
+         {
+             InitializeComponent();
+             WireMainShellEvents();
++            WireKeyboardShortcuts();
+             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
+             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
+             this.DataContext = ViewModel;
+diff --git a/Views/ShellNavigationRail.xaml b/Views/ShellNavigationRail.xaml
+index b39cac80c4453e61b0a8ed65dde6397eb59fc4fd..0344a39cb302286ae4a310c42593840a41a52c7c 100644
+--- a/Views/ShellNavigationRail.xaml
++++ b/Views/ShellNavigationRail.xaml
+@@ -16,7 +16,8 @@
+             <StackPanel Grid.Row="0">
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnOpenDeadlockClick"
+-                        ToolTip="Open deadlock XML/XDL/XEL"
++                        ToolTip="打开死锁文件 (XML / XDL / XEL)  ·  Ctrl+Shift+O"
++                        AutomationProperties.Name="打开死锁文件"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -27,7 +28,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnOpenPlanClick"
+-                        ToolTip="Open execution plan"
++                        ToolTip="打开执行计划 (.sqlplan)  ·  Ctrl+O"
++                        AutomationProperties.Name="打开执行计划"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,16">
+@@ -41,7 +43,8 @@
+ 
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnGenerateHtmlReportClick"
+-                        ToolTip="Export HTML report"
++                        ToolTip="导出 HTML 报告  ·  Ctrl+R"
++                        AutomationProperties.Name="导出 HTML 报告"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -52,7 +55,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnExportWordClick"
+-                        ToolTip="Export Word report"
++                        ToolTip="导出 Word 报告"
++                        AutomationProperties.Name="导出 Word 报告"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -63,7 +67,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnExportPdfClick"
+-                        ToolTip="Export PDF report"
++                        ToolTip="导出 PDF 报告"
++                        AutomationProperties.Name="导出 PDF 报告"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -74,7 +79,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnExportObfuscatedPlanClick"
+-                        ToolTip="Export obfuscated execution plan"
++                        ToolTip="导出脱敏执行计划"
++                        AutomationProperties.Name="导出脱敏执行计划"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,16">
+@@ -88,7 +94,8 @@
+             <StackPanel Grid.Row="2">
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnCopyAnalysisResultClick"
+-                        ToolTip="Copy analysis result"
++                        ToolTip="复制分析结果  ·  Ctrl+Shift+C"
++                        AutomationProperties.Name="复制分析结果"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,8">
+@@ -99,7 +106,8 @@
+                 </Button>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnClearResultsClick"
+-                        ToolTip="Clear all results"
++                        ToolTip="清空所有结果  ·  Ctrl+L"
++                        AutomationProperties.Name="清空所有结果"
+                         Width="48"
+                         Height="48"
+                         Margin="0,0,0,16">
+@@ -113,12 +121,14 @@
+                 <ToggleButton x:Name="ThemeToggle"
+                               Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                               Click="OnThemeToggleClick"
+-                              ToolTip="Toggle dark theme"
++                              ToolTip="切换深色 / 浅色主题"
++                              AutomationProperties.Name="切换深色或浅色主题"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,16"/>
+                 <Button Style="{StaticResource MaterialDesignIconButton}"
+                         Click="OnAboutClick"
+-                        ToolTip="About"
++                        ToolTip="关于 SqlXmlAnalyzer  ·  F1"
++                        AutomationProperties.Name="关于"
+                         Width="48"
+                         Height="48">
+                     <materialDesign:PackIcon Kind="InformationOutline"

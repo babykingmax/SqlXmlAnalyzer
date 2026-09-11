@@ -1,0 +1,218 @@
+[
+  {
+    "name": "light-1280x720-100",
+    "WorkspaceWidth": 1212,
+    "WorkspaceHeight": 621.5966666666667,
+    "GraphWidth": 920,
+    "GraphHeight": 452.99333333333334,
+    "GraphHeightRatio": 0.7287576617206227,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1280x720-125",
+    "WorkspaceWidth": 956,
+    "WorkspaceHeight": 477.5966666666667,
+    "GraphWidth": 948,
+    "GraphHeight": 308.99333333333334,
+    "GraphHeightRatio": 0.6469754814034157,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1280x720-150",
+    "WorkspaceWidth": 785.1428571428571,
+    "WorkspaceHeight": 381.5966666666667,
+    "GraphWidth": 777.1428571428571,
+    "GraphHeight": 212.99333333333337,
+    "GraphHeightRatio": 0.5581635059705274,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1280x720-200",
+    "WorkspaceWidth": 572,
+    "WorkspaceHeight": 261.5966666666667,
+    "GraphWidth": 564,
+    "GraphHeight": 92.99333333333337,
+    "GraphHeightRatio": 0.3554836325641255,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1366x768-100",
+    "WorkspaceWidth": 1298.2857142857142,
+    "WorkspaceHeight": 669.5966666666667,
+    "GraphWidth": 1006.2857142857142,
+    "GraphHeight": 500.99333333333334,
+    "GraphHeightRatio": 0.7482016537318485,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1366x768-125",
+    "WorkspaceWidth": 1024.5714285714284,
+    "WorkspaceHeight": 515.8823809523809,
+    "GraphWidth": 1016.5714285714284,
+    "GraphHeight": 347.27904761904756,
+    "GraphHeightRatio": 0.6731748562103026,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1366x768-150",
+    "WorkspaceWidth": 842.8571428571428,
+    "WorkspaceHeight": 413.5966666666667,
+    "GraphWidth": 834.8571428571428,
+    "GraphHeight": 244.99333333333337,
+    "GraphHeightRatio": 0.5923484231820051,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1366x768-200",
+    "WorkspaceWidth": 614.8571428571428,
+    "WorkspaceHeight": 285.5966666666667,
+    "GraphWidth": 606.8571428571428,
+    "GraphHeight": 116.99333333333337,
+    "GraphHeightRatio": 0.40964530398347326,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1920x1080-100",
+    "WorkspaceWidth": 1852,
+    "WorkspaceHeight": 981.5966666666667,
+    "GraphWidth": 1236,
+    "GraphHeight": 812.9933333333333,
+    "GraphHeightRatio": 0.828235629705344,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1920x1080-125",
+    "WorkspaceWidth": 1468,
+    "WorkspaceHeight": 765.5966666666667,
+    "GraphWidth": 852,
+    "GraphHeight": 596.9933333333333,
+    "GraphHeightRatio": 0.7797752515467239,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1920x1080-150",
+    "WorkspaceWidth": 1212,
+    "WorkspaceHeight": 621.5966666666667,
+    "GraphWidth": 920,
+    "GraphHeight": 452.99333333333334,
+    "GraphHeightRatio": 0.7287576617206227,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "light-1920x1080-200",
+    "WorkspaceWidth": 892,
+    "WorkspaceHeight": 441.5966666666667,
+    "GraphWidth": 884,
+    "GraphHeight": 272.99333333333334,
+    "GraphHeightRatio": 0.6181960914560043,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1280x720-100",
+    "WorkspaceWidth": 1212,
+    "WorkspaceHeight": 621.5966666666667,
+    "GraphWidth": 920,
+    "GraphHeight": 452.99333333333334,
+    "GraphHeightRatio": 0.7287576617206227,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1280x720-125",
+    "WorkspaceWidth": 956,
+    "WorkspaceHeight": 477.5966666666667,
+    "GraphWidth": 948,
+    "GraphHeight": 308.99333333333334,
+    "GraphHeightRatio": 0.6469754814034157,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1280x720-150",
+    "WorkspaceWidth": 785.1428571428571,
+    "WorkspaceHeight": 381.5966666666667,
+    "GraphWidth": 777.1428571428571,
+    "GraphHeight": 212.99333333333337,
+    "GraphHeightRatio": 0.5581635059705274,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1280x720-200",
+    "WorkspaceWidth": 572,
+    "WorkspaceHeight": 261.5966666666667,
+    "GraphWidth": 564,
+    "GraphHeight": 92.99333333333337,
+    "GraphHeightRatio": 0.3554836325641255,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1366x768-100",
+    "WorkspaceWidth": 1298.2857142857142,
+    "WorkspaceHeight": 669.5966666666667,
+    "GraphWidth": 1006.2857142857142,
+    "GraphHeight": 500.99333333333334,
+    "GraphHeightRatio": 0.7482016537318485,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1366x768-125",
+    "WorkspaceWidth": 1024.5714285714284,
+    "WorkspaceHeight": 515.8823809523809,
+    "GraphWidth": 1016.5714285714284,
+    "GraphHeight": 347.27904761904756,
+    "GraphHeightRatio": 0.6731748562103026,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1366x768-150",
+    "WorkspaceWidth": 842.8571428571428,
+    "WorkspaceHeight": 413.5966666666667,
+    "GraphWidth": 834.8571428571428,
+    "GraphHeight": 244.99333333333337,
+    "GraphHeightRatio": 0.5923484231820051,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1366x768-200",
+    "WorkspaceWidth": 614.8571428571428,
+    "WorkspaceHeight": 285.5966666666667,
+    "GraphWidth": 606.8571428571428,
+    "GraphHeight": 116.99333333333337,
+    "GraphHeightRatio": 0.40964530398347326,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1920x1080-100",
+    "WorkspaceWidth": 1852,
+    "WorkspaceHeight": 981.5966666666667,
+    "GraphWidth": 1236,
+    "GraphHeight": 812.9933333333333,
+    "GraphHeightRatio": 0.828235629705344,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1920x1080-125",
+    "WorkspaceWidth": 1468,
+    "WorkspaceHeight": 765.5966666666667,
+    "GraphWidth": 852,
+    "GraphHeight": 596.9933333333333,
+    "GraphHeightRatio": 0.7797752515467239,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1920x1080-150",
+    "WorkspaceWidth": 1212,
+    "WorkspaceHeight": 621.5966666666667,
+    "GraphWidth": 920,
+    "GraphHeight": 452.99333333333334,
+    "GraphHeightRatio": 0.7287576617206227,
+    "ActualMonitorDpi": 1.75
+  },
+  {
+    "name": "dark-1920x1080-200",
+    "WorkspaceWidth": 892,
+    "WorkspaceHeight": 441.5966666666667,
+    "GraphWidth": 884,
+    "GraphHeight": 272.99333333333334,
+    "GraphHeightRatio": 0.6181960914560043,
+    "ActualMonitorDpi": 1.75
+  }
+]
