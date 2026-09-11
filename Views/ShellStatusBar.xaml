@@ -1,18 +1,20 @@
 <UserControl x:Class="SqlXmlAnalyzer.Views.ShellStatusBar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StatusBar Background="{StaticResource AccentBrush}"
-               Foreground="White">
+    <StatusBar Background="{DynamicResource AccentBrush}"
+               Foreground="{DynamicResource AccentForegroundBrush}">
+        <StatusBarItem><TextBlock x:Name="AnalysisStatusText" Text="{Binding AnalysisOperation.Status}" ToolTip="{Binding AnalysisOperation.Detail}" Foreground="{DynamicResource AccentForegroundBrush}" AutomationProperties.Name="分析状态"/></StatusBarItem>
+        <StatusBarItem><Button Content="取消" Command="{Binding AnalysisOperation.CancelCommand}" Padding="8,0" MinHeight="22" AutomationProperties.Name="取消当前分析" ToolTip="取消读取、分析或视图准备；未完成结果不会提交"/></StatusBarItem>
         <StatusBarItem>
             <TextBlock x:Name="PART_StatusTextBlock"
                        Text="{Binding StatusText}"
-                       Foreground="White"
+                       Foreground="{DynamicResource AccentForegroundBrush}"
                        FontWeight="SemiBold"/>
         </StatusBarItem>
         <Separator Background="#88FFFFFF"/>
         <StatusBarItem HorizontalAlignment="Right">
             <TextBlock Text="SqlXmlAnalyzer v2.0 | 2026 Modern UI"
-                       Foreground="White"/>
+                       Foreground="{DynamicResource AccentForegroundBrush}"/>
         </StatusBarItem>
     </StatusBar>
 </UserControl>

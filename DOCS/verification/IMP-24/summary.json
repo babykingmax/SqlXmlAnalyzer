@@ -1,0 +1,812 @@
+{
+  "task": "IMP-24",
+  "capturedAtUtc": "2026-09-10T02:53:51.0595997Z",
+  "gitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "workspace": "Current uncommitted workspace, includes prior IMP-23 changes; not a published revision",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "counters": {
+        "total": 2527,
+        "passed": 2527,
+        "failed": 0,
+        "skipped": 0
+      },
+      "trx": {
+        "path": "SqlXmlAnalyzer.Tests/TestResults/imp24-full-Debug.trx",
+        "sha256": "5D88B7819753DAE01F551A3804A0751E7A5CC70EC8999589570CC95376FC2644"
+      },
+      "focusedTests": [
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"future\\\"},{\\\"RuleId\\\":\\\"\"···, location: \"Duplicate RuleId\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003227"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.EditAndReset_PreserveUnknownRulesFieldsAliasesAndRootCasing",
+          "outcome": "Passed",
+          "duration": "00:00:00.0035915"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Override_ExistingSemanticMergeKeepsOtherEnabledOriginsAndHighestSeverity",
+          "outcome": "Passed",
+          "duration": "00:00:00.0085238"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.FailedLoadOrSave_LeavesDraftBaselineAndActiveConfigurationIntact",
+          "outcome": "Passed",
+          "duration": "00:00:00.0030981"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_UnknownRuleId_PreservesEntryAndWarns",
+          "outcome": "Passed",
+          "duration": "00:00:00.0060063"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_BudgetsBoundBytesDepthAndEntries",
+          "outcome": "Passed",
+          "duration": "00:00:00.0050402"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.ApplyCallbackFailureAndBrokenReporter_DoNotMisreportCommittedConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0072686"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ConcurrentEditBeforeOrDuringStaging_DoesNotOverwriteExternalContent(during: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0120008"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.SaveAs_StagesNewFileAndNeverOverwritesExistingDestination",
+          "outcome": "Passed",
+          "duration": "00:00:00.0111577"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ReplacementFailure_ReportsActualCommitState(afterCommit: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0241606"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: True, severity: \"Critical\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0028250"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Apply_CapturedEngineAndWorkspaceRemainOldUntilExplicitReanalysis",
+          "outcome": "Passed",
+          "duration": "00:00:00.0099283"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_CancelledAfterCommit_DoesNotReportAnUnwrittenFile",
+          "outcome": "Passed",
+          "duration": "00:00:00.0123664"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_016_WAIT_STATS\\\"},{\"···, location: \"Duplicate RuleId\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003555"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_004_ESTIMATE_MISMAT\"···, location: \"$.Rules[0].Enabled\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003066"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_004_ESTIMATE_MISMAT\"···, location: \"$.Rules[0].SeverityOverride\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003579"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Resolve_WithoutExplicitPath_UsesApplicationBaseDirectory",
+          "outcome": "Passed",
+          "duration": "00:00:00.0023190"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.7765244"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Graph_RejectsChangedDocumentAndDistributesPlanStatementDiagnosticsWithoutRerunning",
+          "outcome": "Passed",
+          "duration": "00:00:00.0023030"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: False, severity: null)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0027592"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_DuplicateRuleIdAndInvalidSeverity_ReturnsValidationErrors",
+          "outcome": "Passed",
+          "duration": "00:00:00.0058293"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.Logs_RespectBuildLevelsAndDoNotContainUnknownJsonPayload",
+          "outcome": "Passed",
+          "duration": "00:00:00.0178594"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_PreservesEncodingUnknownFieldsAndVerifiedBackup(format: \"utf32\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0236087"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.UnchangedSettings_DoNotReformatOrAmplifyLargeUnknownPayload",
+          "outcome": "Passed",
+          "duration": "00:00:00.0604282"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[],\\\"rules\\\":[]}\", location: \"$.Rules\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0005535"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_InvalidJson_ReturnsFailure",
+          "outcome": "Passed",
+          "duration": "00:00:00.0067728"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.CancelOrClose_LoadCannotReplacePreviousDraftEvenIfProviderIgnoresCancellation(close: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0042534"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.Recalculate_RequiresAppliedDraftAndPropagatesCancellation",
+          "outcome": "Passed",
+          "duration": "00:00:00.0038750"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: True, severity: \"Info\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0071748"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ConcurrentEditBeforeOrDuringStaging_DoesNotOverwriteExternalContent(during: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0057865"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_ValidExplicitConfiguration_ReturnsNormalizedConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0053340"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.ApplyAndSave_AreIndependentAndSnapshotDoesNotMutate",
+          "outcome": "Passed",
+          "duration": "00:00:00.0091386"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Load_MalformedBomEncodedText_IsRejectedByEditorAndLegacyLoader(utf16: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0046242"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.InvalidDraft_CannotApplyOrSaveAndCanBeRestored",
+          "outcome": "Passed",
+          "duration": "00:00:00.0033715"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.CancelOrClose_LoadCannotReplacePreviousDraftEvenIfProviderIgnoresCancellation(close: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0050562"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_DeprecatedRuleIdAlias_NormalizesAndWarns",
+          "outcome": "Passed",
+          "duration": "00:00:00.0043692"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Fingerprint_TracksEffectiveSettingsAndIgnoresUnknownFieldsAndOrdering",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003190"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0189358"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: True, severity: \"Warning\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0027081"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_OldEmptyForms_KeepBuiltInDefaults(json: \"{\\\"Rules\\\":[]}\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002166"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ReplacementFailure_ReportsActualCommitState(afterCommit: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0131242"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Load_MalformedBomEncodedText_IsRejectedByEditorAndLegacyLoader(utf16: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0070950"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_PreservesEncodingUnknownFieldsAndVerifiedBackup(format: \"utf8\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0201780"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_PreservesEncodingUnknownFieldsAndVerifiedBackup(format: \"utf16\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0267811"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_OldEmptyForms_KeepBuiltInDefaults(json: \"{\\\"Rules\\\":null}\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0001509"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_004_ESTIMATE_MISMAT\"···, location: \"$.Rules[0].Enabled\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003357"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.LegacyProjection_MutationCannotChangeCapturedConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002529"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[null]}\", location: \"$.Rules[0]\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003468"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.RowsFilterPreviewReset_PreserveUnknownConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0041503"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_ExplicitMissingPath_ReturnsFailure",
+          "outcome": "Passed",
+          "duration": "00:00:00.0031968"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"extensions\\\":{\\\"a\\\":1,\\\"a\\\":2}}\", location: \"extensions\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003476"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_OldEmptyForms_KeepBuiltInDefaults(json: \"{}\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0000300"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.LoadAndSaveAs_RejectOversizeMalformedAndCancelledOperations",
+          "outcome": "Passed",
+          "duration": "00:00:00.0118262"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\n\\\"Rules\\\":broken}\", location: \"行 2\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0008726"
+        }
+      ],
+      "wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "ProductionNavigation": true,
+        "Rows": 34,
+        "CheckboxAndComboBoxBindings": true,
+        "ImmutableGraphAndListSnapshot": true,
+        "ActualReanalysis": true,
+        "SeverityOverrideAndReset": true,
+        "UnknownFieldsPreserved": true,
+        "ConflictPreservesSource": true,
+        "EvidenceKind": "Off-screen WPF test host with actual production windows and event handlers; not desktop input automation"
+      }
+    },
+    {
+      "configuration": "Release",
+      "counters": {
+        "total": 2527,
+        "passed": 2527,
+        "failed": 0,
+        "skipped": 0
+      },
+      "trx": {
+        "path": "SqlXmlAnalyzer.Tests/TestResults/imp24-full-Release.trx",
+        "sha256": "10836C45CE53F10E8A02EDE13AF61680EA83B17C47AD20B7DF8FA538F6A17534"
+      },
+      "focusedTests": [
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.7734543"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_BudgetsBoundBytesDepthAndEntries",
+          "outcome": "Passed",
+          "duration": "00:00:00.0041365"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Load_MalformedBomEncodedText_IsRejectedByEditorAndLegacyLoader(utf16: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0067771"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.LegacyProjection_MutationCannotChangeCapturedConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002251"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[],\\\"rules\\\":[]}\", location: \"$.Rules\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0004689"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Apply_CapturedEngineAndWorkspaceRemainOldUntilExplicitReanalysis",
+          "outcome": "Passed",
+          "duration": "00:00:00.0070858"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ConcurrentEditBeforeOrDuringStaging_DoesNotOverwriteExternalContent(during: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0149290"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: False, severity: null)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0022089"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_ExplicitMissingPath_ReturnsFailure",
+          "outcome": "Passed",
+          "duration": "00:00:00.0023155"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_PreservesEncodingUnknownFieldsAndVerifiedBackup(format: \"utf8\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0230493"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Resolve_WithoutExplicitPath_UsesApplicationBaseDirectory",
+          "outcome": "Passed",
+          "duration": "00:00:00.0018597"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\n\\\"Rules\\\":broken}\", location: \"行 2\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0007694"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Fingerprint_TracksEffectiveSettingsAndIgnoresUnknownFieldsAndOrdering",
+          "outcome": "Passed",
+          "duration": "00:00:00.0004471"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ReplacementFailure_ReportsActualCommitState(afterCommit: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0199595"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"future\\\"},{\\\"RuleId\\\":\\\"\"···, location: \"Duplicate RuleId\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002337"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: True, severity: \"Info\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0050544"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.LoadAndSaveAs_RejectOversizeMalformedAndCancelledOperations",
+          "outcome": "Passed",
+          "duration": "00:00:00.0146354"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_004_ESTIMATE_MISMAT\"···, location: \"$.Rules[0].Enabled\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002481"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.UnknownFailure_CreatesValidatedNativeDumpOrExplainsFailureAndDeduplicates(fails: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0148974"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[null]}\", location: \"$.Rules[0]\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002240"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_016_WAIT_STATS\\\"},{\"···, location: \"Duplicate RuleId\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002738"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_OldEmptyForms_KeepBuiltInDefaults(json: \"{\\\"Rules\\\":null}\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0001092"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_DeprecatedRuleIdAlias_NormalizesAndWarns",
+          "outcome": "Passed",
+          "duration": "00:00:00.0037016"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.FailedLoadOrSave_LeavesDraftBaselineAndActiveConfigurationIntact",
+          "outcome": "Passed",
+          "duration": "00:00:00.0027543"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_UnknownRuleId_PreservesEntryAndWarns",
+          "outcome": "Passed",
+          "duration": "00:00:00.0040376"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: True, severity: \"Critical\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0019222"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.Recalculate_RequiresAppliedDraftAndPropagatesCancellation",
+          "outcome": "Passed",
+          "duration": "00:00:00.0044861"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_InvalidJson_ReturnsFailure",
+          "outcome": "Passed",
+          "duration": "00:00:00.0051221"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_PreservesEncodingUnknownFieldsAndVerifiedBackup(format: \"utf32\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0276757"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Load_MalformedBomEncodedText_IsRejectedByEditorAndLegacyLoader(utf16: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0052078"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ConcurrentEditBeforeOrDuringStaging_DoesNotOverwriteExternalContent(during: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0060110"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.EditAndReset_PreserveUnknownRulesFieldsAliasesAndRootCasing",
+          "outcome": "Passed",
+          "duration": "00:00:00.0088623"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Configuration_ChangesRealRuleResultsAndGraphUsesIdenticalDiagnostics(enabled: True, severity: \"Warning\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0021362"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.SaveAs_StagesNewFileAndNeverOverwritesExistingDestination",
+          "outcome": "Passed",
+          "duration": "00:00:00.0099274"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.CancelOrClose_LoadCannotReplacePreviousDraftEvenIfProviderIgnoresCancellation(close: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0059328"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.ApplyCallbackFailureAndBrokenReporter_DoNotMisreportCommittedConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0066593"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_CancelledAfterCommit_DoesNotReportAnUnwrittenFile",
+          "outcome": "Passed",
+          "duration": "00:00:00.0148735"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.InvalidDraft_CannotApplyOrSaveAndCanBeRestored",
+          "outcome": "Passed",
+          "duration": "00:00:00.0034818"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_OldEmptyForms_KeepBuiltInDefaults(json: \"{}\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0000198"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.ApplyAndSave_AreIndependentAndSnapshotDoesNotMutate",
+          "outcome": "Passed",
+          "duration": "00:00:00.0059258"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.Diagnostics.RuleConfigurationDiagnosticTests.Logs_RespectBuildLevelsAndDoNotContainUnknownJsonPayload",
+          "outcome": "Passed",
+          "duration": "00:00:00.0183308"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_DuplicateRuleIdAndInvalidSeverity_ReturnsValidationErrors",
+          "outcome": "Passed",
+          "duration": "00:00:00.0044958"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_004_ESTIMATE_MISMAT\"···, location: \"$.Rules[0].SeverityOverride\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002365"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"extensions\\\":{\\\"a\\\":1,\\\"a\\\":2}}\", location: \"extensions\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002474"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.UnchangedSettings_DoNotReformatOrAmplifyLargeUnknownPayload",
+          "outcome": "Passed",
+          "duration": "00:00:00.0578241"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_OldEmptyForms_KeepBuiltInDefaults(json: \"{\\\"Rules\\\":[]}\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0001429"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationDocumentTests.Parse_InvalidInput_HasLocationAndNoPartialApplication(json: \"{\\\"Rules\\\":[{\\\"RuleId\\\":\\\"RULE_004_ESTIMATE_MISMAT\"···, location: \"$.Rules[0].Enabled\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002379"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_ReplacementFailure_ReportsActualCommitState(afterCommit: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0118133"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Graph_RejectsChangedDocumentAndDistributesPlanStatementDiagnosticsWithoutRerunning",
+          "outcome": "Passed",
+          "duration": "00:00:00.0015458"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.CancelOrClose_LoadCannotReplacePreviousDraftEvenIfProviderIgnoresCancellation(close: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0040936"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationFlowTests.Override_ExistingSemanticMergeKeepsOtherEnabledOriginsAndHighestSeverity",
+          "outcome": "Passed",
+          "duration": "00:00:00.0048806"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationViewModelTests.RowsFilterPreviewReset_PreserveUnknownConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0046031"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationLoaderTests.Load_ValidExplicitConfiguration_ReturnsNormalizedConfiguration",
+          "outcome": "Passed",
+          "duration": "00:00:00.0049388"
+        },
+        {
+          "name": "SqlXmlAnalyzer.Tests.RuleConfigurationStoreTests.Save_PreservesEncodingUnknownFieldsAndVerifiedBackup(format: \"utf16\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0243652"
+        }
+      ],
+      "wpf": {
+        "Passed": true,
+        "BindingErrors": 0,
+        "ProductionNavigation": true,
+        "Rows": 34,
+        "CheckboxAndComboBoxBindings": true,
+        "ImmutableGraphAndListSnapshot": true,
+        "ActualReanalysis": true,
+        "SeverityOverrideAndReset": true,
+        "UnknownFieldsPreserved": true,
+        "ConflictPreservesSource": true,
+        "EvidenceKind": "Off-screen WPF test host with actual production windows and event handlers; not desktop input automation"
+      }
+    }
+  ],
+  "sourceFiles": 611,
+  "sourceManifestSha256": "043F2A1199DABF4B0CE390EC5BF5F67F54428D0931D6EF9B790054DE0CB7F4BE",
+  "artifacts": [
+    {
+      "path": "build-Debug.log",
+      "sha256": "E55B6E3CF2546812FE8E57B4DB61654A48B57F96A6F53D3DE22D1DFF4B330695"
+    },
+    {
+      "path": "build-Release.log",
+      "sha256": "779762B943E01C3788EC87CDE8C792A1B839A90A273A4830919189397B80BF75"
+    },
+    {
+      "path": "cli-Debug-future.json",
+      "sha256": "3FE6F667F98B7811FE367FF433BE17DFDC4DE28559CCB1CF2581C662794988BC"
+    },
+    {
+      "path": "cli-Debug-future.log",
+      "sha256": "2498182DDDE4E67152439B10FF96E31C2A5ACBD17111B44599049DCF4FB2C0F4"
+    },
+    {
+      "path": "cli-Debug-legacy.json",
+      "sha256": "C2048857CA1287A7392718E422AACA29A632BF9D7BCC1531FC84278F40A9D0ED"
+    },
+    {
+      "path": "cli-Debug-legacy.log",
+      "sha256": "24F183F85AD920C049D00792EED9576AA377292C66DDD7E532AE57DBF94D37FC"
+    },
+    {
+      "path": "cli-future.json",
+      "sha256": "3D808F46AA648352DFDCAA5CBBAFE8F060A1EB47EEDD859B1D525AC2E1C48F51"
+    },
+    {
+      "path": "cli-Release-future.json",
+      "sha256": "E20E636B14FDA40EEABC20E63FD29ED56452EFCEC40F01474C236545F686ADFC"
+    },
+    {
+      "path": "cli-Release-future.log",
+      "sha256": "D2B14C014F3708F8301A44FE8F2D4D8DAB2A5EAAB6AF051817F753255F438A1C"
+    },
+    {
+      "path": "cli-Release-legacy.json",
+      "sha256": "9C1DBDC08F1769B449C666FB89FC12F4F772805F5300D57891EB4445C9073AB7"
+    },
+    {
+      "path": "cli-Release-legacy.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "cli-verification.json",
+      "sha256": "DF805B2F31407A0483360DF5E606FF3A4AA98477A5466BD6EB8D3CAC39D4459D"
+    },
+    {
+      "path": "Collect-Evidence.ps1",
+      "sha256": "8D7B47A014079C4C37CE752B28C866D35298B800117F43BA9FCFCF8F67070FCF"
+    },
+    {
+      "path": "probe-Debug.log",
+      "sha256": "508305AB139D634EB1A52C99F2862B116143DB055E4A601119C346CEADBFF227"
+    },
+    {
+      "path": "probe-Release.log",
+      "sha256": "E6DFAF3D274284693955B516FEA530C2E5C637F87CCD3214308D8A5603599299"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8B312855CF13690F979FE6C221F250D42C9426DA9598BAD0A0A3D9070AFDD34B"
+    },
+    {
+      "path": "Run-CliProbe.ps1",
+      "sha256": "501FA3C6BCA6F71512E905D56139E775017E4A4DAEE3D808FA8BAA1634A444C8"
+    },
+    {
+      "path": "Run-WpfProbe.ps1",
+      "sha256": "EF7F8F0E012652F0E5246714AE82B2D9B161A26DBFC9DF2D322BA1FBD28B40DF"
+    },
+    {
+      "path": "tests-Debug.log",
+      "sha256": "A49F9B871C452AE79EB4EAC9CDD9803CBE1FDA8BAAEC1DF50ED9FEFBA12C4123"
+    },
+    {
+      "path": "tests-Release.log",
+      "sha256": "80BC9E81C677221BA9CC86555BAB7AD68EB8939795275BFFEA85D46405042410"
+    },
+    {
+      "path": "WpfProbe.cs.txt",
+      "sha256": "5B6712FE54B974BE35188E01D093E122AD01234B839DBA5F41539B05DFA82398"
+    },
+    {
+      "path": "wpf-Debug/binding-errors.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "wpf-Debug/configuration-change-preview.png",
+      "sha256": "6FF275C1A1F6B87709ABF3A8B5199DF38D5A2FAE3B378FDD82633B769F2A7293"
+    },
+    {
+      "path": "wpf-Debug/fixture.sqlplan",
+      "sha256": "7029FEBA81F00FAF8D1DAB4D3BA812DD7A82E64C2B7764B884A36D906DC28550"
+    },
+    {
+      "path": "wpf-Debug/invalid-config-retains-draft.png",
+      "sha256": "BEFC6C5391F6124F637222E005809B82A54C4941274391BB0DC6C5B3DDC45E04"
+    },
+    {
+      "path": "wpf-Debug/invalid.json",
+      "sha256": "1F394D1D8FD8F7A4E3B7DB332AB3DC765AC991C782B9C0D5264052C8B570913A"
+    },
+    {
+      "path": "wpf-Debug/rules.json",
+      "sha256": "20911103A61712E46D3097C81C222FA11EAB5794F655F484FC8563DEF1313424"
+    },
+    {
+      "path": "wpf-Debug/rules.json.SqlXmlAnalyzer-2eb8729a42274d45a77026d628ec8c5b.bak",
+      "sha256": "C21756F19F2A18297B10533B84C9253730574BC9B0A50BF8CD9D0721F505EDC7"
+    },
+    {
+      "path": "wpf-Debug/rules.json.SqlXmlAnalyzer-4027f60ea9334a7e9a99ba4fb4e33be0.bak",
+      "sha256": "C21756F19F2A18297B10533B84C9253730574BC9B0A50BF8CD9D0721F505EDC7"
+    },
+    {
+      "path": "wpf-Debug/rules.json.SqlXmlAnalyzer-93466954e64a479f80dffd5e4ecb925b.bak",
+      "sha256": "C21756F19F2A18297B10533B84C9253730574BC9B0A50BF8CD9D0721F505EDC7"
+    },
+    {
+      "path": "wpf-Debug/rules.json.SqlXmlAnalyzer-d2b176a78b374e84beb1c9256a2a4b92.bak",
+      "sha256": "C21756F19F2A18297B10533B84C9253730574BC9B0A50BF8CD9D0721F505EDC7"
+    },
+    {
+      "path": "wpf-Debug/save-conflict.png",
+      "sha256": "5F460ADA3875757CD5B9438323A394E159F62C057BF287C43391BA945356F429"
+    },
+    {
+      "path": "wpf-Debug/stderr.log",
+      "sha256": "09B72C08357F7E2FB6D8C0BC8225E5B4D5F637F75468F60EA5E3F3CCE1FF4D0F"
+    },
+    {
+      "path": "wpf-Debug/stdout.log",
+      "sha256": "11F44308A996FDA7BFBE51B730516AEF565368791E72DD8CD3F1F2C18A62F0D7"
+    },
+    {
+      "path": "wpf-Debug/verification.json",
+      "sha256": "A74EB84D542BEA5EE744847DC9881EBE7CF8B807FA87D6D48E67D1C34B8C9814"
+    },
+    {
+      "path": "wpf-Debug/workspace-info-override.png",
+      "sha256": "8A0F41F6DE0139E1BA8969BBC7CD630AF0B0891464E7A1FEA100358B35446633"
+    },
+    {
+      "path": "wpf-Debug/workspace-needs-reanalysis.png",
+      "sha256": "8D5EA56FE31A628982347910245045DE9E7628FEE107F0BEBD8E917F3F3555F7"
+    },
+    {
+      "path": "wpf-Release/binding-errors.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "wpf-Release/configuration-change-preview.png",
+      "sha256": "DB839A3148761205FAD1B40F78EFDDF90F724B18DDA766EA2EDBAD7D6C1E34A5"
+    },
+    {
+      "path": "wpf-Release/fixture.sqlplan",
+      "sha256": "7029FEBA81F00FAF8D1DAB4D3BA812DD7A82E64C2B7764B884A36D906DC28550"
+    },
+    {
+      "path": "wpf-Release/invalid-config-retains-draft.png",
+      "sha256": "7CAFCA57092E66B88C2EBE246C7E26B2F9E9A78A4C0D4FD6D5170EB55AF924AB"
+    },
+    {
+      "path": "wpf-Release/invalid.json",
+      "sha256": "1F394D1D8FD8F7A4E3B7DB332AB3DC765AC991C782B9C0D5264052C8B570913A"
+    },
+    {
+      "path": "wpf-Release/rules.json",
+      "sha256": "20911103A61712E46D3097C81C222FA11EAB5794F655F484FC8563DEF1313424"
+    },
+    {
+      "path": "wpf-Release/rules.json.SqlXmlAnalyzer-116a1ef47225453d867510ac21914f85.bak",
+      "sha256": "C21756F19F2A18297B10533B84C9253730574BC9B0A50BF8CD9D0721F505EDC7"
+    },
+    {
+      "path": "wpf-Release/rules.json.SqlXmlAnalyzer-18e1ab36ace34115982b216de9d3ff5b.bak",
+      "sha256": "C21756F19F2A18297B10533B84C9253730574BC9B0A50BF8CD9D0721F505EDC7"
+    },
+    {
+      "path": "wpf-Release/save-conflict.png",
+      "sha256": "C1743E94130CECD0958EF0826BEA20208BBBA5EDFCA8D96F1F02852DA5C9F8FE"
+    },
+    {
+      "path": "wpf-Release/stderr.log",
+      "sha256": "CD6817316D38C870A0633BE7A4134C81A5BC0F9B2A76399B7AF05A724B824333"
+    },
+    {
+      "path": "wpf-Release/stdout.log",
+      "sha256": "11F44308A996FDA7BFBE51B730516AEF565368791E72DD8CD3F1F2C18A62F0D7"
+    },
+    {
+      "path": "wpf-Release/verification.json",
+      "sha256": "A74EB84D542BEA5EE744847DC9881EBE7CF8B807FA87D6D48E67D1C34B8C9814"
+    },
+    {
+      "path": "wpf-Release/workspace-info-override.png",
+      "sha256": "B61F303EEB85594391BB5E7475D1597E29AB08C5CECE913AFA3F3EB5240A666F"
+    },
+    {
+      "path": "wpf-Release/workspace-needs-reanalysis.png",
+      "sha256": "91A5725C0088FA9FE497B55D24397F018ACB5EBDE39176DC2FE855E3A03AD3A1"
+    }
+  ]
+}

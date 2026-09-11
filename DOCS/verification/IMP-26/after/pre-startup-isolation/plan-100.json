@@ -1,0 +1,98 @@
+{
+  "Passed": true,
+  "SourceSha256": "74F952488435603FF8BD7F61A061F9A738EED36A4BC82F53D37FD692FF2F2FAE",
+  "Runs": [
+    {
+      "Run": "process-cold",
+      "TotalMs": 1958.8183,
+      "StartupMs": 814.6941,
+      "InputLatencyP95Ms": 245.2989,
+      "InputLatencyMaxMs": 324.9621,
+      "Samples": 97,
+      "PeakWorkingSetBytes": 285376512,
+      "ManagedBytes": 79956040,
+      "VisibleGraphNodes": 64,
+      "Operators": 100,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 4.6902,
+          "Status": "Loading and identifying file: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 5.9988,
+          "Status": "Analyzing execution plan: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 1932.3031,
+          "Status": "Execution plan analysis complete"
+        }
+      ],
+      "State": "Ready",
+      "StageTimings": [
+        {
+          "State": "Loading",
+          "Milliseconds": 0.6049
+        },
+        {
+          "State": "Parsing",
+          "Milliseconds": 0.8863
+        },
+        {
+          "State": "Analyzing",
+          "Milliseconds": 204.4216
+        },
+        {
+          "State": "PreparingView",
+          "Milliseconds": 1721.9623
+        }
+      ]
+    },
+    {
+      "Run": "same-process-warm",
+      "TotalMs": 1618.42,
+      "StartupMs": 814.6941,
+      "InputLatencyP95Ms": 132.0295,
+      "InputLatencyMaxMs": 210.2417,
+      "Samples": 81,
+      "PeakWorkingSetBytes": 300748800,
+      "ManagedBytes": 112315320,
+      "VisibleGraphNodes": 64,
+      "Operators": 100,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 5.6052,
+          "Status": "Loading and identifying file: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 10.737,
+          "Status": "Analyzing execution plan: plan-100.sqlplan..."
+        },
+        {
+          "Milliseconds": 1550.793,
+          "Status": "Execution plan analysis complete"
+        }
+      ],
+      "State": "Ready",
+      "StageTimings": [
+        {
+          "State": "Loading",
+          "Milliseconds": 0.3016
+        },
+        {
+          "State": "Parsing",
+          "Milliseconds": 4.8328
+        },
+        {
+          "State": "Analyzing",
+          "Milliseconds": 30.6474
+        },
+        {
+          "State": "PreparingView",
+          "Milliseconds": 1509.5383
+        }
+      ]
+    }
+  ]
+}

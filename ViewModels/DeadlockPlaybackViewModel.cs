@@ -69,7 +69,7 @@ namespace SqlXmlAnalyzer.ViewModels
             _timer = new DispatcherTimer();
             _timer.Tick += Timer_Tick;
 
-            PlayCommand = new RelayCommand(o => TogglePlay());
+            PlayCommand = new RelayCommand(o => TogglePlay(), o => !ReduceMotion);
             StepForwardCommand = new RelayCommand(o => StepForward(), o => CanStepForward);
             StepBackwardCommand = new RelayCommand(o => StepBackward(), o => CanStepBackward);
             ResetCommand = new RelayCommand(o => Reset());
@@ -118,12 +118,25 @@ namespace SqlXmlAnalyzer.ViewModels
             }
         }
 
+        private bool _reduceMotion;
+        public bool ReduceMotion
+        {
+            get => _reduceMotion;
+            set
+            {
+                _reduceMotion = value;
+                if (value) IsPlaying = false;
+                OnPropertyChanged(nameof(ReduceMotion));
+                System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
         public bool IsPlaying
         {
             get => _isPlaying;
             set
             {
-                _isPlaying = value;
+                _isPlaying = value && !ReduceMotion;
                 OnPropertyChanged(nameof(IsPlaying));
                 OnPropertyChanged(nameof(PlayButtonText));
                 if (_isPlaying)

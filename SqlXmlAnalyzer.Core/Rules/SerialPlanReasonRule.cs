@@ -13,10 +13,7 @@ namespace SqlXmlAnalyzer.Core.Rules
         {
             // This property is usually on the root QueryPlan node
             var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-            var queryPlan = relOp.Document?.Root?.Element(ns + "BatchSequence")
-                                ?.Element(ns + "Batch")?.Element(ns + "Statements")
-                                ?.Element(ns + "StmtSimple")?.Element(ns + "QueryPlan")
-                            ?? relOp.Document?.Root?.Descendants(ns + "QueryPlan").FirstOrDefault();
+            var queryPlan = Services.QueryPlanXml.Find(relOp, ns);
 
             if (queryPlan == null) return null;
 

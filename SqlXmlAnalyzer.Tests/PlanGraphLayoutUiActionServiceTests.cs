@@ -24,7 +24,7 @@ namespace SqlXmlAnalyzer.Tests
                 PlanLayoutMode.Horizontal);
 
             nodeMap[FindByNodeId(relOps, "0")].Location.X.Should().Be(50);
-            nodeMap[FindByNodeId(relOps, "1")].Location.X.Should().Be(330);
+            nodeMap[FindByNodeId(relOps, "1")].Location.X.Should().Be(382);
         }
 
         [Fact]

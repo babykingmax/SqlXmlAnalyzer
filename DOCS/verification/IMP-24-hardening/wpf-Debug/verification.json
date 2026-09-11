@@ -1,0 +1,17 @@
+{
+  "Passed": true,
+  "BindingErrors": 0,
+  "ProductionNavigation": true,
+  "Rows": 34,
+  "PendingPlanDoesNotPublishSource": true,
+  "CancelledPlanCannotCommit": true,
+  "ReanalysisAndRefactoringShareOriginalInput": true,
+  "ConfigurationPreservesDeadlockRequest": true,
+  "CheckboxAndComboBoxBindings": true,
+  "ImmutableGraphAndListSnapshot": true,
+  "ActualReanalysis": true,
+  "SeverityOverrideAndReset": true,
+  "UnknownFieldsPreserved": true,
+  "ConflictPreservesSource": true,
+  "EvidenceKind": "Off-screen WPF test host with actual production windows and event handlers; not desktop input automation"
+}

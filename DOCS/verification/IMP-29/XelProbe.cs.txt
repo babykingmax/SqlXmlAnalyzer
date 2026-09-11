@@ -1,0 +1,43 @@
+using System.IO;
+using System.Security.Cryptography;
+using System.Text.Json;
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Services;
+
+internal static class Program
+{
+    private static int Main(string[] args)
+    {
+        try
+        {
+            string input = args[0];
+            string hash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(input)));
+            var service = new XelSearchService();
+            var catalog = service.LoadAsync([], [input], default).GetAwaiter().GetResult();
+            var all = service.Search(catalog, new());
+            Require(all.Events.Count == 2 && all.Groups.Count == 1 && catalog.SkippedRecords > 0, "Two deadlocks grouped; non-deadlock records counted separately");
+            var checks = new List<object>();
+            foreach (var row in all.Events)
+            {
+                var entry = row.Entry;
+                entry.ValidateSource();
+                var location = entry.Event.Location ?? throw new InvalidOperationException("Original event location is missing.");
+                Require(!row.IsDuplicate && location.ByteOffset != null && location.ByteLength > 0, "Original event byte range and identity");
+                var filtered = service.Search(catalog, new(entry.Event.CapturedAt, entry.Event.CapturedAt, Object: "DeadlockFixture", Text: "UPDATE", DisplayOffset: TimeSpan.FromHours(8)));
+                Require(filtered.Events.Count == 1 && ReferenceEquals(filtered.Events[0].Entry, entry), "Inclusive time/object/SQL filter returns original event");
+                var analysis = new DeadlockAnalysisService().Analyze(entry.Event.Document);
+                Require(analysis.Processes.Count == 2 && analysis.Graph.VictimProcessIds.Count == 1, "Selected event analyzed independently");
+                checks.Add(new { entry.Event.Index, location.ByteOffset, location.ByteLength, Filtered = filtered.Events.Count, Processes = analysis.Processes.Count });
+            }
+            string damaged = Path.Combine(Path.GetDirectoryName(args[1])!, "damaged.xel");
+            File.WriteAllBytes(damaged, File.ReadAllBytes(input).Take(12).ToArray());
+            var invalid = new XelReader().ReadDocumentAsync(damaged).GetAwaiter().GetResult();
+            Require(invalid.Status == InputStatus.Invalid && invalid.Deadlocks.Count == 0, "Corrupt XEL fails without partial event publication");
+            Require(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(input))) == hash, "Source bytes retained");
+            File.WriteAllText(args[1], JsonSerializer.Serialize(new { Passed = true, SourceSha256 = hash, Events = all.Events.Count, Groups = all.Groups.Count, catalog.SkippedRecords, Checks = checks, CorruptInputStatus = invalid.Status.ToString() }, new JsonSerializerOptions { WriteIndented = true }));
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+    }
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+}

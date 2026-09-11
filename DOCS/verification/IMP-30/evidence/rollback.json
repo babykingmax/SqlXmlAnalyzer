@@ -1,0 +1,22 @@
+{
+  "Passed": true,
+  "Scope": "Local file rollback, actual published CLI processes; old WPF session opening is recorded separately.",
+  "CandidateManifestSha256": "63CD4E762C4C5181209F9CB1EAE9A2B3D169A8EFBD87510509807C3C4C652954",
+  "PreviousManifestSha256": "6E32B896A3B1A1CC8841332B5F3E3F5790611A1D5BD39F99D356DDD26E5706BF",
+  "BackupManifestSha256": "B2BF8C81DF012063C42E40A191851CD5C107D1665A0FE8ACE8F23D116B416D18",
+  "PreviousId": "previous-2f50216-imp20-22",
+  "RestoredGui": "E:\\SqlXmlAnalyzer\\.tmp.imp30-rollback-rc1\\restored\\application\\gui\\SqlXmlAnalyzer.exe",
+  "RestoredGuiSha256": "B84F3F62DD53DD8ECDB60FC69388D4D93FF44B41167FF2F96967C6E91D78AB2D",
+  "CandidateGuiSha256": "CAFBE78832E738A5780D7D8DC85F68C222FCDCEB1A873FE50805DE8D1CDFE433",
+  "RestoredSessionSnapshots": 2,
+  "PlanA": "SELECT 1",
+  "PlanB": "SELECT 2",
+  "OriginalSqlSha256": "DC7047A4A7C90855FFA1732979802FD236F9A4891D12C416A0F30CBC65256D1A",
+  "RestoredSqlSha256": "DC7047A4A7C90855FFA1732979802FD236F9A4891D12C416A0F30CBC65256D1A",
+  "CurrentSqlSha256": "10BB8BC1530D07241CFDC46BB605F692A74AA66E08590D7874B086DFC14703A8",
+  "SqlWritebackBackup": "E:\\SqlXmlAnalyzer\\.tmp.imp30-rollback-rc1\\current.sql.SqlXmlAnalyzer-b046d3903d124ac4ba05917c85e2dfa0.bak",
+  "CurrentSqlPreserved": true,
+  "DatabaseChangesReverted": false,
+  "PackagedCliCommands": 6,
+  "ApprovedForDistribution": false
+}

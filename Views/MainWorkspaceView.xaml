@@ -6,7 +6,7 @@
     <TabControl Margin="2" x:Name="MainTabControl" SelectedIndex="0" Background="{DynamicResource MaterialDesignPaper}">
 
             <!-- ==================== 死锁分析 Tab (A) ==================== -->
-            <TabItem Header="🔴 死锁分析" Margin="0,0,-16,0">
+            <TabItem Header="🔴 死锁分析">
                 <views:DeadlockWorkspaceView x:Name="DeadlockWorkspace"
                                              ProcessesSelectionChanged="DeadlockProcessesList_SelectionChanged"
                                              ResourcesSelectionChanged="DeadlockResourcesList_SelectionChanged"
@@ -22,7 +22,7 @@
             </TabItem>
 
             <!-- ==================== 执行计划分析 Tab (B) - 参考 Plan Explorer ==================== -->
-            <TabItem Header="📈 执行计划分析" Margin="24,0,-42,0">
+            <TabItem Header="📈 执行计划分析">
                 <views:PlanWorkspaceView x:Name="PlanWorkspace"
                                          LeftPanelExpanded="LeftPanel_Expanded"
                                          LeftPanelCollapsed="LeftPanel_Collapsed"
@@ -39,7 +39,7 @@
                                          CopyRollbackDdlClicked="CopyRollbackDdl_Click"/>
             </TabItem>
             <!-- ==================== A/B 并排对比 Tab (C) ==================== -->
-            <TabItem Header="⚖️ A/B 比对分析" Margin="42,0,-60,0">
+            <TabItem Header="⚖️ A/B 比对分析">
                 <views:PlanComparisonWorkspaceView x:Name="PlanComparisonWorkspace"
                                                    TuningHistoryMouseDoubleClicked="TuningHistoryListView_MouseDoubleClick"
                                                    SaveSessionClicked="SaveSession_Click"

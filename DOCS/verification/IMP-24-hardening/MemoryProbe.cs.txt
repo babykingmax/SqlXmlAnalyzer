@@ -1,0 +1,21 @@
+using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
+using SqlXmlAnalyzer.Core.Configuration;
+
+_ = RuleConfigurationDocument.Defaults;
+_ = RuleConfigurationDocument.Parse("{\"extension\":[0]}");
+var results = new List<object>();
+foreach (var (keyLength, count) in new[] { (8192, 5000), (400_000, 250_000) })
+{
+    string json = "{\"" + new string('x', keyLength) + "\":[" + string.Join(",", Enumerable.Repeat("0", count)) + "],\"Rules\":[]}";
+    var timer = new Stopwatch();
+    long before = GC.GetAllocatedBytesForCurrentThread();
+    timer.Start();
+    var document = RuleConfigurationDocument.Parse(json);
+    timer.Stop();
+    long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+    if (document.Json != json || allocated > 32 * 1024 * 1024) throw new Exception("Configuration parsing exceeded allocation bound or changed the document");
+    results.Add(new { keyLength, count, inputBytes = Encoding.UTF8.GetByteCount(json), allocatedBytes = allocated, elapsedMilliseconds = timer.Elapsed.TotalMilliseconds });
+}
+Console.WriteLine(JsonSerializer.Serialize(new { runtime = Environment.Version.ToString(), heapLimitBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes, passed = true, results }, new JsonSerializerOptions { WriteIndented = true }));

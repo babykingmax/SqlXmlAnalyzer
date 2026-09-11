@@ -75,11 +75,11 @@ public sealed class RuleAnalysisContext
 {
     internal RuleAnalysisContext(PlanAnalysisContext analysis, RuleMetadata metadata, PlanLocation location,
         PlanOperator? op, PlanOperatorFacts? facts, XElement legacyElement, XNamespace ns,
-        PlanLocation documentLocation, PlanLocation? statementLocation)
+        PlanLocation documentLocation, PlanLocation? statementLocation, PlanLocation? queryPlanLocation = null)
     {
         Analysis = analysis; Metadata = metadata; Location = location; Operator = op; Facts = facts;
         LegacyElement = legacyElement; Namespace = ns;
-        DocumentLocation = documentLocation; StatementLocation = statementLocation;
+        DocumentLocation = documentLocation; StatementLocation = statementLocation; QueryPlanLocation = queryPlanLocation;
         SourceNodeId = op?.Location.Operator?.NodeId
             ?? (legacyElement.Name == ns + "RelOp" ? (string?)legacyElement.Attribute("NodeId") : null);
     }
@@ -93,9 +93,11 @@ public sealed class RuleAnalysisContext
     public CancellationToken CancellationToken => Analysis.CancellationToken;
     public PlanLocation DocumentLocation { get; }
     public PlanLocation? StatementLocation { get; }
+    public PlanLocation? QueryPlanLocation { get; }
     public PlanLocation LocationFor(RuleScope scope) => scope switch
     {
         RuleScope.Plan => DocumentLocation,
+        RuleScope.QueryPlan => QueryPlanLocation ?? Location,
         RuleScope.Statement => StatementLocation ?? Location,
         RuleScope.Operator => Operator?.Location ?? Location,
         _ => throw new ArgumentOutOfRangeException(nameof(scope))
@@ -194,9 +196,33 @@ public sealed record RuleRun(string RunId, string RuleId, string RuleVersion, Ru
 
 public sealed class PlanDiagnosticReport
 {
+    private readonly Lazy<IReadOnlyDictionary<PlanOperatorKey, PlanDiagnosticReport>> _operatorReports;
     internal PlanDiagnosticReport(PlanAnalysisContext context, IEnumerable<RuleRun> runs, IEnumerable<PlanDiagnostic> diagnostics)
     {
         Context = context; Runs = Array.AsReadOnly(runs.ToArray()); Diagnostics = Array.AsReadOnly(diagnostics.ToArray());
+        _operatorReports = new(BuildOperatorReports);
+    }
+    public PlanDiagnosticReport ForOperator(XElement element)
+    {
+        var model = PlanIdentityAdapter.GetDocument(element.Document);
+        var op = model?.FindOperator(element);
+        if (op == null || model!.Envelope.DocumentId != DocumentId)
+            throw new InvalidDataException("图节点与诊断快照身份不一致，请重新分析。");
+        return _operatorReports.Value.TryGetValue(op.Key, out var report) ? report : new(Context, [], []);
+    }
+    private IReadOnlyDictionary<PlanOperatorKey, PlanDiagnosticReport> BuildOperatorReports()
+    {
+        var operators = Context.Model.Operators;
+        var firstPlan = operators.FirstOrDefault()?.Key;
+        var firstStatements = operators.GroupBy(o => o.Key.QueryPlan.Statement).ToDictionary(g => g.Key, g => g.First().Key);
+        var firstQueryPlans = operators.GroupBy(o => o.Key.QueryPlan).ToDictionary(g => g.Key, g => g.First().Key);
+        PlanOperatorKey? Target(PlanLocation location) => location.Operator ?? (location.QueryPlan != null
+            ? firstQueryPlans.GetValueOrDefault(location.QueryPlan) : location.Statement == null
+                ? firstPlan : firstStatements.GetValueOrDefault(location.Statement));
+        var runs = Runs.Where(r => Target(r.Location) != null).ToLookup(r => Target(r.Location)!);
+        var diagnostics = Diagnostics.Where(d => Target(d.Location) != null).ToLookup(d => Target(d.Location)!);
+        return runs.Select(g => g.Key).Concat(diagnostics.Select(g => g.Key)).Distinct()
+            .ToDictionary(key => key, key => new PlanDiagnosticReport(Context, runs[key], diagnostics[key]));
     }
     [JsonIgnore] public PlanAnalysisContext Context { get; }
     public string ProtocolVersion => Context.ProtocolVersion;

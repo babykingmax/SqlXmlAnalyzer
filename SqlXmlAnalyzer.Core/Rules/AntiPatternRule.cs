@@ -15,8 +15,10 @@ namespace SqlXmlAnalyzer.Core.Rules
             var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
 
             // Scan all ScalarStrings in predicates
-            var predicates = relOp.Descendants(ns + "Predicate").Union(relOp.Descendants(ns + "SeekPredicates"));
-            var scalarOps = predicates.Descendants(ns + "ScalarOperator");
+            var local = Services.PlanOperatorFactsService.LocalElements(relOp, ns).ToList();
+            var predicates = local.Where(element => element.Name.LocalName is "Predicate" or "SeekPredicates").ToHashSet();
+            var scalarOps = local.Where(element => element.Name.LocalName == "ScalarOperator"
+                && element.Ancestors().TakeWhile(ancestor => ancestor != relOp).Any(predicates.Contains));
 
             foreach (var op in scalarOps)
             {

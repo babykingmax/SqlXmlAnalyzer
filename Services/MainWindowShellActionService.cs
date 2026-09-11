@@ -206,6 +206,7 @@ namespace SqlXmlAnalyzer.Services
             var theme = paletteHelper.GetTheme();
             theme.SetBaseTheme(useDarkTheme ? BaseTheme.Dark : BaseTheme.Light);
             paletteHelper.SetTheme(theme);
+            Core.Services.WorkspaceThemeService.Apply(global::System.Windows.Application.Current.Resources, useDarkTheme);
         }
 
         private void RegisterAssociations()

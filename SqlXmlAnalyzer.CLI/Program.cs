@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using SqlXmlAnalyzer;
@@ -28,17 +27,6 @@ namespace SqlXmlAnalyzer.CLI
 {
     public class Program
     {
-        private static readonly string[] DefaultScanExclusionPatterns =
-        {
-            ".git",
-            "bin",
-            "obj",
-            ".vs",
-            "publish-*",
-            "backups",
-            ".tmp.*"
-        };
-
         public static int Main(string[] args)
         {
             Console.OutputEncoding = new UTF8Encoding(false);
@@ -67,14 +55,17 @@ namespace SqlXmlAnalyzer.CLI
         {
             if (cancellationToken.IsCancellationRequested) return CancelledExit();
             DocumentReadOptions readOptions;
+            string? readOptionsPath = null;
             try
             {
                 int optionIndex = Array.IndexOf(args, "--read-options");
                 readOptions = new DocumentReadOptions();
                 if (optionIndex >= 0)
                 {
-                    if (optionIndex + 1 >= args.Length) throw new ArgumentException("--read-options 需要 JSON 文件路径。");
-                    using var optionsStream = File.OpenRead(args[optionIndex + 1]);
+                    if (optionIndex + 1 >= args.Length || args[optionIndex + 1].StartsWith('-'))
+                        throw new ArgumentException("--read-options 需要 JSON 文件路径。");
+                    readOptionsPath = args[optionIndex + 1];
+                    using var optionsStream = File.OpenRead(readOptionsPath);
                     if (optionsStream.Length > 65536) throw new ArgumentException("读取选项文件不得超过 64 KiB。");
                     readOptions = JsonSerializer.Deserialize<DocumentReadOptions>(optionsStream,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true, UnmappedMemberHandling = System.Text.Json.Serialization.JsonUnmappedMemberHandling.Disallow })
@@ -112,10 +103,10 @@ namespace SqlXmlAnalyzer.CLI
             }
             if (args.Length > 0 && args[0].Equals("refactor", StringComparison.OrdinalIgnoreCase))
             {
-                return HandleRefactorCommand(args.Skip(1).ToArray(), readOptions, cancellationToken);
+                return HandleRefactorCommand(args.Skip(1).ToArray(), readOptions, cancellationToken, readOptionsPath);
             }
             if (args.Length > 0 && args[0].ToLowerInvariant() is "semantic-compare" or "rewrite-validate" or "rewrite-apply")
-                return SqlSemanticCommand.Run(args[0].ToLowerInvariant(), args.Skip(1).ToArray(), cancellationToken);
+                return SqlSemanticCommand.Run(args[0].ToLowerInvariant(), args.Skip(1).ToArray(), cancellationToken, readOptions, readOptionsPath);
 
             // Parse arguments
             string? path = null;
@@ -232,7 +223,7 @@ namespace SqlXmlAnalyzer.CLI
             }
             else if (Directory.Exists(path))
             {
-                filesToScan.AddRange(CollectPlanFiles(path, additionalExcludePatterns));
+                filesToScan.AddRange(CollectPlanFiles(path, additionalExcludePatterns, cancellationToken));
             }
             else
             {
@@ -308,83 +299,12 @@ namespace SqlXmlAnalyzer.CLI
 
         public static IReadOnlyList<string> CollectPlanFiles(
             string rootPath,
-            IEnumerable<string>? additionalExcludePatterns = null)
-        {
-            if (!Directory.Exists(rootPath))
-            {
-                return Array.Empty<string>();
-            }
-
-            var excludePatterns = DefaultScanExclusionPatterns
-                .Concat(additionalExcludePatterns ?? Array.Empty<string>())
-                .Select(pattern => pattern.Trim())
-                .Where(pattern => pattern.Length > 0)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToArray();
-
-            var files = new List<string>();
-            var pendingDirectories = new Stack<string>();
-            pendingDirectories.Push(Path.GetFullPath(rootPath));
-
-            while (pendingDirectories.Count > 0)
-            {
-                string currentDirectory = pendingDirectories.Pop();
-
-                try
-                {
-                    files.AddRange(Directory.EnumerateFiles(
-                        currentDirectory,
-                        "*.sqlplan",
-                        SearchOption.TopDirectoryOnly));
-
-                    foreach (string childDirectory in Directory.EnumerateDirectories(currentDirectory))
-                    {
-                        string directoryName = Path.GetFileName(childDirectory);
-                        if (ShouldExcludeDirectory(directoryName, excludePatterns))
-                        {
-                            continue;
-                        }
-
-                        pendingDirectories.Push(childDirectory);
-                    }
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    Console.Error.WriteLine($"[Warning] Skipping inaccessible directory '{currentDirectory}': {ex.Message}");
-                }
-                catch (IOException ex)
-                {
-                    Console.Error.WriteLine($"[Warning] Skipping unreadable directory '{currentDirectory}': {ex.Message}");
-                }
-            }
-
-            files.Sort(StringComparer.OrdinalIgnoreCase);
-            return files;
-        }
-
+            IEnumerable<string>? additionalExcludePatterns = null,
+            System.Threading.CancellationToken cancellationToken = default) =>
+            InputFileCollector.Collect(rootPath, [".sqlplan"], additionalExcludePatterns, cancellationToken);
         private static IEnumerable<string> SplitExcludePatterns(string value)
         {
             return value.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private static bool ShouldExcludeDirectory(
-            string directoryName,
-            IReadOnlyList<string> excludePatterns)
-        {
-            return excludePatterns.Any(pattern => IsWildcardMatch(directoryName, pattern));
-        }
-
-        private static bool IsWildcardMatch(string value, string pattern)
-        {
-            string regexPattern = "^" +
-                Regex.Escape(pattern)
-                    .Replace("\\*", ".*")
-                    .Replace("\\?", ".") +
-                "$";
-            return Regex.IsMatch(
-                value,
-                regexPattern,
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
         private static bool TryParseCost(string value, out double cost) =>
@@ -686,7 +606,7 @@ namespace SqlXmlAnalyzer.CLI
             Console.WriteLine();
             Console.WriteLine("选项:");
             Console.WriteLine("  -p, --path <路径>          执行计划文件 (.sqlplan) 或包含计划文件的目录路径 (必须项)");
-            Console.WriteLine("  -c, --config <路径>        规则配置文件 RuleConfiguration.json 路径 (默认为当前目录的配置)");
+            Console.WriteLine("  -c, --config <路径>        规则配置文件 RuleConfiguration.json 路径 (默认读取应用目录；显式相对路径基于当前目录)");
             Console.WriteLine("  -m, --max-cost <数值>      有限非负子树开销阈值 (超过或缺少完整开销证据则失败)");
             Console.WriteLine("  -b, --block-scans          检测到 Table Scan / Index Scan / Clustered Index Scan 时失败");
             Console.WriteLine("  -f, --format <格式>        输出报告格式: console, json, junit (默认为 console)");
@@ -732,7 +652,7 @@ namespace SqlXmlAnalyzer.CLI
         }
 
         private static int HandleRefactorCommand(string[] args, DocumentReadOptions readOptions,
-            System.Threading.CancellationToken cancellationToken)
+            System.Threading.CancellationToken cancellationToken, string? readOptionsPath = null)
         {
             if (cancellationToken.IsCancellationRequested) return CancelledExit();
             if (args.Contains("--help") || args.Contains("-h"))
@@ -759,6 +679,7 @@ namespace SqlXmlAnalyzer.CLI
             }
 
             string? planPath = null;
+            string? configPath = null;
             bool isDryRun = false;
             bool showSql = false;
             var selectedProposalIds = new List<string>();
@@ -773,7 +694,7 @@ namespace SqlXmlAnalyzer.CLI
                 {
                     case "--plan":
                     case "-p":
-                        if (i + 1 < args.Length)
+                        if (i + 1 < args.Length && !args[i + 1].StartsWith('-'))
                         {
                             planPath = args[++i];
                         }
@@ -787,6 +708,16 @@ namespace SqlXmlAnalyzer.CLI
                     case "--dry-run":
                     case "-d":
                         isDryRun = true;
+                        break;
+
+                    case "--config":
+                    case "-c":
+                        if (i + 1 >= args.Length || args[i + 1].StartsWith('-'))
+                        {
+                            Console.Error.WriteLine("[Error] --config 需要规则配置文件路径。");
+                            return 2;
+                        }
+                        configPath = args[++i];
                         break;
 
                     case "--select":
@@ -878,9 +809,12 @@ namespace SqlXmlAnalyzer.CLI
             }
 
             // Setup services
+            string[] auxiliaryInputs = new[] { configPath ?? (planPath == null ? null : RuleConfigurationPathResolver.Resolve()), readOptionsPath }
+                .OfType<string>().ToArray();
+            string?[] inputPaths = [sqlPath, planPath, .. auxiliaryInputs];
             try
             {
-                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                SqlReportPathGuard.ValidateInputs(inputPaths, outputPath);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
             {
@@ -912,7 +846,7 @@ namespace SqlXmlAnalyzer.CLI
                 services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = showSql });
             }
 
-            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine("RuleConfiguration.json"));
+            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine(configPath));
             services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
 
             // Rules
@@ -942,7 +876,8 @@ namespace SqlXmlAnalyzer.CLI
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath, cancellationToken);
+                var orchestratorResult = orchestrator.Execute(sqlPath, planPath, isDryRun, refactorOptions, outputPath,
+                    cancellationToken, additionalInputPaths: auxiliaryInputs);
                 // Do not create a failure report after the user has cancelled.
                 if (cancellationToken.IsCancellationRequested) return CancelledExit();
 
@@ -950,7 +885,7 @@ namespace SqlXmlAnalyzer.CLI
                 {
                     // Revalidate before writing a failure report: an alias may have appeared
                     // during analysis or writeback. Never use the SQL source as an error log.
-                    SqlReportPathGuard.Validate(sqlPath, outputPath);
+                    SqlReportPathGuard.ValidateInputs(inputPaths, outputPath);
                     if (isJson)
                     {
                         var jsonResult = new
@@ -995,7 +930,7 @@ namespace SqlXmlAnalyzer.CLI
                         {
                             try
                             {
-                                File.WriteAllText(outputPath, jsonString, Encoding.UTF8);
+                                ReportFileWriter.WriteText(outputPath, jsonString, inputPaths, cancellationToken);
                                 Console.WriteLine($"报告已写入到: {outputPath}");
                             }
                             catch (Exception ex)
@@ -1023,7 +958,7 @@ namespace SqlXmlAnalyzer.CLI
                         {
                             try
                             {
-                                File.WriteAllText(outputPath, sb.ToString(), Encoding.UTF8);
+                                ReportFileWriter.WriteText(outputPath, sb.ToString(), inputPaths, cancellationToken);
                                 Console.WriteLine($"报告已写入到: {outputPath}");
                             }
                             catch (Exception ex)
@@ -1069,12 +1004,15 @@ namespace SqlXmlAnalyzer.CLI
             Console.WriteLine("      --read-options <JSON>  辅助计划的读取预算；超限时禁止 SQL 写回");
             Console.WriteLine("  -p, --plan <路径>            关联的执行计划文件 (.sqlplan) 路径 (可选项)");
             Console.WriteLine("                               如果提供，重构引擎将结合计划中的物理开销和扫描信息进行针对性重构");
+            Console.WriteLine("  -c, --config <路径>          辅助计划使用的规则配置；默认读取应用目录 RuleConfiguration.json");
+            Console.WriteLine("                               rewrite-validate / rewrite-apply 须沿用 plan、config、max-passes、read-options");
             Console.WriteLine("      --select <提案ID>        选择审核预览，可重复；必须包含前序依赖，不授权写回");
             Console.WriteLine("  -d, --dry-run                兼容选项；所有 refactor 调用均仅生成审核提案，不修改原文件");
             Console.WriteLine("  -s, --show-sql               输出原始 SQL、提案 diff 与已选择的审核预览（尚未应用）");
             Console.WriteLine("  -m, --max-passes <次数>      重构引擎的最大迭代分析次数 (默认值为 5，必须是大于0的整数)");
             Console.WriteLine("  -f, --format <格式>          报告输出格式，支持: console, json (默认值为 console)");
             Console.WriteLine("  -o, --output <路径>          将重构报告写入指定的文件路径，若路径以 .json 结尾则自动切换为 json 格式");
+            Console.WriteLine("                               报告先暂存再发布；禁止覆盖 SQL、辅助计划、配置及其链接");
             Console.WriteLine("  -h, --help                   显示此帮助信息");
             Console.WriteLine();
             Console.WriteLine("使用示例:");

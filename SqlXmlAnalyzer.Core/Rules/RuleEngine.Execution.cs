@@ -39,6 +39,10 @@ public partial class RuleEngine
         var statementElements = statements.Select(statement => statement.Descendants(ns + "RelOp").FirstOrDefault(op =>
                 !op.Ancestors().TakeWhile(a => a != statement).Any(a => a.Name == ns + "Statements" || a.Name == ns + "InternalInfo"))
             ?? Temporary(statement, ns)).ToList();
+        var queryPlanElements = working.Descendants(ns + "QueryPlan")
+            .Where(query => identities == null ? QueryPlanXml.IsInScope(query, ns)
+                : identities.FindLocation(sources[query])?.QueryPlan != null)
+            .ToList().Select(query => query.Elements(ns + "RelOp").FirstOrDefault() ?? Temporary(query, ns)).ToList();
         // The isolated XML copy represents the same captured document. Register after
         // preparing synthetic contexts so change notifications cannot replace this identity.
         PlanIdentityAdapter.SetEnvelope(working, analysis.Model.Envelope);
@@ -49,6 +53,7 @@ public partial class RuleEngine
             IReadOnlyList<XElement> contexts = metadata.Scope switch
             {
                 RuleScope.Plan => new[] { planElement }, RuleScope.Statement => statementElements,
+                RuleScope.QueryPlan => queryPlanElements,
                 RuleScope.Operator => relOps, _ => throw new InvalidOperationException("RULE_SCOPE_INVALID")
             };
             if (contexts.Count == 0)
@@ -83,6 +88,7 @@ public partial class RuleEngine
             && PlanDocumentBuilder.IsStatement(e.Name.LocalName) && e.Parent?.Name == ns + "Statements");
         XElement? firstStatementOp = statement?.Descendants(ns + "RelOp").FirstOrDefault(e =>
             !e.Ancestors().TakeWhile(a => a != statement).Any(a => a.Name == ns + "Statements" || a.Name == ns + "InternalInfo"));
+        XElement? firstQueryPlanOp = QueryPlanXml.Find(relOp, ns)?.Elements(ns + "RelOp").FirstOrDefault();
         foreach (IPlanAnalyzerRule rule in _rules.ToArray())
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -91,6 +97,7 @@ public partial class RuleEngine
             {
                 RuleScope.Operator => true,
                 RuleScope.Plan => ReferenceEquals(relOp, firstPlanOp),
+                RuleScope.QueryPlan => ReferenceEquals(relOp, firstQueryPlanOp),
                 RuleScope.Statement => ReferenceEquals(relOp, firstStatementOp), _ => false
             };
             Execute(rule, CreateInvocation(analysis, metadata, relOp, relOp, ns, identities), runs, diagnostics,
@@ -118,15 +125,18 @@ public partial class RuleEngine
         XElement? statement = source.AncestorsAndSelf().FirstOrDefault(e => e.Name.Namespace == ns
             && PlanDocumentBuilder.IsStatement(e.Name.LocalName) && e.Parent?.Name == ns + "Statements");
         PlanLocation? statementLocation = statement == null ? null : identities?.FindLocation(statement) ?? Fallback(statement);
+        XElement? queryPlan = QueryPlanXml.Find(source, ns);
+        PlanLocation? queryPlanLocation = queryPlan == null ? null : identities?.FindLocation(queryPlan) ?? Fallback(queryPlan);
         PlanOperator? op = identities?.FindOperator(source);
         PlanLocation location = metadata.Scope switch
         {
             RuleScope.Plan => documentLocation,
+            RuleScope.QueryPlan => queryPlanLocation ?? documentLocation,
             RuleScope.Statement => statementLocation ?? documentLocation,
             _ => op?.Location ?? identities?.FindLocation(source) ?? Fallback(source)
         };
         var facts = op?.Facts ?? (source.Name == ns + "RelOp" ? PlanOperatorFactsService.Get(source, ns, analysis.CancellationToken) : null);
-        return new(analysis, metadata, location, op, facts, legacy, ns, documentLocation, statementLocation);
+        return new(analysis, metadata, location, op, facts, legacy, ns, documentLocation, statementLocation, queryPlanLocation);
     }
 
     private void Execute(IPlanAnalyzerRule rule, RuleAnalysisContext context, List<RuleRun> runs,
@@ -177,6 +187,7 @@ public partial class RuleEngine
                 };
                 PlanLocation location = context.LocationFor(proposal.Scope ?? metadata.Scope);
                 if (((proposal.Scope ?? metadata.Scope) == RuleScope.Operator && context.Facts == null)
+                    || ((proposal.Scope ?? metadata.Scope) == RuleScope.QueryPlan && context.QueryPlanLocation == null)
                     || ((proposal.Scope ?? metadata.Scope) == RuleScope.Statement && context.StatementLocation == null))
                     throw new InvalidOperationException("RULE_LOCATION_UNAVAILABLE: 诊断要求的语句或算子位置不存在。");
                 string id = ProtocolIdentity.Diagnostic(proposal.SemanticCode, location, proposal.Evidence);

@@ -7,6 +7,7 @@ namespace SqlXmlAnalyzer.Views
         public IndexSandboxWindow()
         {
             InitializeComponent();
+            Services.WorkspaceAccessibility.PrepareDialog(this);
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

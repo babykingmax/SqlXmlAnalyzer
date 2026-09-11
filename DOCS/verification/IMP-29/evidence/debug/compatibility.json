@@ -1,0 +1,250 @@
+{
+  "Configuration": "Debug",
+  "GeneratedAtUtc": "2026-09-10T10:26:49.9114132Z",
+  "Passed": true,
+  "Checks": [
+    "scan exit 0",
+    "scan legacy array and complete cost",
+    "report and rule protocol versions",
+    "threshold exit 1",
+    "read exit 0",
+    "read model envelope",
+    "refactor exit 0",
+    "refactor candidate-only contract",
+    "future-config exit 2",
+    "future configuration recognizable rejection",
+    "unknown-option exit 2",
+    "existing-output exit 2",
+    "existing report retained",
+    "CLI original plan and SQL bytes retained",
+    "legacy session version recognized",
+    "session conversion readable as current",
+    "session comparison pair retained",
+    "session overwrite rejected and original bytes retained",
+    "future session recovery retains original",
+    "configuration conversion keeps effective settings",
+    "configuration alias and unknown rule retained",
+    "configuration source retained"
+  ],
+  "Commands": [
+    {
+      "Name": "scan",
+      "Arguments": [
+        "-p",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\plan.sqlplan",
+        "-f",
+        "json"
+      ],
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "Stdout": "scan.stdout.json",
+      "Stderr": "scan.stderr.log"
+    },
+    {
+      "Name": "threshold",
+      "Arguments": [
+        "--path",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\plan.sqlplan",
+        "--max-cost",
+        "0.5",
+        "--format",
+        "json"
+      ],
+      "ExitCode": 1,
+      "ExpectedExitCode": 1,
+      "Stdout": "threshold.stdout.json",
+      "Stderr": "threshold.stderr.log"
+    },
+    {
+      "Name": "read",
+      "Arguments": [
+        "read",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\plan.sqlplan"
+      ],
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "Stdout": "read.stdout.json",
+      "Stderr": "read.stderr.log"
+    },
+    {
+      "Name": "refactor",
+      "Arguments": [
+        "refactor",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\query.sql",
+        "--format",
+        "json"
+      ],
+      "ExitCode": 0,
+      "ExpectedExitCode": 0,
+      "Stdout": "refactor.stdout.json",
+      "Stderr": "refactor.stderr.log"
+    },
+    {
+      "Name": "future-config",
+      "Arguments": [
+        "--path",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\plan.sqlplan",
+        "--config",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\future.json",
+        "--format",
+        "json"
+      ],
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "Stdout": "future-config.stdout.json",
+      "Stderr": "future-config.stderr.log"
+    },
+    {
+      "Name": "unknown-option",
+      "Arguments": [
+        "--unknown-option"
+      ],
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "Stdout": "unknown-option.stdout.json",
+      "Stderr": "unknown-option.stderr.log"
+    },
+    {
+      "Name": "existing-output",
+      "Arguments": [
+        "-p",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\plan.sqlplan",
+        "-f",
+        "json",
+        "-o",
+        "E:\\SqlXmlAnalyzer\\.tmp.imp29-hardening-4\\compatibility-Debug\\runs\\Debug-20260910T102648122Z-f46b385b\\existing-report.json"
+      ],
+      "ExitCode": 2,
+      "ExpectedExitCode": 2,
+      "Stdout": "existing-output.stdout.json",
+      "Stderr": "existing-output.stderr.log"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "converted.json",
+      "Bytes": 373,
+      "Sha256": "B13E47B01D8E947A3FAA3CD59486ECD2E2A47A9715995746706CB8F3C70E57A2"
+    },
+    {
+      "Path": "converted.pesession",
+      "Bytes": 1951,
+      "Sha256": "C76076E717752EC9FFCB04259EFB2A4CF6568DB728EE828E2B7598BD31A56129"
+    },
+    {
+      "Path": "existing-output.stderr.log",
+      "Bytes": 76,
+      "Sha256": "3050CAD3EC4936E81B0FC65785A072C5902C33DF6339447FE1766EC02551CB62"
+    },
+    {
+      "Path": "existing-output.stdout.json",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "existing-report.json",
+      "Bytes": 17,
+      "Sha256": "1478416E5244A53427040982E0C8D5136348D9F88B6CD897BECA385FC1302639"
+    },
+    {
+      "Path": "future-config.stderr.log",
+      "Bytes": 784,
+      "Sha256": "227BCACF21BDD53CC2BF5DBCDDD79EC359C70E2DC579F4D12241CBBC5474B1EA"
+    },
+    {
+      "Path": "future-config.stdout.json",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "future.json",
+      "Bytes": 48,
+      "Sha256": "09D3041F4660415F1022AFC5F69CFA94F211F1670ED9F2DF3E2F2521DB188A35"
+    },
+    {
+      "Path": "future.pesession",
+      "Bytes": 1449,
+      "Sha256": "2B2FA5DFFA975EBDF36D1F80080A9ADE5B7EDAA40380A744FF18727E1F6269DA"
+    },
+    {
+      "Path": "legacy.json",
+      "Bytes": 340,
+      "Sha256": "36BE7D25522B16887D38D93FD3D5D9BA3CF0DC36E03E7C8B146CC600BE531BCE"
+    },
+    {
+      "Path": "legacy.pesession",
+      "Bytes": 1395,
+      "Sha256": "8121ABB32DEA9E51287C9B8E9BDC4819A151F666D48808C66D90BE499D401055"
+    },
+    {
+      "Path": "plan.sqlplan",
+      "Bytes": 710,
+      "Sha256": "A435A992A69EA53A542113080D8A32B344346C3D851F091B15246FF22AFE1542"
+    },
+    {
+      "Path": "query.sql",
+      "Bytes": 59,
+      "Sha256": "906BDFB3DFE62B56D5759CFE7D6344B3CF50CF30477AEA12BA332E4E3CB6C1D7"
+    },
+    {
+      "Path": "read.stderr.log",
+      "Bytes": 786,
+      "Sha256": "1BE1885D7D36195C0E305E0FF0F03BA6CD6AEF973075ADA51C6AD880CC7DAAC9"
+    },
+    {
+      "Path": "read.stdout.json",
+      "Bytes": 29905,
+      "Sha256": "81EB6386908012AE0B817F03CDCF289C9295E1AAED6A744E51D936D2024A5677"
+    },
+    {
+      "Path": "refactor.stderr.log",
+      "Bytes": 1190,
+      "Sha256": "01AC03281EF9A249365E753B4AF2BDBBF0BD039ADD82A39A69D5576021DD359E"
+    },
+    {
+      "Path": "refactor.stdout.json",
+      "Bytes": 3954,
+      "Sha256": "227E8799B62D52CCC7A314213E746DFFD01B030CB2D373CF3C2935438FFB467D"
+    },
+    {
+      "Path": "scan.stderr.log",
+      "Bytes": 9544,
+      "Sha256": "FD68E7883060652197CAC771DCB5259A5EDF885C1520E238F37A85D6C1311F5D"
+    },
+    {
+      "Path": "scan.stdout.json",
+      "Bytes": 207594,
+      "Sha256": "9579A038BCB5932A306F8B8DAE56D8510A6EFAFC08B3C11E1845FD1A63E6801A"
+    },
+    {
+      "Path": "session.log",
+      "Bytes": 4949,
+      "Sha256": "295A7DAB676540347DCA6847BEC903041894490DFAC55B85C222B787B79E17D2"
+    },
+    {
+      "Path": "threshold.stderr.log",
+      "Bytes": 9544,
+      "Sha256": "257CE40A7E46EBA4FCAB370058B242093F0724D6BCE127784257F801431D2294"
+    },
+    {
+      "Path": "threshold.stdout.json",
+      "Bytes": 207645,
+      "Sha256": "804B1531DA12B519249C743579446D6F2642DB72A8DC833F82A87174BCC6E2B5"
+    },
+    {
+      "Path": "unknown-option.stderr.log",
+      "Bytes": 75,
+      "Sha256": "DA6A9B28483C3CAF2D8A9AD6D1C7E879FB968DE4D268440E252B115F7A87A589"
+    },
+    {
+      "Path": "unknown-option.stdout.json",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    }
+  ],
+  "CliSha256": "2EB3D8A234E7F154356E31BD9FBB68869C995CB728DB956DE3A452B5BD387D7C",
+  "AppSha256": "AA91F39C20D57B1F936E6CE53D06291E12F2042E8C9ECC9FB7421273DE541BDC",
+  "CoreSha256": "946244138A977B1CB7E3008BFA6C2A8CA75E5BEA45BB15E6EFCE5A412A86C16D",
+  "Scope": "Actual CLI processes and file conversions using synthetic offline fixtures; no WPF interaction or SQL Server connection.",
+  "Run": "runs/Debug-20260910T102648122Z-f46b385b"
+}

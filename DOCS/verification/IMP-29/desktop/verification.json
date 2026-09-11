@@ -1,0 +1,29 @@
+{
+  "TimestampUtc": "2026-09-10T09:18:12.6474866Z",
+  "Mode": "Visible Release application via Windows computer-use API; injected mouse/keys, native file dialogs",
+  "Fixture": "SqlXmlAnalyzer.Tests/TestData/imp14_cardinality_residual.sqlplan",
+  "SourceSha256": "5A31AE4237746256B7F056C13CDEB4919737B962605D50B2B87962B60FF0AC61",
+  "AppSha256": "E6B58DABADAE7AFB446927DB7461D09F1CB509FECF7DAD33F7E39AA4CEC2411B",
+  "Checks": [
+    "Ctrl+O opened native plan dialog",
+    "Selected second statement with repeated NodeId 0",
+    "F8 selected second-statement diagnostic and graph node before layout fix",
+    "Ctrl+R opened scope B1/S2/Q1 report",
+    "Long preview and format selector bounded after fix",
+    "Clicked visible Save button",
+    "Native save dialog published a complete new HTML file",
+    "Saved HTML preserved B1/S2/Q1 and excluded original SQL text"
+  ],
+  "Export": "statement-2-redacted.html",
+  "ExportSha256": "EA35972188157E29AB82A0EFD56AE8ABC150A86BB33EF5DB7D3433CC807FF093",
+  "Evidence": [
+    "report-fixed.png",
+    "report-saved.png"
+  ],
+  "NotCovered": [
+    "Physical keyboard hardware",
+    "Actual OS DPI switching and monitor transitions",
+    "Screen reader",
+    "Complete external browser/Word/PDF/SSMS rendering matrix"
+  ]
+}

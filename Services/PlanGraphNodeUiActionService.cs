@@ -12,7 +12,7 @@ namespace SqlXmlAnalyzer.Services
             XElement relOp,
             XNamespace ns,
             double residualIoThreshold,
-            int residualIoMinRowsRead)
+            int residualIoMinRowsRead, Core.Rules.PlanDiagnosticReport? report = null)
         {
             ArgumentNullException.ThrowIfNull(relOp);
             ArgumentNullException.ThrowIfNull(ns);
@@ -23,7 +23,7 @@ namespace SqlXmlAnalyzer.Services
                     ns,
                     new Core.Services.PlanGraphNodeWarningSettings(
                         residualIoThreshold,
-                        residualIoMinRowsRead));
+                        residualIoMinRowsRead), report);
 
             var vm = new PlanNodeViewModel
             {

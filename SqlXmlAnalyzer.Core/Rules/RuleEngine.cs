@@ -16,10 +16,12 @@ namespace SqlXmlAnalyzer.Core.Rules
         private readonly Diagnostics.IUnexpectedErrorReporter _unexpectedErrors;
         private readonly Dictionary<IPlanAnalyzerRule, RuleMetadata> _metadata = new();
 
-        public RuleEngine(string? configPath = null, Diagnostics.IUnexpectedErrorReporter? unexpectedErrors = null)
+        public RuleEngine(string? configPath = null, Diagnostics.IUnexpectedErrorReporter? unexpectedErrors = null,
+            RuleConfigurationDocument? configuration = null)
         {
             _unexpectedErrors = unexpectedErrors ?? Diagnostics.UnexpectedErrorReporter.Shared;
-            ConfigurationLoadResult = RuleConfigurationLoader.Load(configPath);
+            ConfigurationLoadResult = configuration == null ? RuleConfigurationLoader.Load(configPath, _unexpectedErrors)
+                : new(configuration.ToLegacy(), "会话配置快照", configuration.Warnings, [], false) { Document = configuration };
             _config = new RuleConfigurationRoot { Rules = ConfigurationLoadResult.Configuration.Rules.Select(c =>
                 new RuleConfig { RuleId = c.RuleId, Enabled = c.Enabled, SeverityOverride = c.SeverityOverride }).ToList() };
 
@@ -30,7 +32,7 @@ namespace SqlXmlAnalyzer.Core.Rules
 
             if (!ConfigurationLoadResult.IsSuccess)
             {
-                throw new InvalidOperationException(
+                throw new System.IO.InvalidDataException(
                     string.Join(Environment.NewLine, ConfigurationLoadResult.Errors));
             }
         }

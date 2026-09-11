@@ -22,8 +22,20 @@ namespace SqlXmlAnalyzer.Core.ViewModels
     {
         private readonly TuningSessionService _tuningSessionService;
         public PlanWorkspaceViewModel PlanWorkspace { get; } = new();
+        public AnalysisOperationViewModel AnalysisOperation { get; private set; } = new();
+        public void InitializeAnalysisOperation(Action cancel)
+        {
+            AnalysisOperation = new(cancel);
+            OnPropertyChanged(nameof(AnalysisOperation));
+        }
         public DeadlockWorkspaceViewModel DeadlockWorkspace { get; } = new();
         public event EventHandler? ResultsCleared;
+        private bool _reduceMotion = !System.Windows.SystemParameters.ClientAreaAnimation;
+        public bool ReduceMotion
+        {
+            get => _reduceMotion;
+            set { if (SetProperty(ref _reduceMotion, value)) Logger.Debug($"IMP25 reduced motion changed: enabled={value}."); }
+        }
 
         public ObservableCollection<DocumentTabViewModel> Tabs { get; } = new ObservableCollection<DocumentTabViewModel>();
 
@@ -70,10 +82,23 @@ namespace SqlXmlAnalyzer.Core.ViewModels
         public XDocument? CurrentDeadlockDoc { get; set; }
         public DeadlockAnalysisOutput? CurrentDeadlockAnalysis { get; set; }
         private XDocument? _currentPlanDoc;
+        public PlanAnalysisSource? CurrentPlanSource { get; private set; }
         public XDocument? CurrentPlanDoc
         {
             get => _currentPlanDoc;
-            set { _currentPlanDoc = value; CurrentRewriteReview = null; CurrentRewriteSource = ""; }
+            set { _currentPlanDoc = value; CurrentPlanSource = null; CurrentRewriteReview = null; CurrentRewriteSource = ""; }
+        }
+        public void CommitPlanSource(PlanAnalysisSource source)
+        {
+            ArgumentNullException.ThrowIfNull(source);
+            _currentPlanDoc = source.Document;
+            CurrentPlanFilePath = source.FilePath;
+            CurrentPlanInput = source.Input;
+            CurrentRewriteReview = null;
+            CurrentRewriteSource = "";
+            CurrentPlanSource = source;
+            OnPropertyChanged(nameof(CurrentPlanSource));
+            OnPropertyChanged(nameof(CurrentPlanDoc));
         }
         public Models.RewriteReview? CurrentRewriteReview { get; set; }
         public string CurrentRewriteSource { get; set; } = "";
@@ -280,7 +305,8 @@ namespace SqlXmlAnalyzer.Core.ViewModels
                 }
 
                 SetComparisonPlans(result.PlanA, result.PlanB, result.ComparisonSelection);
-                StatusText = $"已成功载入调优会话，包含 {TuningHistory.Count} 个计划版本";
+                StatusText = $"已成功载入调优会话，包含 {TuningHistory.Count} 个计划版本"
+                    + (result.RequiresMigration ? "；旧格式已读取，请另存为新文件以保留原件。" : "");
             }
             catch (Exception ex)
             {
@@ -301,6 +327,7 @@ namespace SqlXmlAnalyzer.Core.ViewModels
             CurrentDeadlockDoc = null;
             CurrentDeadlockAnalysis = null;
             CurrentPlanDoc = null;
+            CurrentPlanFilePath = null;
             CurrentPlanDiagnostics = null;
             DeadlockPatternText = "";
             PlanWarningsText = "";

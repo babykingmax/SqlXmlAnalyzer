@@ -1,0 +1,57 @@
+{
+  "RecordedUtc": "2026-09-10T10:26:46.8514752Z",
+  "Configuration": "Debug",
+  "SqlServerVersion": "17.0.4075.5",
+  "IsolatedLocalDb": true,
+  "ExecutionDatabase": "master",
+  "Online": false,
+  "DataCompression": "ROW",
+  "Checks": [
+    {
+      "Database": "imp15.one",
+      "Schema": "sales",
+      "Table": "Order.Detail",
+      "IndexName": "IX_OrderDetail_62654047D45575A38CF2912E1C13E8552B87007C4104D9F2C42BB7DCD88669F2",
+      "TargetAndColumnOrdinalsVerified": true,
+      "RollbackVerified": true,
+      "WrongServerRejected": true
+    },
+    {
+      "Database": "imp15.one",
+      "Schema": "audit",
+      "Table": "Order.Detail",
+      "IndexName": "IX_OrderDetail_6F1A19C845B844669E697B981F913E080F83A61C8956FD88C588EBD9368EAD90",
+      "TargetAndColumnOrdinalsVerified": true,
+      "RollbackVerified": true,
+      "WrongServerRejected": true
+    },
+    {
+      "Database": "imp15.two",
+      "Schema": "sales",
+      "Table": "Order.Detail",
+      "IndexName": "IX_OrderDetail_0EBE196EE707893A2EE2326BC7B51323EA7AA48753A867B8DBF3A22B2CD993A4",
+      "TargetAndColumnOrdinalsVerified": true,
+      "RollbackVerified": true,
+      "WrongServerRejected": true
+    },
+    {
+      "Database": "imp15.one",
+      "Schema": "sch]ema",
+      "Table": "T]b",
+      "IndexName": "IX_Tb_D2A62CBE9524666F614A858C59FE6C7DE709245CFE9D20FA333737552754247A",
+      "TargetAndColumnOrdinalsVerified": true,
+      "RollbackVerified": true,
+      "WrongServerRejected": true
+    },
+    {
+      "Database": "imp15.one",
+      "Schema": "中文 架構",
+      "Table": "訂單 明細",
+      "IndexName": "IX_訂單明細_B5CB280C7F129DB62B8024AE86DB88B2C4F0E8FF3E76D67B89353C0B1F605B39",
+      "TargetAndColumnOrdinalsVerified": true,
+      "RollbackVerified": true,
+      "WrongServerRejected": true
+    }
+  ],
+  "Passed": true
+}

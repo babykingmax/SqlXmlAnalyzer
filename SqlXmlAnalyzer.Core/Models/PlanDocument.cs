@@ -79,6 +79,7 @@ public sealed class PlanDocument
     private readonly IReadOnlyDictionary<PlanStatementKey, XElement> _statementSources;
     private readonly IReadOnlyDictionary<XElement, PlanOperator> _operators;
     private bool _sourceChanged;
+    private readonly XDocument? _source;
 
     internal PlanDocument(DocumentEnvelope envelope, IReadOnlyList<PlanBatch> batches,
         IReadOnlyList<InputDiagnostic> diagnostics, Dictionary<XElement, PlanLocation> locations,
@@ -98,6 +99,7 @@ public sealed class PlanDocument
         Operators = Array.AsReadOnly(QueryPlans.SelectMany(q => q.Operators).ToArray());
         _operators = new ReadOnlyDictionary<XElement, PlanOperator>(Operators.ToDictionary(o => operatorSources[o.Key]));
         XDocument? source = locations.Keys.FirstOrDefault()?.Document;
+        _source = source;
         if (source != null)
         {
             var reference = new WeakReference<PlanDocument>(this);
@@ -113,6 +115,7 @@ public sealed class PlanDocument
     [JsonIgnore] public IReadOnlyList<PlanOperator> Operators { get; }
 
     // Compatibility methods expose the original source explicitly, never reconstructed XML.
+    public bool IsCurrentSource(XDocument source) { EnsureCurrentSource(); return ReferenceEquals(_source, source); }
     public XElement? GetOperatorSource(PlanOperatorKey key) { EnsureCurrentSource(); return _operatorSources.GetValueOrDefault(key); }
     public XElement? GetQueryPlanSource(PlanQueryPlanKey key) { EnsureCurrentSource(); return _queryPlanSources.GetValueOrDefault(key); }
     public XElement? GetStatementSource(PlanStatementKey key) { EnsureCurrentSource(); return _statementSources.GetValueOrDefault(key); }

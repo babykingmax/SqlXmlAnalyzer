@@ -62,12 +62,17 @@ namespace SqlXmlAnalyzer
             Core.Services.DeadlockGraphVisualStateService? deadlockGraphVisualStateService = null,
             Core.Services.DeadlockStepBadgeService? deadlockStepBadgeService = null,
             Core.Services.WorkspacePanelLayoutService? workspacePanelLayoutService = null,
-            Core.Services.TuningSessionActionService? tuningSessionActionService = null)
+            Core.Services.TuningSessionActionService? tuningSessionActionService = null,
+            Core.Configuration.RuleConfigurationSession? configuration = null)
         {
             InitializeComponent();
+            if (System.Windows.Application.Current is { } application)
+                Core.Services.WorkspaceThemeService.Apply(application.Resources, application.Resources["WorkspaceDarkTheme"] is true);
             WireMainShellEvents();
-            WireKeyboardShortcuts();
             ViewModel = new Core.ViewModels.MainViewModel(tuningSessionService);
+            _ruleConfiguration = configuration ?? new Core.Configuration.RuleConfigurationSession();
+            if (_ruleConfiguration.Current != null) ViewModel.PlanWorkspace.SetActiveConfiguration(_ruleConfiguration.Current.Fingerprint);
+            NavigationRail.RuleConfigurationClicked += OpenRuleConfiguration;
             ViewModel.ShowMessageBox = msg => MessageBox.Show(msg);
             this.DataContext = ViewModel;
             _temporaryFileManager = temporaryFileManager ?? new TemporaryFileManager();
@@ -92,7 +97,7 @@ namespace SqlXmlAnalyzer
                 planAnalysisService ?? new Core.Services.PlanAnalysisService(
                     orchestrator,
                     fileHandler,
-                    _temporaryFileManager);
+                    _temporaryFileManager, configuration: _ruleConfiguration);
             _deadlockDocumentController = deadlockDocumentController
                 ?? new Core.Services.DeadlockDocumentController(effectiveDeadlockAnalysisService);
             _planDocumentController = planDocumentController
@@ -166,6 +171,7 @@ namespace SqlXmlAnalyzer
                     MainTabControl,
                     AnalyzeDeadlockXmlAsync,
                     (selected, input, source) => _documentAnalysisUiActionService!.SelectDeadlockEventAsync(selected, input, source));
+            DeadlockWorkspace.XelSearchRequested += async (_, _) => await _xelDeadlockUiActionService.OpenSearchAsync(this);
             Core.Services.MissingIndexDeploymentScriptService effectiveMissingIndexDeploymentScriptService =
                 missingIndexDeploymentScriptService
                 ?? new Core.Services.MissingIndexDeploymentScriptService();
@@ -258,8 +264,8 @@ namespace SqlXmlAnalyzer
                     _sqlDiffUiActionService.ApplyQuickFixResult);
             _planStatisticsUiActionService =
                 new PlanStatisticsUiActionService(PlanWorkspace.StatisticsHistogram);
-            _ = new PlanWorkspaceUiActionService(ViewModel, PlanWorkspace, _sqlDiffUiActionService, _planStatisticsUiActionService,
-                effectivePlanTreeService, effectivePlanOperatorTreeViewRenderer, planPropertyService);
+            _planWorkspaceUiActionService = new PlanWorkspaceUiActionService(ViewModel, PlanWorkspace, _sqlDiffUiActionService, _planStatisticsUiActionService,
+                effectivePlanTreeService, effectivePlanOperatorTreeViewRenderer, planPropertyService, _analysisSessions);
             _ = new DeadlockWorkspaceUiActionService(ViewModel, DeadlockWorkspace, _deadlockGraphState);
             _temporaryFileManager.CleanupStaleFiles(TimeSpan.FromHours(24));
             _analysisResultsUiActionService =
@@ -283,7 +289,8 @@ namespace SqlXmlAnalyzer
                     MainTabControl,
                     RenderDeadlockGraphAndZoom,
                     (s, e) => UpdatePlaybackGraphVisibility(),
-                    _deadlockGraphState.StepBadges);
+                    _deadlockGraphState.StepBadges,
+                    (graph, token) => _deadlockGraphRenderUiActionService!.RenderAsync(graph, token));
             _deadlockPlaybackUiActionService =
                 new DeadlockPlaybackUiActionService(
                     effectiveDeadlockPlaybackStateService,
@@ -375,7 +382,7 @@ namespace SqlXmlAnalyzer
                     _deadlockViewportUiActionService.ZoomToFit);
             ViewModel.ResultsCleared += (_, _) =>
             {
-                _analysisSessions.CancelCurrent();
+                _analysisSessions.Reset();
                 _xelDeadlockUiActionService.ClearEvents();
                 _deadlockPlaybackUiActionService.HidePlayback();
                 _deadlockPlaybackUiActionService.SetCurrentPlayback(null, null);
@@ -396,12 +403,22 @@ namespace SqlXmlAnalyzer
                     ShellStatus.StatusTextBlock,
                     _showplanNs,
                     UpdatePlaybackGraphVisibility,
-                    _xelDeadlockUiActionService.ShowDocumentEvents,
-                    _xelDeadlockUiActionService.ClearEvents);
+                    _xelDeadlockUiActionService.ShowDocumentEventsWithoutAnalysis,
+                    _xelDeadlockUiActionService.ClearEvents,
+                    _planWorkspaceUiActionService.WaitForPendingRenderAsync,
+                    _planWorkspaceUiActionService.BeginDocumentRender);
+            ViewModel.InitializeAnalysisOperation(_analysisSessions.CancelCurrent);
+            _analysisSessions.ProgressChanged += (_, progress) =>
+            {
+                if (Dispatcher.CheckAccess()) ViewModel.AnalysisOperation.Update(progress);
+                else Dispatcher.BeginInvoke(() => ViewModel.AnalysisOperation.Update(progress), System.Windows.Threading.DispatcherPriority.Input);
+            };
             this.Loaded += (s, e) => _sqlDiffScrollSyncService.Attach();
-            this.Closed += (s, e) => _analysisSessions.CancelCurrent();
+            this.Closed += (s, e) => { _analysisSessions.CancelCurrent(); _ruleConfigurationWindow?.Close(); };
+            ViewModel.PropertyChanged += (_, _) => _ruleConfigurationWindow?.Model.RefreshAnalysisState();
 
             ViewModel.PropertyChanged += _planComparisonUiActionService.HandleViewModelPropertyChanged;
+            WireKeyboardShortcuts();
         }
     }
 }

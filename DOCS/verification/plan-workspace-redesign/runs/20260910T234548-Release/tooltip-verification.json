@@ -1,0 +1,26 @@
+{
+  "Passed": true,
+  "Checks": [
+    "Probe isolates application startup callback",
+    "Tooltip uses its current theme surface",
+    "Tooltip foreground follows its theme",
+    "Tooltip retains its readable outline",
+    "Tooltip keeps the node title",
+    "Diagnostic text matches tooltip foreground",
+    "Diagnostic text matches tooltip foreground",
+    "Tooltip uses its current theme surface",
+    "Tooltip foreground follows its theme",
+    "Tooltip retains its readable outline",
+    "Tooltip keeps the node title",
+    "Diagnostic text matches tooltip foreground",
+    "Diagnostic text matches tooltip foreground",
+    "Tooltip uses its current theme surface",
+    "Tooltip foreground follows its theme",
+    "Tooltip retains its readable outline",
+    "Tooltip keeps the node title",
+    "Diagnostic text matches tooltip foreground",
+    "Diagnostic text matches tooltip foreground",
+    "No tooltip binding errors: "
+  ],
+  "EvidenceKind": "Production node ToolTip template rendered off-screen with the owning node DataContext; no physical display certification."
+}

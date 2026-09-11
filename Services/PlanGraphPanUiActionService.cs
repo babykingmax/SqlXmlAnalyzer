@@ -1,5 +1,7 @@
 using System;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -66,11 +68,23 @@ namespace SqlXmlAnalyzer.Services
 
         private static bool IsGraphItem(object? originalSource)
         {
-            return originalSource is FrameworkElement
+            // TextBlock inlines raise input from Run (a content element), and
+            // button templates may override DataContext. Walk both logical
+            // and visual ancestry before capturing the mouse for canvas pan.
+            var current = originalSource as DependencyObject;
+            while (current != null)
             {
-                DataContext: { } dataContext
+                if (current is Nodify.ItemContainer or ButtonBase) return true;
+                if (current is FrameworkElement element && IsGraphItemDataContext(element.DataContext)) return true;
+                if (current is FrameworkContentElement content && IsGraphItemDataContext(content.DataContext)) return true;
+                current = current switch
+                {
+                    FrameworkContentElement inline => inline.Parent,
+                    Visual visual => VisualTreeHelper.GetParent(visual) ?? LogicalTreeHelper.GetParent(visual),
+                    _ => LogicalTreeHelper.GetParent(current)
+                };
             }
-                && IsGraphItemDataContext(dataContext);
+            return false;
         }
 
         internal static bool IsGraphItemDataContext(object? dataContext)

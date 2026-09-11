@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="SQL 改写提案审核" Width="1160" Height="800" MinWidth="820" MinHeight="580"
-        WindowStartupLocation="CenterOwner" Background="#F5F7FA" Foreground="#17243A">
+        WindowStartupLocation="CenterOwner" Background="{DynamicResource SurfaceBrush}" Foreground="{DynamicResource TextBrush}">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/><RowDefinition Height="180"/><RowDefinition Height="*"/>
@@ -10,7 +10,7 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,12">
             <TextBlock Text="SQL 改写提案审核" FontSize="24" FontWeight="SemiBold"/>
-            <TextBlock Text="默认未选择 · 选择仅生成预览 · 应用前须完成隔离数据库验证并审核场景限制" Margin="0,6,0,0" Foreground="#8A4600"/>
+            <TextBlock Text="默认未选择 · 选择仅生成预览 · 应用前须完成隔离数据库验证并审核场景限制" Margin="0,6,0,0" Foreground="{DynamicResource TextBrush}"/>
             <TextBlock Text="选择会包含前序依赖；取消选择会同时取消依赖它的后续提案。取消全部选择可恢复原文。" Margin="0,4,0,0"/>
             <TextBlock x:Name="ReviewApplyStatus" Text="{Binding ApplyStatusText}" Margin="0,8,0,0" FontSize="16" FontWeight="SemiBold"
                        AutomationProperties.Name="SQL 文件应用状态"/>
@@ -19,7 +19,7 @@
         </StackPanel>
         <TabControl x:Name="ReviewTabs" Grid.Row="1" Grid.RowSpan="3" Margin="0,0,0,4">
         <TabItem Header="逐项选择与差异">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Background="White" Foreground="#17243A" FontWeight="Normal" Padding="8">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Background="White" Foreground="{DynamicResource TextBrush}" FontWeight="Normal" Padding="8">
             <ItemsControl ItemsSource="{Binding Items}" IsEnabled="{Binding CanSelect}">
                 <ItemsControl.ItemTemplate><DataTemplate>
                     <StackPanel Margin="4,6">
@@ -27,18 +27,18 @@
                             <TextBlock Text="{Binding Label}" TextWrapping="Wrap"/>
                         </CheckBox>
                         <TextBlock Text="{Binding Preconditions}" TextWrapping="Wrap" Margin="24,4,0,0"/>
-                        <TextBlock Text="{Binding Warnings}" Foreground="#8A4600" TextWrapping="Wrap" Margin="24,4,0,0"/>
+                        <TextBlock Text="{Binding Warnings}" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" Margin="24,4,0,0"/>
                         <Expander Header="查看此项证据与修改差异" IsExpanded="True" Margin="24,4,0,0">
                             <StackPanel>
                                 <TextBlock Text="{Binding Evidence}" TextWrapping="Wrap"/>
                                 <TextBlock Text="{Binding DiffContext}" TextWrapping="Wrap" FontSize="11" Margin="0,4"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="8"/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                    <DockPanel><TextBlock DockPanel.Dock="Top" Text="− 替换前" Foreground="#922020"/>
-                                        <TextBox Text="{Binding OriginalText, Mode=OneWay}" IsReadOnly="True" Background="#FFF0F0" FontFamily="Consolas" MaxHeight="140" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                                    <DockPanel><TextBlock DockPanel.Dock="Top" Text="− 替换前" Foreground="{DynamicResource TextBrush}"/>
+                                        <TextBox Text="{Binding OriginalText, Mode=OneWay}" IsReadOnly="True" Background="{DynamicResource SurfaceBrush}" FontFamily="Consolas" MaxHeight="140" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
                                     </DockPanel>
-                                    <DockPanel Grid.Column="2"><TextBlock DockPanel.Dock="Top" Text="+ 替换后" Foreground="#176230"/>
-                                        <TextBox Text="{Binding ReplacementText, Mode=OneWay}" IsReadOnly="True" Background="#EEFAF0" FontFamily="Consolas" MaxHeight="140" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                                    <DockPanel Grid.Column="2"><TextBlock DockPanel.Dock="Top" Text="+ 替换后" Foreground="{DynamicResource TextBrush}"/>
+                                        <TextBox Text="{Binding ReplacementText, Mode=OneWay}" IsReadOnly="True" Background="{DynamicResource SurfaceBrush}" FontFamily="Consolas" MaxHeight="140" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
                                     </DockPanel>
                                 </Grid>
                             </StackPanel>
@@ -49,11 +49,11 @@
         </ScrollViewer>
         </TabItem>
         <TabItem Header="完整审核报告">
-        <TextBox Text="{Binding Details, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Foreground="#17243A" FontWeight="Normal"
+        <TextBox Text="{Binding Details, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Foreground="{DynamicResource TextBrush}" FontWeight="Normal"
                  VerticalScrollBarVisibility="Auto" Margin="0,10" Padding="8" AutomationProperties.Name="提案前提风险证据与 SQL diff"/>
         </TabItem>
         <TabItem Header="完整 SQL 对照">
-        <Grid Margin="0,10,0,0" TextElement.Foreground="#17243A" TextElement.FontWeight="Normal">
+        <Grid Margin="0,10,0,0" TextElement.Foreground="{DynamicResource TextBrush}" TextElement.FontWeight="Normal">
             <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
             <DockPanel><TextBlock DockPanel.Dock="Top" Text="原始 SQL" FontWeight="SemiBold" Margin="0,0,0,6"/>
                 <TextBox x:Name="ReviewOriginalSql" Text="{Binding OriginalSql, Mode=OneWay}" IsReadOnly="True" FontFamily="Consolas" Padding="8"
@@ -80,7 +80,7 @@
             <Button x:Name="ValidateReviewedSql" DockPanel.Dock="Right" Content="验证所选 SQL" IsEnabled="{Binding CanValidate}" Click="Validate_Click" Padding="12,6"/>
             <StackPanel>
                 <CheckBox Content="已审核所列场景；测试通过不代表任意输入等价" IsChecked="{Binding ReviewedScenarios}" IsEnabled="{Binding CanAcknowledge}"/>
-            <TextBox Text="{Binding Error, Mode=OneWay}" IsReadOnly="True" Foreground="#A02020" TextWrapping="Wrap" MaxHeight="80" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0"/>
+            <TextBox Text="{Binding Error, Mode=OneWay}" IsReadOnly="True" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" MaxHeight="80" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0"/>
             </StackPanel>
         </DockPanel>
         </StackPanel>

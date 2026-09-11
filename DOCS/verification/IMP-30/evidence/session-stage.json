@@ -1,0 +1,59 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "006B6B39219CCD52C1F9809F8D831F19BA529F9805E53B6D9344F9F249EA00F6",
+  "StartedAtUtc": "2026-09-10T11:09:11.3000675Z",
+  "CompletedAtUtc": "2026-09-10T11:09:17.4359071Z",
+  "Results": [
+    {
+      "Path": "build.command.json",
+      "Bytes": 333,
+      "Sha256": "918FFA980F2BA1C0AFC3751836036163B9CBABD3007617BFCD298E3275F18AB2"
+    },
+    {
+      "Path": "build.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "build.stdout.txt",
+      "Bytes": 320,
+      "Sha256": "9C921A9F61274A60E4BDBA1A17809F9458461E1D69BFBDB7378F3CB177D0F084"
+    },
+    {
+      "Path": "candidate.command.json",
+      "Bytes": 202,
+      "Sha256": "9E4200B771F42C149F96C62651707CCDC049A123750D18EBAE907EBF9BF3A860"
+    },
+    {
+      "Path": "candidate.json",
+      "Bytes": 450,
+      "Sha256": "3B7E029BB5558D5F39936D2C2B34E521693D1DA56468356E4DEF806E909C752A"
+    },
+    {
+      "Path": "host/bin/Release/net8.0/SessionHook.dll",
+      "Bytes": 10240,
+      "Sha256": "16AFD7E0FAD7A804FB10BA87CC5602534F4C614B02918B3B7449320B75289875"
+    },
+    {
+      "Path": "host/SessionHook.csproj",
+      "Bytes": 144,
+      "Sha256": "B8FAE8D3DC920323FEADEF0A64FABB8B4E320C415E56C5A3AE973266BCE85942"
+    },
+    {
+      "Path": "host/StartupHook.cs",
+      "Bytes": 3023,
+      "Sha256": "EEED3DFBEB6D74C38819ABE73F10167468812C6502CE80C2461039DFFC9DD59E"
+    },
+    {
+      "Path": "restored.command.json",
+      "Bytes": 230,
+      "Sha256": "8BAE1193EDE12E4B273E6898D84A76E4373BDF2460BC93714F88DF99AE949C41"
+    },
+    {
+      "Path": "restored.json",
+      "Bytes": 478,
+      "Sha256": "43E81C593DAEB0BC07FDE0CBC150852A4263DB5991ED0C5DD20E29E04D06063B"
+    }
+  ]
+}

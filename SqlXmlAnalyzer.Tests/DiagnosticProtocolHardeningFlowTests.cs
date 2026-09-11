@@ -97,7 +97,7 @@ public sealed class DiagnosticProtocolHardeningFlowTests : IDisposable
     }
 
     [Fact]
-    public void Node_DefaultRulesAndUiMappingPreserveStatusWithoutFalseWarning()
+    public void Node_DefaultRulesAndUiMappingPreserveMissingSqlStatusWithoutFalseWarning()
     {
         var op = CleanPlan().Descendants(Ns + "RelOp").Single();
         var vm = new SqlXmlAnalyzer.Services.PlanGraphNodeUiActionService().CreateNodeFromRelOp(op, Ns, 2, 100);
@@ -105,7 +105,9 @@ public sealed class DiagnosticProtocolHardeningFlowTests : IDisposable
         vm.HasWarningVisible.Should().Be("Collapsed");
         vm.DiagnosticStatusText.Should().Contain("Hit 0").And.Contain("RULE_NOT_APPLICABLE");
         vm.HasDiagnosticStatusVisible.Should().Be("Visible");
-        vm.Diagnostics!.HasMissingEvidence.Should().BeFalse();
+        vm.Diagnostics!.HasMissingEvidence.Should().BeTrue();
+        vm.Diagnostics.Runs.Single(run => run.RuleId == "RULE_024_SCALAR_SUBQUERY_PATTERN")
+            .ReasonCode.Should().Be("RULE_MISSING_EVIDENCE");
     }
 
     [Theory]

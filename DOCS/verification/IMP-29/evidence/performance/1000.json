@@ -1,0 +1,98 @@
+{
+  "Passed": true,
+  "SourceSha256": "52017CE964A0FDDEC1D82DBEA14EB15568398B7CD583F7EB1DFD82CDDF389B20",
+  "Runs": [
+    {
+      "Run": "process-cold",
+      "TotalMs": 1883.7047,
+      "StartupMs": 634.4267,
+      "InputLatencyP95Ms": 221.6027,
+      "InputLatencyMaxMs": 247.5816,
+      "Samples": 94,
+      "PeakWorkingSetBytes": 261693440,
+      "ManagedBytes": 80111072,
+      "VisibleGraphNodes": 64,
+      "Operators": 1000,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 7.5594,
+          "Status": "Loading and identifying file: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 250.2444,
+          "Status": "Analyzing execution plan: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 1833.3912,
+          "Status": "Execution plan analysis complete"
+        }
+      ],
+      "State": "Ready",
+      "StageTimings": [
+        {
+          "State": "Loading",
+          "Milliseconds": 3.6613
+        },
+        {
+          "State": "Parsing",
+          "Milliseconds": 240.4599
+        },
+        {
+          "State": "Analyzing",
+          "Milliseconds": 359.3379
+        },
+        {
+          "State": "PreparingView",
+          "Milliseconds": 1224.6017
+        }
+      ]
+    },
+    {
+      "Run": "same-process-warm",
+      "TotalMs": 1947.4784,
+      "StartupMs": 634.4267,
+      "InputLatencyP95Ms": 83.5205,
+      "InputLatencyMaxMs": 163.2807,
+      "Samples": 98,
+      "PeakWorkingSetBytes": 327299072,
+      "ManagedBytes": 155948384,
+      "VisibleGraphNodes": 64,
+      "Operators": 1000,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 5.8671,
+          "Status": "Loading and identifying file: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 14.1985,
+          "Status": "Analyzing execution plan: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 1912.3242,
+          "Status": "Execution plan analysis complete"
+        }
+      ],
+      "State": "Ready",
+      "StageTimings": [
+        {
+          "State": "Loading",
+          "Milliseconds": 0.617
+        },
+        {
+          "State": "Parsing",
+          "Milliseconds": 7.7852
+        },
+        {
+          "State": "Analyzing",
+          "Milliseconds": 238.1811
+        },
+        {
+          "State": "PreparingView",
+          "Milliseconds": 1660.6626
+        }
+      ]
+    }
+  ]
+}

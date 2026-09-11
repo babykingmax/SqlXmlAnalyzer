@@ -1,0 +1,11 @@
+{
+  "Candidate": "publish/imp30-rc1",
+  "NoDump": true,
+  "RejectedBeforeExecution": true,
+  "Passed": true,
+  "EntryPoints": 2,
+  "RejectedCandidateManifestSha256": "63CD4E762C4C5181209F9CB1EAE9A2B3D169A8EFBD87510509807C3C4C652954",
+  "NoPassedStage": true,
+  "ExpectedExitCode": 1,
+  "BuildSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A"
+}

@@ -274,7 +274,7 @@ public sealed class PlanOperatorFactsServiceTests
         var node = new Services.PlanGraphNodeUiActionService().CreateNodeFromRelOp(op, Ns, 10, 1000);
         new Services.PlanGraphCostUiActionService().ApplyCostCalculations([op],
             new Dictionary<XElement, PlanNodeViewModel> { [op] = node }, Ns, DiagramViewMode.CostPercent, PlanColorMode.TotalCost);
-        node.PrimaryDisplayValue.Should().Be("Cost: N/A");
+        node.PrimaryDisplayValue.Should().Be("估算成本 N/A");
         node.EstimatedOperatorCost.Should().Be("N/A");
         new ConnectionViewModel { Source = node }.LabelText.Should().Be("N/A");
         new PlanPropertyService().BuildProperties(op).Should().Contain(new PlanPropertyItem("Estimates", "Estimated Rows", "N/A"));

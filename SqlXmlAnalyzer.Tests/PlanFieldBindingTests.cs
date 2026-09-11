@@ -52,6 +52,8 @@ public sealed class PlanFieldBindingTests
                 new XAttribute("AutoGenerateColumns", "False"),
                 new XAttribute("IsReadOnly", "True"), new XElement(columns)).CreateReader();
             var grid = (DataGrid)XamlReader.Load(reader);
+            // Optional metric columns remain available through the workspace column chooser.
+            foreach (var column in grid.Columns) column.Visibility = Visibility.Visible;
             var relOp = InputFieldMappingTests.RelOp(rows == null ? "" : $"""
                 <RunTimeInformation><RunTimeCountersPerThread ActualRows="{rows}" ActualRowsRead="1000"
                   ActualExecutionMode="Batch"/></RunTimeInformation><IndexScan Ordered="true"/>
@@ -64,14 +66,16 @@ public sealed class PlanFieldBindingTests
             grid.Arrange(new Rect(0, 0, 2100, 180));
             grid.UpdateLayout();
             Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
-            AssertCell(grid, node, "ActualRows", "实际输出行（行）", rows ?? "N/A");
-            AssertCell(grid, node, "ActualRowsRead", "实际读取行（行）", expectedRead);
-            AssertCell(grid, node, "ExecutionMode", "执行模式 (ExecMode)", rows == null ? "N/A" : "Batch");
-            AssertCell(grid, node, "ParallelDisplay", "并行 (Parallel)", rows == null ? "N/A" : "True");
-            AssertCell(grid, node, "Ordered", "有序扫描 (Ordered)", rows == null ? "N/A" : "True");
+            bool workspace = view == "PlanWorkspaceView.xaml";
+            AssertCell(grid, node, "ActualRows", workspace ? "实际输出总行数" : "实际输出行（行）", rows ?? "N/A");
+            AssertCell(grid, node, "ActualRowsRead", workspace ? "实际读取总行数" : "实际读取行（行）", expectedRead);
+            AssertCell(grid, node, "ExecutionMode", workspace ? "执行模式" : "执行模式 (ExecMode)", rows == null ? "N/A" : "Batch");
+            AssertCell(grid, node, "ParallelDisplay", workspace ? "并行" : "并行 (Parallel)", rows == null ? "N/A" : "True");
+            AssertCell(grid, node, "Ordered", workspace ? "有序扫描" : "有序扫描 (Ordered)", rows == null ? "N/A" : "True");
             node.ViewMode = DiagramViewMode.Rows;
-            // The diagram must retain observed zero, rather than replacing it with the estimate of 100.
-            node.PrimaryDisplayValue.Should().Be(rows == null ? "Est R: 100" : $"R: {rows}");
+            // The input provides totals but no execution count: preserve totals without inventing per-execution metrics.
+            node.ActualRowsDisplay.Should().Be(rows ?? "N/A");
+            node.PrimaryDisplayValue.Should().Be("实 N/A / 估 100 · N/A");
         });
     }
 

@@ -26,7 +26,7 @@ namespace SqlXmlAnalyzer.Tests
             result.ConnectionLayout.Should().Be(PlanGraphLayoutDirection.Horizontal);
             result.NodePositions.Should().HaveCount(3);
             FindByNodeId(result.NodePositions, "0").X.Should().Be(50);
-            FindByNodeId(result.NodePositions, "1").X.Should().Be(330);
+            FindByNodeId(result.NodePositions, "1").X.Should().Be(382);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace SqlXmlAnalyzer.Tests
 
             result.ConnectionLayout.Should().Be(PlanGraphLayoutDirection.Vertical);
             FindByNodeId(result.NodePositions, "0").Y.Should().Be(50);
-            FindByNodeId(result.NodePositions, "1").Y.Should().Be(210);
+            FindByNodeId(result.NodePositions, "1").Y.Should().Be(202);
         }
 
         [Fact]

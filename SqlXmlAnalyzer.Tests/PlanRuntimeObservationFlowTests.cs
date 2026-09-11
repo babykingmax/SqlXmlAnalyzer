@@ -31,7 +31,8 @@ public sealed class PlanRuntimeObservationFlowTests
         node.HasActualRows.Should().Be(expectedRows != "N/A");
         node.OwnCost.Should().Be(1);
         node.ActualRecost.Should().Be(expectedRecost);
-        node.PrimaryDisplayValue.Should().Be(expectedRows == "N/A" ? "Est R: 100" : $"R: {expectedRows}");
+        // These fixtures omit executions, so totals are retained without inventing a per-execution comparison.
+        node.PrimaryDisplayValue.Should().Be("实 N/A / 估 100 · N/A");
     }
 
     [Theory]

@@ -1,0 +1,21 @@
+{
+  "runtime": "8.0.30",
+  "heapLimitBytes": 268435456,
+  "passed": true,
+  "results": [
+    {
+      "keyLength": 8192,
+      "count": 5000,
+      "inputBytes": 18209,
+      "allocatedBytes": 182488,
+      "elapsedMilliseconds": 1.7357
+    },
+    {
+      "keyLength": 400000,
+      "count": 250000,
+      "inputBytes": 900017,
+      "allocatedBytes": 10015056,
+      "elapsedMilliseconds": 35.716
+    }
+  ]
+}

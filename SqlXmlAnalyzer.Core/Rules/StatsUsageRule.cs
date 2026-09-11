@@ -13,10 +13,10 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            var doc = relOp.Document;
-            if (doc == null) return null;
+            var queryPlan = Services.QueryPlanXml.Find(relOp, ns);
+            if (queryPlan == null) return null;
 
-            var statsList = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.Parse(doc, ns);
+            var statsList = SqlXmlAnalyzer.Core.Parsers.StatisticsUsageParser.ParseQueryPlan(queryPlan, ns);
             var riskyStats = statsList
                 .Where(stat => stat.Severity != "Info")
                 .ToList();
@@ -42,11 +42,18 @@ namespace SqlXmlAnalyzer.Core.Rules
                     }
 
                     string statusIcon = string.IsNullOrEmpty(warningDetails) ? "✅" : "⚠️";
-                    sbStats.AppendLine($"   • {statusIcon} [{stat.Database}].[{stat.Schema}].[{stat.Table}] (统计项: {stat.Statistics}){warningDetails}");
+                    sbStats.AppendLine($"   • {statusIcon} {stat.Database}.{stat.Schema}.{stat.Table} (统计项: {stat.Statistics}){warningDetails}");
 
                     if (!string.IsNullOrEmpty(warningDetails))
                     {
-                        sbStats.AppendLine($"     👉 优化建议: UPDATE STATISTICS [{stat.Database}].[{stat.Schema}].[{stat.Table}]({stat.Statistics}) WITH FULLSCAN;");
+                        try
+                        {
+                            sbStats.AppendLine($"     👉 审核后自行执行: {Services.StatisticsCommandBuilder.BuildUpdateStatistics(stat)}");
+                        }
+                        catch (ArgumentException)
+                        {
+                            sbStats.AppendLine("     统计信息对象标识缺失或无效，未生成 SQL；请先核对数据库、架构、表与统计信息名称。");
+                        }
                     }
                 }
 

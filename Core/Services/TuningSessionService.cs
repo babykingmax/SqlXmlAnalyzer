@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml.Linq;
+using SqlXmlAnalyzer.Core.Diagnostics;
 using SqlXmlAnalyzer.Core.ViewModels;
 
 namespace SqlXmlAnalyzer.Core.Services
@@ -14,10 +16,24 @@ namespace SqlXmlAnalyzer.Core.Services
         PlanSnapshot? PlanB)
     {
         public PlanComparisonSelection? ComparisonSelection { get; init; }
+        public string SourceVersion { get; init; } = "unversioned";
+        public bool RequiresMigration => SourceVersion != TuningSessionService.CurrentVersion;
     }
 
-    public sealed class TuningSessionService
+    public sealed partial class TuningSessionService
     {
+        public const string CurrentVersion = "2.1";
+        public const int MaxSnapshots = 1024;
+        private readonly ITuningSessionWriter _writer;
+        private readonly IUnexpectedErrorReporter _unexpectedErrors;
+
+        public TuningSessionService() : this(null, null) { }
+
+        public TuningSessionService(ITuningSessionWriter? writer, IUnexpectedErrorReporter? unexpectedErrors = null)
+        {
+            _writer = writer ?? new TuningSessionWriter();
+            _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
+        }
         private static readonly XNamespace FallbackShowplanNamespace =
             "http://schemas.microsoft.com/sqlserver/2004/07/showplan";
 
@@ -85,14 +101,37 @@ namespace SqlXmlAnalyzer.Core.Services
             IEnumerable<PlanSnapshot> snapshots,
             PlanSnapshot? planA,
             PlanSnapshot? planB,
-            PlanComparisonSelection? comparisonSelection = null)
+            PlanComparisonSelection? comparisonSelection = null) =>
+            Save(filePath, snapshots, planA, planB, comparisonSelection, CancellationToken.None);
+
+        public void Save(string filePath, IEnumerable<PlanSnapshot> snapshots, PlanSnapshot? planA, PlanSnapshot? planB,
+            PlanComparisonSelection? comparisonSelection, CancellationToken cancellationToken)
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Logger.Debug("IMP28.Session.Save started.");
+                SaveCore(filePath, snapshots, planA, planB, comparisonSelection, cancellationToken);
+                Logger.Debug("IMP28.Session.Save completed; original files retained.");
+            }
+            catch (Exception exception)
+            {
+                ExceptionPolicy.Describe(exception, "IMP28.Session.Save", _unexpectedErrors);
+                throw;
+            }
+        }
+
+        private void SaveCore(string filePath, IEnumerable<PlanSnapshot> snapshots, PlanSnapshot? planA, PlanSnapshot? planB,
+            PlanComparisonSelection? comparisonSelection, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
-                throw new ArgumentException("File path cannot be empty.", nameof(filePath));
+                throw new InvalidDataException("SESSION_PATH_INVALID: 请使用新的 .pesession 文件名。");
             }
 
-            var snapshotElements = snapshots.Select(snapshot =>
+            var captured = snapshots.Take(MaxSnapshots + 1).ToArray();
+            if (captured.Length > MaxSnapshots) throw new InvalidDataException("SESSION_BUDGET_EXCEEDED: 会话最多保存 1024 个快照。");
+            var snapshotElements = captured.Select(snapshot =>
                 new XElement(
                     SessionNamespace + "Snapshot",
                     new XAttribute("Id", snapshot.Id),
@@ -117,7 +156,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
             var root = new XElement(
                 SessionNamespace + "TuningSession",
-                new XAttribute("Version", "2.1"),
+                new XAttribute("Version", CurrentVersion),
                 new XAttribute("Privacy", Privacy.OutputPrivacy.RawNotice),
                 new XAttribute("Created", DateTime.Now.ToString("o", CultureInfo.InvariantCulture)),
                 new XElement(SessionNamespace + "Snapshots", snapshotElements));
@@ -137,28 +176,37 @@ namespace SqlXmlAnalyzer.Core.Services
                     WriteSelection(SessionNamespace + "B", comparisonSelection.B, planB)));
 
             var document = new XDocument(root);
-            // Adding indentation would change the serialized PlanDoc whose hash is stored above.
-            document.Save(filePath, SaveOptions.DisableFormatting);
+            ValidateStructure(document);
+            SaveNewFile(filePath, document, cancellationToken);
         }
 
         public TuningSessionLoadResult Load(string filePath)
         {
-            XDocument document = SafeXmlHelper.LoadSafe(filePath);
-            if (document.Root == null)
+            try
             {
-                return new TuningSessionLoadResult(
-                    Array.Empty<PlanSnapshot>(),
-                    null,
-                    null);
+                Logger.Debug("IMP28.Session.Load started.");
+                var result = LoadCore(SafeXmlHelper.LoadSafe(filePath));
+                if (result.RequiresMigration) Logger.Warning("IMP28.Session legacy format loaded; save a new copy to upgrade.");
+                Logger.Debug($"IMP28.Session.Load completed; snapshots={result.Snapshots.Count}.");
+                return result;
             }
+            catch (Exception exception)
+            {
+                ExceptionPolicy.Describe(exception, "IMP28.Session.Load", _unexpectedErrors);
+                throw;
+            }
+        }
 
-            XElement? snapshotsElement = document.Root.Element(SessionNamespace + "Snapshots");
+        private static TuningSessionLoadResult LoadCore(XDocument document)
+        {
+            string version = ValidateStructure(document);
+            XElement? snapshotsElement = document.Root!.Element(SessionNamespace + "Snapshots");
             if (snapshotsElement == null)
             {
                 return new TuningSessionLoadResult(
                     Array.Empty<PlanSnapshot>(),
                     null,
-                    null);
+                    null) { SourceVersion = version };
             }
 
             var snapshots = new List<PlanSnapshot>();
@@ -186,6 +234,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 planA,
                 planB)
             {
+                SourceVersion = version,
                 ComparisonSelection = selections.Length == 0 ? null : new(
                     ReadSelection(selections[0].Element(SessionNamespace + "A"), planA?.Document),
                     ReadSelection(selections[0].Element(SessionNamespace + "B"), planB?.Document))

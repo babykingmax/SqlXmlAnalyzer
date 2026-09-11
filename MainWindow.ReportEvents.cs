@@ -33,7 +33,7 @@ namespace SqlXmlAnalyzer
                     : MainTabControl.SelectedIndex == 0
                         ? ViewModel.DeadlockWorkspace.CreateReport(ViewModel.CurrentDeadlockInput?.Envelope)
                         : throw new System.IO.InvalidDataException("请在计划或死锁工作区选择要导出的语句/事件。");
-                new Views.ReportReviewWindow(new ViewModels.ReportReviewViewModel(report, format)) { Owner = this }.Show();
+                new Views.ReportReviewWindow(new ViewModels.ReportReviewViewModel(report, format), _fileDialogService) { Owner = this }.Show();
             }
             catch (System.Exception exception)
             {

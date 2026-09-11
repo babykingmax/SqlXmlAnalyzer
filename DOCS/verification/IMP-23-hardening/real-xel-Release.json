@@ -1,0 +1,55 @@
+{
+  "Passed": true,
+  "Capture": "SQL Server 2019 15.0.4382.1 LocalDB, isolated synthetic row-update deadlocks, two separate event_file captures",
+  "Files": [
+    {
+      "Name": "capture_0_134334783832450000.xel",
+      "SourceHash": "1807086479C74A7295202F6DFD7E114F36F752336CEA8D7E1D4507FB2BE85A2B",
+      "SourceBytes": 17408,
+      "Status": "Partial",
+      "Records": 3,
+      "Events": 1
+    },
+    {
+      "Name": "capture_0_134334784061900000.xel",
+      "SourceHash": "70E9B1E3E029B0E41ED501BF6F1A21487B2D726CF5820CF7D38168BD238D35B1",
+      "SourceBytes": 17408,
+      "Status": "Partial",
+      "Records": 3,
+      "Events": 1
+    }
+  ],
+  "Events": [
+    {
+      "Index": 1,
+      "PayloadIndex": 1,
+      "ByteOffset": 8269,
+      "ByteLength": 7830,
+      "OriginalTime": "2026-09-10T01:46:30.9408637\u002B00:00",
+      "IsDuplicate": false
+    },
+    {
+      "Index": 1,
+      "PayloadIndex": 1,
+      "ByteOffset": 8269,
+      "ByteLength": 7830,
+      "OriginalTime": "2026-09-10T01:46:53.4578982\u002B00:00",
+      "IsDuplicate": false
+    }
+  ],
+  "Groups": 1,
+  "SkippedRecords": 4,
+  "InclusiveTimeFilterMatches": 1,
+  "DatabaseNameChecks": [
+    {
+      "File": "capture_0_134334783832450000.xel",
+      "Matches": 1
+    },
+    {
+      "File": "capture_0_134334784061900000.xel",
+      "Matches": 1
+    }
+  ],
+  "OffsetDisplay": "2026-09-10T09:46:30.9408637\u002B08:00",
+  "CorruptInputStatus": "Invalid"
+}

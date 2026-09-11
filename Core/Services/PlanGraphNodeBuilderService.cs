@@ -69,7 +69,7 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed class PlanGraphNodeBuilderService
     {
-        private readonly RuleEngine _ruleEngine;
+        private RuleEngine? _ruleEngine;
         private readonly PlanGraphOperatorTypeService _operatorTypeService = new();
         private readonly PlanGraphRelOpDetailsService _relOpDetailsService = new();
         private readonly PlanGraphRuntimeCountersService _runtimeCountersService = new();
@@ -82,21 +82,20 @@ namespace SqlXmlAnalyzer.Core.Services
         {
             _executionFacts = executionFacts;
             _unexpectedErrors = unexpectedErrors;
-            _ruleEngine = ruleEngine ?? new RuleEngine(unexpectedErrors: unexpectedErrors);
-            if (ruleEngine == null) _ruleEngine.RegisterDefaultRules();
+            _ruleEngine = ruleEngine;
         }
 
         public PlanGraphNodeBuildResult Build(
             XElement relOp,
             XNamespace ns,
-            PlanGraphNodeWarningSettings warningSettings)
+            PlanGraphNodeWarningSettings warningSettings, PlanDiagnosticReport? report = null)
         {
             ArgumentNullException.ThrowIfNull(relOp);
             ArgumentNullException.ThrowIfNull(ns);
             ArgumentNullException.ThrowIfNull(warningSettings);
             try
             {
-                return BuildCore(relOp, ns, warningSettings);
+                return BuildCore(relOp, ns, warningSettings, report);
             }
             catch (Exception ex)
             {
@@ -106,7 +105,7 @@ namespace SqlXmlAnalyzer.Core.Services
         }
 
         private PlanGraphNodeBuildResult BuildCore(XElement relOp, XNamespace ns,
-            PlanGraphNodeWarningSettings warningSettings)
+            PlanGraphNodeWarningSettings warningSettings, PlanDiagnosticReport? report)
         {
             var facts = PlanOperatorFactsService.Get(relOp, ns);
             PlanExecutionFacts executionFacts = _executionFacts?.Read(relOp, ns) ?? facts.Execution;
@@ -141,7 +140,12 @@ namespace SqlXmlAnalyzer.Core.Services
             string estimatedDataSize = FormatDataSizeMB(estimatedDataSizeMB);
             string actualDataSize = FormatDataSizeMB(actualDataSizeMB);
 
-            PlanDiagnosticReport diagnostics = _ruleEngine.AnalyzeNodeDetailed(relOp, ns);
+            if (report == null && _ruleEngine == null)
+            {
+                _ruleEngine = new RuleEngine(unexpectedErrors: _unexpectedErrors);
+                _ruleEngine.RegisterDefaultRules();
+            }
+            PlanDiagnosticReport diagnostics = report?.ForOperator(relOp) ?? _ruleEngine!.AnalyzeNodeDetailed(relOp, ns);
             PlanGraphWarningResult warningResult =
                 _warningService.BuildWarnings(
                     relOp,

@@ -6,6 +6,7 @@ namespace SqlXmlAnalyzer.Application.Services;
 public sealed record RefactorPresentation(string Sql, string Notices)
 {
     public Core.Models.RewriteReview? Review { get; init; }
+    public bool Failed { get; init; }
     public static RefactorPresentation FromResult(OrchestratorResult result, string originalSql)
     {
         var notices = new List<string>();
@@ -31,6 +32,6 @@ public sealed record RefactorPresentation(string Sql, string Notices)
         notices.AddRange(result.Warnings);
         return new(result.IsSuccess && result.Result != null ? result.Result.Review?.PreviewSql ?? originalSql : originalSql,
             string.Join(Environment.NewLine, notices.Distinct(StringComparer.Ordinal)))
-            { Review = result.Result?.Review };
+            { Review = result.Result?.Review, Failed = !result.IsSuccess || result.Result == null };
     }
 }

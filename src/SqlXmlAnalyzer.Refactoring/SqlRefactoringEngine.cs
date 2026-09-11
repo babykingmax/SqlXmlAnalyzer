@@ -24,7 +24,10 @@ public class SqlRefactoringEngine : IRefactoringEngine
         _unexpectedErrors = unexpectedErrors ?? UnexpectedErrorReporter.Shared;
     }
 
-    public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
+    public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun) =>
+        Run(sql, report, options, isDryRun, System.Threading.CancellationToken.None);
+
+    public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun, System.Threading.CancellationToken cancellationToken)
     {
         var timer = Stopwatch.StartNew();
         var context = new RefactorContext(sql, report, isDryRun);
@@ -62,6 +65,7 @@ public class SqlRefactoringEngine : IRefactoringEngine
 
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (options.MaxPasses < 1)
             {
                 _logger.LogError("Invalid refactoring pass limit.");
@@ -71,6 +75,7 @@ public class SqlRefactoringEngine : IRefactoringEngine
             var parser = new TSql160Parser(true);
             using var reader = new StringReader(sql);
             var fragment = parser.Parse(reader, out var parseErrors);
+            cancellationToken.ThrowIfCancellationRequested();
             if (parseErrors.Count > 0)
             {
                 _logger.LogError("ParserFailed: Count={Count}", parseErrors.Count);
@@ -82,15 +87,18 @@ public class SqlRefactoringEngine : IRefactoringEngine
             var currentFragment = Rules.SqlNodeCloner.Clone(fragment) ?? fragment;
             for (int pass = 1; pass <= options.MaxPasses; pass++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 passCount = pass;
                 bool passChanged = false;
                 foreach (var rule in activeRules)
                 {
                     try
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         if (!rule.CanApply(currentFragment, context)) continue;
                         int skipsBefore = context.SafetySkips.Count;
                         var result = rule.Apply(currentFragment, context);
+                        cancellationToken.ThrowIfCancellationRequested();
                         if (context.SafetySkips.Count > skipsBefore)
                             _logger.LogWarning("UnsafeRewriteSkipped: RuleId={RuleId}, Reason={Reason}",
                                 rule.RuleId, context.SafetySkips[^1].ReasonCode);
@@ -127,6 +135,7 @@ public class SqlRefactoringEngine : IRefactoringEngine
             string finalSql = proposalSql;
             using var validationReader = new StringReader(finalSql);
             parser.Parse(validationReader, out var validationErrors);
+            cancellationToken.ThrowIfCancellationRequested();
             if (validationErrors.Count > 0)
             {
                 _logger.LogError("RefactorValidationFailed: Count={Count}", validationErrors.Count);

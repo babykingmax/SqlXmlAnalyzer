@@ -1,5 +1,80 @@
 # SqlXmlAnalyzer 系统架构指南 🏛️
 
+## 执行计划桌面展示与导航（2026-09-11）
+
+当前执行计划工作区继续使用 WPF＋Nodify。`PlanWorkspaceView` 组织语句选择、问题/索引/检查状态、计划图/热点算子、详情和按需辅助材料；`PlanWorkspaceViewModel.Presentation` 管理展示、筛选与选择。计划、语句及算子联动继续使用完整 `PlanLocation` 身份，不以裸 NodeId 代替跨语句身份。
+
+`PlanGraphNodeMetrics` 为卡片与连线锚点提供统一尺寸。`PlanGraphLayoutService` 使用迭代式子树轮廓布局，支持水平/垂直、折叠和分页森林，保留输入顺序。图容器每页最多 64 个；定位与查找仍覆盖全部节点，通过分页提交进入目标节点所在范围。
+
+`PlanGraphControl.Async/Presentation` 将数据提交和视口操作分开协调：适应意图保留到当前页和视口可测量时；后一次缩放、定位或实际画布平移使旧定位 continuation 失效。`PlanGraphEditor` 同步比例与平移变换，并处理 Nodify 定位动画和最低缩放约束。普通最小比例为 2%，明确适应操作可根据范围临时降低；恢复普通比例后还原范围。此策略保证几何容纳，不保证极小视口的文字可读性。
+
+图、表和详情复用已有算子事实与指标状态；缺失运行数据不补零，估算成本不表达为耗时。`WorkspaceThemeService` 与局部 ToolTip 模板统一提示框背景及文字主题。显示偏好保存在本机；当前工作区默认布局属于已实现状态，评估提出的默认工作方式调整尚未实施。
+
+能力边界：桌面读取已捕获的计划/参数/统计使用信息；真实直方图可手工导入。`LocalDbSqlSemanticRunner` 只用于受限隔离语义场景验证，不能作为通用在线采集或性能收益验证。CLI、分析规则 ID、报告契约和 XML 解析边界不因这次桌面优化而重新定义。
+
+后续 PW-01～PW-06 见[当前设计与差距评估](DOCS/plan-workspace-design-and-gap-assessment.md)，验证状态见[任务矩阵](DOCS/verification/plan-workspace-redesign/acceptance-matrix.md)。尤其 `BuildOperatorReports` 将部分范围级诊断汇入首算子的兼容行为，目前会影响节点徽标含义；PW-02 必须按原始范围设计显示和验证，不能通过改变原诊断身份或默认严重度掩盖问题。
+
+## IMP-30：发布与恢复边界
+
+`Core/Deployment` 的 `ReleaseBundle` 以外部可信清单 SHA-256 校验版本、文件集合、长度、哈希和安全路径，限制文件/字节预算，拒绝重解析点。恢复使用私有同卷暂存目录、逐文件 Flush、双端复验和不覆盖的目录移动，调用方自行选择恢复副本。`ReleaseOperation` 统一脚本的异常分类、DUMP 与分模式日志；不改变 WPF/CLI 的业务命令契约。
+
+`publish.ps1` 复用 IMP-29 构建证明，源码清单新增发布脚本和 `DOCS/release-materials`；发布/回退/单文件会话探针都绑定执行前后同一构建。候选清单与签名/正式分发审批分别记录。参见 [IMP-30](DOCS/IMP-30发布材料与回退验证.md)；可见窗口验收受桌面工具错误阻断，CLI 和启动钩子结果不替代 UI 验收。
+
+[IMP-30 审查修复](DOCS/IMP-30审查修复与加固说明.md)将候选类型/ID、状态中的构建哈希及内嵌构建证据统一校验；阶段输入记录受测 EXE 哈希，完整绑定命令 stdout/stderr。路径先按调用者工作目录规范化；进程与两路输出共享取消期限，输出流式写盘。证据守卫使用明确的预期异常，未知脚本错误仍由既有异常边界生成 DUMP。
+
+## IMP-29：验收执行与报告布局边界
+
+审查修复后，`AcceptanceEvidence.ps1` 管理执行时源码清单、每种配置 17 个 DLL 的字节记录及只创建新文件的构建/阶段证明。`Run-BuildTests.ps1` 在测试前后校验快照，各场景通过 `-BuildEvidence` 拒绝过期构建，并对结果生成绑定。`Write-Validation.ps1` 先验证所有证明，再复制证据和发布摘要；源码记录不从当前目录重新生成来取代旧版本。构建使用 `-t:Rebuild -warnaserror` 和原生退出码，避免增量跳过编译掩盖警告。详见[加固说明](DOCS/IMP-29审查修复与加固说明.md)。
+
+`DOCS/verification/IMP-29/Run-Acceptance.ps1` 顺序组织构建、全量测试、真实数据库/CLI、WPF、XEL 和性能探针，输出目录必须全新。测试宿主校验加载的生产程序集与构建产物字节一致；`AcceptanceProbeBoundary` 与单元测试共用代码，捕获未知异常到真实 minidump，并保证失败不能进入成功证据。验收结果、源码指纹和 R/D/UI 状态分开保存，自动化通过不授予发布许可。
+
+`ReportReviewWindow` 使用显式滚动容器包裹有限的内容 Grid，避免通用可访问性包装器的无限测量把星号行扩展为整个报告高度。正文内部滚动保留全部内容，外部滚动负责紧凑窗口下的控件可达性。验证与限制见 [IMP-29](DOCS/IMP-29完整构建测试与用户场景验收.md)。
+
+## IMP-28：兼容性与会话持久化
+
+审查修复后，`WithCurrentSchema` 在已校验的不可变根对象文本中插入版本成员，先计算 UTF-8 合计字节再生成和重新校验副本；不重新序列化原成员，避免缩进、转义及未知值表示变化。真正超过 1 MiB 时返回 `CONFIG_MIGRATION_BUDGET_EXCEEDED`，详见[加固说明](DOCS/IMP-28审查修复与加固说明.md)。
+
+`RuleConfigurationDocument` 用专用 `ConfigurationSchemaVersion` 区分旧无版本配置与当前字符串 `"1"`，通用 `schemaVersion` 继续作为旧扩展保留；`WithCurrentSchema` 只生成文档副本，实际迁移复用 `RuleConfigurationStore.SaveAsAsync`，不自动改写源配置。未知声明版本拒绝加载，未知非版本字段延用 DOM 保留机制。
+
+`TuningSessionService` 接受无版本、2.0 和 2.1 的已知会话结构。`TuningSessionService.Persistence` 校验管理字段、快照 ID、比较引用和保存预算；通过可注入 `ITuningSessionWriter` 写入目标目录内私有临时文件，刷新并核对 SHA-256 后以不覆盖方式发布。服务无参构造及原 Save 重载保留，新重载提供取消令牌；已有目标明确失败。异常边界复用公共 DUMP 和日志机制。
+
+旧计划、死锁、配置及诊断适配器继续服务现有消费者；新增冻结样例和双路径测试校验字段及规则语义。本步无新的报告导入或模型 JSON 恢复入口。[兼容矩阵](DOCS/IMP-28模型配置报告与CLI兼容性.md)列出版本策略、消费者和迁移限制。
+
+## IMP-27：本地诊断包审核与保存
+
+审查修复后，`RuleMetadataCatalog.Definition` 集中定义版本、分类、作用域和默认严重度，内置规则与包内 `RuleVersions` 共用该来源；`ReportRuleVersions` 保留原报告的实际版本。`MetricGaps` 只接受未分类字段中规范且已定义的非 Available 状态，包含 Incomplete/Ambiguous。日志解码异常先于路径异常分类，保留预期失败处理。详情见[加固说明](DOCS/IMP-27审查修复与加固说明.md)。
+
+Core `Diagnostics/DiagnosticPackageBuilder` 从不可变 IMP-22 报告中读取生成时配置，并将当前会话配置单独记录；只收集允许的元数据和显式选择的附件。`DiagnosticPackage` 私有保存审核字节，提供只读条目、隐私状态、大小及 SHA-256。脱敏继续复用 `ReportRedactionService`，处理前样例不会进入包。`DiagnosticPackageExporter` 在私有临时目录写 ZIP、落盘、核对包清单和审核哈希，再不覆盖地发布；`DiagnosticPackageValidator` 无磁盘解压地校验版本、条目与预算。DUMP 附件按已读取快照复用 `MinidumpValidator` 的流校验。
+
+WPF `DiagnosticPackageViewModel` 管理可选内容、异步准备/保存、预览失效和忙碌门禁；窗口负责本地文件对话框与实际内容呈现，`MainWindow.DiagnosticPackage` 捕获当前范围并在报告失效时降级为元数据包。未知错误与日志门禁复用公共诊断机制，无网络传输。包协议与验证边界见 [IMP-27](DOCS/IMP-27可审核的本地诊断数据包.md)。
+
+## IMP-26：异步操作与视图提交
+
+AnalysisSessionCoordinator 管理九态、请求号、Revision、令牌和阶段计时；AnalysisOperationViewModel 提供状态栏取消。DocumentAnalysisUiActionService 等待分析和首屏图提交后终结请求。PlanWorkspaceUiActionService 在后台准备模型，通过 UiBatchScheduler 提交有界更新；PlanGraphPageService 限制每页 64 个图容器，AllNodes 保留完整指标数据。XEL 初次选择复用打开请求，改写审核复用原诊断快照。异常、DUMP、日志及可测边界见 [IMP-26](DOCS/IMP-26异步状态取消与大图性能.md)。
+
+
+## IMP-25：工作区交互与语义主题
+
+审查加固后，`WorkspacePanelLayoutService.MinimumColumnWidth` 按 Pixel / Auto / Star 语义计算滚动所需宽度；计划视图在展开和侧栏尺寸变化时同步外层最小宽度。`WorkspaceAccessibility.Focus` 在布局后检查可见性并返回真实焦点结果，比较页通过有界 `MoveFocus` 跳过不可用目标。计划视图的节点详情事件统一处理属性展示、焦点进入及返回，新增事件边界沿用未知异常 DUMP 策略。见 [IMP-25 审查加固](DOCS/IMP-25审查修复与加固说明.md)。
+
+`WorkspaceCommands` 定义共享 RoutedUICommand，主窗口在服务初始化后注册 CommandBinding，导航按钮与快捷键共用 CanExecute。`WorkspaceInteractionService` 管理 DIP 策略、循环选择及异常/DUMP 边界；`WorkspaceAccessibility` 处理焦点、对话框尺寸与返回。`AccessiblePlanNode` 提供 AutomationPeer，复用已有算子身份及选择链。`WorkspaceThemeService` 更新 20 种语义画刷，比较树使用动态资源；减少动画由 MainViewModel 传递到推演视图及计时器。此层不修改诊断规则、计划事实或配置格式。详见 [IMP-25 实现与验证](DOCS/IMP-25布局主题与键盘操作.md)。
+
+## IMP-24 配置文档、活动快照与安全保存
+
+审查加固引入 `PlanAnalysisSource`，在成功分析后同时提交 XML、路径和识别结果；新文件与历史快照加载期间不修改当前来源。重算读取这一对象，`ApplicationOrchestrator.Execute` 的可选 `planInput` 让 SQL 改写使用相同输入，避免再次打开磁盘文件。`AnalysisSessionCoordinator` 记录内容类型，配置切换只取消执行计划；按请求 ID 的取消和类型更新在锁内校验。JSON 遍历维护路径片段，仅在错误时生成受限长度的路径；属性名和所有字符串的 Unicode 解码错误在窄边界转为校验异常。验证见 [IMP-24 加固](DOCS/IMP-24审查修复与加固说明.md)。
+
+Core 的 `RuleConfigurationDocument` 保留原 JSON 和未知项，提供不可变已知设置及有效设置指纹；旧 `RuleConfigurationRoot` 仅作为执行兼容投影。`RuleConfigurationSession` 在应用时原子替换文档，`PlanAnalysisService` 每次分析捕获一次，`RuleEngine` 继续把配置写入 `PlanAnalysisContext`。主窗口应用配置后取消旧执行计划请求、清除旧改写审核对象并标记结果需要重算。生产图通过 `PlanDiagnosticReport.ForOperator` 投影已有诊断，保留相同对象、证据及上下文，不另行执行规则。
+
+WPF 的 `RuleConfigurationViewModel` 管理草稿、过滤、变更预览、载入/保存/应用的独立状态及取消；窗口仅处理控件和文件对话框事件。`RuleConfigurationStore` 复用应用层 `SqlFileSnapshot` / `SqlWritebackService` 的原字节校验、备份、落盘和替换逻辑，另存路径使用不覆盖的新文件提交。所有失败保留草稿和活动配置，已发生的提交单独说明；未知错误走统一 DUMP 和日志策略。兼容字段、预算、别名、严重度合并语义及验证见 [IMP-24](DOCS/IMP-24兼容规则配置界面.md)。
+
+## IMP-23 XEL 检索集合与原始事件
+
+审查加固后，结构标签通过长度前缀及分块 SHA-256 固定大小，再统一编号并复用整数缓冲区做完整拓扑比较；标签/属性/比较量预算在昂贵操作前检查。无死锁的可读 XEL 保留为零事件来源；`XelSearchSource` 的首次接受基准跨目录重建保留，导入和导航检查 XML、采集元数据、源字节和事件成员身份。首次载入期间由 ViewModel 和按钮绑定共同阻止查询/导入抢占，详见 [IMP-23 审查加固](DOCS/IMP-23审查修复与加固说明.md)。
+
+Core 的 `XelSearchService` 通过 `IDiagnosticDocumentReader` 读取有预算的快照，构建 `XelSearchCatalog`。`XelStructureKey` 对资源/持有/等待图做有界的精确规范化；身份不足或超出聚合预算的事件单独列出。`XelSearchEvent` 保留所属输入、DeadlockInput、原始位置和固定预览；分组和重复标记都不移除来源。
+
+`XelSearchViewModel` 管理筛选、请求取消/版本、完整结果提交和异常呈现；窗口只处理控件事件。`XelDeadlockUiActionService.SelectSearchEventAsync` 校验源未变化并同步选择器，复用 IMP-20 分析和证据链。未知错误交给统一 DUMP 诊断，日志执行构建模式门禁。键规则、时区/范围语义、预算和验证见 [IMP-23](DOCS/IMP-23XEL搜索聚合与事件追溯.md)。
+
 ## IMP-22 统一报告与脱敏预览
 
 审查加固后，`ReportSizeBudget` 在字段收集、不可变快照构造和 XML 写入时共享 800 万内容字符、10 万条总记录预算；JSON/HTML/SVG 编码输出另有限额。完全缺失指标沿用 `PlanOperator.ExportFacts` 的紧凑策略，以 Missing/N/A 表示；有指标时保留完整投影。正文和 XML 在追加前检查，JSON 缓冲区在扩容前检查，预览按隐私模式缓存不可变正文。CLI 超预算返回明确失败，并清除大型旧模型字段，避免再次序列化放大。

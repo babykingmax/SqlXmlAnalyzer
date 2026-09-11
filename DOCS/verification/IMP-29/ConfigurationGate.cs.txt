@@ -1,0 +1,25 @@
+using SqlXmlAnalyzer.Core;
+using SqlXmlAnalyzer.Core.Abstractions;
+using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Services;
+
+internal static partial class Program
+{
+    // IMP26 reuses completed diagnostics instead of invoking IAnalysisEngine a second time.
+    // Pause at the current review-preparation boundary and verify the same captured envelope.
+    private sealed class GatedRefactoring(IRefactoringEngine inner) : IRefactoringEngine
+    {
+        public bool HoldNext;
+        public ManualResetEventSlim Entered { get; } = new();
+        public ManualResetEventSlim Release { get; } = new();
+        public DocumentEnvelope? LastEnvelope;
+        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool dryRun) =>
+            Run(sql, report, options, dryRun, default);
+        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool dryRun, CancellationToken token)
+        {
+            LastEnvelope = report.InputEnvelope;
+            if (HoldNext) { HoldNext = false; Entered.Set(); Release.Wait(token); }
+            return inner.Run(sql, report, options, dryRun, token);
+        }
+    }
+}

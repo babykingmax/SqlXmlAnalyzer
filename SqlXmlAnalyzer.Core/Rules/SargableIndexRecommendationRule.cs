@@ -14,7 +14,7 @@ namespace SqlXmlAnalyzer.Core.Rules
         public string RuleId => "RULE_035_SARGABLE_INDEX_RECOMMENDATION";
         public string Name => "Sargable Index Recommendation";
         public string Description => "Correlates execution plan scan nodes with high-performance index suggestions and non-SARGable warnings from refactored T-SQL.";
-        public RuleMetadata Metadata => RuleMetadataCatalog.Get(RuleId, Description) with { Version = "2.1.1" };
+        public RuleMetadata Metadata => RuleMetadataCatalog.Get(RuleId, Description);
 
         public RuleEvaluation Evaluate(RuleAnalysisContext context)
         {

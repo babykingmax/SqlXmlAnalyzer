@@ -58,12 +58,11 @@ namespace SqlXmlAnalyzer
             else if (!configurationResult.IsSuccess)
             {
                 MessageBox.Show(
-                    string.Join(Environment.NewLine, configurationResult.Errors),
+                    string.Join(Environment.NewLine, configurationResult.Errors) + Environment.NewLine
+                        + "请打开左侧“规则配置”，修复配置或恢复默认草稿后应用。有效配置应用前不能分析执行计划。",
                     "规则配置错误",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
-                Shutdown();
-                return;
             }
 
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
@@ -86,11 +85,17 @@ namespace SqlXmlAnalyzer
                 logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
             });
             services.AddSingleton<IUnexpectedErrorReporter>(UnexpectedErrorReporter.Shared);
+            services.AddSingleton<RuleConfigurationSession>();
             services.AddSingleton<IFileHandler, PhysicalFileHandler>();
             services.AddSingleton<ISqlWritebackFileSystem, PhysicalSqlWritebackFileSystem>();
             services.AddSingleton<ISqlWritebackService, SqlWritebackService>();
             services.AddSingleton<IResultReporter>(sp => new ConsoleResultReporter { ShowSql = false });
-            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine());
+            services.AddSingleton<IAnalysisEngine>(sp => new SqlXmlAnalysisEngine(ruleEngineFactory: () =>
+            {
+                var engine = new Core.Rules.RuleEngine(configuration: sp.GetRequiredService<RuleConfigurationSession>().Capture());
+                engine.RegisterDefaultRules();
+                return engine;
+            }));
             services.AddSingleton<IRuleFilter, DefaultRuleFilter>();
 
             // Rules

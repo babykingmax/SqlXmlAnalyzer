@@ -22,6 +22,9 @@ namespace SqlXmlAnalyzer.Views
         public event RoutedEventHandler? ClearResultsClicked;
         public event RoutedEventHandler? ThemeToggled;
         public event RoutedEventHandler? AboutClicked;
+        public event RoutedEventHandler? RuleConfigurationClicked;
+
+        private void OnRuleConfigurationClick(object sender, RoutedEventArgs e) => RuleConfigurationClicked?.Invoke(this, e);
 
         private void OnOpenDeadlockClick(object sender, RoutedEventArgs e) =>
             OpenDeadlockClicked?.Invoke(this, e);

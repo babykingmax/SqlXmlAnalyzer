@@ -12,10 +12,10 @@ namespace SqlXmlAnalyzer.Core.Rules
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
-            var doc = relOp.Document;
-            if (doc == null) return null;
+            var queryPlan = Services.QueryPlanXml.Find(relOp, ns);
+            if (queryPlan == null) return null;
 
-            var memGrant = doc.Descendants(ns + "MemoryGrantInfo").FirstOrDefault();
+            var memGrant = queryPlan.Element(ns + "MemoryGrantInfo");
             if (memGrant != null)
             {
                 double granted = PlanDiagnosticAnalyzer.ParseDouble(memGrant.Attribute("GrantedMemory")?.Value);

@@ -1,0 +1,226 @@
+[
+  {
+    "Case": "high-surrogates",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "low-surrogates",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "replacement-character",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "identical-unpaired",
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "valid-supplementary",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-collation",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-basetype",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-empty",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-null",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-object",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-temporary",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "variant-observer",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "binary-control",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "ordinary-unicode",
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Version": "15.0.4382.1"
+  },
+  {
+    "Case": "apply-utf16",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "2019"
+  },
+  {
+    "Case": "apply-variant",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "2019"
+  },
+  {
+    "Case": "high-surrogates",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "low-surrogates",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "replacement-character",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "identical-unpaired",
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "valid-supplementary",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-collation",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-basetype",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-empty",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-null",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-object",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-temporary",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "variant-observer",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "binary-control",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "ordinary-unicode",
+    "Expected": "PassedForScenarios",
+    "Passed": true,
+    "Actual": "PassedForScenarios",
+    "Version": "17.0.4075.5"
+  },
+  {
+    "Case": "apply-utf16",
+    "Expected": "Different",
+    "Passed": true,
+    "Actual": "Different",
+    "Version": "2025"
+  },
+  {
+    "Case": "apply-variant",
+    "Expected": "Failed",
+    "Passed": true,
+    "Actual": "Failed",
+    "Version": "2025"
+  }
+]

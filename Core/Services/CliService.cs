@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -88,8 +89,11 @@ namespace SqlXmlAnalyzer.Core.Services
         }
 
         internal static bool RunAnalysis(string filePath, string? exportFormat, string? outputFile,
-            Func<Rules.RuleEngine>? ruleEngineFactory = null)
+            Func<Rules.RuleEngine>? ruleEngineFactory = null, IReadOnlyList<string>? protectedInputPaths = null)
         {
+            var inputs = (protectedInputPaths ?? []).Append(filePath)
+                .Append(Configuration.RuleConfigurationPathResolver.Resolve()).ToArray();
+            SqlXmlAnalyzer.Application.Services.SqlReportPathGuard.ValidateInputs(inputs, outputFile);
             if (exportFormat == "obfuscated")
             {
                 outputFile ??= Path.Combine(Environment.CurrentDirectory, $"RedactedPlan_{Guid.NewGuid():N}.sqlplan");
@@ -159,18 +163,21 @@ namespace SqlXmlAnalyzer.Core.Services
 
                 if (exportFormat == "pdf")
                 {
-                    ReportExportService.ExportToPdf(outputFile, title, reportText);
+                    SqlXmlAnalyzer.Application.Services.ReportFileWriter.Write(outputFile,
+                        staged => ReportExportService.ExportToPdf(staged, title, reportText), inputs);
                     Console.WriteLine($"[导出] 已生成 PDF 报告: {outputFile}");
                 }
                 else if (exportFormat == "docx" || exportFormat == "word")
                 {
-                    ReportExportService.ExportToWord(outputFile, title, reportText);
+                    SqlXmlAnalyzer.Application.Services.ReportFileWriter.Write(outputFile,
+                        staged => ReportExportService.ExportToWord(staged, title, reportText), inputs);
                     Console.WriteLine($"[导出] 已生成 Word 报告: {outputFile}");
                 }
                 else
                 {
                     // Fallback to text
-                    File.WriteAllText(outputFile, Core.Privacy.OutputPrivacy.MarkRaw(reportText));
+                    SqlXmlAnalyzer.Application.Services.ReportFileWriter.WriteText(outputFile,
+                        Core.Privacy.OutputPrivacy.MarkRaw(reportText), inputs);
                     Console.WriteLine($"[导出] 已生成文本报告: {outputFile}");
                 }
             }
@@ -190,7 +197,7 @@ namespace SqlXmlAnalyzer.Core.Services
             Console.WriteLine("SqlXmlAnalyzer CLI 使用说明:");
             Console.WriteLine("  --analyze <path>   指定要分析的 .xml、.xdl、.xel 或 .sqlplan 文件");
             Console.WriteLine("  --export <format>  指定导出格式 (pdf, docx, obfuscated, txt)");
-            Console.WriteLine("  --out <path>       指定输出文件路径");
+            Console.WriteLine("  --out <path>       指定报告输出路径；禁止覆盖任何输入文件或其链接");
             Console.WriteLine("  --help, -h         显示帮助信息");
             Console.WriteLine();
             Console.WriteLine("示例:");
@@ -209,10 +216,8 @@ namespace SqlXmlAnalyzer.Core.Services
                 Environment.ExitCode = 1;
                 return;
             }
-            var files = Directory.GetFiles(dirPath, "*.*", SearchOption.AllDirectories)
-                .Where(f => f.EndsWith(".sqlplan", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xdl", StringComparison.OrdinalIgnoreCase) ||
-                    f.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xel", StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            var files = SqlXmlAnalyzer.Application.Services.InputFileCollector.Collect(dirPath,
+                [".sqlplan", ".xdl", ".xml", ".xel"]);
 
             if (files.Count == 0)
             {
@@ -230,7 +235,7 @@ namespace SqlXmlAnalyzer.Core.Services
                 Console.WriteLine($"\n>> 分析文件: {Path.GetFileName(file)}");
                 try
                 {
-                    if (RunAnalysis(file, exportFormat, null)) successCount++;
+                    if (RunAnalysis(file, exportFormat, null, protectedInputPaths: files)) successCount++;
                     else failCount++;
                 }
                 catch (Exception ex)

@@ -1,0 +1,309 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.Logging.Abstractions;
+using SqlXmlAnalyzer;
+using SqlXmlAnalyzer.Analysis;
+using SqlXmlAnalyzer.Application;
+using SqlXmlAnalyzer.Application.Services;
+using SqlXmlAnalyzer.Core.Services;
+using SqlXmlAnalyzer.Refactoring;
+using SqlXmlAnalyzer.Services;
+using SqlXmlAnalyzer.ViewModels;
+using SqlXmlAnalyzer.Views;
+
+internal static class Program
+{
+    private static readonly List<string> Checks = [];
+    private static readonly List<object> Matrix = [];
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        App? app = null; MainWindow? main = null;
+        var errors = new StringWriter();
+        try
+        {
+            Console.SetError(new StreamWriter(Console.OpenStandardError(), new UTF8Encoding(false)) { AutoFlush = true });
+            AppContext.SetSwitch("Switch.System.Windows.Media.ShouldRenderEvenWhenNoDisplayDevicesAreAvailable", true);
+            app = new App(); app.InitializeComponent();
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new TextWriterTraceListener(errors));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var files = new PhysicalFileHandler();
+            var refactor = new SqlRefactoringEngine([], new DefaultRuleFilter(), NullLogger<SqlRefactoringEngine>.Instance);
+            var orchestrator = new ApplicationOrchestrator(new SqlXmlAnalysisEngine(), refactor, files, new ConsoleResultReporter(), NullLogger<ApplicationOrchestrator>.Instance);
+            var dialogs = new Dialogs { SavePath = Path.Combine(args[1], "keyboard-report.html") };
+            main = new MainWindow(orchestrator, files, fileDialogService: dialogs) { Width = 1280, Height = 720, Left = -20000, Top = 0, WindowStartupLocation = WindowStartupLocation.Manual };
+            main.Show(); main.Activate(); Pump(); Capture(main, Path.Combine(args[1], "initial.png"), 1);
+            Require(!WorkspaceCommands.ExportHtml.CanExecute(null, main), "Empty workspace disables report command");
+            string plan = Path.Combine(args[1], "fixture.sqlplan");
+            File.WriteAllText(plan, """
+              <ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.539" Build="16.0.1000.6"><BatchSequence><Batch><Statements>
+              <StmtSimple StatementId="1" StatementText="SELECT 1" StatementType="SELECT"><QueryPlan>
+              <RelOp NodeId="0" PhysicalOp="Filter" LogicalOp="Filter" Parallel="false" EstimateRows="1">
+              <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="100000" ActualExecutions="2" ActualRowsRead="200000"/></RunTimeInformation>
+              <Filter><RelOp NodeId="1" PhysicalOp="Index Seek" LogicalOp="Index Seek" Parallel="false" EstimateRows="1"/></Filter>
+              </RelOp></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML>
+              """);
+            dialogs.OpenPath = plan;
+            Run(WorkspaceCommands.OpenPlan, main);
+            Until(() => main.ViewModel.PlanWorkspace.Report != null);
+            var workspace = Find<PlanWorkspaceView>(main); var graph = workspace.NodifyGraph;
+            Until(() => graph.Nodes.Count == 2);
+            VerifyHardening(main, workspace, args[1]);
+            Run(WorkspaceCommands.NextIssue, main);
+            Require(main.ViewModel.PlanWorkspace.SelectedIssue != null, "F8 command selects diagnostic");
+            var origin = Keyboard.FocusedElement;
+            Run(WorkspaceCommands.Evidence, main);
+            Run(WorkspaceCommands.Evidence, main);
+            Require(workspace.GraphTabControl.SelectedIndex == 0, "Evidence command opens source tab");
+            Key((UIElement)workspace.FindName("EvidenceSql"), System.Windows.Input.Key.Escape);
+            Require(ReferenceEquals(Keyboard.FocusedElement, origin), "Repeated evidence navigation preserves the original return focus");
+            Run(WorkspaceCommands.Graph, main);
+            var first = graph.SelectedNode;
+            var node = WorkspaceAccessibility.Descendants(graph).OfType<AccessiblePlanNode>().First(n => ReferenceEquals(n.DataContext, first));
+            var peer = UIElementAutomationPeer.CreatePeerForElement(node)!;
+            Require(peer.GetName().Contains("Node") && peer.GetName().Contains("诊断") && peer.GetPattern(PatternInterface.Invoke) != null,
+                "Custom graph AutomationPeer exposes statement/node/diagnostic name and Invoke");
+            Key(node, System.Windows.Input.Key.Right);
+            Require(!ReferenceEquals(graph.SelectedNode, first), "Graph arrow key selects a different node");
+            var second = graph.SelectedNode;
+            // Enter in an editor must not invoke graph navigation.
+            var editor = new TextBox(); ((Grid)graph.Content).Children.Add(editor); Key(editor, System.Windows.Input.Key.Left); ((Grid)graph.Content).Children.Remove(editor);
+            Require(ReferenceEquals(graph.SelectedNode, second), "Graph navigation does not steal editor arrow keys");
+            Key(main, System.Windows.Input.Key.F6);
+            Require(!graph.IsKeyboardFocusWithin, "F6 moves to the next workspace group");
+            Run(WorkspaceCommands.Compare, main);
+            var comparison = Find<PlanComparisonWorkspaceView>(main);
+            Invoke(WorkspaceAccessibility.Descendants(comparison).OfType<Button>().Single(b => ReferenceEquals(b.Command, main.ViewModel.CaptureCurrentPlanCommand)));
+            comparison.TuningHistoryList.SelectedIndex = 0;
+            Invoke((Button)comparison.FindName("SetSelectedPlanA")); Invoke((Button)comparison.FindName("SetSelectedPlanB"));
+            Require(main.ViewModel.PlanA != null && main.ViewModel.PlanB != null, "Accessible history controls capture and compare A/B");
+            Run(WorkspaceCommands.Plan, main); Run(WorkspaceCommands.ExportHtml, main);
+            var report = app.Windows.OfType<ReportReviewWindow>().Single();
+            Invoke((Button)report.FindName("SaveReport"));
+            Until(() => File.Exists(dialogs.SavePath) && !((ReportReviewViewModel)report.DataContext).IsBusy);
+            Require(File.ReadAllText(dialogs.SavePath).Contains("html", StringComparison.OrdinalIgnoreCase), "Report save entry publishes an actual HTML report");
+            Key(report, System.Windows.Input.Key.Escape); Pump();
+            var returnFocus = Keyboard.FocusedElement;
+            var help = new InteractionHelpWindow(main.ViewModel) { Owner = main }; help.Show(); Pump();
+            ((CheckBox)help.FindName("ReduceMotion")).IsChecked = true;
+            Require(main.ViewModel.ReduceMotion, "Help checkbox updates reduced motion preference");
+            Key(help, System.Windows.Input.Key.Escape); Pump();
+            Require(ReferenceEquals(returnFocus, Keyboard.FocusedElement), "Dialog Escape returns original focus");
+            Wait(main.AnalyzeFileAsync(Path.Combine(args[0], "SqlXmlAnalyzer.Tests/TestData/imp23_search_a.xdl")));
+            Until(() => WorkspaceAccessibility.Descendants(main).OfType<DeadlockWorkspaceView>().Any(view => view.GraphCanvas.Children.Count > 0));
+            foreach (bool dark in new[] { false, true })
+            {
+                ChangeTheme(main, dark);
+                foreach (var resolution in new[] { (1280, 720), (1366, 768), (1920, 1080) })
+                foreach (double scale in new[] { 1.25, 1.5, 2.0 })
+                foreach (var command in new[] { WorkspaceCommands.Plan, WorkspaceCommands.Deadlock, WorkspaceCommands.Compare })
+                {
+                    main.Width = resolution.Item1 / scale; main.Height = resolution.Item2 / scale;
+                    Run(command, main); Pump();
+                    var view = command == WorkspaceCommands.Plan ? (FrameworkElement)Find<PlanWorkspaceView>(main)
+                        : command == WorkspaceCommands.Deadlock ? Find<DeadlockWorkspaceView>(main) : Find<PlanComparisonWorkspaceView>(main);
+                    var scroll = (ScrollViewer)view.FindName("WorkspaceScroll");
+                    Require(scroll.ViewportHeight > 0 && scroll.ViewportWidth > 0, "Visible scroll viewport: " + command.Name);
+                    var content = (FrameworkElement)scroll.Content;
+                    if (command == WorkspaceCommands.Plan)
+                    {
+                        double ratio = Contrast(workspace.StatementTextBox.Foreground, workspace.StatementTextBox.Background);
+                        Require(ratio >= 4.5, $"Actual SQL control contrast: dark={dark}, ratio={ratio:F2}");
+                        if (WorkspaceInteractionService.Layout(view.ActualWidth, view.ActualHeight).Compact)
+                            Require(workspace.ContentGrid.ColumnDefinitions[4].ActualWidth <= 60, $"Collapsed properties panel releases width in compact mode: column={workspace.ContentGrid.ColumnDefinitions[4].Width}, actual={workspace.ContentGrid.ColumnDefinitions[4].ActualWidth}, expanded={((Expander)workspace.FindName("RightPanel")).IsExpanded}, panelDesired={((Expander)workspace.FindName("RightPanel")).DesiredSize}");
+                    }
+                    Require(scroll.ExtentHeight + 1 >= content.MinHeight && scroll.ExtentWidth + 1 >= content.MinWidth, $"All workspace content belongs to scroll extent: {command.Name} {resolution} {scale}: extent {scroll.ExtentWidth}x{scroll.ExtentHeight}, content {content.ActualWidth}x{content.ActualHeight}");
+                    string name = $"{(dark ? "dark" : "light")}-{resolution.Item1}x{resolution.Item2}-{scale * 100:0}-{command.Name}";
+                    Capture(main, Path.Combine(args[1], name + ".png"), scale);
+                    Matrix.Add(new { Name = name, RequestedPixelWidth = resolution.Item1, RequestedPixelHeight = resolution.Item2, Scale = scale,
+                        DipWidth = main.ActualWidth, DipHeight = main.ActualHeight, ActualMonitorDpiScale = VisualTreeHelper.GetDpi(main).DpiScaleX,
+                        scroll.ViewportWidth, scroll.ViewportHeight, scroll.ExtentWidth, scroll.ExtentHeight });
+                }
+            }
+            ChangeTheme(main, false); Run(WorkspaceCommands.Plan, main);
+            Require(((SolidColorBrush)workspace.TryFindResource("TextBrush")).Color == WorkspaceThemeService.Palette(false)["TextBrush"], "Dark to light restores semantic palette");
+            main.Width = 640; main.Height = 360; Run(WorkspaceCommands.Compare, main);
+            WorkspaceAccessibility.Focus(comparison.PlanBTree); Pump();
+            var compactScroll = (ScrollViewer)comparison.FindName("WorkspaceScroll");
+            Require(compactScroll.HorizontalOffset > 0, "Keyboard focus scrolls the B pane into the compact viewport");
+            Capture(main, Path.Combine(args[1], "compact-comparison-B-focus.png"), 2);
+            Run(WorkspaceCommands.Plan, main); Run(WorkspaceCommands.ExportHtml, main);
+            report = app.Windows.OfType<ReportReviewWindow>().Single(); Pump();
+            WorkspaceAccessibility.Focus((Button)report.FindName("SaveReport")); Pump();
+            Require(report.ActualWidth <= 640 && report.ActualHeight <= 360, "Report dialog fits the owner DIP bounds");
+            Require(Find<ScrollViewer>(report).VerticalOffset > 0, "Keyboard focus scrolls the report save action into view");
+            Capture(report, Path.Combine(args[1], "compact-report-save-focus.png"), 2);
+            report.Close();
+            var sandbox = new IndexSandboxWindow { Owner = main,
+                DataContext = new IndexSandboxViewModel(new SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion { Schema = "dbo", Table = "Orders" }) };
+            sandbox.Show(); Pump();
+            Require(sandbox.ActualWidth <= 640 && sandbox.ActualHeight <= 360 && sandbox.Content is ScrollViewer,
+                "Index review dialog adapts to compact owner and scrolls original content");
+            Key(sandbox, System.Windows.Input.Key.Escape);
+            Require(errors.ToString().Length == 0, "WPF binding errors: " + errors);
+            File.WriteAllText(Path.Combine(args[1], "verification.json"), JsonSerializer.Serialize(new { Passed = true, Checks,
+                Matrix, BindingErrors = 0, EvidenceKind = "Actual off-screen production WPF windows, routed commands/keys and AutomationPeer invocation; file dialogs injected. DIP dimensions and scaled bitmap pixels emulate the requested matrix; WPF headless rendering enabled in the probe only. This does not change OS monitor DPI or certify physical desktop keyboard/assistive-technology input." }, new JsonSerializerOptions { WriteIndented = true }));
+            return 0;
+        }
+        catch (Exception exception) { Console.Error.WriteLine(exception); return 1; }
+        finally { File.WriteAllText(Path.Combine(args[1], "binding-errors.txt"), errors.ToString()); main?.Close(); app?.Shutdown(); }
+    }
+    private static void VerifyHardening(MainWindow main, PlanWorkspaceView workspace, string output)
+    {
+        var left = (Expander)workspace.FindName("LeftPanel");
+        var right = (Expander)workspace.FindName("RightPanel");
+        var scroll = (ScrollViewer)workspace.FindName("WorkspaceScroll");
+        var columns = workspace.ContentGrid.ColumnDefinitions;
+        foreach (int side in new[] { 0, 4 })
+        {
+            main.Width = 1536; main.Height = 864; Pump();
+            left.IsExpanded = true; right.IsExpanded = true;
+            columns[0].Width = new GridLength(320); columns[4].Width = new GridLength(280);
+            columns[side].Width = new GridLength(800); Pump();
+            main.Width = 640; main.Height = 360; Pump();
+            Require(!left.IsExpanded && !right.IsExpanded, "Compact resize collapses both sidebars");
+            (side == 0 ? left : right).IsExpanded = true; Pump();
+            Require(columns[side].ActualWidth == 800, "Saved 800 DIP sidebar width restored for column " + side);
+            AssertExtent("Restored column " + side);
+            columns[side].Width = new GridLength(950); Pump();
+            AssertExtent("Splitter width change on expanded column " + side);
+            Capture(main, Path.Combine(output, "restored-sidebar-" + side + ".png"), 2);
+        }
+        for (int cycle = 0; cycle < 3; cycle++)
+        {
+            left.IsExpanded = true; right.IsExpanded = true;
+            columns[0].Width = new GridLength(800); columns[4].Width = new GridLength(650); Pump();
+            AssertExtent("Both expanded sidebars cycle " + cycle);
+            left.IsExpanded = false; right.IsExpanded = false; Pump();
+            Require(scroll.ExtentWidth <= 560, "Collapsing sidebars releases excess scroll extent cycle " + cycle);
+        }
+        left.IsExpanded = true; right.IsExpanded = true;
+        columns[0].Width = new GridLength(320); columns[4].Width = new GridLength(280); Pump();
+        left.IsExpanded = false; right.IsExpanded = false; Pump();
+        var graph = workspace.NodifyGraph;
+        foreach (string entry in new[] { "Enter", "AutomationInvoke", "MouseDoubleClick" })
+        {
+            right.IsExpanded = false; Run(WorkspaceCommands.Graph, main);
+            var selected = graph.SelectedNode;
+            var node = WorkspaceAccessibility.Descendants(graph).OfType<AccessiblePlanNode>().Single(n => ReferenceEquals(n.DataContext, selected));
+            if (entry == "Enter") Key(node, System.Windows.Input.Key.Enter);
+            else if (entry == "AutomationInvoke")
+                ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(node)!.GetPattern(PatternInterface.Invoke)).Invoke();
+            else
+            {
+                var container = WorkspaceAccessibility.Descendants(graph).OfType<Nodify.ItemContainer>().Single(n => ReferenceEquals(n.DataContext, selected));
+                container.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Control.MouseDoubleClickEvent });
+            }
+            Pump();
+            Require(right.IsExpanded && workspace.PropertiesGrid.Items.Count > 0 && workspace.PropertiesGrid.IsKeyboardFocusWithin,
+                entry + " reveals and focuses populated operator properties");
+            var point = workspace.PropertiesGrid.TransformToAncestor(scroll).Transform(new Point());
+            Require(point.X >= -1 && point.X < scroll.ViewportWidth, entry + " scrolls properties into compact viewport");
+            Capture(main, Path.Combine(output, "compact-details-" + entry + ".png"), 2);
+            Key(workspace.PropertiesGrid, System.Windows.Input.Key.Escape);
+            Require(graph.IsKeyboardFocusWithin && ReferenceEquals(selected, graph.SelectedNode), entry + " Escape returns to the same graph node");
+        }
+        Run(WorkspaceCommands.Compare, main);
+        var comparison = Find<PlanComparisonWorkspaceView>(main);
+        comparison.TuningHistoryList.SelectedIndex = -1;
+        WorkspaceAccessibility.Focus(comparison.TuningHistoryList);
+        Key(main, System.Windows.Input.Key.F6);
+        Require(comparison.TuningHistoryList.IsKeyboardFocusWithin && !comparison.PlanATree.IsVisible,
+            "Empty comparison safely retains its sole available focus group");
+        Invoke(WorkspaceAccessibility.Descendants(comparison).OfType<Button>().Single(b => ReferenceEquals(b.Command, main.ViewModel.CaptureCurrentPlanCommand)));
+        comparison.TuningHistoryList.SelectedIndex = 0;
+        Invoke((Button)comparison.FindName("SetSelectedPlanA")); Invoke((Button)comparison.FindName("SetSelectedPlanB"));
+        comparison.TuningHistoryList.SelectedIndex = -1;
+        CommandManager.InvalidateRequerySuggested(); Pump();
+        Require(!((Button)comparison.FindName("SetSelectedPlanA")).IsEnabled && !((Button)comparison.FindName("SetSelectedPlanB")).IsEnabled,
+            "Comparison setup has no selected snapshot and both actions disabled");
+        WorkspaceAccessibility.Focus(comparison.TuningHistoryList);
+        Key(main, System.Windows.Input.Key.F6);
+        Require(comparison.PlanATree.IsKeyboardFocusWithin, "F6 skips disabled A/B actions and reaches plan A");
+        comparison.MoveWorkspaceFocus(true); Pump();
+        Require(comparison.TuningHistoryList.IsKeyboardFocusWithin, "Reverse group navigation skips disabled A/B actions");
+        comparison.MoveWorkspaceFocus(true); Pump();
+        Require(comparison.PlanBTree.IsKeyboardFocusWithin, "Reverse group navigation wraps to plan B");
+        Capture(main, Path.Combine(output, "compact-F6-wrap.png"), 2);
+        Run(WorkspaceCommands.Plan, main);
+        main.Width = 1280; main.Height = 720; Pump();
+
+        void AssertExtent(string scenario)
+        {
+            scroll.ScrollToRightEnd(); Pump();
+            double columnWidth = columns.Cast<ColumnDefinition>().Sum(column => column.ActualWidth);
+            Require(scroll.ExtentWidth + 1 >= columnWidth, scenario + " keeps every column inside the scroll extent");
+            double rightEdge = workspace.ContentGrid.TransformToAncestor(scroll).Transform(new Point(columnWidth, 0)).X;
+            Require(rightEdge <= scroll.ViewportWidth + 1, scenario + " right edge can be reached by scrolling");
+        }
+    }
+
+    private sealed class Dialogs : IFileDialogService
+    {
+        public string? OpenPath; public string SavePath = "";
+        public string? ShowOpenFile(FileDialogRequest request) => OpenPath;
+        public string? ShowSaveFile(FileDialogRequest request) => SavePath;
+    }
+    private static T Find<T>(DependencyObject owner) where T : DependencyObject => WorkspaceAccessibility.Descendants(owner).OfType<T>().First();
+    private static void ChangeTheme(MainWindow main, bool dark)
+    {
+        var toggle = (System.Windows.Controls.Primitives.ToggleButton)Find<ShellNavigationRail>(main).FindName("ThemeToggle");
+        toggle.IsChecked = dark; toggle.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent)); Pump();
+    }
+    private static double Contrast(Brush foreground, Brush background)
+    {
+        static double L(Color c)
+        {
+            static double C(byte v) { double n = v / 255.0; return n <= .04045 ? n / 12.92 : Math.Pow((n + .055) / 1.055, 2.4); }
+            return .2126 * C(c.R) + .7152 * C(c.G) + .0722 * C(c.B);
+        }
+        double a = L(((SolidColorBrush)foreground).Color), b = L(((SolidColorBrush)background).Color);
+        return (Math.Max(a, b) + .05) / (Math.Min(a, b) + .05);
+    }
+    private static void Run(RoutedUICommand command, MainWindow main) { Require(command.CanExecute(null, main), command.Name + " enabled"); command.Execute(null, main); Pump(); }
+    private static void Invoke(Button button) { Require(button.IsEnabled, button.Name + " enabled"); ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(button)!.GetPattern(PatternInterface.Invoke)).Invoke(); Pump(); }
+    private static void Key(UIElement element, System.Windows.Input.Key key)
+    {
+        var input = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(element), Environment.TickCount, key) { RoutedEvent = Keyboard.PreviewKeyDownEvent };
+        element.RaiseEvent(input); Pump();
+    }
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); Checks.Add(message); }
+    private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+    private static void Until(Func<bool> predicate)
+    {
+        var timer = Stopwatch.StartNew(); while (!predicate()) { if (timer.Elapsed > TimeSpan.FromSeconds(30)) throw new TimeoutException("WPF operation timed out"); Pump(); Thread.Sleep(10); } Pump();
+    }
+    private static void Wait(Task task) { Until(() => task.IsCompleted); task.GetAwaiter().GetResult(); }
+    private static void Capture(Window window, string path, double scale)
+    {
+        var timer = Stopwatch.StartNew();
+        while (timer.ElapsedMilliseconds < 250) { Pump(); Thread.Sleep(10); }
+        window.UpdateLayout(); Pump(); var view = (FrameworkElement)window.Content;
+        var bitmap = new RenderTargetBitmap((int)Math.Ceiling(view.ActualWidth * scale), (int)Math.Ceiling(view.ActualHeight * scale), 96, 96, PixelFormats.Pbgra32);
+        var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            drawing.PushTransform(new ScaleTransform(scale, scale));
+            drawing.DrawRectangle((Brush)window.FindResource("BackgroundBrush"), null, new Rect(0, 0, view.ActualWidth, view.ActualHeight));
+            drawing.DrawRectangle(new VisualBrush(view), null, new Rect(0, 0, view.ActualWidth, view.ActualHeight));
+        }
+        bitmap.Render(visual);
+        var pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight * 4]; bitmap.CopyPixels(pixels, bitmap.PixelWidth * 4, 0);
+        Require(pixels.Distinct().Take(12).Count() == 12, $"Screenshot has rendered content: {Path.GetFileName(path)} pixels={string.Join(",", pixels.Distinct().Take(20))} visible={view.IsVisible} state={window.WindowState} opacity={view.Opacity} bounds={VisualTreeHelper.GetDescendantBounds(view)} clip={view.Clip}");
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var output = File.Create(path); encoder.Save(output);
+    }
+}

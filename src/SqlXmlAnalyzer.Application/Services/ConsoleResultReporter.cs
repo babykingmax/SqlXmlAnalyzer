@@ -15,6 +15,10 @@ namespace SqlXmlAnalyzer.Application.Services
         }
 
         public void Report(RefactorResult result, bool isDryRun, string? outputPath = null)
+            => Report(result, isDryRun, outputPath, []);
+
+        public void Report(RefactorResult result, bool isDryRun, string? outputPath,
+            IReadOnlyList<string?> inputPaths, CancellationToken cancellationToken = default)
         {
             if (result == null) return;
 
@@ -23,7 +27,7 @@ namespace SqlXmlAnalyzer.Application.Services
                 var fileContent = FormatReportText(result, isDryRun);
                 try
                 {
-                    File.WriteAllText(outputPath, fileContent, Encoding.UTF8);
+                    ReportFileWriter.WriteText(outputPath, fileContent, inputPaths, cancellationToken);
                     Console.WriteLine($"报告已写入到: {outputPath}");
                 }
                 catch (Exception ex)

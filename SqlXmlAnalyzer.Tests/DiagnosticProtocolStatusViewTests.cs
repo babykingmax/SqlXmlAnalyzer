@@ -50,7 +50,8 @@ public sealed class DiagnosticProtocolStatusViewTests
                     panels.Resources["TextBrush"] = Brushes.Black;
                     panels.Resources["BorderBrush"] = Brushes.LightGray;
                     panels.Resources["AccentBrush"] = Brushes.DarkSlateBlue;
-                    panels.DataContext = new PlanNodeViewModel { Warnings = node.Warnings, DiagnosticStatusText = node.DiagnosticStatusText };
+                    var viewModel = new PlanNodeViewModel { Warnings = node.Warnings, DiagnosticStatusText = node.DiagnosticStatusText };
+                    panels.DataContext = viewModel;
                     canvas.Children.Add(new TextBlock { Text = state, FontSize = 16, FontWeight = FontWeights.Bold, Margin = new Thickness(12, 14, 12, 0) });
                     canvas.Children.Add(new Border { Padding = new Thickness(12), Child = panels });
                     canvas.Measure(new Size(560, double.PositiveInfinity));
@@ -61,6 +62,9 @@ public sealed class DiagnosticProtocolStatusViewTests
                     var warningPanel = (StackPanel)panels.Children[1];
                     statusPanel.Visibility.Should().Be(Visibility.Visible);
                     ((TextBox)statusPanel.Children[2]).Text.Should().Contain(state + " 1");
+                    ((TextBox)statusPanel.Children[2]).Text.Should().NotContain(Environment.NewLine, "tooltips summarize rule execution instead of dumping run logs");
+                    if (state is "Skipped" or "Failed")
+                        viewModel.DiagnosticStatusText.Should().Contain(Environment.NewLine, "full run records remain available outside the tooltip");
                     warningPanel.Visibility.Should().Be(state is "Hit" or "Failed" ? Visibility.Visible : Visibility.Collapsed);
                 }
                 string? output = Environment.GetEnvironmentVariable("SQLXML_IMP12_VISUAL_OUTPUT");

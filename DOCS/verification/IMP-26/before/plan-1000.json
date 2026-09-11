@@ -1,0 +1,60 @@
+{
+  "Passed": true,
+  "SourceSha256": "52017CE964A0FDDEC1D82DBEA14EB15568398B7CD583F7EB1DFD82CDDF389B20",
+  "Runs": [
+    {
+      "Run": "process-cold",
+      "TotalMs": 8696.971,
+      "StartupMs": 533.0934,
+      "InputLatencyP95Ms": 7372.5406,
+      "InputLatencyMaxMs": 7791.6135,
+      "Samples": 428,
+      "PeakWorkingSetBytes": 662790144,
+      "ManagedBytes": 427847928,
+      "VisibleGraphNodes": 1000,
+      "Operators": 1000,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 5.123,
+          "Status": "Loading and identifying file: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 21.1604,
+          "Status": "Analyzing execution plan: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 733.1682,
+          "Status": "Execution plan analysis complete"
+        }
+      ]
+    },
+    {
+      "Run": "same-process-warm",
+      "TotalMs": 6258.4347,
+      "StartupMs": 533.0934,
+      "InputLatencyP95Ms": 5298.8135,
+      "InputLatencyMaxMs": 5578.3519,
+      "Samples": 299,
+      "PeakWorkingSetBytes": 1054076928,
+      "ManagedBytes": 761934792,
+      "VisibleGraphNodes": 1000,
+      "Operators": 1000,
+      "XelEvents": 0,
+      "Stages": [
+        {
+          "Milliseconds": 51.1785,
+          "Status": "Loading and identifying file: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 95.4022,
+          "Status": "Analyzing execution plan: plan-1000.sqlplan..."
+        },
+        {
+          "Milliseconds": 1320.5707,
+          "Status": "Execution plan analysis complete"
+        }
+      ]
+    }
+  ]
+}

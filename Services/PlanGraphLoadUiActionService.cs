@@ -54,17 +54,19 @@ namespace SqlXmlAnalyzer.Services
 
             foreach (XElement relOp in relOps)
             {
+                options.CancellationToken.ThrowIfCancellationRequested();
                 PlanNodeViewModel vm =
                     _nodeUiActionService.CreateNodeFromRelOp(
                         relOp,
                         ns,
                         options.ResidualIoThreshold,
-                        options.ResidualIoMinRowsRead);
+                        options.ResidualIoMinRowsRead, options.Diagnostics);
                 nodeMap[relOp] = vm;
                 allNodes.Add(vm);
             }
 
-            ApplyMissingIndexAssociations(document, ns, allNodes);
+            ApplyMissingIndexAssociations(document, ns, allNodes, options.MissingIndexes);
+            options.CancellationToken.ThrowIfCancellationRequested();
 
             _costUiActionService.ApplyCostCalculations(
                 relOps,
@@ -78,6 +80,7 @@ namespace SqlXmlAnalyzer.Services
                 ns,
                 nodeMap,
                 options.InitialLayout);
+            options.CancellationToken.ThrowIfCancellationRequested();
 
             _connectionUiActionService.BuildConnections(
                 relOps,
@@ -103,10 +106,11 @@ namespace SqlXmlAnalyzer.Services
         private void ApplyMissingIndexAssociations(
             XDocument document,
             XNamespace ns,
-            IReadOnlyList<PlanNodeViewModel> allNodes)
+            IReadOnlyList<PlanNodeViewModel> allNodes,
+            IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>? suppliedIndexes)
         {
             IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion> missingIndexes =
-                PlanDiagnosticAnalyzer.ExtractMissingIndexes(document, ns);
+                suppliedIndexes ?? PlanDiagnosticAnalyzer.ExtractMissingIndexes(document, ns);
             IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion?> matchedSuggestions =
                 _missingIndexAssociationService.MatchSuggestions(
                     allNodes
@@ -134,6 +138,9 @@ namespace SqlXmlAnalyzer.Services
 
     internal sealed record PlanGraphLoadUiActionOptions
     {
+        public System.Threading.CancellationToken CancellationToken { get; init; }
+        public IReadOnlyList<SqlXmlAnalyzer.Core.Models.MissingIndexSuggestion>? MissingIndexes { get; init; }
+        public Core.Rules.PlanDiagnosticReport? Diagnostics { get; init; }
         public IReadOnlyList<XElement>? Operators { get; init; }
         public required PlanLayoutMode InitialLayout { get; init; }
         public required PlanColorMode InitialColor { get; init; }

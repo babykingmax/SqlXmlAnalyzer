@@ -45,21 +45,47 @@ namespace SqlXmlAnalyzer.Application
             _writebackService = writebackService ?? new SqlWritebackService(new PhysicalSqlWritebackFileSystem(), unexpectedErrors: _unexpectedErrors);
         }
 
+        public OrchestratorResult PrepareReview(string sql, InputRecognitionResult input, Core.Models.PlanDocument plan,
+            Core.Rules.PlanDiagnosticReport diagnostics, System.Threading.CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var report = Analysis.SqlXmlAnalysisEngine.FromDiagnostics(input, plan, diagnostics);
+            if (!report.IsSuccess || diagnostics.HasFailures)
+                throw new InvalidDataException("诊断未完成，不能生成改写提案。");
+            var result = _refactoringEngine.Run(sql, report, new RefactorOptions { MaxPasses = 5 }, true, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            var warnings = new List<string>(result.Context.Warnings);
+            if (result.IsSuccess && (result.Errors.Count > 0 || result.ParseErrors?.Count > 0 || result.Context.RefactorFailures.Count > 0))
+                result = result with { IsSuccess = false, OutputSql = sql, Review = null };
+            result = result with { SourceWritten = false };
+            if (result.IsSuccess && (result.Context.Changed || !string.Equals(sql, result.OutputSql, StringComparison.Ordinal)))
+            {
+                warnings.Add("已生成可审核提案，尚未应用；语义等价性未证明。选择只改变审核预览，不写回源文件。");
+                if (result.Review == null) warnings.Add("MissingProposalContract: 改写引擎未提供可审核提案，禁止应用。");
+            }
+            foreach (var warning in warnings) result.Context.Warn(warning);
+            Logger.Debug("IMP26 rewrite preparation reused the existing diagnostic snapshot without file I/O.");
+            return new OrchestratorResult(result, result.IsSuccess, null, null, warnings);
+        }
+
         public OrchestratorResult Execute(
             string sqlPath,
             string? planPath = null,
             bool isDryRun = false,
             RefactorOptions? options = null,
             string? outputPath = null,
-            System.Threading.CancellationToken cancellationToken = default)
+            System.Threading.CancellationToken cancellationToken = default,
+            InputRecognitionResult? planInput = null,
+            IReadOnlyList<string>? additionalInputPaths = null)
         {
             var warnings = new List<string>();
+            string?[] inputPaths = new string?[] { sqlPath, planPath }.Concat(additionalInputPaths ?? []).ToArray();
 
-            _logger.LogDebug("OrchestrationStarted: HasPlan={HasPlan}, DryRun={DryRun}", planPath != null, isDryRun);
+            _logger.LogDebug("OrchestrationStarted: HasPlan={HasPlan}, DryRun={DryRun}", planPath != null || planInput != null, isDryRun);
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                SqlReportPathGuard.Validate(sqlPath, outputPath);
+                SqlReportPathGuard.ValidateInputs(inputPaths, outputPath);
                 if (!_fileHandler.Exists(sqlPath))
                 {
                     throw new FileNotFoundException($"SQL file not found: {sqlPath}", sqlPath);
@@ -69,9 +95,11 @@ namespace SqlXmlAnalyzer.Application
                 var sql = snapshot?.Text ?? _fileHandler.ReadAllText(sqlPath);
                 var report = new AnalysisReport(ImmutableList<IAnalysisIssue>.Empty);
 
-                if (planPath != null)
+                if (planPath != null || planInput != null)
                 {
-                    InputRecognitionResult input = _inputRecognition.Load(planPath, cancellationToken).ForExecutionPlan();
+                    // Desktop reanalysis supplies the already-read document and its
+                    // provenance. Never reopen a possibly changed path in that case.
+                    InputRecognitionResult input = (planInput ?? _inputRecognition.Load(planPath!, cancellationToken)).ForExecutionPlan();
                     if (!input.IsSuccess)
                         return new OrchestratorResult(null, false,
                             $"{input.ErrorCode}: {input.ErrorMessage}", null, warnings);
@@ -97,7 +125,7 @@ namespace SqlXmlAnalyzer.Application
 
                 var opt = options ?? new RefactorOptions();
                 cancellationToken.ThrowIfCancellationRequested();
-                var result = _refactoringEngine.Run(sql, report, opt, isDryRun);
+                var result = _refactoringEngine.Run(sql, report, opt, isDryRun, cancellationToken);
                 warnings.AddRange(result.Context.Warnings);
                 cancellationToken.ThrowIfCancellationRequested();
                 if (result.IsSuccess && (result.Errors.Count > 0 || result.ParseErrors?.Count > 0 ||
@@ -124,8 +152,7 @@ namespace SqlXmlAnalyzer.Application
                     }
                 }
 
-                SqlReportPathGuard.Validate(sqlPath, outputPath);
-                _reporter.Report(result, isDryRun, outputPath);
+                _reporter.Report(result, isDryRun, outputPath, inputPaths, cancellationToken);
                 _logger.LogInformation("OrchestrationCompleted: Success={IsSuccess}", result.IsSuccess);
                 return new OrchestratorResult(result, result.IsSuccess, null, null, warnings);
             }

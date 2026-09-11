@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using SqlXmlAnalyzer.Core.Models;
 using SqlXmlAnalyzer.Core.Parsers;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer
 {
@@ -15,6 +16,8 @@ namespace SqlXmlAnalyzer
         private string _paramName = "";
         private string _compiledValueStr = "";
         private string _runtimeValueStr = "";
+        private bool _compiledValueAvailable;
+        private bool _runtimeValueAvailable;
         private double _compiledValue = 0;
         private double _runtimeValue = 0;
         private bool _hasData = false;
@@ -33,6 +36,7 @@ namespace SqlXmlAnalyzer
         {
             _steps = null; _hasData = false; _dbccCommandsTemplate = "";
             _paramName = ""; _compiledValueStr = ""; _runtimeValueStr = "";
+            _compiledValueAvailable = _runtimeValueAvailable = false;
             TxtStatsInput.Clear(); DrawCanvas.Children.Clear(); GridStatsUsage.ItemsSource = null;
             TxtParamName.Text = "未采集参数"; TxtCompiledValue.Text = "N/A"; TxtRuntimeValue.Text = "N/A";
             PanelEstimates.Visibility = Visibility.Collapsed; PanelSniffingRatio.Visibility = Visibility.Collapsed;
@@ -52,11 +56,15 @@ namespace SqlXmlAnalyzer
             ((Border)TxtStatus.Parent).Background = new SolidColorBrush(Color.FromRgb(227, 242, 253));
 
             _paramName = paramName;
-            _compiledValueStr = compiledValStr.Trim('\'', '(', ')');
-            _runtimeValueStr = runtimeValStr.Trim('\'', '(', ')');
+            _compiledValueAvailable = !string.IsNullOrWhiteSpace(compiledValStr);
+            _runtimeValueAvailable = !string.IsNullOrWhiteSpace(runtimeValStr);
+            _compiledValueStr = NormalizeParameterValue(compiledValStr);
+            _runtimeValueStr = NormalizeParameterValue(runtimeValStr);
 
-            bool parsedCompiled = SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(_compiledValueStr, out _compiledValue);
-            bool parsedRuntime = SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(_runtimeValueStr, out _runtimeValue);
+            bool parsedCompiled = SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(_compiledValueStr, out _compiledValue)
+                && double.IsFinite(_compiledValue);
+            bool parsedRuntime = SqlXmlAnalyzer.Core.NumericParser.TryParseInvariantDouble(_runtimeValueStr, out _runtimeValue)
+                && double.IsFinite(_runtimeValue);
 
             if (!parsedCompiled && !parsedRuntime)
             {
@@ -65,11 +73,16 @@ namespace SqlXmlAnalyzer
                 if (_compiledValue == _runtimeValue) _runtimeValue += 500;
             }
             else if (!parsedCompiled) _compiledValue = _runtimeValue * 0.1;
-            else if (!parsedRuntime) _runtimeValue = _compiledValue * 10;
+            else if (!parsedRuntime)
+            {
+                double simulatedRuntime = _compiledValue * 10;
+                _runtimeValue = double.IsFinite(simulatedRuntime)
+                    ? simulatedRuntime : Math.CopySign(double.MaxValue, _compiledValue);
+            }
 
             TxtParamName.Text = _paramName;
-            TxtCompiledValue.Text = _compiledValueStr;
-            TxtRuntimeValue.Text = _runtimeValueStr;
+            TxtCompiledValue.Text = _compiledValueAvailable ? _compiledValueStr : "N/A";
+            TxtRuntimeValue.Text = _runtimeValueAvailable ? _runtimeValueStr : "N/A";
 
             _hasData = true;
 
@@ -98,30 +111,19 @@ namespace SqlXmlAnalyzer
                     {
                         var sb = new System.Text.StringBuilder();
                         sb.AppendLine("-- 💡 SqlXmlAnalyzer 推荐的 DBCC SHOW_STATISTICS 查询命令");
-                        sb.AppendLine("-- 请复制并在 SSMS 中运行相关命令，然后在结果集中全选并复制“第三张直方图表”，覆盖粘贴回此输入框。");
+                        sb.AppendLine("-- 请复制并在 SSMS 中运行相关命令，然后复制返回的直方图表，覆盖粘贴回此输入框。");
                         sb.AppendLine();
 
                         foreach (var stat in stats)
                         {
-                            string db = stat.Database;
-                            string schema = string.IsNullOrEmpty(stat.Schema) ? "dbo" : stat.Schema;
-                            string table = stat.Table;
-                            string statName = stat.Statistics;
-
-                            string Quote(string s)
+                            try
                             {
-                                if (string.IsNullOrEmpty(s)) return "";
-                                s = s.Trim();
-                                if (!s.StartsWith("[") && !s.EndsWith("]")) return $"[{s}]";
-                                return s;
+                                sb.AppendLine(StatisticsCommandBuilder.BuildShowStatistics(stat));
                             }
-
-                            string fullTable = "";
-                            if (!string.IsNullOrEmpty(db)) fullTable += Quote(db) + ".";
-                            fullTable += Quote(schema) + "." + Quote(table);
-                            string fullStat = Quote(statName);
-
-                            sb.AppendLine($"DBCC SHOW_STATISTICS ('{fullTable}', '{fullStat}');");
+                            catch (ArgumentException)
+                            {
+                                sb.AppendLine("-- 未生成命令：统计对象标识缺失或格式无效，请在 SSMS 中确认对象身份。");
+                            }
                         }
 
                         _dbccCommandsTemplate = sb.ToString();
@@ -201,20 +203,20 @@ namespace SqlXmlAnalyzer
             if (_steps == null || _steps.Count == 0) return;
 
             // 1. Calculate compiled and runtime estimate details using the core parser
-            StatisticsHistogramParser.EstimateValue(_compiledValueStr, _steps, _keyType, out double compEst, out _, out string compMatch);
-            StatisticsHistogramParser.EstimateValue(_runtimeValueStr, _steps, _keyType, out double runEst, out _, out string runMatch);
+            StatisticsHistogramParser.EstimateValue(_compiledValueAvailable ? _compiledValueStr : null, _steps, _keyType, out double compEst, out _, out string compMatch);
+            StatisticsHistogramParser.EstimateValue(_runtimeValueAvailable ? _runtimeValueStr : null, _steps, _keyType, out double runEst, out _, out string runMatch);
 
             // Update labels
-            TxtCompiledEstimate.Text = $"估算返回: {compEst:N2} 行 ({compMatch})";
-            TxtRuntimeEstimate.Text = $"估算返回: {runEst:N2} 行 ({runMatch})";
+            TxtCompiledEstimate.Text = FormatEstimate(compEst, compMatch);
+            TxtRuntimeEstimate.Text = FormatEstimate(runEst, runMatch);
 
-            SqlXmlAnalyzer.Logger.Info($"ApplyStatistics: Param={_paramName}, Compiled={_compiledValueStr} -> Est={compEst:F2} ({compMatch}), Runtime={_runtimeValueStr} -> Est={runEst:F2} ({runMatch})");
+            SqlXmlAnalyzer.Logger.Info($"ApplyStatistics: KeyType={_keyType}, CompiledEstimateAvailable={double.IsFinite(compEst)}, RuntimeEstimateAvailable={double.IsFinite(runEst)}");
 
             PanelEstimates.Visibility = Visibility.Visible;
 
             // 2. Show sniffing deviation ratio
             double ratio = 1.0;
-            if (compEst > 0 && runEst > 0)
+            if (double.IsFinite(compEst) && double.IsFinite(runEst) && compEst > 0 && runEst > 0 && double.IsFinite(Math.Max(compEst, runEst) / Math.Min(compEst, runEst)))
             {
                 ratio = Math.Max(compEst, runEst) / Math.Min(compEst, runEst);
                 TxtSniffingRatio.Text = $"{ratio:F1} 倍";
@@ -226,7 +228,7 @@ namespace SqlXmlAnalyzer
                 PanelSniffingRatio.Visibility = Visibility.Collapsed;
             }
 
-            TxtStatus.Text = $"成功载入 {_steps.Count} 个直方图区间 (类型: {_keyType})";
+            TxtStatus.Text = $"已载入 {_steps.Count} 个直方图区间 (类型: {_keyType})；估算仅用于直方图说明，不能替代 SQL Server 基数估算。";
             TxtStatus.Foreground = new SolidColorBrush(Color.FromRgb(46, 125, 50));
             ((Border)TxtStatus.Parent).Background = new SolidColorBrush(Color.FromRgb(232, 245, 233));
 
@@ -262,12 +264,20 @@ namespace SqlXmlAnalyzer
 
         private void DrawMockHistogram(double width, double height)
         {
+            if (!double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0
+                || !double.IsFinite(_compiledValue) || !double.IsFinite(_runtimeValue)) return;
+            // Mock coordinates are relative. Normalize before subtraction so
+            // finite opposite extremes cannot overflow the synthetic range.
+            double coordinateScale = Math.Max(Math.Abs(_compiledValue), Math.Abs(_runtimeValue));
+            if (coordinateScale == 0) coordinateScale = 1;
+            double compiledValue = _compiledValue / coordinateScale;
+            double runtimeValue = _runtimeValue / coordinateScale;
             int stepsCount = 20;
             double[] stepValues = new double[stepsCount];
-            double maxVal = Math.Max(_compiledValue, _runtimeValue);
-            double minVal = Math.Min(_compiledValue, _runtimeValue);
+            double maxVal = Math.Max(compiledValue, runtimeValue);
+            double minVal = Math.Min(compiledValue, runtimeValue);
             double range = maxVal - minVal;
-            if (range == 0) range = 100;
+            if (range == 0) range = 1;
 
             double startXValue = minVal - range * 0.2;
             double endXValue = maxVal + range * 0.2;
@@ -279,8 +289,8 @@ namespace SqlXmlAnalyzer
             for (int i = 0; i < stepsCount; i++)
             {
                 double xVal = startXValue + i * stepSize;
-                double dist1 = Math.Exp(-Math.Pow((xVal - _compiledValue) / (range * 0.1), 2));
-                double dist2 = Math.Exp(-Math.Pow((xVal - _runtimeValue) / (range * 0.3), 2));
+                double dist1 = Math.Exp(-Math.Pow((xVal - compiledValue) / (range * 0.1), 2));
+                double dist2 = Math.Exp(-Math.Pow((xVal - runtimeValue) / (range * 0.3), 2));
                 double eqRows = (dist1 * 10000) + (dist2 * 500) + rnd.Next(50, 200);
 
                 stepValues[i] = eqRows;
@@ -321,7 +331,7 @@ namespace SqlXmlAnalyzer
                 double barHeight = (stepValues[i] / maxEqRows) * height;
                 var rect = new Rectangle
                 {
-                    Width = barWidth - 2,
+                    Width = Math.Max(0, barWidth - 2),
                     Height = barHeight,
                     Fill = new SolidColorBrush(Color.FromRgb(144, 202, 249)),
                     Stroke = new SolidColorBrush(Color.FromRgb(33, 150, 243)),
@@ -335,8 +345,8 @@ namespace SqlXmlAnalyzer
 
             double ValueToX(double val) => ((val - startXValue) / (endXValue - startXValue)) * width;
 
-            double compiledX = ValueToX(_compiledValue);
-            double runtimeX = ValueToX(_runtimeValue);
+            double compiledX = ValueToX(compiledValue);
+            double runtimeX = ValueToX(runtimeValue);
 
             DrawVerticalLine(compiledX, height, Color.FromRgb(25, 118, 210), "Compiled");
             DrawVerticalLine(runtimeX, height, Color.FromRgb(211, 47, 47), "Runtime");
@@ -347,15 +357,17 @@ namespace SqlXmlAnalyzer
             if (_steps == null || _steps.Count == 0) return;
 
             // 1. Convert parameter values to numeric positions
-            StatisticsHistogramParser.EstimateValue(_compiledValueStr, _steps, _keyType, out double compEst, out double compNumPos, out _);
-            StatisticsHistogramParser.EstimateValue(_runtimeValueStr, _steps, _keyType, out double runEst, out double runNumPos, out _);
+            StatisticsHistogramParser.EstimateValue(_compiledValueAvailable ? _compiledValueStr : null, _steps, _keyType, out double compEst, out double compNumPos, out _);
+            StatisticsHistogramParser.EstimateValue(_runtimeValueAvailable ? _runtimeValueStr : null, _steps, _keyType, out double runEst, out double runNumPos, out _);
 
-            // Determine bounds for X scale (extend bounds to encompass compiled/runtime if they fall outside steps)
-            double minStepKey = _steps.Min(s => s.RangeHiKeyNumeric);
-            double maxStepKey = _steps.Max(s => s.RangeHiKeyNumeric);
-
-            double startXValue = Math.Min(minStepKey, Math.Min(compNumPos, runNumPos));
-            double endXValue = Math.Max(maxStepKey, Math.Max(compNumPos, runNumPos));
+            // Normalize drawing coordinates before computing the span to avoid overflow.
+            var plottedSteps = _steps.Where(s => double.IsFinite(s.RangeHiKeyNumeric) && double.IsFinite(s.EqRows)).ToList();
+            if (plottedSteps.Count == 0) return;
+            double minStepKey = plottedSteps.Min(s => s.RangeHiKeyNumeric);
+            double maxStepKey = plottedSteps.Max(s => s.RangeHiKeyNumeric);
+            double coordinateScale = Math.Max(1, Math.Max(Math.Abs(minStepKey), Math.Abs(maxStepKey)));
+            double startXValue = minStepKey / coordinateScale;
+            double endXValue = maxStepKey / coordinateScale;
             double range = endXValue - startXValue;
             if (range == 0) range = 1.0;
 
@@ -365,10 +377,10 @@ namespace SqlXmlAnalyzer
             range = endXValue - startXValue;
 
             // Y scale based on Max(EQ_ROWS, AVG_RANGE_ROWS)
-            double maxRowsVal = _steps.Max(s => Math.Max(s.EqRows, s.AvgRangeRows));
+            double maxRowsVal = plottedSteps.Max(s => Math.Max(s.EqRows, double.IsFinite(s.AvgRangeRows) ? s.AvgRangeRows : 0));
             if (maxRowsVal == 0) maxRowsVal = 10.0;
 
-            double ValueToX(double val) => ((val - startXValue) / range) * width;
+            double ValueToX(double val) => ((val / coordinateScale - startXValue) / range) * width;
 
             // Draw Y-axis grids
             for (int i = 0; i <= 4; i++)
@@ -388,7 +400,7 @@ namespace SqlXmlAnalyzer
 
                 var txt = new TextBlock
                 {
-                    Text = (maxRowsVal * i / 4.0).ToString("N0"),
+                    Text = (maxRowsVal * (i / 4.0)).ToString("N0"),
                     FontSize = 9,
                     Foreground = new SolidColorBrush(Color.FromRgb(158, 158, 158))
                 };
@@ -398,15 +410,15 @@ namespace SqlXmlAnalyzer
             }
 
             // Draw Range Block Bars and EQ_ROWS Pins
-            for (int i = 0; i < _steps.Count; i++)
+            for (int i = 0; i < plottedSteps.Count; i++)
             {
-                var step = _steps[i];
+                var step = plottedSteps[i];
                 double xCurr = ValueToX(step.RangeHiKeyNumeric);
 
                 // 1. Draw Range average bar between step[i-1] and step[i]
-                if (i > 0)
+                if (i > 0 && double.IsFinite(step.AvgRangeRows))
                 {
-                    double xPrev = ValueToX(_steps[i - 1].RangeHiKeyNumeric);
+                    double xPrev = ValueToX(plottedSteps[i - 1].RangeHiKeyNumeric);
                     double barW = xCurr - xPrev;
                     if (barW > 0.5)
                     {
@@ -418,7 +430,7 @@ namespace SqlXmlAnalyzer
                             Fill = new SolidColorBrush(Color.FromArgb(50, 33, 150, 243)), // Translucent blue
                             Stroke = new SolidColorBrush(Color.FromArgb(80, 33, 150, 243)),
                             StrokeThickness = 0.5,
-                            ToolTip = $"区间: {_steps[i - 1].RangeHiKey} ~ {step.RangeHiKey}\n区间内行数 (RANGE_ROWS): {step.RangeRows:N0}\n区间内均值 (AVG_RANGE_ROWS): {step.AvgRangeRows:N1}"
+                            ToolTip = $"区间: {plottedSteps[i - 1].RangeHiKey} ~ {step.RangeHiKey}\n区间内行数 (RANGE_ROWS): {step.RangeRows:N0}\n区间内均值 (AVG_RANGE_ROWS): {step.AvgRangeRows:N1}"
                         };
                         Canvas.SetLeft(rect, xPrev);
                         Canvas.SetTop(rect, height - barH);
@@ -457,8 +469,20 @@ namespace SqlXmlAnalyzer
             double compiledX = ValueToX(compNumPos);
             double runtimeX = ValueToX(runNumPos);
 
-            DrawVerticalLine(compiledX, height, Color.FromRgb(25, 118, 210), $"Compiled: {_compiledValueStr} ({compEst:N0}行)");
-            DrawVerticalLine(runtimeX, height, Color.FromRgb(211, 47, 47), $"Runtime: {_runtimeValueStr} ({runEst:N0}行)");
+            if (double.IsFinite(compiledX)) DrawVerticalLine(compiledX, height, Color.FromRgb(25, 118, 210), $"Compiled: {_compiledValueStr} ({compEst:N0}行)");
+            if (double.IsFinite(runtimeX)) DrawVerticalLine(runtimeX, height, Color.FromRgb(211, 47, 47), $"Runtime: {_runtimeValueStr} ({runEst:N0}行)");
+        }
+
+        private static string FormatEstimate(double rows, string match) => double.IsFinite(rows)
+            ? $"估算返回: {rows:N2} 行 ({match})" : $"估算返回: N/A ({match})";
+
+        private static string NormalizeParameterValue(string value)
+        {
+            value = value.Trim();
+            while (value.Length >= 2 && value[0] == '(' && value[^1] == ')') value = value[1..^1].Trim();
+            if (value.StartsWith("N'", StringComparison.OrdinalIgnoreCase)) value = value[1..];
+            return value.Length >= 2 && value[0] == '\'' && value[^1] == '\''
+                ? value[1..^1].Replace("''", "'") : value;
         }
 
         private void DrawVerticalLine(double x, double height, Color color, string label)

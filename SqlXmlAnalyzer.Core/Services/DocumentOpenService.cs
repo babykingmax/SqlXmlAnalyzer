@@ -109,9 +109,20 @@ namespace SqlXmlAnalyzer.Core.Services
 
         public async Task<DocumentOpenResult> OpenAsync(
             string filePath,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            Action<AnalysisOperationState>? progress = null)
         {
-            InputRecognitionResult result = await _recognition.ReadFileAsync(filePath, cancellationToken: cancellationToken);
+            InputRecognitionResult result;
+            try
+            {
+                result = _recognition is InputRecognitionService recognition
+                    ? await Task.Run(() => recognition.Load(filePath, cancellationToken, progress), cancellationToken).ConfigureAwait(false)
+                    : await _recognition.ReadFileAsync(filePath, cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                result = new(InputStatus.Cancelled, AnalysisDocumentKind.Unknown, null, "INPUT_CANCELLED", "读取已取消。");
+            }
 
             return new DocumentOpenResult(
                 result.Kind,

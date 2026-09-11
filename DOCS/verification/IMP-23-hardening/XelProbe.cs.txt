@@ -1,0 +1,41 @@
+using System.Text.Json;
+using System.Xml.Linq;
+using SqlXmlAnalyzer.Core.Services;
+
+var paths = Directory.GetFiles(args[0], "*.xel").OrderBy(p => p, StringComparer.Ordinal).ToArray();
+if (paths.Length != 2) throw new InvalidOperationException("Expected two independently captured XEL files.");
+var service = new XelSearchService();
+var catalog = await service.LoadAsync([], paths, default);
+var all = service.Search(catalog, new());
+if (catalog.Events.Count != 2 || catalog.SkippedRecords < 2 || all.Groups.Count != 1)
+    throw new InvalidOperationException($"Unexpected scope: {all.Summary}; groups: {string.Join(";", all.Groups.Select(g => g.Description))}");
+if (all.Events.Any(row => row.IsDuplicate || row.Entry.Event.Location?.ByteOffset == null || row.Entry.Event.Location?.ByteLength == null))
+    throw new InvalidOperationException("Capture identity missing or distinct events wrongly marked duplicate.");
+var first = all.Events[0].Entry;
+var filtered = service.Search(catalog, new(first.Event.CapturedAt, first.Event.CapturedAt, Object: "DeadlockFixture", Text: "UPDATE", DisplayOffset: TimeSpan.FromHours(8)));
+if (filtered.Events.Count != 1 || !ReferenceEquals(filtered.Events[0].Entry, first)) throw new InvalidOperationException("Real XEL source trace or filter failed.");
+foreach (var entry in catalog.Events) entry.ValidateSource();
+var databaseChecks = catalog.Sources.Select(source =>
+{
+    string database = source.Input.Deadlocks[0].Document.Descendants("process").Attributes("currentdbname").First().Value;
+    int matches = service.Search(service.Build([source]), new(Database: database)).Events.Count;
+    if (matches != 1) throw new InvalidOperationException("Captured currentdbname must match the database filter.");
+    return new { File = Path.GetFileName(source.Path), Matches = matches };
+}).ToArray();
+var bytes = await File.ReadAllBytesAsync(paths[0]);
+var damaged = Path.Combine(args[0], "damaged.input");
+await File.WriteAllBytesAsync(damaged, bytes.Take(12).ToArray());
+var bad = await new SqlXmlAnalyzer.Core.XelReader().ReadDocumentAsync(damaged);
+if (bad.Status != InputStatus.Invalid || bad.Deadlocks.Count != 0) throw new InvalidOperationException("Truncated XEL should be invalid and contain no events.");
+var report = new
+{
+    Passed = true,
+    Capture = "SQL Server 2019 15.0.4382.1 LocalDB, isolated synthetic row-update deadlocks, two separate event_file captures",
+    Files = catalog.Sources.Select(s => new { Name = Path.GetFileName(s.Path), s.Input.Envelope!.SourceHash, s.Input.Envelope.SourceBytes, Status = s.Input.Status.ToString(), Records = s.Input.XelRecords.Count, Events = s.Input.Deadlocks.Count }),
+    Events = all.Events.Select(r => new { r.Entry.Event.Index, r.Entry.Event.PayloadIndex, r.Entry.Event.Location!.ByteOffset, r.Entry.Event.Location.ByteLength, r.OriginalTime, r.IsDuplicate }),
+    Groups = all.Groups.Count, catalog.SkippedRecords, InclusiveTimeFilterMatches = filtered.Events.Count, DatabaseNameChecks = databaseChecks,
+    OffsetDisplay = filtered.Events[0].DisplayTime, CorruptInputStatus = bad.Status.ToString()
+};
+Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(args[1]))!);
+await File.WriteAllTextAsync(args[1], JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
+Console.WriteLine($"PASS: {all.Summary}");

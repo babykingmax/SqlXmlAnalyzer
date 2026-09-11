@@ -1,0 +1,20 @@
+[
+  {
+    "Configuration": "debug",
+    "Total": 3066,
+    "Passed": 3066,
+    "Failed": 0,
+    "NotExecuted": 0,
+    "ResultPath": "E:\\SqlXmlAnalyzer\\.tmp.plan-ui-test-results\\plan-graph-polish-debug.trx",
+    "Sha256": "56B53ADDD4772926A55C5B1AA8E8DD9A1A8CE70E4F5AE16D4E1793DEC795A447"
+  },
+  {
+    "Configuration": "release",
+    "Total": 3066,
+    "Passed": 3066,
+    "Failed": 0,
+    "NotExecuted": 0,
+    "ResultPath": "E:\\SqlXmlAnalyzer\\.tmp.plan-ui-test-results\\plan-graph-polish-release.trx",
+    "Sha256": "C7C3D58A0373A44AF6C2D41CA8DE0966EB5565C5495E79C6F62B3FA1465E8BF6"
+  }
+]

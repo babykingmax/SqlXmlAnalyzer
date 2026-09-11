@@ -1,0 +1,8 @@
+{
+  "LogPolicyVerified": true,
+  "NativeDumps": 1,
+  "Passed": true,
+  "UnknownStringException": true,
+  "Configuration": "Debug",
+  "CoreSha256": "B0B78C26AAE4B43374076F6AB2972B62D195595B8D6A9A77ACAD185B9509CD26"
+}

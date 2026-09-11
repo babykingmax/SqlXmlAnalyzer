@@ -1,0 +1,13 @@
+{
+  "Cpu": {
+    "Name": "AMD Ryzen 9 9900X 12-Core Processor            ",
+    "NumberOfCores": 12,
+    "NumberOfLogicalProcessors": 24
+  },
+  "Computer": {
+    "TotalPhysicalMemory": 100562231296
+  },
+  "OS": "Microsoft Windows NT 10.0.26200.0",
+  "Dotnet": "10.0.400",
+  "CapturedAtUtc": "2026-09-10T05:57:17.4426510Z"
+}

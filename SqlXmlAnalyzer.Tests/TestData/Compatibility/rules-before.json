@@ -1,0 +1,172 @@
+[
+  {
+    "RuleId": "RULE_001_IMPLICIT_CONV",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_002_KEY_LOOKUP",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_003_PARAM_SNIFFING",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_004_ESTIMATE_MISMATCH",
+    "Version": "2.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_006_RESIDUAL_PREDICATE",
+    "Version": "2.0.0",
+    "DefaultSeverity": "Info"
+  },
+  {
+    "RuleId": "RULE_008_SPILL_DETECTION",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_009_PARALLEL_SKEW",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_011_UDF_TVF",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_012_NESTED_LOOPS_HIGH_EXEC",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Critical"
+  },
+  {
+    "RuleId": "RULE_013_ANTI_PATTERN",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_014_SERIAL_PLAN_REASON",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Info"
+  },
+  {
+    "RuleId": "RULE_015_LOCAL_VARIABLES",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_016_ZERO_ROW_ACTUALS",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_017_LARGE_MEMORY_GRANT",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_018_OPTIMIZER_ABORT",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Critical"
+  },
+  {
+    "RuleId": "RULE_019_CACHE_RECOMPILE",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_020_MISSING_INDEX",
+    "Version": "2.1.1",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_021_TABLE_SCAN",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_022_HIGH_COST_OP",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_023_RUNNING_TOTAL_PATTERN",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Critical"
+  },
+  {
+    "RuleId": "RULE_024_SCALAR_SUBQUERY_PATTERN",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_025_QUERY_REWRITE",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_026_IMPLICIT_CONV_DOC",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_027_PARAM_SNIFFING_DOC",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_028_STATS_USAGE",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_029_MEMORY_GRANT_DOC",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_030_CARDINALITY_ERROR",
+    "Version": "2.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_031_KEY_LOOKUP_OP",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_032_MEMORY_SPILL",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_033_THREAD_SKEW",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_034_RESIDUAL_PRED_OP",
+    "Version": "2.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_035_SARGABLE_INDEX_RECOMMENDATION",
+    "Version": "2.1.1",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_036_WAIT_STATS",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Warning"
+  },
+  {
+    "RuleId": "RULE_037_RESOURCE_SEMAPHORE",
+    "Version": "1.0.0",
+    "DefaultSeverity": "Critical"
+  }
+]

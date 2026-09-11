@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using SqlXmlAnalyzer.Core.Parsers;
 using SqlXmlAnalyzer.ViewModels;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -21,6 +23,7 @@ namespace SqlXmlAnalyzer.Services
         private readonly Control _playbackControl;
         private readonly TabControl _mainTabControl;
         private readonly Action<DeadlockGraph> _drawGraph;
+        private readonly Func<DeadlockGraph, CancellationToken, Task>? _drawGraphAsync;
         private readonly EventHandler _playbackStepChangedHandler;
         private readonly Dictionary<Core.Services.DeadlockPlaybackEdgeKey, Border> _stepBadges;
 
@@ -34,8 +37,10 @@ namespace SqlXmlAnalyzer.Services
             TabControl mainTabControl,
             Action<DeadlockGraph> drawGraph,
             EventHandler playbackStepChangedHandler,
-            Dictionary<Core.Services.DeadlockPlaybackEdgeKey, Border> stepBadges)
+            Dictionary<Core.Services.DeadlockPlaybackEdgeKey, Border> stepBadges,
+            Func<DeadlockGraph, CancellationToken, Task>? drawGraphAsync = null)
         {
+            _drawGraphAsync = drawGraphAsync;
             _viewModel = viewModel
                 ?? throw new ArgumentNullException(nameof(viewModel));
             _processesList = processesList
@@ -58,7 +63,16 @@ namespace SqlXmlAnalyzer.Services
                 ?? throw new ArgumentNullException(nameof(stepBadges));
         }
 
-        public DeadlockAnalysisUiResult Apply(Core.Services.DeadlockDocumentResult documentResult)
+        public async Task<DeadlockAnalysisUiResult> ApplyAsync(Core.Services.DeadlockDocumentResult documentResult, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            var result = Apply(documentResult, _drawGraphAsync == null);
+            if (_drawGraphAsync != null) await _drawGraphAsync(documentResult.Analysis.Graph, token);
+            token.ThrowIfCancellationRequested();
+            return result;
+        }
+
+        public DeadlockAnalysisUiResult Apply(Core.Services.DeadlockDocumentResult documentResult, bool drawGraph = true)
         {
             ArgumentNullException.ThrowIfNull(documentResult);
 
@@ -83,7 +97,7 @@ namespace SqlXmlAnalyzer.Services
             }
 
             _stepBadges.Clear();
-            _drawGraph(analysis.Graph);
+            if (drawGraph) _drawGraph(analysis.Graph);
             _mainTabControl.SelectedIndex = 0;
 
             foreach (string warning in analysis.Warnings)

@@ -16,6 +16,8 @@ namespace SqlXmlAnalyzer.Services
         private readonly Func<string, string, string, Task> _analyzeDeadlockXmlAsync;
         private readonly Func<DeadlockInput, InputRecognitionResult?, string, Task>? _selectEventAsync;
         private string _sourceFilePath = string.Empty;
+        private bool _suppressSelection;
+        private Views.XelSearchWindow? _searchWindow;
         public InputRecognitionResult? CurrentInput { get; private set; }
 
         public XelDeadlockUiActionService(
@@ -88,6 +90,7 @@ namespace SqlXmlAnalyzer.Services
 
         public async Task HandleSelectionChangedAsync()
         {
+            if (_suppressSelection) return;
             try
             {
                 if (_selector.SelectedItem is DeadlockInput input)
@@ -109,6 +112,33 @@ namespace SqlXmlAnalyzer.Services
             }
         }
 
+        public async Task OpenSearchAsync(Window owner)
+        {
+            try
+            {
+                if (_searchWindow != null) { _searchWindow.Activate(); return; }
+                var model = new ViewModels.XelSearchViewModel(SelectSearchEventAsync);
+                _searchWindow = new Views.XelSearchWindow(model) { Owner = owner };
+                _searchWindow.Closed += (_, _) => _searchWindow = null;
+                _searchWindow.Show();
+                await model.InitializeAsync(CurrentInput == null ? null : new(_sourceFilePath, CurrentInput));
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(owner, Core.Diagnostics.ExceptionPolicy.Describe(exception, "IMP23.XelSearch.Open"), "XEL 检索失败");
+            }
+        }
+
+        internal async Task SelectSearchEventAsync(XelSearchEvent entry)
+        {
+            entry.ValidateSource();
+            _suppressSelection = true;
+            try { ShowXmlEvents(entry.Source.Input.Deadlocks, entry.Source.Path, entry.Source.Input, entry.Event); }
+            finally { _suppressSelection = false; }
+            if (_selectEventAsync != null) await _selectEventAsync(entry.Event, entry.Source.Input, entry.Source.Path);
+            else await _analyzeDeadlockXmlAsync(entry.Event.Document.ToString(), entry.Source.Path, entry.Event.DisplayName);
+        }
+
         public void ShowDocumentEvents(InputRecognitionResult input, string source)
         {
             if (!input.HasUsableContent) { ClearEvents(); return; }
@@ -116,7 +146,15 @@ namespace SqlXmlAnalyzer.Services
             _selector.ToolTip = input.Status == InputStatus.Partial ? InputReadPresentation.Describe(input) : null;
         }
 
-        public void ShowXmlEvents(IReadOnlyList<DeadlockInput> events, string source, InputRecognitionResult? input = null)
+        public void ShowDocumentEventsWithoutAnalysis(InputRecognitionResult input, string source)
+        {
+            bool previous = _suppressSelection;
+            _suppressSelection = true;
+            try { ShowDocumentEvents(input, source); }
+            finally { _suppressSelection = previous; }
+        }
+
+        public void ShowXmlEvents(IReadOnlyList<DeadlockInput> events, string source, InputRecognitionResult? input = null, DeadlockInput? selected = null)
         {
             ClearEvents();
             CurrentInput = input;
@@ -125,7 +163,8 @@ namespace SqlXmlAnalyzer.Services
             _selector.ItemsSource = events;
             _selector.Visibility = Visibility.Visible;
             _mainTabControl.SelectedIndex = 0;
-            _selector.SelectedIndex = 0;
+            if (selected == null) _selector.SelectedIndex = 0;
+            else _selector.SelectedItem = selected;
         }
 
         public void ClearEvents()

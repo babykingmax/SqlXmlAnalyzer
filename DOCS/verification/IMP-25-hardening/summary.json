@@ -1,0 +1,606 @@
+{
+  "task": "IMP-25 review fixes: restored sidebar extent, eligible focus cycling and operator details",
+  "capturedAtUtc": "2026-09-10T05:54:30.9740680Z",
+  "gitHead": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+  "workspace": "Current uncommitted workspace; includes prerequisite IMP-23/IMP-24 work.",
+  "configurations": [
+    {
+      "configuration": "Debug",
+      "tests": {
+        "failed": 0,
+        "skipped": 0,
+        "passed": 2597
+      },
+      "build": {
+        "errors": 0,
+        "warnings": 0,
+        "logSha256": "EB8932B1F2E4B82A1CBB761DD7C045DBBBF011D9A4FAFDD494680CB4ED30CE7B"
+      },
+      "trx": {
+        "sha256": "F5592D9E3AAB4C9583BAAF9B3E6270312B1DED6146705733BA6B7B4F2DA6493C",
+        "path": "full-Debug.trx"
+      },
+      "wpf": {
+        "bindingErrors": 0,
+        "sha256": "7ECDAAA68D1961201B31686BC358C8D2560E371078E65457FA25B360FDB0C74F",
+        "path": "wpf-Debug/verification.json",
+        "combinations": 54
+      }
+    },
+    {
+      "configuration": "Release",
+      "tests": {
+        "failed": 0,
+        "skipped": 0,
+        "passed": 2597
+      },
+      "build": {
+        "errors": 0,
+        "warnings": 0,
+        "logSha256": "958203D636099F2D6D3C9310A9FA7BAF16ADEF1935AA6BF256F973AA75178AAD"
+      },
+      "trx": {
+        "sha256": "0A555CC9332B3599BD81971CF572E9A32F69B9FC87C76ACC70049394ABB07E23",
+        "path": "full-Release.trx"
+      },
+      "wpf": {
+        "bindingErrors": 0,
+        "sha256": "7ECDAAA68D1961201B31686BC358C8D2560E371078E65457FA25B360FDB0C74F",
+        "path": "wpf-Release/verification.json",
+        "combinations": 54
+      }
+    }
+  ],
+  "newTests": 22,
+  "sourceInputs": {
+    "count": 624,
+    "path": "source-inputs.json",
+    "sha256": "1533D9A44292C4506E5BE3546229DE429E6FA153C0FC47D4E6F90DBA60684A00"
+  },
+  "tooling": [
+    {
+      "sha256": "BA4FC0A4C006891BD28F598CF3C517FF3F1CDF218A021F02B43F5EA7585648A6",
+      "path": "WpfProbe.cs.txt"
+    },
+    {
+      "sha256": "9F3477B682EB994A0DC6DAE2440EE47838D58AB8057487E6F95BED7CFBE14F89",
+      "path": "Run-WpfProbe.ps1"
+    },
+    {
+      "sha256": "71244B06B749EC3C69FF9F10003A04B8E9C0578F9BD098BE895364E8C947D95D",
+      "path": "Write-Validation.ps1"
+    }
+  ],
+  "artifacts": [
+    {
+      "sha256": "747CE592551404F66450829B59D1E2888D6286318E0500C859DEFE3B1365975F",
+      "path": "wpf-Debug/compact-comparison-B-focus.png"
+    },
+    {
+      "sha256": "2D9D3835C608EDEC6885F12BFF818154B97755F384E813DF6148E8322B11EE8C",
+      "path": "wpf-Debug/compact-details-AutomationInvoke.png"
+    },
+    {
+      "sha256": "7884D34E6CBDBA5BE3B6F4D24474EFE9036F8F3EBB15E5012EB736152E31999C",
+      "path": "wpf-Debug/compact-details-Enter.png"
+    },
+    {
+      "sha256": "2D9D3835C608EDEC6885F12BFF818154B97755F384E813DF6148E8322B11EE8C",
+      "path": "wpf-Debug/compact-details-MouseDoubleClick.png"
+    },
+    {
+      "sha256": "B60536830540C3390689666770EFC20AEE73081750B45B5BC283E2F5857DC6F9",
+      "path": "wpf-Debug/compact-F6-wrap.png"
+    },
+    {
+      "sha256": "192C52B6E3E63E92D5BF8739024E415C27E3E04386DBE7D663B91E80993FC4B9",
+      "path": "wpf-Debug/compact-report-save-focus.png"
+    },
+    {
+      "sha256": "7A3BFE315A0D4E026E592BA007EC02B9A79C1376A43C63558CAB2A2EBCD32FB2",
+      "path": "wpf-Debug/dark-1280x720-125-Compare.png"
+    },
+    {
+      "sha256": "EC1456A3E337A41888F9A290E148A340EFFF1EDA40C071790951256C49974468",
+      "path": "wpf-Debug/dark-1280x720-125-Deadlock.png"
+    },
+    {
+      "sha256": "D2BDE603C288BB36F5D33741C7C14C9F06172977F977CA39EC582CF673397FF7",
+      "path": "wpf-Debug/dark-1280x720-125-Plan.png"
+    },
+    {
+      "sha256": "961C4F4B11078F6A430CF2F2B8BF413B7549C284A86D97DC045534CC94CC24EC",
+      "path": "wpf-Debug/dark-1280x720-150-Compare.png"
+    },
+    {
+      "sha256": "A34A2E26588F16A9AAE647B3C315238BE8FA6232F5411B98F8E8B9419F7E0F4E",
+      "path": "wpf-Debug/dark-1280x720-150-Deadlock.png"
+    },
+    {
+      "sha256": "BEAAFD3A6BBAE85A556052395B34DC9BAA0D9926E3C484F70D04A919C7CFCB01",
+      "path": "wpf-Debug/dark-1280x720-150-Plan.png"
+    },
+    {
+      "sha256": "14314391221A0870AC07664605CFFE42E9401C808D481386E236FB7F41ABA7A4",
+      "path": "wpf-Debug/dark-1280x720-200-Compare.png"
+    },
+    {
+      "sha256": "823172A44B1D1DAC18C1F34114B98AD306343BE2840BC697AEBE2952B7AB7373",
+      "path": "wpf-Debug/dark-1280x720-200-Deadlock.png"
+    },
+    {
+      "sha256": "D48B88A9368ED8C34BE5DF8DCB4288F20AC2707C31B12516F081636669910217",
+      "path": "wpf-Debug/dark-1280x720-200-Plan.png"
+    },
+    {
+      "sha256": "E16681078C9945CD499F9D926DE5B2DF738C02C88F3D2C282D87B0C3441E732E",
+      "path": "wpf-Debug/dark-1366x768-125-Compare.png"
+    },
+    {
+      "sha256": "B45CCFB4E09A1936373848B36B3BEC630E896A3EED184E2AF5A72852FC1FC3E3",
+      "path": "wpf-Debug/dark-1366x768-125-Deadlock.png"
+    },
+    {
+      "sha256": "8CF7A1EA6DE441DA8AF3BB2027E279BA62BF4CCF1814274CDFDDA86EEDCD1F32",
+      "path": "wpf-Debug/dark-1366x768-125-Plan.png"
+    },
+    {
+      "sha256": "01F2D5A4FA9F7AF484D26577FDF43A8A9B6C16CC31DF19DDB03EEE440F8F0AF2",
+      "path": "wpf-Debug/dark-1366x768-150-Compare.png"
+    },
+    {
+      "sha256": "DDDC48954CB54E70C0B5C90E26959949F13B91FA6F5A9140384BEF9ABCDAB7A7",
+      "path": "wpf-Debug/dark-1366x768-150-Deadlock.png"
+    },
+    {
+      "sha256": "3661F423C818168105E6BFDBFC4467A3BB3154CC3628EE86E0B7E0D2D6F83F14",
+      "path": "wpf-Debug/dark-1366x768-150-Plan.png"
+    },
+    {
+      "sha256": "84B14CB3544CC16068996F194CA64F5D571E55805DA7C258577BB9B05B858238",
+      "path": "wpf-Debug/dark-1366x768-200-Compare.png"
+    },
+    {
+      "sha256": "2CAF7D0501D6D135CD2A507354422F69650128C66BDF7B40CF3DC4499F0D631D",
+      "path": "wpf-Debug/dark-1366x768-200-Deadlock.png"
+    },
+    {
+      "sha256": "F37D92DAC1038A0FE5F55E259B2E99AAE6A9F8CB58D7A5B9A97C4F0294C64F8B",
+      "path": "wpf-Debug/dark-1366x768-200-Plan.png"
+    },
+    {
+      "sha256": "76D1B4945BF3366A9176F4F7C90075612583AC3538100A97CED08F822C88F836",
+      "path": "wpf-Debug/dark-1920x1080-125-Compare.png"
+    },
+    {
+      "sha256": "AD8B481EAE429193EF31AF8D282B4BCD8B7D558C18A6DE4115EF7B8966BDBD9B",
+      "path": "wpf-Debug/dark-1920x1080-125-Deadlock.png"
+    },
+    {
+      "sha256": "94DBA334D8340BE59B02EAD02E831B0C508F3F289ACE6B123A3587353604CAFE",
+      "path": "wpf-Debug/dark-1920x1080-125-Plan.png"
+    },
+    {
+      "sha256": "75CC929D1DDC6935CE48782BE0C58900CED8871E1E0902AA7CDB1EC3D06646C8",
+      "path": "wpf-Debug/dark-1920x1080-150-Compare.png"
+    },
+    {
+      "sha256": "7734A3DF23B2611E1F56374ADDB7449C7C7D5F46036312FD3AB97873B995560A",
+      "path": "wpf-Debug/dark-1920x1080-150-Deadlock.png"
+    },
+    {
+      "sha256": "4F208E72E278A301052F3FB44CFFA6B4792414D5D9DBCE5DA80156C87396D564",
+      "path": "wpf-Debug/dark-1920x1080-150-Plan.png"
+    },
+    {
+      "sha256": "DAA5DE0B5A315990408592C7F95E43B3ED071ACFAFEAC1B8D3C6F9B720330750",
+      "path": "wpf-Debug/dark-1920x1080-200-Compare.png"
+    },
+    {
+      "sha256": "56D57F1F7AD3725E48110B0C4040F1E3F11E542FAB9F7F0EBD7E2DE06E6C8078",
+      "path": "wpf-Debug/dark-1920x1080-200-Deadlock.png"
+    },
+    {
+      "sha256": "B66FE8BC7AB08E7A80BAE9B9C8FFB6993350FAB7E3A4D33595DC0D647C75870C",
+      "path": "wpf-Debug/dark-1920x1080-200-Plan.png"
+    },
+    {
+      "sha256": "794CFFE63FF701A380BEB7143F53D0D6F7A5446BF2A477C0DA21966081BFF38B",
+      "path": "wpf-Debug/fixture.sqlplan"
+    },
+    {
+      "sha256": "5BC9649540283CC1AC6FBE46E6541D02859B000F687B35595AF5470A10A2FA55",
+      "path": "wpf-Debug/initial.png"
+    },
+    {
+      "sha256": "6F00392DC0ACD9FA80631F0B07DB7D5DEE0889E38FE38A067A561D6DA3DE4140",
+      "path": "wpf-Debug/keyboard-report.html"
+    },
+    {
+      "sha256": "F332DC27C8139FBA39D7FBBD56BAF9B69D3B60EC3D36649733B182223598679A",
+      "path": "wpf-Debug/light-1280x720-125-Compare.png"
+    },
+    {
+      "sha256": "48E516A8672A2784F9BA3E7A6A344936FC6ADEDF412B979E6F82181DD8197D06",
+      "path": "wpf-Debug/light-1280x720-125-Deadlock.png"
+    },
+    {
+      "sha256": "216427006780FA82E280507F1FC943CA55A8E9AA73FBDC016D5A95446CE9E2F1",
+      "path": "wpf-Debug/light-1280x720-125-Plan.png"
+    },
+    {
+      "sha256": "BB3547B642C1A05DF4E613881C93311A41A4C8C545C92F9C4C3387DE008298AD",
+      "path": "wpf-Debug/light-1280x720-150-Compare.png"
+    },
+    {
+      "sha256": "E82F68DE6392F63A178B3E27C481E03E7165C2A58553B3A33317CA03783ECE61",
+      "path": "wpf-Debug/light-1280x720-150-Deadlock.png"
+    },
+    {
+      "sha256": "B3E461555F16C38BAE00E151AC7472B1717BE93586E9159927C38DD8CCA828B2",
+      "path": "wpf-Debug/light-1280x720-150-Plan.png"
+    },
+    {
+      "sha256": "98DB4CA9DCC7F8ACFD9FEBC16CB6BE23A1481EF4182C3D58187230FA7BEDE432",
+      "path": "wpf-Debug/light-1280x720-200-Compare.png"
+    },
+    {
+      "sha256": "F0A98C36245278E2B513792308819001C326684FF677682866901CA0D6E5C559",
+      "path": "wpf-Debug/light-1280x720-200-Deadlock.png"
+    },
+    {
+      "sha256": "BEBA0B87BAF5A45589DE837F835B741C2F0543327355DCE8E8B1789758AE10B1",
+      "path": "wpf-Debug/light-1280x720-200-Plan.png"
+    },
+    {
+      "sha256": "1F2575FEE73AB9627F4044381DB52BF276C3CC9D65527CE248045E5AA8801FCF",
+      "path": "wpf-Debug/light-1366x768-125-Compare.png"
+    },
+    {
+      "sha256": "8CCA17D99102C5FCBBAEE0609EDD8E3F43F3F27F35631FD9E85DC02D8D253AAB",
+      "path": "wpf-Debug/light-1366x768-125-Deadlock.png"
+    },
+    {
+      "sha256": "A335F713358067B0F0C4E57AAE2E0DD42C3C31A0D74B8A6272EA0575225DC9E5",
+      "path": "wpf-Debug/light-1366x768-125-Plan.png"
+    },
+    {
+      "sha256": "7B003FB93F9FC216793E0CBCCCBAD3A249A1EC6C29911DBE06BA25360CB06A18",
+      "path": "wpf-Debug/light-1366x768-150-Compare.png"
+    },
+    {
+      "sha256": "BFABDC4AB8699D80B8E32949C3CA8272269DB5338E6BA67331222055E4DA02C4",
+      "path": "wpf-Debug/light-1366x768-150-Deadlock.png"
+    },
+    {
+      "sha256": "A36CBB0BC2E84FB09DF45F574651895B4329767C40583EA7AEF031BDF8345078",
+      "path": "wpf-Debug/light-1366x768-150-Plan.png"
+    },
+    {
+      "sha256": "DFC6A13C4C3306856591F155080490E01A91CC0599A1CEA17DF1AC5A57632D10",
+      "path": "wpf-Debug/light-1366x768-200-Compare.png"
+    },
+    {
+      "sha256": "A70E8756E01270D8B58CD6D1A1C986A05793A89577F18C457B5768C1FAF74C83",
+      "path": "wpf-Debug/light-1366x768-200-Deadlock.png"
+    },
+    {
+      "sha256": "B6074B59244186EAF018F1D98CAAD6D02470E2DE3077B691412F1B068F5DCA64",
+      "path": "wpf-Debug/light-1366x768-200-Plan.png"
+    },
+    {
+      "sha256": "E78A3C854A04E763E8823B0FD05073A1F811B4C6DC77D31D722DE71A5B8893BF",
+      "path": "wpf-Debug/light-1920x1080-125-Compare.png"
+    },
+    {
+      "sha256": "CE63934161286495CC5D60D258CD2E32C1A40FC4219E34E45C7D468A722A35FD",
+      "path": "wpf-Debug/light-1920x1080-125-Deadlock.png"
+    },
+    {
+      "sha256": "A994D581EF0294E45F607186A65217256009EE846D3116D2F1301171D810E425",
+      "path": "wpf-Debug/light-1920x1080-125-Plan.png"
+    },
+    {
+      "sha256": "6B203AADFF05566B79A06FAB63BE2E842114FF7938CFC90F7BD492338A7453C0",
+      "path": "wpf-Debug/light-1920x1080-150-Compare.png"
+    },
+    {
+      "sha256": "96F4229E83FAC27E9FB715CA651AE325C5E2A2DD49976CCFF9CBE774B9AB8487",
+      "path": "wpf-Debug/light-1920x1080-150-Deadlock.png"
+    },
+    {
+      "sha256": "F6714992FBD1E5B7E522BFAEF3F44961D8B6085725D0FCEF6FD4AEDD2AD31CB3",
+      "path": "wpf-Debug/light-1920x1080-150-Plan.png"
+    },
+    {
+      "sha256": "C55109D0A9A1B73349724416DC25BEBB391973AE275F55449EBEF362DF780823",
+      "path": "wpf-Debug/light-1920x1080-200-Compare.png"
+    },
+    {
+      "sha256": "04CE13C60C622B1206CD8645A87DBEBED63AE9FA0A05651FC96122BB472D4AA2",
+      "path": "wpf-Debug/light-1920x1080-200-Deadlock.png"
+    },
+    {
+      "sha256": "055CF03FF78B18E125A81CA0CC9FD8A4EA984D04711CBCD568D24CE867BA8774",
+      "path": "wpf-Debug/light-1920x1080-200-Plan.png"
+    },
+    {
+      "sha256": "29E2640E14D6098CFD2DD5804887EB5165C2ACD79E0577CFACCC70805B6E9D90",
+      "path": "wpf-Debug/restored-sidebar-0.png"
+    },
+    {
+      "sha256": "CB72AB2927943E7F5E17CAC8A069D9CC703268B3EE3982D40E0AC304DA030274",
+      "path": "wpf-Debug/restored-sidebar-4.png"
+    },
+    {
+      "sha256": "7ECDAAA68D1961201B31686BC358C8D2560E371078E65457FA25B360FDB0C74F",
+      "path": "wpf-Debug/verification.json"
+    },
+    {
+      "sha256": "747CE592551404F66450829B59D1E2888D6286318E0500C859DEFE3B1365975F",
+      "path": "wpf-Release/compact-comparison-B-focus.png"
+    },
+    {
+      "sha256": "2D9D3835C608EDEC6885F12BFF818154B97755F384E813DF6148E8322B11EE8C",
+      "path": "wpf-Release/compact-details-AutomationInvoke.png"
+    },
+    {
+      "sha256": "7884D34E6CBDBA5BE3B6F4D24474EFE9036F8F3EBB15E5012EB736152E31999C",
+      "path": "wpf-Release/compact-details-Enter.png"
+    },
+    {
+      "sha256": "2D9D3835C608EDEC6885F12BFF818154B97755F384E813DF6148E8322B11EE8C",
+      "path": "wpf-Release/compact-details-MouseDoubleClick.png"
+    },
+    {
+      "sha256": "B60536830540C3390689666770EFC20AEE73081750B45B5BC283E2F5857DC6F9",
+      "path": "wpf-Release/compact-F6-wrap.png"
+    },
+    {
+      "sha256": "192C52B6E3E63E92D5BF8739024E415C27E3E04386DBE7D663B91E80993FC4B9",
+      "path": "wpf-Release/compact-report-save-focus.png"
+    },
+    {
+      "sha256": "7A3BFE315A0D4E026E592BA007EC02B9A79C1376A43C63558CAB2A2EBCD32FB2",
+      "path": "wpf-Release/dark-1280x720-125-Compare.png"
+    },
+    {
+      "sha256": "EC1456A3E337A41888F9A290E148A340EFFF1EDA40C071790951256C49974468",
+      "path": "wpf-Release/dark-1280x720-125-Deadlock.png"
+    },
+    {
+      "sha256": "D5A90559D6624ED4E9A50BBE4E5CBC4619A26A088BAC6818287C81E744156CD1",
+      "path": "wpf-Release/dark-1280x720-125-Plan.png"
+    },
+    {
+      "sha256": "961C4F4B11078F6A430CF2F2B8BF413B7549C284A86D97DC045534CC94CC24EC",
+      "path": "wpf-Release/dark-1280x720-150-Compare.png"
+    },
+    {
+      "sha256": "A34A2E26588F16A9AAE647B3C315238BE8FA6232F5411B98F8E8B9419F7E0F4E",
+      "path": "wpf-Release/dark-1280x720-150-Deadlock.png"
+    },
+    {
+      "sha256": "CE88AFA0E0ECF3D656EB02DD091358F07E5F15645B785748C1A8BA462C3C0453",
+      "path": "wpf-Release/dark-1280x720-150-Plan.png"
+    },
+    {
+      "sha256": "14314391221A0870AC07664605CFFE42E9401C808D481386E236FB7F41ABA7A4",
+      "path": "wpf-Release/dark-1280x720-200-Compare.png"
+    },
+    {
+      "sha256": "823172A44B1D1DAC18C1F34114B98AD306343BE2840BC697AEBE2952B7AB7373",
+      "path": "wpf-Release/dark-1280x720-200-Deadlock.png"
+    },
+    {
+      "sha256": "E61200C53E6E822F306C1F6B6C81ED29FA10C7F5FBF635D57B49222476CA2615",
+      "path": "wpf-Release/dark-1280x720-200-Plan.png"
+    },
+    {
+      "sha256": "E16681078C9945CD499F9D926DE5B2DF738C02C88F3D2C282D87B0C3441E732E",
+      "path": "wpf-Release/dark-1366x768-125-Compare.png"
+    },
+    {
+      "sha256": "B45CCFB4E09A1936373848B36B3BEC630E896A3EED184E2AF5A72852FC1FC3E3",
+      "path": "wpf-Release/dark-1366x768-125-Deadlock.png"
+    },
+    {
+      "sha256": "62CE789C72B95638BE1F139340684D7F9CDE0079E492625F092C9539763155C0",
+      "path": "wpf-Release/dark-1366x768-125-Plan.png"
+    },
+    {
+      "sha256": "01F2D5A4FA9F7AF484D26577FDF43A8A9B6C16CC31DF19DDB03EEE440F8F0AF2",
+      "path": "wpf-Release/dark-1366x768-150-Compare.png"
+    },
+    {
+      "sha256": "DDDC48954CB54E70C0B5C90E26959949F13B91FA6F5A9140384BEF9ABCDAB7A7",
+      "path": "wpf-Release/dark-1366x768-150-Deadlock.png"
+    },
+    {
+      "sha256": "721A9FB66F625750EEBADF9553815B29A81411668490BD673BE1B0DE985D0455",
+      "path": "wpf-Release/dark-1366x768-150-Plan.png"
+    },
+    {
+      "sha256": "84B14CB3544CC16068996F194CA64F5D571E55805DA7C258577BB9B05B858238",
+      "path": "wpf-Release/dark-1366x768-200-Compare.png"
+    },
+    {
+      "sha256": "2CAF7D0501D6D135CD2A507354422F69650128C66BDF7B40CF3DC4499F0D631D",
+      "path": "wpf-Release/dark-1366x768-200-Deadlock.png"
+    },
+    {
+      "sha256": "2AF12CE3914D79F3CC719C5A9E42DBC0137F6737164264F43313241673BCC7B7",
+      "path": "wpf-Release/dark-1366x768-200-Plan.png"
+    },
+    {
+      "sha256": "76D1B4945BF3366A9176F4F7C90075612583AC3538100A97CED08F822C88F836",
+      "path": "wpf-Release/dark-1920x1080-125-Compare.png"
+    },
+    {
+      "sha256": "AD8B481EAE429193EF31AF8D282B4BCD8B7D558C18A6DE4115EF7B8966BDBD9B",
+      "path": "wpf-Release/dark-1920x1080-125-Deadlock.png"
+    },
+    {
+      "sha256": "2E713401B60B4D17E2FEEA61F6DC38E10D526ED9ABB5D8DD6235A0D21E76BF1B",
+      "path": "wpf-Release/dark-1920x1080-125-Plan.png"
+    },
+    {
+      "sha256": "75CC929D1DDC6935CE48782BE0C58900CED8871E1E0902AA7CDB1EC3D06646C8",
+      "path": "wpf-Release/dark-1920x1080-150-Compare.png"
+    },
+    {
+      "sha256": "7734A3DF23B2611E1F56374ADDB7449C7C7D5F46036312FD3AB97873B995560A",
+      "path": "wpf-Release/dark-1920x1080-150-Deadlock.png"
+    },
+    {
+      "sha256": "4E6835DD73F02AF6509361963AB6B9B5126AD8A76E0883A4457C05F402C03DF2",
+      "path": "wpf-Release/dark-1920x1080-150-Plan.png"
+    },
+    {
+      "sha256": "DAA5DE0B5A315990408592C7F95E43B3ED071ACFAFEAC1B8D3C6F9B720330750",
+      "path": "wpf-Release/dark-1920x1080-200-Compare.png"
+    },
+    {
+      "sha256": "56D57F1F7AD3725E48110B0C4040F1E3F11E542FAB9F7F0EBD7E2DE06E6C8078",
+      "path": "wpf-Release/dark-1920x1080-200-Deadlock.png"
+    },
+    {
+      "sha256": "04EAAF8574A88AA218574490E7E577100D8E8664A6C0B1441ED9DCE628139DF8",
+      "path": "wpf-Release/dark-1920x1080-200-Plan.png"
+    },
+    {
+      "sha256": "794CFFE63FF701A380BEB7143F53D0D6F7A5446BF2A477C0DA21966081BFF38B",
+      "path": "wpf-Release/fixture.sqlplan"
+    },
+    {
+      "sha256": "5BC9649540283CC1AC6FBE46E6541D02859B000F687B35595AF5470A10A2FA55",
+      "path": "wpf-Release/initial.png"
+    },
+    {
+      "sha256": "FD47A9E7B537AEF2D16DB7FC067AC37B53F9ADC2494602E9A32A15FC3C69C776",
+      "path": "wpf-Release/keyboard-report.html"
+    },
+    {
+      "sha256": "F332DC27C8139FBA39D7FBBD56BAF9B69D3B60EC3D36649733B182223598679A",
+      "path": "wpf-Release/light-1280x720-125-Compare.png"
+    },
+    {
+      "sha256": "48E516A8672A2784F9BA3E7A6A344936FC6ADEDF412B979E6F82181DD8197D06",
+      "path": "wpf-Release/light-1280x720-125-Deadlock.png"
+    },
+    {
+      "sha256": "65672950645F1877A98A23A648A57ACE791A7960F24C62FDE9FCC3E331B8057F",
+      "path": "wpf-Release/light-1280x720-125-Plan.png"
+    },
+    {
+      "sha256": "BB3547B642C1A05DF4E613881C93311A41A4C8C545C92F9C4C3387DE008298AD",
+      "path": "wpf-Release/light-1280x720-150-Compare.png"
+    },
+    {
+      "sha256": "E82F68DE6392F63A178B3E27C481E03E7165C2A58553B3A33317CA03783ECE61",
+      "path": "wpf-Release/light-1280x720-150-Deadlock.png"
+    },
+    {
+      "sha256": "57BB0AB765E63D74B76992EED374AF7604CB7F466291296623EEF5AA561004A6",
+      "path": "wpf-Release/light-1280x720-150-Plan.png"
+    },
+    {
+      "sha256": "98DB4CA9DCC7F8ACFD9FEBC16CB6BE23A1481EF4182C3D58187230FA7BEDE432",
+      "path": "wpf-Release/light-1280x720-200-Compare.png"
+    },
+    {
+      "sha256": "F0A98C36245278E2B513792308819001C326684FF677682866901CA0D6E5C559",
+      "path": "wpf-Release/light-1280x720-200-Deadlock.png"
+    },
+    {
+      "sha256": "4919802CE934461D99E7102F6A65C65F52983F8A435090E3BE3B668668685E88",
+      "path": "wpf-Release/light-1280x720-200-Plan.png"
+    },
+    {
+      "sha256": "1F2575FEE73AB9627F4044381DB52BF276C3CC9D65527CE248045E5AA8801FCF",
+      "path": "wpf-Release/light-1366x768-125-Compare.png"
+    },
+    {
+      "sha256": "8CCA17D99102C5FCBBAEE0609EDD8E3F43F3F27F35631FD9E85DC02D8D253AAB",
+      "path": "wpf-Release/light-1366x768-125-Deadlock.png"
+    },
+    {
+      "sha256": "5DF3237DBC4571BEE24CF84381631D1B73C5F54C5F17B500EA5475A2F07749B2",
+      "path": "wpf-Release/light-1366x768-125-Plan.png"
+    },
+    {
+      "sha256": "7B003FB93F9FC216793E0CBCCCBAD3A249A1EC6C29911DBE06BA25360CB06A18",
+      "path": "wpf-Release/light-1366x768-150-Compare.png"
+    },
+    {
+      "sha256": "BFABDC4AB8699D80B8E32949C3CA8272269DB5338E6BA67331222055E4DA02C4",
+      "path": "wpf-Release/light-1366x768-150-Deadlock.png"
+    },
+    {
+      "sha256": "750B9B18E0A1A28C9980D3537BC3359C345A60F5297B614967023DDF39509D8A",
+      "path": "wpf-Release/light-1366x768-150-Plan.png"
+    },
+    {
+      "sha256": "DFC6A13C4C3306856591F155080490E01A91CC0599A1CEA17DF1AC5A57632D10",
+      "path": "wpf-Release/light-1366x768-200-Compare.png"
+    },
+    {
+      "sha256": "A70E8756E01270D8B58CD6D1A1C986A05793A89577F18C457B5768C1FAF74C83",
+      "path": "wpf-Release/light-1366x768-200-Deadlock.png"
+    },
+    {
+      "sha256": "05009FE6AB3DDAF001A64D814DC7DB01DBF5D55BD43BD56C8B60F32876B3152E",
+      "path": "wpf-Release/light-1366x768-200-Plan.png"
+    },
+    {
+      "sha256": "E78A3C854A04E763E8823B0FD05073A1F811B4C6DC77D31D722DE71A5B8893BF",
+      "path": "wpf-Release/light-1920x1080-125-Compare.png"
+    },
+    {
+      "sha256": "CE63934161286495CC5D60D258CD2E32C1A40FC4219E34E45C7D468A722A35FD",
+      "path": "wpf-Release/light-1920x1080-125-Deadlock.png"
+    },
+    {
+      "sha256": "699B2F346245A548DB9DE9B8B695F1C168D593B3624CB2BF3DAD13E650F4CFCA",
+      "path": "wpf-Release/light-1920x1080-125-Plan.png"
+    },
+    {
+      "sha256": "6B203AADFF05566B79A06FAB63BE2E842114FF7938CFC90F7BD492338A7453C0",
+      "path": "wpf-Release/light-1920x1080-150-Compare.png"
+    },
+    {
+      "sha256": "96F4229E83FAC27E9FB715CA651AE325C5E2A2DD49976CCFF9CBE774B9AB8487",
+      "path": "wpf-Release/light-1920x1080-150-Deadlock.png"
+    },
+    {
+      "sha256": "322012FF0AFC8441C8AE9AB1BAC029915EA5DD0FEF508080DAD44527906C9169",
+      "path": "wpf-Release/light-1920x1080-150-Plan.png"
+    },
+    {
+      "sha256": "C55109D0A9A1B73349724416DC25BEBB391973AE275F55449EBEF362DF780823",
+      "path": "wpf-Release/light-1920x1080-200-Compare.png"
+    },
+    {
+      "sha256": "04CE13C60C622B1206CD8645A87DBEBED63AE9FA0A05651FC96122BB472D4AA2",
+      "path": "wpf-Release/light-1920x1080-200-Deadlock.png"
+    },
+    {
+      "sha256": "19FDA5301FFB9AB9CB7E8852FC009A77991262505F8E05FD19752F6B90BEBBB3",
+      "path": "wpf-Release/light-1920x1080-200-Plan.png"
+    },
+    {
+      "sha256": "B67951441A4BF9CD7CE50D85AFA3148A3403FF581EFE0966A65B2D31B9264469",
+      "path": "wpf-Release/restored-sidebar-0.png"
+    },
+    {
+      "sha256": "7401769567EC38C6E0E494B21DE6256A98CBFC8BC912071CF9A7E13B789C5B76",
+      "path": "wpf-Release/restored-sidebar-4.png"
+    },
+    {
+      "sha256": "7ECDAAA68D1961201B31686BC358C8D2560E371078E65457FA25B360FDB0C74F",
+      "path": "wpf-Release/verification.json"
+    }
+  ],
+  "diagnosticEvidence": "Unit tests validate an actual Windows MiniDump, failed dump creation, deduplication, Debug four-level logging and Release Error/Critical-only logging.",
+  "manualAcceptance": "Pending: physical desktop keyboard and native file dialogs, actual monitor DPI switching/multiple monitors, screen-reader operation. Off-screen production WPF layout/commands do not substitute for these checks."
+}

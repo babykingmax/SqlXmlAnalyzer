@@ -9,6 +9,14 @@ namespace SqlXmlAnalyzer.Services
     {
         private readonly Core.Services.PlanGraphCollapseStateService _collapseStateService = new();
         private readonly Core.Services.PlanGraphVisibilityStateService _visibilityStateService = new();
+        private readonly Action<string> _appendLog;
+
+        public PlanGraphCollapseUiActionService(Action<string>? appendLog = null)
+        {
+            // The shared logger uses the user's application-data directory and
+            // isolates file/console failures. A diagnostic sink never owns UI state.
+            _appendLog = appendLog ?? Logger.Debug;
+        }
 
         public bool RevealNode(PlanNodeViewModel node, IReadOnlyList<PlanNodeViewModel> masterNodes,
             Action reapplyLayout, Action updateVisibility)
@@ -232,16 +240,14 @@ namespace SqlXmlAnalyzer.Services
 
         public void AppendCollapseLog(string text)
         {
-            string logDir = System.IO.Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Logs");
-            if (!System.IO.Directory.Exists(logDir))
+            try
             {
-                System.IO.Directory.CreateDirectory(logDir);
+                _appendLog(text);
             }
-
-            string logFile = System.IO.Path.Combine(logDir, "CollapseLog.txt");
-            System.IO.File.AppendAllText(logFile, text);
+            catch (Exception exception)
+            {
+                Logger.Error("Plan graph diagnostic logging failed; graph interaction remains available.", exception);
+            }
         }
 
         private static IReadOnlyList<Core.Services.PlanGraphCollapseStateNode> BuildCollapseStateNodes(

@@ -1,0 +1,64 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "006B6B39219CCD52C1F9809F8D831F19BA529F9805E53B6D9344F9F249EA00F6",
+  "StartedAtUtc": "2026-09-10T11:08:00.6568355Z",
+  "CompletedAtUtc": "2026-09-10T11:08:19.2032305Z",
+  "Results": [
+    {
+      "Path": "backup/bundle-manifest.json",
+      "Bytes": 8104,
+      "Sha256": "B2BF8C81DF012063C42E40A191851CD5C107D1665A0FE8ACE8F23D116B416D18"
+    },
+    {
+      "Path": "candidate-help.command.json",
+      "Bytes": 224,
+      "Sha256": "2BA4CCAEC75D4CB90FCBFFD87D1F60155C8FB9AFA32B1274F171F9639627CCEF"
+    },
+    {
+      "Path": "candidate-read.command.json",
+      "Bytes": 310,
+      "Sha256": "8D973583A8841828AC60B1823DAAF2410745EC1B00BC37F95A6EE84C566F7EEE"
+    },
+    {
+      "Path": "candidate-report.json",
+      "Bytes": 207431,
+      "Sha256": "8E0B6D4A16C0F8651935CCE50FE5A779F281023BCAE60915034ED80179554C27"
+    },
+    {
+      "Path": "candidate-scan.command.json",
+      "Bytes": 527,
+      "Sha256": "69D1EF1A68F9B6B18FBF2A9A70B44F6728F35413D1C6FD5C1503DB1E78C231AB"
+    },
+    {
+      "Path": "restored-help.command.json",
+      "Bytes": 252,
+      "Sha256": "ED33CB20279E441CDE1F996DA92BBBC029BF7D693584DC79B44583A7DC10BAB8"
+    },
+    {
+      "Path": "restored-read.command.json",
+      "Bytes": 338,
+      "Sha256": "F70F4587C71E82FCD4D7BE990D9B333F7E2048289D26DB4956A0FB15C1F527EB"
+    },
+    {
+      "Path": "restored-report.json",
+      "Bytes": 207432,
+      "Sha256": "8DE3426F1117C07D3458D86A8871081B242C44FA4B725707A0D3BD364FC4E5A1"
+    },
+    {
+      "Path": "restored-scan.command.json",
+      "Bytes": 554,
+      "Sha256": "D8D225E2D04BF13CB0146D06F5D12E2E45446C31EB6D91AC7FDF54D8A909FAF5"
+    },
+    {
+      "Path": "restored/bundle-manifest.json",
+      "Bytes": 8104,
+      "Sha256": "B2BF8C81DF012063C42E40A191851CD5C107D1665A0FE8ACE8F23D116B416D18"
+    },
+    {
+      "Path": "verification.json",
+      "Bytes": 1401,
+      "Sha256": "F3B1A440FAF4876A4EDFDC83283F26C81CD274737A2AA249F604AB084796C658"
+    }
+  ]
+}

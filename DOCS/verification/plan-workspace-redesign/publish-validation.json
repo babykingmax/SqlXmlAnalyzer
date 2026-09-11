@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-11T09:42:39.2034639+08:00",
+  "scope": "2026-09-11 documentation update: fresh local Debug/Release solution rebuilds and full tests; no new UI implementation or manual usability acceptance.",
+  "sourceContext": {
+    "baseCommit": "6690f150987dec2707f830c5a3ec9210b6bd1b4f",
+    "branch": "codex/imp-0-19-enhancements",
+    "workingTreeWasDirty": true,
+    "validationTarget": "Existing local working tree, including uncommitted source and test changes; not an isolated checkout of a published commit.",
+    "sourceChangesDuringDocumentationUpdate": false,
+    "assemblyHashTiming": "Collected after the completed runs; no claim of a pre-build source freeze."
+  },
+  "runs": [
+    {
+      "configuration": "Debug",
+      "build": {
+        "command": "dotnet build SqlXmlAnalyzer.sln -c Debug -m:1 -t:Rebuild -warnaserror -v minimal",
+        "exitCode": 0,
+        "warnings": 0,
+        "errors": 0,
+        "localLog": ".tmp.plan-ui-test-results/docs-publish-debug-build.log",
+        "logSha256": "5A82508BF2829709B062148B34DACF352C2BE940B3C6ABE088EDCB93C39B0E92"
+      },
+      "tests": {
+        "command": "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Debug --no-build --blame-hang --blame-hang-timeout 120s --logger 'trx;LogFileName=docs-publish-debug.trx' --results-directory .tmp.plan-ui-test-results -v minimal",
+        "exitCode": 0,
+        "total": 3066,
+        "passed": 3066,
+        "failed": 0,
+        "notExecuted": 0,
+        "startedAt": "2026-09-11T09:35:42.6685797+08:00",
+        "finishedAt": "2026-09-11T09:37:13.2093452+08:00",
+        "localTrx": ".tmp.plan-ui-test-results/docs-publish-debug.trx",
+        "trxSha256": "9987C44CB3FA2C1300A9851BC497D38B6958646DB17B2749D6C163CBB1A94745",
+        "localLog": ".tmp.plan-ui-test-results/docs-publish-debug-test.log",
+        "logSha256": "E204AC00B2D2690A4E6D246B992153BF1240B2650FF4787CA2BC549D8C23A94B"
+      },
+      "assembliesRecordedAfterTests": [
+        {
+          "path": "bin/Debug/net8.0-windows/SqlXmlAnalyzer.dll",
+          "sha256": "41DA7FD7605BB35C8D0F06B584F4D7B00040205DA6ECA341F311CBAA0A382F61"
+        },
+        {
+          "path": "SqlXmlAnalyzer.Tests/bin/Debug/net8.0-windows/SqlXmlAnalyzer.Tests.dll",
+          "sha256": "8DECE87E947F0FADEEE231D809A669DEA83B0D7BD741F8627BA50F85CBA3AD1D"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "build": {
+        "command": "dotnet build SqlXmlAnalyzer.sln -c Release -m:1 -t:Rebuild -warnaserror -v minimal",
+        "exitCode": 0,
+        "warnings": 0,
+        "errors": 0,
+        "localLog": ".tmp.plan-ui-test-results/docs-publish-release-build.log",
+        "logSha256": "4A2D18D29BEFC1FF83269F62EBC134AA5CDBB85C78331FEA2B20318B6448E408"
+      },
+      "tests": {
+        "command": "dotnet test SqlXmlAnalyzer.Tests/SqlXmlAnalyzer.Tests.csproj -c Release --no-build --blame-hang --blame-hang-timeout 120s --logger 'trx;LogFileName=docs-publish-release.trx' --results-directory .tmp.plan-ui-test-results -v minimal",
+        "exitCode": 0,
+        "total": 3066,
+        "passed": 3066,
+        "failed": 0,
+        "notExecuted": 0,
+        "startedAt": "2026-09-11T09:38:21.2459734+08:00",
+        "finishedAt": "2026-09-11T09:40:01.3896095+08:00",
+        "localTrx": ".tmp.plan-ui-test-results/docs-publish-release.trx",
+        "trxSha256": "053ADB2B617CE1B938D60B454379A29DA6154A642EC77824397748CB772CEFF7",
+        "localLog": ".tmp.plan-ui-test-results/docs-publish-release-test.log",
+        "logSha256": "A14A58CC4DBD4D6EBA87BC2F740D419D78B4E4680D7A350B45561E6D791E43D8"
+      },
+      "assembliesRecordedAfterTests": [
+        {
+          "path": "bin/Release/net8.0-windows/SqlXmlAnalyzer.dll",
+          "sha256": "50440EFF856E2E791C98ABBC9EFDDD9B90BEA6589D44589E89AAB57A1E1E9483"
+        },
+        {
+          "path": "SqlXmlAnalyzer.Tests/bin/Release/net8.0-windows/SqlXmlAnalyzer.Tests.dll",
+          "sha256": "6A306BE775D87B6C45943665EA9460A21966C7E885A544A8A9132BB3836D7B98"
+        }
+      ]
+    }
+  ],
+  "documentation": {
+    "markdownFileCount": 14,
+    "files": [
+      "README.md",
+      "Architecture.md",
+      "CHANGELOG.md",
+      "UserGuide.md",
+      "DOCS/README.md",
+      "DOCS/软件详细设计与问题分析.md",
+      "DOCS/UI改进和功能改善文档.md",
+      "DOCS/软件改善实施规划.md",
+      "DOCS/检索来源与验证记录.md",
+      "DOCS/plan-workspace-design-and-gap-assessment.md",
+      "DOCS/verification/plan-workspace-redesign/README.md",
+      "DOCS/verification/plan-workspace-redesign/graph-polish.md",
+      "DOCS/verification/plan-workspace-redesign/acceptance-matrix.md",
+      "DOCS/IMP-29完整构建测试与用户场景验收.md"
+    ],
+    "localLinkCheck": {
+      "checked": 589,
+      "missingCount": 0,
+      "missing": [],
+      "method": "Markdown inline local-link target existence; remote HTTP links and fragment anchors are outside this check."
+    }
+  },
+  "limitations": [
+    "No new WPF screenshot, physical DPI, hardware keyboard, screen reader or DBA task acceptance was performed in this documentation update.",
+    "Historical off-screen rendering evidence is linked by dated documents; geometry and binding checks do not establish readability or usability.",
+    "PW-01 through PW-06 remain open. The 0.1666% small-viewport fit remains a known readability failure.",
+    "The historical self-dump test stall is retained in graph-polish.md. Passing these reruns does not establish a fix.",
+    "No coverage report was generated. This record does not approve an application release.",
+    "Raw logs, TRX, DUMP and build outputs remain local; only this result summary is intended for documentation."
+  ],
+  "submissionScope": "User explicitly authorized all source, tests and related documentation; build outputs, temporary files and raw logs excluded.",
+  "cleanup": {
+    "requested": true,
+    "completed": false,
+    "rootTemporaryDirectoriesBefore": 121,
+    "rootTemporaryFilesBefore": 266,
+    "detachedWorktreeDeregistered": ".tmp.imp30-baseline",
+    "directoryRemoval": "git worktree remove returned Permission denied; residual directory remains",
+    "subsequentDeletion": "Automatic approval rejected both batch and verified literal-path Remove-Item commands: blocked by policy",
+    "generatedEvidenceRetained": true
+  }
+}

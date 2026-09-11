@@ -9,7 +9,7 @@ namespace SqlXmlAnalyzer.Tests
     public sealed class PlanGraphLayoutServiceTests
     {
         [Fact]
-        public void CalculateLayout_WhenHorizontal_PlacesRootAndChildrenLikePlanGraphControl()
+        public void CalculateLayout_WhenHorizontal_CentersParentBetweenOrderedInputs()
         {
             var service = new PlanGraphLayoutService();
             XDocument document = CreateThreeNodePlan();
@@ -28,16 +28,16 @@ namespace SqlXmlAnalyzer.Tests
 
             root.SubtreeWidth.Should().Be(2);
             root.X.Should().Be(50);
-            root.Y.Should().Be(130);
+            root.Y.Should().Be(106);
             childOne.SubtreeWidth.Should().Be(1);
-            childOne.X.Should().Be(330);
+            childOne.X.Should().Be(382);
             childOne.Y.Should().Be(50);
-            childTwo.X.Should().Be(330);
-            childTwo.Y.Should().Be(210);
+            childTwo.X.Should().Be(382);
+            childTwo.Y.Should().Be(162);
         }
 
         [Fact]
-        public void CalculateLayout_WhenVertical_PlacesRootAndChildrenLikePlanGraphControl()
+        public void CalculateLayout_WhenVertical_CentersParentBetweenOrderedInputs()
         {
             var service = new PlanGraphLayoutService();
             XDocument document = CreateThreeNodePlan();
@@ -55,12 +55,12 @@ namespace SqlXmlAnalyzer.Tests
             PlanGraphLayoutPosition childTwo = FindByNodeId(positions, "2");
 
             root.SubtreeWidth.Should().Be(2);
-            root.X.Should().Be(190);
+            root.X.Should().Be(192);
             root.Y.Should().Be(50);
             childOne.X.Should().Be(50);
-            childOne.Y.Should().Be(210);
-            childTwo.X.Should().Be(330);
-            childTwo.Y.Should().Be(210);
+            childOne.Y.Should().Be(202);
+            childTwo.X.Should().Be(334);
+            childTwo.Y.Should().Be(202);
         }
 
         [Fact]

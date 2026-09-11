@@ -6,6 +6,13 @@ namespace SqlXmlAnalyzer
 {
     public static class PhysicalOpToIconMapper
     {
+        static PhysicalOpToIconMapper()
+        {
+            // Shared icons must be immutable before graph preparation can run
+            // on a worker and the resulting models reach the UI dispatcher.
+            foreach (var entry in Mapping.Values) { entry.Geometry.Freeze(); entry.Brush.Freeze(); }
+            DefaultGeometry.Freeze(); DefaultBrush.Freeze();
+        }
         private static readonly Brush RedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
         private static readonly Brush BlueBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3498DB"));
         private static readonly Brush PurpleBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9B59B6"));

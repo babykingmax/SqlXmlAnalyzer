@@ -3,9 +3,9 @@ using System.Security.Principal;
 
 namespace SqlXmlAnalyzer.Core.Diagnostics;
 
-internal static class DiagnosticFileAccess
+public static class DiagnosticFileAccess
 {
-    internal static void CreatePrivateDirectory(string path)
+    public static void CreatePrivateDirectory(string path)
     {
         if (OperatingSystem.IsWindows())
         {

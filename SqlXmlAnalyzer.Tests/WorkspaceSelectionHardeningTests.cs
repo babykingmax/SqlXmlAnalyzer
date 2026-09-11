@@ -149,7 +149,7 @@ public sealed class WorkspaceSelectionHardeningTests
         var files = new FaultingFiles(error);
         var reporter = new Reporter(failure == "capture-failure");
         using var temporary = new TemporaryFileManager();
-        var orchestrator = new ApplicationOrchestrator(new EmptyAnalysis(), new NoRefactoring(), files,
+        var orchestrator = new ApplicationOrchestrator(new EmptyAnalysis(), new NoRefactoring(error), files,
             new SilentReporter(), NullLogger<ApplicationOrchestrator>.Instance);
         var service = new PlanAnalysisService(orchestrator, files, temporary, reporter,
             () => new RuleEngine(unexpectedErrors: reporter));
@@ -252,10 +252,13 @@ public sealed class WorkspaceSelectionHardeningTests
     {
         public AnalysisReport Analyze(string xmlContent) => new(Array.Empty<IAnalysisIssue>());
     }
-    private sealed class NoRefactoring : IRefactoringEngine
+    private sealed class NoRefactoring(Exception? error = null) : IRefactoringEngine
     {
-        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun) =>
-            new(sql, true, Array.Empty<string>(), new(sql));
+        public RefactorResult Run(string sql, AnalysisReport report, RefactorOptions options, bool isDryRun)
+        {
+            if (error != null) throw error;
+            return new(sql, true, Array.Empty<string>(), new(sql));
+        }
     }
     private sealed class SilentReporter : IResultReporter
     {

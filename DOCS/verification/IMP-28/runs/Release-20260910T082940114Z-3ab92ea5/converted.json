@@ -1,0 +1,27 @@
+{
+  "Rules": [
+    {
+      "RuleId": "RULE_016_WAIT_STATS",
+      "Enabled": false
+    },
+    {
+      "RuleId": "rule_004_estimate_mismatch",
+      "SeverityOverride": "warning",
+      "VendorRuleOption": {
+        "Keep": true
+      }
+    },
+    {
+      "RuleId": "FUTURE_VENDOR_RULE",
+      "Enabled": "future-semantics",
+      "Options": [
+        1,
+        2
+      ]
+    }
+  ],
+  "VendorRootOption": {
+    "Keep": "legacy-extension"
+  },
+  "ConfigurationSchemaVersion": "1"
+}

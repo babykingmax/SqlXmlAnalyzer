@@ -24,9 +24,13 @@ public sealed record PlanWorkspaceIssue(PlanLocation Location, PlanDiagnostic? D
     public string Severity => Diagnostic?.Severity.ToString() ?? (Run?.Status == RuleRunStatus.Failed ? "Critical" : "N/A");
     public string Confidence => Diagnostic?.Confidence.ToString() ?? "N/A";
     public string Status => Diagnostic == null ? Run!.Status.ToString() : "Hit";
-    public string Scope => Location.Operator == null ? Location.Statement == null ? "文档" : "语句" : $"Node {Location.Operator.NodeId ?? "N/A"}";
+    public string Scope => Location.Operator != null ? $"Node {Location.Operator.NodeId ?? "N/A"}"
+        : Location.QueryPlan != null ? "查询计划" : Location.Statement != null ? "语句" : "文档";
     public string Details => Diagnostic == null ? DiagnosticTextFormatter.FormatRun(Run!) : DiagnosticTextFormatter.FormatDiagnostic(Diagnostic);
     public IReadOnlyList<DiagnosticEvidence> Evidence => Diagnostic?.Evidence ?? Array.Empty<DiagnosticEvidence>();
+    public string RuleId => Diagnostic?.RuleId ?? Run?.RuleId ?? "";
+    public string StatusLabel => Diagnostic != null ? "发现问题" : Run?.Status == RuleRunStatus.Failed ? "检查失败" : "未执行";
+    public string Summary => Diagnostic?.Summary ?? Run?.Reason ?? "";
 }
 
 public sealed record PlanWorkspaceSelection(PlanStatementChoice Choice, IReadOnlyList<XElement> Operators,
@@ -37,7 +41,7 @@ public sealed record PlanSourceTarget(PlanLocation Location, string Sql, string 
 }
 
 /// <summary>One selection owns SQL, operators, issues and source navigation. XML remains in its original document.</summary>
-public sealed class PlanWorkspaceViewModel : ObservableObject
+public sealed partial class PlanWorkspaceViewModel : ObservableObject
 {
     private readonly IUnexpectedErrorReporter _unexpectedErrors;
     private readonly Func<XDocument, PlanDocument?> _readModel;
@@ -54,6 +58,19 @@ public sealed class PlanWorkspaceViewModel : ObservableObject
     public XDocument? Document { get; private set; }
     public PlanDocument? Model { get; private set; }
     public PlanDiagnosticReport? Report { get; private set; }
+    private string? _activeConfiguration;
+    public bool NeedsConfigurationReanalysis => Report != null && _activeConfiguration != null &&
+        _activeConfiguration != Configuration.RuleConfigurationDocument.ComputeFingerprint(Report.Configuration.Values);
+    public string ConfigurationStatus => Report == null ? "规则配置：尚无分析结果。" :
+        "结果配置 " + Configuration.RuleConfigurationDocument.ComputeFingerprint(Report.Configuration.Values)[..12] +
+        (NeedsConfigurationReanalysis ? "；配置已切换，需要重新分析。当前图和列表保留旧快照。" : "；图和列表使用同一配置快照。");
+    public void SetActiveConfiguration(string fingerprint)
+    {
+        _activeConfiguration = fingerprint;
+        OnPropertyChanged(nameof(NeedsConfigurationReanalysis)); OnPropertyChanged(nameof(ConfigurationStatus));
+        OnPropertyChanged(nameof(SelectedReportText));
+        NotifyPresentationHeader();
+    }
     public IReadOnlyList<PlanBatch> Batches => Model?.Batches ?? Array.Empty<PlanBatch>();
     public IReadOnlyList<PlanStatementChoice> Statements { get; private set; } = Array.Empty<PlanStatementChoice>();
     public PlanWorkspaceSelection? Selection { get; private set; }
@@ -63,7 +80,7 @@ public sealed class PlanWorkspaceViewModel : ObservableObject
     public string RefactoringNotices { get; private set; } = "";
     public bool HasRefactoringNotices => !string.IsNullOrWhiteSpace(RefactoringNotices);
     public string SelectedReportText => Selection == null ? "" :
-        $"当前选择：{Selection.Choice.Statement.Key} / {Selection.Choice.DisplayName}" + Environment.NewLine + Status
+        $"当前选择：{Selection.Choice.Statement.Key} / {Selection.Choice.DisplayName}" + Environment.NewLine + ConfigurationStatus + Environment.NewLine + Status
         + Environment.NewLine + string.Join(Environment.NewLine + Environment.NewLine, Issues.Select(issue => issue.Details))
         + (HasRefactoringNotices ? Environment.NewLine + Environment.NewLine + "SQL 改写阶段（文档分析结果）："
             + Environment.NewLine + RefactoringNotices : "");
@@ -75,7 +92,7 @@ public sealed class PlanWorkspaceViewModel : ObservableObject
         if (Document == null || Model == null || Report == null || Selection == null)
             throw new InvalidDataException("当前选择没有完整诊断快照，请等待分析完成或重新分析。");
         return Reporting.DiagnosticReportFactory.Plan(Document, Model, Report, Selection.Choice.Statement.Key,
-            Selection.Choice.QueryPlan?.Key, RefactoringNotices, Context + Environment.NewLine + Status);
+            Selection.Choice.QueryPlan?.Key, RefactoringNotices, Context + Environment.NewLine + ConfigurationStatus + Environment.NewLine + Status);
     }
     public IReadOnlyList<DiagnosticEvidence> Evidence => SelectedIssue?.Evidence ?? Array.Empty<DiagnosticEvidence>();
     public PlanSourceTarget? SourceTarget { get; private set; }
@@ -213,7 +230,7 @@ public sealed class PlanWorkspaceViewModel : ObservableObject
         var location = Model?.FindLocation(element);
         if (location?.Operator == null || Selection?.Operators.Contains(element) != true)
             throw new InvalidDataException("节点不属于当前选择。");
-        _selectedIssue = Issues.FirstOrDefault(issue => issue.Location.Operator == location.Operator);
+        _selectedIssue = Findings.FirstOrDefault(issue => issue.Location.Operator == location.Operator);
         _selectedEvidence = null; SourceTarget = Resolve(location); NotifyEvidence();
     });
 
@@ -241,13 +258,16 @@ public sealed class PlanWorkspaceViewModel : ObservableObject
     }
     private void NotifySelection()
     {
+        OnPropertyChanged(nameof(NeedsConfigurationReanalysis)); OnPropertyChanged(nameof(ConfigurationStatus));
         OnPropertyChanged(nameof(SelectedStatement)); OnPropertyChanged(nameof(Issues)); OnPropertyChanged(nameof(Status));
         OnPropertyChanged(nameof(SelectedReportText));
+        RefreshPresentationSelection();
         NotifyEvidence(); OnPropertyChanged(nameof(Selection));
     }
     private void NotifyEvidence()
     {
         OnPropertyChanged(nameof(SelectedIssue)); OnPropertyChanged(nameof(SelectedEvidence)); OnPropertyChanged(nameof(Details));
         OnPropertyChanged(nameof(Evidence)); OnPropertyChanged(nameof(SourceTarget));
+        RefreshPresentationDetails();
     }
 }

@@ -10,6 +10,7 @@ DOCS/implementation/** -text
 DOCS/review-evidence/** -text
 DOCS/verification/** -text
 SqlXmlAnalyzer.Tests/TestData/Schemas/*.xsd -text
+SqlXmlAnalyzer.Tests/TestData/Compatibility/* -text
 
 ###############################################################################
 # Set default behavior for command prompt diff.

@@ -1,0 +1,7 @@
+{
+  "LogPolicyVerified": true,
+  "Passed": true,
+  "ValidatedNativeDumps": 1,
+  "ExpectedFailureObserved": true,
+  "Configuration": "Release"
+}

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TuningSession xmlns="http://schemas.sqlxmlanalyzer.com/session" Version="99" Created="2026-06-26T10:00:00Z" PlanAId="historical-a" PlanBId="historical-b">
+  <Snapshots>
+    <Snapshot Id="historical-a" Title="Legacy A" FilePath="fixture-a.sqlplan" CaptureTime="2026-06-26T10:00:00Z" TotalCost="1" OperatorCount="1" MissingIndexCount="0">
+      <StatementText>SELECT 1</StatementText>
+      <PlanDoc><ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT 1"><QueryPlan><RelOp NodeId="0" PhysicalOp="Constant Scan" LogicalOp="Constant Scan" EstimatedTotalSubtreeCost="1" /></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML></PlanDoc>
+    </Snapshot>
+    <Snapshot Id="historical-b" Title="Legacy B" FilePath="fixture-b.sqlplan" CaptureTime="2026-06-26T11:00:00Z" TotalCost="0.5" OperatorCount="1" MissingIndexCount="0">
+      <StatementText>SELECT 2</StatementText>
+      <PlanDoc><ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT 2"><QueryPlan><RelOp NodeId="0" PhysicalOp="Constant Scan" LogicalOp="Constant Scan" EstimatedTotalSubtreeCost="0.5" /></QueryPlan></StmtSimple></Statements></Batch></BatchSequence></ShowPlanXML></PlanDoc>
+    </Snapshot>
+  </Snapshots>
+</TuningSession>

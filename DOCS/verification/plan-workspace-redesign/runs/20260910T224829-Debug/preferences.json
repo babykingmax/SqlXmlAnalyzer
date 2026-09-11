@@ -1,0 +1,117 @@
+{
+  "Version": 1,
+  "LeftWidth": 280,
+  "RightWidth": 320,
+  "LeftOpen": true,
+  "RightOpen": true,
+  "AuxiliaryOpen": false,
+  "AuxiliaryHeight": 220,
+  "ActiveView": "graph",
+  "CompactPane": "graph",
+  "Columns": [
+    {
+      "Key": "Node ID",
+      "Width": 75,
+      "DisplayIndex": 15,
+      "Visible": true
+    },
+    {
+      "Key": "\u7269\u7406\u64CD\u4F5C",
+      "Width": 155,
+      "DisplayIndex": 14,
+      "Visible": true
+    },
+    {
+      "Key": "\u5BF9\u8C61",
+      "Width": 190,
+      "DisplayIndex": 13,
+      "Visible": true
+    },
+    {
+      "Key": "\u4F30\u7B97\u6210\u672C",
+      "Width": 110,
+      "DisplayIndex": 12,
+      "Visible": true
+    },
+    {
+      "Key": "\u4F30\u7B97\u884C / \u6B21",
+      "Width": 110,
+      "DisplayIndex": 11,
+      "Visible": true
+    },
+    {
+      "Key": "\u5B9E\u9645\u884C / \u6B21",
+      "Width": 110,
+      "DisplayIndex": 10,
+      "Visible": true
+    },
+    {
+      "Key": "\u4F30\u7B97\u504F\u5DEE",
+      "Width": 105,
+      "DisplayIndex": 9,
+      "Visible": true
+    },
+    {
+      "Key": "\u8BFB\u53D6\u653E\u5927",
+      "Width": 105,
+      "DisplayIndex": 8,
+      "Visible": true
+    },
+    {
+      "Key": "\u95EE\u9898",
+      "Width": 75,
+      "DisplayIndex": 7,
+      "Visible": true
+    },
+    {
+      "Key": "\u5DE5\u5177\u91CD\u4F30\u6210\u672C",
+      "Width": 125,
+      "DisplayIndex": 6,
+      "Visible": false
+    },
+    {
+      "Key": "\u903B\u8F91\u64CD\u4F5C",
+      "Width": 155,
+      "DisplayIndex": 5,
+      "Visible": false
+    },
+    {
+      "Key": "\u6267\u884C\u6A21\u5F0F",
+      "Width": 160,
+      "DisplayIndex": 4,
+      "Visible": false
+    },
+    {
+      "Key": "\u5E76\u884C",
+      "Width": 100,
+      "DisplayIndex": 3,
+      "Visible": false
+    },
+    {
+      "Key": "\u6709\u5E8F\u626B\u63CF",
+      "Width": 100,
+      "DisplayIndex": 2,
+      "Visible": false
+    },
+    {
+      "Key": "\u5B9E\u9645\u8F93\u51FA\u603B\u884C\u6570",
+      "Width": 150,
+      "DisplayIndex": 1,
+      "Visible": false
+    },
+    {
+      "Key": "\u5B9E\u9645\u8BFB\u53D6\u603B\u884C\u6570",
+      "Width": 150,
+      "DisplayIndex": 0,
+      "Visible": false
+    }
+  ],
+  "Graph": {
+    "ViewMode": 2,
+    "HasExplicitViewMode": false,
+    "LayoutMode": 0,
+    "ColorMode": 0,
+    "LinkMetric": 0,
+    "ShowConnectionLabels": true
+  }
+}

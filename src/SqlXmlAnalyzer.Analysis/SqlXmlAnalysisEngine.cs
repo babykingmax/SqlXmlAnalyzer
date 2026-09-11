@@ -51,22 +51,7 @@ namespace SqlXmlAnalyzer.Analysis
                 var plan = _planBuilder?.Build(doc, input.Envelope!, cancellationToken) ?? PlanIdentityAdapter.GetDocument(doc, cancellationToken);
                 var diagnostics = _ruleEngineFactory?.Invoke().AnalyzePlanDetailed(doc, ns, plan, input.Capabilities, cancellationToken)
                     ?? PlanDiagnosticAnalyzer.AnalyzeDetailed(doc, ns, _configPath, plan, input.Capabilities, cancellationToken, _unexpectedErrors);
-                var ruleResults = diagnostics.ToLegacyResults();
-
-                var issues = new List<IAnalysisIssue>();
-                foreach (var res in ruleResults)
-                {
-                    var severity = MapSeverity(res.Severity);
-
-                    issues.Add(new SqlPlanAnalysisIssue(
-                        res.RuleId,
-                        res.Diagnostic == null ? $"[{res.Location?.DisplayScope}] [Node {res.NodeId}] {res.Title}: {res.Message}"
-                            : Core.Rules.DiagnosticTextFormatter.FormatDiagnostic(res.Diagnostic),
-                        severity
-                    ) { Location = res.Location, Objects = res.Objects, Diagnostic = res.Diagnostic, Run = res.Run });
-                }
-
-                return new AnalysisReport(issues) { Diagnostics = diagnostics, Plan = plan, InputEnvelope = input.Envelope, Capabilities = input.Capabilities, InputDiagnostics = input.Diagnostics };
+                return FromDiagnostics(input, plan!, diagnostics);
             }
             catch (OperationCanceledException ex)
             {
@@ -81,6 +66,29 @@ namespace SqlXmlAnalyzer.Analysis
                 string message = ExceptionPolicy.Describe(ex, "SqlXmlAnalysisEngine.Analyze", _unexpectedErrors);
                 return Failure(InputStatus.UnexpectedError, "INPUT_ANALYSIS_ERROR", message);
             }
+        }
+
+        public static AnalysisReport FromDiagnostics(InputRecognitionResult input, Core.Models.PlanDocument plan, Core.Rules.PlanDiagnosticReport diagnostics)
+        {
+            if (!input.IsSuccess || input.Document == null || !plan.IsCurrentSource(input.Document)
+                || diagnostics.DocumentId != plan.Envelope.DocumentId)
+                throw new System.IO.InvalidDataException("诊断快照与改写输入不一致。");
+            var ruleResults = diagnostics.ToLegacyResults();
+
+            var issues = new List<IAnalysisIssue>();
+            foreach (var res in ruleResults)
+            {
+                var severity = MapSeverity(res.Severity);
+
+                issues.Add(new SqlPlanAnalysisIssue(
+                    res.RuleId,
+                    res.Diagnostic == null ? $"[{res.Location?.DisplayScope}] [Node {res.NodeId}] {res.Title}: {res.Message}"
+                        : Core.Rules.DiagnosticTextFormatter.FormatDiagnostic(res.Diagnostic),
+                    severity
+                ) { Location = res.Location, Objects = res.Objects, Diagnostic = res.Diagnostic, Run = res.Run });
+            }
+
+            return new AnalysisReport(issues) { Diagnostics = diagnostics, Plan = plan, InputEnvelope = input.Envelope, Capabilities = input.Capabilities, InputDiagnostics = input.Diagnostics };
         }
 
         private static AnalysisReport Failure(InputStatus status, string code, string message) =>

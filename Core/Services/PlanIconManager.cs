@@ -7,6 +7,8 @@ namespace SqlXmlAnalyzer.Core.Services
 {
     public static class PlanIconManager
     {
+        private static readonly object CacheLock = new();
+        private static readonly System.Collections.Generic.Dictionary<string, (DateTime Stamp, long Length, ImageSource Image)> Cache = new(StringComparer.OrdinalIgnoreCase);
         public static string? FindIconPath(string op)
         {
             string? iconFile = GetIconFileName(op);
@@ -139,16 +141,23 @@ namespace SqlXmlAnalyzer.Core.Services
 
             try
             {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(path, UriKind.Absolute);
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
-                bitmap.Freeze();
-                return bitmap;
+                path = Path.GetFullPath(path);
+                var file = new FileInfo(path);
+                lock (CacheLock)
+                {
+                    if (Cache.TryGetValue(path, out var cached) && cached.Stamp == file.LastWriteTimeUtc && cached.Length == file.Length) return cached.Image;
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit(); bitmap.UriSource = new Uri(path, UriKind.Absolute);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad; bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    bitmap.EndInit(); bitmap.Freeze();
+                    if (Cache.Count >= 128) Cache.Clear();
+                    Cache[path] = (file.LastWriteTimeUtc, file.Length, bitmap);
+                    return bitmap;
+                }
             }
-            catch
+            catch (Exception exception)
             {
+                Diagnostics.ExceptionPolicy.Describe(exception, "IMP26.OperatorIcon");
                 return null;
             }
         }

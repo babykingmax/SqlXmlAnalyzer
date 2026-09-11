@@ -1,4 +1,4 @@
-<UserControl x:Class="SqlXmlAnalyzer.Views.PlanComparisonWorkspaceView"
+<UserControl Foreground="{DynamicResource TextBrush}" x:Class="SqlXmlAnalyzer.Views.PlanComparisonWorkspaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:evidence="clr-namespace:SqlXmlAnalyzer.Core.Services;assembly=SqlXmlAnalyzer.Core">
@@ -9,7 +9,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-<Grid Background="{DynamicResource MaterialDesignPaper}">
+<ScrollViewer x:Name="WorkspaceScroll" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False"><Grid MinWidth="960" MinHeight="620" Height="{Binding ViewportHeight, ElementName=WorkspaceScroll}" Width="{Binding ViewportWidth, ElementName=WorkspaceScroll}" Background="{DynamicResource MaterialDesignPaper}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="320" MinWidth="200"/>
                         <!-- 调优历史列表 -->
@@ -48,16 +48,16 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12" Foreground="#37474F"/>
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
                                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2">
-                                            <TextBlock Text="Cost: " Foreground="#78909C" FontSize="11"/>
-                                            <TextBlock Text="{Binding TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontWeight="Bold" Foreground="#0078D7" FontSize="11" Margin="0,0,12,0"/>
-                                            <TextBlock Text="Ops: " Foreground="#78909C" FontSize="11"/>
-                                            <TextBlock Text="{Binding OperatorCount}" Foreground="#37474F" FontSize="11" Margin="0,0,12,0"/>
-                                            <TextBlock Text="Idx: " Foreground="#78909C" FontSize="11"/>
-                                            <TextBlock Text="{Binding MissingIndexCount}" Foreground="#EF6C00" FontSize="11"/>
+                                            <TextBlock Text="Cost: " Foreground="{DynamicResource SecondaryTextBrush}" FontSize="11"/>
+                                            <TextBlock Text="{Binding TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontWeight="Bold" Foreground="{DynamicResource InfoBrush}" FontSize="11" Margin="0,0,12,0"/>
+                                            <TextBlock Text="Ops: " Foreground="{DynamicResource SecondaryTextBrush}" FontSize="11"/>
+                                            <TextBlock Text="{Binding OperatorCount}" Foreground="{DynamicResource TextBrush}" FontSize="11" Margin="0,0,12,0"/>
+                                            <TextBlock Text="Idx: " Foreground="{DynamicResource SecondaryTextBrush}" FontSize="11"/>
+                                            <TextBlock Text="{Binding MissingIndexCount}" Foreground="{DynamicResource WarningBrush}" FontSize="11"/>
                                         </StackPanel>
-                                        <TextBlock Grid.Row="2" Text="{Binding ShortStatementText}" Foreground="#546E7A" FontSize="10" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="2" Text="{Binding ShortStatementText}" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="10" FontStyle="Italic"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -87,7 +87,7 @@
                         </StackPanel>
                     </Grid>
 
-                    <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#DDDDDD" />
+                    <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="{DynamicResource SurfaceBrush}" />
 
                     <!-- 右侧：对比区域 -->
                     <Grid Grid.Column="2" Margin="6">
@@ -96,9 +96,9 @@
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock Text="⚖️" FontSize="64" HorizontalAlignment="Center" Margin="0,0,0,16"/>
                                 <TextBlock Text="选中左侧快照，点击『设为 A』或『设为 B』进行比较。"
-                                           Foreground="#78909C" FontSize="14" HorizontalAlignment="Center"/>
+                                           Foreground="{DynamicResource SecondaryTextBrush}" FontSize="14" HorizontalAlignment="Center"/>
                                 <TextBlock Text="提示：可以右键选中快照并设为计划 A/B；双击快照可以将其重新载入主窗口进行详细诊断。" 
-                                           Foreground="#B0BEC5" FontSize="12" Margin="0,8,0,0" HorizontalAlignment="Center" FontStyle="Italic"/>
+                                           Foreground="{DynamicResource TextBrush}" FontSize="12" Margin="0,8,0,0" HorizontalAlignment="Center" FontStyle="Italic"/>
                             </StackPanel>
                         </Grid>
 
@@ -122,9 +122,9 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- 计划 A 卡片 (基准) -->
-                                <Border Grid.Column="0" Background="#F5F7FA" BorderBrush="#0078D7" BorderThickness="2,1,1,1" CornerRadius="4" Padding="12" Margin="4">
+                                <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2,1,1,1" CornerRadius="4" Padding="12" Margin="4">
                                     <StackPanel>
-                                        <TextBlock Text="[计划 A] (基准)" FontSize="11" Foreground="#0078D7" FontWeight="SemiBold"/>
+                                        <TextBlock Text="[计划 A] (基准)" FontSize="11" Foreground="{DynamicResource InfoBrush}" FontWeight="SemiBold"/>
                                         <TextBlock Text="{Binding PlanA.Title}" FontSize="13" FontWeight="Bold" Margin="0,4" TextTrimming="CharacterEllipsis"/>
                                         <Grid Margin="0,4,0,0">
                                             <Grid.ColumnDefinitions>
@@ -133,36 +133,36 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="总估算成本" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanA.TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
+                                                <TextBlock Text="总估算成本" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBlock Text="{Binding PlanA.TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1">
-                                                <TextBlock Text="算子数量" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanA.OperatorCount}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
+                                                <TextBlock Text="算子数量" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBlock Text="{Binding PlanA.OperatorCount}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="缺失索引" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanA.MissingIndexCount}" FontSize="16" FontWeight="Bold" Foreground="#EF6C00"/>
+                                                <TextBlock Text="缺失索引" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBlock Text="{Binding PlanA.MissingIndexCount}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}"/>
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 差异分析中心指示卡 -->
-                                <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="8" Margin="8,4" VerticalAlignment="Center">
+                                <Border Grid.Column="1" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="8" Margin="8,4" VerticalAlignment="Center">
                                     <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="估算成本变化" FontSize="10" Foreground="#78909C" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="{Binding CostDeltaText}" FontSize="13" FontWeight="Bold" Foreground="{Binding CostDeltaColor}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4"/>
+                                        <TextBlock Text="估算成本变化" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CostDeltaText}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4"/>
                                         <Button Content=" 🔁 交换 A/B " Click="SwapPlanAB_Click" FontSize="10" Padding="8,2" Height="22" Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Center"/>
                                         <TextBlock x:Name="ComparisonEvidenceNotice" Text="{x:Static evidence:AnalysisDisplayText.ComparisonNotice}"
-                                                   Foreground="#795548" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                                   Foreground="{DynamicResource TextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0"/>
                                     </StackPanel>
                                 </Border>
 
                                 <!-- 计划 B 卡片 (待比较) -->
-                                <Border Grid.Column="2" Background="#F5F7FA" BorderBrush="#2E7D32" BorderThickness="2,1,1,1" CornerRadius="4" Padding="12" Margin="4">
+                                <Border Grid.Column="2" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2,1,1,1" CornerRadius="4" Padding="12" Margin="4">
                                     <StackPanel>
-                                        <TextBlock Text="[计划 B] (待比较)" FontSize="11" Foreground="#2E7D32" FontWeight="SemiBold"/>
+                                        <TextBlock Text="[计划 B] (待比较)" FontSize="11" Foreground="{DynamicResource GoodBrush}" FontWeight="SemiBold"/>
                                         <TextBlock Text="{Binding PlanB.Title}" FontSize="13" FontWeight="Bold" Margin="0,4" TextTrimming="CharacterEllipsis"/>
                                         <Grid Margin="0,4,0,0">
                                             <Grid.ColumnDefinitions>
@@ -171,16 +171,16 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="总估算成本" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanB.TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
+                                                <TextBlock Text="总估算成本" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBlock Text="{Binding PlanB.TotalCost, TargetNullValue=N/A, StringFormat={}{0:F4}}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1">
-                                                <TextBlock Text="算子数量" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanB.OperatorCount}" FontSize="16" FontWeight="Bold" Foreground="#37474F"/>
+                                                <TextBlock Text="算子数量" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBlock Text="{Binding PlanB.OperatorCount}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextBrush}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="缺失索引" FontSize="10" Foreground="#78909C"/>
-                                                <TextBlock Text="{Binding PlanB.MissingIndexCount}" FontSize="16" FontWeight="Bold" Foreground="#EF6C00"/>
+                                                <TextBlock Text="缺失索引" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBlock Text="{Binding PlanB.MissingIndexCount}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}"/>
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>
@@ -233,30 +233,30 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- 计划 A 的 TreeView -->
-                                <Border Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+                                <Border Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4">
 
     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <Border Background="#F5F7FA" Padding="6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                                            <TextBlock Text="计划 A 操作符结构树" FontWeight="SemiBold" FontSize="11" Foreground="#546E7A"/>
+                                        <Border Background="{DynamicResource SurfaceBrush}" Padding="6" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+                                            <TextBlock Text="计划 A 操作符结构树" FontWeight="SemiBold" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
                                         </Border>
                                         <TreeView Grid.Row="1" x:Name="PlanATreeView" BorderThickness="0"/>
                                     </Grid>
                                 </Border>
 
                                 <!-- 计划 B 的 TreeView -->
-                                <Border Grid.Column="2" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4">
+                                <Border Grid.Column="2" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4">
 
     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <Border Background="#F5F7FA" Padding="6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                                            <TextBlock Text="计划 B 操作符结构树" FontWeight="SemiBold" FontSize="11" Foreground="#546E7A"/>
+                                        <Border Background="{DynamicResource SurfaceBrush}" Padding="6" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+                                            <TextBlock Text="计划 B 操作符结构树" FontWeight="SemiBold" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
                                         </Border>
                                         <TreeView Grid.Row="1" x:Name="PlanBTreeView" BorderThickness="0"/>
                                     </Grid>
@@ -264,5 +264,5 @@
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Grid></ScrollViewer>
 </UserControl>

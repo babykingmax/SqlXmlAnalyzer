@@ -1,0 +1,139 @@
+{
+  "GeneratedAtUtc": "2026-09-10T11:36:32.4331726Z",
+  "ReviewFindingsFixed": 5,
+  "NewRegressionTests": 17,
+  "TotalImp30Tests": 47,
+  "ImplementationComplete": true,
+  "AutomatedAcceptancePassed": true,
+  "Imp30FullyAccepted": false,
+  "ApprovedForDistribution": false,
+  "BuildEvidenceSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A",
+  "SourceFiles": 814,
+  "BuildAndTests": [
+    {
+      "Configuration": "Debug",
+      "Total": 2838,
+      "Passed": 2838,
+      "Failed": 0,
+      "Skipped": 0,
+      "Rebuild": true,
+      "WarningsAsErrors": true
+    },
+    {
+      "Configuration": "Release",
+      "Total": 2838,
+      "Passed": 2838,
+      "Failed": 0,
+      "Skipped": 0,
+      "Rebuild": true,
+      "WarningsAsErrors": true
+    }
+  ],
+  "Candidate": {
+    "Candidate": "E:\\SqlXmlAnalyzer\\publish\\imp30-rc2",
+    "Id": "2.0.0-imp30-20260910T113215Z-0f3c050f",
+    "ManifestSha256": "A100086C166EEF569BD5F38E30525E54B0836599B74F1B4B81739DCA613D164E",
+    "ApprovedForDistribution": false,
+    "BuildSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A"
+  },
+  "CandidateFiles": 38,
+  "Archive": {
+    "ArchiveBytes": 167939348,
+    "CandidateId": "2.0.0-imp30-20260910T113215Z-0f3c050f",
+    "ApprovedForDistribution": false,
+    "ExtractedDirectory": "E:\\SqlXmlAnalyzer\\.tmp.imp30-hardening-zipcheck",
+    "ManifestSha256": "A100086C166EEF569BD5F38E30525E54B0836599B74F1B4B81739DCA613D164E",
+    "ArchiveSha256": "B60F731C54F0BBC97A453889E894BBB2F8A9443DF45223184BF3089EE58D9676",
+    "Passed": true,
+    "Archive": "E:\\SqlXmlAnalyzer\\publish\\imp30-rc2.zip",
+    "Files": 38
+  },
+  "Rollback": {
+    "Passed": true,
+    "Scope": "Local file rollback, actual published CLI processes; old WPF session opening is recorded separately.",
+    "CandidateManifestSha256": "A100086C166EEF569BD5F38E30525E54B0836599B74F1B4B81739DCA613D164E",
+    "PreviousManifestSha256": "6E32B896A3B1A1CC8841332B5F3E3F5790611A1D5BD39F99D356DDD26E5706BF",
+    "BackupManifestSha256": "28C5691A05282639C37EBBEC263025792D8AA93EA90F37651012DDAA351F6275",
+    "PreviousId": "previous-2f50216-imp20-22",
+    "RestoredGui": "E:\\SqlXmlAnalyzer\\.tmp.imp30-hardening-rollback\\restored\\application\\gui\\SqlXmlAnalyzer.exe",
+    "RestoredGuiSha256": "B84F3F62DD53DD8ECDB60FC69388D4D93FF44B41167FF2F96967C6E91D78AB2D",
+    "CandidateGuiSha256": "CAFBE78832E738A5780D7D8DC85F68C222FCDCEB1A873FE50805DE8D1CDFE433",
+    "RestoredSessionSnapshots": 2,
+    "PlanA": "SELECT 1",
+    "PlanB": "SELECT 2",
+    "OriginalSqlSha256": "DC7047A4A7C90855FFA1732979802FD236F9A4891D12C416A0F30CBC65256D1A",
+    "RestoredSqlSha256": "DC7047A4A7C90855FFA1732979802FD236F9A4891D12C416A0F30CBC65256D1A",
+    "CurrentSqlSha256": "10BB8BC1530D07241CFDC46BB605F692A74AA66E08590D7874B086DFC14703A8",
+    "SqlWritebackBackup": "E:\\SqlXmlAnalyzer\\.tmp.imp30-hardening-rollback\\current.sql.SqlXmlAnalyzer-47182ebebc03441781265c85b9af8add.bak",
+    "CurrentSqlPreserved": true,
+    "DatabaseChangesReverted": false,
+    "PackagedCliCommands": 6,
+    "ApprovedForDistribution": false
+  },
+  "PackagedCliCommandsPassed": 6,
+  "PackagedGuiSessionReadersPassed": 2,
+  "RelativePathEntryPointsPassed": 2,
+  "StaleCandidateEntryPointsRejected": 2,
+  "ValidatedNativeDumps": 2,
+  "LogPolicyVerified": true,
+  "DesktopAcceptance": {
+    "State": "Pending",
+    "Passed": false,
+    "ExecutedThisRound": false,
+    "Scope": "Startup hooks only; no visible WPF window acceptance.",
+    "PreviousBlocker": "GetCursorPos / 0x80070005"
+  },
+  "StageRoots": {
+    "publish": ".tmp.imp30-publish-c70b6a93d0ea4078865eb144e34d0afd",
+    "rollback": ".tmp.imp30-hardening-rollback",
+    "session": ".tmp.imp30-hardening-session",
+    "debug": ".tmp.imp30-hardening-diagnostics/Debug",
+    "release": ".tmp.imp30-hardening-diagnostics/Release",
+    "negative": ".tmp.imp30-hardening-negative",
+    "archive": ".tmp.imp30-hardening-archive"
+  },
+  "StageFileCounts": [
+    {
+      "Files": 7,
+      "Name": "publish"
+    },
+    {
+      "Files": 24,
+      "Name": "rollback"
+    },
+    {
+      "Files": 15,
+      "Name": "session"
+    },
+    {
+      "Files": 7,
+      "Name": "debug"
+    },
+    {
+      "Files": 7,
+      "Name": "release"
+    },
+    {
+      "Files": 9,
+      "Name": "negative"
+    },
+    {
+      "Files": 1,
+      "Name": "archive"
+    }
+  ],
+  "Remaining": [
+    "Visible candidate/restored GUI opening and export acceptance",
+    "UI-10 external readers",
+    "UI-13 OS DPI/multi-monitor",
+    "UI-14 physical keyboard/screen reader",
+    "UI-15 performance budget",
+    "R02/R19/R20/D06 restricted rewrites",
+    "Signing and formal distribution approval"
+  ],
+  "History": [
+    "Original rc1 and its evidence retained as history.",
+    "This candidate binds the new build, updated scripts and release materials.",
+    "No SQL analysis or GUI business logic changed."
+  ]
+}

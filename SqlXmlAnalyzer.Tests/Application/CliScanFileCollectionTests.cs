@@ -19,9 +19,12 @@ namespace SqlXmlAnalyzer.Tests.Application
 
         public void Dispose()
         {
-            if (Directory.Exists(_tempDirectory))
+            string full = Path.GetFullPath(_tempDirectory);
+            if (!full.StartsWith(Path.Combine(Path.GetFullPath(Path.GetTempPath()), "SqlXmlAnalyzer_Cli_"), StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Unexpected cleanup path");
+            if (Directory.Exists(full))
             {
-                Directory.Delete(_tempDirectory, true);
+                Directory.Delete(full, true);
             }
         }
 
@@ -52,6 +55,50 @@ namespace SqlXmlAnalyzer.Tests.Application
                 new[] { "scratch" });
 
             files.Should().ContainSingle().Which.Should().Be(includedFile);
+        }
+
+        [Fact]
+        public void CollectPlanFiles_SkipsAncestorJunctionAndDoesNotDuplicatePlans()
+        {
+            string included = WritePlanFile("plans", "include.sqlplan");
+            string junction = Path.Combine(_tempDirectory, "plans", "loop");
+            // NTFS directory junctions do not require the symbolic-link privilege.
+            var start = new System.Diagnostics.ProcessStartInfo("cmd.exe")
+            {
+                UseShellExecute = false, CreateNoWindow = true,
+                RedirectStandardOutput = true, RedirectStandardError = true
+            };
+            foreach (string argument in new[] { "/c", "mklink", "/J", junction, _tempDirectory }) start.ArgumentList.Add(argument);
+            using var process = System.Diagnostics.Process.Start(start)!;
+            process.WaitForExit(10000).Should().BeTrue();
+            process.ExitCode.Should().Be(0, process.StandardError.ReadToEnd());
+            try
+            {
+                Program.CollectPlanFiles(_tempDirectory).Should().ContainSingle().Which.Should().Be(included);
+            }
+            finally { Directory.Delete(junction); }
+        }
+
+        [Fact]
+        public void CollectPlanFiles_CancellationWhilePreparingTraversalStopsCollection()
+        {
+            WritePlanFile("plans", "include.sqlplan");
+            using var cancellation = new System.Threading.CancellationTokenSource();
+            IEnumerable<string> Exclusions()
+            {
+                yield return "unused";
+                cancellation.Cancel();
+            }
+            Action collect = () => Program.CollectPlanFiles(_tempDirectory, Exclusions(), cancellation.Token);
+            collect.Should().Throw<OperationCanceledException>();
+        }
+
+        [Fact]
+        public void CollectPlanFiles_AlreadyCanceledMissingRootDoesNotReportSuccessfulEmptyScan()
+        {
+            Action collect = () => Program.CollectPlanFiles(Path.Combine(_tempDirectory, "missing"),
+                cancellationToken: new System.Threading.CancellationToken(true));
+            collect.Should().Throw<OperationCanceledException>();
         }
 
         private string WritePlanFile(string relativeDirectory, string fileName)

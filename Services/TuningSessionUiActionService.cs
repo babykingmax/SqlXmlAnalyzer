@@ -48,8 +48,7 @@ namespace SqlXmlAnalyzer.Services
                 return;
             }
 
-            Core.Services.AnalysisSession session = analysisSessions.Begin();
-            _viewModel.CurrentPlanFilePath = snapshot.FilePath;
+            Core.Services.AnalysisSession session = analysisSessions.Begin(Core.Services.AnalysisDocumentKind.ExecutionPlanXml);
             await analyzeExecutionPlanDocumentAsync(
                 snapshot.Document,
                 snapshot.FilePath,

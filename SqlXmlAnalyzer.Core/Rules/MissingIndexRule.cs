@@ -10,7 +10,7 @@ namespace SqlXmlAnalyzer.Core.Rules
         public string RuleId => "RULE_020_MISSING_INDEX";
         public string Name => "Missing Index Suggestion";
         public string Description => "Extracts and scores missing indexes.";
-        public RuleMetadata Metadata => RuleMetadataCatalog.Get(RuleId, Description) with { Version = "2.1.1" };
+        public RuleMetadata Metadata => RuleMetadataCatalog.Get(RuleId, Description);
 
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using SqlXmlAnalyzer.Core.Models;
+using SqlXmlAnalyzer.Core.Services;
 
 namespace SqlXmlAnalyzer.Core.Parsers
 {
@@ -10,13 +11,16 @@ namespace SqlXmlAnalyzer.Core.Parsers
     {
         public static List<StatisticsInfo> Parse(XDocument doc, XNamespace ns)
         {
+            if (doc?.Root == null) return new List<StatisticsInfo>();
+            return QueryPlanXml.Enumerate(doc, ns).SelectMany(query => ParseQueryPlan(query, ns)).ToList();
+        }
+
+        public static List<StatisticsInfo> ParseQueryPlan(XElement queryPlan, XNamespace ns)
+        {
             var list = new List<StatisticsInfo>();
-            if (doc?.Root == null) return list;
+            if (queryPlan.Name != ns + "QueryPlan" || !QueryPlanXml.IsInScope(queryPlan, ns)) return list;
 
-            var statsUsageNode = doc.Descendants(ns + "OptimizerStatsUsage").FirstOrDefault();
-            if (statsUsageNode == null) return list;
-
-            foreach (var elem in statsUsageNode.Elements(ns + "StatisticsInfo"))
+            foreach (var elem in queryPlan.Elements(ns + "OptimizerStatsUsage").Elements(ns + "StatisticsInfo"))
             {
                 var info = new StatisticsInfo
                 {

@@ -1,0 +1,561 @@
+{
+  "Task": "IMP-23",
+  "Date": "2026-09-10",
+  "Status": "Implementation and automated verification complete",
+  "Tests": [
+    {
+      "Configuration": "Debug",
+      "Total": 2459,
+      "Passed": 2459,
+      "Failed": 0,
+      "Skipped": 0,
+      "TrxSha256": "2CE5931F97847E9102EAE5760279A7DB8A88305A9EC2C558FBB51D35A4958A52",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "NewTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.MultiFileStructure_IgnoresSpidsLocalIdsAndOrderButRetainsEveryOriginalIndex",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"mode=\\\"S\\\"\", newValue: \"mode=\\\"X\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.Logs_UseRequiredBuildLevelsAndDoNotContainQueryOrSourcePayload",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeFilter_ConvertsOffsetsWithInclusiveTickPrecisionAndPreservesOriginalTime",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.XelRecords_FiltersIncludeActionsAndFieldsButNotSkippedEventsAndPreserveOffsets",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"dbid=\\\"7\\\"\", newValue: \"dbid=\\\"8\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CancelledSearchAndBuild_DoNotReturnPartialResults",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"bytes\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"read committed (2)\", newValue: \"serializable (4)\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.IncompleteResourceIdentity_IsExplicitlyIsolated",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidFilter_PreservesPreviousResultAndDoesNotDump",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.SelectGroupAndEvent_NavigatesExactSourceWithOriginalMetadata",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.ChangedSource_CannotNavigateUsingOldCachedFacts",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.IdenticalLocalRoles_WithDifferentGlobalTopology_DoNotAggregate",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.ChangedOriginalElement_KeepsPreviewSnapshotAndBlocksNavigation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"hobtid=\\\"1001\\\"\", newValue: \"hobtid=\\\"9999\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.MultiplePayloadsInOneRecord_RetainDistinctOriginalLocations",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.DisplayOffsetAtDateLimit_ShowsExplicitRangeNotice",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.BrokenReporter_PreservesNavigationFailure",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"Sales.dbo.Orders\", newValue: \"Sales.dbo.Other\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidDisplayOffset_IsExpectedFailure(offset: \"+25:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.UnknownTimestamp_IsLastExcludedByTimeFilterAndNeverInventedAsUtc",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.DuplicateCopies_AreMarkedAndKeptWithAllSourcePaths",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeWithoutValidExplicitZone_IsRejected(value: \"2026-09-10T08:00:00+25:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.DifferentCapturedOrigins_DoNotAggregateOrBecomeDuplicates",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeWithoutValidExplicitZone_IsRejected(value: \"invalid\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.RepeatedDstClockHour_UsesExplicitOffsetsInsteadOfMachineZone",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.FailedFileLoad_DoesNotMutateExistingCollection",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"files\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.ObsoleteImportCannotOverwriteNewSearchEvenWhenReaderIgnoresCancellation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"events\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.CloseDuringLoad_CannotCommitLateResult",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"<owner id=\\\"p1\\\"\", newValue: \"<owner id=\\\"p2\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.MultiFileLoad_UsesBudgetsAndSkipsSamePathWithoutDroppingDifferentCopies",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SymmetricStructureOverBudget_IsKeptSeparateInsteadOfUsingApproximateHash",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.ChangedSource_NavigationIsBlockedBeforeCallback",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidDisplayOffset_IsExpectedFailure(offset: \"+14:01\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"<victimProcess id=\\\"p1\\\"\", newValue: \"<victimProcess id=\\\"p2\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"characters\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeWithoutValidExplicitZone_IsRejected(value: \"2026-09-10T08:00:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.CancelledImport_RetainsPreviousResultsAndSelection",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidDisplayOffset_IsExpectedFailure(offset: \"08:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.ProductionNavigation_UpdatesSelectorToExactMemberAndInvokesAnalysisOnlyOnce",
+          "Outcome": "Passed"
+        }
+      ]
+    },
+    {
+      "Configuration": "Release",
+      "Total": 2459,
+      "Passed": 2459,
+      "Failed": 0,
+      "Skipped": 0,
+      "TrxSha256": "FF6CCEFCE7CFCB02EF96074234441DC161DD0FB5C36450171266376C19283F06",
+      "BuildWarnings": 0,
+      "BuildErrors": 0,
+      "NewTests": [
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.ChangedOriginalElement_KeepsPreviewSnapshotAndBlocksNavigation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.FailedFileLoad_DoesNotMutateExistingCollection",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.XelRecords_FiltersIncludeActionsAndFieldsButNotSkippedEventsAndPreserveOffsets",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CancelledSearchAndBuild_DoNotReturnPartialResults",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"bytes\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.BrokenReporter_PreservesNavigationFailure",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.ChangedSource_NavigationIsBlockedBeforeCallback",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.UnknownFailure_WritesValidatedNativeDumpOrExplainsCaptureFailure(dumpFails: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"Sales.dbo.Orders\", newValue: \"Sales.dbo.Other\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidDisplayOffset_IsExpectedFailure(offset: \"+14:01\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.DuplicateCopies_AreMarkedAndKeptWithAllSourcePaths",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"mode=\\\"S\\\"\", newValue: \"mode=\\\"X\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.CancelledImport_RetainsPreviousResultsAndSelection",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeFilter_ConvertsOffsetsWithInclusiveTickPrecisionAndPreservesOriginalTime",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidDisplayOffset_IsExpectedFailure(offset: \"08:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"dbid=\\\"7\\\"\", newValue: \"dbid=\\\"8\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.SelectGroupAndEvent_NavigatesExactSourceWithOriginalMetadata",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.DifferentCapturedOrigins_DoNotAggregateOrBecomeDuplicates",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.IncompleteResourceIdentity_IsExplicitlyIsolated",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.ProductionNavigation_UpdatesSelectorToExactMemberAndInvokesAnalysisOnlyOnce",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.ObsoleteImportCannotOverwriteNewSearchEvenWhenReaderIgnoresCancellation",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"files\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.MultiFileLoad_UsesBudgetsAndSkipsSamePathWithoutDroppingDifferentCopies",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.RepeatedDstClockHour_UsesExplicitOffsetsInsteadOfMachineZone",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidFilter_PreservesPreviousResultAndDoesNotDump",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.UnknownTimestamp_IsLastExcludedByTimeFilterAndNeverInventedAsUtc",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.IdenticalLocalRoles_WithDifferentGlobalTopology_DoNotAggregate",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"<owner id=\\\"p1\\\"\", newValue: \"<owner id=\\\"p2\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"read committed (2)\", newValue: \"serializable (4)\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.Diagnostics.XelSearchDiagnosticTests.Logs_UseRequiredBuildLevelsAndDoNotContainQueryOrSourcePayload",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.DisplayOffsetAtDateLimit_ShowsExplicitRangeNotice",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeWithoutValidExplicitZone_IsRejected(value: \"2026-09-10T08:00:00+25:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.MultiplePayloadsInOneRecord_RetainDistinctOriginalLocations",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"characters\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.ChangedSource_CannotNavigateUsingOldCachedFacts",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.CloseDuringLoad_CannotCommitLateResult",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchViewModelTests.InvalidDisplayOffset_IsExpectedFailure(offset: \"+25:00\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeWithoutValidExplicitZone_IsRejected(value: \"invalid\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.MultiFileStructure_IgnoresSpidsLocalIdsAndOrderButRetainsEveryOriginalIndex",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SymmetricStructureOverBudget_IsKeptSeparateInsteadOfUsingApproximateHash",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"hobtid=\\\"1001\\\"\", newValue: \"hobtid=\\\"9999\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.CollectionBudgets_RejectWholeResult(budget: \"events\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.SameSpids_WithDifferentResourcesModesVictimsOrDependencies_DoNotAggregate(oldValue: \"<victimProcess id=\\\"p1\\\"\", newValue: \"<victimProcess id=\\\"p2\\\"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "SqlXmlAnalyzer.Tests.XelSearchServiceTests.TimeWithoutValidExplicitZone_IsRejected(value: \"2026-09-10T08:00:00\")",
+          "Outcome": "Passed"
+        }
+      ]
+    }
+  ],
+  "RealXel": [
+    "real-xel-Debug.json",
+    "real-xel-Release.json"
+  ],
+  "Wpf": [
+    "wpf-Debug/verification.json",
+    "wpf-Release/verification.json"
+  ],
+  "UiLimitation": "Native desktop input unavailable: GetCursorPos access denied 0x80070005 on both attempts. Screenshots use production WPF views in off-screen test hosts.",
+  "ScopeLimits": [
+    "No large-trace performance claim",
+    "No coverage percentage claim",
+    "No IMP-24 through IMP-30 completion claim"
+  ],
+  "SourceFiles": [
+    {
+      "Path": "MainWindow.Services.cs",
+      "SHA256": "A114C4983A397E090B4D626C60F0C326E1434F1B4D9A7573E97EDBD718A54B35"
+    },
+    {
+      "Path": "Services/XelDeadlockUiActionService.cs",
+      "SHA256": "5AE5495F1ABC86A2987C3E575D9B97B29769678254DD3D9FDCB9BD66E15EDC50"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/XelSearchModels.cs",
+      "SHA256": "24B10A02581DB59B9EE1BC25349F32060B5AA60328CEC121FA010D06B653FD34"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/XelSearchService.cs",
+      "SHA256": "108ECEE429250A6883763713AA06224F2A5D631A57B04906817FA3D663A47735"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Core/Services/XelStructureKey.cs",
+      "SHA256": "90F9BE0547F9AC0CED3D95BB3078D2ADED4B0CBDC3DECB3BAD869D3579B6D4A1"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/Diagnostics/XelSearchDiagnosticTests.cs",
+      "SHA256": "8135C950650A30E595A6D999089E8D1404D92FFC15743936BC1CF4879D38A969"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/XelSearchServiceTests.cs",
+      "SHA256": "EC99C18942C5B0D4CC2E20359F2456A59809B7648FE24B9317CF8E300EE5A5C6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/XelSearchViewModelTests.cs",
+      "SHA256": "2661DEA42FB938DFE014D679490B8D5A676132317446300243450C38DF730750"
+    },
+    {
+      "Path": "ViewModels/XelSearchViewModel.cs",
+      "SHA256": "5FC5DCEB65F3508750D7E6C0D67F6BD70920BA4C4CE88C5F4F0CA459E1C473F9"
+    },
+    {
+      "Path": "Views/DeadlockWorkspaceView.xaml",
+      "SHA256": "CD78FA231B933F76A2626F19FB46D07E0D0103819B314B1A230CBF0C3ABB71D7"
+    },
+    {
+      "Path": "Views/DeadlockWorkspaceView.xaml.cs",
+      "SHA256": "2C93054DBE6A97F714BF5E83F19F18F06DF917314DD716A6F442AC5E229A06FA"
+    },
+    {
+      "Path": "Views/XelSearchWindow.xaml",
+      "SHA256": "503A2BD1BD9F9BABB215DE94243EE4C65C2E6DE6F3FDF63AC5E2555BE6AC52B7"
+    },
+    {
+      "Path": "Views/XelSearchWindow.xaml.cs",
+      "SHA256": "BCDABE54E293D5FFCE3CE30F470828C7A970F670CC606C4A7D5003651BB6B36A"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp23_search_a.xdl",
+      "SHA256": "70AA8009E4B0E539748ACCC9FF3CD19767D429EAF58670F64C3A30A74F4451E6"
+    },
+    {
+      "Path": "SqlXmlAnalyzer.Tests/TestData/imp23_search_b.xdl",
+      "SHA256": "0793337A2AB0C64751B20FB5C6E092B2F9C04D7AF33EDC97A2D1C8FFB74EC691"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "DOCS/verification/IMP-23/README.md",
+      "SHA256": "E89850D75585130826E5D3802A805D828A3B3312DEFD7F194F1A7BCEE1F5BDF5"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/Run-WpfProbe.ps1",
+      "SHA256": "16EDE0819D46E427AF94CB4E5B08DA334F192BFBA3772E9484D05F2AEFB5DC5F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/Run-XelProbe.ps1",
+      "SHA256": "E638D60D73532AC84DD53688B0F46AB60D1629D3993DFD1D704A2A2FDE3B851B"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/WpfProbe.cs.txt",
+      "SHA256": "DB563273D62E3D21520F8A2FB4F7297F44F30830B7BEFB760266DEEA0F8A3358"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/XelProbe.cs.txt",
+      "SHA256": "3F8E2067DF08C0A0258AC0F221E58D4A64623DEC4CFC62FB60E311101803FC1C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/build-Debug.txt",
+      "SHA256": "F37A5E89311119DBE168D31FA3BBC8B4176E44932EB77989D7E0820582B99FEC"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/build-Release.txt",
+      "SHA256": "ECC1203053308B3D051E33696F342E60D57747B445DA7DF0F86B07E7C5FAAB1C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/real-xel-Debug.json",
+      "SHA256": "6196E075423FEE760FE810F5E302F725497C52B79DE592ADB8E44B31B99FAF08"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/real-xel-Release.json",
+      "SHA256": "6196E075423FEE760FE810F5E302F725497C52B79DE592ADB8E44B31B99FAF08"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/tests-Debug.txt",
+      "SHA256": "59ABF79526810DFA330124A6891A09B8E5C82313ECB4EA6D02639309BF26E419"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/tests-Release.txt",
+      "SHA256": "6E29055CA43ED4FF8EE9389D8C016F289240A699AC3AED672E30A1C67B5EE61C"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Debug/binding-errors.txt",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Debug/filtered-events.png",
+      "SHA256": "24E6D69A506A8636FAACF4E65DB8663B8DDC1070EC0046E23F81CA8A22426508"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Debug/invalid-offset-retains-results.png",
+      "SHA256": "14132671340CC503CA1FD1A0E89E539025DE372993CCCB68CF4901D506470007"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Debug/original-event-workspace.png",
+      "SHA256": "9852C6F858D50C8A641915B8F9A9F0756B46BD36C3D0A8B66E938363BE903350"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Debug/search-group-members.png",
+      "SHA256": "F2A5E57845D972F21051A2320F7A3A644F2C8325C75304CD315FF2D58C12BF1F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Debug/verification.json",
+      "SHA256": "858D807228A3F06505A98C9149A9B4E96905F920F68169FDA82FE49D2B7F97A0"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Release/binding-errors.txt",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Release/filtered-events.png",
+      "SHA256": "24E6D69A506A8636FAACF4E65DB8663B8DDC1070EC0046E23F81CA8A22426508"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Release/invalid-offset-retains-results.png",
+      "SHA256": "14132671340CC503CA1FD1A0E89E539025DE372993CCCB68CF4901D506470007"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Release/original-event-workspace.png",
+      "SHA256": "9852C6F858D50C8A641915B8F9A9F0756B46BD36C3D0A8B66E938363BE903350"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Release/search-group-members.png",
+      "SHA256": "F2A5E57845D972F21051A2320F7A3A644F2C8325C75304CD315FF2D58C12BF1F"
+    },
+    {
+      "Path": "DOCS/verification/IMP-23/wpf-Release/verification.json",
+      "SHA256": "858D807228A3F06505A98C9149A9B4E96905F920F68169FDA82FE49D2B7F97A0"
+    }
+  ]
+}

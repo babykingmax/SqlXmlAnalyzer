@@ -6,6 +6,8 @@ namespace SqlXmlAnalyzer
     public partial class MainWindow
     {
         public Core.ViewModels.MainViewModel ViewModel { get; }
+        private readonly Core.Configuration.RuleConfigurationSession _ruleConfiguration;
+        private Views.RuleConfigurationWindow? _ruleConfigurationWindow;
         private readonly TemporaryFileManager _temporaryFileManager;
         private readonly Core.Services.AnalysisSessionCoordinator _analysisSessions;
         private readonly Core.Services.BrowserLauncher _browserLauncher;
@@ -35,6 +37,7 @@ namespace SqlXmlAnalyzer
         private readonly WorkspacePanelUiActionService _workspacePanelUiActionService;
         private readonly TuningSessionUiActionService _tuningSessionUiActionService;
         private readonly PlanAnalysisUiActionService _planAnalysisUiActionService;
+        private readonly PlanWorkspaceUiActionService _planWorkspaceUiActionService;
         private readonly PlanSelectionUiActionService _planSelectionUiActionService;
         private readonly SqlDiffScrollSyncService _sqlDiffScrollSyncService;
         private readonly SqlDiffUiActionService _sqlDiffUiActionService;

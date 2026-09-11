@@ -1,0 +1,646 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"><title>DiagnosticReport</title><style>body{font:14px sans-serif;margin:24px;color:#172b4d;background:white}pre{white-space:pre-wrap;overflow-wrap:anywhere}svg{max-width:100%;height:auto}h1{font-size:24px}</style></head><body><h1>诊断报告 / B1/S1/Q1</h1><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 188" role="img" aria-label="静态关系图"><desc>已脱敏诊断报告：自由文本已整体替换；保留结构定位、指标状态、规则及问题数量。XML 仅供结构核对，不可执行 SQL。</desc><rect width="900" height="188" fill="white"/><text x="8" y="20" font-size="14" fill="#172b4d">已脱敏静态图 / B1/S1/Q1</text><g transform="translate(0,32)"><path d="M 760 38 L 800 38 L 800 108 L 765 108" fill="none" stroke="#667788"/><circle cx="765" cy="108" r="4" fill="#667788"/><rect x="8" y="8" width="750" height="54" rx="5" fill="#edf5ff" stroke="#557799"/><text x="18" y="28" font-size="12" fill="#172b4d">B1/S1/Q1/O1</text><text x="18" y="48" font-size="12" fill="#172b4d">[Masked_GraphLabel_113]</text><rect x="8" y="78" width="750" height="54" rx="5" fill="#edf5ff" stroke="#557799"/><text x="18" y="98" font-size="12" fill="#172b4d">B1/S1/Q1/O2</text><text x="18" y="118" font-size="12" fill="#172b4d">[Masked_GraphLabel_114]</text></g></svg><pre id="report-text">已脱敏诊断报告：自由文本已整体替换；保留结构定位、指标状态、规则及问题数量。XML 仅供结构核对，不可执行 SQL。
+DiagnosticReport IMP22-1.0 | SqlXmlAnalyzer 1.0.0
+Kind: ExecutionPlan | Scope: B1/S1/Q1 | CreatedAt: 2026-09-10T06:53:00.1963724+00:00
+Facts: 420 | Issues: 1 | Hit: 2 | NoHit: 37 | Skipped: 11 | Failed: 0
+离线静态关系图；不是实际执行时间线。图超过 80 个节点时展示前 80 个，完整节点/边仍列入正文与 JSON。HTML/PDF/Word/JSON 包含同一事实、诊断、运行记录及 XML；SVG 仅包含静态图，sqlplan 仅包含选择范围 XML；无交互回放。
+=== Metadata ===
+DocumentId: [Masked_SourceIdentity_1]
+SourceName: [Masked_Metadata_2]
+SourceHash: [Masked_SourceIdentity_1]
+EngineBuild: [Masked_Metadata_3]
+SourceSchema: [Masked_Metadata_4]
+CapturedAt: [Masked_Metadata_5]
+Capabilities: PlanStatements, PlanOperators, RuntimeCounters, PreservedSource
+RuleProtocol: 1.0
+InputDiagnostics: [Masked_DiagnosticText_6]
+InputContext: [Masked_Metadata_7]
+Configuration: [Masked_Configuration_8]
+DocumentRefactoringNotices: [Masked_DiagnosticText_9]
+=== Facts ===
+B1/S1 SQL: [Masked_SqlText_10]
+B1/S1/Q1/O1 PhysicalOp: [Masked_OperatorLabel_11]
+B1/S1/Q1/O1 LogicalOp: [Masked_OperatorLabel_11]
+B1/S1/Q1/O1 NodeId: [Masked_SourceIdentity_12]
+B1/S1/Q1/O1 Source: [Masked_SourceLocation_13]
+B1/S1/Q1/O1/Partitioned: N/A
+B1/S1/Q1/O1/PartitionCount: N/A
+B1/S1/Q1/O1/PartitionRange: N/A
+B1/S1/Q1/O1/Execution/ActualExecutionMode: N/A
+B1/S1/Q1/O1/Execution/EstimatedExecutionMode: N/A
+B1/S1/Q1/O1/Execution/Parallel: False
+B1/S1/Q1/O1/Execution/Ordered: N/A
+B1/S1/Q1/O1/Execution/ExecutionMode: [Masked_FactText_14]
+B1/S1/Q1/O1/Execution/ParallelDisplay: [Masked_FactText_15]
+B1/S1/Q1/O1/Execution/OrderedDisplay: [Masked_FactText_14]
+B1/S1/Q1/O1/Threads[1]/ThreadId: 0
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field1/Name: [Masked_XmlFieldName_16]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field1: [Masked_FactText_17]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field2/Name: [Masked_XmlFieldName_18]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field2: [Masked_FactText_19]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field3/Name: [Masked_XmlFieldName_20]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field3: [Masked_FactText_21]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field4/Name: [Masked_XmlFieldName_22]
+B1/S1/Q1/O1/Threads[1]/SourceAttributes/Field4: [Masked_FactText_23]
+B1/S1/Q1/O1/Threads[1]/OutputRows/Value: 100000
+B1/S1/Q1/O1/Threads[1]/OutputRows/State: Available
+B1/S1/Q1/O1/Threads[1]/OutputRows/Unit: rows
+B1/S1/Q1/O1/Threads[1]/OutputRows/Source: [Masked_FactText_24]
+B1/S1/Q1/O1/Threads[1]/OutputRows/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/OutputRows/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/OutputRows/IsPresent: True
+B1/S1/Q1/O1/Threads[1]/OutputRows/IsAvailable: True
+B1/S1/Q1/O1/Threads[1]/RowsRead/Value: 200000
+B1/S1/Q1/O1/Threads[1]/RowsRead/State: Available
+B1/S1/Q1/O1/Threads[1]/RowsRead/Unit: rows
+B1/S1/Q1/O1/Threads[1]/RowsRead/Source: [Masked_FactText_25]
+B1/S1/Q1/O1/Threads[1]/RowsRead/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/RowsRead/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/RowsRead/IsPresent: True
+B1/S1/Q1/O1/Threads[1]/RowsRead/IsAvailable: True
+B1/S1/Q1/O1/Threads[1]/Executions/Value: 2
+B1/S1/Q1/O1/Threads[1]/Executions/State: Available
+B1/S1/Q1/O1/Threads[1]/Executions/Unit: executions
+B1/S1/Q1/O1/Threads[1]/Executions/Source: [Masked_FactText_26]
+B1/S1/Q1/O1/Threads[1]/Executions/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/Executions/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/Executions/IsPresent: True
+B1/S1/Q1/O1/Threads[1]/Executions/IsAvailable: True
+B1/S1/Q1/O1/Threads[1]/Rebinds/Value: N/A
+B1/S1/Q1/O1/Threads[1]/Rebinds/State: Missing
+B1/S1/Q1/O1/Threads[1]/Rebinds/Unit: rebinds
+B1/S1/Q1/O1/Threads[1]/Rebinds/Source: [Masked_FactText_27]
+B1/S1/Q1/O1/Threads[1]/Rebinds/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/Rebinds/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/Rebinds/IsPresent: False
+B1/S1/Q1/O1/Threads[1]/Rebinds/IsAvailable: False
+B1/S1/Q1/O1/Threads[1]/Rewinds/Value: N/A
+B1/S1/Q1/O1/Threads[1]/Rewinds/State: Missing
+B1/S1/Q1/O1/Threads[1]/Rewinds/Unit: rewinds
+B1/S1/Q1/O1/Threads[1]/Rewinds/Source: [Masked_FactText_28]
+B1/S1/Q1/O1/Threads[1]/Rewinds/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/Rewinds/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/Rewinds/IsPresent: False
+B1/S1/Q1/O1/Threads[1]/Rewinds/IsAvailable: False
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/Value: N/A
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/State: Missing
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/Unit: ms
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/Source: [Masked_FactText_29]
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/IsPresent: False
+B1/S1/Q1/O1/Threads[1]/ElapsedTime/IsAvailable: False
+B1/S1/Q1/O1/Threads[1]/CpuTime/Value: N/A
+B1/S1/Q1/O1/Threads[1]/CpuTime/State: Missing
+B1/S1/Q1/O1/Threads[1]/CpuTime/Unit: ms
+B1/S1/Q1/O1/Threads[1]/CpuTime/Source: [Masked_FactText_30]
+B1/S1/Q1/O1/Threads[1]/CpuTime/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/CpuTime/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/CpuTime/IsPresent: False
+B1/S1/Q1/O1/Threads[1]/CpuTime/IsAvailable: False
+B1/S1/Q1/O1/Threads[1]/LogicalReads/Value: N/A
+B1/S1/Q1/O1/Threads[1]/LogicalReads/State: Missing
+B1/S1/Q1/O1/Threads[1]/LogicalReads/Unit: pages
+B1/S1/Q1/O1/Threads[1]/LogicalReads/Source: [Masked_FactText_31]
+B1/S1/Q1/O1/Threads[1]/LogicalReads/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/LogicalReads/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/LogicalReads/IsPresent: False
+B1/S1/Q1/O1/Threads[1]/LogicalReads/IsAvailable: False
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/Value: N/A
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/State: Missing
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/Unit: pages
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/Source: [Masked_FactText_32]
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/Kind: Actual
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/Aggregation: Attribute
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/IsPresent: False
+B1/S1/Q1/O1/Threads[1]/PhysicalReads/IsAvailable: False
+B1/S1/Q1/O1/EstimatedRows/Value: 1
+B1/S1/Q1/O1/EstimatedRows/State: Available
+B1/S1/Q1/O1/EstimatedRows/Unit: rows/execution
+B1/S1/Q1/O1/EstimatedRows/Source: [Masked_FactText_33]
+B1/S1/Q1/O1/EstimatedRows/Kind: Estimated
+B1/S1/Q1/O1/EstimatedRows/Aggregation: Attribute
+B1/S1/Q1/O1/EstimatedRows/IsPresent: True
+B1/S1/Q1/O1/EstimatedRows/IsAvailable: True
+B1/S1/Q1/O1/EstimatedRowsRead/Value: N/A
+B1/S1/Q1/O1/EstimatedRowsRead/State: Missing
+B1/S1/Q1/O1/EstimatedRowsRead/Unit: rows/execution
+B1/S1/Q1/O1/EstimatedRowsRead/Source: [Masked_FactText_34]
+B1/S1/Q1/O1/EstimatedRowsRead/Kind: Estimated
+B1/S1/Q1/O1/EstimatedRowsRead/Aggregation: Attribute
+B1/S1/Q1/O1/EstimatedRowsRead/IsPresent: False
+B1/S1/Q1/O1/EstimatedRowsRead/IsAvailable: False
+B1/S1/Q1/O1/EstimatedCpuCost/Value: N/A
+B1/S1/Q1/O1/EstimatedCpuCost/State: Missing
+B1/S1/Q1/O1/EstimatedCpuCost/Unit: optimizer-cost
+B1/S1/Q1/O1/EstimatedCpuCost/Source: [Masked_FactText_35]
+B1/S1/Q1/O1/EstimatedCpuCost/Kind: Estimated
+B1/S1/Q1/O1/EstimatedCpuCost/Aggregation: Attribute
+B1/S1/Q1/O1/EstimatedCpuCost/IsPresent: False
+B1/S1/Q1/O1/EstimatedCpuCost/IsAvailable: False
+B1/S1/Q1/O1/EstimatedIoCost/Value: N/A
+B1/S1/Q1/O1/EstimatedIoCost/State: Missing
+B1/S1/Q1/O1/EstimatedIoCost/Unit: optimizer-cost
+B1/S1/Q1/O1/EstimatedIoCost/Source: [Masked_FactText_36]
+B1/S1/Q1/O1/EstimatedIoCost/Kind: Estimated
+B1/S1/Q1/O1/EstimatedIoCost/Aggregation: Attribute
+B1/S1/Q1/O1/EstimatedIoCost/IsPresent: False
+B1/S1/Q1/O1/EstimatedIoCost/IsAvailable: False
+B1/S1/Q1/O1/AverageRowSize/Value: N/A
+B1/S1/Q1/O1/AverageRowSize/State: Missing
+B1/S1/Q1/O1/AverageRowSize/Unit: bytes/row
+B1/S1/Q1/O1/AverageRowSize/Source: [Masked_FactText_37]
+B1/S1/Q1/O1/AverageRowSize/Kind: Estimated
+B1/S1/Q1/O1/AverageRowSize/Aggregation: Attribute
+B1/S1/Q1/O1/AverageRowSize/IsPresent: False
+B1/S1/Q1/O1/AverageRowSize/IsAvailable: False
+B1/S1/Q1/O1/EstimatedExecutions/Value: N/A
+B1/S1/Q1/O1/EstimatedExecutions/State: Missing
+B1/S1/Q1/O1/EstimatedExecutions/Unit: executions
+B1/S1/Q1/O1/EstimatedExecutions/Source: [Masked_FactText_38]
+B1/S1/Q1/O1/EstimatedExecutions/Kind: Estimated
+B1/S1/Q1/O1/EstimatedExecutions/Aggregation: RebindsPlusRewindsPlusOne
+B1/S1/Q1/O1/EstimatedExecutions/IsPresent: False
+B1/S1/Q1/O1/EstimatedExecutions/IsAvailable: False
+B1/S1/Q1/O1/SubtreeCost/Value: N/A
+B1/S1/Q1/O1/SubtreeCost/State: Missing
+B1/S1/Q1/O1/SubtreeCost/Unit: optimizer-cost
+B1/S1/Q1/O1/SubtreeCost/Source: [Masked_FactText_39]
+B1/S1/Q1/O1/SubtreeCost/Kind: Estimated
+B1/S1/Q1/O1/SubtreeCost/Aggregation: Attribute
+B1/S1/Q1/O1/SubtreeCost/IsPresent: False
+B1/S1/Q1/O1/SubtreeCost/IsAvailable: False
+B1/S1/Q1/O1/OwnCost/Value: N/A
+B1/S1/Q1/O1/OwnCost/State: Missing
+B1/S1/Q1/O1/OwnCost/Unit: optimizer-cost
+B1/S1/Q1/O1/OwnCost/Source: [Masked_FactText_40]
+B1/S1/Q1/O1/OwnCost/Kind: Estimated
+B1/S1/Q1/O1/OwnCost/Aggregation: SubtreeMinusChildren
+B1/S1/Q1/O1/OwnCost/IsPresent: False
+B1/S1/Q1/O1/OwnCost/IsAvailable: False
+B1/S1/Q1/O1/OutputRows/Value: 100000
+B1/S1/Q1/O1/OutputRows/State: Available
+B1/S1/Q1/O1/OutputRows/Unit: rows
+B1/S1/Q1/O1/OutputRows/Source: [Masked_FactText_24]
+B1/S1/Q1/O1/OutputRows/Kind: Actual
+B1/S1/Q1/O1/OutputRows/Aggregation: SumThreads
+B1/S1/Q1/O1/OutputRows/IsPresent: True
+B1/S1/Q1/O1/OutputRows/IsAvailable: True
+B1/S1/Q1/O1/RowsRead/Value: 200000
+B1/S1/Q1/O1/RowsRead/State: Available
+B1/S1/Q1/O1/RowsRead/Unit: rows
+B1/S1/Q1/O1/RowsRead/Source: [Masked_FactText_25]
+B1/S1/Q1/O1/RowsRead/Kind: Actual
+B1/S1/Q1/O1/RowsRead/Aggregation: SumThreads
+B1/S1/Q1/O1/RowsRead/IsPresent: True
+B1/S1/Q1/O1/RowsRead/IsAvailable: True
+B1/S1/Q1/O1/ThreadExecutions/Value: 2
+B1/S1/Q1/O1/ThreadExecutions/State: Available
+B1/S1/Q1/O1/ThreadExecutions/Unit: executions
+B1/S1/Q1/O1/ThreadExecutions/Source: [Masked_FactText_26]
+B1/S1/Q1/O1/ThreadExecutions/Kind: Actual
+B1/S1/Q1/O1/ThreadExecutions/Aggregation: SumThreads
+B1/S1/Q1/O1/ThreadExecutions/IsPresent: True
+B1/S1/Q1/O1/ThreadExecutions/IsAvailable: True
+B1/S1/Q1/O1/LogicalExecutions/Value: 2
+B1/S1/Q1/O1/LogicalExecutions/State: Available
+B1/S1/Q1/O1/LogicalExecutions/Unit: executions
+B1/S1/Q1/O1/LogicalExecutions/Source: [Masked_FactText_41]
+B1/S1/Q1/O1/LogicalExecutions/Kind: Actual
+B1/S1/Q1/O1/LogicalExecutions/Aggregation: CommonWorkerExecutions
+B1/S1/Q1/O1/LogicalExecutions/IsPresent: True
+B1/S1/Q1/O1/LogicalExecutions/IsAvailable: True
+B1/S1/Q1/O1/RowsPerExecution/Value: 50000
+B1/S1/Q1/O1/RowsPerExecution/State: Available
+B1/S1/Q1/O1/RowsPerExecution/Unit: rows/execution
+B1/S1/Q1/O1/RowsPerExecution/Source: [Masked_FactText_42]
+B1/S1/Q1/O1/RowsPerExecution/Kind: Actual
+B1/S1/Q1/O1/RowsPerExecution/Aggregation: RowsPerExecution
+B1/S1/Q1/O1/RowsPerExecution/IsPresent: True
+B1/S1/Q1/O1/RowsPerExecution/IsAvailable: True
+B1/S1/Q1/O1/Rebinds/Value: N/A
+B1/S1/Q1/O1/Rebinds/State: Missing
+B1/S1/Q1/O1/Rebinds/Unit: rebinds
+B1/S1/Q1/O1/Rebinds/Source: [Masked_FactText_27]
+B1/S1/Q1/O1/Rebinds/Kind: Actual
+B1/S1/Q1/O1/Rebinds/Aggregation: SumThreads
+B1/S1/Q1/O1/Rebinds/IsPresent: False
+B1/S1/Q1/O1/Rebinds/IsAvailable: False
+B1/S1/Q1/O1/Rewinds/Value: N/A
+B1/S1/Q1/O1/Rewinds/State: Missing
+B1/S1/Q1/O1/Rewinds/Unit: rewinds
+B1/S1/Q1/O1/Rewinds/Source: [Masked_FactText_28]
+B1/S1/Q1/O1/Rewinds/Kind: Actual
+B1/S1/Q1/O1/Rewinds/Aggregation: SumThreads
+B1/S1/Q1/O1/Rewinds/IsPresent: False
+B1/S1/Q1/O1/Rewinds/IsAvailable: False
+B1/S1/Q1/O1/ElapsedTime/Value: N/A
+B1/S1/Q1/O1/ElapsedTime/State: Missing
+B1/S1/Q1/O1/ElapsedTime/Unit: ms
+B1/S1/Q1/O1/ElapsedTime/Source: [Masked_FactText_29]
+B1/S1/Q1/O1/ElapsedTime/Kind: Actual
+B1/S1/Q1/O1/ElapsedTime/Aggregation: MaxThreads
+B1/S1/Q1/O1/ElapsedTime/IsPresent: False
+B1/S1/Q1/O1/ElapsedTime/IsAvailable: False
+B1/S1/Q1/O1/CpuTime/Value: N/A
+B1/S1/Q1/O1/CpuTime/State: Missing
+B1/S1/Q1/O1/CpuTime/Unit: ms
+B1/S1/Q1/O1/CpuTime/Source: [Masked_FactText_30]
+B1/S1/Q1/O1/CpuTime/Kind: Actual
+B1/S1/Q1/O1/CpuTime/Aggregation: SumThreads
+B1/S1/Q1/O1/CpuTime/IsPresent: False
+B1/S1/Q1/O1/CpuTime/IsAvailable: False
+B1/S1/Q1/O1/LogicalReads/Value: N/A
+B1/S1/Q1/O1/LogicalReads/State: Missing
+B1/S1/Q1/O1/LogicalReads/Unit: pages
+B1/S1/Q1/O1/LogicalReads/Source: [Masked_FactText_31]
+B1/S1/Q1/O1/LogicalReads/Kind: Actual
+B1/S1/Q1/O1/LogicalReads/Aggregation: SumThreads
+B1/S1/Q1/O1/LogicalReads/IsPresent: False
+B1/S1/Q1/O1/LogicalReads/IsAvailable: False
+B1/S1/Q1/O1/PhysicalReads/Value: N/A
+B1/S1/Q1/O1/PhysicalReads/State: Missing
+B1/S1/Q1/O1/PhysicalReads/Unit: pages
+B1/S1/Q1/O1/PhysicalReads/Source: [Masked_FactText_32]
+B1/S1/Q1/O1/PhysicalReads/Kind: Actual
+B1/S1/Q1/O1/PhysicalReads/Aggregation: SumThreads
+B1/S1/Q1/O1/PhysicalReads/IsPresent: False
+B1/S1/Q1/O1/PhysicalReads/IsAvailable: False
+B1/S1/Q1/O1/PhysicalOp: [Masked_FactText_43]
+B1/S1/Q1/O1/HasResidualPredicate: False
+B1/S1/Q1/O1/WorkerRows: N/A
+B1/S1/Q1/O2 PhysicalOp: [Masked_OperatorLabel_44]
+B1/S1/Q1/O2 LogicalOp: [Masked_OperatorLabel_44]
+B1/S1/Q1/O2 NodeId: [Masked_SourceIdentity_45]
+B1/S1/Q1/O2 Source: [Masked_SourceLocation_46]
+B1/S1/Q1/O2/Partitioned: N/A
+B1/S1/Q1/O2/PartitionCount: N/A
+B1/S1/Q1/O2/PartitionRange: N/A
+B1/S1/Q1/O2/Execution/ActualExecutionMode: N/A
+B1/S1/Q1/O2/Execution/EstimatedExecutionMode: N/A
+B1/S1/Q1/O2/Execution/Parallel: False
+B1/S1/Q1/O2/Execution/Ordered: N/A
+B1/S1/Q1/O2/Execution/ExecutionMode: [Masked_FactText_14]
+B1/S1/Q1/O2/Execution/ParallelDisplay: [Masked_FactText_15]
+B1/S1/Q1/O2/Execution/OrderedDisplay: [Masked_FactText_14]
+B1/S1/Q1/O2/EstimatedRows/Value: 1
+B1/S1/Q1/O2/EstimatedRows/State: Available
+B1/S1/Q1/O2/EstimatedRows/Unit: rows/execution
+B1/S1/Q1/O2/EstimatedRows/Source: [Masked_FactText_33]
+B1/S1/Q1/O2/EstimatedRows/Kind: Estimated
+B1/S1/Q1/O2/EstimatedRows/Aggregation: Attribute
+B1/S1/Q1/O2/EstimatedRows/IsPresent: True
+B1/S1/Q1/O2/EstimatedRows/IsAvailable: True
+B1/S1/Q1/O2/EstimatedRowsRead/Value: N/A
+B1/S1/Q1/O2/EstimatedRowsRead/State: Missing
+B1/S1/Q1/O2/EstimatedRowsRead/Unit: rows/execution
+B1/S1/Q1/O2/EstimatedRowsRead/Source: [Masked_FactText_34]
+B1/S1/Q1/O2/EstimatedRowsRead/Kind: Estimated
+B1/S1/Q1/O2/EstimatedRowsRead/Aggregation: Attribute
+B1/S1/Q1/O2/EstimatedRowsRead/IsPresent: False
+B1/S1/Q1/O2/EstimatedRowsRead/IsAvailable: False
+B1/S1/Q1/O2/EstimatedCpuCost/Value: N/A
+B1/S1/Q1/O2/EstimatedCpuCost/State: Missing
+B1/S1/Q1/O2/EstimatedCpuCost/Unit: optimizer-cost
+B1/S1/Q1/O2/EstimatedCpuCost/Source: [Masked_FactText_35]
+B1/S1/Q1/O2/EstimatedCpuCost/Kind: Estimated
+B1/S1/Q1/O2/EstimatedCpuCost/Aggregation: Attribute
+B1/S1/Q1/O2/EstimatedCpuCost/IsPresent: False
+B1/S1/Q1/O2/EstimatedCpuCost/IsAvailable: False
+B1/S1/Q1/O2/EstimatedIoCost/Value: N/A
+B1/S1/Q1/O2/EstimatedIoCost/State: Missing
+B1/S1/Q1/O2/EstimatedIoCost/Unit: optimizer-cost
+B1/S1/Q1/O2/EstimatedIoCost/Source: [Masked_FactText_36]
+B1/S1/Q1/O2/EstimatedIoCost/Kind: Estimated
+B1/S1/Q1/O2/EstimatedIoCost/Aggregation: Attribute
+B1/S1/Q1/O2/EstimatedIoCost/IsPresent: False
+B1/S1/Q1/O2/EstimatedIoCost/IsAvailable: False
+B1/S1/Q1/O2/AverageRowSize/Value: N/A
+B1/S1/Q1/O2/AverageRowSize/State: Missing
+B1/S1/Q1/O2/AverageRowSize/Unit: bytes/row
+B1/S1/Q1/O2/AverageRowSize/Source: [Masked_FactText_37]
+B1/S1/Q1/O2/AverageRowSize/Kind: Estimated
+B1/S1/Q1/O2/AverageRowSize/Aggregation: Attribute
+B1/S1/Q1/O2/AverageRowSize/IsPresent: False
+B1/S1/Q1/O2/AverageRowSize/IsAvailable: False
+B1/S1/Q1/O2/EstimatedExecutions/Value: N/A
+B1/S1/Q1/O2/EstimatedExecutions/State: Missing
+B1/S1/Q1/O2/EstimatedExecutions/Unit: executions
+B1/S1/Q1/O2/EstimatedExecutions/Source: [Masked_FactText_38]
+B1/S1/Q1/O2/EstimatedExecutions/Kind: Estimated
+B1/S1/Q1/O2/EstimatedExecutions/Aggregation: RebindsPlusRewindsPlusOne
+B1/S1/Q1/O2/EstimatedExecutions/IsPresent: False
+B1/S1/Q1/O2/EstimatedExecutions/IsAvailable: False
+B1/S1/Q1/O2/SubtreeCost/Value: N/A
+B1/S1/Q1/O2/SubtreeCost/State: Missing
+B1/S1/Q1/O2/SubtreeCost/Unit: optimizer-cost
+B1/S1/Q1/O2/SubtreeCost/Source: [Masked_FactText_39]
+B1/S1/Q1/O2/SubtreeCost/Kind: Estimated
+B1/S1/Q1/O2/SubtreeCost/Aggregation: Attribute
+B1/S1/Q1/O2/SubtreeCost/IsPresent: False
+B1/S1/Q1/O2/SubtreeCost/IsAvailable: False
+B1/S1/Q1/O2/OwnCost/Value: N/A
+B1/S1/Q1/O2/OwnCost/State: Missing
+B1/S1/Q1/O2/OwnCost/Unit: optimizer-cost
+B1/S1/Q1/O2/OwnCost/Source: [Masked_FactText_40]
+B1/S1/Q1/O2/OwnCost/Kind: Estimated
+B1/S1/Q1/O2/OwnCost/Aggregation: SubtreeMinusChildren
+B1/S1/Q1/O2/OwnCost/IsPresent: False
+B1/S1/Q1/O2/OwnCost/IsAvailable: False
+B1/S1/Q1/O2/OutputRows/Value: N/A
+B1/S1/Q1/O2/OutputRows/State: Missing
+B1/S1/Q1/O2/OutputRows/Unit: rows
+B1/S1/Q1/O2/OutputRows/Source: [Masked_FactText_24]
+B1/S1/Q1/O2/OutputRows/Kind: Actual
+B1/S1/Q1/O2/OutputRows/Aggregation: SumThreads
+B1/S1/Q1/O2/OutputRows/IsPresent: False
+B1/S1/Q1/O2/OutputRows/IsAvailable: False
+B1/S1/Q1/O2/RowsRead/Value: N/A
+B1/S1/Q1/O2/RowsRead/State: Missing
+B1/S1/Q1/O2/RowsRead/Unit: rows
+B1/S1/Q1/O2/RowsRead/Source: [Masked_FactText_25]
+B1/S1/Q1/O2/RowsRead/Kind: Actual
+B1/S1/Q1/O2/RowsRead/Aggregation: SumThreads
+B1/S1/Q1/O2/RowsRead/IsPresent: False
+B1/S1/Q1/O2/RowsRead/IsAvailable: False
+B1/S1/Q1/O2/ThreadExecutions/Value: N/A
+B1/S1/Q1/O2/ThreadExecutions/State: Missing
+B1/S1/Q1/O2/ThreadExecutions/Unit: executions
+B1/S1/Q1/O2/ThreadExecutions/Source: [Masked_FactText_26]
+B1/S1/Q1/O2/ThreadExecutions/Kind: Actual
+B1/S1/Q1/O2/ThreadExecutions/Aggregation: SumThreads
+B1/S1/Q1/O2/ThreadExecutions/IsPresent: False
+B1/S1/Q1/O2/ThreadExecutions/IsAvailable: False
+B1/S1/Q1/O2/LogicalExecutions/Value: N/A
+B1/S1/Q1/O2/LogicalExecutions/State: Missing
+B1/S1/Q1/O2/LogicalExecutions/Unit: executions
+B1/S1/Q1/O2/LogicalExecutions/Source: [Masked_FactText_41]
+B1/S1/Q1/O2/LogicalExecutions/Kind: Actual
+B1/S1/Q1/O2/LogicalExecutions/Aggregation: CommonWorkerExecutions
+B1/S1/Q1/O2/LogicalExecutions/IsPresent: False
+B1/S1/Q1/O2/LogicalExecutions/IsAvailable: False
+B1/S1/Q1/O2/RowsPerExecution/Value: N/A
+B1/S1/Q1/O2/RowsPerExecution/State: Missing
+B1/S1/Q1/O2/RowsPerExecution/Unit: rows/execution
+B1/S1/Q1/O2/RowsPerExecution/Source: [Masked_FactText_42]
+B1/S1/Q1/O2/RowsPerExecution/Kind: Actual
+B1/S1/Q1/O2/RowsPerExecution/Aggregation: RowsPerExecution
+B1/S1/Q1/O2/RowsPerExecution/IsPresent: False
+B1/S1/Q1/O2/RowsPerExecution/IsAvailable: False
+B1/S1/Q1/O2/Rebinds/Value: N/A
+B1/S1/Q1/O2/Rebinds/State: Missing
+B1/S1/Q1/O2/Rebinds/Unit: rebinds
+B1/S1/Q1/O2/Rebinds/Source: [Masked_FactText_27]
+B1/S1/Q1/O2/Rebinds/Kind: Actual
+B1/S1/Q1/O2/Rebinds/Aggregation: SumThreads
+B1/S1/Q1/O2/Rebinds/IsPresent: False
+B1/S1/Q1/O2/Rebinds/IsAvailable: False
+B1/S1/Q1/O2/Rewinds/Value: N/A
+B1/S1/Q1/O2/Rewinds/State: Missing
+B1/S1/Q1/O2/Rewinds/Unit: rewinds
+B1/S1/Q1/O2/Rewinds/Source: [Masked_FactText_28]
+B1/S1/Q1/O2/Rewinds/Kind: Actual
+B1/S1/Q1/O2/Rewinds/Aggregation: SumThreads
+B1/S1/Q1/O2/Rewinds/IsPresent: False
+B1/S1/Q1/O2/Rewinds/IsAvailable: False
+B1/S1/Q1/O2/ElapsedTime/Value: N/A
+B1/S1/Q1/O2/ElapsedTime/State: Missing
+B1/S1/Q1/O2/ElapsedTime/Unit: ms
+B1/S1/Q1/O2/ElapsedTime/Source: [Masked_FactText_29]
+B1/S1/Q1/O2/ElapsedTime/Kind: Actual
+B1/S1/Q1/O2/ElapsedTime/Aggregation: MaxThreads
+B1/S1/Q1/O2/ElapsedTime/IsPresent: False
+B1/S1/Q1/O2/ElapsedTime/IsAvailable: False
+B1/S1/Q1/O2/CpuTime/Value: N/A
+B1/S1/Q1/O2/CpuTime/State: Missing
+B1/S1/Q1/O2/CpuTime/Unit: ms
+B1/S1/Q1/O2/CpuTime/Source: [Masked_FactText_30]
+B1/S1/Q1/O2/CpuTime/Kind: Actual
+B1/S1/Q1/O2/CpuTime/Aggregation: SumThreads
+B1/S1/Q1/O2/CpuTime/IsPresent: False
+B1/S1/Q1/O2/CpuTime/IsAvailable: False
+B1/S1/Q1/O2/LogicalReads/Value: N/A
+B1/S1/Q1/O2/LogicalReads/State: Missing
+B1/S1/Q1/O2/LogicalReads/Unit: pages
+B1/S1/Q1/O2/LogicalReads/Source: [Masked_FactText_31]
+B1/S1/Q1/O2/LogicalReads/Kind: Actual
+B1/S1/Q1/O2/LogicalReads/Aggregation: SumThreads
+B1/S1/Q1/O2/LogicalReads/IsPresent: False
+B1/S1/Q1/O2/LogicalReads/IsAvailable: False
+B1/S1/Q1/O2/PhysicalReads/Value: N/A
+B1/S1/Q1/O2/PhysicalReads/State: Missing
+B1/S1/Q1/O2/PhysicalReads/Unit: pages
+B1/S1/Q1/O2/PhysicalReads/Source: [Masked_FactText_32]
+B1/S1/Q1/O2/PhysicalReads/Kind: Actual
+B1/S1/Q1/O2/PhysicalReads/Aggregation: SumThreads
+B1/S1/Q1/O2/PhysicalReads/IsPresent: False
+B1/S1/Q1/O2/PhysicalReads/IsAvailable: False
+B1/S1/Q1/O2/PhysicalOp: [Masked_FactText_47]
+B1/S1/Q1/O2/HasResidualPredicate: False
+B1/S1/Q1/O2/WorkerRows: N/A
+=== Diagnostics ===
+D1 | RULE_004_ESTIMATE_MISMATCH / 2.0.0 | B1/S1/Q1/O1 | Hit | Critical | High
+Title: [Masked_DiagnosticText_48]
+DiagnosticId: [Masked_SourceIdentity_49]
+Details: [Masked_DiagnosticText_50]
+Source: [Masked_SourceLocation_13]
+Origins: [{&quot;RuleId&quot;:&quot;RULE_004_ESTIMATE_MISMATCH&quot;,&quot;RuleVersion&quot;:&quot;2.0.0&quot;},{&quot;RuleId&quot;:&quot;RULE_030_CARDINALITY_ERROR&quot;,&quot;RuleVersion&quot;:&quot;2.0.0&quot;}]
+Evidence1/Location: B1/S1/Q1/O1
+Evidence1/Name: [Masked_DiagnosticText_51]
+Evidence1/Value: [Masked_DiagnosticText_52]
+Evidence1/State: Available
+Evidence2/Location: B1/S1/Q1/O1
+Evidence2/Name: [Masked_DiagnosticText_53]
+Evidence2/Value: [Masked_DiagnosticText_54]
+Evidence2/State: Available
+Evidence3/Location: B1/S1/Q1/O1
+Evidence3/Name: [Masked_DiagnosticText_55]
+Evidence3/Value: [Masked_DiagnosticText_56]
+Evidence3/State: Available
+Evidence4/Location: B1/S1/Q1/O1
+Evidence4/Name: [Masked_DiagnosticText_57]
+Evidence4/Value: [Masked_DiagnosticText_58]
+Evidence4/State: Available
+Evidence5/Location: B1/S1/Q1/O1
+Evidence5/Name: [Masked_DiagnosticText_59]
+Evidence5/Value: [Masked_DiagnosticText_52]
+Evidence5/State: Available
+Evidence6/Location: B1/S1/Q1/O1
+Evidence6/Name: [Masked_DiagnosticText_60]
+Evidence6/Value: [Masked_DiagnosticText_58]
+Evidence6/State: Available
+Evidence7/Location: B1/S1/Q1/O1
+Evidence7/Name: [Masked_DiagnosticText_61]
+Evidence7/Value: [Masked_DiagnosticText_62]
+Evidence7/State: Available
+=== Rule Runs ===
+R1 | RULE_001_IMPLICIT_CONV / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_63]
+R2 | RULE_001_IMPLICIT_CONV / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_64]
+R3 | RULE_002_KEY_LOOKUP / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_65]
+R4 | RULE_002_KEY_LOOKUP / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_66]
+R5 | RULE_003_PARAM_SNIFFING / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_67]
+R6 | RULE_004_ESTIMATE_MISMATCH / 2.0.0 | B1/S1/Q1/O1 | Hit | N/A | N/A
+ReasonCode: RULE_HIT
+Details: [Masked_DiagnosticText_68]
+R7 | RULE_004_ESTIMATE_MISMATCH / 2.0.0 | B1/S1/Q1/O2 | Skipped | N/A | N/A
+ReasonCode: RULE_MISSING_EVIDENCE
+Details: [Masked_DiagnosticText_69]
+R8 | RULE_017_LARGE_MEMORY_GRANT / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_70]
+R9 | RULE_006_RESIDUAL_PREDICATE / 2.0.0 | B1/S1/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_71]
+R10 | RULE_006_RESIDUAL_PREDICATE / 2.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_72]
+R11 | RULE_008_SPILL_DETECTION / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_73]
+R12 | RULE_008_SPILL_DETECTION / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_74]
+R13 | RULE_009_PARALLEL_SKEW / 1.0.0 | B1/S1/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_75]
+R14 | RULE_009_PARALLEL_SKEW / 1.0.0 | B1/S1/Q1/O2 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_76]
+R15 | RULE_011_UDF_TVF / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_77]
+R16 | RULE_011_UDF_TVF / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_78]
+R17 | RULE_012_NESTED_LOOPS_HIGH_EXEC / 1.0.0 | B1/S1/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_79]
+R18 | RULE_012_NESTED_LOOPS_HIGH_EXEC / 1.0.0 | B1/S1/Q1/O2 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_80]
+R19 | RULE_013_ANTI_PATTERN / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_81]
+R20 | RULE_013_ANTI_PATTERN / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_82]
+R21 | RULE_014_SERIAL_PLAN_REASON / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_83]
+R22 | RULE_015_LOCAL_VARIABLES / 1.0.0 | B1/S1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_84]
+R23 | RULE_016_ZERO_ROW_ACTUALS / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_85]
+R24 | RULE_016_ZERO_ROW_ACTUALS / 1.0.0 | B1/S1/Q1/O2 | Skipped | N/A | N/A
+ReasonCode: RULE_MISSING_EVIDENCE
+Details: [Masked_DiagnosticText_86]
+R25 | RULE_036_WAIT_STATS / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_87]
+R26 | RULE_037_RESOURCE_SEMAPHORE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_88]
+R27 | RULE_018_OPTIMIZER_ABORT / 1.0.0 | B1/S1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_89]
+R28 | RULE_019_CACHE_RECOMPILE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_90]
+R29 | RULE_020_MISSING_INDEX / 2.1.1 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_91]
+R30 | RULE_021_TABLE_SCAN / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_92]
+R31 | RULE_021_TABLE_SCAN / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_93]
+R32 | RULE_022_HIGH_COST_OP / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_94]
+R33 | RULE_023_RUNNING_TOTAL_PATTERN / 1.0.0 | B1/S1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_95]
+R34 | RULE_024_SCALAR_SUBQUERY_PATTERN / 1.0.0 | B1/S1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_96]
+R35 | RULE_025_QUERY_REWRITE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_97]
+R36 | RULE_026_IMPLICIT_CONV_DOC / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_98]
+R37 | RULE_027_PARAM_SNIFFING_DOC / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_99]
+R38 | RULE_028_STATS_USAGE / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_100]
+R39 | RULE_029_MEMORY_GRANT_DOC / 1.0.0 | Document | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_101]
+R40 | RULE_030_CARDINALITY_ERROR / 2.0.0 | B1/S1/Q1/O1 | Hit | N/A | N/A
+ReasonCode: RULE_HIT
+Details: [Masked_DiagnosticText_102]
+R41 | RULE_030_CARDINALITY_ERROR / 2.0.0 | B1/S1/Q1/O2 | Skipped | N/A | N/A
+ReasonCode: RULE_MISSING_EVIDENCE
+Details: [Masked_DiagnosticText_103]
+R42 | RULE_031_KEY_LOOKUP_OP / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_104]
+R43 | RULE_031_KEY_LOOKUP_OP / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_105]
+R44 | RULE_032_MEMORY_SPILL / 1.0.0 | B1/S1/Q1/O1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_106]
+R45 | RULE_032_MEMORY_SPILL / 1.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_107]
+R46 | RULE_033_THREAD_SKEW / 1.0.0 | B1/S1/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_108]
+R47 | RULE_033_THREAD_SKEW / 1.0.0 | B1/S1/Q1/O2 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_109]
+R48 | RULE_034_RESIDUAL_PRED_OP / 2.0.0 | B1/S1/Q1/O1 | Skipped | N/A | N/A
+ReasonCode: RULE_NOT_APPLICABLE
+Details: [Masked_DiagnosticText_110]
+R49 | RULE_034_RESIDUAL_PRED_OP / 2.0.0 | B1/S1/Q1/O2 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_111]
+R50 | RULE_035_SARGABLE_INDEX_RECOMMENDATION / 2.1.1 | B1/S1 | NoHit | N/A | N/A
+ReasonCode: RULE_NO_HIT
+Details: [Masked_DiagnosticText_112]
+=== Graph nodes / edges (complete) ===
+B1/S1/Q1/O1: [Masked_GraphLabel_113]
+B1/S1/Q1/O2: [Masked_GraphLabel_114]
+B1/S1/Q1/O1 -&gt; B1/S1/Q1/O2
+=== Source XML (selection) ===
+&lt;ShowPlanXML Version=&quot;[MASKED_OtherText]&quot; Build=&quot;[MASKED_OtherText]&quot; xmlns=&quot;http://schemas.microsoft.com/sqlserver/2004/07/showplan&quot;&gt;
+  &lt;BatchSequence&gt;
+    &lt;Batch&gt;
+      &lt;Statements&gt;
+        &lt;StmtSimple StatementId=&quot;1&quot; StatementText=&quot;-- 已脱敏 SQL --&quot; StatementType=&quot;[MASKED_OtherText]&quot;&gt;
+          &lt;QueryPlan&gt;
+&lt;RelOp NodeId=&quot;0&quot; PhysicalOp=&quot;Filter&quot; LogicalOp=&quot;Filter&quot; Parallel=&quot;false&quot; EstimateRows=&quot;1&quot;&gt;
+&lt;RunTimeInformation&gt;&lt;RunTimeCountersPerThread Thread=&quot;0&quot; ActualRows=&quot;100000&quot; ActualExecutions=&quot;2&quot; ActualRowsRead=&quot;200000&quot; /&gt;&lt;/RunTimeInformation&gt;
+&lt;Filter&gt;&lt;RelOp NodeId=&quot;1&quot; PhysicalOp=&quot;Index Seek&quot; LogicalOp=&quot;Index Seek&quot; Parallel=&quot;false&quot; EstimateRows=&quot;1&quot; /&gt;&lt;/Filter&gt;
+&lt;/RelOp&gt;&lt;/QueryPlan&gt;
+        &lt;/StmtSimple&gt;
+      &lt;/Statements&gt;
+    &lt;/Batch&gt;
+  &lt;/BatchSequence&gt;
+&lt;/ShowPlanXML&gt;
+</pre></body></html>

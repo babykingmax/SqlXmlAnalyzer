@@ -13,11 +13,12 @@ namespace SqlXmlAnalyzer.Core.Rules
         public AnalysisResult? Analyze(XElement relOp, XNamespace ns)
         {
             var nodeId = relOp.Attribute("NodeId")?.Value ?? "N/A";
-            var document = relOp.Document;
-            if (document == null) return null;
+            var queryPlan = Services.QueryPlanXml.Find(relOp, ns);
+            if (queryPlan == null) return null;
 
             // 1. TempDB Spill (Critical)
-            var spillNode = document.Descendants(ns + "SpillToTempDb").FirstOrDefault();
+            var spillNode = Services.QueryPlanXml.Descendants(queryPlan, ns)
+                .FirstOrDefault(element => element.Name == ns + "SpillToTempDb" && element.Parent?.Name == ns + "Warnings");
             if (spillNode != null)
             {
                 int spillLevel = 0;
@@ -33,7 +34,7 @@ namespace SqlXmlAnalyzer.Core.Rules
             }
 
             // 2. Memory Grant ratio (Warning)
-            var grantNode = document.Descendants(ns + "MemoryGrantInfo").FirstOrDefault();
+            var grantNode = queryPlan.Element(ns + "MemoryGrantInfo");
             if (grantNode != null)
             {
                 if (long.TryParse(grantNode.Attribute("GrantedMemory")?.Value, out long grantedKB) &&

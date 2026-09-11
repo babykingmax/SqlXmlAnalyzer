@@ -62,6 +62,7 @@ public sealed class AnalysisDisplayThemeTests
                 {
                     BaseTheme = theme, PrimaryColor = PrimaryColor.DeepPurple, SecondaryColor = SecondaryColor.Lime
                 });
+                Core.Services.WorkspaceThemeService.Apply(host.Resources, theme == BaseTheme.Dark);
                 host.Measure(new Size(900, 300));
                 host.Arrange(new Rect(0, 0, 900, 300));
                 host.UpdateLayout();

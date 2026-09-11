@@ -77,19 +77,23 @@ public sealed class InputRecognitionService : IDiagnosticDocumentReader
         _options.Validate();
     }
 
-    public InputRecognitionResult Load(string path, CancellationToken cancellationToken = default)
+    public InputRecognitionResult Load(string path, CancellationToken cancellationToken = default, Action<AnalysisOperationState>? progress = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (string.IsNullOrWhiteSpace(path))
             return Failure(InputStatus.ReadError, AnalysisDocumentKind.Unknown, null, "INPUT_READ_ERROR", ReadErrorMessage);
         if (Path.GetExtension(path).Equals(".xel", StringComparison.OrdinalIgnoreCase))
+        {
+            progress?.Invoke(AnalysisOperationState.Parsing);
             return new XelReader().ReadDocumentAsync(path, _options, cancellationToken, _unexpectedErrors).GetAwaiter().GetResult();
+        }
         byte[]? snapshot = null;
         var result = Read(() =>
         {
             if (_loadXml != null) return _loadXml(path);
             using Stream stream = _openRead(path);
             snapshot = SafeXmlHelper.ReadSnapshot(stream, _options, cancellationToken);
+            progress?.Invoke(AnalysisOperationState.Parsing);
             return SafeXmlHelper.LoadSnapshot(snapshot, _options, cancellationToken);
         }, cancellationToken);
         return WithSource(result, snapshot, path);

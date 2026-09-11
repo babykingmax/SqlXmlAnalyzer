@@ -16,10 +16,10 @@ namespace SqlXmlAnalyzer.Core.Services
 
     public sealed class PlanGraphConnectionGeometryService
     {
-        private const double NodeWidth = 228;
-        private const double NodeHeight = 70;
-        private const double HorizontalConnectionOffsetY = 35;
-        private const double VerticalConnectionOffsetX = 115;
+        private const double NodeWidth = PlanGraphNodeMetrics.Width;
+        private const double NodeHeight = PlanGraphNodeMetrics.Height;
+        private const double HorizontalConnectionOffsetY = NodeHeight / 2;
+        private const double VerticalConnectionOffsetX = NodeWidth / 2;
 
         public double GetArrowAngle(PlanGraphConnectionLayout layout)
         {

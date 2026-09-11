@@ -3,6 +3,19 @@
                     xmlns:nodify="clr-namespace:Nodify;assembly=Nodify">
 
     <!-- 统一语义化颜色系统 (Semantic Colors) -->
+    <SolidColorBrush x:Key="AccentForegroundBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SelectionBrush" Color="#DCEBFA"/>
+    <SolidColorBrush x:Key="PlanTooltipSurfaceBrush" Color="#F8FAFD"/>
+    <SolidColorBrush x:Key="FocusBrush" Color="#00519E"/>
+    <SolidColorBrush x:Key="DisabledSurfaceBrush" Color="#E2E5E9"/>
+    <SolidColorBrush x:Key="DisabledTextBrush" Color="#56606C"/>
+    <SolidColorBrush x:Key="WarningSurfaceBrush" Color="#FFF4D0"/>
+    <SolidColorBrush x:Key="CriticalSurfaceBrush" Color="#FCE8E8"/>
+    <Style x:Key="{x:Static SystemParameters.FocusVisualStyleKey}">
+        <Setter Property="Control.Template"><Setter.Value>
+            <ControlTemplate><Rectangle Margin="-2" Stroke="{DynamicResource FocusBrush}" StrokeThickness="2" StrokeDashArray="2 1" SnapsToDevicePixels="True"/></ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
     
     <!-- 1. 致命 / 错误 (Critical) -->
     <Color x:Key="CriticalColor">#D32F2F</Color>

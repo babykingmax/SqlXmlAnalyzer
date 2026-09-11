@@ -15,31 +15,29 @@ namespace SqlXmlAnalyzer.Core.Rules
         {
             var nodeId = relOp.Attribute("NodeId")?.Value ?? "0";
 
-            var queryPlan = relOp.Document?.Descendants(ns + "QueryPlan").FirstOrDefault();
-            if (queryPlan != null)
+            var queryPlan = Services.QueryPlanXml.Find(relOp, ns);
+            var statement = queryPlan == null ? null : StatementSqlAnalysis.Parse(queryPlan, ns);
+            var unknown = statement == null ? null : StatementSqlAnalysis.GetOptimizeForUnknown(statement);
+            AnalysisResult HintResult() => new()
             {
-                // Check for OPTIMIZE FOR UNKNOWN
-                if (queryPlan.ToString().Contains("OPTIMIZE FOR UNKNOWN", StringComparison.OrdinalIgnoreCase))
-                {
-                    return new AnalysisResult
-                    {
-                        RuleId = "RULE_003_OPTIMIZE_FOR_UNKNOWN",
-                        Severity = "Info",
-                        Title = "提示: OPTIMIZE FOR UNKNOWN",
-                        Message = "检测到查询使用了 OPTION (OPTIMIZE FOR UNKNOWN)。优化器将使用统计信息的平均密度进行预估，而不是特定参数的值。这有助于缓解参数嗅探，但可能导致所有参数均获得次优计划。",
-                        NodeId = nodeId
-                    };
-                }
-            }
+                RuleId = "RULE_003_OPTIMIZE_FOR_UNKNOWN",
+                Severity = "Info",
+                Title = "提示: OPTIMIZE FOR UNKNOWN",
+                Message = "StatementText 中包含 OPTIMIZE FOR UNKNOWN 或针对特定参数的 UNKNOWN 提示。优化器对受影响参数使用统计信息分布进行估算，而不采用本次参数值；请结合实际基数和参数分布验证计划表现。",
+                NodeId = nodeId
+            };
+            if (unknown?.AllParameters == true) return HintResult();
 
-            var paramList = relOp.Document?.Descendants(ns + "ParameterList").Descendants(ns + "ColumnReference");
-            if (paramList == null) return null;
+            var paramList = queryPlan?.Elements(ns + "ParameterList").Elements(ns + "ColumnReference");
+            if (paramList == null) return unknown?.Parameters.Count > 0 ? HintResult() : null;
 
             var sniffedParams = new List<string>();
 
             foreach (var p in paramList)
             {
                 string col = p.Attribute("Column")?.Value ?? "";
+                // A per-parameter hint must not suppress evidence for other parameters.
+                if (unknown?.Parameters.Contains(col) == true) continue;
                 string? comp = p.Attribute("ParameterCompiledValue")?.Value;
                 string? run = p.Attribute("ParameterRuntimeValue")?.Value;
 
@@ -63,7 +61,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 else if (ratio >= 10) severity = "Warning";
                 else severity = "Info";
 
-                var statsList = relOp.Document != null ? Parsers.StatisticsUsageParser.Parse(relOp.Document, ns) : new List<Models.StatisticsInfo>();
+                var statsList = queryPlan != null ? Parsers.StatisticsUsageParser.ParseQueryPlan(queryPlan, ns) : new List<Models.StatisticsInfo>();
                 var staleStats = statsList.Where(s => s.IsStale || s.ModificationCount > 1000).ToList();
                 string statsWarning = "";
 
@@ -89,7 +87,7 @@ namespace SqlXmlAnalyzer.Core.Rules
                 };
             }
 
-            return null;
+            return unknown?.Parameters.Count > 0 ? HintResult() : null;
         }
     }
 }

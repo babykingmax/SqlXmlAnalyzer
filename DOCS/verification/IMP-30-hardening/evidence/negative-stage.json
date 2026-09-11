@@ -1,0 +1,54 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "0087776A2A8C68102BEB2F40DA33973678904B957D9F4F657E627FEA01469F8A",
+  "StartedAtUtc": "2026-09-10T11:34:04.6241612Z",
+  "CompletedAtUtc": "2026-09-10T11:34:12.0167301Z",
+  "Results": [
+    {
+      "Path": "rollback.command.json",
+      "Bytes": 830,
+      "Sha256": "4B433B35AD8BEE582315C284E91CA363A350FE6839C7373C705B0B2F036E614E"
+    },
+    {
+      "Path": "rollback.stderr.txt",
+      "Bytes": 149,
+      "Sha256": "BD25D58F60841DB293594AFAE47747839A94FF1B1E2F4687D0B12A21A2091632"
+    },
+    {
+      "Path": "rollback.stdout.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "rollback/release.log",
+      "Bytes": 154,
+      "Sha256": "777842638143D7796DBBED81F92FDF1B05532FCE0053862951C564F22FF81556"
+    },
+    {
+      "Path": "session.command.json",
+      "Bytes": 832,
+      "Sha256": "42350699F28811490E2E72C223EB662315A053B154097C7038ED1917B1A24B19"
+    },
+    {
+      "Path": "session.stderr.txt",
+      "Bytes": 149,
+      "Sha256": "4789581A74EBB52EB164A923689C69133CAD96C2CCD42811ACFD59B2A2BC9CF1"
+    },
+    {
+      "Path": "session.stdout.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "session/release.log",
+      "Bytes": 154,
+      "Sha256": "4EE87B8AB7AD08BAF3630EB3981206331469923276B09F6B9C407A50627CC9AE"
+    },
+    {
+      "Path": "verification.json",
+      "Bytes": 379,
+      "Sha256": "511815ABC6E82EAC7D0CAD63E210D8C8FB29476BC10769CEDA8555A74FE7F019"
+    }
+  ]
+}

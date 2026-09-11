@@ -3,488 +3,294 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
              xmlns:local="clr-namespace:SqlXmlAnalyzer"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             xmlns:graphServices="clr-namespace:SqlXmlAnalyzer.Core.Services"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             PreviewKeyDown="Graph_PreviewKeyDown" Focusable="True" AutomationProperties.Name="执行计划图">
     <UserControl.Resources>
-        <local:ConnectionThicknessConverter x:Key="ConnectionThicknessConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <Style x:Key="PlanGraphToolTip" TargetType="ToolTip">
+            <Setter Property="Background" Value="{DynamicResource PlanTooltipSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border x:Name="TooltipSurface" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" CornerRadius="6" SnapsToDevicePixels="True">
+                            <ContentPresenter TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ToolTip" BasedOn="{StaticResource PlanGraphToolTip}"/>
+        <Style x:Key="PlanNodeCard" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="7"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type nodify:ItemContainer}}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource SecondaryTextBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType={x:Type nodify:ItemContainer}}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsPreviewingSelection, RelativeSource={RelativeSource AncestorType={x:Type nodify:ItemContainer}}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type nodify:ItemContainer}}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GraphButton" TargetType="Button">
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SelectionBrush}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SelectionBrush}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource DisabledSurfaceBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-
-    <Grid>
-        <!-- 纯图形区域 (Plan Explorer 风格操作符盒子图) - 无内部侧边栏，避免布局冲突 -->
-        <Border BorderBrush="#90A4AE" BorderThickness="1.5" Background="#F5F7FA" CornerRadius="4">
-            <Grid>
-                <!-- 顶部工具提示栏 -->
-                <Border Background="#ECEFF1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,0,1" Height="36" VerticalAlignment="Top" Panel.ZIndex="10">
-                    <StackPanel Orientation="Horizontal" Margin="8,0">
-                        <TextBlock Text="📊 执行计划节点图" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center" Foreground="#37474F"/>
-                        
-                        <!-- 视图选项：动态切换显示模式 -->
-                        <TextBlock Text="视图模式:" VerticalAlignment="Center" Margin="12,0,4,0" FontSize="11" Foreground="#546E7A"/>
-                        <ComboBox x:Name="CmbViewMode" SelectedIndex="0" Width="120" Height="24" SelectionChanged="CmbViewMode_SelectionChanged" VerticalContentAlignment="Center" FontSize="11">
-                            <ComboBoxItem Content="成本百分比 (%)"/>
-                            <ComboBoxItem Content="CPU + I/O 成本"/>
-                            <ComboBoxItem Content="行数对比 (Act/Est)"/>
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource SurfaceBrush}" CornerRadius="4">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="4">
+                <WrapPanel VerticalAlignment="Center">
+                    <TextBlock Text="指标" Margin="4,0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="CmbViewMode" SelectedIndex="0" Width="138" MinHeight="28" Margin="2" AutomationProperties.Name="图指标"
+                              SelectionChanged="CmbViewMode_SelectionChanged">
+                        <ComboBoxItem Content="估算成本占比"/>
+                        <ComboBoxItem Content="估算 CPU / I/O"/>
+                        <ComboBoxItem Content="实际 / 估算行数"/>
+                    </ComboBox>
+                    <TextBox x:Name="GraphSearch" Width="145" Margin="6,2,0,2" Padding="5,3" MinHeight="28"
+                             ToolTip="搜索算子、对象或 Node ID；Enter 查找下一项" AutomationProperties.Name="查找算子"
+                             KeyDown="SearchBox_KeyDown" TextChanged="SearchBox_TextChanged"/>
+                    <Button Content="查找" Style="{StaticResource GraphButton}" Click="FindNode_Click"/>
+                    <TextBlock x:Name="SearchResultText" Margin="4,0" VerticalAlignment="Center" FontSize="11"/>
+                    <Button Content="适应图" Style="{StaticResource GraphButton}" Click="FitGraph_Click" ToolTip="缩放并居中当前分段"/>
+                    <Button Content="−" Style="{StaticResource GraphButton}" Click="ZoomOut_Click" AutomationProperties.Name="缩小计划图"/>
+                    <Button Content="100%" Style="{StaticResource GraphButton}" Click="ResetZoom_Click" ToolTip="恢复原始大小"/>
+                    <Button Content="+" Style="{StaticResource GraphButton}" Click="ZoomIn_Click" AutomationProperties.Name="放大计划图"/>
+                    <Button Content="定位选中" Style="{StaticResource GraphButton}" Click="LocateSelected_Click"/>
+                    <Button x:Name="DisplaySettingsButton" Content="显示设置" Style="{StaticResource GraphButton}" Click="DisplaySettings_Click"/>
+                </WrapPanel>
+            </Border>
+            <Popup x:Name="DisplaySettingsPopup" PlacementTarget="{Binding ElementName=DisplaySettingsButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="14" CornerRadius="4">
+                    <StackPanel Width="235">
+                        <TextBlock Text="显示设置" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBlock Text="布局"/>
+                        <ComboBox x:Name="CmbLayoutMode" SelectedIndex="0" Margin="0,4,0,10" SelectionChanged="CmbLayoutMode_SelectionChanged">
+                            <ComboBoxItem Content="水平"/><ComboBoxItem Content="垂直"/>
                         </ComboBox>
-
-                        <TextBlock Text="布局方向:" VerticalAlignment="Center" Margin="12,0,4,0" FontSize="11" Foreground="#546E7A"/>
-                        <ComboBox x:Name="CmbLayoutMode" SelectedIndex="0" Width="80" Height="24" SelectionChanged="CmbLayoutMode_SelectionChanged" VerticalContentAlignment="Center" FontSize="11">
-                            <ComboBoxItem Content="水平 (H)"/>
-                            <ComboBoxItem Content="垂直 (V)"/>
+                        <TextBlock Text="成本强度"/>
+                        <ComboBox x:Name="CmbColorMode" SelectedIndex="0" Margin="0,4,0,10" SelectionChanged="CmbColorMode_SelectionChanged">
+                            <ComboBoxItem Content="估算总成本"/><ComboBoxItem Content="估算 CPU"/><ComboBoxItem Content="估算 I/O"/>
                         </ComboBox>
-
-                        <TextBlock Text="热力图模式:" VerticalAlignment="Center" Margin="12,0,4,0" FontSize="11" Foreground="#546E7A"/>
-                        <ComboBox x:Name="CmbColorMode" SelectedIndex="0" Width="110" Height="24" SelectionChanged="CmbColorMode_SelectionChanged" VerticalContentAlignment="Center" FontSize="11">
-                            <ComboBoxItem Content="总成本百分比"/>
-                            <ComboBoxItem Content="CPU 成本"/>
-                            <ComboBoxItem Content="I/O 成本"/>
+                        <TextBlock Text="连线粗细"/>
+                        <ComboBox x:Name="CmbLinkMetric" SelectedIndex="0" Margin="0,4,0,10" SelectionChanged="CmbLinkMetric_SelectionChanged">
+                            <ComboBoxItem Content="输出行数"/><ComboBoxItem Content="数据大小"/>
                         </ComboBox>
-
-                        <TextBlock Text="连线粗细:" VerticalAlignment="Center" Margin="12,0,4,0" FontSize="11" Foreground="#546E7A"/>
-                        <ComboBox x:Name="CmbLinkMetric" SelectedIndex="0" Width="100" Height="24" SelectionChanged="CmbLinkMetric_SelectionChanged" VerticalContentAlignment="Center" FontSize="11">
-                            <ComboBoxItem Content="数据行数"/>
-                            <ComboBoxItem Content="数据大小"/>
-                        </ComboBox>
-
-                        <Button Content="全部展开" FontSize="9" Padding="6,1" Margin="12,0,0,0" Click="ExpandAll_Click" VerticalAlignment="Center"/>
-                        <Button Content="智能折叠(&lt;5%)" FontSize="9" Padding="6,1" Margin="6,0,0,0" Click="SmartCollapse_Click" VerticalAlignment="Center" ToolTip="折叠子树成本小于5%且无警告的节点"/>
-
-                        <Button Content="重置视图" FontSize="9" Padding="6,1" Margin="6,0,0,0" Click="ResetView_Click" VerticalAlignment="Center"/>
+                        <CheckBox Content="显示连线数值（近景）" IsChecked="{Binding ShowConnectionLabels}" Margin="0,2,0,10"/>
+                        <Button Content="全部展开" Style="{StaticResource GraphButton}" Click="ExpandAll_Click"/>
+                        <Button Content="折叠低成本无警告子树" Style="{StaticResource GraphButton}" Click="SmartCollapse_Click" ToolTip="子树估算成本小于 5%，且无警告"/>
                     </StackPanel>
                 </Border>
-
-                <nodify:NodifyEditor x:Name="Editor"
-                                     VirtualizingPanel.IsVirtualizing="False"
-                                     ItemsSource="{Binding Nodes}"
-                                     SelectedItem="{Binding SelectedNode, Mode=TwoWay}"
-                                     Connections="{Binding Connections}"
-                                     Background="Transparent"
-                                     Margin="0,26,0,0"
-                                     SnapsToDevicePixels="False" 
-                                     UseLayoutRounding="False"
-                                     TextOptions.TextRenderingMode="ClearType"
-                                     TextOptions.TextFormattingMode="Ideal"
-                                     TextOptions.TextHintingMode="Fixed"
-                                     PreviewMouseLeftButtonDown="Editor_PreviewMouseLeftButtonDown"
-                                     PreviewMouseMove="Editor_PreviewMouseMove"
-                                     PreviewMouseLeftButtonUp="Editor_PreviewMouseLeftButtonUp">
-                    
-                    <!-- 节点内容模板 (Plan Explorer 专业操作符盒子) -->
-                    <nodify:NodifyEditor.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:PlanNodeViewModel}">
-                            <Grid>
-                                <!-- Material Design 风格的节点卡片 -->
-                                <Border MinWidth="140" MinHeight="75" 
-                                        Background="{DynamicResource MaterialDesignPaper}" 
-                                        BorderBrush="{Binding DynamicBorderBrush}" 
-                                        BorderThickness="{Binding DynamicBorderThickness}" 
-                                        CornerRadius="6"
-                                        SnapsToDevicePixels="True">
-                                    <Border.ContextMenu>
-                                    <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
-                                        <MenuItem Header="复制节点全部信息" Click="CopyNodeInfo_Click" FontSize="13" Padding="12,6">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="ContentCopy" Width="16" Height="16" Foreground="{DynamicResource AccentBrush}"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </Border.ContextMenu>
-                                <Border.Effect>
-                                        <DropShadowEffect Color="#000000" BlurRadius="6" ShadowDepth="2" Opacity="0.12"/>
-                                    </Border.Effect>
-                                    
-                                    <!-- 节点 ToolTip 保留原有详细信息 -->
+            </Popup>
+            <local:PlanGraphEditor x:Name="Editor" Grid.Row="1" VirtualizingPanel.IsVirtualizing="False" MinViewportZoom="0.02"
+                                 ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode, Mode=TwoWay}" Connections="{Binding Connections}"
+                                 Background="Transparent" SnapsToDevicePixels="True" UseLayoutRounding="True"
+                                 PreviewMouseLeftButtonDown="Editor_PreviewMouseLeftButtonDown" PreviewMouseMove="Editor_PreviewMouseMove"
+                                 PreviewMouseLeftButtonUp="Editor_PreviewMouseLeftButtonUp">
+                <nodify:NodifyEditor.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:PlanNodeViewModel}">
+                        <local:AccessiblePlanNode>
+                                <Border x:Name="NodeCard" Width="{x:Static graphServices:PlanGraphNodeMetrics.Width}" Height="{x:Static graphServices:PlanGraphNodeMetrics.Height}"
+                                        Style="{StaticResource PlanNodeCard}">
+                                    <Border.ContextMenu><ContextMenu><MenuItem Header="复制节点信息" Click="CopyNodeInfo_Click"/></ContextMenu></Border.ContextMenu>
                                     <Border.ToolTip>
-                                        <ToolTip Background="Transparent" BorderThickness="0" Padding="0" Placement="Right" ToolTipService.ShowDuration="60000" ToolTipService.InitialShowDelay="100">
-                                            <Border Background="{DynamicResource SurfaceBrush}" 
-                                                    BorderBrush="{DynamicResource AccentBrush}" BorderThickness="3,0,0,0"
-                                                    CornerRadius="8" ClipToBounds="True" Margin="8">
-                                                <Border.ContextMenu>
-                                    <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
-                                        <MenuItem Header="复制节点全部信息" Click="CopyNodeInfo_Click" FontSize="13" Padding="12,6">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="ContentCopy" Width="16" Height="16" Foreground="{DynamicResource AccentBrush}"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </Border.ContextMenu>
-                                <Border.Effect>
-                                                    <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="4" Opacity="0.15"/>
-                                                </Border.Effect>
-                                                <StackPanel Width="310">
-                                                    <!-- 头部区域 (无缝深色背景) -->
-                                                    <Border Background="{DynamicResource AccentBrush}" Padding="10,8">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <StackPanel Grid.Column="0">
-                                                                <TextBlock Text="{Binding PhysicalOp}" FontWeight="Bold" FontSize="15" Foreground="White" />
-                                                                <TextBlock Text="{Binding LogicalOpSuffix}" FontSize="12" FontStyle="Italic" Foreground="#E0F0FF" Margin="0,2,0,0" Visibility="{Binding HasExtraInfo}"/>
-                                                            </StackPanel>
-                                                            <Border Grid.Column="1" Background="#33000000" CornerRadius="4" Padding="6,2" VerticalAlignment="Top">
-                                                                <TextBlock Text="{Binding NodeId, StringFormat='Node {0}'}" FontSize="11" Foreground="White"/>
-                                                            </Border>
-                                                        </Grid>
-                                                    </Border>
-                                                    <!-- 主体数据区域 -->
-                                                    <Border Padding="10">
-                                                        <StackPanel>
-                                                            <!-- 执行与行数信息 (两列网格排版) -->
-                                                            <Grid Margin="0,0,0,12">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="140"/>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                </Grid.RowDefinitions>
-                                                                
-                                                                <TextBlock Text="Executions (Act/Est):" Grid.Row="0" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="0,3">
-                                                                    <TextBlock Text="{Binding ActualExecutions}" FontSize="12" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold"/>
-                                                                    <TextBlock Text=" / " FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                                                                    <TextBlock Text="{Binding EstimatedExecutions}" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
-                                                                </StackPanel>
-
-                                                                <TextBlock Text="输出行（实际/估算）:" Grid.Row="1" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0,3">
-                                                                    <TextBlock Text="{Binding ActualRows}" FontSize="12" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold"/>
-                                                                    <TextBlock Text=" / " FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                                                                    <TextBlock Text="{Binding EstRows}" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
-                                                                </StackPanel>
-
-                                                                <TextBlock Text="实际读取行（行）:" Grid.Row="2" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding ActualRowsRead}" Grid.Row="2" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
-
-                                                                <TextBlock Text="Execution Mode:" Grid.Row="3" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding ExecutionMode}" Grid.Row="3" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
-                                                                <TextBlock Text="Data Size (Est):" Grid.Row="4" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Text="{Binding EstimatedDataSize}" Grid.Row="4" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
-                                                                <TextBlock Text="并行 (Parallel):" Grid.Row="5" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBlock Text="{Binding ParallelDisplay}" Grid.Row="5" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
-                                                                <TextBlock Text="有序扫描 (Ordered):" Grid.Row="6" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBlock Text="{Binding Ordered}" Grid.Row="6" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}"/>
-                                                            </Grid>
-
-                                                            <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,12"/>
-
-                                                            <!-- 成本信息 -->
-                                                            <Grid Margin="0,0,0,12">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="140"/>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                </Grid.RowDefinitions>
-                                                                
-                                                                <TextBlock Text="Operator Cost:" Grid.Row="0" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding EstimatedOperatorCost}" Grid.Row="0" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
-
-                                                                <TextBlock Text="I/O Cost:" Grid.Row="1" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding EstimatedIOCost}" Grid.Row="1" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
-
-                                                                <TextBlock Text="CPU Cost:" Grid.Row="2" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding EstimatedCPUCost}" Grid.Row="2" Grid.Column="1" FontSize="12" Foreground="{DynamicResource TextBrush}" />
-
-                                                                <TextBlock Text="Subtree Cost:" Grid.Row="3" Grid.Column="0" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,3"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding EstimatedSubtreeCostStr}" Grid.Row="3" Grid.Column="1" FontSize="12" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold" />
-                                                            </Grid>
-
-                                                            <!-- 数据库对象与详细属性 -->
-                                                            <StackPanel Visibility="{Binding HasObjectDetails}" Margin="0,4,0,0">
-                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
-                                                                <TextBlock Text="Object Details" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding ObjectDetails}" FontSize="12" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" />
-                                                            </StackPanel>
-
-                                                            <StackPanel Visibility="{Binding HasPartitionInfo}">
-                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
-                                                                <TextBlock Text="Partitioning" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
-                                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                                                    <TextBlock Text="Partition Count: " FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                                                                    <TextBlock Text="{Binding PartitionCount}" FontSize="12" Foreground="{DynamicResource TextBrush}" FontWeight="SemiBold"/>
-                                                                </StackPanel>
-                                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                                    <TextBlock Text="Partition Range: " FontSize="12" Foreground="{Binding PartitionLabelColor}"/>
-                                                                    <TextBlock Text="{Binding PartitionRange}" FontSize="12" Foreground="{Binding PartitionRangeColor}" FontWeight="SemiBold"/>
-                                                                </StackPanel>
-                                                            </StackPanel>
-
-                                                            <StackPanel Visibility="{Binding HasOutputList}">
-                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
-                                                                <TextBlock Text="Output List" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding OutputList}" FontSize="12" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" MaxHeight="80"  />
-                                                            </StackPanel>
-
-                                                            <StackPanel Visibility="{Binding HasSeekPredicates}">
-                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
-                                                                <TextBlock Text="Seek Predicates" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding SeekPredicates}" FontSize="12" Foreground="{DynamicResource AccentHoverBrush}" TextWrapping="Wrap" MaxHeight="80"  />
-                                                            </StackPanel>
-
-                                                            <StackPanel Visibility="{Binding HasPredicate}">
-                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
-                                                                <TextBlock Text="Residual Predicate" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding Predicate}" FontSize="12" Foreground="{DynamicResource AccentHoverBrush}" TextWrapping="Wrap" MaxHeight="80"  />
-                                                            </StackPanel>
-
-                                                            <StackPanel Visibility="{Binding HasDiagnosticStatusVisible}" Margin="0,8,0,0">
-                                                                <Separator Background="{DynamicResource BorderBrush}" Margin="0,0,0,8"/>
-                                                                <TextBlock Text="诊断运行状态" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4"/>
-                                                                <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding DiagnosticStatusText}" FontSize="12" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
-                                                            </StackPanel>
-
-                                                            <!-- 警告信息 -->
-                                                            <StackPanel Visibility="{Binding HasWarningVisible}" Margin="0,8,0,0">
-                                                                <Border Background="#FFF3E0" BorderBrush="#FFB74D" BorderThickness="1" CornerRadius="6" Padding="12">
-                                                                    <StackPanel>
-                                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                                                            <materialDesign:PackIcon Kind="Alert" Foreground="#F57C00" Width="16" Height="16" VerticalAlignment="Center"/>
-                                                                            <TextBlock Text="性能警告 (Warnings)" FontSize="12" FontWeight="Bold" Foreground="#F57C00" Margin="4,0,0,0" VerticalAlignment="Center"/>
-                                                                        </StackPanel>
-                                                                        <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0" Margin="0" Text="{Binding Warnings}" FontSize="12" Foreground="#D84315" TextWrapping="Wrap"/>
-                                                                    </StackPanel>
-                                                                </Border>
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                    </Border>
+                                        <ToolTip Style="{StaticResource PlanGraphToolTip}" Placement="Right" MaxWidth="430" ToolTipService.InitialShowDelay="350">
+                                            <ScrollViewer MaxHeight="420" VerticalScrollBarVisibility="Auto">
+                                                <StackPanel Width="350">
+                                                    <TextBlock Text="{Binding PhysicalOp}" FontSize="14" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding NodeId, StringFormat='Node {0}'}" Margin="0,3"/>
+                                                    <TextBlock Text="{Binding ObjectDisplay}" TextWrapping="Wrap" MaxHeight="42" TextTrimming="CharacterEllipsis" Margin="0,3"/>
+                                                    <TextBlock Text="{Binding RowComparisonHelp}" TextWrapping="Wrap" Margin="0,3"/>
+                                                    <TextBlock Text="{Binding ActualRowsRead, StringFormat='实际读取总行数：{0}'}"/>
+                                                    <TextBlock Text="{Binding ExecutionMode, StringFormat='执行模式：{0}'}"/>
+                                                    <TextBlock Text="双击或 Enter 查看完整属性" Margin="0,6"/>
+                                                    <StackPanel Visibility="{Binding HasDiagnosticStatusVisible}" Margin="0,8,0,0">
+                                                        <Separator Background="{DynamicResource BorderBrush}"/>
+                                                        <TextBlock Text="检查运行状态" FontWeight="SemiBold" Margin="0,4"/>
+                                                        <TextBox Text="{Binding DiagnosticStatusSummary, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    <StackPanel Visibility="{Binding HasWarningVisible}" Margin="0,8,0,0">
+                                                        <TextBlock Text="首要问题摘要" FontWeight="SemiBold"/>
+                                                        <TextBox Text="{Binding TopDiagnosticSummary, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
+                                                    </StackPanel>
                                                 </StackPanel>
-                                            </Border>
+                                            </ScrollViewer>
                                         </ToolTip>
                                     </Border.ToolTip>
-
-                                    <!-- 重新设计的内部布局: 顶部色带 (DynamicBackgroundBrush) + 底部主体 -->
                                     <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="4" /> <!-- 顶部状态色条 -->
-                                            <RowDefinition Height="Auto" /> <!-- 头部信息 -->
-                                            <RowDefinition Height="*" /> <!-- 底部数据 -->
-                                        </Grid.RowDefinitions>
-                                        
-                                        <!-- 状态指示条 (Cost 色或 Warning 色) -->
-                                        <Border Grid.Row="0" Background="{Binding DynamicBackgroundBrush}" CornerRadius="6,6,0,0" />
-                                        
-                                        <!-- 警告与并行标记悬浮在右上角 -->
-                                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Panel.ZIndex="5">
-                                            <!-- 索引推荐徽章 -->
-                                            <Button Visibility="{Binding MissingIndexOverlayVisible}" 
-                                                    ToolTip="{Binding MissingIndexTooltip}"
-                                                    Command="{Binding DataContext.OpenSandboxCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                    CommandParameter="{Binding AssociatedSuggestion}"
-                                                    Background="Transparent" BorderThickness="0" Width="16" Height="16" Padding="0" Cursor="Hand" Margin="0,0,2,0">
-                                                <Button.Template>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="#2E7D32" CornerRadius="8" Width="16" Height="16">
-                                                            <materialDesign:PackIcon Kind="Plus" Width="10" Height="10" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                            </Button>
-                                            <Border Width="16" Height="16" CornerRadius="8" Background="{StaticResource CriticalBrush}"
-                                                    Visibility="{Binding HasWarningVisible}" ToolTip="{Binding Warnings}">
-                                                <TextBlock Text="!" Foreground="White" FontSize="11" FontWeight="Bold" 
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="4"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Background="{Binding DynamicBackgroundBrush}" CornerRadius="5,0,0,5"/>
+                                        <Grid Grid.Column="1" Margin="8,7,8,6">
+                                            <Grid.RowDefinitions><RowDefinition Height="24"/><RowDefinition Height="18"/><RowDefinition Height="6"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="32"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                            <Path x:Name="OperatorIcon" Grid.RowSpan="2" Data="{Binding IconGeometry}" Fill="{Binding IconBrush}"
+                                                  Width="24" Height="24" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,3,0,0" IsHitTestVisible="False"/>
+                                            <TextBlock x:Name="OperatorName" Grid.Column="1" Text="{Binding PhysicalOp}" FontWeight="SemiBold" FontSize="13"
+                                                       Foreground="{DynamicResource TextBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <Button x:Name="CollapseNodeButton" Grid.Column="2" Content="{Binding CollapseButtonText}"
+                                                    Visibility="{Binding CollapseButtonVisibility}" Click="ToggleCollapse_Click"
+                                                    Style="{StaticResource GraphButton}" Width="22" Height="22" FontSize="14" Padding="0" Margin="0"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="{Binding CollapseActionLabel}" AutomationProperties.Name="{Binding CollapseActionLabel}"/>
+                                            <DockPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                                                <Border x:Name="DiagnosticBadge" DockPanel.Dock="Right" Visibility="{Binding DiagnosticBadgeVisibility}" Padding="4,0" CornerRadius="3" ToolTip="{Binding DiagnosticSummary}" Margin="5,0,0,0">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{DynamicResource SelectionBrush}"/>
+                                                            <Setter Property="TextElement.Foreground" Value="{DynamicResource InfoBrush}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DiagnosticSeverity}" Value="严重">
+                                                                    <Setter Property="Background" Value="{DynamicResource CriticalSurfaceBrush}"/>
+                                                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource CriticalBrush}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding DiagnosticSeverity}" Value="警告">
+                                                                    <Setter Property="Background" Value="{DynamicResource WarningSurfaceBrush}"/>
+                                                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource WarningBrush}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding DiagnosticBadgeText}" FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock x:Name="NodeObjectLabel" Text="{Binding NodeObjectDisplay}" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}" TextTrimming="CharacterEllipsis"
+                                                           Visibility="{Binding DataContext.NodeMetricsVisible, RelativeSource={RelativeSource AncestorType={x:Type local:PlanGraphControl}}, Converter={StaticResource BoolToVis}}"/>
+                                            </DockPanel>
+                                            <Border Grid.Row="3" Grid.ColumnSpan="3" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,3,0,0"
+                                                    Visibility="{Binding DataContext.NodeMetricsVisible, RelativeSource={RelativeSource AncestorType={x:Type local:PlanGraphControl}}, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock x:Name="NodePrimaryMetric" Text="{Binding PrimaryDisplayValue}" FontSize="11" Foreground="{DynamicResource TextBrush}"
+                                                           ToolTip="{Binding PrimaryMetricHelp}" TextTrimming="CharacterEllipsis"/>
                                             </Border>
-                                            <materialDesign:PackIcon Kind="LightningBolt" Width="14" Height="14" Foreground="{StaticResource WarningBrush}" Visibility="{Binding IsParallelVisible}" Margin="2,1,0,0"/>
-                                        </StackPanel>
-
-                                        <!-- Header 区: 图标与名称 -->
-                                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="8,8,24,6">
-                                            <!-- 图标 -->
-                                            <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                                                <Path Data="{Binding IconGeometry}" Fill="{Binding IconBrush}" Stretch="Uniform" />
-                                            </Viewbox>
-                                            
-                                            <!-- 名称 -->
-                                            <StackPanel Margin="6,0,0,0" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding PhysicalOp}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" TextTrimming="CharacterEllipsis" MaxWidth="100" ToolTip="{Binding PhysicalOp}"/>
-                                                <TextBlock Text="{Binding LogicalOpSuffix}" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" Visibility="{Binding HasExtraInfo}"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                        
-                                        <!-- 分隔线 -->
-                                        <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
-                                            <Grid Background="{DynamicResource MaterialDesignPaper}" Margin="0">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <!-- 数据指标: 成本占比 -->
-                                                <TextBlock Grid.Row="0" Text="{Binding PrimaryDisplayValue}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" Margin="0,6,0,2"/>
-                                                <!-- 对象名称 -->
-                                                <TextBlock Grid.Row="1" Text="{Binding ObjectDetails}" 
-                                                           FontSize="9.5" Foreground="{DynamicResource SecondaryTextBrush}" 
-                                                           HorizontalAlignment="Center" TextAlignment="Center"
-                                                           MaxWidth="130" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="30" Margin="4,0,4,6"
-                                                           Visibility="{Binding HasObjectDetails}"/>
-                                            </Grid>
-                                        </Border>
+                                        </Grid>
                                     </Grid>
                                 </Border>
-                                
-                                <!-- 折叠/展开按钮 (悬浮在右下角) -->
-                                <Button Content="{Binding CollapseButtonText}" 
-                                        Visibility="{Binding CollapseButtonVisibility}"
-                                        PreviewMouseLeftButtonDown="ToggleCollapse_PreviewMouseDown"
-                                        Panel.ZIndex="9999"
-                                        Width="20" Height="20" FontSize="16" Padding="0,-2,0,0"
-                                        FontWeight="Bold"
-                                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                        Margin="0,0,-10,-10" 
-                                        Background="{DynamicResource MaterialDesignPaper}" Foreground="{StaticResource InfoBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                        Cursor="Hand"
-                                        ToolTip="折叠/展开子树">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="10"/>
-                                            <Setter Property="Effect">
-                                                <Setter.Value>
-                                                    <DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1" Opacity="0.15"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </nodify:NodifyEditor.ItemTemplate>
-
-                    <!-- 节点容器样式 (位置 + 选择效果) -->
-                    <nodify:NodifyEditor.ItemContainerStyle>
-                        <Style TargetType="{x:Type nodify:ItemContainer}">
-                            <Setter Property="Location" Value="{Binding Location, Mode=TwoWay}"/>
-                            <Setter Property="MinWidth" Value="230"/>
-                            <Setter Property="MinHeight" Value="70"/>
-                            <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource BoolToVis}}"/>
-                            <EventSetter Event="MouseDoubleClick" Handler="Node_MouseDoubleClick"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Effect">
-                                        <Setter.Value>
-                                            <DropShadowEffect Color="#1976D2" BlurRadius="8" ShadowDepth="0" Opacity="0.4"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </nodify:NodifyEditor.ItemContainerStyle>
-
-                    <!-- 连接线 (数据流向父节点，由子指向父，支持数据流厚度与估算偏差颜色，以及悬浮数据量数值标签与流向动画) -->
-                    <nodify:NodifyEditor.ConnectionTemplate>
-                        <DataTemplate DataType="{x:Type local:ConnectionViewModel}">
-                            <Grid Opacity="{Binding Opacity}" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
-                                <!-- 1. 背景管道连接线 (展示行数对应的粗细，以及估算偏差颜色) -->
-                                <nodify:LineConnection Source="{Binding SourceLocation}" 
-                                                   Target="{Binding TargetLocation}"
-                                                   Stroke="{Binding StrokeBrush}"
-                                                   StrokeThickness="{Binding ThicknessValue}"
-                                                   
-                                                   
-                                                   ToolTip="{Binding ToolTipText}"/>
-
-                                <!-- 2. 前景动画虚线 (实现类似商业 SQL Sentry Plan Explorer 的动态数据流流向效果) -->
-                                <nodify:LineConnection Source="{Binding SourceLocation}" 
-                                                   Target="{Binding TargetLocation}"
-                                                   Stroke="{DynamicResource AccentHoverBrush}"
-                                                   StrokeThickness="1.5"
-                                                   StrokeDashArray="4,4"
-                                                   ArrowEnds="None"
-                                                   IsHitTestVisible="False"
-                                                   Opacity="0.9">
-                                    <nodify:LineConnection.Style>
-                                        <Style TargetType="{x:Type nodify:LineConnection}">
-                                            <Style.Triggers>
-                                                <EventTrigger RoutedEvent="Loaded">
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="StrokeDashOffset"
-                                                                             From="100" To="0" Duration="0:0:3"
-                                                                             RepeatBehavior="Forever"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </EventTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </nodify:LineConnection.Style>
-                                </nodify:LineConnection>
-
-                                <!-- 3. 数据流行数浮动标签 (精确居中于连接线中点) -->
-                                <!-- 采用圆角胶囊样式，更贴合现代 UI -->
-                                <Border Background="{DynamicResource SurfaceBrush}" 
-                                        BorderBrush="{Binding StrokeBrush}" 
-                                        BorderThickness="1"
-                                        CornerRadius="10" Padding="8,3"
-                                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                                        IsHitTestVisible="False"
-                                        Panel.ZIndex="10">
-                                    <Border.RenderTransform>
-                                        <TranslateTransform X="{Binding MidpointX}" Y="{Binding MidpointY}"/>
-                                    </Border.RenderTransform>
-                                    <Border.ContextMenu>
-                                    <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
-                                        <MenuItem Header="复制节点全部信息" Click="CopyNodeInfo_Click" FontSize="13" Padding="12,6">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="ContentCopy" Width="16" Height="16" Foreground="{DynamicResource AccentBrush}"/>
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </Border.ContextMenu>
-                                <Border.Effect>
-                                        <DropShadowEffect Color="#000000" BlurRadius="6" ShadowDepth="2" Opacity="0.25"/>
-                                    </Border.Effect>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <materialDesign:PackIcon Kind="ArrowRight" Foreground="{Binding StrokeBrush}" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,4,0" RenderTransformOrigin="0.5,0.5">
-                                            <materialDesign:PackIcon.RenderTransform>
-                                                <RotateTransform Angle="{Binding ArrowAngle}"/>
-                                            </materialDesign:PackIcon.RenderTransform>
-                                        </materialDesign:PackIcon>
-                                        <TextBlock Text="{Binding LabelText}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                                
-                                <!-- 5. 绝对置顶的真实独立箭头层 -->
-                                <Polygon Points="{Binding ArrowPoints}" Fill="{Binding StrokeBrush}" 
-                                         HorizontalAlignment="Left" VerticalAlignment="Top"
-                                         IsHitTestVisible="False" Panel.ZIndex="20">
-                                    <Polygon.RenderTransform>
-                                        <TranslateTransform X="{Binding ArrowTransformX}" Y="{Binding ArrowTransformY}"/>
-                                    </Polygon.RenderTransform>
-                                </Polygon>
-                            </Grid>
-                        </DataTemplate>
-                    </nodify:NodifyEditor.ConnectionTemplate>
-                </nodify:NodifyEditor>
-
-                <!-- 空状态提示 -->
-                <TextBlock x:Name="EmptyHint" Text="尚未加载执行计划&#x0A;请打开 .sqlplan 或 .xml 执行计划文件&#x0A;（打开后会自动切换到此专业 Nodify 盒子视图）" 
-                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                           TextAlignment="Center" Foreground="#546E7A" FontSize="13"
-                           Visibility="Collapsed"/>
-            </Grid>
-        </Border>
-    
-        <!-- 漂亮的 Toast 提示窗 -->
-        <Popup x:Name="ToastPopup" Placement="Bottom" VerticalOffset="-80" HorizontalOffset="0" AllowsTransparency="True" StaysOpen="False" IsHitTestVisible="False" PopupAnimation="Slide">
-            <Border Background="#2C2C2C" CornerRadius="6" Padding="16,10" Margin="10">
-                <Border.Effect>
-                    <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="4" Opacity="0.4"/>
-                </Border.Effect>
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="CheckCircle" Foreground="#4CAF50" Width="18" Height="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock Text="节点信息已复制到剪贴板" Foreground="#FAFAFA" FontSize="13" FontWeight="Normal" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        </local:AccessiblePlanNode>
+                    </DataTemplate>
+                </nodify:NodifyEditor.ItemTemplate>
+                <nodify:NodifyEditor.ItemContainerStyle>
+                    <Style TargetType="{x:Type nodify:ItemContainer}">
+                        <Setter Property="Location" Value="{Binding Location, Mode=TwoWay}"/>
+                        <Setter Property="SelectedBrush" Value="{DynamicResource AccentBrush}"/>
+                        <Setter Property="HighlightBrush" Value="{DynamicResource AccentBrush}"/>
+                        <Setter Property="SelectedBorderThickness" Value="2"/>
+                        <Setter Property="MinWidth" Value="{x:Static graphServices:PlanGraphNodeMetrics.Width}"/>
+                        <Setter Property="MinHeight" Value="{x:Static graphServices:PlanGraphNodeMetrics.Height}"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type nodify:ItemContainer}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" SnapsToDevicePixels="True"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource BoolToVis}}"/>
+                        <EventSetter Event="MouseDoubleClick" Handler="Node_MouseDoubleClick"/>
+                    </Style>
+                </nodify:NodifyEditor.ItemContainerStyle>
+                <nodify:NodifyEditor.ConnectionTemplate>
+                    <DataTemplate DataType="{x:Type local:ConnectionViewModel}">
+                        <Grid Opacity="{Binding Opacity}" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
+                            <nodify:LineConnection Source="{Binding SourceLocation}" Target="{Binding TargetLocation}" Stroke="{DynamicResource SecondaryTextBrush}"
+                                                   StrokeThickness="{Binding ThicknessValue}" ToolTip="{Binding ToolTipText}"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" Padding="4,1" CornerRadius="3" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False"
+                                    Visibility="{Binding DataContext.ConnectionLabelsVisible, RelativeSource={RelativeSource AncestorType={x:Type local:PlanGraphControl}}, Converter={StaticResource BoolToVis}}">
+                                <Border.RenderTransform><TranslateTransform X="{Binding MidpointX}" Y="{Binding MidpointY}"/></Border.RenderTransform>
+                                <TextBlock Text="{Binding LabelText}" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            </Border>
+                            <Polygon Points="{Binding ArrowPoints}" Fill="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False">
+                                <Polygon.RenderTransform><TranslateTransform X="{Binding ArrowTransformX}" Y="{Binding ArrowTransformY}"/></Polygon.RenderTransform>
+                            </Polygon>
+                        </Grid>
+                    </DataTemplate>
+                </nodify:NodifyEditor.ConnectionTemplate>
+            </local:PlanGraphEditor>
+            <TextBlock x:Name="EmptyHint" Grid.Row="1" Text="打开执行计划文件开始分析" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       TextAlignment="Center" TextWrapping="Wrap" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="13" Visibility="Collapsed"/>
+            <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="6,3">
+                <StackPanel>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding PageDescription}" FontSize="11" VerticalAlignment="Center" AutomationProperties.Name="图显示范围"/>
+                        <Button Content="上一组" Click="PreviousGraphPage_Click" IsEnabled="{Binding CanPreviousPage}" Style="{StaticResource GraphButton}"/>
+                        <Button Content="下一组" Click="NextGraphPage_Click" IsEnabled="{Binding CanNextPage}" Style="{StaticResource GraphButton}"/>
+                        <TextBlock Text="{Binding HiddenNodesDescription}" FontSize="11" VerticalAlignment="Center" Margin="6,0"/>
+                        <ComboBox x:Name="CrossPageSelector" Width="250" Margin="4,2" DisplayMemberPath="Label" IsEditable="True" IsReadOnly="True" Text="跨页关系：选择算子继续查看" SelectionChanged="CrossPageSelector_SelectionChanged"
+                                  AutomationProperties.Name="跨页算子关系" ToolTip="跨页关系：选择父子算子继续查看" Visibility="Collapsed"
+                                  MaxDropDownHeight="320" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True">
+                            <ComboBox.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel/></ItemsPanelTemplate></ComboBox.ItemsPanel>
+                        </ComboBox>
+                    </WrapPanel>
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding ZoomDescription, StringFormat='缩放 {0}'}" Margin="10,0,0,0"
+                                   FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" AutomationProperties.Name="当前缩放比例"/>
+                        <TextBlock Text="{Binding GraphLegend}" FontSize="10" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+                    </DockPanel>
                 </StackPanel>
             </Border>
-        </Popup>
-    </Grid>
+            <Popup x:Name="ToastPopup" Placement="Center" PlacementTarget="{Binding ElementName=Editor}" StaysOpen="False" IsHitTestVisible="False" AllowsTransparency="True">
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="12,8" CornerRadius="4"><TextBlock Text="节点信息已复制"/></Border>
+            </Popup>
+        </Grid>
+    </Border>
 </UserControl>

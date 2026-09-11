@@ -60,5 +60,41 @@ namespace SqlXmlAnalyzer.Tests
             session.Token.IsCancellationRequested.Should().BeTrue();
             coordinator.IsCurrent(session.RequestId).Should().BeFalse();
         }
+
+        [Theory]
+        [InlineData(AnalysisDocumentKind.Unknown)]
+        [InlineData(AnalysisDocumentKind.DeadlockXml)]
+        [InlineData(AnalysisDocumentKind.XelDeadlockTrace)]
+        public void ConfigurationCancellation_DoesNotCancelUnrelatedWork(AnalysisDocumentKind kind)
+        {
+            using var coordinator = new AnalysisSessionCoordinator();
+            var session = coordinator.Begin(kind);
+            coordinator.CancelCurrent(AnalysisDocumentKind.ExecutionPlanXml).Should().BeFalse();
+            session.Token.IsCancellationRequested.Should().BeFalse();
+            coordinator.IsCurrent(session.RequestId).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ConfigurationCancellation_CancelsPlanAfterContentRecognition()
+        {
+            using var coordinator = new AnalysisSessionCoordinator();
+            var session = coordinator.Begin();
+            coordinator.TrySetKind(session.RequestId, AnalysisDocumentKind.ExecutionPlanXml).Should().BeTrue();
+            coordinator.CancelCurrent(AnalysisDocumentKind.ExecutionPlanXml).Should().BeTrue();
+            session.Token.IsCancellationRequested.Should().BeTrue();
+            coordinator.IsCurrent(session.RequestId).Should().BeFalse();
+        }
+
+        [Fact]
+        public void OldRequest_CannotReclassifyOrCancelNewDeadlockWork()
+        {
+            using var coordinator = new AnalysisSessionCoordinator();
+            var old = coordinator.Begin(AnalysisDocumentKind.ExecutionPlanXml);
+            var current = coordinator.Begin(AnalysisDocumentKind.DeadlockXml);
+            coordinator.TrySetKind(old.RequestId, AnalysisDocumentKind.ExecutionPlanXml).Should().BeFalse();
+            coordinator.Cancel(old.RequestId).Should().BeFalse();
+            coordinator.CancelCurrent(AnalysisDocumentKind.ExecutionPlanXml).Should().BeFalse();
+            coordinator.IsCurrent(current.RequestId).Should().BeTrue();
+        }
     }
 }

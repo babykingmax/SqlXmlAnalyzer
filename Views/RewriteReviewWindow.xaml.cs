@@ -12,6 +12,7 @@ public partial class RewriteReviewWindow : Window
     public RewriteReviewWindow(string sourceSql, RewriteReview review)
     {
         InitializeComponent();
+        Services.WorkspaceAccessibility.PrepareDialog(this);
         DataContext = new RewriteReviewViewModel(sourceSql, review);
         Closed += (_, _) => { _lifetime.Cancel(); _lifetime.Dispose(); };
     }

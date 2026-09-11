@@ -1,0 +1,59 @@
+{
+  "SchemaVersion": 1,
+  "Passed": true,
+  "BuildSha256": "389C4966BACC82BE6B7760753669836DC3A2BB8A1EAED26EEC94C45CD3F3C3BF",
+  "StartedAtUtc": "2026-09-10T10:31:31.9097661Z",
+  "CompletedAtUtc": "2026-09-10T10:31:32.7784339Z",
+  "Results": [
+    {
+      "Path": "dtd.json",
+      "Bytes": 1459,
+      "Sha256": "AC6C65D50F292E847BAF2577D5DD5067D2EBD62D073275DA8AD8699F53FBD482"
+    },
+    {
+      "Path": "dtd.log",
+      "Bytes": 121,
+      "Sha256": "225628F0D774CC05788DA8A6F12FB8934E9937717997B47EF8BB22ACCB9AC211"
+    },
+    {
+      "Path": "dtd.sqlplan",
+      "Bytes": 65,
+      "Sha256": "ADFE85B23AE26856B78170BB4E41590242A1329AEC483C353CB654163E5285A0"
+    },
+    {
+      "Path": "malformed.json",
+      "Bytes": 1477,
+      "Sha256": "4E4C7BA5C2620A753859487CBB4EA51FB3324927883E9ED6604EF8FF4AC15FBD"
+    },
+    {
+      "Path": "malformed.log",
+      "Bytes": 121,
+      "Sha256": "94C4F24ECB274B52CAB588980673E78E424E5A6D4161D54485A7EE03AB62F268"
+    },
+    {
+      "Path": "malformed.sqlplan",
+      "Bytes": 13,
+      "Sha256": "4EDCC635564E8A9A959B8F81D7EADF7387B4A0DF3C4BE39347A15A87E3E04624"
+    },
+    {
+      "Path": "verification.json",
+      "Bytes": 681,
+      "Sha256": "809E1A7DDA7FCC0A5B140412ED64E1B73B63F874C1362A5DE43B12CFD8162FE5"
+    },
+    {
+      "Path": "wrong-root.json",
+      "Bytes": 1581,
+      "Sha256": "0130FF20705D5E1FA86DEB5BFA798C5DB20D033DA7E1A38C8F72A62F5DB5718E"
+    },
+    {
+      "Path": "wrong-root.log",
+      "Bytes": 166,
+      "Sha256": "FDCBD5F6095937A5A3439B75C3DB5DD292E9E88C138383E0B34227B79F5D34CB"
+    },
+    {
+      "Path": "wrong-root.sqlplan",
+      "Bytes": 13,
+      "Sha256": "8DB6FC3911E40C5C2AB90F9CAE80D32A39F4C7B91468C7E750EE724610544C94"
+    }
+  ]
+}

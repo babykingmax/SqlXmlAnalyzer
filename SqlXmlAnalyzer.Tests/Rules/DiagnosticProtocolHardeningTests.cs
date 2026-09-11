@@ -26,12 +26,12 @@ public sealed class DiagnosticProtocolHardeningTests : IDisposable
                 "false", "RULE_007_NON_SARGABLE", IssueSeverity.Warning),
             "case" => (new AntiPatternRule(), "<IndexScan><Predicate><ScalarOperator ScalarString='CASE WHEN [t].[a]=(1) THEN [t].[b] ELSE [t].[c] END=(2)'/></Predicate></IndexScan>",
                 "false", "RULE_013_CASE_IN_PREDICATE", IssueSeverity.Warning),
-            "parameter" => (new ParameterSniffingRule(), "<IndexScan><Predicate><ScalarOperator ScalarString='[t].[a]=&quot;OPTIMIZE FOR UNKNOWN&quot;'/></Predicate></IndexScan>",
+            "parameter" => (new ParameterSniffingRule(), "<IndexScan/>",
                 "false", "RULE_003_OPTIMIZE_FOR_UNKNOWN", IssueSeverity.Info),
             _ => throw new ArgumentOutOfRangeException(nameof(branch))
         };
         return (rule, SafeXmlHelper.ParseSafe(PlanIdentityModelTests.Wrap(
-            $"<StmtSimple StatementId='1'><QueryPlan><RelOp NodeId='0' PhysicalOp='Index Scan' Parallel='{parallel}' EstimateRows='400'>{payload}</RelOp></QueryPlan></StmtSimple>")), resultId, severity);
+            $"<StmtSimple StatementId='1' StatementText='SELECT @p OPTION (OPTIMIZE FOR UNKNOWN)'><QueryPlan><RelOp NodeId='0' PhysicalOp='Index Scan' Parallel='{parallel}' EstimateRows='400'>{payload}</RelOp></QueryPlan></StmtSimple>")), resultId, severity);
     }
 
     [Theory]

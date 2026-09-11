@@ -1,0 +1,106 @@
+{
+  "Passed": true,
+  "SourceSha256": "AF2D481E2B4BE6D71CB74E96D7FAAE4137C1F60F2D42DB5A13EA4C5C216B586B",
+  "Runs": [
+    {
+      "Run": "process-cold",
+      "TotalMs": 320.3642,
+      "StartupMs": 617.1654,
+      "InputLatencyP95Ms": 61.9185,
+      "InputLatencyMaxMs": 61.9185,
+      "Samples": 16,
+      "PeakWorkingSetBytes": 177377280,
+      "ManagedBytes": 30272720,
+      "VisibleGraphNodes": 0,
+      "Operators": 0,
+      "XelEvents": 2,
+      "Stages": [
+        {
+          "Milliseconds": 6.9538,
+          "Status": "Loading and identifying file: multiple.xel..."
+        },
+        {
+          "Milliseconds": 101.8288,
+          "Status": "Partial\uFF1A\u5DF2\u8BFB\u53D6 2 \u4E2A\u6B7B\u9501\u4E8B\u4EF6\u3002"
+        },
+        {
+          "Milliseconds": 108.5005,
+          "Status": "Analyzing deadlock file: multiple.xel..."
+        },
+        {
+          "Milliseconds": 309.3138,
+          "Status": "\u6B7B\u9501\u5206\u6790\u5B8C\u6210"
+        }
+      ],
+      "State": "Partial",
+      "StageTimings": [
+        {
+          "State": "Loading",
+          "Milliseconds": 2.5139
+        },
+        {
+          "State": "Parsing",
+          "Milliseconds": 100.5375
+        },
+        {
+          "State": "Analyzing",
+          "Milliseconds": 139.6505
+        },
+        {
+          "State": "PreparingView",
+          "Milliseconds": 61.181
+        }
+      ]
+    },
+    {
+      "Run": "same-process-warm",
+      "TotalMs": 63.7518,
+      "StartupMs": 617.1654,
+      "InputLatencyP95Ms": 40.3799,
+      "InputLatencyMaxMs": 40.3799,
+      "Samples": 4,
+      "PeakWorkingSetBytes": 180133888,
+      "ManagedBytes": 22395184,
+      "VisibleGraphNodes": 0,
+      "Operators": 0,
+      "XelEvents": 2,
+      "Stages": [
+        {
+          "Milliseconds": 1.6723,
+          "Status": "Loading and identifying file: multiple.xel..."
+        },
+        {
+          "Milliseconds": 4.2679,
+          "Status": "Partial\uFF1A\u5DF2\u8BFB\u53D6 2 \u4E2A\u6B7B\u9501\u4E8B\u4EF6\u3002"
+        },
+        {
+          "Milliseconds": 8.6681,
+          "Status": "Analyzing deadlock file: multiple.xel..."
+        },
+        {
+          "Milliseconds": 53.8309,
+          "Status": "\u6B7B\u9501\u5206\u6790\u5B8C\u6210"
+        }
+      ],
+      "State": "Partial",
+      "StageTimings": [
+        {
+          "State": "Loading",
+          "Milliseconds": 0.7787
+        },
+        {
+          "State": "Parsing",
+          "Milliseconds": 6.9674
+        },
+        {
+          "State": "Analyzing",
+          "Milliseconds": 8.4313
+        },
+        {
+          "State": "PreparingView",
+          "Milliseconds": 36.754
+        }
+      ]
+    }
+  ]
+}

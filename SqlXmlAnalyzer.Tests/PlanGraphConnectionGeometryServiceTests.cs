@@ -28,7 +28,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(20, 50),
                     PlanGraphConnectionLayout.Horizontal);
 
-            result.Should().Be(new PlanGraphConnectionPoint(300, 135));
+            result.Should().Be(new PlanGraphConnectionPoint(300, 144));
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(20, 50),
                     PlanGraphConnectionLayout.Horizontal);
 
-            result.Should().Be(new PlanGraphConnectionPoint(248, 85));
+            result.Should().Be(new PlanGraphConnectionPoint(280, 94));
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(300, 100),
                     PlanGraphConnectionLayout.Horizontal);
 
-            result.Should().Be(new PlanGraphConnectionPoint(248, 85));
+            result.Should().Be(new PlanGraphConnectionPoint(280, 94));
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(300, 100),
                     PlanGraphConnectionLayout.Horizontal);
 
-            result.Should().Be(new PlanGraphConnectionPoint(300, 135));
+            result.Should().Be(new PlanGraphConnectionPoint(300, 144));
         }
 
         [Fact]
@@ -76,7 +76,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(50, 20),
                     PlanGraphConnectionLayout.Vertical);
 
-            result.Should().Be(new PlanGraphConnectionPoint(215, 300));
+            result.Should().Be(new PlanGraphConnectionPoint(230, 300));
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(50, 20),
                     PlanGraphConnectionLayout.Vertical);
 
-            result.Should().Be(new PlanGraphConnectionPoint(165, 90));
+            result.Should().Be(new PlanGraphConnectionPoint(180, 108));
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(100, 300),
                     PlanGraphConnectionLayout.Vertical);
 
-            result.Should().Be(new PlanGraphConnectionPoint(165, 90));
+            result.Should().Be(new PlanGraphConnectionPoint(180, 108));
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace SqlXmlAnalyzer.Tests
                     new PlanGraphConnectionGeometryNode(100, 300),
                     PlanGraphConnectionLayout.Vertical);
 
-            result.Should().Be(new PlanGraphConnectionPoint(215, 300));
+            result.Should().Be(new PlanGraphConnectionPoint(230, 300));
         }
 
         [Fact]

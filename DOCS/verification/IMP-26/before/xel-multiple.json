@@ -1,0 +1,52 @@
+{
+  "Passed": true,
+  "SourceSha256": "06BF4E69E2EBDB554A7D4DFB04D6F69BF13B9E7E33CF0C6FDF73244AC5B2C3B3",
+  "Runs": [
+    {
+      "Run": "process-cold",
+      "TotalMs": 217.4617,
+      "StartupMs": 548.2345,
+      "InputLatencyP95Ms": 44.3851,
+      "InputLatencyMaxMs": 44.3851,
+      "Samples": 11,
+      "PeakWorkingSetBytes": 186265600,
+      "ManagedBytes": 29679832,
+      "VisibleGraphNodes": 0,
+      "Operators": 0,
+      "XelEvents": 2,
+      "Stages": [
+        {
+          "Milliseconds": 37.9521,
+          "Status": "Analyzing deadlock file: multiple.xel..."
+        },
+        {
+          "Milliseconds": 170.7512,
+          "Status": "\u6B7B\u9501\u5206\u6790\u5B8C\u6210"
+        }
+      ]
+    },
+    {
+      "Run": "same-process-warm",
+      "TotalMs": 62.9547,
+      "StartupMs": 548.2345,
+      "InputLatencyP95Ms": 35.2923,
+      "InputLatencyMaxMs": 35.2923,
+      "Samples": 4,
+      "PeakWorkingSetBytes": 190971904,
+      "ManagedBytes": 21472264,
+      "VisibleGraphNodes": 0,
+      "Operators": 0,
+      "XelEvents": 2,
+      "Stages": [
+        {
+          "Milliseconds": 16.8548,
+          "Status": "Analyzing deadlock file: multiple.xel..."
+        },
+        {
+          "Milliseconds": 25.6218,
+          "Status": "\u6B7B\u9501\u5206\u6790\u5B8C\u6210"
+        }
+      ]
+    }
+  ]
+}

@@ -58,12 +58,17 @@ public sealed class PlanComparisonSourceHashTests
             var capture = PlanComparisonMultiStatementTests.Compare(snapshot, snapshot).Statements.Single().QueryA!.Capture;
             capture.SourceHashKind.Should().Be("XML 表示");
             capture.SourceHash.Should().Be(snapshot.XmlContentHash);
-            service.Save(path, [snapshot], snapshot, snapshot);
-            var loaded = service.Load(path).PlanA!;
-            var restored = PlanComparisonMultiStatementTests.Compare(loaded, loaded).Statements.Single().QueryA!.Capture;
-            restored.SourceHashKind.Should().Be("XML 表示");
-            restored.RecordedOriginalSourceHash.Should().NotBeNull();
-            restored.Summary.Should().Contain("关联未核验");
+            string resaved = Path.ChangeExtension(path, ".resaved.pesession");
+            try
+            {
+                service.Save(resaved, [snapshot], snapshot, snapshot);
+                var loaded = service.Load(resaved).PlanA!;
+                var restored = PlanComparisonMultiStatementTests.Compare(loaded, loaded).Statements.Single().QueryA!.Capture;
+                restored.SourceHashKind.Should().Be("XML 表示");
+                restored.RecordedOriginalSourceHash.Should().NotBeNull();
+                restored.Summary.Should().Contain("关联未核验");
+            }
+            finally { File.Delete(resaved); }
         });
     }
 

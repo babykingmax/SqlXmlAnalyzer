@@ -1,0 +1,11 @@
+{
+  "Root": ".tmp.imp29-hardening-4",
+  "BuildTests": "build-tests",
+  "ExpectedTests": 2791,
+  "HardeningTests": 25,
+  "Configurations": ["Debug", "Release"],
+  "WpfProbes": ["20", "21", "22", "23", "24", "25", "26", "27"],
+  "Wpf24Suffix": "",
+  "PerformancePrefix": "performance-",
+  "PerformanceInputs": ["100", "1000", "5000", "xel"]
+}

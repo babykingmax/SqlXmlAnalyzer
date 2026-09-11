@@ -7,6 +7,19 @@ namespace SqlXmlAnalyzer.Tests
 {
     public sealed class WorkspacePanelLayoutServiceTests
     {
+        [Theory]
+        [InlineData(GridUnitType.Pixel, 800, 30, double.PositiveInfinity, 0, 800)]
+        [InlineData(GridUnitType.Pixel, 950, 30, double.PositiveInfinity, 280, 950)]
+        [InlineData(GridUnitType.Pixel, 800, 30, 600, 800, 600)]
+        [InlineData(GridUnitType.Pixel, 10, 30, 600, 10, 30)]
+        [InlineData(GridUnitType.Auto, 1, 30, double.PositiveInfinity, 28, 30)]
+        [InlineData(GridUnitType.Auto, 1, 30, double.PositiveInfinity, 350, 350)]
+        [InlineData(GridUnitType.Auto, 1, 30, 300, 350, 300)]
+        [InlineData(GridUnitType.Star, 1, 320, double.PositiveInfinity, 900, 320)]
+        public void MinimumColumnWidth_AccountsForRestoredPixelsAndAutoWithoutLockingStarSize(
+            GridUnitType unit, double value, double min, double max, double desired, double expected) =>
+            WorkspacePanelLayoutService.MinimumColumnWidth(new GridLength(value, unit), min, max, desired).Should().Be(expected);
+
         [Fact]
         public void ToggleSqlCompare_WhenOriginalSqlIsCollapsed_ExpandsOriginalSqlPanel()
         {

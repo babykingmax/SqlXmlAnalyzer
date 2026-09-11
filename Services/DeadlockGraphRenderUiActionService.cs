@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SqlXmlAnalyzer.Services
 {
@@ -59,6 +61,35 @@ namespace SqlXmlAnalyzer.Services
         {
             Render(graph);
             _invokeWhenLoaded(_zoomToFit);
+        }
+
+        private long _renderRevision;
+        public async Task RenderAsync(DeadlockGraph graph, CancellationToken token)
+        {
+            long revision = ++_renderRevision;
+            double width = GetCanvasWidth(), height = GetCanvasHeight();
+            var prepared = await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+                var layout = _layoutService.BuildLayout(graph);
+                var placement = _placementService.PlaceNodes(layout, graph.VictimProcessId, width, height);
+                var edges = _edgeService.BuildEdges(layout.Resources);
+                token.ThrowIfCancellationRequested();
+                return (Layout: layout, Placement: placement, Edges: edges);
+            }, token);
+            if (revision != _renderRevision) throw new OperationCanceledException(token);
+            ClearGraphState(); ResetViewport();
+            foreach (var detail in prepared.Layout.ResourceGroupDetails) _graphState.ResourceGroupDetails[detail.Key] = detail.Value;
+            try
+            {
+                await UiBatchScheduler.ApplyAsync(prepared.Placement.Processes, _drawProcessNode, token, () => revision == _renderRevision);
+                await UiBatchScheduler.ApplyAsync(prepared.Placement.Resources, _drawResourceNode, token, () => revision == _renderRevision);
+                await UiBatchScheduler.ApplyAsync(prepared.Edges, _drawEdge, token, () => revision == _renderRevision);
+                if (prepared.Layout.Processes.Count == 0) _graphCanvas.Children.Add(CreateNoDataMessage());
+                else AddGraphTip(prepared.Placement.TipPosition, graph.CycleAnalysis.Summary);
+                _invokeWhenLoaded(() => { if (revision == _renderRevision && !token.IsCancellationRequested) _zoomToFit(); });
+            }
+            catch { if (revision == _renderRevision) ClearGraphState(); throw; }
         }
 
         public void Render(DeadlockGraph graph)

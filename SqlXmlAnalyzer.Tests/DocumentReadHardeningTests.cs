@@ -213,7 +213,7 @@ public sealed class DocumentReadHardeningTests : IDisposable
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
         var handler = typeof(Program).GetMethod("HandleRefactorCommand", BindingFlags.NonPublic | BindingFlags.Static)!;
-        int code = (int)handler.Invoke(null, new object[] { new[] { sql }, new DocumentReadOptions(), cancellation.Token })!;
+        int code = (int)handler.Invoke(null, new object?[] { new[] { sql }, new DocumentReadOptions(), cancellation.Token, null })!;
         code.Should().Be(130);
         File.ReadAllText(sql).Should().Be("SELECT * FROM Users WHERE Age + 10 > 50;");
         Directory.GetFiles(_directory).Should().ContainSingle();
